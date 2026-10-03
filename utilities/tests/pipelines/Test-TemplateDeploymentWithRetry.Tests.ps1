@@ -277,7 +277,9 @@ Describe 'Bounded template validation with actual runtime helpers' {
 
     BeforeEach {
         $savedTemp = $env:TEMP
+        $savedTmpDir = $env:TMPDIR
         $env:TEMP = $TestDrive
+        $env:TMPDIR = $TestDrive
         '{"Microsoft.DevTestLab":{"labs":{}}}' | Set-Content -LiteralPath (Join-Path $TestDrive 'avm-apiSpecs.json')
         $templatePath = Join-Path $TestDrive ("template-{0}.json" -f [guid]::NewGuid())
         $template = @{
@@ -338,6 +340,7 @@ Describe 'Bounded template validation with actual runtime helpers' {
 
     AfterEach {
         $env:TEMP = $savedTemp
+        $env:TMPDIR = $savedTmpDir
     }
 
     It 'Revalidates a different allowed region and leaves only its region tokens for deployment' {
