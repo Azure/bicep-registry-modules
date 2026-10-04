@@ -26,13 +26,16 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
 // ============ //
 // Dependencies //
 // ============ //
 
 // General resources
 // =================
-resource backupManagementService 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+resource backupManagementService 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: '262044b1-e2ce-469f-a196-69ab7ada62d3'
 }
 
@@ -55,7 +58,9 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
     proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
-    backupManagementServiceApplicationObjectId: backupManagementService.id
+    backupManagementServiceApplicationObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : backupManagementService!.id
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
     preCreatedDiskName: 'dep-${namePrefix}-shared-disk-${serviceShort}'

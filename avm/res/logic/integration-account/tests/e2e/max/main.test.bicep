@@ -22,13 +22,16 @@ param serviceShort string = 'iamax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
 // ============ //
 // Dependencies //
 // ============ //
 
 // General resources
 // =================
-resource logicAppsService 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+resource logicAppsService 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: '7cd684f4-8a78-49b0-91ec-6a35d38739ba'
 }
 
@@ -43,7 +46,9 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-01'
-    logicAppsServiceEnterpriseApplicationObjectId: logicAppsService.id
+    logicAppsServiceEnterpriseApplicationObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : logicAppsService!.id
   }
 }
 

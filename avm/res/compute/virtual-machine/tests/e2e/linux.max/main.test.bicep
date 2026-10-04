@@ -23,13 +23,16 @@ param serviceShort string = 'vmlimax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
 // ============ //
 // Dependencies //
 // ============ //
 
 // General resources
 // =================
-resource backupManagementService 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+resource backupManagementService 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: '262044b1-e2ce-469f-a196-69ab7ada62d3'
 }
 
@@ -53,7 +56,9 @@ module nestedDependencies 'dependencies.bicep' = {
     sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
-    backupManagementServiceApplicationObjectId: backupManagementService.id
+    backupManagementServiceApplicationObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : backupManagementService!.id
     waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
   }

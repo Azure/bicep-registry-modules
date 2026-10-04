@@ -25,13 +25,16 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
 // ============ //
 // Dependencies //
 // ============ //
 
 // General resources
 // =================
-resource azureDatabricks 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+resource azureDatabricks 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: '2ff814a6-3304-4ab8-85cb-cd0e6f879c1d'
 }
 
@@ -45,7 +48,9 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     location: resourceLocation
-    databricksApplicationObjectId: azureDatabricks.id
+    databricksApplicationObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : azureDatabricks!.id
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
   }

@@ -22,13 +22,16 @@ param serviceShort string = 'cicgsb'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
 // ============ //
 // Dependencies //
 // ============ //
 
 // General resources
 // =================
-resource standbyPoolResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+resource standbyPoolResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: 'd4398a72-b879-49e5-9f3a-ff22c32efb42'
 }
 
@@ -43,7 +46,9 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     containerGroupProfileName: 'dep-${namePrefix}-cgp-${serviceShort}'
     standbyContainerGroupPoolName: 'dep-${namePrefix}-scgp-${serviceShort}'
-    standbyPoolResourceProviderEnterpriseApplicationObjectId: standbyPoolResourceProvider.id
+    standbyPoolResourceProviderEnterpriseApplicationObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : standbyPoolResourceProvider!.id
   }
 }
 

@@ -19,6 +19,9 @@ param serviceShort string = 'dwhsm'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
@@ -39,7 +42,7 @@ var enforcedLocation = 'uksouth'
 
 // General resources
 // =================
-resource azureDatabricks 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+resource azureDatabricks 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: '2ff814a6-3304-4ab8-85cb-cd0e6f879c1d'
 }
 
@@ -62,7 +65,9 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    databricksApplicationObjectId: azureDatabricks.id
+    databricksApplicationObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : azureDatabricks!.id
     primaryHSMKeyName: nestedHsmDependencies.outputs.primaryKeyName
     secondaryHSMKeyName: nestedHsmDependencies.?outputs.?secondaryKeyName
     deploymentScriptNamePrefix: 'dep-${namePrefix}-ds-${serviceShort}'
