@@ -15,6 +15,9 @@ param serviceShort string = 'ashniwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
 @description('Optional. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param localAdminAndDeploymentUserPass string = newGuid()
@@ -42,7 +45,7 @@ param hciHostImageReferenceId string = ''
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
 
-resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'
 }
 
@@ -197,7 +200,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.4.0' = {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    hciResourceProviderObjectId: hciResourceProvider.id
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
   }
 }
 

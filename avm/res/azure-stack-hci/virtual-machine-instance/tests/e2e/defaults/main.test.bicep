@@ -21,6 +21,9 @@ param serviceShort string = 'ashvmimin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param arbLocalAdminAndDeploymentUserPass string = ''
@@ -58,7 +61,7 @@ var enforcedLocation = 'southeastasia'
 // General resources
 // =================
 
-resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'
 }
 
@@ -104,7 +107,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.4.0' = {
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
     servicePrincipalId: arbDeploymentAppId
     servicePrincipalSecret: arbDeploymentServicePrincipalSecret
-    hciResourceProviderObjectId: hciResourceProvider.id
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames

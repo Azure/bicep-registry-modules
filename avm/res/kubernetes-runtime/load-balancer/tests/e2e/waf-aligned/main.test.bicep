@@ -18,7 +18,10 @@ param serviceShort string = 'krlbwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-resource kubernetesRuntimeResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
+resource kubernetesRuntimeResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: '087fca6e-4606-4d41-b3f6-5ebdf75b8b4c'
 }
 
@@ -47,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       clusterName: nestedDependencies.outputs.clusterName
-      kubernetesRuntimeRPObjectId: kubernetesRuntimeResourceProvider.id
+      kubernetesRuntimeRPObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : kubernetesRuntimeResourceProvider!.id
       addresses: [
         '10.0.0.100-10.0.0.110'
       ]
