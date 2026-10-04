@@ -51,7 +51,7 @@ configuration:
 
   # Graph lookups require Azure; use an identity placeholder only during static analysis.
   AZURE_PARAMETER_DEFAULTS:
-    builtInServicePrincipalObjectId: "ffffffff-ffff-ffff-ffff-ffffffffffff"
+    builtInServicePrincipalObjectId: "00000000-0000-4000-8000-000000000001"
 
   # Custom non-sensitive parameters' names
   AZURE_DEPLOYMENT_NONSENSITIVE_PARAMETER_NAMES:
