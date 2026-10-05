@@ -97,8 +97,8 @@ Describe 'Maximum fixture compatibility' {
         $userPool = $userPools[0]
     }
 
-    It 'Uses the Dds_v5 size for the user pool' {
-        $userPool.vmSize | Should -Be 'Standard_D2ds_v5'
+    It 'Uses the Dds_v4 size for the user pool' {
+        $userPool.vmSize | Should -Be 'Standard_D2ds_v4'
     }
 
     It 'Keeps the ephemeral Linux OS disk' {
@@ -120,7 +120,13 @@ Describe 'Maximum fixture compatibility' {
 
     It 'Keeps the managed system disk and two system-pool zones' {
         $primaryPools.Count | Should -Be 1
-        $primaryPools[0].vmSize | Should -Be 'Standard_D2s_v5'
+        $primaryPools[0].vmSize | Should -Be 'Standard_D2s_v4'
+        $primaryPools[0].type | Should -Be 'VirtualMachineScaleSets'
+        $primaryPools[0].mode | Should -Be 'System'
+        $primaryPools[0].count | Should -Be 1
+        $primaryPools[0].enableAutoScaling | Should -BeTrue
+        $primaryPools[0].minCount | Should -Be 1
+        $primaryPools[0].maxCount | Should -Be 3
         $primaryPools[0].osDiskType | Should -Be 'Managed'
         $primaryPools[0].osDiskSizeGB | Should -Be 128
         $primaryPools[0].availabilityZones.Count | Should -Be 2
@@ -131,6 +137,83 @@ Describe 'Maximum fixture compatibility' {
     It 'Lets CI choose the resource location' {
         $fixture.Template.parameters.resourceLocation.defaultValue | Should -Be '[deployment().location]'
         $parameters.location.value | Should -Be "[parameters('resourceLocation')]"
+        $resourceGroups = @($fixture.Resources | Where-Object type -EQ 'Microsoft.Resources/resourceGroups')
+        $resourceGroups.Count | Should -Be 1
+        $resourceGroups[0].location | Should -Be "[parameters('resourceLocation')]"
+    }
+
+    It 'Keeps sequential initial and idempotency deployments' {
+        $fixture.TestModule.copy.count | Should -Be "[length(createArray('init', 'idem'))]"
+        $fixture.TestModule.copy.mode | Should -Be 'serial'
+        $fixture.TestModule.copy.batchSize | Should -Be 1
+    }
+}
+
+Describe 'Private fixture compatibility' {
+    BeforeAll {
+        $fixture = Get-AksFixture -Name 'priv'
+        $parameters = $fixture.TestModule.properties.parameters
+        $primaryPools = @($parameters.primaryAgentPoolProfiles.value)
+        $userPools = @($parameters.agentPools.value)
+        if ($primaryPools.Count -ne 1 -or $userPools.Count -ne 1) {
+            throw 'Expected one system pool and one user pool in the private fixture.'
+        }
+        $pools = @($primaryPools[0], $userPools[0])
+    }
+
+    It 'Uses the D8ds_v4 size for both pools' {
+        foreach ($pool in $pools) {
+            $pool.vmSize | Should -Be 'Standard_D8ds_v4'
+        }
+    }
+
+    It 'Keeps both scale-set pools in zone three' {
+        $primaryPools[0].mode | Should -Be 'System'
+        $userPools[0].mode | Should -Be 'User'
+        foreach ($pool in $pools) {
+            $pool.type | Should -Be 'VirtualMachineScaleSets'
+            $pool.availabilityZones.Count | Should -Be 1
+            $pool.availabilityZones[0] | Should -Be 3
+        }
+    }
+
+    It 'Keeps the initial node counts and autoscaling bounds' {
+        $primaryPools[0].count | Should -Be 1
+        $userPools[0].count | Should -Be 2
+        foreach ($pool in $pools) {
+            $pool.enableAutoScaling | Should -BeTrue
+            $pool.minCount | Should -Be 1
+            $pool.maxCount | Should -Be 3
+        }
+    }
+
+    It 'Keeps the Linux disks, pod limits and system taint' {
+        $primaryPools[0].osDiskSizeGB | Should -Be 0
+        $userPools[0].osDiskSizeGB | Should -Be 128
+        $userPools[0].minPods | Should -Be 2
+        $primaryPools[0].nodeTaints | Should -Contain 'CriticalAddonsOnly=true:NoSchedule'
+        foreach ($pool in $pools) {
+            $pool.osType | Should -Be 'Linux'
+            $pool.maxPods | Should -Be 30
+        }
+    }
+
+    It 'Keeps private networking, custom DNS and managed identity access' {
+        $parameters.apiServerAccessProfile.value.enablePrivateCluster | Should -BeTrue
+        $parameters.apiServerAccessProfile.value.privateDNSZone | Should -Match '\.outputs\.privateDnsZoneResourceId\.value'
+        $parameters.networkPlugin.value | Should -Be 'azure'
+        $parameters.aadProfile.value.enableAzureRBAC | Should -BeTrue
+        $parameters.aadProfile.value.managed | Should -BeTrue
+        $identities = @($parameters.managedIdentities.value.userAssignedResourceIds)
+        $identities.Count | Should -Be 1
+        $identities[0] | Should -Match '\.outputs\.managedIdentityResourceId\.value'
+        $primaryPools[0].vnetSubnetResourceId | Should -Match '\.outputs\.vNetResourceId\.value'
+        $primaryPools[0].vnetSubnetResourceId | Should -Be $userPools[0].vnetSubnetResourceId
+    }
+
+    It 'Lets CI choose the resource location' {
+        $fixture.Template.parameters.resourceLocation.defaultValue | Should -Be '[deployment().location]'
+        $parameters.ContainsKey('location') | Should -BeFalse
         $resourceGroups = @($fixture.Resources | Where-Object type -EQ 'Microsoft.Resources/resourceGroups')
         $resourceGroups.Count | Should -Be 1
         $resourceGroups[0].location | Should -Be "[parameters('resourceLocation')]"

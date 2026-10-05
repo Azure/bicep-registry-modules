@@ -97,7 +97,7 @@ module testDeployment '../../../main.bicep' = [
           osDiskSizeGB: 128
           osType: 'Linux'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_D2s_v5'
+          vmSize: 'Standard_D2s_v4'
           enableAutoScaling: true
           minCount: 1
           maxCount: 3
@@ -130,7 +130,7 @@ module testDeployment '../../../main.bicep' = [
           osType: 'Linux'
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_D2ds_v5'
+          vmSize: 'Standard_D2ds_v4'
           vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
           enableAutoScaling: true
           maxCount: 2
