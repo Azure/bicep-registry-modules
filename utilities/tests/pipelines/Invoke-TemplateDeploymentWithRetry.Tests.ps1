@@ -141,6 +141,26 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             }
         }
 
+        function New-FixturePreflightOperation {
+            param([string] $Id)
+            $name = $Id.Split('/')[-1]
+            $operation = New-FixtureOperation -Id $Id -State Failed -StatusMessage @{
+                status = 'Failed'
+                error  = @{
+                    code    = 'InvalidTemplateDeployment'
+                    message = "The template deployment '$name' is not valid according to the validation procedure. The following resource provider(s) - 'Microsoft.Compute/virtualMachineScaleSets (2024-11-01)' reported preflight validation errors. Tracking id is 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'. See inner errors for details."
+                    details = @(@{
+                            code    = 'SkuNotAvailable'
+                            message = "The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_B12ms' is currently not available in location 'centralus'. Please try another size or deploy to a different location or different zone."
+                        })
+                }
+            }
+            $operation.properties.statusCode = 'BadRequest'
+            $operation.properties.targetResource.resourceType = 'Microsoft.Resources/deployments'
+            $operation.properties.targetResource.resourceName = $name
+            return $operation
+        }
+
         function Assert-FixtureParameters {
             param([string] $Path, [string] $Region, [string] $BaseTime, [securestring] $Secret)
             $BaseTime | Should -BeExactly 'fixed-base-time'
@@ -230,7 +250,14 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             $id = Get-DeploymentResourceId -Scope $Scope -Name $Name -SubscriptionId $DefaultProfile.Subscription.Id `
                 -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId
             $script:trace.Add("state:$id")
-            if (-not $script:records.ContainsKey($id)) { throw "Missing deployment [$id]." }
+            if (-not $script:records.ContainsKey($id)) {
+                $exception = [System.InvalidOperationException]::new("Deployment '$Name' could not be found. StatusCode: 404")
+                $exception | Add-Member -NotePropertyName Response -NotePropertyValue @{ StatusCode = 404 }
+                $exception | Add-Member -NotePropertyName Body -NotePropertyValue @{ Code = 'DeploymentNotFound' }
+                throw [System.Management.Automation.ErrorRecord]::new(
+                    $exception, 'DeploymentNotFound', [System.Management.Automation.ErrorCategory]::ObjectNotFound, $id
+                )
+            }
             @{ DeploymentName = $Name; ProvisioningState = $script:records[$id].State }
         }
 
@@ -396,6 +423,353 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         $templateInput.AdditionalParameters.resourceLocation | Should -BeExactly ''
         (Get-Content -LiteralPath $templatePath -Raw | ConvertFrom-Json).variables.regionToken | Should -Be 'swedencentral'
         Should -Invoke New-AzSubscriptionDeployment -Times 2 -Exactly -ParameterFilter { $Location -eq 'WestEurope' }
+        Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+    }
+
+    Context 'Preflight-rejected nested deployment discovery' -Tag 'NestedPreflight' {
+        BeforeEach {
+            $script:preflightId = "$script:groupId/providers/Microsoft.Resources/deployments/xw3pmls5ubqw4-test-cvmsswinuni-init"
+            $script:preflightOperation = New-FixturePreflightOperation -Id $script:preflightId
+            $script:parentId = "/subscriptions/$script:subscriptionId/providers/Microsoft.Resources/deployments/failed-parent"
+            $script:roots.Add($script:parentId)
+            $script:records[$script:parentId] = @{
+                State      = 'Failed'
+                Operations = @(
+                    $script:preflightOperation
+                    (New-FixtureOperation -Id $script:nestedId -Operation Read)
+                    (New-FixtureOperation -Id $script:nestedId)
+                    (New-FixtureOperation -Id $script:groupId)
+                )
+            }
+            $script:records[$script:nestedId] = @{
+                State      = 'Succeeded'
+                Operations = @((New-FixtureOperation -Id $script:vnetId))
+            }
+            $script:restOverrides["GET ${script:preflightId}?api-version=2021-04-01"] =
+            New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'DeploymentNotFound' } }
+            $null = $script:alive.Add($script:groupId)
+            $null = $script:alive.Add($script:vnetId)
+            $discoveryInput = @{ DeploymentNames = 'failed-parent'; Scope = 'subscription'; RequireCompleteRemoval = $true }
+        }
+
+        It 'Omits only the absent rejected child while retaining siblings and resources across <pages> operation pages' -ForEach @(
+            @{ pages = 1 }, @{ pages = 2 }
+        ) {
+            if ($pages -eq 2) {
+                $page = "${script:parentId}/operations?api-version=2021-04-01"
+                $nextPage = "$page&`$skiptoken=next"
+                $script:restOverrides["GET $page"] = New-FixtureResponse -Content @{
+                    value = @($script:records[$script:parentId].Operations[1..3]); nextLink = "https://management.azure.com$nextPage"
+                }
+                $script:restOverrides["GET $nextPage"] = New-FixtureResponse -Content @{ value = @($script:preflightOperation) }
+            }
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+            $result.resolveError | Should -BeNullOrEmpty
+            $result.resourcesToRemove | Should -Contain $script:groupId
+            $result.resourcesToRemove | Should -Contain $script:vnetId
+            $result.deploymentIds | Should -Be @($script:nestedId, $script:parentId)
+            $script:trace | Should -Contain "GET:$script:preflightId"
+            $script:trace | Should -Contain "GET:$script:nestedId/operations"
+            $script:trace | Should -Not -Contain "GET:$script:preflightId/operations"
+            Should -Invoke Get-AzResourceGroupDeployment -Times 0 -Exactly -ParameterFilter {
+                $Name -eq 'xw3pmls5ubqw4-test-cvmsswinuni-init'
+            }
+        }
+
+        It 'Accepts explicit matching error targets and a numeric HTTP status string' {
+            $script:preflightOperation.properties.statusCode = '400'
+            $script:preflightOperation.properties.statusMessage.error.target = $script:preflightId
+            $script:restOverrides["GET ${script:preflightId}?api-version=2021-04-01"] = New-FixtureResponse -StatusCode 404 -Content @{
+                error = @{ code = 'DeploymentNotFound'; target = $script:preflightId }
+            }
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+            $result.resolveError | Should -BeNullOrEmpty
+            $result.deploymentIds | Should -Be @($script:nestedId, $script:parentId)
+        }
+
+        It 'Requires a unique failed Create with direct child preflight evidence: <kind>' -ForEach @(
+            @{ kind = 'missing operation type' }, @{ kind = 'array operation type' }
+            @{ kind = 'successful Create' }, @{ kind = 'running Create' }, @{ kind = 'missing operation state' }
+            @{ kind = 'array operation state' }, @{ kind = 'missing HTTP status' }, @{ kind = 'HTTP authorization failure' }
+            @{ kind = 'array HTTP status' }, @{ kind = 'missing resource type' }, @{ kind = 'wrong resource type' }
+            @{ kind = 'missing resource name' }, @{ kind = 'wrong resource name' }, @{ kind = 'array resource name' }
+            @{ kind = 'missing status message' }, @{ kind = 'text status message' }, @{ kind = 'JSON-string status message' }
+            @{ kind = 'array status message' }, @{ kind = 'successful status message' }, @{ kind = 'array status' }
+            @{ kind = 'missing error' }, @{ kind = 'array error' }, @{ kind = 'array error code' }
+            @{ kind = 'unrelated validation error' }, @{ kind = 'different deployment message' }
+            @{ kind = 'different error target' }, @{ kind = 'array error target' }
+            @{ kind = 'descendant preflight failure' }, @{ kind = 'contradictory error wrapper' }
+            @{ kind = 'missing details' }, @{ kind = 'malformed details' }, @{ kind = 'malformed detail' }
+            @{ kind = 'duplicate failed Create' }, @{ kind = 'successful Create for the same target' }
+            @{ kind = 'successful Read of the same target' }, @{ kind = 'rejection on a Read instead of Create' }
+        ) {
+            $operation = $script:preflightOperation.properties
+            switch ($kind) {
+                'missing operation type' { $operation.Remove('provisioningOperation') }
+                'array operation type' { $operation.provisioningOperation = @('Create') }
+                'successful Create' { $operation.provisioningState = 'Succeeded' }
+                'running Create' { $operation.provisioningState = 'Running' }
+                'missing operation state' { $operation.Remove('provisioningState') }
+                'array operation state' { $operation.provisioningState = @('Failed') }
+                'missing HTTP status' { $operation.Remove('statusCode') }
+                'HTTP authorization failure' { $operation.statusCode = 'Forbidden' }
+                'array HTTP status' { $operation.statusCode = @('BadRequest') }
+                'missing resource type' { $operation.targetResource.Remove('resourceType') }
+                'wrong resource type' { $operation.targetResource.resourceType = 'Microsoft.Compute/virtualMachineScaleSets' }
+                'missing resource name' { $operation.targetResource.Remove('resourceName') }
+                'wrong resource name' { $operation.targetResource.resourceName = 'another-child' }
+                'array resource name' { $operation.targetResource.resourceName = @($operation.targetResource.resourceName) }
+                'missing status message' { $operation.Remove('statusMessage') }
+                'text status message' { $operation.statusMessage = $operation.statusMessage.error.message }
+                'JSON-string status message' { $operation.statusMessage = ConvertTo-Json $operation.statusMessage -Depth 10 -Compress }
+                'array status message' { $operation.statusMessage = @($operation.statusMessage) }
+                'successful status message' { $operation.statusMessage.status = 'Succeeded' }
+                'array status' { $operation.statusMessage.status = @('Failed') }
+                'missing error' { $operation.statusMessage.Remove('error') }
+                'array error' { $operation.statusMessage.error = @($operation.statusMessage.error) }
+                'array error code' { $operation.statusMessage.error.code = @('InvalidTemplateDeployment') }
+                'unrelated validation error' { $operation.statusMessage.error.message = 'An arbitrary template validation failure.' }
+                'different deployment message' { $operation.statusMessage.error.message = $operation.statusMessage.error.message.Replace('xw3pmls5ubqw4-test-cvmsswinuni-init', 'grandchild') }
+                'different error target' { $operation.statusMessage.error.target = "${script:preflightId}-other" }
+                'array error target' { $operation.statusMessage.error.target = @($script:preflightId) }
+                'descendant preflight failure' {
+                    $operation.statusMessage.error = @{
+                        code = 'DeploymentFailed'; message = 'A descendant failed.'; details = @($operation.statusMessage.error)
+                    }
+                }
+                'contradictory error wrapper' { $operation.statusMessage.code = 'DeploymentFailed' }
+                'missing details' { $operation.statusMessage.error.Remove('details') }
+                'malformed details' { $operation.statusMessage.error.details = 'SkuNotAvailable' }
+                'malformed detail' { $operation.statusMessage.error.details = @(@{ code = @('SkuNotAvailable'); message = 'Unavailable.' }) }
+                'duplicate failed Create' { $script:records[$script:parentId].Operations += $script:preflightOperation }
+                'successful Create for the same target' { $script:records[$script:parentId].Operations += New-FixtureOperation -Id $script:preflightId }
+                'successful Read of the same target' { $script:records[$script:parentId].Operations += New-FixtureOperation -Id $script:preflightId -Operation Read }
+                'rejection on a Read instead of Create' {
+                    $operation.provisioningOperation = 'Read'
+                    $script:records[$script:parentId].Operations += New-FixtureOperation -Id $script:preflightId -State Failed
+                }
+            }
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+            $result.resolveError | Should -Not -BeNullOrEmpty
+            $result.deploymentIds | Should -Not -Contain $script:preflightId
+            $script:trace | Should -Not -Contain "GET:$script:preflightId"
+            $script:removed.Count | Should -Be 0
+        }
+
+        It 'Rejects ambiguous same-child evidence on a later operation page' {
+            $page = "${script:parentId}/operations?api-version=2021-04-01"
+            $nextPage = "$page&`$skiptoken=next"
+            $script:restOverrides["GET $page"] = New-FixtureResponse -Content @{
+                value = $script:records[$script:parentId].Operations; nextLink = "https://management.azure.com$nextPage"
+            }
+            $script:restOverrides["GET $nextPage"] = New-FixtureResponse -Content @{
+                value = @((New-FixtureOperation -Id $script:preflightId -Operation Read))
+            }
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+            $result.resolveError | Should -Not -BeNullOrEmpty
+            Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Path -eq $nextPage }
+            $script:trace | Should -Not -Contain "GET:$script:preflightId"
+        }
+
+        It 'Rejects <kind> absence responses even with valid rejection evidence' -ForEach @(
+            @{ kind = 'generic 404'; status = 404; content = @{ error = @{ code = 'NotFound' } } }
+            @{ kind = 'missing resource group'; status = 404; content = @{ error = @{ code = 'ResourceGroupNotFound' } } }
+            @{ kind = 'wrong HTTP status'; status = 403; content = @{ error = @{ code = 'DeploymentNotFound' } } }
+            @{ kind = 'array response'; status = 404; content = @(@{ error = @{ code = 'DeploymentNotFound' } }) }
+            @{ kind = 'array error'; status = 404; content = @{ error = @(@{ code = 'DeploymentNotFound' }) } }
+            @{ kind = 'array code'; status = 404; content = @{ error = @{ code = @('DeploymentNotFound') } } }
+            @{ kind = 'wrong error target'; status = 404; content = @{ error = @{ code = 'DeploymentNotFound'; target = '/providers/Microsoft.Resources/deployments/another-child' } } }
+            @{ kind = 'different record'; status = 200; content = @{ id = '/providers/Microsoft.Resources/deployments/another-child' } }
+        ) {
+            $script:restOverrides["GET ${script:preflightId}?api-version=2021-04-01"] = New-FixtureResponse -StatusCode $status -Content $content
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+            $result.resolveError | Should -Not -BeNullOrEmpty
+            $result.deploymentIds | Should -Not -Contain $script:parentId
+            $script:removed.Count | Should -Be 0
+        }
+
+        It 'Does not suppress <kind> with a DeploymentNotFound error ID' -ForEach @(
+            @{ kind = 'authorization'; exceptionType = [System.UnauthorizedAccessException] }
+            @{ kind = 'timeout'; exceptionType = [System.TimeoutException] }
+            @{ kind = 'transport'; exceptionType = [System.Net.Http.HttpRequestException] }
+            @{ kind = 'cancellation'; exceptionType = [System.OperationCanceledException] }
+        ) {
+            Mock Invoke-AzRestMethod {
+                throw [System.Management.Automation.ErrorRecord]::new(
+                    $exceptionType::new('Child lookup failed.'), 'DeploymentNotFound',
+                    [System.Management.Automation.ErrorCategory]::ObjectNotFound, $script:preflightId
+                )
+            } -ParameterFilter { $Path -eq "${script:preflightId}?api-version=2021-04-01" }
+            if ($kind -eq 'cancellation') {
+                { Get-DeploymentTargetResourceList @discoveryInput } | Should -Throw '*Child lookup failed*'
+            } else {
+                $result = Get-DeploymentTargetResourceList @discoveryInput
+                $result.resolveError | Should -Match 'Child lookup failed'
+            }
+            $script:removed.Count | Should -Be 0
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Does not infer a missing or <state> parent from child rejection evidence' -ForEach @(
+            @{ state = 'missing' }, @{ state = 'Succeeded' }, @{ state = 'Running' }, @{ state = 'Canceled' }
+        ) {
+            if ($state -eq 'missing') {
+                $script:records.Remove($script:parentId)
+            } else {
+                $script:records[$script:parentId].State = $state
+            }
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+            $result.resolveError | Should -Not -BeNullOrEmpty
+            $result.deploymentIds | Should -BeNullOrEmpty
+            $script:trace | Should -Not -Contain "GET:$script:preflightId"
+        }
+
+        It 'Traverses an existing <state> child instead of trusting historical rejection evidence' -ForEach @(
+            @{ state = 'Failed' }, @{ state = 'Succeeded' }
+        ) {
+            $resourceId = "$script:groupId/providers/Microsoft.Network/virtualNetworks/child-resource"
+            $script:records[$script:preflightId] = @{ State = $state; Operations = @((New-FixtureOperation -Id $resourceId)) }
+            $script:restOverrides["GET ${script:preflightId}?api-version=2021-04-01"] = New-FixtureResponse -Content @{ id = $script:preflightId }
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+            $result.resolveError | Should -BeNullOrEmpty
+            $result.resourcesToRemove | Should -Contain $resourceId
+            $result.deploymentIds | Should -Be @($script:preflightId, $script:nestedId, $script:parentId)
+            $script:trace | Should -Contain "GET:$script:preflightId/operations"
+        }
+
+        It 'Still blocks cleanup when an existing child has <kind>' -ForEach @(
+            @{ kind = 'nonterminal state' }, @{ kind = 'missing status after record lookup' }
+            @{ kind = 'missing operations' }, @{ kind = 'missing descendant' }
+        ) {
+            $script:records[$script:preflightId] = @{ State = 'Failed'; Operations = @() }
+            $script:restOverrides["GET ${script:preflightId}?api-version=2021-04-01"] = New-FixtureResponse -Content @{ id = $script:preflightId }
+            switch ($kind) {
+                'nonterminal state' { $script:records[$script:preflightId].State = 'Running' }
+                'missing status after record lookup' { $script:records.Remove($script:preflightId) }
+                'missing operations' {
+                    $script:restOverrides["GET ${script:preflightId}/operations?api-version=2021-04-01"] =
+                    New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'DeploymentNotFound' } }
+                }
+                'missing descendant' {
+                    $script:records[$script:preflightId].Operations = @((New-FixtureOperation -Id "${script:preflightId}-grandchild" -State Failed))
+                }
+            }
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+            $result.resolveError | Should -Not -BeNullOrEmpty
+            $result.deploymentIds | Should -Not -Contain $script:parentId
+        }
+
+        It 'Does not infer an absent grandchild from a succeeded intermediate parent' {
+            $script:records[$script:parentId].Operations = $script:records[$script:parentId].Operations[1..3]
+            $script:records[$script:nestedId].Operations += $script:preflightOperation
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+            $result.resolveError | Should -Match 'could not be found'
+            $script:trace | Should -Not -Contain "GET:$script:preflightId"
+            $result.deploymentIds | Should -Not -Contain $script:parentId
+        }
+
+        It 'Keeps a nonterminal successful sibling blocking cleanup after confirming child absence' {
+            $script:records[$script:nestedId].State = 'Running'
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+            $result.resolveError | Should -Match 'Running'
+            $script:trace | Should -Contain "GET:$script:preflightId"
+            $result.deploymentIds | Should -Not -Contain $script:parentId
+        }
+
+        It 'Uses the exact <scope> child ID and restores the discovery context' -ForEach @(
+            @{ scope = 'resource group in another subscription'; prefix = '/subscriptions/22222222-2222-2222-2222-222222222222/resourceGroups/elsewhere' }
+            @{ scope = 'subscription'; prefix = '/subscriptions/22222222-2222-2222-2222-222222222222' }
+            @{ scope = 'management group'; prefix = '/providers/Microsoft.Management/managementGroups/elsewhere' }
+            @{ scope = 'tenant'; prefix = '' }
+        ) {
+            $script:preflightId = "$prefix/providers/Microsoft.Resources/deployments/xw3pmls5ubqw4-test-cvmsswinuni-init"
+            $script:preflightOperation.properties.targetResource.id = $script:preflightId
+            $script:restOverrides["GET ${script:preflightId}?api-version=2021-04-01"] =
+            New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'DeploymentNotFound' } }
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+            $result.resolveError | Should -BeNullOrEmpty
+            $result.deploymentIds | Should -Be @($script:nestedId, $script:parentId)
+            $script:trace | Should -Contain "GET:$script:preflightId"
+            $script:azContext.Subscription.Id | Should -Be $script:subscriptionId
+        }
+
+        It 'Restores cross-subscription context after a rejected child lookup <kind>' -ForEach @(
+            @{ kind = 'fails'; exceptionType = [System.UnauthorizedAccessException] }
+            @{ kind = 'is cancelled'; exceptionType = [System.OperationCanceledException] }
+        ) {
+            $script:preflightId = $script:preflightId.Replace($script:subscriptionId, '22222222-2222-2222-2222-222222222222')
+            $script:preflightOperation.properties.targetResource.id = $script:preflightId
+            Mock Invoke-AzRestMethod { throw $exceptionType::new('Child lookup failed.') } -ParameterFilter {
+                $Path -eq "${script:preflightId}?api-version=2021-04-01"
+            }
+            if ($kind -eq 'is cancelled') {
+                { Get-DeploymentTargetResourceList @discoveryInput } | Should -Throw '*Child lookup failed*'
+            } else {
+                $result = Get-DeploymentTargetResourceList @discoveryInput
+                $result.resolveError | Should -Match 'Child lookup failed'
+            }
+            $script:azContext.Subscription.Id | Should -Be $script:subscriptionId
+            Should -Invoke Set-AzContext -Times 1 -Exactly -ParameterFilter {
+                $PesterBoundParameters.ContainsKey('Context') -and $Context.Subscription.Id -eq $script:subscriptionId
+            }
+            $script:removed.Count | Should -Be 0
+        }
+
+        It 'Does not use rejection evidence when the parsed lookup scope differs from the target ID' {
+            $script:preflightOperation.properties.targetResource.id =
+            "$script:preflightId/providers/Microsoft.Resources/deployments/xw3pmls5ubqw4-test-cvmsswinuni-init"
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+            $result.resolveError | Should -Not -BeNullOrEmpty
+            $script:trace | Should -Not -Contain "GET:$script:preflightId"
+            $result.deploymentIds | Should -Not -Contain $script:parentId
+        }
+    }
+
+    It 'Cleans rejected-child failures before relocation within the shared budgets: <outcomes>' -Tag 'NestedPreflight' -ForEach @(
+        @{ outcomes = @('Regional', 'Succeeded') }
+        @{ outcomes = @('Regional', 'Regional', 'Succeeded') }
+        @{ outcomes = @('Regional', 'Regional', 'Regional') }
+    ) {
+        $script:outcomes = $outcomes
+        $script:regions = @('centralus', 'swedencentral', 'eastus')
+        $script:preflightId = "$script:groupId/providers/Microsoft.Resources/deployments/xw3pmls5ubqw4-test-cvmsswinuni-init"
+        $script:regionalError = (New-FixturePreflightOperation -Id $script:preflightId).properties.statusMessage
+        $script:incidentMessage = "The deployment '{0}' failed with error(s). (Code: DeploymentFailed) " +
+        $script:regionalError.error.message + ' (Code: InvalidTemplateDeployment) ' +
+        $script:regionalError.error.details[0].message + ' (Code: SkuNotAvailable)'
+        $script:restOverrides["GET ${script:preflightId}?api-version=2021-04-01"] =
+        New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'DeploymentNotFound' } }
+        Mock Invoke-AzRestMethod {
+            $id = $Path.Split('?')[0] -replace '/operations$', ''
+            if ($Method -eq 'GET' -and $Path.Contains('/operations?') -and $id -in $script:roots) {
+                $script:records[$id].Operations = @(
+                    (New-FixturePreflightOperation -Id $script:preflightId)
+                    (New-FixtureOperation -Id $script:nestedId -Operation Read)
+                    (New-FixtureOperation -Id $script:nestedId)
+                    (New-FixtureOperation -Id $script:groupId)
+                )
+            }
+            Invoke-FixtureRest $Method $Path
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+        if ($outcomes[-1] -eq 'Succeeded') {
+            $result.ContainsKey('Exception') | Should -BeFalse
+        } else {
+            $result.Exception | Should -Match 'Standard_B12ms'
+        }
+        $result.DeploymentAttempts | Should -Be $outcomes.Count
+        $result.AttemptedLocations | Should -Be $script:regions[0..($outcomes.Count - 1)]
+        $result.DeploymentNames | Should -Be @($script:names)
+        $result.RemainingDeploymentNames | Should -Be @($script:names[-1])
+        $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+        for ($index = 0; $index -lt $outcomes.Count - 1; $index++) {
+            $root = $script:roots[$index]
+            $script:records.ContainsKey($root) | Should -BeFalse
+            $script:trace.IndexOf("DELETE:$root") | Should -BeLessThan $script:trace.IndexOf("validate:$($script:regions[$index + 1])")
+        }
+        $script:removed.Count | Should -BeGreaterThan 0
+        $script:trace | Should -Contain "GET:$script:nestedId/operations"
+        $script:trace | Should -Not -Contain "DELETE:$script:preflightId"
         Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
     }
 
