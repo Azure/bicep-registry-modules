@@ -142,3 +142,48 @@ Describe 'Maximum fixture compatibility' {
         $fixture.TestModule.copy.batchSize | Should -Be 1
     }
 }
+
+Describe 'Automatic fixture compatibility' {
+    BeforeAll {
+        $fixture = Get-AksFixture -Name 'automatic'
+        $parameters = $fixture.TestModule.properties.parameters
+    }
+
+    It 'Leaves system node pools under AKS Automatic management' {
+        $parameters.ContainsKey('primaryAgentPoolProfiles') | Should -BeTrue
+        @($parameters.primaryAgentPoolProfiles.value).Count | Should -Be 0
+        $parameters.ContainsKey('agentPools') | Should -BeFalse
+    }
+
+    It 'Keeps the Automatic SKU and automatic node provisioning' {
+        $parameters.skuName.value | Should -Be 'Automatic'
+        $parameters.nodeProvisioningProfile.value.mode | Should -Be 'Auto'
+        $parameters.nodeResourceGroupProfile.value.restrictionLevel | Should -Be 'ReadOnly'
+    }
+
+    It 'Keeps managed identity and Entra access controls' {
+        $parameters.managedIdentities.value.systemAssigned | Should -BeTrue
+        $parameters.aadProfile.value.enableAzureRBAC | Should -BeTrue
+        $parameters.aadProfile.value.managed | Should -BeTrue
+        $parameters.disableLocalAccounts.value | Should -BeTrue
+    }
+
+    It 'Keeps both workload autoscalers' {
+        $parameters.workloadAutoScalerProfile.value.keda.enabled | Should -BeTrue
+        $parameters.workloadAutoScalerProfile.value.verticalPodAutoscaler.enabled | Should -BeTrue
+    }
+
+    It 'Lets CI choose the resource location' {
+        $fixture.Template.parameters.resourceLocation.defaultValue | Should -Be '[deployment().location]'
+        $parameters.ContainsKey('location') | Should -BeFalse
+        $resourceGroups = @($fixture.Resources | Where-Object type -EQ 'Microsoft.Resources/resourceGroups')
+        $resourceGroups.Count | Should -Be 1
+        $resourceGroups[0].location | Should -Be "[parameters('resourceLocation')]"
+    }
+
+    It 'Keeps sequential initial and idempotency deployments' {
+        $fixture.TestModule.copy.count | Should -Be "[length(createArray('init', 'idem'))]"
+        $fixture.TestModule.copy.mode | Should -Be 'serial'
+        $fixture.TestModule.copy.batchSize | Should -Be 1
+    }
+}

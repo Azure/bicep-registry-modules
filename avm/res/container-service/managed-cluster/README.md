@@ -70,14 +70,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
   params: {
     // Required parameters
     name: 'csauto001'
-    primaryAgentPoolProfiles: [
-      {
-        count: 1
-        mode: 'System'
-        name: 'systempool'
-        vmSize: 'Standard_D8ds_v5'
-      }
-    ]
+    primaryAgentPoolProfiles: []
     // Non-required parameters
     aadProfile: {
       enableAzureRBAC: true
@@ -152,14 +145,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": "csauto001"
     },
     "primaryAgentPoolProfiles": {
-      "value": [
-        {
-          "count": 1,
-          "mode": "System",
-          "name": "systempool",
-          "vmSize": "Standard_D8ds_v5"
-        }
-      ]
+      "value": []
     },
     // Non-required parameters
     "aadProfile": {
@@ -260,14 +246,7 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 
 // Required parameters
 param name = 'csauto001'
-param primaryAgentPoolProfiles = [
-  {
-    count: 1
-    mode: 'System'
-    name: 'systempool'
-    vmSize: 'Standard_D8ds_v5'
-  }
-]
+param primaryAgentPoolProfiles = []
 // Non-required parameters
 param aadProfile = {
   enableAzureRBAC: true

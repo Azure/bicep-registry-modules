@@ -84,14 +84,7 @@ module testDeployment '../../../main.bicep' = [
         restrictionLevel: 'ReadOnly'
       }
       outboundType: 'managedNATGateway'
-      primaryAgentPoolProfiles: [
-        {
-          name: 'systempool'
-          count: 1
-          vmSize: 'Standard_D8ds_v5'
-          mode: 'System'
-        }
-      ]
+      primaryAgentPoolProfiles: [] // AKS Automatic manages its system node pools.
       publicNetworkAccess: 'Enabled'
       skuName: 'Automatic'
       workloadAutoScalerProfile: {
