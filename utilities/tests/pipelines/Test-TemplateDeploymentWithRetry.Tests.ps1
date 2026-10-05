@@ -242,6 +242,322 @@ Describe 'Regional validation error classification' {
     }
 }
 
+Describe 'Machine Learning Cosmos regional capacity classification' {
+    BeforeAll {
+        $script:cosmosResponseJson = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'fixtures' 'ml-cosmos-regional-error.json') -Raw
+    }
+
+    BeforeEach {
+        $response = $script:cosmosResponseJson | ConvertFrom-Json -AsHashtable
+        $workspaceFailure = $response.error.details[0]
+        $leaf = $workspaceFailure.details[0]
+        $jsonStart = $leaf.message.IndexOf('Error : Message: ') + 'Error : Message: '.Length
+        $jsonEnd = $leaf.message.LastIndexOf(', Request URI: /serviceReservation')
+        $script:embeddedJson = $leaf.message.Substring($jsonStart, $jsonEnd - $jsonStart)
+    }
+
+    It 'Accepts the captured envelope with <display> matching selected location <selected>' -ForEach @(
+        @{ display = 'Norway East'; selected = 'norwayeast' }
+        @{ display = 'Norway East'; selected = 'Norway East' }
+        @{ display = 'Norway East'; selected = ' NORWAY EAST ' }
+        @{ display = 'norwayeast'; selected = 'Norway East' }
+        @{ display = 'NorwayEast'; selected = 'norwayeast' }
+        @{ display = 'West US 2'; selected = 'westus2' }
+    ) {
+        $leaf.message = $leaf.message.Replace('Norway East', $display)
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation $selected | Should -BeTrue
+    }
+
+    It 'Reads the complete ML envelope from <source>' -ForEach @(
+        @{ source = 'JSON ErrorDetails' }, @{ source = 'explicit operation response' }, @{ source = 'multiple regional operations' }
+    ) {
+        $record = New-TestValidationError -Response $response -ErrorDetails
+        $parameters = @{ ErrorRecord = $record; ResourceLocation = 'norwayeast' }
+        if ($source -ne 'JSON ErrorDetails') {
+            $record.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('Formatted SDK text is not classification evidence.')
+            $parameters.ErrorResponse = @($response)
+            if ($source -eq 'multiple regional operations') {
+                $parameters.ErrorResponse += @{ code = 'SkuNotAvailable'; message = 'SKU not available in this location.' }
+            }
+        }
+        Test-RegionalValidationError @parameters | Should -BeTrue
+    }
+
+    It 'Parses embedded JSON rather than depending on property order or formatting' {
+        $cosmos = $embeddedJson | ConvertFrom-Json -AsHashtable
+        $formatted = [ordered]@{ message = $cosmos.message; code = $cosmos.code } | ConvertTo-Json
+        $leaf.message = $leaf.message.Replace($embeddedJson, $formatted)
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeTrue
+    }
+
+    It 'Rejects a missing selected resource location' {
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) | Should -BeFalse
+    }
+
+    It 'Rejects <kind> selected location evidence' -ForEach @(
+        @{ kind = 'null'; location = $null }
+        @{ kind = 'empty'; location = '' }
+        @{ kind = 'whitespace'; location = ' ' }
+        @{ kind = 'secondary region'; location = 'swedencentral' }
+        @{ kind = 'partial region'; location = 'norway' }
+        @{ kind = 'region suffix'; location = 'norwayeast2' }
+    ) {
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation $location | Should -BeFalse
+    }
+
+    It 'Requires the immediate ML resource-failure target: <kind>' -ForEach @(
+        @{ kind = 'missing' }, @{ kind = 'empty' }, @{ kind = 'non-string' }
+        @{ kind = 'different service' }, @{ kind = 'child resource' }, @{ kind = 'trailing slash' }
+        @{ kind = 'relative target' }, @{ kind = 'prefixed target' }, @{ kind = 'invalid subscription' }
+        @{ kind = 'query suffix' }, @{ kind = 'conflicting leaf target' }, @{ kind = 'standalone leaf' }
+        @{ kind = 'standalone targeted leaf' }, @{ kind = 'intermediate wrapper' }, @{ kind = 'array detail' }
+    ) {
+        switch ($kind) {
+            'missing' { $workspaceFailure.Remove('target') }
+            'empty' { $workspaceFailure.target = '' }
+            'non-string' { $workspaceFailure.target = @($workspaceFailure.target) }
+            'different service' { $workspaceFailure.target = $workspaceFailure.target.Replace('Microsoft.MachineLearningServices/workspaces', 'Microsoft.DocumentDB/databaseAccounts') }
+            'child resource' { $workspaceFailure.target += '/connections/connection' }
+            'trailing slash' { $workspaceFailure.target += '/' }
+            'relative target' { $workspaceFailure.target = 'Microsoft.MachineLearningServices/workspaces/encrypted-workspace' }
+            'prefixed target' { $workspaceFailure.target = 'unrelated' + $workspaceFailure.target }
+            'invalid subscription' { $workspaceFailure.target = $workspaceFailure.target.Replace('11111111-1111-1111-1111-111111111111', 'not-a-subscription') }
+            'query suffix' { $workspaceFailure.target += '?other=true' }
+            'conflicting leaf target' { $leaf.target = $workspaceFailure.target + '-other' }
+            'standalone leaf' { $response = $leaf }
+            'standalone targeted leaf' { $leaf.target = $workspaceFailure.target; $response = $leaf }
+            'intermediate wrapper' { $workspaceFailure.details = @(@{ code = 'DeploymentFailed'; details = @($leaf) }) }
+            'array detail' { $workspaceFailure.details = @(, @($leaf)) }
+        }
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Accepts a consistent explicit leaf target and case-insensitive ARM target' {
+        $leaf.target = $workspaceFailure.target.ToUpperInvariant()
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeTrue
+    }
+
+    It 'Does not leak workspace context to a sibling error' {
+        $response.error.details += @{ code = 'ResourceDeploymentFailure'; details = @($leaf) }
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Rejects unclassified information in a <position> regional sibling: <kind>' -ForEach @(
+        @{ position = 'preceding'; kind = 'envelope additionalInfo' }
+        @{ position = 'following'; kind = 'envelope additionalInfo' }
+        @{ position = 'preceding'; kind = 'contradictory status' }
+        @{ position = 'following'; kind = 'contradictory status' }
+        @{ position = 'preceding'; kind = 'unknown error field' }
+        @{ position = 'following'; kind = 'unknown error field' }
+    ) {
+        $sibling = @{ error = @{ code = 'SkuNotAvailable'; message = 'SKU not available in this location.' } }
+        switch ($kind) {
+            'envelope additionalInfo' { $sibling.additionalInfo = @{ code = 'AuthorizationFailed' } }
+            'contradictory status' { $sibling.status = 'Canceled' }
+            'unknown error field' { $sibling.error.unknownError = 'QuotaExceeded' }
+        }
+        $errors = $position -eq 'preceding' ? @($sibling, $response) : @($response, $sibling)
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $errors) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Rejects extra or contradictory information at the <level> level: <field>' -ForEach @(
+        @{ level = 'envelope'; field = 'additionalInfo'; value = @{ code = 'AuthorizationFailed' } }
+        @{ level = 'envelope'; field = 'message'; value = 'Forbidden.' }
+        @{ level = 'envelope'; field = 'status'; value = 'Canceled' }
+        @{ level = 'envelope'; field = 'status'; value = @('Failed') }
+        @{ level = 'deployment'; field = 'additionalInfo'; value = @() }
+        @{ level = 'deployment'; field = 'unknownError'; value = 'QuotaExceeded' }
+        @{ level = 'deployment'; field = 'message'; value = @{ code = 'Forbidden' } }
+        @{ level = 'workspace'; field = 'additionalInfo'; value = @{ code = 'InvalidParameter' } }
+        @{ level = 'workspace'; field = 'additionalInfo'; value = $null }
+        @{ level = 'workspace'; field = 'unknownError'; value = 'QuotaExceeded' }
+        @{ level = 'leaf'; field = 'additionalInfo'; value = @{ code = 'Forbidden' } }
+        @{ level = 'leaf'; field = 'additionalInfo'; value = $false }
+        @{ level = 'leaf'; field = 'details'; value = @() }
+        @{ level = 'leaf'; field = 'details'; value = @(@{ code = 'SkuNotAvailable'; message = 'SKU not available in this location.' }) }
+        @{ level = 'leaf'; field = 'innererror'; value = $null }
+        @{ level = 'leaf'; field = 'innererror'; value = @{ code = 'InvalidParameter'; message = 'Invalid key.' } }
+        @{ level = 'leaf'; field = 'unknownError'; value = 'QuotaExceeded' }
+    ) {
+        $node = switch ($level) {
+            'envelope' { $response }
+            'deployment' { $response.error }
+            'workspace' { $workspaceFailure }
+            'leaf' { $leaf }
+        }
+        $node[$field] = $value
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Rejects a <code> ancestor or additional permanent descendant' -ForEach @(
+        @{ code = 'Unknown' }, @{ code = 'QuotaExceeded' }, @{ code = 'AuthorizationFailed' }
+        @{ code = 'InvalidAuthenticationToken' }, @{ code = 'InvalidTemplate' }, @{ code = 'BadRequest' }
+    ) {
+        $response.error.details += @{ code = $code; message = 'Permanent or unknown failure.' }
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeFalse
+        $response.error.details = @($workspaceFailure)
+        $response.error.code = $code
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Rejects an otherwise valid failure from another region in the same response array' {
+        $other = $script:cosmosResponseJson.Replace('Norway East', 'Sweden Central') | ConvertFrom-Json -AsHashtable
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response @($response, $other)) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Rejects case-duplicate ARM fields above the embedded payload' {
+        $ambiguous = $script:cosmosResponseJson.Replace('"code": "BadRequest"', '"code": "BadRequest", "Code": "AuthorizationFailed"')
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $ambiguous -ErrorDetails) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Rejects <kind> embedded JSON without selecting a positive fragment' -ForEach @(
+        @{ kind = 'malformed' }, @{ kind = 'trailing comma' }, @{ kind = 'comment' }, @{ kind = 'two objects' }
+        @{ kind = 'array' }, @{ kind = 'missing code' }, @{ kind = 'missing message' }, @{ kind = 'non-string code' }
+        @{ kind = 'non-string message' }, @{ kind = 'duplicate code' }, @{ kind = 'case-duplicate code' }
+        @{ kind = 'escaped duplicate code' }, @{ kind = 'duplicate message' }, @{ kind = 'case-duplicate message' }
+        @{ kind = 'extra details' }, @{ kind = 'extra additionalInfo' }, @{ kind = 'unknown property' }
+    ) {
+        $replacement = switch ($kind) {
+            'malformed' { $embeddedJson.Replace('{"code":', '{"code" ') }
+            'trailing comma' { $embeddedJson.Insert($embeddedJson.Length - 1, ',') }
+            'comment' { $embeddedJson.Replace('{"code":', '{/* extra */"code":') }
+            'two objects' { "$embeddedJson $embeddedJson" }
+            'array' { "[$embeddedJson]" }
+            'missing code' { $embeddedJson.Replace('"code":"ServiceUnavailable",', '') }
+            'missing message' { '{"code":"ServiceUnavailable"}' }
+            'non-string code' { $embeddedJson.Replace('"code":"ServiceUnavailable"', '"code":["ServiceUnavailable"]') }
+            'non-string message' { '{"code":"ServiceUnavailable","message":null}' }
+            'duplicate code' { $embeddedJson.Replace('{"code":', '{"code":"AuthorizationFailed","code":') }
+            'case-duplicate code' { $embeddedJson.Replace('{"code":', '{"Code":"AuthorizationFailed","code":') }
+            'escaped duplicate code' { $embeddedJson.Replace('{"code":', '{"\u0063ode":"AuthorizationFailed","code":') }
+            'duplicate message' { $embeddedJson.Replace('"message":', '"message":"Forbidden.","message":') }
+            'case-duplicate message' { $embeddedJson.Replace('"message":', '"Message":"Forbidden.","message":') }
+            'extra details' { $embeddedJson.Replace('{"code":', '{"details":[],"code":') }
+            'extra additionalInfo' { $embeddedJson.Replace('{"code":', '{"additionalInfo":{"code":"InvalidParameter"},"code":') }
+            'unknown property' { $embeddedJson.Replace('{"code":', '{"unknown":"Forbidden","code":') }
+        }
+        $leaf.message = $leaf.message.Replace($embeddedJson, $replacement)
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Rejects an embedded <code> code despite the high-demand wording' -ForEach @(
+        @{ code = 'BadRequest' }, @{ code = 'QuotaExceeded' }, @{ code = 'AuthorizationFailed' }
+        @{ code = 'InvalidAuthenticationToken' }, @{ code = 'InvalidParameter' }, @{ code = 'Forbidden' }
+        @{ code = 'RequestRateTooLarge' }, @{ code = 'ServiceBusy' }, @{ code = 'serviceunavailable' }, @{ code = '' }
+    ) {
+        $leaf.message = $leaf.message.Replace('"code":"ServiceUnavailable"', ('"code":"' + $code + '"'))
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Rejects a generic <code> even with the full Cosmos message' -ForEach @(
+        @{ code = 'BadRequest' }, @{ code = 'ServiceUnavailable' }
+    ) {
+        $leaf.code = $code
+        $leaf.message = ($embeddedJson | ConvertFrom-Json).message
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Rejects captured AKS PropertyChangeNotAllowed JSON in <context>' -ForEach @(
+        @{ context = 'the observed AKS envelope' }, @{ context = 'an ML workspace wrapper' }, @{ context = 'a mixed Cosmos response' }
+    ) {
+        $aks = '{"code":"BadRequest","target":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/retry-fixture/providers/Microsoft.ContainerService/managedClusters/automatic-cluster","message":"{\r\n  \"code\": \"PropertyChangeNotAllowed\",\r\n  \"details\": null,\r\n  \"message\": \"Changing property \\\"agentPoolProfile.availabilityZone\\\" is not allowed in an api-version before \\\"2026-01-02-preview\\\".\",\r\n  \"subcode\": \"\",\r\n  \"target\": \"agentPoolProfile.availabilityZone\"\r\n}"}' |
+            ConvertFrom-Json -AsHashtable
+        switch ($context) {
+            'the observed AKS envelope' { $response.error.details = @($aks) }
+            'an ML workspace wrapper' { $leaf.message = $aks.message }
+            'a mixed Cosmos response' { $response.error.details += $aks }
+        }
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Rejects <kind> Cosmos messages' -ForEach @(
+        @{ kind = 'configuration'; message = 'Invalid database account configuration.' }
+        @{ kind = 'quota'; message = 'The subscription has exceeded its database account quota in Norway East.' }
+        @{ kind = 'key access'; message = 'The encryption key could not be accessed.' }
+        @{ kind = 'permission'; message = 'This subscription is not authorized to create accounts in Norway East.' }
+        @{ kind = 'authentication'; message = 'Authentication token expired.' }
+        @{ kind = 'generic availability'; message = 'Service unavailable in Norway East.' }
+    ) {
+        $cosmos = $embeddedJson | ConvertFrom-Json -AsHashtable
+        $cosmos.message = "$message See https://aka.ms/cosmosdbquota for more information."
+        $leaf.message = $leaf.message.Replace($embeddedJson, ($cosmos | ConvertTo-Json -Compress))
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Rejects missing or misleading quota links: <link>' -ForEach @(
+        @{ link = '' }, @{ link = 'http://aka.ms/cosmosdbquota' }, @{ link = 'https://aka.ms/cosmosdbquota-not' }
+        @{ link = 'https://aka.ms/cosmosdbquota/other' }, @{ link = 'https://aka.ms/cosmosdbquota?other=true' }
+        @{ link = 'https://aka.ms/cosmosdbquota#other' }, @{ link = 'https://aka.ms/cosmosdbquota.example.invalid' }
+        @{ link = 'https://aka.ms.example.invalid/cosmosdbquota' }, @{ link = 'https://example.invalid/cosmosdbquota' }
+    ) {
+        $leaf.message = $leaf.message.Replace('https://aka.ms/cosmosdbquota', $link)
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Rejects a changed wrapper or diagnostic suffix: <kind>' -ForEach @(
+        @{ kind = 'unrelated prefix' }, @{ kind = 'additional trailing failure' }, @{ kind = 'missing wrapper' }
+        @{ kind = 'other operation' }, @{ kind = 'invalid operation ID' }, @{ kind = 'different URI' }
+        @{ kind = 'nonempty request stats' }, @{ kind = 'SDK failure text' }, @{ kind = 'invalid activity ID' }
+        @{ kind = 'invalid timestamp' }, @{ kind = 'embedded trailing permission failure' }, @{ kind = 'region access without high demand' }
+    ) {
+        switch ($kind) {
+            'unrelated prefix' { $leaf.message = 'Forbidden. ' + $leaf.message }
+            'additional trailing failure' { $leaf.message += ' Another resource failed permanently.' }
+            'missing wrapper' { $leaf.message = $embeddedJson }
+            'other operation' { $leaf.message = $leaf.message.Replace('Database account creation failed.', 'Database account update failed.') }
+            'invalid operation ID' { $leaf.message = $leaf.message.Replace('22222222-2222-2222-2222-222222222222', 'unknown') }
+            'different URI' { $leaf.message = $leaf.message.Replace('/serviceReservation', '/databaseAccounts') }
+            'nonempty request stats' { $leaf.message = $leaf.message.Replace('RequestStats: ,', 'RequestStats: AuthorizationFailed,') }
+            'SDK failure text' { $leaf.message = $leaf.message.Replace("2.14.0'", "2.14.0, Forbidden'") }
+            'invalid activity ID' { $leaf.message = $leaf.message.Replace('33333333-3333-3333-3333-333333333333', 'unknown') }
+            'invalid timestamp' { $leaf.message = $leaf.message.Replace('Mon, 05 Oct 2026', 'Mon, 99 Oct 2026') }
+            'embedded trailing permission failure' { $leaf.message = $leaf.message.Replace('2.14.0"}', '2.14.0. Forbidden."}') }
+            'region access without high demand' { $leaf.message = $leaf.message.Replace('experiencing high demand', 'denying subscription access') }
+        }
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Does not override HTTP <status> evidence' -ForEach @(
+        @{ status = 401 }, @{ status = 403 }, @{ status = 404 }, @{ status = 429 }, @{ status = 500 }, @{ status = 504 }
+    ) {
+        $record = New-TestValidationError -Response $response
+        $record.Exception | Add-Member -NotePropertyName Response -NotePropertyValue @{ StatusCode = $status }
+        Test-RegionalValidationError -ErrorRecord $record -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Does not override the <category> category' -ForEach @(
+        @{ category = 'AuthenticationError' }, @{ category = 'PermissionDenied' }
+        @{ category = 'SecurityError' }, @{ category = 'OperationStopped' }
+    ) {
+        $record = [System.Management.Automation.ErrorRecord]::new(
+            [System.InvalidOperationException]::new('Forbidden or stopped.'),
+            'TemplateValidationFailed', [System.Management.Automation.ErrorCategory] $category, $response
+        )
+        Test-RegionalValidationError -ErrorRecord $record -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Does not override wrapped <type> evidence' -ForEach @(
+        @{ type = 'System.OperationCanceledException' }, @{ type = 'System.Threading.Tasks.TaskCanceledException' }
+        @{ type = 'System.Management.Automation.PipelineStoppedException' }, @{ type = 'System.UnauthorizedAccessException' }
+    ) {
+        $inner = New-Object -TypeName $type -ArgumentList 'Stop'
+        $record = [System.Management.Automation.ErrorRecord]::new(
+            [System.InvalidOperationException]::new('Failed', $inner),
+            'TemplateValidationFailed', [System.Management.Automation.ErrorCategory]::InvalidResult, $response
+        )
+        Test-RegionalValidationError -ErrorRecord $record -ResourceLocation 'norwayeast' | Should -BeFalse
+    }
+
+    It 'Preserves the original response and error record during classification' {
+        $original = $response | ConvertTo-Json -Depth 20
+        $record = New-TestValidationError -Response $response
+        Test-RegionalValidationError -ErrorRecord $record -ResourceLocation 'norwayeast' | Should -BeTrue
+        [object]::ReferenceEquals($record.TargetObject, $response) | Should -BeTrue
+        ($response | ConvertTo-Json -Depth 20) | Should -BeExactly $original
+        $record.Exception.Message | Should -BeExactly 'Template is not valid.'
+    }
+}
+
 Describe 'Bounded template validation with actual runtime helpers' {
     BeforeAll {
         function Get-AzResourceProvider {

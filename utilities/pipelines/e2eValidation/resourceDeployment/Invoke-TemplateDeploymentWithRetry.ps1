@@ -6,6 +6,14 @@
 . (Join-Path $PSScriptRoot 'New-TemplateDeployment.ps1')
 . (Join-Path $PSScriptRoot '..' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
 
+<#
+.SYNOPSIS
+Classify wholly regional structured errors without overriding permission or cancellation evidence.
+
+.PARAMETER ResourceLocation
+Optional. Selected resource location. Required for an ML workspace's embedded Cosmos DB capacity failure,
+which must name this same region rather than a fixed secondary region.
+#>
 function Test-RegionalValidationError {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -15,7 +23,10 @@ function Test-RegionalValidationError {
 
         [Parameter()]
         [AllowNull()]
-        [object] $ErrorResponse
+        [object] $ErrorResponse,
+
+        [Parameter()]
+        [string] $ResourceLocation
     )
 
     if ($ErrorRecord.CategoryInfo.Category -in @('AuthenticationError', 'PermissionDenied', 'SecurityError', 'OperationStopped')) {
@@ -50,8 +61,56 @@ function Test-RegionalValidationError {
         return $false
     }
 
+    $guidPattern = '[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}'
+    $classification = @{ HasCosmosCapacityError = $false; HasUnclassifiedInformation = $false }
+
+    function Test-MachineLearningCosmosCapacityError {
+        param ([string] $Message)
+
+        if ([string]::IsNullOrWhiteSpace($ResourceLocation)) { return $false }
+        $sdkPattern = 'Microsoft\.Azure\.Documents\.Common/[0-9]+\.[0-9]+\.[0-9]+'
+        $wrapperPattern = "\ALong running operation failed with status 'Failed'\. Additional Info:'Database account creation failed\. " +
+        "Operation Id: $guidPattern, Error : Message: (?<json>\{.*\}), Request URI: /serviceReservation, RequestStats: , SDK: $sdkPattern(?:, $sdkPattern)*'\z"
+        $wrapper = [regex]::Match($Message, $wrapperPattern, [System.Text.RegularExpressions.RegexOptions]::Singleline)
+        if (-not $wrapper.Success) { return $false }
+
+        try {
+            $document = [System.Text.Json.JsonDocument]::Parse($wrapper.Groups['json'].Value)
+        } catch [System.Text.Json.JsonException] {
+            return $false
+        }
+        try {
+            if ($document.RootElement.ValueKind -ne [System.Text.Json.JsonValueKind]::Object) { return $false }
+            $cosmos = @{}
+            foreach ($property in $document.RootElement.EnumerateObject()) {
+                if ($property.Name -notin @('code', 'message') -or $cosmos.ContainsKey($property.Name) -or
+                    $property.Value.ValueKind -ne [System.Text.Json.JsonValueKind]::String) {
+                    return $false
+                }
+                $cosmos[$property.Name] = $property.Value.GetString()
+            }
+            if ($cosmos.Count -ne 2 -or $cosmos.code -cne 'ServiceUnavailable') { return $false }
+            $messagePattern = '\ASorry, we are currently experiencing high demand in (?<region>[A-Za-z0-9]+(?: [A-Za-z0-9]+)*) region, ' +
+            'and cannot fulfill your request at this time (?<time>[A-Z][a-z]{2}, [0-9]{2} [A-Z][a-z]{2} [0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} GMT)\. ' +
+            'To request region access for your subscription, please follow this link https://aka\.ms/cosmosdbquota for more details on how to create a region access request\.' +
+            "\r\nActivityId: $guidPattern, $sdkPattern\z"
+            $capacity = [regex]::Match($cosmos.message, $messagePattern)
+            $timestamp = [datetime]::MinValue
+            return $capacity.Success -and
+            [datetime]::TryParseExact($capacity.Groups['time'].Value, 'r', [System.Globalization.CultureInfo]::InvariantCulture,
+                [System.Globalization.DateTimeStyles]::None, [ref] $timestamp) -and
+            ($capacity.Groups['region'].Value -replace '\s', '').ToLowerInvariant() -eq ($ResourceLocation -replace '\s', '').ToLowerInvariant()
+        } finally {
+            $document.Dispose()
+        }
+    }
+
     function Test-RegionalErrorNode {
-        param ([object] $Node, [int] $Depth = 0)
+        param (
+            [object] $Node,
+            [int] $Depth = 0,
+            [string] $WorkspaceTarget
+        )
 
         if ($Depth -gt 20 -or $null -eq $Node) {
             return $false
@@ -74,6 +133,10 @@ function Test-RegionalValidationError {
         $Node = $properties
         if ($Node.Contains('error')) {
             if ($Node.Contains('code') -or $Node.Contains('details') -or $Node.Contains('innererror')) { return $false }
+            if (@($Node.Keys | Where-Object { $_ -notin @('error', 'status') }).Count -gt 0 -or
+                ($Node.Contains('status') -and ($Node.status -isnot [string] -or $Node.status -cne 'Failed'))) {
+                $classification.HasUnclassifiedInformation = $true
+            }
             return Test-RegionalErrorNode -Node $Node.error -Depth ($Depth + 1)
         }
         if ($Node.code -isnot [string] -or [string]::IsNullOrWhiteSpace($Node.code)) {
@@ -81,6 +144,11 @@ function Test-RegionalValidationError {
         }
         if ($Node.additionalInfo) {
             return $false
+        }
+        if (@($Node.Keys | Where-Object { $_ -notin @('code', 'message', 'target', 'details', 'innererror') }).Count -gt 0 -or
+            ($Node.Contains('message') -and $Node.message -isnot [string]) -or
+            ($Node.Contains('target') -and ($Node.target -isnot [string] -or [string]::IsNullOrWhiteSpace($Node.target)))) {
+            $classification.HasUnclassifiedInformation = $true
         }
 
         $children = @()
@@ -91,8 +159,13 @@ function Test-RegionalValidationError {
         if ($null -ne $Node.innererror) {
             $children += , $Node.innererror
         }
+        $childWorkspaceTarget = ''
+        if ($Node.code -eq 'ResourceDeploymentFailure' -and $Node.target -is [string] -and
+            $Node.target -match "\A/subscriptions/$guidPattern/resourceGroups/[A-Za-z0-9_.()-]+/providers/Microsoft\.MachineLearningServices/workspaces/[A-Za-z0-9_-]+\z") {
+            $childWorkspaceTarget = $Node.target
+        }
         foreach ($child in $children) {
-            if (-not (Test-RegionalErrorNode -Node $child -Depth ($Depth + 1))) { return $false }
+            if (-not (Test-RegionalErrorNode -Node $child -Depth ($Depth + 1) -WorkspaceTarget $childWorkspaceTarget)) { return $false }
         }
 
         if ($Node.code -in @('InvalidTemplateDeployment', 'DeploymentFailed', 'ResourceDeploymentFailure', 'MultipleErrorsOccurred')) {
@@ -100,6 +173,16 @@ function Test-RegionalValidationError {
         }
         if ($Node.message -isnot [string]) { return $false }
         switch ($Node.code) {
+            'BadRequest' {
+                if ($classification.HasUnclassifiedInformation -or [string]::IsNullOrEmpty($WorkspaceTarget) -or
+                    $Node.Contains('details') -or $Node.Contains('innererror') -or
+                    ($Node.Contains('target') -and $Node.target -ne $WorkspaceTarget)) {
+                    return $false
+                }
+                $isCosmosCapacityError = Test-MachineLearningCosmosCapacityError -Message $Node.message
+                if ($isCosmosCapacityError) { $classification.HasCosmosCapacityError = $true }
+                return $isCosmosCapacityError
+            }
             'RequestDisallowedByAzure' {
                 return $Node.message -match 'https://aka\.ms/locationineligible(?:[?#\s).,;:''"]|$)'
             }
@@ -113,7 +196,8 @@ function Test-RegionalValidationError {
         }
     }
 
-    return Test-RegionalErrorNode -Node $errors
+    $regional = Test-RegionalErrorNode -Node $errors
+    return $regional -and (-not $classification.HasCosmosCapacityError -or -not $classification.HasUnclassifiedInformation)
 }
 
 function Restore-RegionTokenFile {
@@ -300,7 +384,7 @@ function Invoke-TemplateDeploymentWithRetry {
                 } catch {
                     $lastError = $_
                     if (-not $canRetry -or $selection.IsGlobal -or $attemptedLocations.Count -ge $RegionLimit -or
-                        -not (Test-RegionalValidationError -ErrorRecord $_)) {
+                        -not (Test-RegionalValidationError -ErrorRecord $_ -ResourceLocation $location)) {
                         throw
                     }
                     Write-Warning "Regional validation failed in [$location]; selecting another eligible region."
@@ -374,7 +458,7 @@ function Invoke-TemplateDeploymentWithRetry {
                         $lastError.Exception, 'ConfirmedDeploymentFailure', [System.Management.Automation.ErrorCategory]::InvalidResult, $null
                     )
                 }
-                if (Test-RegionalValidationError -ErrorRecord $classificationError -ErrorResponse $errors) {
+                if (Test-RegionalValidationError -ErrorRecord $classificationError -ErrorResponse $errors -ResourceLocation $location) {
                     Write-Warning "Regional deployment failure in [$location]; cleaning confirmed failed attempts before selecting another region."
                     $cleanupInput = @{
                         TemplateFilePath                 = $validationParameters.TemplateFilePath
