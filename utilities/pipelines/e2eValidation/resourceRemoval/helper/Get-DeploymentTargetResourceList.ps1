@@ -1,125 +1,8 @@
 . (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
+. (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentOperationAtScope.ps1')
+. (Join-Path $PSScriptRoot '..' '..' 'resourceDeployment' 'New-TemplateDeployment.ps1')
 
 #region helper
-<#
-.SYNOPSIS
-Get all deployment operations at a given scope
-
-.DESCRIPTION
-Get all deployment oeprations at a given scope. By default, the results are filtered down to 'create' operations (i.e., excluding 'read' operations that would correspond to 'existing' resources).
-
-.PARAMETER Name
-Mandatory. The deployment name to search for
-
-.PARAMETER ResourceGroupName
-Optional. The name of the resource group for scope 'resourcegroup'. Relevant for resource-group-level deployments.
-
-.PARAMETER SubscriptionId
-Optional. The ID of the subscription to fetch deployments from. Relevant for subscription- & resource-group-level deployments.
-
-.PARAMETER ManagementGroupId
-Optional. The ID of the management group to fetch deployments from. Relevant for management-group-level deployments.
-
-.PARAMETER Scope
-Mandatory. The scope to search in
-
-.PARAMETER ProvisioningOperationsToInclude
-Optional. The provisioning operations to include in the result set. By default, only 'create' operations are included.
-
-.EXAMPLE
-Get-DeploymentOperationAtScope -Scope 'subscription' -Name 'v73rhp24d7jya-test-apvmiaiboaai'
-
-Get all deployment operations for a deployment with name 'v73rhp24d7jya-test-apvmiaiboaai' at scope 'subscription'
-
-.NOTES
-This function is a standin for the Get-AzDeploymentOperation cmdlet, which does not provide the ability to filter by provisioning operation.
-As such, it was also returning 'existing' resources (i.e., with provisioningOperation=Read).
-#>
-function Get-DeploymentOperationAtScope {
-
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory)]
-        [Alias('DeploymentName')]
-        [string] $Name,
-
-        [Parameter(Mandatory = $false)]
-        [string] $ResourceGroupName,
-
-        [Parameter(Mandatory = $false)]
-        [string] $SubscriptionId,
-
-        [Parameter(Mandatory = $false)]
-        [string] $ManagementGroupId,
-
-        [Parameter(Mandatory = $false)]
-        [ValidateSet(
-            'Create', # any resource creation
-            'Read', # E.g., 'existing' resources
-            'EvaluateDeploymentOutput' # Nobody knows
-        )]
-        [string[]] $ProvisioningOperationsToInclude = @('Create'),
-
-        [Parameter(Mandatory)]
-        [ValidateSet(
-            'resourcegroup',
-            'subscription',
-            'managementgroup',
-            'tenant'
-        )]
-        [string] $Scope
-    )
-
-
-    switch ($Scope) {
-        'resourcegroup' {
-            $path = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Resources/deployments/{2}/operations?api-version=2021-04-01' -f $SubscriptionId, $ResourceGroupName, $name
-            break
-        }
-        'subscription' {
-            $path = '/subscriptions/{0}/providers/Microsoft.Resources/deployments/{1}/operations?api-version=2021-04-01' -f $SubscriptionId, $name
-            break
-        }
-        'managementgroup' {
-            $path = '/providers/Microsoft.Management/managementGroups/{0}/providers/Microsoft.Resources/deployments/{1}/operations?api-version=2021-04-01' -f $ManagementGroupId, $name
-            break
-        }
-        'tenant' {
-            $path = '/providers/Microsoft.Resources/deployments/{0}/operations?api-version=2021-04-01' -f $name
-            break
-        }
-    }
-
-    ##############################################
-    # Get all deployment children based on scope #
-    ##############################################
-
-    $response = Invoke-AzRestMethod -Method 'GET' -Path $path -ErrorAction Stop
-    $content = $response.Content | ConvertFrom-Json -ErrorAction Stop
-
-    if ($response.StatusCode -ne 200) {
-        if ($response.StatusCode -eq 404 -and $content.error.code -eq 'DeploymentNotFound') {
-            $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new(
-                    [System.InvalidOperationException]::new("Deployment [$Name] was not found in scope [$Scope]."),
-                    'DeploymentNotFound',
-                    [System.Management.Automation.ErrorCategory]::ObjectNotFound,
-                    $Name
-                ))
-        }
-        if ($Scope -eq 'resourcegroup' -and $response.StatusCode -eq 404 -and $content.error.code -eq 'ResourceGroupNotFound') {
-            Write-Verbose "Resource group [$ResourceGroupName] no longer exists. No contained resources remain to remove." -Verbose
-            return $true
-        }
-        throw ('Failed to fetch deployment operations for deployment [{0}] in scope [{1}]: HTTP [{2}], error [{3}].' -f $Name, $Scope, $response.StatusCode, $content.error.code)
-    }
-    if ($content.value -isnot [array]) {
-        throw "Invalid deployment operations response for deployment [$Name] in scope [$Scope]."
-    }
-    $deploymentOperations = $content.value.properties
-    $deploymentOperationsFiltered = $deploymentOperations | Where-Object { $_.provisioningOperation -in $ProvisioningOperationsToInclude }
-    return $deploymentOperationsFiltered ?? $true # Returning true to indicate that the deployment was found, but did not contain any relevant operations
-}
-
 <#
 .SYNOPSIS
 Get all deployments that match a given deployment name in a given scope
@@ -144,6 +27,12 @@ Optional. Throw an exception if a deployment cannot be found. If not set, a warn
 
 .PARAMETER ResolvedResourceIds
 Optional. Accumulates known resource IDs so a later nested lookup failure cannot discard already discovered cleanup targets.
+
+.PARAMETER RequireCompleteRemoval
+Optional. Require failed roots and terminal nested deployments; restore cross-subscription discovery context.
+
+.PARAMETER ResolvedDeploymentIds
+Optional. Accumulates deployment record IDs in child-before-parent order for strict removal.
 
 .EXAMPLE
 Get-DeploymentTargetResourceListInner -Name 'keyvault-12356' -Scope 'resourcegroup'
@@ -187,7 +76,13 @@ function Get-DeploymentTargetResourceListInner {
         [switch] $DoThrow,
 
         [Parameter(Mandatory = $false)]
-        [System.Collections.Generic.List[string]] $ResolvedResourceIds = [System.Collections.Generic.List[string]]::new()
+        [System.Collections.Generic.List[string]] $ResolvedResourceIds = [System.Collections.Generic.List[string]]::new(),
+
+        [Parameter()]
+        [switch] $RequireCompleteRemoval,
+
+        [Parameter()]
+        [System.Collections.Generic.List[string]] $ResolvedDeploymentIds = [System.Collections.Generic.List[string]]::new()
     )
 
     $resultSet = [System.Collections.ArrayList]@()
@@ -216,10 +111,19 @@ function Get-DeploymentTargetResourceListInner {
         }
     }
     try {
-        $op = Get-DeploymentOperationAtScope @baseInputObject
+        if ($RequireCompleteRemoval) {
+            $state = Get-TemplateDeployment -DeploymentScope $Scope -DeploymentName $Name `
+                -SubscriptionId $baseInputObject.SubscriptionId -ResourceGroupName $ResourceGroupName `
+                -ManagementGroupId $ManagementGroupId -DefaultProfile $currentContext
+            $allowedStates = $DoThrow ? @('Failed') : @('Succeeded', 'Failed')
+            if ($state.ProvisioningState -notin $allowedStates) {
+                throw "Deployment [$Name] is [$($state.ProvisioningState)]; cleanup cannot authorize regional relocation."
+            }
+        }
+        $op = Get-DeploymentOperationAtScope @baseInputObject -RequireCompleteRemoval:$RequireCompleteRemoval -ResolvedResourceIds $ResolvedResourceIds
         [array] $deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
     } catch {
-        if (-not $DoThrow -and $_.FullyQualifiedErrorId.Split(',')[0] -eq 'DeploymentNotFound' -and (Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Other') {
+        if (-not $RequireCompleteRemoval -and -not $DoThrow -and $_.FullyQualifiedErrorId.Split(',')[0] -eq 'DeploymentNotFound' -and (Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Other') {
             Write-Warning "Deployment [$Name] was not found in scope [$Scope]. Ignoring, as nested deployment."
             return
         }
@@ -232,7 +136,9 @@ function Get-DeploymentTargetResourceListInner {
     foreach ($deployment in ($deploymentTargets | Where-Object { $_ -notmatch '\/Microsoft\.Resources\/deployments\/' } )) {
         Write-Verbose ('Found deployed resource [{0}]' -f $deployment)
         [array]$resultSet += $deployment
-        $ResolvedResourceIds.Add($deployment)
+        if (-not $ResolvedResourceIds.Contains($deployment)) {
+            $ResolvedResourceIds.Add($deployment)
+        }
     }
 
     #############################
@@ -240,42 +146,73 @@ function Get-DeploymentTargetResourceListInner {
     #############################
     foreach ($deployment in ($deploymentTargets | Where-Object { $_ -match '\/Microsoft\.Resources\/deployments\/' } )) {
         $name = Split-Path $deployment -Leaf
-        if ($deployment -match '/resourceGroups/') {
-            # Resource Group Level Child Deployments #
-            ##########################################
-            if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
-                $subscriptionId = $Matches[1]
-                if ($currentContext.Subscription.Id -ne $subscriptionId) {
-                    $null = Set-AzContext -Subscription $subscriptionId -ErrorAction Stop
+        $nestedInput = @{
+            Name                   = $name
+            ResolvedResourceIds    = $ResolvedResourceIds
+            RequireCompleteRemoval = $RequireCompleteRemoval
+            ResolvedDeploymentIds  = $ResolvedDeploymentIds
+        }
+        $restoreContext = $false
+        $discoveryError = $null
+        try {
+            if ($deployment -match '/resourceGroups/') {
+                # Resource Group Level Child Deployments #
+                ##########################################
+                if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
+                    $subscriptionId = $Matches[1]
+                    if ($currentContext.Subscription.Id -ne $subscriptionId) {
+                        $restoreContext = $RequireCompleteRemoval
+                        $null = Set-AzContext -Subscription $subscriptionId -ErrorAction Stop
+                    }
+                }
+                Write-Verbose ('Found [resource group] deployment [{0}]' -f $deployment)
+                $nestedResourceGroup = [regex]::Match($deployment, '(?i)/resourceGroups/([^/]+)/').Groups[1].Value
+                [array]$resultSet += Get-DeploymentTargetResourceListInner @nestedInput -Scope 'resourcegroup' -ResourceGroupName $nestedResourceGroup
+            } elseif ($deployment -match '/subscriptions/') {
+                # Subscription Level Child Deployments #
+                ########################################
+                if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
+                    $subscriptionId = $Matches[1]
+                    if ($currentContext.Subscription.Id -ne $subscriptionId) {
+                        $restoreContext = $RequireCompleteRemoval
+                        $null = Set-AzContext -Subscription $subscriptionId -ErrorAction Stop
+                    }
+                }
+                Write-Verbose ('Found [subscription] deployment [{0}]' -f $deployment)
+                [array]$resultSet += Get-DeploymentTargetResourceListInner @nestedInput -Scope 'subscription'
+            } elseif ($deployment -match '/managementgroups/') {
+                # Management Group Level Child Deployments #
+                ############################################
+                Write-Verbose ('Found [management group] deployment [{0}]' -f $deployment)
+                $nestedManagementGroup = [regex]::Match($deployment, '(?i)/managementGroups/([^/]+)/').Groups[1].Value
+                [array]$resultSet += Get-DeploymentTargetResourceListInner @nestedInput -Scope 'managementgroup' -ManagementGroupId $nestedManagementGroup
+            } else {
+                # Tenant Level Child Deployments #
+                ##################################
+                Write-Verbose ('Found [tenant] deployment [{0}]' -f $deployment)
+                [array]$resultSet += Get-DeploymentTargetResourceListInner @nestedInput -Scope 'tenant'
+            }
+        } catch {
+            $discoveryError = $_
+            throw
+        } finally {
+            if ($restoreContext) {
+                try {
+                    $null = Set-AzContext -Context $currentContext -ErrorAction Stop
+                } catch {
+                    if ($discoveryError -and (Get-DeploymentErrorKind -ErrorRecord $discoveryError) -eq 'Cancellation') {
+                        Write-Warning "Azure context restoration also failed during cancellation: $($_.Exception.Message)"
+                    } else {
+                        throw
+                    }
                 }
             }
-            Write-Verbose ('Found [resource group] deployment [{0}]' -f $deployment)
-            $resourceGroupName = $deployment.split('/resourceGroups/')[1].Split('/')[0]
-            [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'resourcegroup' -ResourceGroupName $ResourceGroupName -ResolvedResourceIds $ResolvedResourceIds
-        } elseif ($deployment -match '/subscriptions/') {
-            # Subscription Level Child Deployments #
-            ########################################
-            if ($deployment -match '^\/subscriptions\/([0-9a-zA-Z-]+?)\/') {
-                $subscriptionId = $Matches[1]
-                if ($currentContext.Subscription.Id -ne $subscriptionId) {
-                    $null = Set-AzContext -Subscription $subscriptionId -ErrorAction Stop
-                }
-            }
-            Write-Verbose ('Found [subscription] deployment [{0}]' -f $deployment)
-            [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'subscription' -ResolvedResourceIds $ResolvedResourceIds
-        } elseif ($deployment -match '/managementgroups/') {
-            # Management Group Level Child Deployments #
-            ############################################
-            Write-Verbose ('Found [management group] deployment [{0}]' -f $deployment)
-            [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'managementgroup' -ManagementGroupId $ManagementGroupId -ResolvedResourceIds $ResolvedResourceIds
-        } else {
-            # Tenant Level Child Deployments #
-            ##################################
-            Write-Verbose ('Found [tenant] deployment [{0}]' -f $deployment)
-            [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'tenant' -ResolvedResourceIds $ResolvedResourceIds
         }
     }
 
+    if ($RequireCompleteRemoval) {
+        $ResolvedDeploymentIds.Add((Get-DeploymentResourceId @baseInputObject))
+    }
     return $resultSet | Select-Object -Unique
 }
 #endregion
@@ -310,6 +247,10 @@ Optional. Maximum discovery rounds for required deployment records. Defaults to 
 
 .PARAMETER SearchRetryInterval
 Optional. Seconds between discovery rounds. Defaults to 60.
+
+.PARAMETER RequireCompleteRemoval
+Optional. Require complete terminal-state discovery and collect deployment records for removal.
+Only proven missing root preflight attempts may omit a record. Other missing or incomplete records block relocation.
 
 .EXAMPLE
 Get-DeploymentTargetResourceList -name 'KeyVault' -ResourceGroupName 'validation-rg' -scope 'resourcegroup'
@@ -354,7 +295,10 @@ function Get-DeploymentTargetResourceList {
 
         [Parameter(Mandatory = $false)]
         [ValidateRange(0, 2147483647)]
-        [int] $SearchRetryInterval = 60
+        [int] $SearchRetryInterval = 60,
+
+        [Parameter()]
+        [switch] $RequireCompleteRemoval
     )
 
     if (@($PreflightRejectedDeploymentNames | Where-Object { $_ -notin $DeploymentNames }).Count -gt 0) {
@@ -362,6 +306,7 @@ function Get-DeploymentTargetResourceList {
     }
     $searchRetryCount = 1
     $resourcesToRemove = @()
+    $resolvedDeploymentIds = [System.Collections.Generic.List[string]]::new()
     $deploymentNameObjects = $DeploymentNames | ForEach-Object {
         @{
             Name         = $_
@@ -379,10 +324,12 @@ function Get-DeploymentTargetResourceList {
 
             $resolvedResourceIds = [System.Collections.Generic.List[string]]::new()
             $innerInputObject = @{
-                Name                = $deploymentNameObject.Name
-                Scope               = $scope
-                ResolvedResourceIds = $resolvedResourceIds
-                ErrorAction         = 'Stop'
+                Name                   = $deploymentNameObject.Name
+                Scope                  = $scope
+                ResolvedResourceIds    = $resolvedResourceIds
+                ErrorAction            = 'Stop'
+                RequireCompleteRemoval = $RequireCompleteRemoval
+                ResolvedDeploymentIds  = $resolvedDeploymentIds
             }
             if (-not [String]::IsNullOrEmpty($resourceGroupName)) {
                 $innerInputObject['resourceGroupName'] = $resourceGroupName
@@ -391,6 +338,11 @@ function Get-DeploymentTargetResourceList {
                 $innerInputObject['ManagementGroupId'] = $ManagementGroupId
             }
             try {
+                if ($RequireCompleteRemoval -and $deploymentNameObject.Name -in $PreflightRejectedDeploymentNames) {
+                    $null = Get-DeploymentOperationAtScope -Name $deploymentNameObject.Name -Scope $Scope `
+                        -SubscriptionId (Get-AzContext -ErrorAction Stop).Subscription.Id -ResourceGroupName $ResourceGroupName `
+                        -ManagementGroupId $ManagementGroupId -RequireCompleteRemoval
+                }
                 $targetResources = Get-DeploymentTargetResourceListInner @innerInputObject -DoThrow # Specifying [-DoThrow] for top-level deployments that we definitely want to resolve
                 Write-Verbose ('Found & resolved deployment [{0}]. [{1}] resources found to remove.' -f $deploymentNameObject.Name, $targetResources.Count) -Verbose
                 $deploymentNameObject.Resolved = $true
@@ -399,7 +351,8 @@ function Get-DeploymentTargetResourceList {
                 if ($errorKind -eq 'Cancellation') {
                     throw
                 }
-                if ($errorKind -eq 'Other' -and $_.FullyQualifiedErrorId.Split(',')[0] -eq 'DeploymentNotFound') {
+                if ((-not $RequireCompleteRemoval -or $deploymentNameObject.Name -in $PreflightRejectedDeploymentNames) -and
+                    $errorKind -eq 'Other' -and $_.FullyQualifiedErrorId.Split(',')[0] -eq 'DeploymentNotFound') {
                     if ($deploymentNameObject.Name -in $PreflightRejectedDeploymentNames) {
                         Write-Verbose "Confirmed no deployment record for preflight-rejected attempt [$($deploymentNameObject.Name)]. No lookup retry is needed." -Verbose
                         $deploymentNameObject.Resolved = $true
@@ -431,9 +384,11 @@ function Get-DeploymentTargetResourceList {
         return @{
             resolveError      = $resolveErrors -join '; '
             resourcesToRemove = $resourcesToRemove
+            deploymentIds     = @($resolvedDeploymentIds | Select-Object -Unique)
         }
     }
     return @{
         resourcesToRemove = $resourcesToRemove
+        deploymentIds     = @($resolvedDeploymentIds | Select-Object -Unique)
     }
 }

@@ -31,7 +31,8 @@ Describe 'CI parameter workflow integration' {
             param(
                 [string] $TemplateFilePath, [string] $DeploymentMetadataLocation,
                 [string] $SubscriptionId, [string] $ManagementGroupId,
-                [string] $RepoRoot, [hashtable] $AdditionalParameters, [bool] $DoNotThrow
+                [string] $RepoRoot, [hashtable] $AdditionalParameters, [bool] $DoNotThrow,
+                [int] $RetryLimit, [int] $AttemptNumber
             )
             throw 'Unexpected deployment.'
         }
@@ -49,10 +50,10 @@ Describe 'CI parameter workflow integration' {
             $script = $script.Replace('${{ inputs.deploymentMetadataLocation }}', 'westeurope')
             $script = $script.Replace('${{ inputs.managementGroupId }}', '')
             $script = $script.Replace('${{ steps.get-test-subscription.outputs.subscriptionId }}', '11111111-1111-1111-1111-111111111111')
-            $script = $script.Replace('${{ inputs.modulePath }}', 'avm/res/dev-test-lab/lab')
+            $script = $script.Replace('${{ inputs.modulePath }}', 'avm/res/retry-test/widget')
             $script = $script.Replace('${{ inputs.customLocation }}', '')
             $script = $script.Replace('${{ steps.replace-tokens.outputs.resourceLocation }}', '')
-            $script = $script.Replace('${{ steps.validate-template.outputs.resourceLocation }}', 'eastus')
+            $script = $script.Replace('${{ inputs.removeDeployment }}', 'true')
             return [scriptblock]::Create($script)
         }
     }
@@ -140,9 +141,9 @@ output configuredParameters object = {
         $action.inputs.githubVariables.default | Should -Be '{}'
         $action.inputs.githubSecrets.default | Should -Be '{}'
         $stepsWithSecrets = @($action.runs.steps | Where-Object { $_.env -and $_.env.ContainsKey('AVM_CI_SECRETS') })
-        $stepsWithSecrets.Count | Should -Be 2
+        $stepsWithSecrets.Count | Should -Be 1
         foreach ($step in $stepsWithSecrets) {
-            $step.name | Should -BeIn @('Validate template file', 'Deploy template file')
+            $step.name | Should -Be 'Deploy template file'
             $step.env.AVM_CI_VARIABLES | Should -Be '${{ inputs.githubVariables }}'
             $step.env.AVM_CI_SECRETS | Should -Be '${{ inputs.githubSecrets }}'
             $step.with.inlineScript | Should -Not -Match '\$\{\{\s*inputs\.github(Secrets|Variables)'
@@ -160,10 +161,10 @@ output configuredParameters object = {
         $messages | Should -Match 'GitHub Actions secrets or variables'
     }
 
-    It 'Passes <format> parameters to <stepName> without modifying the template or logging values' -ForEach @(
-        @{ stepName = 'Validate template file'; commandName = 'Test-TemplateDeployment'; format = 'JSON' }
+    It 'Passes <format> parameters to <commandName> without modifying the template or logging values' -ForEach @(
+        @{ stepName = 'Deploy template file'; commandName = 'Test-TemplateDeployment'; format = 'JSON' }
         @{ stepName = 'Deploy template file'; commandName = 'New-TemplateDeployment'; format = 'JSON' }
-        @{ stepName = 'Validate template file'; commandName = 'Test-TemplateDeployment'; format = 'Bicep' }
+        @{ stepName = 'Deploy template file'; commandName = 'Test-TemplateDeployment'; format = 'Bicep' }
         @{ stepName = 'Deploy template file'; commandName = 'New-TemplateDeployment'; format = 'Bicep' }
     ) {
         $path = $format -eq 'Bicep' ? $bicepPath : $templatePath
@@ -184,8 +185,8 @@ output configuredParameters object = {
         Get-Content -Path $path -Raw | Should -BeExactly $before
     }
 
-    It 'Stops <stepName> when Bicep compilation fails' -ForEach @(
-        @{ stepName = 'Validate template file'; commandName = 'Test-TemplateDeployment' }
+    It 'Stops <commandName> when Bicep compilation fails' -ForEach @(
+        @{ stepName = 'Deploy template file'; commandName = 'Test-TemplateDeployment' }
         @{ stepName = 'Deploy template file'; commandName = 'New-TemplateDeployment' }
     ) {
         Mock bicep { $global:LASTEXITCODE = 1; return '{"parameters":{}}' }

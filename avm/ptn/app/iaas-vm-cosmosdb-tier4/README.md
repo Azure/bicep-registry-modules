@@ -569,10 +569,10 @@ Tags for all resources. Should include standard tags like Environment, Owner, Co
 - Example:
   ```Bicep
   {
-    Application: 'MyApp'
-    CostCenter: 'IT'
-    Environment: 'Production'
-    Owner: 'TeamName'
+      Application: 'MyApp'
+      CostCenter: 'IT'
+      Environment: 'Production'
+      Owner: 'TeamName'
   }
   ```
 
