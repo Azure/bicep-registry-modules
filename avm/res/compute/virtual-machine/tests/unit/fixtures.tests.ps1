@@ -1,7 +1,7 @@
 BeforeAll {
     $modulePath = Join-Path $PSScriptRoot '..' '..'
     $fixtures = @{}
-    foreach ($scenario in @('linux.max', 'waf-aligned', 'windows.disks', 'windows.max', 'windows.zrsdisks')) {
+    foreach ($scenario in @('linux.max', 'waf-aligned', 'windows.disks', 'windows.hostpool', 'windows.max', 'windows.zrsdisks')) {
         $source = Join-Path $modulePath 'tests' 'e2e' $scenario 'main.test.bicep'
         $output = Join-Path $TestDrive "$scenario.json"
         $diagnostics = bicep build $source --no-restore --outfile $output 2>&1
@@ -25,6 +25,7 @@ Describe 'Virtual machine fixture compatibility' {
         @{ scenario = 'linux.max'; zone = 1 }
         @{ scenario = 'waf-aligned'; zone = 2 }
         @{ scenario = 'windows.disks'; zone = 1 }
+        @{ scenario = 'windows.hostpool'; zone = -1 }
         @{ scenario = 'windows.max'; zone = 2 }
         @{ scenario = 'windows.zrsdisks'; zone = 2 }
     ) {
@@ -82,6 +83,13 @@ Describe 'Virtual machine fixture compatibility' {
         $parameters.osDisk.value.managedDisk.diskEncryptionSetResourceId | Should -Not -BeNullOrEmpty
         $parameters.dataDisks.value[1].managedDisk.resourceId | Should -Not -BeNullOrEmpty
         $parameters.dataDisks.value[1].managedDisk.diskEncryptionSetResourceId | Should -Not -BeNullOrEmpty
+    }
+
+    It 'Keeps host-pool registration enabled with its dependency outputs' {
+        $registration = $fixtures['windows.hostpool'].Parameters.extensionHostPoolRegistration.value
+        $registration.enabled | Should -BeTrue
+        $registration.hostPoolName | Should -Match 'outputs\.hostPoolName\.value'
+        $registration.registrationInfoToken | Should -Match 'outputs\.registrationInfoToken\.value'
     }
 
     It 'Creates the source OS disk on a compatible SCSI VM' {

@@ -2991,7 +2991,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D4s_v3'
+    vmSize: 'Standard_D4ads_v5'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
@@ -3077,7 +3077,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D4s_v3"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "adminPassword": {
@@ -3165,7 +3165,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D4s_v3'
+param vmSize = 'Standard_D4ads_v5'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'

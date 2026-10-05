@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_D4s_v3'
+      vmSize: 'Standard_D4ads_v5'
       adminPassword: password
       extensionAadJoinConfig: {
         enabled: false // Should be true but is disabled for the test environment to avoid domain conflicts
