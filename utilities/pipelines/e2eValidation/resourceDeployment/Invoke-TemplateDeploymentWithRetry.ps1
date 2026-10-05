@@ -11,8 +11,8 @@
 Classify wholly regional structured errors without overriding permission or cancellation evidence.
 
 .PARAMETER ResourceLocation
-Optional. Selected resource location. Required for an ML workspace's embedded Cosmos DB capacity failure,
-which must name this same region rather than a fixed secondary region.
+Optional. Selected resource location. Required for ML workspace Cosmos DB capacity and AKS preflight
+empty-zone failures, which must name this same region rather than a fixed secondary region.
 #>
 function Test-RegionalValidationError {
     [CmdletBinding()]
@@ -62,7 +62,7 @@ function Test-RegionalValidationError {
     }
 
     $guidPattern = '[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}'
-    $classification = @{ HasCosmosCapacityError = $false; HasUnclassifiedInformation = $false }
+    $classification = @{ HasCosmosCapacityError = $false; HasAksZoneCapacityError = $false; HasUnclassifiedInformation = $false }
 
     function Test-MachineLearningCosmosCapacityError {
         param ([string] $Message)
@@ -105,11 +105,48 @@ function Test-RegionalValidationError {
         }
     }
 
+    function Test-AksPreflightZoneCapacityError {
+        param ([string] $Message, [string] $ParentMessage)
+
+        if ([string]::IsNullOrWhiteSpace($ResourceLocation)) { return $false }
+        $parent = $ParentMessage.Split("'")
+        if ($parent.Count -ne 7 -or $parent[0] -cne 'The template deployment ' -or
+            $parent[1] -cnotmatch '\A[A-Za-z0-9_.()-]+\z' -or
+            $parent[2] -cne ' is not valid according to the validation procedure. The following resource provider(s) - ' -or
+            $parent[4] -cne ' reported preflight validation errors. Tracking id is ' -or
+            $parent[5] -cnotmatch "\A$guidPattern\z" -or $parent[6] -cne '. See inner errors for details.') {
+            return $false
+        }
+        $provider = [regex]::Match($parent[3], '\AMicrosoft\.ContainerService/managedClusters \((?<version>[0-9]{4}-[0-9]{2}-[0-9]{2})\)\z')
+        $apiDate = [datetime]::MinValue
+        if (-not $provider.Success -or -not [datetime]::TryParseExact($provider.Groups['version'].Value, 'yyyy-MM-dd',
+                [System.Globalization.CultureInfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::None, [ref] $apiDate)) {
+            return $false
+        }
+
+        $parts = $Message.Split("'")
+        if ($parts.Count -ne 9 -or
+            $parts[0] -cnotmatch '\APreflight validation check for resource\(s\) for container service [A-Za-z0-9_-]+ in resource group [A-Za-z0-9_.()-]+ failed\. Message: The zone\(s\) \z' -or
+            $parts[2] -cne ' for resource ' -or $parts[3] -cnotmatch '\A[a-z][a-z0-9]{0,11}\z' -or
+            $parts[4] -cne ' is not supported. The supported zones for location ' -or
+            $parts[5] -cnotmatch '\A[A-Za-z0-9]+(?: [A-Za-z0-9]+)*\z' -or
+            $parts[6] -cne ' are ' -or $parts[7] -cne '' -or $parts[8] -cne '. Details: ') {
+            return $false
+        }
+        $zones = $parts[1].Split(',')
+        if ($zones.Count -gt 3 -or @($zones | Where-Object { $_ -cnotin @('1', '2', '3') }).Count -gt 0 -or
+            @($zones | Select-Object -Unique).Count -ne $zones.Count) {
+            return $false
+        }
+        return ($parts[5] -replace '\s', '').ToLowerInvariant() -eq ($ResourceLocation -replace '\s', '').ToLowerInvariant()
+    }
+
     function Test-RegionalErrorNode {
         param (
             [object] $Node,
             [int] $Depth = 0,
-            [string] $WorkspaceTarget
+            [string] $WorkspaceTarget,
+            [string] $AksPreflightMessage
         )
 
         if ($Depth -gt 20 -or $null -eq $Node) {
@@ -164,8 +201,14 @@ function Test-RegionalValidationError {
             $Node.target -match "\A/subscriptions/$guidPattern/resourceGroups/[A-Za-z0-9_.()-]+/providers/Microsoft\.MachineLearningServices/workspaces/[A-Za-z0-9_-]+\z") {
             $childWorkspaceTarget = $Node.target
         }
+        $childAksPreflightMessage = ''
+        if ($Node.code -ceq 'InvalidTemplateDeployment' -and $Node.message -is [string] -and
+            -not $Node.Contains('target') -and -not $Node.Contains('innererror')) {
+            $childAksPreflightMessage = $Node.message
+        }
         foreach ($child in $children) {
-            if (-not (Test-RegionalErrorNode -Node $child -Depth ($Depth + 1) -WorkspaceTarget $childWorkspaceTarget)) { return $false }
+            if (-not (Test-RegionalErrorNode -Node $child -Depth ($Depth + 1) -WorkspaceTarget $childWorkspaceTarget `
+                        -AksPreflightMessage $childAksPreflightMessage)) { return $false }
         }
 
         if ($Node.code -in @('InvalidTemplateDeployment', 'DeploymentFailed', 'ResourceDeploymentFailure', 'MultipleErrorsOccurred')) {
@@ -173,6 +216,16 @@ function Test-RegionalValidationError {
         }
         if ($Node.message -isnot [string]) { return $false }
         switch ($Node.code) {
+            'AvailabilityZoneNotSupported' {
+                if ($Node.code -cne 'AvailabilityZoneNotSupported' -or $classification.HasUnclassifiedInformation -or
+                    [string]::IsNullOrEmpty($AksPreflightMessage) -or
+                    $Node.Contains('target') -or $Node.Contains('details') -or $Node.Contains('innererror')) {
+                    return $false
+                }
+                $isAksZoneCapacityError = Test-AksPreflightZoneCapacityError -Message $Node.message -ParentMessage $AksPreflightMessage
+                if ($isAksZoneCapacityError) { $classification.HasAksZoneCapacityError = $true }
+                return $isAksZoneCapacityError
+            }
             'BadRequest' {
                 if ($classification.HasUnclassifiedInformation -or [string]::IsNullOrEmpty($WorkspaceTarget) -or
                     $Node.Contains('details') -or $Node.Contains('innererror') -or
@@ -197,7 +250,34 @@ function Test-RegionalValidationError {
     }
 
     $regional = Test-RegionalErrorNode -Node $errors
-    return $regional -and (-not $classification.HasCosmosCapacityError -or -not $classification.HasUnclassifiedInformation)
+    if ($regional -and $classification.HasAksZoneCapacityError -and $response -is [string]) {
+        try {
+            $document = [System.Text.Json.JsonDocument]::Parse($response)
+        } catch [System.Text.Json.JsonException] {
+            return $false
+        }
+        try {
+            $nodes = [System.Collections.Generic.Stack[System.Text.Json.JsonElement]]::new()
+            $nodes.Push($document.RootElement)
+            while ($nodes.Count -gt 0) {
+                $node = $nodes.Pop()
+                if ($node.ValueKind -eq [System.Text.Json.JsonValueKind]::Object) {
+                    $names = @{}
+                    foreach ($property in $node.EnumerateObject()) {
+                        if ($names.ContainsKey($property.Name)) { return $false }
+                        $names[$property.Name] = $true
+                        $nodes.Push($property.Value)
+                    }
+                } elseif ($node.ValueKind -eq [System.Text.Json.JsonValueKind]::Array) {
+                    foreach ($child in $node.EnumerateArray()) { $nodes.Push($child) }
+                }
+            }
+        } finally {
+            $document.Dispose()
+        }
+    }
+    return $regional -and (-not ($classification.HasCosmosCapacityError -or $classification.HasAksZoneCapacityError) -or
+        -not $classification.HasUnclassifiedInformation)
 }
 
 function Restore-RegionTokenFile {
