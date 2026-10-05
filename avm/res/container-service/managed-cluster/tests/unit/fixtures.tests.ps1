@@ -97,8 +97,8 @@ Describe 'Maximum fixture compatibility' {
         $userPool = $userPools[0]
     }
 
-    It 'Uses the Dds_v4 size for the user pool' {
-        $userPool.vmSize | Should -Be 'Standard_D2ds_v4'
+    It 'Uses the Dds_v5 size for the user pool' {
+        $userPool.vmSize | Should -Be 'Standard_D2ds_v5'
     }
 
     It 'Keeps the ephemeral Linux OS disk' {
@@ -120,7 +120,7 @@ Describe 'Maximum fixture compatibility' {
 
     It 'Keeps the managed system disk and two system-pool zones' {
         $primaryPools.Count | Should -Be 1
-        $primaryPools[0].vmSize | Should -Be 'Standard_D2s_v4'
+        $primaryPools[0].vmSize | Should -Be 'Standard_D2s_v5'
         $primaryPools[0].type | Should -Be 'VirtualMachineScaleSets'
         $primaryPools[0].mode | Should -Be 'System'
         $primaryPools[0].count | Should -Be 1
@@ -161,9 +161,9 @@ Describe 'Private fixture compatibility' {
         $pools = @($primaryPools[0], $userPools[0])
     }
 
-    It 'Uses the D8ds_v4 size for both pools' {
+    It 'Uses the D8ds_v5 size for both pools' {
         foreach ($pool in $pools) {
-            $pool.vmSize | Should -Be 'Standard_D8ds_v4'
+            $pool.vmSize | Should -Be 'Standard_D8ds_v5'
         }
     }
 
