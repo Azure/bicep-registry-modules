@@ -813,7 +813,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             manual: [
               {
                 count: 2
-                size: 'Standard_DS4_v2'
+                size: 'Standard_D8ds_v5'
               }
             ]
           }
@@ -930,7 +930,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
               "manual": [
                 {
                   "count": 2,
-                  "size": "Standard_DS4_v2"
+                  "size": "Standard_D8ds_v5"
                 }
               ]
             }
@@ -1049,7 +1049,7 @@ param agentPools = [
         manual: [
           {
             count: 2
-            size: 'Standard_DS4_v2'
+            size: 'Standard_D8ds_v5'
           }
         ]
       }

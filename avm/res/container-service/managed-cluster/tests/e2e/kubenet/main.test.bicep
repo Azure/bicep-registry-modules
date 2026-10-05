@@ -102,7 +102,7 @@ module testDeployment '../../../main.bicep' = [
               manual: [
                 {
                   count: 2
-                  size: 'Standard_DS4_v2'
+                  size: 'Standard_D8ds_v5'
                 }
               ]
             }
