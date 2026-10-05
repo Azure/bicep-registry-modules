@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      skuName: 'Standard_B12ms'
+      skuName: 'Standard_D4ads_v5'
       adminPassword: password
       diagnosticSettings: [
         {

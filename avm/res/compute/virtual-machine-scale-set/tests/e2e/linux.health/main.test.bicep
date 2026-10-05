@@ -73,7 +73,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Linux'
-      skuName: 'Standard_B12ms'
+      skuName: 'Standard_D4ads_v5'
       disablePasswordAuthentication: true
       nicConfigurations: [
         {

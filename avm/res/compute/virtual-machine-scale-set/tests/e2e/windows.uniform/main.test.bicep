@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
       }
       orchestrationMode: 'Uniform'
       osType: 'Windows'
-      skuName: 'Standard_B12ms'
+      skuName: 'Standard_D4ads_v5'
       patchMode: 'AutomaticByOS'
       nicConfigurations: [
         {

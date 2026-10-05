@@ -96,7 +96,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     }
     osType: 'Linux'
-    skuName: 'Standard_B12ms'
+    skuName: 'Standard_D4ads_v5'
     // Non-required parameters
     disablePasswordAuthentication: true
     publicKeys: [
@@ -172,7 +172,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Linux"
     },
     "skuName": {
-      "value": "Standard_B12ms"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "disablePasswordAuthentication": {
@@ -236,7 +236,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param skuName = 'Standard_B12ms'
+param skuName = 'Standard_D4ads_v5'
 // Non-required parameters
 param disablePasswordAuthentication = true
 param publicKeys = [
@@ -300,7 +300,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     }
     osType: 'Linux'
-    skuName: 'Standard_B12ms'
+    skuName: 'Standard_D4ads_v5'
     // Non-required parameters
     disablePasswordAuthentication: true
     extensionHealthConfig: {
@@ -381,7 +381,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Linux"
     },
     "skuName": {
-      "value": "Standard_B12ms"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "disablePasswordAuthentication": {
@@ -452,7 +452,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param skuName = 'Standard_B12ms'
+param skuName = 'Standard_D4ads_v5'
 // Non-required parameters
 param disablePasswordAuthentication = true
 param extensionHealthConfig = {
@@ -521,7 +521,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     }
     osType: 'Linux'
-    skuName: 'Standard_B12ms'
+    skuName: 'Standard_D4ads_v5'
     // Non-required parameters
     availabilityZones: [
       2
@@ -711,7 +711,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Linux"
     },
     "skuName": {
-      "value": "Standard_B12ms"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "availabilityZones": {
@@ -931,7 +931,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param skuName = 'Standard_B12ms'
+param skuName = 'Standard_D4ads_v5'
 // Non-required parameters
 param availabilityZones = [
   2
@@ -1112,7 +1112,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     }
     osType: 'Linux'
-    skuName: 'Standard_B12ms'
+    skuName: 'Standard_D4ads_v5'
     // Non-required parameters
     dataDisks: [
       {
@@ -1209,7 +1209,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Linux"
     },
     "skuName": {
-      "value": "Standard_B12ms"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "dataDisks": {
@@ -1298,7 +1298,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param skuName = 'Standard_B12ms'
+param skuName = 'Standard_D4ads_v5'
 // Non-required parameters
 param dataDisks = [
   {
@@ -1380,7 +1380,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     }
     osType: 'Windows'
-    skuName: 'Standard_B12ms'
+    skuName: 'Standard_D4ads_v5'
     // Non-required parameters
     location: '<location>'
   }
@@ -1450,7 +1450,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Windows"
     },
     "skuName": {
-      "value": "Standard_B12ms"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "location": {
@@ -1506,7 +1506,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param skuName = 'Standard_B12ms'
+param skuName = 'Standard_D4ads_v5'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -1564,7 +1564,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     }
     osType: 'Windows'
-    skuName: 'Standard_B12ms'
+    skuName: 'Standard_D4ads_v5'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -1748,7 +1748,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Windows"
     },
     "skuName": {
-      "value": "Standard_B12ms"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -1954,7 +1954,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param skuName = 'Standard_B12ms'
+param skuName = 'Standard_D4ads_v5'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -2126,7 +2126,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     }
     osType: 'Windows'
-    skuName: 'Standard_B12ms'
+    skuName: 'Standard_D4ads_v5'
     // Non-required parameters
     orchestrationMode: 'Uniform'
     patchMode: 'AutomaticByOS'
@@ -2197,7 +2197,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Windows"
     },
     "skuName": {
-      "value": "Standard_B12ms"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "orchestrationMode": {
@@ -2256,7 +2256,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param skuName = 'Standard_B12ms'
+param skuName = 'Standard_D4ads_v5'
 // Non-required parameters
 param orchestrationMode = 'Uniform'
 param patchMode = 'AutomaticByOS'
@@ -2315,7 +2315,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     }
     osType: 'Windows'
-    skuName: 'Standard_B12ms'
+    skuName: 'Standard_D4ads_v5'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -2470,7 +2470,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Windows"
     },
     "skuName": {
-      "value": "Standard_B12ms"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -2641,7 +2641,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param skuName = 'Standard_B12ms'
+param skuName = 'Standard_D4ads_v5'
 // Non-required parameters
 param diagnosticSettings = [
   {

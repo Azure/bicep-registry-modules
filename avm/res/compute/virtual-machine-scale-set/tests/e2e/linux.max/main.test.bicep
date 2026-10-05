@@ -90,7 +90,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Linux'
-      skuName: 'Standard_B12ms'
+      skuName: 'Standard_D4ads_v5'
       availabilityZones: [
         2
       ]
@@ -134,7 +134,7 @@ module testDeployment '../../../main.bicep' = [
       encryptionAtHost: false
       extensionCustomScriptConfig: {
         settings: {
-          commandToExecute: 'bash ${nestedDependencies.outputs.storageAccountCSEFileUrl}'
+          commandToExecute: 'bash ${nestedDependencies.outputs.storageAccountCSEFileName}'
           fileUris: [
             nestedDependencies.outputs.storageAccountCSEFileUrl
           ]
