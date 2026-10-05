@@ -390,7 +390,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
         name: '2754e64b-b96e-44bc-9cb2-6e39b057f515'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -573,7 +573,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
           "name": "2754e64b-b96e-44bc-9cb2-6e39b057f515",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -712,7 +712,7 @@ param roleAssignments = [
     name: '2754e64b-b96e-44bc-9cb2-6e39b057f515'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

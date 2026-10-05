@@ -271,7 +271,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
         name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -395,7 +395,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
           "name": "73ec30e0-2e25-475f-beec-d90cab332eb7",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -495,7 +495,7 @@ param roleAssignments = [
     name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

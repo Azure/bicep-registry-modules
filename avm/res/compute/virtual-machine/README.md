@@ -540,7 +540,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
                   principalId: '<principalId>'
                   principalType: 'ServicePrincipal'
-                  roleDefinitionIdOrName: 'Owner'
+                  roleDefinitionIdOrName: 'Reader'
                 }
                 {
                   principalId: '<principalId>'
@@ -563,7 +563,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -738,7 +738,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -842,7 +842,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "name": "696e6067-3ddc-4b71-bf97-9caebeba441a",
                     "principalId": "<principalId>",
                     "principalType": "ServicePrincipal",
-                    "roleDefinitionIdOrName": "Owner"
+                    "roleDefinitionIdOrName": "Reader"
                   },
                   {
                     "principalId": "<principalId>",
@@ -865,7 +865,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               "name": "ff72f58d-a3cf-42fd-9c27-c61906bdddfe",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -1094,7 +1094,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "name": "eb01de52-d2be-4272-a7b9-13de6c399e27",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1194,7 +1194,7 @@ param nicConfigurations = [
               name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               principalId: '<principalId>'
@@ -1217,7 +1217,7 @@ param nicConfigurations = [
         name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -1392,7 +1392,7 @@ param roleAssignments = [
     name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -1671,7 +1671,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -2005,7 +2005,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "principalId": "<principalId>",
@@ -2281,7 +2281,7 @@ param roleAssignments = [
   {
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     principalId: '<principalId>'
@@ -3271,7 +3271,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
                   principalId: '<principalId>'
                   principalType: 'ServicePrincipal'
-                  roleDefinitionIdOrName: 'Owner'
+                  roleDefinitionIdOrName: 'Reader'
                 }
                 {
                   principalId: '<principalId>'
@@ -3294,7 +3294,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             name: '95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -3517,7 +3517,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -3617,7 +3617,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "name": "e962e7c1-261a-4afd-b5ad-17a640a0b7bc",
                     "principalId": "<principalId>",
                     "principalType": "ServicePrincipal",
-                    "roleDefinitionIdOrName": "Owner"
+                    "roleDefinitionIdOrName": "Reader"
                   },
                   {
                     "principalId": "<principalId>",
@@ -3640,7 +3640,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               "name": "95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -3925,7 +3925,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "name": "c70e8c48-6945-4607-9695-1098ba5a86ed",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -4021,7 +4021,7 @@ param nicConfigurations = [
               name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               principalId: '<principalId>'
@@ -4044,7 +4044,7 @@ param nicConfigurations = [
         name: '95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -4267,7 +4267,7 @@ param roleAssignments = [
     name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

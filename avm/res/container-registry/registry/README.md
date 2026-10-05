@@ -317,7 +317,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         name: '37c5bf75-c804-4607-94a9-e7485164f9f7'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -522,7 +522,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
           "name": "37c5bf75-c804-4607-94a9-e7485164f9f7",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -709,7 +709,7 @@ param roleAssignments = [
     name: '37c5bf75-c804-4607-94a9-e7485164f9f7'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

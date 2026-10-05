@@ -562,7 +562,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         name: 'bd0f41e3-8e3e-4cd3-b028-edd61608bd9f'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -795,7 +795,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
           "name": "bd0f41e3-8e3e-4cd3-b028-edd61608bd9f",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1004,7 +1004,7 @@ param roleAssignments = [
     name: 'bd0f41e3-8e3e-4cd3-b028-edd61608bd9f'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

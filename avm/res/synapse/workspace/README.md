@@ -869,7 +869,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         name: '499f9243-2170-4204-807d-ee6d0f94a0d0'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -1120,7 +1120,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           "name": "499f9243-2170-4204-807d-ee6d0f94a0d0",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1345,7 +1345,7 @@ param roleAssignments = [
     name: '499f9243-2170-4204-807d-ee6d0f94a0d0'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

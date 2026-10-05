@@ -620,7 +620,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         name: '8abf72f9-e918-4adc-b20b-c783b8799065'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -844,7 +844,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           "name": "8abf72f9-e918-4adc-b20b-c783b8799065",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1030,7 +1030,7 @@ param roleAssignments = [
     name: '8abf72f9-e918-4adc-b20b-c783b8799065'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -1658,7 +1658,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         name: '1910de8c-4dab-4189-96bb-2feb68350fb8'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -1870,7 +1870,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           "name": "1910de8c-4dab-4189-96bb-2feb68350fb8",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -2048,7 +2048,7 @@ param roleAssignments = [
     name: '1910de8c-4dab-4189-96bb-2feb68350fb8'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

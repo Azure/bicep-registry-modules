@@ -720,7 +720,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -932,7 +932,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
           "name": "f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1106,7 +1106,7 @@ param roleAssignments = [
     name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

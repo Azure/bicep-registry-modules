@@ -386,7 +386,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           name: guid('Owner assignment ${namePrefix}${serviceShort}')
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }

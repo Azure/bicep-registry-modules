@@ -255,7 +255,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -311,7 +311,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "principalId": "<principalId>",
@@ -357,7 +357,7 @@ param roleAssignments = [
   {
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     principalId: '<principalId>'
@@ -512,7 +512,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
         name: 'c331c327-6458-473a-9398-95b382c6f04f'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -582,7 +582,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
           "name": "c331c327-6458-473a-9398-95b382c6f04f",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -642,7 +642,7 @@ param roleAssignments = [
     name: 'c331c327-6458-473a-9398-95b382c6f04f'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

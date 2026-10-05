@@ -1164,7 +1164,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             {
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               principalId: '<principalId>'
@@ -1293,7 +1293,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               name: 'cff1213b-7877-4425-b67c-bb1de8950dfb'
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               name: '<name>'
@@ -1533,7 +1533,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             {
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               principalId: '<principalId>'
@@ -1559,7 +1559,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -1620,7 +1620,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             {
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               principalId: '<principalId>'
@@ -1640,7 +1640,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             {
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               principalId: '<principalId>'
@@ -1700,7 +1700,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               {
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Owner"
+                "roleDefinitionIdOrName": "Reader"
               },
               {
                 "principalId": "<principalId>",
@@ -1839,7 +1839,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
                 "name": "cff1213b-7877-4425-b67c-bb1de8950dfb",
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Owner"
+                "roleDefinitionIdOrName": "Reader"
               },
               {
                 "name": "<name>",
@@ -2097,7 +2097,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               {
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Owner"
+                "roleDefinitionIdOrName": "Reader"
               },
               {
                 "principalId": "<principalId>",
@@ -2127,7 +2127,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           "name": "30b99723-a3d8-4e31-8872-b80c960d62bd",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -2194,7 +2194,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               {
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Owner"
+                "roleDefinitionIdOrName": "Reader"
               },
               {
                 "principalId": "<principalId>",
@@ -2214,7 +2214,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               {
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Owner"
+                "roleDefinitionIdOrName": "Reader"
               },
               {
                 "principalId": "<principalId>",
@@ -2270,7 +2270,7 @@ param blobServices = {
         {
           principalId: '<principalId>'
           principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
         }
         {
           principalId: '<principalId>'
@@ -2399,7 +2399,7 @@ param fileServices = {
           name: 'cff1213b-7877-4425-b67c-bb1de8950dfb'
           principalId: '<principalId>'
           principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
         }
         {
           name: '<name>'
@@ -2639,7 +2639,7 @@ param queueServices = {
         {
           principalId: '<principalId>'
           principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
         }
         {
           principalId: '<principalId>'
@@ -2665,7 +2665,7 @@ param roleAssignments = [
     name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -2726,7 +2726,7 @@ param tableServices = {
         {
           principalId: '<principalId>'
           principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
         }
         {
           principalId: '<principalId>'
@@ -2746,7 +2746,7 @@ param tableServices = {
         {
           principalId: '<principalId>'
           principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
         }
         {
           principalId: '<principalId>'
