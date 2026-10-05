@@ -1,22 +1,38 @@
 BeforeAll {
     $modulePath = Join-Path $PSScriptRoot '..' '..'
-    $source = Join-Path $modulePath 'tests' 'e2e' 'kubenet' 'main.test.bicep'
-    $output = Join-Path $TestDrive 'kubenet.json'
-    $diagnostics = bicep build $source --no-restore --outfile $output 2>&1
-    if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
-    $template = Get-Content -LiteralPath $output -Raw | ConvertFrom-Json -AsHashtable
-    $resources = $template.resources -is [System.Collections.IDictionary] ? @($template.resources.Values) : @($template.resources)
-    $testModules = @($resources | Where-Object {
-            $_.type -eq 'Microsoft.Resources/deployments' -and $_.properties.parameters.ContainsKey('primaryAgentPoolProfiles')
-        })
-    if ($testModules.Count -ne 1) { throw 'Expected one tested AKS module in the kubenet fixture.' }
-    $testModule = $testModules[0]
-    $parameters = $testModule.properties.parameters
-    $primaryPools = @($parameters.primaryAgentPoolProfiles.value)
-    $userPools = @($parameters.agentPools.value)
+
+    function Get-AksFixture {
+        param ([Parameter(Mandatory)] [string] $Name)
+
+        $source = Join-Path $modulePath 'tests' 'e2e' $Name 'main.test.bicep'
+        $output = Join-Path $TestDrive "$Name.json"
+        $diagnostics = bicep build $source --no-restore --outfile $output 2>&1
+        if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+        $template = Get-Content -LiteralPath $output -Raw | ConvertFrom-Json -AsHashtable
+        $resources = $template.resources -is [System.Collections.IDictionary] ? @($template.resources.Values) : @($template.resources)
+        $testModules = @($resources | Where-Object {
+                $_.type -eq 'Microsoft.Resources/deployments' -and $_.properties.parameters.ContainsKey('primaryAgentPoolProfiles')
+            })
+        if ($testModules.Count -ne 1) { throw "Expected one tested AKS module in the $Name fixture." }
+        [pscustomobject]@{
+            Template = $template
+            Resources = $resources
+            TestModule = $testModules[0]
+        }
+    }
 }
 
 Describe 'Kubenet fixture compatibility' {
+    BeforeAll {
+        $fixture = Get-AksFixture -Name 'kubenet'
+        $template = $fixture.Template
+        $resources = $fixture.Resources
+        $testModule = $fixture.TestModule
+        $parameters = $testModule.properties.parameters
+        $primaryPools = @($parameters.primaryAgentPoolProfiles.value)
+        $userPools = @($parameters.agentPools.value)
+    }
+
     It 'Uses a supported size in the manual scale profile' {
         $profiles = @($userPools[0].virtualMachinesProfile.scale.manual)
         $profiles.Count | Should -Be 1
@@ -66,5 +82,63 @@ Describe 'Kubenet fixture compatibility' {
         $testModule.copy.count | Should -Be "[length(createArray('init', 'idem'))]"
         $testModule.copy.mode | Should -Be 'serial'
         $testModule.copy.batchSize | Should -Be 1
+    }
+}
+
+Describe 'Maximum fixture compatibility' {
+    BeforeAll {
+        $fixture = Get-AksFixture -Name 'max'
+        $parameters = $fixture.TestModule.properties.parameters
+        $primaryPools = @($parameters.primaryAgentPoolProfiles.value)
+        $userPools = @($parameters.agentPools.value)
+        if ($userPools.Count -ne 1 -or $userPools[0].name -cne 'userpool1') {
+            throw 'Expected the maximum fixture userpool1.'
+        }
+        $userPool = $userPools[0]
+    }
+
+    It 'Uses the Dds_v5 size for the user pool' {
+        $userPool.vmSize | Should -Be 'Standard_D2ds_v5'
+    }
+
+    It 'Keeps the ephemeral Linux OS disk' {
+        $userPool.osType | Should -Be 'Linux'
+        $userPool.osDiskType | Should -Be 'Ephemeral'
+        $userPool.osDiskSizeGB | Should -Be 30
+    }
+
+    It 'Keeps the zonal scale-set user pool and autoscaling bounds' {
+        $userPool.type | Should -Be 'VirtualMachineScaleSets'
+        $userPool.mode | Should -Be 'User'
+        $userPool.availabilityZones.Count | Should -Be 1
+        $userPool.availabilityZones[0] | Should -Be 1
+        $userPool.count | Should -Be 1
+        $userPool.enableAutoScaling | Should -BeTrue
+        $userPool.minCount | Should -Be 1
+        $userPool.maxCount | Should -Be 2
+    }
+
+    It 'Keeps the managed system disk and two system-pool zones' {
+        $primaryPools.Count | Should -Be 1
+        $primaryPools[0].vmSize | Should -Be 'Standard_D2s_v5'
+        $primaryPools[0].osDiskType | Should -Be 'Managed'
+        $primaryPools[0].osDiskSizeGB | Should -Be 128
+        $primaryPools[0].availabilityZones.Count | Should -Be 2
+        $primaryPools[0].availabilityZones[0] | Should -Be 1
+        $primaryPools[0].availabilityZones[1] | Should -Be 2
+    }
+
+    It 'Lets CI choose the resource location' {
+        $fixture.Template.parameters.resourceLocation.defaultValue | Should -Be '[deployment().location]'
+        $parameters.location.value | Should -Be "[parameters('resourceLocation')]"
+        $resourceGroups = @($fixture.Resources | Where-Object type -EQ 'Microsoft.Resources/resourceGroups')
+        $resourceGroups.Count | Should -Be 1
+        $resourceGroups[0].location | Should -Be "[parameters('resourceLocation')]"
+    }
+
+    It 'Keeps sequential initial and idempotency deployments' {
+        $fixture.TestModule.copy.count | Should -Be "[length(createArray('init', 'idem'))]"
+        $fixture.TestModule.copy.mode | Should -Be 'serial'
+        $fixture.TestModule.copy.batchSize | Should -Be 1
     }
 }

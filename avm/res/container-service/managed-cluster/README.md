@@ -1207,7 +1207,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           maxSurge: '50%'
           nodeSoakDurationInMinutes: 0
         }
-        vmSize: 'Standard_D2s_v3'
+        vmSize: 'Standard_D2ds_v5'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -1566,7 +1566,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             "maxSurge": "50%",
             "nodeSoakDurationInMinutes": 0
           },
-          "vmSize": "Standard_D2s_v3",
+          "vmSize": "Standard_D2ds_v5",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -2041,7 +2041,7 @@ param agentPools = [
       maxSurge: '50%'
       nodeSoakDurationInMinutes: 0
     }
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2ds_v5'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
