@@ -93,6 +93,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}'
       computerName: take('w${namePrefix}${serviceShort}', 15)
       adminUsername: 'VMAdmin'
+      diskControllerType: 'SCSI'
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'
@@ -181,7 +182,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_D2s_v6'
+      vmSize: 'Standard_D4ads_v5'
       adminPassword: password
       availabilityZone: 2
       backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName

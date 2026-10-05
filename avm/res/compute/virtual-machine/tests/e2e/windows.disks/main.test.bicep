@@ -62,7 +62,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}02'
       securityType: nestedDependencies.outputs.?securityType
       osType: nestedDependencies.outputs.osType
-      vmSize: 'Standard_E2s_v3'
+      vmSize: 'Standard_D4ads_v5'
       availabilityZone: 1
       diskControllerType: 'SCSI'
       nicConfigurations: [

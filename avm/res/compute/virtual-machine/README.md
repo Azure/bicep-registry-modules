@@ -589,7 +589,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v6'
+    vmSize: 'Standard_D4ads_v5'
     // Non-required parameters
     adminUsername: 'localAdministrator'
     backupPolicyName: '<backupPolicyName>'
@@ -619,6 +619,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     disablePasswordAuthentication: true
+    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -897,7 +898,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2s_v6"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "adminUsername": {
@@ -941,6 +942,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "disablePasswordAuthentication": {
       "value": true
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -1243,7 +1247,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Linux'
-param vmSize = 'Standard_D2s_v6'
+param vmSize = 'Standard_D4ads_v5'
 // Non-required parameters
 param adminUsername = 'localAdministrator'
 param backupPolicyName = '<backupPolicyName>'
@@ -1273,6 +1277,7 @@ param dataDisks = [
   }
 ]
 param disablePasswordAuthentication = true
+param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
@@ -1515,7 +1520,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v6'
+    vmSize: 'Standard_D4ads_v5'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'VMAdmin'
@@ -1544,6 +1549,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
+    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -1801,7 +1807,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v6"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "adminPassword": {
@@ -1846,6 +1852,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         }
       ]
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -2125,7 +2134,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v6'
+param vmSize = 'Standard_D4ads_v5'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'VMAdmin'
@@ -2154,6 +2163,7 @@ param dataDisks = [
     }
   }
 ]
+param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
@@ -2502,7 +2512,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: '<osType>'
-    vmSize: 'Standard_E2s_v3'
+    vmSize: 'Standard_D4ads_v5'
     // Non-required parameters
     dataDisks: [
       {
@@ -2576,7 +2586,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "<osType>"
     },
     "vmSize": {
-      "value": "Standard_E2s_v3"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "dataDisks": {
@@ -2646,7 +2656,7 @@ param osDisk = {
   }
 }
 param osType = '<osType>'
-param vmSize = 'Standard_E2s_v3'
+param vmSize = 'Standard_D4ads_v5'
 // Non-required parameters
 param dataDisks = [
   {
@@ -3320,7 +3330,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D4ads_v5'
     // Non-required parameters
     additionalUnattendContent: [
       {
@@ -3672,7 +3682,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "additionalUnattendContent": {
@@ -4070,7 +4080,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D4ads_v5'
 // Non-required parameters
 param additionalUnattendContent = [
   {
@@ -4684,7 +4694,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D4ads_v5'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
@@ -4753,7 +4763,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "adminPassword": {
@@ -4820,7 +4830,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D4ads_v5'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'

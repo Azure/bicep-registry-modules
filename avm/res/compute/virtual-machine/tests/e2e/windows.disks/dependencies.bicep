@@ -160,7 +160,7 @@ resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_D2s_v6'
+      vmSize: 'Standard_D4ads_v5'
     }
     osProfile: {
       adminUsername: adminUsername
@@ -168,6 +168,7 @@ resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
       computerName: take(osDiskVMName, 15)
     }
     storageProfile: {
+      diskControllerType: 'SCSI'
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'
