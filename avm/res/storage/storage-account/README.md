@@ -815,6 +815,10 @@ This instance deploys the module within an Azure Extended Zone.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/extended-location]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+This test is skipped in CI because the required Azure Extended Zone is not available to the CI subscription: deployment job 112203196501 failed with `UnsupportedEdgeZone` because the `losangeles` Extended Zone is not registered/available under the `westus` parent region for this subscription. This is a CI-subscription access/registration prerequisite, not a fixture or module defect, so no fixture-level change can resolve it; the Extended Zone test inputs are preserved unchanged. Re-enable this test once the CI subscription has approved access/registration for the `losangeles` Extended Zone.
+```
 
 <details>
 
