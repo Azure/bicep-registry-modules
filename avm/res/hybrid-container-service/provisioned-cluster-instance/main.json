@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14628577764753735681"
+      "templateHash": "15535966645886352681"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -499,7 +499,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The name of the key vault. The key vault name. Required if no existing SSH keys."
+        "description": "Conditional. The name of the key vault that stores the generated SSH key pair. Required if `linuxProfile` is not provided. The key vault must allow template deployment (`enabledForTemplateDeployment`), so that later deployments can read the stored public key instead of generating and storing a new key pair."
       }
     },
     "customLocationResourceId": {

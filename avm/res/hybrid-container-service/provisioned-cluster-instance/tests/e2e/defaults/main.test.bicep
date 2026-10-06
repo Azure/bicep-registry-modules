@@ -66,14 +66,19 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     networkInterfaceName: 'dep-${namePrefix}-mice-${serviceShort}'
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
+    arbDeploymentAppId: arbDeploymentAppId
+    arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
+    arbDeploymentSPObjectId: arbDeploymentSPObjectId
     deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
+    diskNamePrefix: 'dep-${namePrefix}-dsk-${serviceShort}'
+    waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
     hciHostImageReferenceId: hciHostImageReferenceId
     location: enforcedLocation
   }
 }
 
-module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
+module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.6.0' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
   scope: resourceGroup
   params: {
@@ -89,13 +94,13 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
       clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
-      defaultGateway: '192.168.1.1'
+      defaultGateway: '172.20.0.1'
       deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
-      dnsServers: ['192.168.1.254']
+      dnsServers: ['172.20.0.1']
       domainFqdn: 'hci.local'
       domainOUPath: nestedDependencies.outputs.domainOUPath
-      startingIPAddress: '192.168.1.55'
-      endingIPAddress: '192.168.1.65'
+      startingIPAddress: '172.20.0.55'
+      endingIPAddress: '172.20.0.65'
       enableStorageAutoIp: true
       keyVaultName: nestedDependencies.outputs.keyVaultName
       networkIntents: [
@@ -195,11 +200,11 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
     customLocationResourceId: customLocation.id
     vmSwitchName: azlocal.outputs.vSwitchName
     ipAllocationMethod: 'Static'
-    addressPrefix: '192.168.1.0/24'
-    startingAddress: '192.168.1.171'
-    endingAddress: '192.168.1.190'
-    defaultGateway: '192.168.1.1'
-    dnsServers: ['192.168.1.254']
+    addressPrefix: '172.20.0.0/24'
+    startingAddress: '172.20.0.171'
+    endingAddress: '172.20.0.190'
+    defaultGateway: '172.20.0.1'
+    dnsServers: ['172.20.0.1']
     routeName: 'default'
     vlanId: null
   }
