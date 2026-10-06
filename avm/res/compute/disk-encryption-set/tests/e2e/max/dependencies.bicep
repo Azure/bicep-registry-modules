@@ -54,8 +54,10 @@ resource keyVaultKeyRBAC 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
 }
 
 // Azure RBAC role assignments can take several minutes to propagate to the data plane.
-// Without this bounded wait, the Disk Encryption Set deployment can fail with `KeyVaultAccessForbidden`
-// even though the equivalent role assignment above has just been created.
+// Without this bounded probe, the Disk Encryption Set deployment can fail with `KeyVaultAccessForbidden`
+// even though the equivalent role assignment above has just been created. Rather than a fixed sleep,
+// this script actively probes the data plane (authenticated as the same UAMI/role the module itself uses)
+// until a `Get-AzKeyVaultKey` call succeeds, bounded by a maximum number of attempts.
 resource waitForKeyPermissionsPropagation 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: waitDeploymentScriptName
   location: location
@@ -70,7 +72,38 @@ resource waitForKeyPermissionsPropagation 'Microsoft.Resources/deploymentScripts
     azPowerShellVersion: '11.0'
     retentionInterval: 'PT1H'
     cleanupPreference: 'Always'
-    scriptContent: 'write-output "Sleeping for 15 seconds to allow role propagation"; start-sleep -Seconds 15'
+    environmentVariables: [
+      {
+        name: 'KEY_VAULT_NAME'
+        value: keyVault.name
+      }
+      {
+        name: 'KEY_NAME'
+        value: keyVault::key.name
+      }
+    ]
+    scriptContent: '''
+      $maxAttempts = 10
+      $delaySeconds = 10
+      $lastError = $null
+
+      for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+        try {
+          $null = Get-AzKeyVaultKey -VaultName $env:KEY_VAULT_NAME -Name $env:KEY_NAME -ErrorAction Stop
+          Write-Output "Key Vault Crypto Service Encryption User role has propagated after $attempt attempt(s)."
+          $DeploymentScriptOutputs = @{ attempts = $attempt }
+          return
+        } catch {
+          $lastError = $_
+          Write-Output "Attempt $attempt/$maxAttempts failed (role propagation pending or transient error): $($_.Exception.Message)"
+          if ($attempt -lt $maxAttempts) {
+            Start-Sleep -Seconds $delaySeconds
+          }
+        }
+      }
+
+      throw "Key Vault Crypto Service Encryption User role did not propagate within $($maxAttempts * $delaySeconds) seconds. Last error: $($lastError.Exception.Message)"
+    '''
   }
   dependsOn: [
     keyVaultKeyRBAC
