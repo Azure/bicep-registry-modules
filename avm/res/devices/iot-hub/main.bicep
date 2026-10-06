@@ -263,6 +263,7 @@ resource iothub_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-0
   }
 ]
 
+@batchSize(1)
 module iothub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-iothub-PrivateEndpoint-${index}'

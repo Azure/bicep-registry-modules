@@ -6,7 +6,7 @@
 . (Join-Path $PSScriptRoot 'New-TemplateDeployment.ps1')
 . (Join-Path $PSScriptRoot '..' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
 
-function Test-RegionalValidationError {
+function Test-DeploymentRetryError {
     [CmdletBinding()]
     [OutputType([bool])]
     param (
@@ -15,21 +15,49 @@ function Test-RegionalValidationError {
 
         [Parameter()]
         [AllowNull()]
-        [object] $ErrorResponse
+        [object] $ErrorResponse,
+
+        [Parameter()]
+        [ValidateSet('Regional', 'Transient')]
+        [string] $RetryKind = 'Regional',
+
+        [Parameter()]
+        [string] $SubscriptionId,
+
+        [Parameter()]
+        [string] $ResourceLocation
     )
 
     if ($ErrorRecord.CategoryInfo.Category -in @('AuthenticationError', 'PermissionDenied', 'SecurityError', 'OperationStopped')) {
         return $false
     }
-    for ($exception = $ErrorRecord.Exception; $null -ne $exception; $exception = $exception.InnerException) {
+    if ($RetryKind -eq 'Transient' -and (Get-DeploymentErrorKind -ErrorRecord $ErrorRecord) -ne 'Other') {
+        return $false
+    }
+    $pendingExceptions = [System.Collections.Generic.Stack[System.Exception]]::new()
+    $pendingExceptions.Push($ErrorRecord.Exception)
+    $visitedExceptions = [System.Collections.Generic.HashSet[System.Exception]]::new()
+    while ($pendingExceptions.Count -gt 0) {
+        $exception = $pendingExceptions.Pop()
+        if (-not $visitedExceptions.Add($exception)) { continue }
         if ($exception -is [System.OperationCanceledException] -or
             $exception -is [System.Management.Automation.PipelineStoppedException] -or
             $exception -is [System.UnauthorizedAccessException]) {
             return $false
         }
         $statusCode = $exception.Response.StatusCode ?? $exception.StatusCode
-        if ($statusCode -and [int] $statusCode -notin @(400, 409, 503)) {
-            return $false
+        if ($null -ne $statusCode) {
+            $allowedStatuses = $RetryKind -eq 'Transient' ? @(400, 409, 500, 503) : @(400, 409, 503)
+            try {
+                if ($statusCode -is [array] -or [int] $statusCode -notin $allowedStatuses) { return $false }
+            } catch {
+                return $false
+            }
+        }
+        if ($exception -is [System.AggregateException]) {
+            foreach ($inner in $exception.InnerExceptions) { $pendingExceptions.Push($inner) }
+        } elseif ($null -ne $exception.InnerException) {
+            $pendingExceptions.Push($exception.InnerException)
         }
     }
 
@@ -50,8 +78,104 @@ function Test-RegionalValidationError {
         return $false
     }
 
-    function Test-RegionalErrorNode {
-        param ([object] $Node, [int] $Depth = 0)
+    $resourceTargetPattern = $null
+    $parsedSubscriptionId = [guid]::Empty
+    if ([guid]::TryParse($SubscriptionId, [ref] $parsedSubscriptionId)) {
+        $resourceTypes = $RetryKind -eq 'Transient' ?
+        '(?:Microsoft\.Network/(?:applicationGateways|privateEndpoints)|Microsoft\.DBforPostgreSQL/flexibleServers)' :
+        'Microsoft\.ContainerInstance/containerGroups'
+        $resourceTargetPattern = '^/subscriptions/' + [regex]::Escape($SubscriptionId) +
+        "/resourceGroups/[^/?#\s]+/providers/$resourceTypes/[^/?#\s]+$"
+    }
+
+    $guidPattern = '[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}'
+    $classification = @{ HasCosmosCapacityError = $false; HasAksZoneCapacityError = $false; HasUnclassifiedInformation = $false }
+
+    function Test-MachineLearningCosmosCapacityError {
+        param ([string] $Message)
+
+        if ([string]::IsNullOrWhiteSpace($ResourceLocation)) { return $false }
+        $sdkPattern = 'Microsoft\.Azure\.Documents\.Common/[0-9]+\.[0-9]+\.[0-9]+'
+        $wrapperPattern = "\ALong running operation failed with status 'Failed'\. Additional Info:'Database account creation failed\. " +
+        "Operation Id: $guidPattern, Error : Message: (?<json>\{.*\}), Request URI: /serviceReservation, RequestStats: , SDK: $sdkPattern(?:, $sdkPattern)*'\z"
+        $wrapper = [regex]::Match($Message, $wrapperPattern, [System.Text.RegularExpressions.RegexOptions]::Singleline)
+        if (-not $wrapper.Success) { return $false }
+
+        try {
+            $document = [System.Text.Json.JsonDocument]::Parse($wrapper.Groups['json'].Value)
+        } catch [System.Text.Json.JsonException] {
+            return $false
+        }
+        try {
+            if ($document.RootElement.ValueKind -ne [System.Text.Json.JsonValueKind]::Object) { return $false }
+            $cosmos = @{}
+            foreach ($property in $document.RootElement.EnumerateObject()) {
+                if ($property.Name -notin @('code', 'message') -or $cosmos.ContainsKey($property.Name) -or
+                    $property.Value.ValueKind -ne [System.Text.Json.JsonValueKind]::String) {
+                    return $false
+                }
+                $cosmos[$property.Name] = $property.Value.GetString()
+            }
+            if ($cosmos.Count -ne 2 -or $cosmos.code -cne 'ServiceUnavailable') { return $false }
+            $messagePattern = '\ASorry, we are currently experiencing high demand in (?<region>[A-Za-z0-9]+(?: [A-Za-z0-9]+)*) region, ' +
+            'and cannot fulfill your request at this time (?<time>[A-Z][a-z]{2}, [0-9]{2} [A-Z][a-z]{2} [0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} GMT)\. ' +
+            'To request region access for your subscription, please follow this link https://aka\.ms/cosmosdbquota for more details on how to create a region access request\.' +
+            "\r\nActivityId: $guidPattern, $sdkPattern\z"
+            $capacity = [regex]::Match($cosmos.message, $messagePattern)
+            $timestamp = [datetime]::MinValue
+            return $capacity.Success -and
+            [datetime]::TryParseExact($capacity.Groups['time'].Value, 'r', [System.Globalization.CultureInfo]::InvariantCulture,
+                [System.Globalization.DateTimeStyles]::None, [ref] $timestamp) -and
+            ($capacity.Groups['region'].Value -replace '\s', '').ToLowerInvariant() -eq ($ResourceLocation -replace '\s', '').ToLowerInvariant()
+        } finally {
+            $document.Dispose()
+        }
+    }
+
+    function Test-AksPreflightZoneCapacityError {
+        param ([string] $Message, [string] $ParentMessage)
+
+        if ([string]::IsNullOrWhiteSpace($ResourceLocation)) { return $false }
+        $parent = $ParentMessage.Split("'")
+        if ($parent.Count -ne 7 -or $parent[0] -cne 'The template deployment ' -or
+            $parent[1] -cnotmatch '\A[A-Za-z0-9_.()-]+\z' -or
+            $parent[2] -cne ' is not valid according to the validation procedure. The following resource provider(s) - ' -or
+            $parent[4] -cne ' reported preflight validation errors. Tracking id is ' -or
+            $parent[5] -cnotmatch "\A$guidPattern\z" -or $parent[6] -cne '. See inner errors for details.') {
+            return $false
+        }
+        $provider = [regex]::Match($parent[3], '\AMicrosoft\.ContainerService/managedClusters \((?<version>[0-9]{4}-[0-9]{2}-[0-9]{2})\)\z')
+        $apiDate = [datetime]::MinValue
+        if (-not $provider.Success -or -not [datetime]::TryParseExact($provider.Groups['version'].Value, 'yyyy-MM-dd',
+                [System.Globalization.CultureInfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::None, [ref] $apiDate)) {
+            return $false
+        }
+
+        $parts = $Message.Split("'")
+        if ($parts.Count -ne 9 -or
+            $parts[0] -cnotmatch '\APreflight validation check for resource\(s\) for container service [A-Za-z0-9_-]+ in resource group [A-Za-z0-9_.()-]+ failed\. Message: The zone\(s\) \z' -or
+            $parts[2] -cne ' for resource ' -or $parts[3] -cnotmatch '\A[a-z][a-z0-9]{0,11}\z' -or
+            $parts[4] -cne ' is not supported. The supported zones for location ' -or
+            $parts[5] -cnotmatch '\A[A-Za-z0-9]+(?: [A-Za-z0-9]+)*\z' -or
+            $parts[6] -cne ' are ' -or $parts[7] -cne '' -or $parts[8] -cne '. Details: ') {
+            return $false
+        }
+        $zones = $parts[1].Split(',')
+        if ($zones.Count -gt 3 -or @($zones | Where-Object { $_ -cnotin @('1', '2', '3') }).Count -gt 0 -or
+            @($zones | Select-Object -Unique).Count -ne $zones.Count) {
+            return $false
+        }
+        return ($parts[5] -replace '\s', '').ToLowerInvariant() -eq ($ResourceLocation -replace '\s', '').ToLowerInvariant()
+    }
+
+    function Test-RetryErrorNode {
+        param (
+            [object] $Node,
+            [int] $Depth = 0,
+            [string] $ResourceTarget,
+            [string] $WorkspaceTarget,
+            [string] $AksPreflightMessage
+        )
 
         if ($Depth -gt 20 -or $null -eq $Node) {
             return $false
@@ -59,7 +183,7 @@ function Test-RegionalValidationError {
         if ($Node -is [array]) {
             if ($Node.Count -eq 0) { return $false }
             foreach ($child in $Node) {
-                if (-not (Test-RegionalErrorNode -Node $child -Depth ($Depth + 1))) { return $false }
+                if (-not (Test-RetryErrorNode -Node $child -Depth ($Depth + 1) -ResourceTarget $ResourceTarget)) { return $false }
             }
             return $true
         }
@@ -72,15 +196,25 @@ function Test-RegionalValidationError {
             $properties[$key] = $Node[$key]
         }
         $Node = $properties
+        if ($null -ne $Node.status -and ($Node.status -isnot [string] -or $Node.status -ne 'Failed')) { return $false }
         if ($Node.Contains('error')) {
             if ($Node.Contains('code') -or $Node.Contains('details') -or $Node.Contains('innererror')) { return $false }
-            return Test-RegionalErrorNode -Node $Node.error -Depth ($Depth + 1)
+            if (@($Node.Keys | Where-Object { $_ -notin @('error', 'status') }).Count -gt 0 -or
+                ($Node.Contains('status') -and ($Node.status -isnot [string] -or $Node.status -cne 'Failed'))) {
+                $classification.HasUnclassifiedInformation = $true
+            }
+            return Test-RetryErrorNode -Node $Node.error -Depth ($Depth + 1)
         }
         if ($Node.code -isnot [string] -or [string]::IsNullOrWhiteSpace($Node.code)) {
             return $false
         }
         if ($Node.additionalInfo) {
             return $false
+        }
+        if (@($Node.Keys | Where-Object { $_ -notin @('code', 'message', 'target', 'details', 'innererror') }).Count -gt 0 -or
+            ($Node.Contains('message') -and $Node.message -isnot [string]) -or
+            ($Node.Contains('target') -and ($Node.target -isnot [string] -or [string]::IsNullOrWhiteSpace($Node.target)))) {
+            $classification.HasUnclassifiedInformation = $true
         }
 
         $children = @()
@@ -91,15 +225,70 @@ function Test-RegionalValidationError {
         if ($null -ne $Node.innererror) {
             $children += , $Node.innererror
         }
+        $childResourceTarget = ''
+        if ($Node.code -eq 'ResourceDeploymentFailure' -and $Node.target -is [string] -and
+            $resourceTargetPattern -and $Node.target -match $resourceTargetPattern) {
+            $childResourceTarget = $Node.target
+        }
+        # ACI omits the leaf code for this resource-specific capacity response.
+        if ($RetryKind -eq 'Regional' -and $childResourceTarget -match '/providers/Microsoft\.ContainerInstance/containerGroups/[^/]+$' -and
+            -not [string]::IsNullOrWhiteSpace($ResourceLocation) -and $Node.details -is [array] -and
+            $Node.details.Count -eq 1 -and $null -eq $Node.innererror -and
+            $children[0] -is [System.Collections.IDictionary] -and $children[0].psbase.Count -eq 1 -and $children[0].message -is [string]) {
+            $capacityPattern = "\AThe requested resource is not available in the location '$([regex]::Escape($ResourceLocation))' at this moment\. " +
+            "Please retry with a different resource request or in another location\. Resource requested: '(?<cpu>[0-9]+(?:\.[0-9]+)?)' CPU '(?<memory>[0-9]+(?:\.[0-9]+)?)' GB memory 'Linux' OS\z"
+            $match = [regex]::Match($children[0].message, $capacityPattern)
+            if ($match.Success) {
+                $cpu = [double]::Parse($match.Groups['cpu'].Value, [System.Globalization.CultureInfo]::InvariantCulture)
+                $memory = [double]::Parse($match.Groups['memory'].Value, [System.Globalization.CultureInfo]::InvariantCulture)
+                return $cpu -gt 0 -and $cpu -le 4 -and $memory -gt 0 -and $memory -le 16
+            }
+        }
+        $childWorkspaceTarget = ''
+        if ($Node.code -eq 'ResourceDeploymentFailure' -and $Node.target -is [string] -and
+            $Node.target -match "\A/subscriptions/$guidPattern/resourceGroups/[A-Za-z0-9_.()-]+/providers/Microsoft\.MachineLearningServices/workspaces/[A-Za-z0-9_-]+\z") {
+            $childWorkspaceTarget = $Node.target
+        }
+        $childAksPreflightMessage = ''
+        if ($Node.code -ceq 'InvalidTemplateDeployment' -and $Node.message -is [string] -and
+            -not $Node.Contains('target') -and -not $Node.Contains('innererror')) {
+            $childAksPreflightMessage = $Node.message
+        }
         foreach ($child in $children) {
-            if (-not (Test-RegionalErrorNode -Node $child -Depth ($Depth + 1))) { return $false }
+            if (-not (Test-RetryErrorNode -Node $child -Depth ($Depth + 1) -ResourceTarget $childResourceTarget -WorkspaceTarget $childWorkspaceTarget `
+                        -AksPreflightMessage $childAksPreflightMessage)) { return $false }
         }
 
         if ($Node.code -in @('InvalidTemplateDeployment', 'DeploymentFailed', 'ResourceDeploymentFailure', 'MultipleErrorsOccurred')) {
             return $children.Count -gt 0
         }
         if ($Node.message -isnot [string]) { return $false }
+        if ($RetryKind -eq 'Transient') {
+            return $Node.code -eq 'InternalServerError' -and $children.Count -eq 0 -and
+            -not [string]::IsNullOrWhiteSpace($Node.message) -and -not [string]::IsNullOrWhiteSpace($ResourceTarget) -and
+            ($null -eq $Node.target -or ($Node.target -is [string] -and $Node.target -ieq $ResourceTarget))
+        }
         switch ($Node.code) {
+            'AvailabilityZoneNotSupported' {
+                if ($Node.code -cne 'AvailabilityZoneNotSupported' -or $classification.HasUnclassifiedInformation -or
+                    [string]::IsNullOrEmpty($AksPreflightMessage) -or
+                    $Node.Contains('target') -or $Node.Contains('details') -or $Node.Contains('innererror')) {
+                    return $false
+                }
+                $isAksZoneCapacityError = Test-AksPreflightZoneCapacityError -Message $Node.message -ParentMessage $AksPreflightMessage
+                if ($isAksZoneCapacityError) { $classification.HasAksZoneCapacityError = $true }
+                return $isAksZoneCapacityError
+            }
+            'BadRequest' {
+                if ($classification.HasUnclassifiedInformation -or [string]::IsNullOrEmpty($WorkspaceTarget) -or
+                    $Node.Contains('details') -or $Node.Contains('innererror') -or
+                    ($Node.Contains('target') -and $Node.target -ne $WorkspaceTarget)) {
+                    return $false
+                }
+                $isCosmosCapacityError = Test-MachineLearningCosmosCapacityError -Message $Node.message
+                if ($isCosmosCapacityError) { $classification.HasCosmosCapacityError = $true }
+                return $isCosmosCapacityError
+            }
             'RequestDisallowedByAzure' {
                 return $Node.message -match 'https://aka\.ms/locationineligible(?:[?#\s).,;:''"]|$)'
             }
@@ -113,7 +302,61 @@ function Test-RegionalValidationError {
         }
     }
 
-    return Test-RegionalErrorNode -Node $errors
+    $regional = Test-RetryErrorNode -Node $errors
+    if ($regional -and $classification.HasAksZoneCapacityError -and $response -is [string]) {
+        try {
+            $document = [System.Text.Json.JsonDocument]::Parse($response)
+        } catch [System.Text.Json.JsonException] {
+            return $false
+        }
+        try {
+            $nodes = [System.Collections.Generic.Stack[System.Text.Json.JsonElement]]::new()
+            $nodes.Push($document.RootElement)
+            while ($nodes.Count -gt 0) {
+                $node = $nodes.Pop()
+                if ($node.ValueKind -eq [System.Text.Json.JsonValueKind]::Object) {
+                    $names = @{}
+                    foreach ($property in $node.EnumerateObject()) {
+                        if ($names.ContainsKey($property.Name)) { return $false }
+                        $names[$property.Name] = $true
+                        $nodes.Push($property.Value)
+                    }
+                } elseif ($node.ValueKind -eq [System.Text.Json.JsonValueKind]::Array) {
+                    foreach ($child in $node.EnumerateArray()) { $nodes.Push($child) }
+                }
+            }
+        } finally {
+            $document.Dispose()
+        }
+    }
+    return $regional -and (-not ($classification.HasCosmosCapacityError -or $classification.HasAksZoneCapacityError) -or
+        -not $classification.HasUnclassifiedInformation)
+}
+
+<#
+.SYNOPSIS
+Classify wholly regional structured errors without overriding permission or cancellation evidence.
+
+.PARAMETER ResourceLocation
+Optional. Selected resource location. Required for ML workspace Cosmos DB capacity and AKS preflight
+empty-zone failures, which must name this same region rather than a fixed secondary region.
+#>
+function Test-RegionalValidationError {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory)]
+        [System.Management.Automation.ErrorRecord] $ErrorRecord,
+        [Parameter()]
+        [AllowNull()]
+        [object] $ErrorResponse,
+        [Parameter()]
+        [string] $SubscriptionId,
+        [Parameter()]
+        [string] $ResourceLocation
+    )
+
+    return Test-DeploymentRetryError @PSBoundParameters
 }
 
 function Restore-RegionTokenFile {
@@ -155,6 +398,7 @@ failed deployment, wholly regional structured errors, and complete resource/reco
 Pins, global resources and resource-group scope never relocate. Retained resources are not
 cleaned between attempts. Metadata location, non-location parameters and tokens stay fixed.
 Results distinguish all submitted names from names still requiring final cleanup.
+Wholly transient InternalServerError resource failures may retry in the same movable location after the same complete cleanup.
 
 .PARAMETER TemplateInput
 Required. Common template, scope and parameter inputs. Only one parameter file is supported.
@@ -186,7 +430,8 @@ Optional. Return failure details and outstanding cleanup names instead of throwi
 .OUTPUTS
 ValidationOnly returns the selected location. Otherwise returns DeploymentOutput or Exception and the original
 ErrorRecord, ResourceLocation, AttemptedLocations, DeploymentAttempts, all DeploymentNames, outstanding
-RemainingDeploymentNames, and the PreflightRejectedDeploymentNames subset.
+RemainingDeploymentNames, the PreflightRejectedDeploymentNames subset, and PendingDeletionDeploymentIds
+for roots with confirmed resource removal but unconfirmed accepted history deletion.
 #>
 function Invoke-TemplateDeploymentWithRetry {
     [CmdletBinding(SupportsShouldProcess)]
@@ -254,6 +499,7 @@ function Invoke-TemplateDeploymentWithRetry {
     $attemptedLocations = [System.Collections.Generic.List[string]]::new()
     $deploymentNames = [System.Collections.Generic.List[string]]::new()
     $remainingNames = [System.Collections.Generic.List[string]]::new()
+    $pendingDeletionIds = [System.Collections.Generic.List[string]]::new()
     $preflightNames = [System.Collections.Generic.List[string]]::new()
     $deploymentAttempts = 0
     $needsValidation = $true
@@ -300,7 +546,7 @@ function Invoke-TemplateDeploymentWithRetry {
                 } catch {
                     $lastError = $_
                     if (-not $canRetry -or $selection.IsGlobal -or $attemptedLocations.Count -ge $RegionLimit -or
-                        -not (Test-RegionalValidationError -ErrorRecord $_)) {
+                        -not (Test-RegionalValidationError -ErrorRecord $_ -ResourceLocation $location)) {
                         throw
                     }
                     Write-Warning "Regional validation failed in [$location]; selecting another eligible region."
@@ -347,8 +593,8 @@ function Invoke-TemplateDeploymentWithRetry {
                 throw $lastError
             }
 
-            if ($canRetry -and -not $selection.IsGlobal -and $RemoveDeployment -and
-                $attemptedLocations.Count -lt $RegionLimit -and $attemptResult.FailureQueryAllowed) {
+            if ($canRetry -and -not $selection.IsGlobal -and $RemoveDeployment -and $attemptResult.FailureQueryAllowed -and
+                ($attemptedLocations.Count -lt $RegionLimit -or -not $attemptResult.RetryAllowed)) {
                 $stateInput = @{
                     DeploymentScope   = $scope
                     DeploymentName    = $attemptResult.DeploymentNames[-1]
@@ -357,7 +603,7 @@ function Invoke-TemplateDeploymentWithRetry {
                     ManagementGroupId = $validationParameters.ManagementGroupId
                 }
                 $deployment = Get-TemplateDeployment @stateInput -ErrorAction Stop
-                if ($deployment.ProvisioningState -ne 'Failed') {
+                if ($deployment -is [array] -or $deployment.ProvisioningState -isnot [string] -or $deployment.ProvisioningState -ne 'Failed') {
                     throw "Deployment [$($stateInput.DeploymentName)] is [$($deployment.ProvisioningState)]; no retry is safe."
                 }
                 $errorInput = $stateInput.Clone()
@@ -374,8 +620,18 @@ function Invoke-TemplateDeploymentWithRetry {
                         $lastError.Exception, 'ConfirmedDeploymentFailure', [System.Management.Automation.ErrorCategory]::InvalidResult, $null
                     )
                 }
-                if (Test-RegionalValidationError -ErrorRecord $classificationError -ErrorResponse $errors) {
-                    Write-Warning "Regional deployment failure in [$location]; cleaning confirmed failed attempts before selecting another region."
+                $classificationInput = @{
+                    ErrorRecord      = $classificationError
+                    ErrorResponse    = $errors
+                    SubscriptionId   = $validationParameters.SubscriptionId
+                    ResourceLocation = $location
+                }
+                $regionalFailure = $attemptedLocations.Count -lt $RegionLimit -and (Test-RegionalValidationError @classificationInput)
+                $transientFailure = -not $regionalFailure -and (Test-DeploymentRetryError @classificationInput -RetryKind Transient)
+                if ($regionalFailure -or $transientFailure) {
+                    Write-Warning ($regionalFailure ?
+                        "Regional deployment failure in [$location]; cleaning confirmed failed attempts before selecting another region." :
+                        "Transient resource failure in [$location]; cleaning confirmed failed attempts before retrying in the same region.")
                     $cleanupInput = @{
                         TemplateFilePath                 = $validationParameters.TemplateFilePath
                         DeploymentNames                  = @($remainingNames)
@@ -384,12 +640,16 @@ function Invoke-TemplateDeploymentWithRetry {
                         ResourceGroupName                = $validationParameters.ResourceGroupName
                         ManagementGroupId                = $validationParameters.ManagementGroupId
                         RequireCompleteRemoval           = $true
+                        RequireNoDeploymentScripts       = $transientFailure
                     }
                     try {
                         $cleanup = Initialize-DeploymentRemoval @cleanupInput -ErrorAction Stop
                     } catch {
                         foreach ($name in @($_.Exception.Data['RemovedDeploymentNames'])) {
                             $null = $remainingNames.Remove($name)
+                        }
+                        foreach ($id in @($_.Exception.Data['PendingDeletionDeploymentIds'] ?? @())) {
+                            $pendingDeletionIds.Add($id)
                         }
                         throw
                     }
@@ -398,8 +658,12 @@ function Invoke-TemplateDeploymentWithRetry {
                         throw 'Cleanup did not confirm removal of every outstanding deployment; regional relocation is blocked.'
                     }
                     $remainingNames.Clear()
-                    Restore-RegionTokenFile -Files $tokenFiles
-                    $needsValidation = $true
+                    if ($regionalFailure) {
+                        Restore-RegionTokenFile -Files $tokenFiles
+                        $needsValidation = $true
+                    } else {
+                        Start-Sleep -Seconds 5
+                    }
                     continue
                 }
             }
@@ -454,6 +718,7 @@ function Invoke-TemplateDeploymentWithRetry {
     }
     $result.DeploymentNames = @($deploymentNames)
     $result.RemainingDeploymentNames = @($remainingNames)
+    $result.PendingDeletionDeploymentIds = @($pendingDeletionIds)
     $result.PreflightRejectedDeploymentNames = @($preflightNames)
     $result.ResourceLocation = $location
     $result.AttemptedLocations = @($attemptedLocations)
