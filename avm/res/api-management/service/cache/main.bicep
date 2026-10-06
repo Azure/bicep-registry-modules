@@ -8,6 +8,7 @@ param apiManagementServiceName string
 param name string
 
 @sys.description('Required. Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}.')
+@sys.secure()
 param connectionString string
 
 @sys.description('Optional. Cache description.')

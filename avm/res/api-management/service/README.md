@@ -4872,7 +4872,7 @@ Caches.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectionString`](#parameter-cachesconnectionstring) | string | Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}. |
+| [`connectionString`](#parameter-cachesconnectionstring) | securestring | Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}. |
 | [`name`](#parameter-cachesname) | string | Identifier of the Cache entity. Cache identifier (should be either 'default' or valid Azure region identifier). |
 | [`useFromLocation`](#parameter-cachesusefromlocation) | string | Location identifier to use cache from (should be either 'default' or valid Azure region identifier). |
 
@@ -4888,7 +4888,7 @@ Caches.
 Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `caches.name`
 
