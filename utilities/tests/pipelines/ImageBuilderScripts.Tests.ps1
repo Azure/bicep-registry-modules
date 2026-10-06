@@ -14,6 +14,12 @@ Describe 'Image Builder deployment scripts' {
             throw 'Start-AzImageBuilderTemplate must be mocked.'
         }
 
+        function Get-AzImageBuilderTemplate {
+            [CmdletBinding()]
+            param ([string] $ImageTemplateName, [string] $ResourceGroupName)
+            throw ('Get-AzImageBuilderTemplate for [{0}] in [{1}] must be mocked.' -f $ImageTemplateName, $ResourceGroupName)
+        }
+
         function Get-AzImageBuilderTemplateRunOutput {
             [CmdletBinding()]
             param ([string] $ImageTemplateName, [string] $ResourceGroupName)
@@ -62,12 +68,26 @@ Describe 'Image Builder deployment scripts' {
         $copyInput.DestinationStorageAccountName = 'destination'
         $script:sourceUri = 'https://source.blob.core.windows.net/vhds/source.vhd'
         $script:runOutputs = @([pscustomobject]@{ ArtifactUri = $script:sourceUri })
+        $script:clock = [datetime] '2026-10-06T10:00:00Z'
+        $script:imageTemplate = [pscustomobject]@{
+            BuildTimeoutInMinute    = 6
+            LastRunStatusStartTime   = $script:clock
+            LastRunStatusRunState    = 'Succeeded'
+            LastRunStatusRunSubState = 'Distributing'
+            LastRunStatusMessage     = ''
+        }
+        $script:previousImageTemplate = $script:imageTemplate.PSObject.Copy()
+        $script:previousImageTemplate.LastRunStatusStartTime = [datetime]::MinValue
+        $script:previousImageTemplate.LastRunStatusRunState = $null
 
         Mock Install-Module {}
         Mock Get-Module {} -ParameterFilter { $Name -contains 'Az.ImageBuilder' -or $Name -contains 'Az.Storage' }
         Mock Get-InstalledModule {}
         Mock Write-Verbose {}
+        Mock Get-Date { $script:clock }
+        Mock Start-Sleep { $script:clock = $script:clock.AddSeconds($Seconds) }
         Mock Start-AzImageBuilderTemplate {}
+        Mock Get-AzImageBuilderTemplate { $script:imageTemplate.PSObject.Copy() }
         Mock Get-AzImageBuilderTemplateRunOutput { $script:runOutputs }
         Mock Get-AzStorageAccount {
             [pscustomobject]@{
@@ -82,28 +102,204 @@ Describe 'Image Builder deployment scripts' {
             }
         }
         Mock Start-AzStorageBlobCopy { [pscustomobject]@{ Name = $DestBlob } }
-        Mock Get-AzStorageBlobCopyState {}
+        Mock Get-AzStorageBlobCopyState { [pscustomobject]@{ Status = 'Success'; StatusDescription = '' } }
     }
 
     Context 'Starting an image build' {
-        It 'Waits for the image build by default' {
+        BeforeEach {
+            $script:templateLookupCount = 0
+            Mock Get-AzImageBuilderTemplate {
+                $script:templateLookupCount++
+                if ($script:templateLookupCount -eq 1) {
+                    $script:previousImageTemplate.PSObject.Copy()
+                } else {
+                    $script:imageTemplate.PSObject.Copy()
+                }
+            }
+        }
+
+        It 'Waits for the current image build by default' {
             . $startScript @startInput
 
             Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly -ParameterFilter {
-                $ImageTemplateName -eq 'build-template' -and $ResourceGroupName -eq 'build-rg' -and -not $NoWait
+                $ImageTemplateName -eq 'build-template' -and $ResourceGroupName -eq 'build-rg' -and $NoWait
             }
+            Should -Invoke Get-AzImageBuilderTemplate -Times 2 -Exactly -ParameterFilter {
+                $ImageTemplateName -eq 'build-template' -and $ResourceGroupName -eq 'build-rg'
+            }
+        }
+
+        It 'Does not treat a completed run action as a completed image build' {
+            Mock Start-AzImageBuilderTemplate { [pscustomobject]@{ Status = 'Succeeded' } }
+            $script:imageTemplate.LastRunStatusRunState = 'Running'
+            Mock Start-Sleep {
+                $script:clock = $script:clock.AddSeconds($Seconds)
+                $script:imageTemplate.LastRunStatusRunState = 'Succeeded'
+            }
+
+            . $startScript @startInput
+
+            Should -Invoke Get-AzImageBuilderTemplate -Times 3 -Exactly
+            Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+        }
+
+        It 'Does not accept the previous completed run after a new submission' {
+            $script:previousImageTemplate = $script:imageTemplate.PSObject.Copy()
+            Mock Start-Sleep {
+                $script:clock = $script:clock.AddSeconds($Seconds)
+                $script:imageTemplate.LastRunStatusStartTime = $script:clock
+            }
+
+            . $startScript @startInput
+
+            Should -Invoke Get-AzImageBuilderTemplate -Times 3 -Exactly
+            Should -Invoke Start-Sleep -Times 1 -Exactly
+        }
+
+        It 'Ignores an older successful status after observing the submitted run' {
+            $script:previousImageTemplate.LastRunStatusStartTime = $script:clock.AddMinutes(-2)
+            Mock Get-AzImageBuilderTemplate {
+                $script:templateLookupCount++
+                if ($script:templateLookupCount -eq 1) {
+                    $script:previousImageTemplate.PSObject.Copy()
+                } else {
+                    $status = $script:imageTemplate.PSObject.Copy()
+                    if ($script:templateLookupCount -eq 2) {
+                        $status.LastRunStatusRunState = 'Running'
+                    } elseif ($script:templateLookupCount -eq 3) {
+                        $status.LastRunStatusStartTime = $status.LastRunStatusStartTime.AddMinutes(-1)
+                    }
+                    $status
+                }
+            }
+
+            . $startScript @startInput
+
+            Should -Invoke Get-AzImageBuilderTemplate -Times 4 -Exactly
+            Should -Invoke Start-Sleep -Times 2 -Exactly
+        }
+
+        It 'Rejects a different newer run instead of reporting its success' {
+            $script:imageTemplate.LastRunStatusRunState = 'Running'
+            Mock Start-Sleep {
+                $script:clock = $script:clock.AddSeconds($Seconds)
+                $script:imageTemplate.LastRunStatusStartTime = $script:clock
+                $script:imageTemplate.LastRunStatusRunState = 'Succeeded'
+            }
+
+            { . $startScript @startInput } | Should -Throw '*changed while waiting*'
+
+            Should -Invoke Get-AzImageBuilderTemplate -Times 3 -Exactly
+        }
+
+        It 'Rejects the current terminal build state <state> with provider diagnostics' -ForEach @(
+            @{ state = 'Failed' }
+            @{ state = 'Canceled' }
+            @{ state = 'PartiallySucceeded' }
+        ) {
+            $script:imageTemplate.LastRunStatusRunState = $state
+            $script:imageTemplate.LastRunStatusMessage = 'PackerBuildFailed: customization failed'
+
+            { . $startScript @startInput } | Should -Throw "*$state*PackerBuildFailed: customization failed*"
+
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+            Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Created*image artifacts*' }
+        }
+
+        It 'Rejects an unknown current build state' {
+            $script:imageTemplate.LastRunStatusRunState = 'UnexpectedState'
+
+            { . $startScript @startInput } | Should -Throw '*Unexpected*UnexpectedState*'
+
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Bounds a running build using <case>' -ForEach @(
+            @{ case = 'the configured timeout'; minutes = 7; expectedMinutes = 12 }
+            @{ case = 'the default for zero'; minutes = 0; expectedMinutes = 245 }
+            @{ case = 'the default for an omitted timeout'; minutes = $null; expectedMinutes = 245 }
+        ) {
+            $script:previousImageTemplate.BuildTimeoutInMinute = $minutes
+            $script:imageTemplate.LastRunStatusRunState = 'Running'
+            $script:timeoutMinutes = $expectedMinutes
+            Mock Start-Sleep { $script:clock = $script:clock.AddMinutes($script:timeoutMinutes) }
+
+            { . $startScript @startInput } | Should -Throw "*Timed out after $expectedMinutes minutes*Running*"
+
+            Should -Invoke Get-AzImageBuilderTemplate -Times 2 -Exactly
+            Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+        }
+
+        It 'Accepts completion just before the observation deadline' {
+            $script:imageTemplate.LastRunStatusRunState = 'Running'
+            Mock Start-Sleep {
+                $script:clock = $script:clock.AddSeconds(659)
+                $script:imageTemplate.LastRunStatusRunState = 'Succeeded'
+            }
+
+            . $startScript @startInput
+
+            Should -Invoke Get-AzImageBuilderTemplate -Times 3 -Exactly
+        }
+
+        It 'Does not read another status after the observation deadline' {
+            $script:imageTemplate.LastRunStatusRunState = 'Running'
+            Mock Start-Sleep {
+                $script:clock = $script:clock.AddMinutes(11)
+                $script:imageTemplate.LastRunStatusRunState = 'Succeeded'
+            }
+
+            { . $startScript @startInput } | Should -Throw '*Timed out after 11 minutes*'
+
+            Should -Invoke Get-AzImageBuilderTemplate -Times 2 -Exactly
+        }
+
+        It 'Times out rather than accepting a success without a new run timestamp' {
+            $script:imageTemplate.LastRunStatusStartTime = $null
+            Mock Start-Sleep { $script:clock = $script:clock.AddMinutes(11) }
+
+            { . $startScript @startInput } | Should -Throw '*Timed out*'
+
+            Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Created*image artifacts*' }
+        }
+
+        It 'Rejects a negative build timeout before submission' {
+            $script:previousImageTemplate.BuildTimeoutInMinute = -1
+
+            { . $startScript @startInput } | Should -Throw '*invalid build timeout*'
+
+            Should -Invoke Start-AzImageBuilderTemplate -Times 0 -Exactly
+        }
+
+        It 'Rejects a missing template before submission' {
+            Mock Get-AzImageBuilderTemplate {}
+
+            { . $startScript @startInput } | Should -Throw '*Expected exactly one image template*'
+
+            Should -Invoke Start-AzImageBuilderTemplate -Times 0 -Exactly
+        }
+
+        It 'Preserves a non-terminating status lookup error' {
+            $ErrorActionPreference = 'Continue'
+            Mock Get-AzImageBuilderTemplate { Write-Error 'Image status lookup failed' }
+
+            { . $startScript @startInput } | Should -Throw '*Image status lookup failed*'
+
+            Should -Invoke Start-AzImageBuilderTemplate -Times 0 -Exactly
         }
 
         It 'Preserves the explicit asynchronous option' {
             . $startScript @startInput -NoWait
 
             Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly -ParameterFilter { $NoWait }
+            Should -Invoke Get-AzImageBuilderTemplate -Times 0 -Exactly
         }
 
         It 'Does not start a build with WhatIf' {
             . $startScript @startInput -WhatIf
 
             Should -Invoke Start-AzImageBuilderTemplate -Times 0 -Exactly
+            Should -Invoke Get-AzImageBuilderTemplate -Times 0 -Exactly
         }
 
         It 'Propagates a non-terminating build error without reporting success' {
@@ -112,7 +308,7 @@ Describe 'Image Builder deployment scripts' {
 
             { . $startScript @startInput } | Should -Throw '*Image build failed: PackerBuildFailed*'
 
-            Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Created/initialized*' }
+            Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Created*image artifacts*' }
         }
 
         It 'Propagates submission errors with NoWait' {
@@ -121,7 +317,7 @@ Describe 'Image Builder deployment scripts' {
 
             { . $startScript @startInput -NoWait } | Should -Throw '*Image build submission failed*'
 
-            Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Created/initialized*' }
+            Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Created*image artifacts*' }
         }
     }
 
@@ -166,6 +362,37 @@ Describe 'Image Builder deployment scripts' {
             Should -Invoke Start-AzStorageBlobCopy -Times 1 -Exactly -ParameterFilter { $AbsoluteUri -ceq $script:sourceUri }
         }
 
+        It 'Waits for a successful build to expose its VHD output' {
+            $script:runOutputs = @()
+            Mock Start-Sleep {
+                $script:clock = $script:clock.AddSeconds($Seconds)
+                $script:runOutputs = @([pscustomobject]@{ ArtifactUri = $script:sourceUri })
+            }
+
+            . $copyScript @copyInput
+
+            Should -Invoke Get-AzImageBuilderTemplateRunOutput -Times 2 -Exactly
+            Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+            Should -Invoke Start-AzStorageBlobCopy -Times 1 -Exactly
+        }
+
+        It 'Does not copy even an existing artifact from a build in state <state>' -ForEach @(
+            @{ state = 'Running' }
+            @{ state = 'Failed' }
+            @{ state = 'Canceled' }
+            @{ state = 'PartiallySucceeded' }
+            @{ state = 'UnexpectedState' }
+            @{ state = '' }
+        ) {
+            $script:imageTemplate.LastRunStatusRunState = $state
+
+            { . $copyScript @copyInput } | Should -Throw '*has not completed successfully*'
+
+            Should -Invoke Get-AzImageBuilderTemplateRunOutput -Times 0 -Exactly
+            Should -Invoke Get-AzStorageAccount -Times 0 -Exactly
+            Should -Invoke Start-AzStorageBlobCopy -Times 0 -Exactly
+        }
+
         It 'Rejects <case> before accessing storage' -ForEach @(
             @{ case = 'no outputs'; outputs = @() }
             @{ case = 'a null URI'; outputs = @([pscustomobject]@{ ArtifactUri = $null }) }
@@ -178,6 +405,7 @@ Describe 'Image Builder deployment scripts' {
 
             Should -Invoke Get-AzStorageAccount -Times 0 -Exactly
             Should -Invoke Start-AzStorageBlobCopy -Times 0 -Exactly
+            $script:clock | Should -Be ([datetime] '2026-10-06T10:05:00Z')
         }
 
         It 'Rejects ambiguous VHD outputs before accessing storage' {
@@ -187,6 +415,7 @@ Describe 'Image Builder deployment scripts' {
 
             Should -Invoke Get-AzStorageAccount -Times 0 -Exactly
             Should -Invoke Start-AzStorageBlobCopy -Times 0 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
         }
 
         It 'Rejects an invalid artifact URI [<uri>] before accessing storage' -ForEach @(
@@ -213,10 +442,57 @@ Describe 'Image Builder deployment scripts' {
             Should -Invoke Start-AzStorageBlobCopy -Times 0 -Exactly
         }
 
+        It 'Rejects missing storage accounts before copying' {
+            Mock Get-AzStorageAccount {}
+
+            { . $copyScript @copyInput } | Should -Throw '*source storage account*'
+
+            Should -Invoke Start-AzStorageBlobCopy -Times 0 -Exactly
+        }
+
+        It 'Preserves a non-terminating copy submission error' {
+            $ErrorActionPreference = 'Continue'
+            Mock Start-AzStorageBlobCopy { Write-Error 'Blob copy submission failed' }
+
+            { . $copyScript @copyInput -WaitForComplete } | Should -Throw '*Blob copy submission failed*'
+
+            Should -Invoke Get-AzStorageBlobCopyState -Times 0 -Exactly
+        }
+
+        It 'Rejects a copy that ends in <state>' -ForEach @(
+            @{ state = 'Failed' }
+            @{ state = 'Aborted' }
+            @{ state = 'Pending' }
+        ) {
+            Mock Get-AzStorageBlobCopyState { [pscustomobject]@{ Status = $state; StatusDescription = 'Copy provider diagnostic' } }
+
+            { . $copyScript @copyInput -WaitForComplete } | Should -Throw "*$state*Copy provider diagnostic*"
+        }
+
+        It 'Rejects a missing copy status' {
+            Mock Get-AzStorageBlobCopyState {}
+
+            { . $copyScript @copyInput -WaitForComplete } | Should -Throw '*Expected exactly one blob copy status*'
+        }
+
+        It 'Preserves a non-terminating copy status error' {
+            $ErrorActionPreference = 'Continue'
+            Mock Get-AzStorageBlobCopyState { Write-Error 'Blob copy status lookup failed' }
+
+            { . $copyScript @copyInput -WaitForComplete } | Should -Throw '*Blob copy status lookup failed*'
+        }
+
         It 'Does not copy with WhatIf' {
             . $copyScript @copyInput -WhatIf
 
             Should -Invoke Start-AzStorageBlobCopy -Times 0 -Exactly
+        }
+
+        It 'Does not wait for a copy that WhatIf did not start' {
+            . $copyScript @copyInput -WhatIf -WaitForComplete
+
+            Should -Invoke Start-AzStorageBlobCopy -Times 0 -Exactly
+            Should -Invoke Get-AzStorageBlobCopyState -Times 0 -Exactly
         }
     }
 }

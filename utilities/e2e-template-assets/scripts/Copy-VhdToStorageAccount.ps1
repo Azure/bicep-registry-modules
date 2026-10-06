@@ -3,7 +3,7 @@
 Copy a VHD baked from a given Image Template to a given destination storage account blob container
 
 .DESCRIPTION
-Copy a VHD baked from a given Image Template to a given destination storage account blob container
+Copy a VHD from a successful image build to a destination storage account blob container. Wait up to five minutes for the completed build's VHD output to become available.
 
 .PARAMETER ImageTemplateName
 Mandatory. The name of the Image Template
@@ -89,9 +89,26 @@ process {
     Write-Verbose 'Initializing source storage account parameters before the blob copy' -Verbose
     Write-Verbose ('Retrieving source storage account from Image Template [{0}] in resource group [{1}]' -f $imageTemplateName, $imageTemplateResourceGroup) -Verbose
     Get-InstalledModule
-    $imgtRunOutputs = @(Get-AzImageBuilderTemplateRunOutput -ImageTemplateName $imageTemplateName -ResourceGroupName $imageTemplateResourceGroup -ErrorAction Stop | Where-Object {
-            -not [string]::IsNullOrWhiteSpace($_.ArtifactUri)
-        })
+    $artifactDeadline = (Get-Date).ToUniversalTime().AddMinutes(5)
+    $imgtRunOutputs = @()
+    while ((Get-Date).ToUniversalTime() -lt $artifactDeadline) {
+        $imageTemplates = @(Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageTemplateResourceGroup -ErrorAction Stop)
+        if ($imageTemplates.Count -ne 1) {
+            throw ('Expected exactly one image template [{0}] in resource group [{1}].' -f $imageTemplateName, $imageTemplateResourceGroup)
+        }
+        $imageTemplate = $imageTemplates[0]
+        if ($imageTemplate.LastRunStatusRunState -ne 'Succeeded') {
+            throw ('Image build [{0}] has not completed successfully. Last run state [{1}], substate [{2}]: {3}' -f $imageTemplateName, $imageTemplate.LastRunStatusRunState, $imageTemplate.LastRunStatusRunSubState, $imageTemplate.LastRunStatusMessage)
+        }
+        $imgtRunOutputs = @(Get-AzImageBuilderTemplateRunOutput -ImageTemplateName $imageTemplateName -ResourceGroupName $imageTemplateResourceGroup -ErrorAction Stop | Where-Object {
+                -not [string]::IsNullOrWhiteSpace($_.ArtifactUri)
+            })
+        if ($imgtRunOutputs.Count -gt 0) {
+            break
+        }
+        Write-Verbose ('Waiting for the completed image build [{0}] to expose its VHD output.' -f $imageTemplateName) -Verbose
+        Start-Sleep -Seconds 15
+    }
     if ($imgtRunOutputs.Count -ne 1) {
         throw ('Expected exactly one VHD artifact URI from image template [{0}] in resource group [{1}], but found [{2}]. Check the image build result.' -f $imageTemplateName, $imageTemplateResourceGroup, $imgtRunOutputs.Count)
     }
@@ -101,15 +118,21 @@ process {
         throw ('Image template [{0}] returned an invalid VHD artifact URI.' -f $imageTemplateName)
     }
     $sourceStorageAccountName = $sourceBlobUri.Host.Split('.')[0]
-    $storageAccountList = Get-AzStorageAccount
-    $sourceStorageAccount = $storageAccountList | Where-Object StorageAccountName -EQ $sourceStorageAccountName
-    $sourceStorageAccountContext = $sourceStorageAccount.Context
-    $sourceStorageAccountRGName = $sourceStorageAccount.ResourceGroupName
+    $storageAccountList = @(Get-AzStorageAccount -ErrorAction Stop)
+    $sourceStorageAccounts = @($storageAccountList | Where-Object StorageAccountName -EQ $sourceStorageAccountName)
+    if ($sourceStorageAccounts.Count -ne 1 -or -not $sourceStorageAccounts[0].Context) {
+        throw ('Could not resolve exactly one source storage account [{0}] with a storage context.' -f $sourceStorageAccountName)
+    }
+    $sourceStorageAccountContext = $sourceStorageAccounts[0].Context
+    $sourceStorageAccountRGName = $sourceStorageAccounts[0].ResourceGroupName
     Write-Verbose ('Retrieving artifact uri [{0}] stored in resource group [{1}]' -f $sourceUri, $sourceStorageAccountRGName) -Verbose
 
     Write-Verbose 'Initializing destination storage account parameters before the blob copy' -Verbose
-    $destinationStorageAccount = $storageAccountList | Where-Object StorageAccountName -EQ $destinationStorageAccountName
-    $destinationStorageAccountContext = $destinationStorageAccount.Context
+    $destinationStorageAccounts = @($storageAccountList | Where-Object StorageAccountName -EQ $destinationStorageAccountName)
+    if ($destinationStorageAccounts.Count -ne 1 -or -not $destinationStorageAccounts[0].Context) {
+        throw ('Could not resolve exactly one destination storage account [{0}] with a storage context.' -f $destinationStorageAccountName)
+    }
+    $destinationStorageAccountContext = $destinationStorageAccounts[0].Context
     $destinationBlobName = "$vhdName.vhd"
     Write-Verbose ('Planning for destination blob name [{0}] in container [{1}] and storage account [{2}]' -f $destinationBlobName, $destinationContainerName, $destinationStorageAccountName) -Verbose
 
@@ -121,15 +144,27 @@ process {
         DestBlob      = $destinationBlobName
         DestContainer = $destinationContainerName
         Force         = $true
+        ErrorAction   = 'Stop'
     }
 
     if ($PSCmdlet.ShouldProcess('Storage blob copy of VHD [{0}]' -f $destinationBlobName, 'Start')) {
-        $destBlob = Start-AzStorageBlobCopy @resourceActionInputObject
-        Write-Verbose ('Copied/initialized copy of VHD from URI [{0}] to container [{1}] in storage account [{2}]' -f $sourceUri, $destinationContainerName, $destinationStorageAccountName) -Verbose
-    }
+        $destBlobs = @(Start-AzStorageBlobCopy @resourceActionInputObject)
+        if ($destBlobs.Count -ne 1) {
+            throw ('Expected exactly one destination blob after starting copy of [{0}].' -f $destinationBlobName)
+        }
+        Write-Verbose ('Started copy of VHD from URI [{0}] to container [{1}] in storage account [{2}]' -f $sourceUri, $destinationContainerName, $destinationStorageAccountName) -Verbose
 
-    if ($WaitForComplete) {
-        $destBlob | Get-AzStorageBlobCopyState -WaitForComplete
+        if ($WaitForComplete) {
+            $copyStates = @($destBlobs[0] | Get-AzStorageBlobCopyState -WaitForComplete -ErrorAction Stop)
+            if ($copyStates.Count -ne 1) {
+                throw ('Expected exactly one blob copy status for [{0}].' -f $destinationBlobName)
+            }
+            if ($copyStates[0].Status -ne 'Success') {
+                throw ('VHD copy [{0}] ended in state [{1}]: {2}' -f $destinationBlobName, $copyStates[0].Status, $copyStates[0].StatusDescription)
+            }
+            Write-Verbose ('Completed copy of VHD [{0}] to container [{1}] in storage account [{2}]' -f $destinationBlobName, $destinationContainerName, $destinationStorageAccountName) -Verbose
+            $copyStates[0]
+        }
     }
 }
 
