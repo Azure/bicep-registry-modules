@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using encryption with Customer-Managed-Key'
-metadata description = 'This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity to access the Customer-Managed-Key secret. CI execution of this test is currently disabled via .e2eignore due to an internal CMK role-assignment propagation race between the module-created System-Assigned Identity and the CMK activation step; see .e2eignore for details.'
+metadata description = 'This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity to access the Customer-Managed-Key secret.'
 
 // ========== //
 // Parameters //

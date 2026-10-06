@@ -309,14 +309,10 @@ param sqlAdministratorLogin = 'synwsadmin'
 
 ### Example 3: _Using encryption with Customer-Managed-Key_
 
-This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity to access the Customer-Managed-Key secret. CI execution of this test is currently disabled via .e2eignore due to an internal CMK role-assignment propagation race between the module-created System-Assigned Identity and the CMK activation step; see .e2eignore for details.
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity to access the Customer-Managed-Key secret.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encrwsai]
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-This test is skipped in CI because it fails with a reproducible 'CustomerManagedKeyPermissionMissing' race condition: the workspace's System-Assigned Identity is created by the `workspace` resource in `main.bicep`, and the subsequent `workspace_key` CMK-activation module (which depends on the `workspace_cmk_rbac` role-assignment module) can execute before that role assignment has propagated through Microsoft Entra ID / Azure RBAC. No fixture-level change can resolve this, because both steps and their dependency are internal to the module's own resource graph; a fix requires inserting a bounded readiness wait between the role assignment and the CMK activation inside `main.bicep` itself. Re-enable this test once `main.bicep` has been updated to account for CMK role-assignment propagation latency before activating the workspace key.
-```
 
 <details>
 
