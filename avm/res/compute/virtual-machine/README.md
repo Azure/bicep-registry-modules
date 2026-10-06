@@ -4307,6 +4307,10 @@ This instance deploys the module for a VM with dedicated nVidia graphic card.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.nvidia]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+This test is skipped in CI because the required GPU SKU is not available in the CI subscription: deployment job 112203203905 failed because quota for `standardNVADSA10v5Family` in `SwedenCentral` is 0 (limit 0 / used 0), while the test requires 6 cores. This is a CI-subscription capacity prerequisite, not a fixture or module defect, so no fixture-level change can resolve it; the GPU/hibernation-specific test inputs are preserved unchanged. Re-enable this test once the CI subscription is guaranteed adequate GPU quota for `standardNVADSA10v5Family` in the target region.
+```
 
 <details>
 
