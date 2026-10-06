@@ -42,6 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
+    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForKeyPermissionsPropagation'
   }
 }
 
