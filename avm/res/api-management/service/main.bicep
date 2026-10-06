@@ -1078,6 +1078,7 @@ type cacheType = {
   name: string
 
   @description('Required. Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}.')
+  @secure()
   connectionString: string
 
   @description('Optional. Cache description.')
