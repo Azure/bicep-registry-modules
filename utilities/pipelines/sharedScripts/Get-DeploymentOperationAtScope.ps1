@@ -21,6 +21,62 @@
     return "$prefix/providers/Microsoft.Resources/deployments/$Name"
 }
 
+function Test-ExistingGraphLookup {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param (
+        [object] $Operation,
+        [System.Text.Json.JsonElement] $Export,
+        [string] $Scope
+    )
+
+    function Get-UniqueJsonProperty {
+        param ([object] $Object, [string] $Name)
+        if ($null -eq $Object -or $Object.ValueKind -ne 'Object') { return $null }
+        $properties = @($Object.EnumerateObject() | Where-Object { $_.Name -ieq $Name })
+        if ($properties.Count -ne 1 -or $properties[0].Name -cne $Name) { return $null }
+        return $properties[0].Value
+    }
+
+    $target = $Operation.targetResource
+    $extension = $target.extension
+    if ($Operation.provisioningOperation -cne 'Create' -or $Operation.provisioningState -cne 'Succeeded' -or
+        $null -ne $Operation.statusCode -or $null -ne $Operation.statusMessage -or
+        $target -isnot [System.Management.Automation.PSCustomObject] -or $null -ne $target.PSObject.Properties['id'] -or
+        $target.resourceType -isnot [string] -or $target.resourceType -cne 'Microsoft.Graph/servicePrincipals@v1.0' -or
+        $target.symbolicName -isnot [string] -or [string]::IsNullOrWhiteSpace($target.symbolicName) -or
+        $extension -isnot [System.Management.Automation.PSCustomObject] -or
+        $extension.name -isnot [string] -or $extension.name -cne 'MicrosoftGraph' -or
+        $extension.version -isnot [string] -or $extension.version -cne '1.0.0' -or
+        $extension.alias -isnot [string] -or [string]::IsNullOrWhiteSpace($extension.alias) -or
+        $Export.ValueKind -ne 'Object' -or @($Export.EnumerateObject() | Where-Object { $_.Name -ieq 'error' }).Count -gt 0) {
+        return $false
+    }
+    $template = Get-UniqueJsonProperty $Export 'template'
+    $language = Get-UniqueJsonProperty $template 'languageVersion'
+    $schema = Get-UniqueJsonProperty $template '$schema'
+    if ($language.ValueKind -ne 'String' -or $language.GetString() -cne '2.0' -or $schema.ValueKind -ne 'String') {
+        return $false
+    }
+    . (Join-Path $PSScriptRoot 'Get-ScopeOfTemplateFile.ps1')
+    if ((Get-ScopeOfTemplateFile -TemplateFileContent @{ '$schema' = $schema.GetString() }) -ne $Scope) {
+        return $false
+    }
+    $declaration = Get-UniqueJsonProperty (Get-UniqueJsonProperty $template 'resources') $target.symbolicName
+    $existing = Get-UniqueJsonProperty $declaration 'existing'
+    $type = Get-UniqueJsonProperty $declaration 'type'
+    $alias = Get-UniqueJsonProperty $declaration 'import'
+    if ($existing.ValueKind -ne 'True' -or $type.ValueKind -ne 'String' -or $type.GetString() -cne $target.resourceType -or
+        $alias.ValueKind -ne 'String' -or $alias.GetString() -cne $extension.alias) {
+        return $false
+    }
+    $import = Get-UniqueJsonProperty (Get-UniqueJsonProperty $template 'imports') $extension.alias
+    $provider = Get-UniqueJsonProperty $import 'provider'
+    $version = Get-UniqueJsonProperty $import 'version'
+    return $provider.ValueKind -eq 'String' -and $provider.GetString() -ceq $extension.name -and
+    $version.ValueKind -eq 'String' -and $version.GetString() -ceq $extension.version
+}
+
 <#
 .SYNOPSIS
 Get all deployment operations at a given scope
@@ -52,6 +108,7 @@ Optional. Return every operation without filtering or a success sentinel, for st
 
 .PARAMETER RequireCompleteRemoval
 Optional. Require terminal operations and complete target IDs before authorizing relocation.
+An ID-less existing Graph lookup additionally requires an exact declaration in that deployment's exported template.
 
 .PARAMETER ResolvedResourceIds
 Optional. Preserve known create targets when a later operation page fails.
@@ -177,11 +234,34 @@ function Get-DeploymentOperationAtScope {
     } while ($path)
 
     if ($RequireCompleteRemoval) {
-        foreach ($operation in $deploymentOperations) {
-            if ($operation.provisioningState -notin @('Succeeded', 'Failed') -or
-                ($operation.provisioningOperation -eq 'Create' -and [string]::IsNullOrWhiteSpace($operation.targetResource.id))) {
-                throw "Deployment [$Name] has an incomplete operation; cleanup cannot authorize regional relocation."
+        $templateExport = $null
+        try {
+            foreach ($operation in $deploymentOperations) {
+                if ($operation.provisioningState -isnot [string] -or $operation.provisioningState -notin @('Succeeded', 'Failed')) {
+                    throw "Deployment [$Name] has an incomplete operation; cleanup cannot authorize regional relocation."
+                }
+                if ($operation.provisioningOperation -eq 'Create' -and
+                    ($operation.targetResource.id -isnot [string] -or [string]::IsNullOrWhiteSpace($operation.targetResource.id))) {
+                    if ($operation.targetResource.resourceType -is [string] -and
+                        $operation.targetResource.resourceType -ceq 'Microsoft.Graph/servicePrincipals@v1.0') {
+                        if ($null -eq $templateExport) {
+                            $response = Invoke-AzRestMethod -Method POST -Path "${resourceId}/exportTemplate?api-version=2025-04-01" -ErrorAction Stop
+                            if ($response.StatusCode -is [array] -or $response.StatusCode -ne 200 -or $response.Content -isnot [string]) {
+                                throw "Cannot export deployment [$Name] in scope [$Scope]: HTTP [$($response.StatusCode)]."
+                            }
+                            $templateExport = [System.Text.Json.JsonDocument]::Parse(
+                                $response.Content, [System.Text.Json.JsonDocumentOptions]@{ MaxDepth = 100 }
+                            )
+                        }
+                        if (Test-ExistingGraphLookup -Operation $operation -Export $templateExport.RootElement -Scope $Scope) {
+                            continue
+                        }
+                    }
+                    throw "Deployment [$Name] has an incomplete operation; cleanup cannot authorize regional relocation."
+                }
             }
+        } finally {
+            if ($null -ne $templateExport) { $templateExport.Dispose() }
         }
     }
     if ($IncludeAllOperations) {

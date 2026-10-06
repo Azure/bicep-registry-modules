@@ -144,7 +144,7 @@ function Get-DeploymentTargetResourceListInner {
                 -SubscriptionId $baseInputObject.SubscriptionId -ResourceGroupName $ResourceGroupName `
                 -ManagementGroupId $ManagementGroupId -DefaultProfile $currentContext
             $allowedStates = $DoThrow ? @('Failed') : @('Succeeded', 'Failed')
-            if ($state.ProvisioningState -notin $allowedStates) {
+            if ($state.ProvisioningState -isnot [string] -or $state.ProvisioningState -notin $allowedStates) {
                 throw "Deployment [$Name] is [$($state.ProvisioningState)]; cleanup cannot authorize regional relocation."
             }
         }

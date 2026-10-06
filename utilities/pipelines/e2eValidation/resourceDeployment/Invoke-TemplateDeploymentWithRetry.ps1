@@ -6,7 +6,7 @@
 . (Join-Path $PSScriptRoot 'New-TemplateDeployment.ps1')
 . (Join-Path $PSScriptRoot '..' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
 
-function Test-RegionalValidationError {
+function Test-DeploymentRetryError {
     [CmdletBinding()]
     [OutputType([bool])]
     param (
@@ -15,21 +15,49 @@ function Test-RegionalValidationError {
 
         [Parameter()]
         [AllowNull()]
-        [object] $ErrorResponse
+        [object] $ErrorResponse,
+
+        [Parameter()]
+        [ValidateSet('Regional', 'Transient')]
+        [string] $RetryKind = 'Regional',
+
+        [Parameter()]
+        [string] $SubscriptionId,
+
+        [Parameter()]
+        [string] $ResourceLocation
     )
 
     if ($ErrorRecord.CategoryInfo.Category -in @('AuthenticationError', 'PermissionDenied', 'SecurityError', 'OperationStopped')) {
         return $false
     }
-    for ($exception = $ErrorRecord.Exception; $null -ne $exception; $exception = $exception.InnerException) {
+    if ($RetryKind -eq 'Transient' -and (Get-DeploymentErrorKind -ErrorRecord $ErrorRecord) -ne 'Other') {
+        return $false
+    }
+    $pendingExceptions = [System.Collections.Generic.Stack[System.Exception]]::new()
+    $pendingExceptions.Push($ErrorRecord.Exception)
+    $visitedExceptions = [System.Collections.Generic.HashSet[System.Exception]]::new()
+    while ($pendingExceptions.Count -gt 0) {
+        $exception = $pendingExceptions.Pop()
+        if (-not $visitedExceptions.Add($exception)) { continue }
         if ($exception -is [System.OperationCanceledException] -or
             $exception -is [System.Management.Automation.PipelineStoppedException] -or
             $exception -is [System.UnauthorizedAccessException]) {
             return $false
         }
         $statusCode = $exception.Response.StatusCode ?? $exception.StatusCode
-        if ($statusCode -and [int] $statusCode -notin @(400, 409, 503)) {
-            return $false
+        if ($null -ne $statusCode) {
+            $allowedStatuses = $RetryKind -eq 'Transient' ? @(400, 409, 500, 503) : @(400, 409, 503)
+            try {
+                if ($statusCode -is [array] -or [int] $statusCode -notin $allowedStatuses) { return $false }
+            } catch {
+                return $false
+            }
+        }
+        if ($exception -is [System.AggregateException]) {
+            foreach ($inner in $exception.InnerExceptions) { $pendingExceptions.Push($inner) }
+        } elseif ($null -ne $exception.InnerException) {
+            $pendingExceptions.Push($exception.InnerException)
         }
     }
 
@@ -50,8 +78,18 @@ function Test-RegionalValidationError {
         return $false
     }
 
-    function Test-RegionalErrorNode {
-        param ([object] $Node, [int] $Depth = 0)
+    $resourceTargetPattern = $null
+    $parsedSubscriptionId = [guid]::Empty
+    if ([guid]::TryParse($SubscriptionId, [ref] $parsedSubscriptionId)) {
+        $resourceTypes = $RetryKind -eq 'Transient' ?
+        '(?:Microsoft\.Network/(?:applicationGateways|privateEndpoints)|Microsoft\.DBforPostgreSQL/flexibleServers)' :
+        'Microsoft\.ContainerInstance/containerGroups'
+        $resourceTargetPattern = '^/subscriptions/' + [regex]::Escape($SubscriptionId) +
+        "/resourceGroups/[^/?#\s]+/providers/$resourceTypes/[^/?#\s]+$"
+    }
+
+    function Test-RetryErrorNode {
+        param ([object] $Node, [int] $Depth = 0, [string] $ResourceTarget)
 
         if ($Depth -gt 20 -or $null -eq $Node) {
             return $false
@@ -59,7 +97,7 @@ function Test-RegionalValidationError {
         if ($Node -is [array]) {
             if ($Node.Count -eq 0) { return $false }
             foreach ($child in $Node) {
-                if (-not (Test-RegionalErrorNode -Node $child -Depth ($Depth + 1))) { return $false }
+                if (-not (Test-RetryErrorNode -Node $child -Depth ($Depth + 1) -ResourceTarget $ResourceTarget)) { return $false }
             }
             return $true
         }
@@ -72,9 +110,10 @@ function Test-RegionalValidationError {
             $properties[$key] = $Node[$key]
         }
         $Node = $properties
+        if ($null -ne $Node.status -and ($Node.status -isnot [string] -or $Node.status -ne 'Failed')) { return $false }
         if ($Node.Contains('error')) {
             if ($Node.Contains('code') -or $Node.Contains('details') -or $Node.Contains('innererror')) { return $false }
-            return Test-RegionalErrorNode -Node $Node.error -Depth ($Depth + 1)
+            return Test-RetryErrorNode -Node $Node.error -Depth ($Depth + 1)
         }
         if ($Node.code -isnot [string] -or [string]::IsNullOrWhiteSpace($Node.code)) {
             return $false
@@ -91,14 +130,38 @@ function Test-RegionalValidationError {
         if ($null -ne $Node.innererror) {
             $children += , $Node.innererror
         }
+        $childResourceTarget = ''
+        if ($Node.code -eq 'ResourceDeploymentFailure' -and $Node.target -is [string] -and
+            $resourceTargetPattern -and $Node.target -match $resourceTargetPattern) {
+            $childResourceTarget = $Node.target
+        }
+        # ACI omits the leaf code for this resource-specific capacity response.
+        if ($RetryKind -eq 'Regional' -and $childResourceTarget -match '/providers/Microsoft\.ContainerInstance/containerGroups/[^/]+$' -and
+            -not [string]::IsNullOrWhiteSpace($ResourceLocation) -and $Node.details -is [array] -and
+            $Node.details.Count -eq 1 -and $null -eq $Node.innererror -and
+            $children[0] -is [System.Collections.IDictionary] -and $children[0].psbase.Count -eq 1 -and $children[0].message -is [string]) {
+            $capacityPattern = "\AThe requested resource is not available in the location '$([regex]::Escape($ResourceLocation))' at this moment\. " +
+            "Please retry with a different resource request or in another location\. Resource requested: '(?<cpu>[0-9]+(?:\.[0-9]+)?)' CPU '(?<memory>[0-9]+(?:\.[0-9]+)?)' GB memory 'Linux' OS\z"
+            $match = [regex]::Match($children[0].message, $capacityPattern)
+            if ($match.Success) {
+                $cpu = [double]::Parse($match.Groups['cpu'].Value, [System.Globalization.CultureInfo]::InvariantCulture)
+                $memory = [double]::Parse($match.Groups['memory'].Value, [System.Globalization.CultureInfo]::InvariantCulture)
+                return $cpu -gt 0 -and $cpu -le 4 -and $memory -gt 0 -and $memory -le 16
+            }
+        }
         foreach ($child in $children) {
-            if (-not (Test-RegionalErrorNode -Node $child -Depth ($Depth + 1))) { return $false }
+            if (-not (Test-RetryErrorNode -Node $child -Depth ($Depth + 1) -ResourceTarget $childResourceTarget)) { return $false }
         }
 
         if ($Node.code -in @('InvalidTemplateDeployment', 'DeploymentFailed', 'ResourceDeploymentFailure', 'MultipleErrorsOccurred')) {
             return $children.Count -gt 0
         }
         if ($Node.message -isnot [string]) { return $false }
+        if ($RetryKind -eq 'Transient') {
+            return $Node.code -eq 'InternalServerError' -and $children.Count -eq 0 -and
+            -not [string]::IsNullOrWhiteSpace($Node.message) -and -not [string]::IsNullOrWhiteSpace($ResourceTarget) -and
+            ($null -eq $Node.target -or ($Node.target -is [string] -and $Node.target -ieq $ResourceTarget))
+        }
         switch ($Node.code) {
             'RequestDisallowedByAzure' {
                 return $Node.message -match 'https://aka\.ms/locationineligible(?:[?#\s).,;:''"]|$)'
@@ -113,7 +176,25 @@ function Test-RegionalValidationError {
         }
     }
 
-    return Test-RegionalErrorNode -Node $errors
+    return Test-RetryErrorNode -Node $errors
+}
+
+function Test-RegionalValidationError {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory)]
+        [System.Management.Automation.ErrorRecord] $ErrorRecord,
+        [Parameter()]
+        [AllowNull()]
+        [object] $ErrorResponse,
+        [Parameter()]
+        [string] $SubscriptionId,
+        [Parameter()]
+        [string] $ResourceLocation
+    )
+
+    return Test-DeploymentRetryError @PSBoundParameters
 }
 
 function Restore-RegionTokenFile {
@@ -155,6 +236,7 @@ failed deployment, wholly regional structured errors, and complete resource/reco
 Pins, global resources and resource-group scope never relocate. Retained resources are not
 cleaned between attempts. Metadata location, non-location parameters and tokens stay fixed.
 Results distinguish all submitted names from names still requiring final cleanup.
+Wholly transient InternalServerError resource failures may retry in the same movable location after the same complete cleanup.
 
 .PARAMETER TemplateInput
 Required. Common template, scope and parameter inputs. Only one parameter file is supported.
@@ -186,7 +268,8 @@ Optional. Return failure details and outstanding cleanup names instead of throwi
 .OUTPUTS
 ValidationOnly returns the selected location. Otherwise returns DeploymentOutput or Exception and the original
 ErrorRecord, ResourceLocation, AttemptedLocations, DeploymentAttempts, all DeploymentNames, outstanding
-RemainingDeploymentNames, and the PreflightRejectedDeploymentNames subset.
+RemainingDeploymentNames, the PreflightRejectedDeploymentNames subset, and PendingDeletionDeploymentIds
+for roots with confirmed resource removal but unconfirmed accepted history deletion.
 #>
 function Invoke-TemplateDeploymentWithRetry {
     [CmdletBinding(SupportsShouldProcess)]
@@ -254,6 +337,7 @@ function Invoke-TemplateDeploymentWithRetry {
     $attemptedLocations = [System.Collections.Generic.List[string]]::new()
     $deploymentNames = [System.Collections.Generic.List[string]]::new()
     $remainingNames = [System.Collections.Generic.List[string]]::new()
+    $pendingDeletionIds = [System.Collections.Generic.List[string]]::new()
     $preflightNames = [System.Collections.Generic.List[string]]::new()
     $deploymentAttempts = 0
     $needsValidation = $true
@@ -347,8 +431,8 @@ function Invoke-TemplateDeploymentWithRetry {
                 throw $lastError
             }
 
-            if ($canRetry -and -not $selection.IsGlobal -and $RemoveDeployment -and
-                $attemptedLocations.Count -lt $RegionLimit -and $attemptResult.FailureQueryAllowed) {
+            if ($canRetry -and -not $selection.IsGlobal -and $RemoveDeployment -and $attemptResult.FailureQueryAllowed -and
+                ($attemptedLocations.Count -lt $RegionLimit -or -not $attemptResult.RetryAllowed)) {
                 $stateInput = @{
                     DeploymentScope   = $scope
                     DeploymentName    = $attemptResult.DeploymentNames[-1]
@@ -357,7 +441,7 @@ function Invoke-TemplateDeploymentWithRetry {
                     ManagementGroupId = $validationParameters.ManagementGroupId
                 }
                 $deployment = Get-TemplateDeployment @stateInput -ErrorAction Stop
-                if ($deployment.ProvisioningState -ne 'Failed') {
+                if ($deployment -is [array] -or $deployment.ProvisioningState -isnot [string] -or $deployment.ProvisioningState -ne 'Failed') {
                     throw "Deployment [$($stateInput.DeploymentName)] is [$($deployment.ProvisioningState)]; no retry is safe."
                 }
                 $errorInput = $stateInput.Clone()
@@ -374,8 +458,18 @@ function Invoke-TemplateDeploymentWithRetry {
                         $lastError.Exception, 'ConfirmedDeploymentFailure', [System.Management.Automation.ErrorCategory]::InvalidResult, $null
                     )
                 }
-                if (Test-RegionalValidationError -ErrorRecord $classificationError -ErrorResponse $errors) {
-                    Write-Warning "Regional deployment failure in [$location]; cleaning confirmed failed attempts before selecting another region."
+                $classificationInput = @{
+                    ErrorRecord      = $classificationError
+                    ErrorResponse    = $errors
+                    SubscriptionId   = $validationParameters.SubscriptionId
+                    ResourceLocation = $location
+                }
+                $regionalFailure = $attemptedLocations.Count -lt $RegionLimit -and (Test-RegionalValidationError @classificationInput)
+                $transientFailure = -not $regionalFailure -and (Test-DeploymentRetryError @classificationInput -RetryKind Transient)
+                if ($regionalFailure -or $transientFailure) {
+                    Write-Warning ($regionalFailure ?
+                        "Regional deployment failure in [$location]; cleaning confirmed failed attempts before selecting another region." :
+                        "Transient resource failure in [$location]; cleaning confirmed failed attempts before retrying in the same region.")
                     $cleanupInput = @{
                         TemplateFilePath                 = $validationParameters.TemplateFilePath
                         DeploymentNames                  = @($remainingNames)
@@ -384,12 +478,16 @@ function Invoke-TemplateDeploymentWithRetry {
                         ResourceGroupName                = $validationParameters.ResourceGroupName
                         ManagementGroupId                = $validationParameters.ManagementGroupId
                         RequireCompleteRemoval           = $true
+                        RequireNoDeploymentScripts       = $transientFailure
                     }
                     try {
                         $cleanup = Initialize-DeploymentRemoval @cleanupInput -ErrorAction Stop
                     } catch {
                         foreach ($name in @($_.Exception.Data['RemovedDeploymentNames'])) {
                             $null = $remainingNames.Remove($name)
+                        }
+                        foreach ($id in @($_.Exception.Data['PendingDeletionDeploymentIds'] ?? @())) {
+                            $pendingDeletionIds.Add($id)
                         }
                         throw
                     }
@@ -398,8 +496,12 @@ function Invoke-TemplateDeploymentWithRetry {
                         throw 'Cleanup did not confirm removal of every outstanding deployment; regional relocation is blocked.'
                     }
                     $remainingNames.Clear()
-                    Restore-RegionTokenFile -Files $tokenFiles
-                    $needsValidation = $true
+                    if ($regionalFailure) {
+                        Restore-RegionTokenFile -Files $tokenFiles
+                        $needsValidation = $true
+                    } else {
+                        Start-Sleep -Seconds 5
+                    }
                     continue
                 }
             }
@@ -454,6 +556,7 @@ function Invoke-TemplateDeploymentWithRetry {
     }
     $result.DeploymentNames = @($deploymentNames)
     $result.RemainingDeploymentNames = @($remainingNames)
+    $result.PendingDeletionDeploymentIds = @($pendingDeletionIds)
     $result.PreflightRejectedDeploymentNames = @($preflightNames)
     $result.ResourceLocation = $location
     $result.AttemptedLocations = @($attemptedLocations)

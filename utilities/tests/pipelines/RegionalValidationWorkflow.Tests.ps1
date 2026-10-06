@@ -48,8 +48,9 @@ Describe 'Regional validation workflow runtime integration' {
             [CmdletBinding()]
             param(
                 [string] $TemplateFilePath, [string[]] $DeploymentNames, [string[]] $PreflightRejectedDeploymentNames,
+                [string[]] $PendingDeletionDeploymentIds,
                 [string] $ManagementGroupId, [string] $SubscriptionId, [string] $ResourceGroupName,
-                [switch] $RequireCompleteRemoval
+                [switch] $RequireCompleteRemoval, [switch] $RequireNoDeploymentScripts
             )
             throw 'Unexpected Azure cleanup.'
         }
@@ -113,6 +114,7 @@ Describe 'Regional validation workflow runtime integration' {
                 '${{ steps.deploy_step.outputs.remainingDeploymentNames }}'         = $Outputs.remainingDeploymentNames ?? ''
                 '${{ steps.deploy_step.outputs.deploymentNames }}'                  = $Outputs.deploymentNames ?? ''
                 '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}' = $Outputs.preflightRejectedDeploymentNames ?? ''
+                '${{ steps.deploy_step.outputs.pendingDeletionDeploymentIds }}'     = $Outputs.pendingDeletionDeploymentIds ?? ''
             }
             foreach ($key in $values.Keys) {
                 $script = $script.Replace($key, $values[$key])
@@ -380,6 +382,52 @@ Describe 'Regional validation workflow runtime integration' {
         }
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
         Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+    }
+
+    It 'Passes accepted history deletions to final cleanup without claiming the deployment was removed' -Tag 'HistoryRemoval' {
+        Mock Test-AzSubscriptionDeployment {}
+        Mock New-AzSubscriptionDeployment {
+            $script:deploymentNames.Add($DeploymentName)
+            throw "The deployment '$DeploymentName' failed with error(s). (Code: InvalidTemplateDeployment) Regional capacity failure."
+        }
+        $script:operationError = @{ error = @{ code = 'SkuNotAvailable'; message = 'The SKU is not available in location centralus.' } }
+        Mock Initialize-DeploymentRemoval {
+            if ($RequireCompleteRemoval) {
+                $exception = [System.InvalidOperationException]::new('Deployment history deletion is still pending.')
+                $exception.Data['PendingDeletionDeploymentIds'] = @(
+                    "/subscriptions/$SubscriptionId/providers/Microsoft.Resources/deployments/$($DeploymentNames[0])"
+                )
+                throw $exception
+            }
+        }
+
+        { Invoke-ValidationAndDeployment } | Should -Throw '*Regional capacity failure*'
+        $outputs = Get-StepOutput
+        $pendingId = "/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/$($script:deploymentNames[0])"
+        @($outputs.pendingDeletionDeploymentIds | ConvertFrom-Json) | Should -Be @($pendingId)
+        @($outputs.remainingDeploymentNames | ConvertFrom-Json) | Should -Be @($script:deploymentNames)
+        $null = Invoke-DeploymentStep -Name 'Remove deployed resources' -Outputs $outputs
+        Should -Invoke Initialize-DeploymentRemoval -Times 1 -Exactly -ParameterFilter {
+            -not $RequireCompleteRemoval -and $PendingDeletionDeploymentIds.Count -eq 1 -and
+            $PendingDeletionDeploymentIds[0] -eq $pendingId -and $DeploymentNames[0] -eq $script:deploymentNames[0]
+        }
+        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+    }
+
+    It 'Rejects <kind> pending history output before final cleanup' -Tag 'HistoryRemoval' -ForEach @(
+        @{ kind = 'a scalar'; pending = '"owned"'; remaining = '["owned"]' }
+        @{ kind = 'an object'; pending = '{}'; remaining = '["owned"]' }
+        @{ kind = 'a null ID'; pending = '[null]'; remaining = '["owned"]' }
+        @{ kind = 'a blank ID'; pending = '[" "]'; remaining = '["owned"]' }
+        @{ kind = 'an ownerless ID'; pending = '["/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/owned"]'; remaining = '[]' }
+    ) {
+        $outputs = @{
+            deploymentNames = '["owned"]'
+            remainingDeploymentNames = $remaining
+            pendingDeletionDeploymentIds = $pending
+        }
+        { Invoke-DeploymentStep -Name 'Remove deployed resources' -Outputs $outputs } | Should -Throw '*pending*deletion*metadata*'
+        Should -Invoke Initialize-DeploymentRemoval -Times 0 -Exactly
     }
 
     It 'Preserves deployment names for cleanup when all same-region deployment attempts fail' {

@@ -142,22 +142,37 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         }
 
         function New-FixturePreflightOperation {
-            param([string] $Id)
+            param(
+                [string] $Id,
+                [string] $ResourceTypeAndVersion = 'Microsoft.Compute/virtualMachineScaleSets (2024-11-01)',
+                [string] $Sku = 'Standard_B12ms',
+                [string] $Location = 'centralus'
+            )
             $name = $Id.Split('/')[-1]
             $operation = New-FixtureOperation -Id $Id -State Failed -StatusMessage @{
                 status = 'Failed'
                 error  = @{
                     code    = 'InvalidTemplateDeployment'
-                    message = "The template deployment '$name' is not valid according to the validation procedure. The following resource provider(s) - 'Microsoft.Compute/virtualMachineScaleSets (2024-11-01)' reported preflight validation errors. Tracking id is 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'. See inner errors for details."
+                    message = "The template deployment '$name' is not valid according to the validation procedure. The following resource provider(s) - '$ResourceTypeAndVersion' reported preflight validation errors. Tracking id is 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'. See inner errors for details."
                     details = @(@{
                             code    = 'SkuNotAvailable'
-                            message = "The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_B12ms' is currently not available in location 'centralus'. Please try another size or deploy to a different location or different zone."
+                            message = "The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: $Sku' is currently not available in location '$Location'. Please try another size or deploy to a different location or different zone."
                         })
                 }
             }
             $operation.properties.statusCode = 'BadRequest'
             $operation.properties.targetResource.resourceType = 'Microsoft.Resources/deployments'
             $operation.properties.targetResource.resourceName = $name
+            return $operation
+        }
+
+        function New-FixtureGraphOperation {
+            $operation = New-FixtureOperation
+            $operation.properties.targetResource = @{
+                resourceType = 'Microsoft.Graph/servicePrincipals@v1.0'
+                symbolicName = 'backupManagementService'
+                extension    = @{ name = 'MicrosoftGraph'; alias = 'microsoftGraphV1'; version = '1.0.0' }
+            }
             return $operation
         }
 
@@ -174,6 +189,32 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             } else {
                 $content | Should -Match ([regex]::Escape("location: '$Region'"))
                 Get-Content -LiteralPath $script:childPath -Raw | Should -Match ([regex]::Escape("= '$Region'"))
+            }
+        }
+
+        function New-FixtureResourceFailure {
+            param([string] $ResourceId, [hashtable] $Leaf, [switch] $Nested)
+            $failure = @{
+                code = 'ResourceDeploymentFailure'; target = $ResourceId
+                message = "The resource write operation failed to complete successfully, because it reached terminal provisioning state 'Failed'."
+                details = @($Leaf)
+            }
+            if ($Nested) {
+                $failure = @{
+                    code = 'ResourceDeploymentFailure'; target = "${script:nestedId}-PrivateEndpoint-0"
+                    details = @(@{
+                            code = 'DeploymentFailed'; target = "${script:nestedId}-PrivateEndpoint-0"
+                            details = @($failure)
+                        })
+                }
+            }
+            return @{
+                status = 'Failed'
+                error = @{
+                    code = 'DeploymentFailed'; target = $script:nestedId
+                    message = 'At least one resource deployment operation failed. Please list deployment operations for details.'
+                    details = @($failure)
+                }
             }
         }
 
@@ -277,6 +318,13 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                 }
                 return New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'DeploymentNotFound' } }
             }
+            if ($Method -eq 'POST' -and $id.EndsWith('/exportTemplate')) {
+                $recordId = $id.Substring(0, $id.Length - '/exportTemplate'.Length)
+                if ($script:records[$recordId].Template) {
+                    return New-FixtureResponse -Content @{ template = $script:records[$recordId].Template }
+                }
+                return New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'DeploymentNotFound' } }
+            }
             if ($Method -eq 'GET' -and $id -eq $script:groupId) {
                 if ($script:alive.Contains($id)) { return New-FixtureResponse -Content @{ id = $id } }
                 return New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'ResourceGroupNotFound' } }
@@ -286,7 +334,9 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                 return New-FixtureResponse -StatusCode 204
             }
             if ($Method -eq 'GET' -and $id -in $script:roots) {
-                if ($script:records.ContainsKey($id)) { return New-FixtureResponse -Content @{ id = $id } }
+                if ($script:records.ContainsKey($id)) {
+                    return New-FixtureResponse -Content @{ id = $id; properties = @{ provisioningState = $script:records[$id].State } }
+                }
                 return New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'DeploymentNotFound' } }
             }
             throw "Unexpected REST fixture request [$Method $Path]."
@@ -485,6 +535,303 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             $result = Get-DeploymentTargetResourceList @discoveryInput
             $result.resolveError | Should -BeNullOrEmpty
             $result.deploymentIds | Should -Be @($script:nestedId, $script:parentId)
+        }
+
+        It 'Cleans the captured <scenario> preflight shape without deleting the missing child history' -ForEach @(
+            @{ scenario = 'Windows disks'; name = 'test-vmwindisk-init' }
+            @{ scenario = 'Windows ZRS'; name = 'test-vmwinzrs-init' }
+        ) {
+            $script:preflightId = "$script:groupId/providers/Microsoft.Resources/deployments/$name"
+            $script:preflightOperation = New-FixturePreflightOperation -Id $script:preflightId `
+                -ResourceTypeAndVersion 'Microsoft.Compute/virtualMachines (2025-11-01)' -Sku 'Standard_D4ads_v5' -Location 'eastus'
+            $siblingRead = New-FixtureOperation -Id $script:nestedId -Operation Read
+            $siblingRead.properties.targetResource.apiVersion = '2025-04-01'
+            $script:records[$script:parentId].Operations = @(
+                $script:preflightOperation
+                $siblingRead
+                (New-FixtureOperation -Id $script:nestedId)
+                (New-FixtureOperation -Id $script:groupId)
+            )
+            $script:restOverrides["GET ${script:preflightId}?api-version=2021-04-01"] =
+            New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'DeploymentNotFound' } }
+
+            $result = Initialize-DeploymentRemoval -TemplateFilePath $templatePath -SubscriptionId $script:subscriptionId `
+                -DeploymentNames 'failed-parent' -RequireCompleteRemoval
+
+            $result.RemovedDeploymentNames | Should -Be @('failed-parent')
+            $script:alive.Count | Should -Be 0
+            $script:trace | Should -Contain "GET:$script:nestedId/operations"
+            $script:trace | Should -Contain "DELETE:$script:parentId"
+            $script:trace | Should -Not -Contain "DELETE:$script:preflightId"
+            $script:trace | Should -Not -Contain "GET:$script:preflightId/operations"
+        }
+
+        It 'Fails closed for the captured ID-less Graph Create in <scenario>, even with terminal operations' -ForEach @(
+            @{ scenario = 'Linux VM max'; action = $false; count = 5 }
+            @{ scenario = 'VM WAF'; action = $false; count = 5 }
+            @{ scenario = 'Windows VM max'; action = $true; count = 6 }
+        ) {
+            $diagnosticId = "$script:groupId/providers/Microsoft.Resources/deployments/diagnosticDependencies"
+            $graphOperation = New-FixtureGraphOperation
+            $script:records[$script:parentId].Operations = @(
+                $script:preflightOperation
+                (New-FixtureOperation -Id $script:nestedId)
+                (New-FixtureOperation -Id $diagnosticId)
+                (New-FixtureOperation -Id $script:groupId)
+                $graphOperation
+            )
+            if ($action) {
+                $siblingAction = New-FixtureOperation -Id $script:nestedId -Operation Action
+                $siblingAction.properties.targetResource.actionName = 'listOutputsWithSecureValues'
+                $siblingAction.properties.targetResource.apiVersion = '2025-04-01'
+                $script:records[$script:parentId].Operations += $siblingAction
+            }
+
+            $script:records[$script:parentId].Operations.Count | Should -Be $count
+            $result = Get-DeploymentTargetResourceList @discoveryInput
+
+            $result.resolveError | Should -Match 'incomplete operation|export'
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+            $script:trace | Should -Not -Contain "GET:$script:preflightId"
+        }
+
+        Context 'Existing Graph lookups matched to the exact deployed template' -Tag 'ExistingGraph' {
+            BeforeEach {
+                $template.languageVersion = '2.0'
+                $template.imports = @{ microsoftGraphV1 = @{ provider = 'MicrosoftGraph'; version = '1.0.0' } }
+                $template.resources = @{
+                    backupManagementService = @{
+                        condition = "[equals(parameters('builtInServicePrincipalObjectId'), null())]"
+                        existing = $true
+                        import = 'microsoftGraphV1'
+                        type = 'Microsoft.Graph/servicePrincipals@v1.0'
+                        properties = @{ appId = '262044b1-e2ce-469f-a196-69ab7ada62d3' }
+                    }
+                }
+                $script:graphOperation = New-FixtureGraphOperation
+                $script:records[$script:parentId].Operations += $script:graphOperation
+                $script:records[$script:parentId].Template = $template
+            }
+
+            It 'Cleans the captured <scenario> graph with authoritative existing-only proof across <pages> pages' -ForEach @(
+                @{ scenario = 'Linux VM max'; pages = 1; action = $false }
+                @{ scenario = 'VM WAF'; pages = 1; action = $false }
+                @{ scenario = 'Windows VM max'; pages = 1; action = $true }
+                @{ scenario = 'Linux VM max'; pages = 2; action = $false }
+                @{ scenario = 'VM WAF'; pages = 2; action = $false }
+                @{ scenario = 'Windows VM max'; pages = 2; action = $true }
+            ) {
+                $diagnosticId = "$script:groupId/providers/Microsoft.Resources/deployments/diagnosticDependencies"
+                $script:records[$diagnosticId] = @{ State = 'Succeeded'; Operations = @() }
+                $script:preflightOperation = New-FixturePreflightOperation -Id $script:preflightId `
+                    -ResourceTypeAndVersion 'Microsoft.Compute/virtualMachines (2025-11-01)' -Sku 'Standard_D4ads_v5' -Location 'eastus'
+                $script:records[$script:parentId].Operations = @(
+                    $script:preflightOperation
+                    (New-FixtureOperation -Id $script:nestedId)
+                    (New-FixtureOperation -Id $diagnosticId)
+                    (New-FixtureOperation -Id $script:groupId)
+                    $script:graphOperation
+                )
+                if ($action) {
+                    $siblingAction = New-FixtureOperation -Id $script:nestedId -Operation Action
+                    $siblingAction.properties.targetResource.actionName = 'listOutputsWithSecureValues'
+                    $script:records[$script:parentId].Operations += $siblingAction
+                }
+                if ($pages -eq 2) {
+                    $page = "${script:parentId}/operations?api-version=2021-04-01"
+                    $nextPage = "$page&`$skiptoken=next"
+                    $script:restOverrides["GET $page"] = New-FixtureResponse -Content @{
+                        value = @($script:records[$script:parentId].Operations[0..3]); nextLink = "https://management.azure.com$nextPage"
+                    }
+                    $script:restOverrides["GET $nextPage"] = New-FixtureResponse -Content @{
+                        value = @($script:records[$script:parentId].Operations | Select-Object -Skip 4)
+                    }
+                }
+
+                $result = Initialize-DeploymentRemoval -TemplateFilePath $templatePath -SubscriptionId $script:subscriptionId `
+                    -DeploymentNames 'failed-parent' -RequireCompleteRemoval
+
+                $result.RemovedDeploymentNames | Should -Be @('failed-parent')
+                $script:alive.Count | Should -Be 0
+                $script:trace | Should -Contain "GET:$script:nestedId/operations"
+                $script:trace | Should -Contain "GET:$diagnosticId/operations"
+                $script:trace | Should -Contain "DELETE:$script:parentId"
+                $script:trace | Should -Not -Contain "DELETE:$script:preflightId"
+                $script:trace | Should -Not -Contain "GET:$script:preflightId/operations"
+                @($script:trace | Where-Object { $_ -like 'remove:*' }) | Should -Be @("remove:$script:groupId")
+                Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter {
+                    $Method -eq 'POST' -and $Path -eq "${script:parentId}/exportTemplate?api-version=2025-04-01"
+                }
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Refuses to omit an ID-less Graph operation with <kind>' -ForEach @(
+                @{ kind = 'a writable declaration' }, @{ kind = 'a missing existing flag' }, @{ kind = 'a string existing flag' }
+                @{ kind = 'a missing symbol' }, @{ kind = 'an array symbol' }, @{ kind = 'a different symbol' }
+                @{ kind = 'a different resource type' }, @{ kind = 'an array resource type' }
+                @{ kind = 'a missing extension' }, @{ kind = 'an array extension' }, @{ kind = 'a different extension provider' }
+                @{ kind = 'a different extension alias' }, @{ kind = 'a different extension version' }
+                @{ kind = 'a missing import' }, @{ kind = 'an array import' }, @{ kind = 'a different declaration type' }
+                @{ kind = 'a missing provider import' }, @{ kind = 'a different imported provider' }, @{ kind = 'a different imported version' }
+                @{ kind = 'duplicate declaration symbols' }, @{ kind = 'duplicate import aliases' }, @{ kind = 'an unsupported template scope' }
+                @{ kind = 'an unsupported template language' }, @{ kind = 'a failed operation' }, @{ kind = 'a running operation' }
+                @{ kind = 'an empty target ID' }, @{ kind = 'an explicit null target ID' }, @{ kind = 'an array target ID' }
+                @{ kind = 'a contradictory error message' }, @{ kind = 'a contradictory HTTP status' }
+                @{ kind = 'an array template' }, @{ kind = 'an array resource declaration' }, @{ kind = 'an array import declaration' }
+                @{ kind = 'an unproven provider version' }
+            ) {
+                $operation = $script:graphOperation.properties
+                $declaration = $template.resources.backupManagementService
+                switch ($kind) {
+                    'a writable declaration' { $declaration.existing = $false }
+                    'a missing existing flag' { $declaration.Remove('existing') }
+                    'a string existing flag' { $declaration.existing = 'true' }
+                    'a missing symbol' { $operation.targetResource.Remove('symbolicName') }
+                    'an array symbol' { $operation.targetResource.symbolicName = @('backupManagementService') }
+                    'a different symbol' { $operation.targetResource.symbolicName = 'newServicePrincipal' }
+                    'a different resource type' { $operation.targetResource.resourceType = 'Microsoft.Graph/applications@v1.0' }
+                    'an array resource type' { $operation.targetResource.resourceType = @('Microsoft.Graph/servicePrincipals@v1.0') }
+                    'a missing extension' { $operation.targetResource.Remove('extension') }
+                    'an array extension' { $operation.targetResource.extension = @($operation.targetResource.extension) }
+                    'a different extension provider' { $operation.targetResource.extension.name = 'UnknownProvider' }
+                    'a different extension alias' { $operation.targetResource.extension.alias = 'anotherImport' }
+                    'a different extension version' { $operation.targetResource.extension.version = '2.0.0' }
+                    'a missing import' { $declaration.Remove('import') }
+                    'an array import' { $declaration.import = @('microsoftGraphV1') }
+                    'a different declaration type' { $declaration.type = 'Microsoft.Graph/applications@v1.0' }
+                    'a missing provider import' { $template.Remove('imports') }
+                    'a different imported provider' { $template.imports.microsoftGraphV1.provider = 'UnknownProvider' }
+                    'a different imported version' { $template.imports.microsoftGraphV1.version = '2.0.0' }
+                    'duplicate declaration symbols' {
+                        $template.resources = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
+                        $template.resources.Add('backupManagementService', $declaration)
+                        $template.resources.Add('BACKUPMANAGEMENTSERVICE', @{ existing = $false })
+                    }
+                    'duplicate import aliases' {
+                        $template.imports = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
+                        $template.imports.Add('microsoftGraphV1', @{ provider = 'MicrosoftGraph'; version = '1.0.0' })
+                        $template.imports.Add('MICROSOFTGRAPHV1', @{ provider = 'UnknownProvider'; version = '1.0.0' })
+                    }
+                    'an unsupported template scope' { $template.'$schema' = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#' }
+                    'an unsupported template language' { $template.languageVersion = '1.0' }
+                    'a failed operation' { $operation.provisioningState = 'Failed' }
+                    'a running operation' { $operation.provisioningState = 'Running' }
+                    'an empty target ID' { $operation.targetResource.id = '' }
+                    'an explicit null target ID' { $operation.targetResource.id = $null }
+                    'an array target ID' { $operation.targetResource.id = @($null) }
+                    'a contradictory error message' { $operation.statusMessage = @{ error = @{ code = 'AuthorizationFailed' } } }
+                    'a contradictory HTTP status' { $operation.statusCode = 'Forbidden' }
+                    'an array template' { $script:records[$script:parentId].Template = @($template) }
+                    'an array resource declaration' { $template.resources.backupManagementService = @($declaration) }
+                    'an array import declaration' { $template.imports.microsoftGraphV1 = @($template.imports.microsoftGraphV1) }
+                    'an unproven provider version' {
+                        $operation.targetResource.extension.version = '2.0.0'
+                        $template.imports.microsoftGraphV1.version = '2.0.0'
+                    }
+                }
+
+                $result = Get-DeploymentTargetResourceList @discoveryInput
+
+                $result.resolveError | Should -Not -BeNullOrEmpty
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Does not use root existing declarations to skip an unknown nested Graph operation' {
+                $script:records[$script:nestedId].Operations += New-FixtureGraphOperation
+                $result = Get-DeploymentTargetResourceList @discoveryInput
+                $result.resolveError | Should -Not -BeNullOrEmpty
+                $script:trace | Should -Contain "POST:$script:nestedId/exportTemplate"
+                $script:trace | Should -Not -Contain "DELETE:$script:parentId"
+            }
+
+            It 'Preserves the returned Graph operation while fetching its exact template only once' {
+                $script:records[$script:parentId].Operations += New-FixtureGraphOperation
+                $operations = Get-DeploymentOperationAtScope -Name 'failed-parent' -Scope subscription `
+                    -SubscriptionId $script:subscriptionId -IncludeAllOperations -RequireCompleteRemoval
+                @($operations | Where-Object { $_.targetResource.symbolicName -eq 'backupManagementService' }).Count | Should -Be 2
+                @($operations | Where-Object { $_.targetResource.symbolicName -eq 'backupManagementService' }).provisioningOperation | Should -Be @('Create', 'Create')
+                Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+            }
+
+            It 'Does not use Graph proof to authorize a malformed root state' {
+                $script:records[$script:parentId].State = @('Failed')
+                $result = Get-DeploymentTargetResourceList @discoveryInput
+                $result.resolveError | Should -Not -BeNullOrEmpty
+                Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+            }
+
+            It 'Restores the original context when a nested cross-subscription export is refused' {
+                $otherSubscription = '22222222-2222-2222-2222-222222222222'
+                $otherNestedId = $script:nestedId.Replace($script:subscriptionId, $otherSubscription)
+                $script:records[$otherNestedId] = $script:records[$script:nestedId]
+                $script:records[$otherNestedId].Operations += New-FixtureGraphOperation
+                foreach ($operation in $script:records[$script:parentId].Operations) {
+                    if ($operation.properties.targetResource.id -eq $script:nestedId) {
+                        $operation.properties.targetResource.id = $otherNestedId
+                    }
+                }
+                $result = Get-DeploymentTargetResourceList @discoveryInput
+                $result.resolveError | Should -Not -BeNullOrEmpty
+                $script:trace | Should -Contain "POST:$otherNestedId/exportTemplate"
+                $script:azContext.Subscription.Id | Should -Be $script:subscriptionId
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
+
+            It 'Relocates only after cleaning an attempt with a server-proven existing Graph lookup' {
+                $script:records = @{}
+                $script:roots.Clear()
+                $script:alive.Clear()
+                $script:graphTemplate = $template
+                Mock New-AzSubscriptionDeployment {
+                    try {
+                        Invoke-FixtureSubmission $DeploymentName $TemplateFile $resourceLocation $baseTime $adminSecret
+                    } finally {
+                        $rootId = $script:roots[-1]
+                        $script:records[$rootId].Operations += New-FixtureGraphOperation
+                        $script:records[$rootId].Template = $script:graphTemplate
+                    }
+                }
+                $result = Invoke-TemplateDeploymentWithRetry @retryInput
+                $result.ContainsKey('Exception') | Should -BeFalse
+                @($script:submissions) | Should -Be @('italynorth', 'swedencentral')
+                $result.DeploymentAttempts | Should -Be 2
+                $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+                $script:trace.IndexOf("POST:$($script:roots[0])/exportTemplate") | Should -BeLessThan $script:trace.IndexOf("remove:$script:groupId")
+                $script:trace.IndexOf("DELETE:$($script:roots[0])") | Should -BeLessThan $script:trace.IndexOf('validate:swedencentral')
+            }
+
+            It 'Fails closed when exact-record export returns <failure>' -ForEach @(
+                @{ failure = '403' }, @{ failure = '404' }, @{ failure = '500' }
+                @{ failure = 'invalid JSON' }, @{ failure = 'no template' }, @{ failure = 'an array response' }
+                @{ failure = 'duplicate template properties' }, @{ failure = 'duplicate existing properties' }
+                @{ failure = 'duplicate provider properties' }, @{ failure = 'an error with a template' }
+            ) {
+                $response = New-FixtureResponse -Content @{ template = $template }
+                switch ($failure) {
+                    { $_ -in @('403', '404', '500') } {
+                        $response = New-FixtureResponse -StatusCode ([int] $failure) -Content @{ error = @{ code = 'ExportFailed' } }
+                    }
+                    'invalid JSON' { $response.Content = 'invalid' }
+                    'no template' { $response.Content = '{}' }
+                    'an array response' { $response.Content = "[$($response.Content)]" }
+                    'duplicate template properties' {
+                        $json = ConvertTo-Json -InputObject $template -Depth 20 -Compress
+                        $response.Content = "{`"template`":$json,`"template`":$json}"
+                    }
+                    'duplicate existing properties' { $response.Content = $response.Content.Replace('"existing":true', '"existing":false,"existing":true') }
+                    'duplicate provider properties' { $response.Content = $response.Content.Replace('"provider":"MicrosoftGraph"', '"provider":"Other","provider":"MicrosoftGraph"') }
+                    'an error with a template' { $response = New-FixtureResponse -Content @{ template = $template; error = @{ code = 'AuthorizationFailed' } } }
+                }
+                $script:restOverrides["POST ${script:parentId}/exportTemplate?api-version=2025-04-01"] = $response
+                $result = Get-DeploymentTargetResourceList @discoveryInput
+                $result.resolveError | Should -Not -BeNullOrEmpty
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+                Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter {
+                    $Method -eq 'POST' -and $Path -eq "${script:parentId}/exportTemplate?api-version=2025-04-01"
+                }
+            }
         }
 
         It 'Requires a unique failed Create with direct child preflight evidence: <kind>' -ForEach @(
@@ -1108,6 +1455,613 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         $script:records.ContainsKey($script:roots[0]) | Should -BeTrue
     }
 
+    Context 'Captured terminal resource failures' -Tag 'CapturedResourceFailures' {
+        BeforeEach {
+            $script:vnetId = "$script:groupId/providers/Microsoft.Network/privateEndpoints/failed-resource"
+            $script:incidentMessage = "10:00:00 - The deployment '{0}' failed with error(s). Showing 1 out of 1 error(s). " +
+            'Status Message: The resource write operation failed to complete successfully, because it reached terminal provisioning state Failed. ' +
+            '(Code: ResourceDeploymentFailure) - An error occurred. (Code:InternalServerError)'
+            $script:regionalError = New-FixtureResourceFailure -ResourceId $script:vnetId `
+                -Leaf @{ code = 'InternalServerError'; message = 'An error occurred.'; details = @() }
+            Mock Get-AzResourceGroupDeployment {
+                if ($Name -eq 'dependencies') { $script:records[$script:nestedId].State = 'Failed' }
+                Get-FixtureStatus $Name resourcegroup $ResourceGroupName '' $DefaultProfile
+            }
+        }
+
+        It 'Retries a script-free <scenario> failure in the same region only after confirmed cleanup' -ForEach @(
+            @{ scenario = 'Application Gateway WAF'; resourceType = 'Microsoft.Network/applicationGateways'; nested = $false }
+            @{ scenario = 'PostgreSQL max'; resourceType = 'Microsoft.DBforPostgreSQL/flexibleServers'; nested = $false }
+            @{ scenario = 'managed-environment private endpoint'; resourceType = 'Microsoft.Network/privateEndpoints'; nested = $true }
+        ) {
+            $script:vnetId = "$script:groupId/providers/$resourceType/failed-resource"
+            $script:regionalError = New-FixtureResourceFailure -ResourceId $script:vnetId -Nested:$nested `
+                -Leaf @{ code = 'InternalServerError'; message = 'An error occurred.'; details = @() }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.ContainsKey('Exception') | Should -BeFalse
+            @($script:submissions) | Should -Be @('italynorth', 'italynorth')
+            @($script:validations) | Should -Be @('italynorth')
+            $result.AttemptedLocations | Should -Be @('italynorth')
+            $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+            $script:trace.IndexOf("DELETE:$($script:roots[0])") | Should -BeLessThan $script:trace.LastIndexOf('submit:italynorth')
+            Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 5 }
+        }
+
+        It 'Uses one region and at most three submissions for repeated confirmed transient resource failures' {
+            $script:outcomes = @('Regional', 'Regional', 'Regional')
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput -RegionLimit 1
+            $result.Exception | Should -Match 'InternalServerError'
+            $result.DeploymentAttempts | Should -Be 3
+            $result.AttemptedLocations | Should -Be @('italynorth')
+            @($script:submissions) | Should -Be @('italynorth', 'italynorth', 'italynorth')
+            $result.RemainingDeploymentNames | Should -Be @($script:names[2])
+            $script:records.ContainsKey($script:roots[0]) | Should -BeFalse
+            $script:records.ContainsKey($script:roots[1]) | Should -BeFalse
+            Should -Invoke Start-Sleep -Times 2 -Exactly -ParameterFilter { $Seconds -eq 5 }
+        }
+
+        It 'Keeps the captured <scenario> with a <placement> deployment script ineligible for same-region replay' -ForEach @(
+            @{ scenario = 'Application Gateway WAF'; resourceType = 'Microsoft.Network/applicationGateways'; scriptName = 'dep-gci-ds-nagwaf'; placement = 'root' }
+            @{ scenario = 'Application Gateway WAF'; resourceType = 'Microsoft.Network/applicationGateways'; scriptName = 'dep-gci-ds-nagwaf'; placement = 'nested' }
+            @{ scenario = 'managed-environment private endpoint'; resourceType = 'Microsoft.Network/privateEndpoints'; scriptName = 'dep-gci-ds-amemax'; placement = 'root' }
+            @{ scenario = 'managed-environment private endpoint'; resourceType = 'Microsoft.Network/privateEndpoints'; scriptName = 'dep-gci-ds-amemax'; placement = 'nested' }
+        ) {
+            $script:vnetId = "$script:groupId/providers/$resourceType/failed-resource"
+            $script:regionalError = New-FixtureResourceFailure -ResourceId $script:vnetId `
+                -Leaf @{ code = 'InternalServerError'; message = 'An error occurred.' }
+            $script:scriptId = "$script:groupId/providers/Microsoft.Resources/deploymentScripts/$scriptName"
+            Mock New-AzSubscriptionDeployment {
+                try {
+                    Invoke-FixtureSubmission $DeploymentName $TemplateFile $resourceLocation $baseTime $adminSecret
+                } finally {
+                    $rootId = $script:roots[-1]
+                    $operation = New-FixtureOperation -Id $script:scriptId
+                    if ($placement -eq 'nested') {
+                        $dependencyId = "$script:groupId/providers/Microsoft.Resources/deployments/script-dependencies"
+                        $script:records[$dependencyId] = @{ State = 'Succeeded'; Operations = @($operation) }
+                        $operation = New-FixtureOperation -Id $dependencyId
+                    }
+                    $script:records[$rootId].Operations += $operation
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.Exception | Should -Match 'InternalServerError'
+            $result.Exception | Should -Match 'deployment scripts'
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $script:submissions.Count | Should -Be 1
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+        }
+
+        It 'Shares validation and submission budgets for <kinds> with <regionLimit> regions' -ForEach @(
+            @{ kinds = @('Transient', 'Regional', 'Success'); regionLimit = 3; succeeds = $true; expectedRegions = @('italynorth', 'italynorth', 'swedencentral') }
+            @{ kinds = @('Regional', 'Transient', 'Success'); regionLimit = 3; succeeds = $true; expectedRegions = @('italynorth', 'swedencentral', 'swedencentral') }
+            @{ kinds = @('Transient', 'Regional', 'Regional'); regionLimit = 3; succeeds = $false; expectedRegions = @('italynorth', 'italynorth', 'swedencentral') }
+            @{ kinds = @('Regional', 'Transient', 'Regional'); regionLimit = 2; succeeds = $false; expectedRegions = @('italynorth', 'swedencentral', 'swedencentral') }
+            @{ kinds = @('Transient', 'Regional', 'Success'); regionLimit = 1; succeeds = $false; expectedRegions = @('italynorth', 'italynorth') }
+        ) {
+            $script:outcomes = @($kinds | ForEach-Object { $_ -eq 'Success' ? 'Succeeded' : 'Regional' })
+            Mock New-AzSubscriptionDeployment {
+                if ($kinds[$script:names.Count] -eq 'Regional') {
+                    $script:incidentMessage = "The deployment '{0}' failed. (Code:SkuNotAvailable)"
+                    $script:regionalError = @{ error = @{ code = 'SkuNotAvailable'; message = 'Capacity is not available in this location.' } }
+                } else {
+                    $script:incidentMessage = "The deployment '{0}' failed. (Code:InternalServerError)"
+                    $script:regionalError = New-FixtureResourceFailure -ResourceId $script:vnetId `
+                        -Leaf @{ code = 'InternalServerError'; message = 'An error occurred.' }
+                }
+                Invoke-FixtureSubmission $DeploymentName $TemplateFile $resourceLocation $baseTime $adminSecret
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput -RegionLimit $regionLimit
+            $result.ContainsKey('Exception') | Should -Be (-not $succeeds)
+            @($script:submissions) | Should -Be $expectedRegions
+            $result.DeploymentAttempts | Should -Be $expectedRegions.Count
+            @($script:validations) | Should -Be @($expectedRegions | Select-Object -Unique)
+            $result.AttemptedLocations | Should -Be @($expectedRegions | Select-Object -Unique)
+            $result.RemainingDeploymentNames | Should -Be @($script:names[-1])
+            $result.DeploymentAttempts | Should -BeLessOrEqual 3
+            $result.AttemptedLocations.Count | Should -BeLessOrEqual $regionLimit
+        }
+
+        It 'Does not change regional cleanup eligibility for an attempt with deployment scripts' {
+            $script:regionalError = @{ error = @{ code = 'SkuNotAvailable'; message = 'Capacity is not available in this location.' } }
+            Mock Get-AzResourceGroupDeployment {
+                $script:records[$script:nestedId].Operations += New-FixtureOperation `
+                    -Id "$script:groupId/providers/Microsoft.Resources/deploymentScripts/dependency"
+                Get-FixtureStatus $Name resourcegroup $ResourceGroupName '' $DefaultProfile
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.ContainsKey('Exception') | Should -BeFalse
+            @($script:submissions) | Should -Be @('italynorth', 'swedencentral')
+        }
+
+        It 'Rejects the script exclusion flag without complete discovery' {
+            { Remove-Deployment -RequireNoDeploymentScripts } | Should -Throw '*requires complete*discovery*'
+            Should -Invoke Get-AzContext -Times 0 -Exactly
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+        }
+
+        It 'Keeps transient retries blocked by <restriction>' -ForEach @(
+            @{ restriction = 'a custom pin' }, @{ restriction = 'a token pin' }
+            @{ restriction = 'a CI parameter pin' }, @{ restriction = 'a global selection' }
+            @{ restriction = 'resource-group scope' }, @{ restriction = 'retained resources' }
+        ) {
+            switch ($restriction) {
+                'a custom pin' { $retryInput.CustomLocation = 'italynorth' }
+                'a token pin' { $retryInput.TokenResourceLocation = 'italynorth' }
+                'a CI parameter pin' { $templateInput.AdditionalParameters.resourceLocation = 'italynorth' }
+                'a global selection' { Mock Get-AvailableResourceLocation { @{ Location = 'italynorth'; IsGlobal = $true } } }
+                'resource-group scope' {
+                    $template.'$schema' = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+                    $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+                }
+                'retained resources' { $retryInput.RemoveDeployment = $false }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.Exception | Should -Match 'InternalServerError'
+            $script:submissions.Count | Should -Be 1
+            $script:removed.Count | Should -Be 0
+        }
+
+        It 'Does not treat <kind> as a confirmed transient resource failure' -ForEach @(
+            @{ kind = 'a bare InternalServerError' }, @{ kind = 'a missing resource target' }
+            @{ kind = 'an array target' }, @{ kind = 'another subscription' }, @{ kind = 'a deployment target' }
+            @{ kind = 'a mixed quota failure' }, @{ kind = 'a mixed regional failure' }
+            @{ kind = 'an unknown leaf' }, @{ kind = 'an empty failure list' }, @{ kind = 'additional error information' }
+            @{ kind = 'an unsupported resource type' }, @{ kind = 'an extension under an unsupported resource' }
+            @{ kind = 'a mixed authorization failure' }, @{ kind = 'a contradictory resource state' }
+        ) {
+            $node = $script:regionalError.error.details[0]
+            switch ($kind) {
+                'a bare InternalServerError' { $script:regionalError = @{ error = @{ code = 'InternalServerError'; message = 'An error occurred.' } } }
+                'a missing resource target' { $node.Remove('target') }
+                'an array target' { $node.target = @($node.target) }
+                'another subscription' { $node.target = $node.target.Replace($script:subscriptionId, '22222222-2222-2222-2222-222222222222') }
+                'a deployment target' { $node.target = $script:nestedId }
+                'a mixed quota failure' { $node.details += @{ code = 'QuotaExceeded'; message = 'Quota exceeded.' } }
+                'a mixed regional failure' { $node.details += @{ code = 'SkuNotAvailable'; message = 'Capacity is not available in this location.' } }
+                'an unknown leaf' { $node.details[0].code = 'UnknownError' }
+                'an empty failure list' { $node.details = @() }
+                'additional error information' { $node.details[0].additionalInfo = @(@{ type = 'PermissionFailure' }) }
+                'an unsupported resource type' { $node.target = "$script:groupId/providers/Microsoft.Network/virtualNetworks/unproven" }
+                'an extension under an unsupported resource' {
+                    $node.target = "$script:groupId/providers/Microsoft.Network/virtualNetworks/parent/providers/Microsoft.Network/privateEndpoints/child"
+                }
+                'a mixed authorization failure' { $node.details += @{ code = 'AuthorizationFailed'; message = 'Access denied.' } }
+                'a contradictory resource state' { $node.status = 'Succeeded' }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.Exception | Should -Match 'InternalServerError'
+            $script:submissions.Count | Should -Be 1
+            $script:removed.Count | Should -Be 0
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+        }
+
+        It 'Does not replay a generic server error with <state> root state' -ForEach @(
+            @{ state = 'Running' }, @{ state = 'Accepted' }, @{ state = 'Succeeded' }, @{ state = 'Canceled' }, @{ state = $null }
+            @{ state = @('Failed') }
+        ) {
+            Mock Get-AzDeployment { @{ DeploymentName = $Name; ProvisioningState = $state } }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.Exception | Should -Match 'InternalServerError'
+            $script:submissions.Count | Should -Be 1
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+        }
+
+        It 'Does not inspect operations or replay with <kind> root identity' -ForEach @(
+            @{ kind = 'a different' }, @{ kind = 'a missing' }, @{ kind = 'an ambiguous' }
+        ) {
+            Mock Get-AzDeployment {
+                switch ($kind) {
+                    'a different' { @{ DeploymentName = 'another-root'; ProvisioningState = 'Failed' } }
+                    'a missing' { @{ ProvisioningState = 'Failed' } }
+                    'an ambiguous' {
+                        @{ DeploymentName = $Name; ProvisioningState = 'Failed' }
+                        @{ DeploymentName = $Name; ProvisioningState = 'Failed' }
+                    }
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.Exception | Should -Match 'InternalServerError'
+            $script:submissions.Count | Should -Be 1
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+        }
+
+        It 'Never promotes a validation-stage HTTP 500 to transient or regional deployment recovery' {
+            Mock Test-AzSubscriptionDeployment {
+                $exception = [System.InvalidOperationException]::new('Validation server error.')
+                $exception | Add-Member -NotePropertyName Response -NotePropertyValue @{ StatusCode = 500 }
+                $record = [System.Management.Automation.ErrorRecord]::new(
+                    $exception, 'ServerError', [System.Management.Automation.ErrorCategory]::InvalidResult, $null
+                )
+                $record.ErrorDetails = [System.Management.Automation.ErrorDetails]::new(
+                    (ConvertTo-Json -InputObject $script:regionalError -Depth 20)
+                )
+                throw $record
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput -ValidationOnly
+            $result.Exception | Should -Not -BeNullOrEmpty
+            $result.AttemptedLocations | Should -Be @('italynorth')
+            Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
+            Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+            Should -Invoke Get-AzDeployment -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        }
+
+        It 'Does not lose the original server error or retry when cleanup fails' {
+            Mock Remove-AzResource { throw 'Cleanup failed.' }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.Exception | Should -Match 'InternalServerError'
+            $result.Exception | Should -Match 'removal failed'
+            $result.ErrorRecord.TargetObject.Exception.Message | Should -Match 'InternalServerError'
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $result.PendingDeletionDeploymentIds.Count | Should -Be 0
+            $script:submissions.Count | Should -Be 1
+        }
+
+        It 'Does not use structured retry evidence to override <kind> exceptions' -ForEach @(
+            @{ kind = 'authorization'; type = [System.UnauthorizedAccessException] }
+            @{ kind = 'timeout'; type = [System.TimeoutException] }
+            @{ kind = 'transport'; type = [System.Net.Http.HttpRequestException] }
+            @{ kind = 'cancellation'; type = [System.OperationCanceledException] }
+            @{ kind = 'secondary aggregate authorization'; type = [System.UnauthorizedAccessException] }
+        ) {
+            $exception = $type::new('Uncertain or forbidden.')
+            if ($kind -eq 'secondary aggregate authorization') {
+                $exception = [System.AggregateException]::new([System.Exception[]] @(
+                        [System.InvalidOperationException]::new('An error occurred.'), $exception
+                    ))
+            }
+            $record = [System.Management.Automation.ErrorRecord]::new(
+                $exception, 'FailedRequest', [System.Management.Automation.ErrorCategory]::InvalidResult, $null
+            )
+            Test-DeploymentRetryError -ErrorRecord $record -ErrorResponse $script:regionalError `
+                -SubscriptionId $script:subscriptionId -RetryKind Transient | Should -BeFalse
+        }
+
+        It 'Uses an HTTP 500 only with a subsequently confirmed failed root and structured resource failure' {
+            Mock New-AzSubscriptionDeployment {
+                try {
+                    Invoke-FixtureSubmission $DeploymentName $TemplateFile $resourceLocation $baseTime $adminSecret
+                } catch {
+                    $exception = [System.InvalidOperationException]::new($_.Exception.Message)
+                    $exception | Add-Member -NotePropertyName Response -NotePropertyValue @{ StatusCode = 500 }
+                    throw [System.Management.Automation.ErrorRecord]::new(
+                        $exception, 'ServerError', [System.Management.Automation.ErrorCategory]::InvalidResult, $DeploymentName
+                    )
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.ContainsKey('Exception') | Should -BeFalse
+            @($script:submissions) | Should -Be @('italynorth', 'italynorth')
+            $script:trace.IndexOf("state:$($script:roots[0])") | Should -BeLessThan $script:trace.IndexOf("remove:$script:groupId")
+        }
+
+        Context 'Container Instances capacity without a leaf code' {
+            BeforeEach {
+                $script:regions = @('koreacentral', 'swedencentral', 'eastus')
+                $script:vnetId = "$script:groupId/providers/Microsoft.ContainerInstance/containerGroups/capacity"
+                $script:capacityMessage = "The requested resource is not available in the location 'koreacentral' at this moment. " +
+                "Please retry with a different resource request or in another location. Resource requested: '4' CPU '4' GB memory 'Linux' OS"
+                $script:regionalError = New-FixtureResourceFailure -ResourceId $script:vnetId -Leaf @{ message = $script:capacityMessage }
+                $script:incidentMessage = "10:00:00 - The deployment '{0}' failed with error(s). Showing 1 out of 1 error(s). " +
+                "Status Message: The resource write operation failed to complete successfully. (Code: ResourceDeploymentFailure) - $script:capacityMessage (Code:)"
+            }
+
+            It 'Relocates the captured <scenario> capacity shape only after complete removal' -ForEach @(
+                @{ scenario = 'max'; name = 'capacity-max-1' }
+                @{ scenario = 'WAF'; name = 'capacity-waf' }
+            ) {
+                $script:vnetId = "$script:groupId/providers/Microsoft.ContainerInstance/containerGroups/$name"
+                $script:regionalError = New-FixtureResourceFailure -ResourceId $script:vnetId -Leaf @{ message = $script:capacityMessage }
+                $result = Invoke-TemplateDeploymentWithRetry @retryInput
+                $result.ContainsKey('Exception') | Should -BeFalse
+                @($script:submissions) | Should -Be @('koreacentral', 'swedencentral')
+                $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+                $script:trace.IndexOf("DELETE:$($script:roots[0])") | Should -BeLessThan $script:trace.IndexOf('validate:swedencentral')
+            }
+
+            It 'Does not authorize relocation from <kind>' -ForEach @(
+                @{ kind = 'a missing provider target' }, @{ kind = 'a different provider' }, @{ kind = 'another subscription' }
+                @{ kind = 'an array target' }, @{ kind = 'a different location' }, @{ kind = 'a generic message' }
+                @{ kind = 'an extra message suffix' }, @{ kind = 'an explicit empty code' }, @{ kind = 'an explicit null code' }
+                @{ kind = 'an unknown code' }, @{ kind = 'another error property' }, @{ kind = 'a mixed quota failure' }
+                @{ kind = 'a bare message-only node' }, @{ kind = 'CPU above the standard request size' }
+                @{ kind = 'memory above the standard request size' }, @{ kind = 'zero CPU' }
+                @{ kind = 'a disguised property count' }, @{ kind = 'an innererror instead of details' }
+                @{ kind = 'contradictory successful status' }
+            ) {
+                $node = $script:regionalError.error.details[0]
+                switch ($kind) {
+                    'a missing provider target' { $node.Remove('target') }
+                    'a different provider' { $node.target = "$script:groupId/providers/Microsoft.Network/virtualNetworks/capacity" }
+                    'another subscription' { $node.target = $node.target.Replace($script:subscriptionId, '22222222-2222-2222-2222-222222222222') }
+                    'an array target' { $node.target = @($node.target) }
+                    'a different location' { $node.details[0].message = $script:capacityMessage.Replace('koreacentral', 'westus') }
+                    'a generic message' { $node.details[0].message = 'Not available in the location. Retry elsewhere.' }
+                    'an extra message suffix' { $node.details[0].message += ' Also failed because quota was exceeded.' }
+                    'an explicit empty code' { $node.details[0].code = '' }
+                    'an explicit null code' { $node.details[0].code = $null }
+                    'an unknown code' { $node.details[0].code = 'UnknownError' }
+                    'another error property' { $node.details[0].innererror = @{ code = 'QuotaExceeded' } }
+                    'a mixed quota failure' { $node.details += @{ code = 'QuotaExceeded'; message = 'Regional quota exceeded.' } }
+                    'a bare message-only node' { $script:regionalError = @{ message = $script:capacityMessage } }
+                    'CPU above the standard request size' { $node.details[0].message = $script:capacityMessage.Replace("'4' CPU", "'8' CPU") }
+                    'memory above the standard request size' { $node.details[0].message = $script:capacityMessage.Replace("'4' GB", "'32' GB") }
+                    'zero CPU' { $node.details[0].message = $script:capacityMessage.Replace("'4' CPU", "'0' CPU") }
+                    'a disguised property count' { $node.details[0].Count = 1 }
+                    'an innererror instead of details' { $node.innererror = $node.details[0]; $node.Remove('details') }
+                    'contradictory successful status' { $script:regionalError.status = 'Succeeded' }
+                }
+                $result = Invoke-TemplateDeploymentWithRetry @retryInput
+                $result.Exception | Should -Not -BeNullOrEmpty
+                $script:submissions.Count | Should -Be 1
+                $script:removed.Count | Should -Be 0
+                $result.RemainingDeploymentNames | Should -Be @($script:names)
+            }
+        }
+    }
+
+    Context 'Asynchronous deployment history removal' -Tag 'HistoryRemoval' {
+        BeforeEach {
+            $script:historyReads = 0
+            $script:historyDeletes = 0
+            $script:historyReadyAfter = 1
+            $script:historyLookupError = $null
+            Mock Invoke-AzRestMethod {
+                $id = $Path.Split('?')[0]
+                if ($id -eq $script:roots[0] -and $Method -eq 'DELETE') {
+                    $script:trace.Add("DELETE:$id")
+                    $script:historyDeletes++
+                    return New-FixtureResponse -StatusCode 202
+                }
+                if ($id -eq $script:roots[0] -and $Method -eq 'GET') {
+                    $script:trace.Add("GET:$id")
+                    $script:historyReads++
+                    if ($script:historyLookupError) { throw $script:historyLookupError }
+                    if ($script:historyReads -le $script:historyReadyAfter) {
+                        return New-FixtureResponse -Content @{ id = $id; properties = @{ provisioningState = 'Failed' } }
+                    }
+                    $script:records.Remove($id)
+                    return New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'DeploymentNotFound' } }
+                }
+                Invoke-FixtureRest $Method $Path
+            }
+        }
+
+        It 'Confirms delayed history deletion before relocating the <scenario> cleanup with <resourceCount> targets' -ForEach @(
+            @{ scenario = 'Windows VMSS defaults'; resourceCount = 3 }
+            @{ scenario = 'Windows VMSS max'; resourceCount = 18 }
+            @{ scenario = 'Linux VMSS max'; resourceCount = 20 }
+        ) {
+            $script:regionalError = @{ error = @{
+                    code    = 'DeploymentFailed'
+                    details = @(@{
+                            code    = 'ResourceDeploymentFailure'
+                            details = @(@{ code = 'SkuNotAvailable'; message = "Standard_D4ads_v5 is not available in location 'eastus'." })
+                        })
+                }
+            }
+            Mock Get-AzResourceGroupDeployment {
+                if ($Name -eq 'dependencies') {
+                    $script:records[$script:nestedId].Operations = @(
+                        New-FixtureOperation -Id $script:vnetId
+                        for ($index = 2; $index -lt $resourceCount; $index++) {
+                            New-FixtureOperation -Id "$script:groupId/providers/Microsoft.Network/virtualNetworks/dependency-$index"
+                        }
+                    )
+                }
+                Get-FixtureStatus $Name resourcegroup $ResourceGroupName '' $DefaultProfile
+            }
+
+            $log = @(Invoke-TemplateDeploymentWithRetry @retryInput 4>&1)
+            $result = $log | Where-Object { $_ -is [hashtable] }
+            $log | Out-String | Should -Match "Total number of deployment target resources after fetching deployments \[$resourceCount\]"
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $result.DeploymentAttempts | Should -Be 2
+            $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+            $result.PendingDeletionDeploymentIds | Should -BeNullOrEmpty
+            $script:historyReads | Should -Be 2
+            $script:historyDeletes | Should -Be 1
+            @($script:trace | Where-Object { $_ -like 'remove:*' }) | Should -Be @("remove:$script:groupId")
+            $script:trace.LastIndexOf("GET:$($script:roots[0])") | Should -BeLessThan $script:trace.IndexOf('validate:swedencentral')
+            $script:trace.IndexOf("remove:$script:groupId") | Should -BeLessThan $script:trace.IndexOf("DELETE:$($script:roots[0])")
+            Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+        }
+
+        It 'Keeps ownership when history remains and confirms it in final cleanup without rediscovering deleted resources' {
+            $script:historyReadyAfter = 3
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'still exists after cleanup'
+            $result.Exception | Should -Match 'ExampleSku'
+            $result.ErrorRecord.TargetObject.Exception.Message | Should -Match 'ExampleSku'
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $result.PendingDeletionDeploymentIds | Should -Be @($script:roots[0])
+            $script:historyReads | Should -Be 3
+            $script:historyDeletes | Should -Be 1
+            $script:alive.Count | Should -Be 0
+            $script:submissions.Count | Should -Be 1
+            $script:validations.Count | Should -Be 1
+            Should -Invoke Start-Sleep -Times 2 -Exactly -ParameterFilter { $Seconds -eq 15 }
+            $beforeFinalCleanup = $script:trace.Count
+
+            Initialize-DeploymentRemoval -TemplateFilePath $templatePath -SubscriptionId $script:subscriptionId `
+                -DeploymentNames $result.RemainingDeploymentNames -PendingDeletionDeploymentIds $result.PendingDeletionDeploymentIds
+
+            $script:historyReads | Should -Be 4
+            $script:historyDeletes | Should -Be 1
+            $script:records.ContainsKey($script:roots[0]) | Should -BeFalse
+            @($script:trace | Select-Object -Skip $beforeFinalCleanup) | Should -Be @("GET:$($script:roots[0])")
+            Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
+        }
+
+        It 'Still fails final cleanup if an accepted deletion remains visible after the bounded confirmation window' {
+            $script:historyReadyAfter = 100
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.PendingDeletionDeploymentIds | Should -Be @($script:roots[0])
+            {
+                Initialize-DeploymentRemoval -TemplateFilePath $templatePath -SubscriptionId $script:subscriptionId `
+                    -DeploymentNames $result.RemainingDeploymentNames -PendingDeletionDeploymentIds $result.PendingDeletionDeploymentIds
+            } | Should -Throw '*still exists after cleanup*'
+            $script:historyReads | Should -Be 6
+            $script:historyDeletes | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke Start-Sleep -Times 4 -Exactly -ParameterFilter { $Seconds -eq 15 }
+            Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
+        }
+
+        It 'Does not retry a history confirmation <kind> or discard the original deployment error' -ForEach @(
+            @{ kind = 'authorization failure'; exceptionType = [System.UnauthorizedAccessException] }
+            @{ kind = 'timeout'; exceptionType = [System.TimeoutException] }
+            @{ kind = 'transport failure'; exceptionType = [System.Net.Http.HttpRequestException] }
+            @{ kind = 'cancellation'; exceptionType = [System.OperationCanceledException] }
+        ) {
+            $script:historyLookupError = $exceptionType::new('History confirmation failed.')
+            if ($kind -eq 'cancellation') {
+                { Invoke-TemplateDeploymentWithRetry @retryInput } | Should -Throw '*History confirmation failed*'
+            } else {
+                $result = Invoke-TemplateDeploymentWithRetry @retryInput
+                $result.Exception | Should -Match 'History confirmation failed'
+                $result.Exception | Should -Match 'ExampleSku'
+                $result.RemainingDeploymentNames | Should -Be @($script:names)
+                $result.PendingDeletionDeploymentIds | Should -Be @($script:roots[0])
+            }
+            $script:historyReads | Should -Be 1
+            $script:historyDeletes | Should -Be 1
+            $script:submissions.Count | Should -Be 1
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Does not publish record-only cleanup evidence after <failure>' -ForEach @(
+            @{ failure = 'resource removal failure' }, @{ failure = 'unconfirmed resource absence' }
+            @{ failure = 'rejected history deletion' }, @{ failure = 'uncertain history deletion' }
+        ) {
+            switch ($failure) {
+                'resource removal failure' { Mock Remove-AzResource { throw 'Removal failed.' } }
+                'unconfirmed resource absence' { Mock Remove-AzResource {} }
+                'rejected history deletion' {
+                    Mock Invoke-AzRestMethod { New-FixtureResponse -StatusCode 403 } -ParameterFilter { $Method -eq 'DELETE' }
+                }
+                'uncertain history deletion' {
+                    Mock Invoke-AzRestMethod { throw [System.TimeoutException]::new('Deletion response unknown.') } -ParameterFilter { $Method -eq 'DELETE' }
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.Exception | Should -Match 'ExampleSku'
+            $result.PendingDeletionDeploymentIds | Should -BeNullOrEmpty
+            $result.PendingDeletionDeploymentIds.Count | Should -Be 0
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $script:submissions.Count | Should -Be 1
+        }
+    }
+
+    It 'Rejects <state> visible history after an accepted deletion without polling an uncertain record' -Tag 'HistoryRemoval' -ForEach @(
+        @{ state = 'Running' }, @{ state = 'Accepted' }, @{ state = 'Canceled' }, @{ state = $null }, @{ state = @('Failed') }
+    ) {
+        $id = "/subscriptions/$script:subscriptionId/providers/Microsoft.Resources/deployments/owned"
+        Mock Invoke-AzRestMethod {
+            if ($Method -eq 'DELETE') { return New-FixtureResponse -StatusCode 202 }
+            New-FixtureResponse -Content @{ id = $id; properties = @{ provisioningState = $state } }
+        }
+        { Complete-DeploymentRemoval -DeploymentIds $id -DeploymentNamesById @{ $id = 'owned' } } | Should -Throw '*Cannot confirm removal*'
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'GET' }
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
+    It 'Reconciles only the accepted root history deletion at <scope> scope' -Tag 'HistoryRemoval' -ForEach @(
+        @{ scope = 'subscription'; schema = 'subscriptionDeploymentTemplate' }
+        @{ scope = 'resourcegroup'; schema = 'deploymentTemplate' }
+        @{ scope = 'managementgroup'; schema = 'managementGroupDeploymentTemplate' }
+        @{ scope = 'tenant'; schema = 'tenantDeploymentTemplate' }
+    ) {
+        $template.'$schema' = "https://schema.management.azure.com/schemas/2019-08-01/$schema.json#"
+        $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+        $id = Get-DeploymentResourceId -Scope $scope -Name 'pending' -SubscriptionId $script:subscriptionId `
+            -ResourceGroupName 'retry-fixture' -ManagementGroupId 'test-management-group'
+        $script:roots.Add($id)
+        Initialize-DeploymentRemoval -TemplateFilePath $templatePath -SubscriptionId $script:subscriptionId `
+            -ResourceGroupName 'retry-fixture' -ManagementGroupId 'test-management-group' `
+            -DeploymentNames pending -PendingDeletionDeploymentIds $id.ToUpperInvariant() -PreflightRejectedDeploymentNames pending
+        @($script:trace) | Should -Be @("GET:$($id.ToUpperInvariant())")
+        Should -Invoke Remove-AzResource -Times 0 -Exactly
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
+    It 'Cleans other owned resources before reporting an unconfirmed pending root deletion' -Tag 'HistoryRemoval' {
+        $pendingId = "/subscriptions/$script:subscriptionId/providers/Microsoft.Resources/deployments/pending"
+        $ordinaryId = "/subscriptions/$script:subscriptionId/providers/Microsoft.Resources/deployments/ordinary"
+        $script:roots.Add($pendingId)
+        $script:roots.Add($ordinaryId)
+        $script:records[$pendingId] = @{ State = 'Failed'; Operations = @() }
+        $script:records[$ordinaryId] = @{ State = 'Failed'; Operations = @((New-FixtureOperation -Id $script:groupId)) }
+        $null = $script:alive.Add($script:groupId)
+
+        {
+            Initialize-DeploymentRemoval -TemplateFilePath $templatePath -SubscriptionId $script:subscriptionId `
+                -DeploymentNames pending, ordinary -PendingDeletionDeploymentIds $pendingId
+        } | Should -Throw '*still exists after cleanup*'
+
+        $script:alive.Count | Should -Be 0
+        $script:trace.IndexOf("remove:$script:groupId") | Should -BeLessThan $script:trace.IndexOf("GET:$pendingId")
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Path -like "$pendingId/operations*" -or $Method -eq 'DELETE' }
+        Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
+        Should -Invoke Start-Sleep -Times 2 -Exactly -ParameterFilter { $Seconds -eq 15 }
+    }
+
+    It 'Rejects pending history metadata with <kind>' -Tag 'HistoryRemoval' -ForEach @(
+        @{ kind = 'strict relocation cleanup'; names = @('owned'); strict = $true }
+        @{ kind = 'no submitted names'; names = @(); strict = $false }
+        @{ kind = 'duplicate submitted names'; names = @('owned', 'owned'); strict = $false }
+    ) {
+        $id = "/subscriptions/$script:subscriptionId/providers/Microsoft.Resources/deployments/owned"
+        {
+            Initialize-DeploymentRemoval -TemplateFilePath $templatePath -SubscriptionId $script:subscriptionId `
+                -DeploymentNames $names -PendingDeletionDeploymentIds $id -RequireCompleteRemoval:$strict
+        } | Should -Throw '*pending*deletion*metadata*'
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        Should -Invoke Remove-AzResource -Times 0 -Exactly
+    }
+
+    It 'Rejects record-only cleanup metadata for <kind> before any discovery or deletion' -Tag 'HistoryRemoval' -ForEach @(
+        @{ kind = 'another root'; ids = @('/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/other') }
+        @{ kind = 'another subscription'; ids = @('/subscriptions/22222222-2222-2222-2222-222222222222/providers/Microsoft.Resources/deployments/owned') }
+        @{ kind = 'a nested deployment'; ids = @('/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/retry-fixture/providers/Microsoft.Resources/deployments/owned') }
+        @{ kind = 'duplicate IDs'; ids = @('/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/owned', '/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/owned') }
+    ) {
+        {
+            Initialize-DeploymentRemoval -TemplateFilePath $templatePath -SubscriptionId $script:subscriptionId `
+                -DeploymentNames owned -PendingDeletionDeploymentIds $ids
+        } | Should -Throw '*pending*deletion*metadata*'
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        Should -Invoke Remove-AzResource -Times 0 -Exactly
+    }
+
+    It 'Rejects a <kind> history absence response instead of completing relocation' -Tag 'HistoryRemoval' -ForEach @(
+        @{ kind = 'generic 404'; status = 404; content = @{ error = @{ code = 'NotFound' } } }
+        @{ kind = 'wrong-scope 404'; status = 404; content = @{ error = @{ code = 'ResourceGroupNotFound' } } }
+        @{ kind = 'authorization failure'; status = 403; content = @{ error = @{ code = 'DeploymentNotFound' } } }
+        @{ kind = 'different record'; status = 200; content = @{ id = '/providers/Microsoft.Resources/deployments/other' } }
+        @{ kind = 'array body'; status = 404; content = @(@{ error = @{ code = 'DeploymentNotFound' } }) }
+        @{ kind = 'array error'; status = 404; content = @{ error = @(@{ code = 'DeploymentNotFound' }) } }
+        @{ kind = 'array code'; status = 404; content = @{ error = @{ code = @('DeploymentNotFound') } } }
+        @{ kind = 'wrong error target'; status = 404; content = @{ error = @{ code = 'DeploymentNotFound'; target = '/providers/Microsoft.Resources/deployments/other' } } }
+        @{ kind = 'array error target'; status = 404; content = @{ error = @{ code = 'DeploymentNotFound'; target = @('/providers/Microsoft.Resources/deployments/other') } } }
+        @{ kind = 'array present identity'; status = 200; content = @{ id = @('/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/owned'); properties = @{ provisioningState = 'Failed' } } }
+        @{ kind = 'array present record'; status = 200; content = @(@{ id = '/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/owned'; properties = @{ provisioningState = 'Failed' } }) }
+    ) {
+        $id = "/subscriptions/$script:subscriptionId/providers/Microsoft.Resources/deployments/owned"
+        Mock Invoke-AzRestMethod {
+            if ($Method -eq 'DELETE') { return New-FixtureResponse -StatusCode 202 }
+            New-FixtureResponse -StatusCode $status -Content $content
+        }
+        { Complete-DeploymentRemoval -DeploymentIds $id -DeploymentNamesById @{ $id = 'owned' } } | Should -Throw '*Cannot confirm removal*'
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
     It 'Propagates cancellation during <phase> without another submission' -ForEach @(
         @{ phase = 'submission' }, @{ phase = 'status' }, @{ phase = 'details' }, @{ phase = 'discovery' }
         @{ phase = 'removal' }, @{ phase = 'record deletion' }, @{ phase = 'absence confirmation' }
@@ -1224,6 +2178,9 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         $result.DeploymentAttempts | Should -Be $expectedSubmissions
         $result.AttemptedLocations.Count | Should -Be $expectedRegions
         $script:submissions.Count | Should -Be $expectedSubmissions
+        if ($regionLimit -eq 1 -and $outcomes[0] -eq 'Legacy') {
+            Should -Invoke Get-AzDeployment -Times 0 -Exactly
+        }
     }
 
     It 'Rejects invalid <budget> limits before validation or submission' -ForEach @(
@@ -1490,10 +2447,33 @@ module dependency './dependency.bicep' = {
         $result.Exception | Should -Match 'record removal failed'
         $result.DeploymentNames | Should -Be @($script:names)
         $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+        $result.PendingDeletionDeploymentIds.Count | Should -Be 0
         $script:records.ContainsKey($script:roots[0]) | Should -BeFalse
         $script:records.ContainsKey($script:roots[1]) | Should -BeTrue
         $script:alive.Count | Should -Be 0
         $script:submissions.Count | Should -Be 2
+    }
+
+    It 'Separates confirmed earlier roots from a later accepted deletion that is still pending' -Tag 'HistoryRemoval' {
+        $script:outcomes = @('Legacy', 'Regional', 'Succeeded')
+        Mock Invoke-AzRestMethod {
+            if ($Method -eq 'DELETE' -and $Path.Split('?')[0] -eq $script:roots[1]) {
+                return New-FixtureResponse -StatusCode 202
+            }
+            Invoke-FixtureRest $Method $Path
+        }
+
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.Exception | Should -Match 'ExampleSku'
+        $result.Exception | Should -Match 'still exists after cleanup'
+        $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+        $result.PendingDeletionDeploymentIds | Should -Be @($script:roots[1])
+        $script:records.ContainsKey($script:roots[0]) | Should -BeFalse
+        $script:records.ContainsKey($script:roots[1]) | Should -BeTrue
+        $script:alive.Count | Should -Be 0
+        $script:submissions.Count | Should -Be 2
+        Should -Invoke Start-Sleep -Times 2 -Exactly -ParameterFilter { $Seconds -eq 15 }
     }
 
     It 'Keeps cancellation terminal when restoring a cross-subscription context also fails' {
@@ -1583,7 +2563,7 @@ module dependency './dependency.bicep' = {
     }
 
     It 'Removes an out-of-group nested record before its root: <outcome>' -ForEach @(
-        @{ outcome = 'success' }, @{ outcome = 'nested deletion failure' }
+        @{ outcome = 'success' }, @{ outcome = 'nested deletion failure' }, @{ outcome = 'nested deletion remains pending' }
     ) {
         $otherSubscription = '22222222-2222-2222-2222-222222222222'
         $script:subscriptionRecordId = "/subscriptions/$otherSubscription/providers/Microsoft.Resources/deployments/subscription-dependencies"
@@ -1605,11 +2585,15 @@ module dependency './dependency.bicep' = {
                 $script:trace.Add("${Method}:$id")
                 if ($Method -eq 'DELETE') {
                     if ($outcome -eq 'nested deletion failure') { return New-FixtureResponse -StatusCode 403 }
+                    if ($outcome -eq 'nested deletion remains pending') { return New-FixtureResponse -StatusCode 202 }
                     $script:records.Remove($id)
                     return New-FixtureResponse -StatusCode 204
                 }
                 if ($Method -eq 'GET' -and -not $script:records.ContainsKey($id)) {
                     return New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'DeploymentNotFound' } }
+                }
+                if ($Method -eq 'GET' -and $outcome -eq 'nested deletion remains pending') {
+                    return New-FixtureResponse -Content @{ id = $id; properties = @{ provisioningState = 'Succeeded' } }
                 }
             }
             Invoke-FixtureRest $Method $Path
@@ -1620,8 +2604,9 @@ module dependency './dependency.bicep' = {
             $result.ContainsKey('Exception') | Should -BeFalse
             $script:trace.IndexOf("DELETE:$script:subscriptionRecordId") | Should -BeLessThan $script:trace.IndexOf("DELETE:$root")
         } else {
-            $result.Exception | Should -Match 'record removal failed'
+            $result.Exception | Should -Match 'record removal failed|still exists after cleanup'
             $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $result.PendingDeletionDeploymentIds.Count | Should -Be 0
             $script:records.ContainsKey($root) | Should -BeTrue
             $script:trace | Should -Not -Contain "DELETE:$root"
         }
