@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/cache/CHANGELOG.md).
 
+## 0.1.3
+
+### Changes
+
+- Marked the `connectionString` parameter as secure. Named-value references such as `{{cache-connection-string}}` remain supported.
+
+### Breaking Changes
+
+- None
+
 ## 0.1.2
 
 ### Changes

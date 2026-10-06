@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10207732047978764384"
+      "templateHash": "3482760627744877213"
     },
     "name": "API Management Service Caches",
     "description": "This module deploys an API Management Service Cache."
@@ -25,7 +25,7 @@
       }
     },
     "connectionString": {
-      "type": "string",
+      "type": "securestring",
       "metadata": {
         "description": "Required. Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}."
       }
