@@ -176,6 +176,14 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             return $operation
         }
 
+        function Initialize-FixtureMachineLearningCosmosFailure {
+            $script:cosmosResponseJson = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'fixtures' 'ml-cosmos-regional-error.json') -Raw
+            $script:regionalError = $script:cosmosResponseJson | ConvertFrom-Json -AsHashtable
+            $script:regions = @('norwayeast', 'swedencentral', 'eastus')
+            $script:incidentMessage = "The deployment '{0}' failed with error(s). Showing 1 out of 1 error(s). Status Message: " +
+            'Machine Learning workspace database account creation failed. (Code: BadRequest)'
+        }
+
         function Assert-FixtureParameters {
             param([string] $Path, [string] $Region, [string] $BaseTime, [securestring] $Secret)
             $BaseTime | Should -BeExactly 'fixed-base-time'
@@ -1118,6 +1126,510 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         $script:trace | Should -Contain "GET:$script:nestedId/operations"
         $script:trace | Should -Not -Contain "DELETE:$script:preflightId"
         Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+    }
+
+    Context 'AKS managed-cluster preflight with no supported zones' {
+        BeforeEach {
+            $script:aksResponseJson = Get-Content -LiteralPath (Join-Path -Path $PSScriptRoot -ChildPath 'fixtures\aks-empty-zones-regional-error.json') -Raw
+            $script:regionalError = $script:aksResponseJson | ConvertFrom-Json -AsHashtable
+            $script:regions = @('swedencentral', 'norwayeast', 'eastus')
+            $script:incidentMessage = "The deployment '{0}' failed with error(s). Showing 1 out of 1 error(s). Status Message: " +
+            'AKS managed-cluster preflight failed. (Code: AvailabilityZoneNotSupported)'
+        }
+
+        It 'Relocates after successful validation and a failed nested deployment only after confirmed cleanup' {
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            @($script:validations) | Should -Be @('swedencentral', 'norwayeast')
+            @($script:submissions) | Should -Be @('swedencentral', 'norwayeast')
+            $result.DeploymentOutput.region.value | Should -Be 'norwayeast'
+            $result.AttemptedLocations | Should -Be @('swedencentral', 'norwayeast')
+            $result.DeploymentAttempts | Should -Be 2
+            $result.DeploymentNames | Should -Be @($script:names)
+            $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+            $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+            $script:regionalError.error.Contains('target') | Should -BeFalse
+            $script:regionalError.error.details[0].Contains('target') | Should -BeFalse
+            $script:records[$script:roots[1]].Operations[1].properties.targetResource.id | Should -Be $script:nestedId
+            $script:records.ContainsKey($script:roots[0]) | Should -BeFalse
+            $script:resourceRegion | Should -Be 'norwayeast'
+            $script:removed | Should -Contain $script:groupId
+            $script:trace | Should -Contain "GET:$script:nestedId/operations"
+            $root = $script:roots[0]
+            foreach ($step in @("remove:$script:groupId", "GET:$script:groupId", "DELETE:$root", "GET:$root")) {
+                $script:trace | Should -Contain $step
+            }
+            $script:trace.IndexOf("remove:$script:groupId") | Should -BeLessThan $script:trace.LastIndexOf("GET:$script:groupId")
+            $script:trace.LastIndexOf("GET:$script:groupId") | Should -BeLessThan $script:trace.IndexOf("DELETE:$root")
+            $script:trace.IndexOf("DELETE:$root") | Should -BeLessThan $script:trace.LastIndexOf("GET:$root")
+            $script:trace.LastIndexOf("GET:$root") | Should -BeLessThan $script:trace.IndexOf('validate:norwayeast')
+            $script:trace.IndexOf('validate:norwayeast') | Should -BeLessThan $script:trace.IndexOf('submit:norwayeast')
+            $templateInput.AdditionalParameters.resourceLocation | Should -BeExactly ''
+            Should -Invoke New-AzSubscriptionDeployment -Times 2 -Exactly -ParameterFilter { $Location -eq 'WestEurope' }
+            Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+        }
+
+        It 'Passes the selected region to validation without submitting or cleaning the rejected candidate' {
+            $script:validationFailures = @('swedencentral')
+            $script:outcomes = @('Succeeded')
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            @($script:validations) | Should -Be @('swedencentral', 'norwayeast')
+            @($script:submissions) | Should -Be @('norwayeast')
+            $result.DeploymentAttempts | Should -Be 1
+            $script:removed.Count | Should -Be 0
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        }
+
+        It 'Preserves the shared three-candidate and three-submission budgets' {
+            $script:outcomes = @('Regional', 'Regional', 'Regional')
+            Mock New-AzSubscriptionDeployment {
+                $script:regionalError = $script:aksResponseJson.Replace('swedencentral', $resourceLocation) | ConvertFrom-Json -AsHashtable
+                Invoke-FixtureSubmission -Name $DeploymentName -Path $TemplateFile -Region $resourceLocation -BaseTime $baseTime -Secret $adminSecret
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'AKS managed-cluster preflight failed'
+            @($script:submissions) | Should -Be $script:regions
+            @($script:validations) | Should -Be $script:regions
+            $result.AttemptedLocations | Should -Be $script:regions
+            $result.DeploymentAttempts | Should -Be 3
+            $result.RemainingDeploymentNames | Should -Be @($script:names[2])
+            $script:removed.Count | Should -Be 2
+        }
+
+        It 'Does not change existing same-region retries when relocation is pinned' {
+            $retryInput.CustomLocation = 'swedencentral'
+            $script:outcomes = @('Regional', 'Regional', 'Regional')
+            $script:incidentMessage = "The deployment '{0}' failed with error(s). (Code: DeploymentFailed) AKS managed-cluster preflight failed."
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'AKS managed-cluster preflight failed'
+            @($script:submissions) | Should -Be @('swedencentral', 'swedencentral', 'swedencentral')
+            @($script:validations) | Should -Be @('swedencentral')
+            $result.DeploymentAttempts | Should -Be 3
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $script:removed.Count | Should -Be 0
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        }
+
+        It 'Never relocates AKS zone failures with <restriction>' -ForEach @(
+            @{ restriction = 'custom location' }, @{ restriction = 'CI location' }, @{ restriction = 'token location' }
+            @{ restriction = 'retained resources' }, @{ restriction = 'global resources' }
+            @{ restriction = 'resource-group scope' }, @{ restriction = 'no movable input' }
+        ) {
+            switch ($restriction) {
+                'custom location' { $retryInput.CustomLocation = 'swedencentral' }
+                'CI location' { $templateInput.AdditionalParameters.resourceLocation = 'swedencentral' }
+                'token location' { $retryInput.TokenResourceLocation = 'Sweden Central' }
+                'retained resources' { $retryInput.RemoveDeployment = $false }
+                'global resources' { Mock Get-AvailableResourceLocation { @{ Location = 'swedencentral'; IsGlobal = $true } } }
+                'resource-group scope' {
+                    $template.'$schema' = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+                    $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+                }
+                'no movable input' {
+                    $template.variables.Remove('regionToken')
+                    $templateInput.AdditionalParameters.Remove('resourceLocation')
+                    $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'AKS managed-cluster preflight failed'
+            $script:validations.Count | Should -Be 1
+            $script:submissions.Count | Should -Be 1
+            $script:removed.Count | Should -Be 0
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        }
+
+        It 'Rejects a mismatched error region during <phase>' -ForEach @(
+            @{ phase = 'validation' }, @{ phase = 'deployment' }
+        ) {
+            $script:regionalError = $script:aksResponseJson.Replace('swedencentral', 'norwayeast') | ConvertFrom-Json -AsHashtable
+            if ($phase -eq 'validation') { $script:validationFailures = @('swedencentral') }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Not -BeNullOrEmpty
+            $result.AttemptedLocations | Should -Be @('swedencentral')
+            $script:validations.Count | Should -Be 1
+            $script:submissions.Count | Should -Be ($phase -eq 'validation' ? 0 : 1)
+            $script:removed.Count | Should -Be 0
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+        }
+
+        It 'Requires an authoritative Failed root instead of <state>' -ForEach @(
+            @{ state = 'Running' }, @{ state = 'Accepted' }, @{ state = 'Canceled' }
+            @{ state = 'Succeeded' }, @{ state = 'Unknown' }, @{ state = '' }
+        ) {
+            Mock Get-AzDeployment { @{ DeploymentName = $Name; ProvisioningState = $state } }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'no retry is safe'
+            $script:validations.Count | Should -Be 1
+            $script:submissions.Count | Should -Be 1
+            $script:removed.Count | Should -Be 0
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        }
+
+        It 'Does not relocate when root status cannot be read' {
+            Mock Get-AzDeployment { throw [System.UnauthorizedAccessException]::new('Root lookup forbidden.') }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'Root lookup forbidden'
+            $script:submissions.Count | Should -Be 1
+            $script:removed.Count | Should -Be 0
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        }
+
+        It 'Retains cleanup ownership when <failure>' -ForEach @(
+            @{ failure = 'resource removal fails'; expected = 'removal failed' }
+            @{ failure = 'resources remain'; expected = 'still exists after cleanup' }
+            @{ failure = 'record deletion fails'; expected = 'record removal failed' }
+            @{ failure = 'record remains'; expected = 'record .* still exists after cleanup' }
+        ) {
+            switch ($failure) {
+                'resource removal fails' { Mock Remove-AzResource { throw 'Removal failed.' } }
+                'resources remain' { Mock Remove-AzResource {} }
+                'record deletion fails' {
+                    Mock Invoke-AzRestMethod {
+                        if ($Method -eq 'DELETE') { return New-FixtureResponse -StatusCode 403 }
+                        Invoke-FixtureRest -Method $Method -Path $Path
+                    }
+                }
+                'record remains' {
+                    Mock Invoke-AzRestMethod {
+                        if ($Method -eq 'DELETE') { return New-FixtureResponse -StatusCode 202 }
+                        Invoke-FixtureRest -Method $Method -Path $Path
+                    }
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match $expected
+            $result.Exception | Should -Match 'AKS managed-cluster preflight failed'
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $script:validations.Count | Should -Be 1
+            $script:submissions.Count | Should -Be 1
+            $script:records.ContainsKey($script:roots[0]) | Should -BeTrue
+        }
+
+        It 'Rejects <proof> cleanup confirmation' -ForEach @(
+            @{ proof = 'null' }, @{ proof = 'empty' }, @{ proof = 'wrong name' }, @{ proof = 'extra name' }
+        ) {
+            Mock Initialize-DeploymentRemoval {
+                $RequireCompleteRemoval | Should -BeTrue
+                switch ($proof) {
+                    'null' { return }
+                    'empty' { @{ RemovedDeploymentNames = @() } }
+                    'wrong name' { @{ RemovedDeploymentNames = @('another-deployment') } }
+                    'extra name' { @{ RemovedDeploymentNames = @($DeploymentNames) + @('another-deployment') } }
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'Cleanup did not confirm removal'
+            $script:validations.Count | Should -Be 1
+            $script:submissions.Count | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+        }
+
+        It 'Stops on a mixed <code> failure instead of relocating' -ForEach @(
+            @{ code = 'Unknown' }, @{ code = 'AuthorizationFailed' }, @{ code = 'QuotaExceeded' }, @{ code = 'BadRequest' }
+        ) {
+            $message = $code -eq 'BadRequest' ?
+            '{"code":"PropertyChangeNotAllowed","details":null,"message":"Changing property \"agentPoolProfile.availabilityZone\" is not allowed in an api-version before \"2026-01-02-preview\".","subcode":"","target":"agentPoolProfile.availabilityZone"}' :
+            'Not a regional capacity failure.'
+            $script:regionalError.error.details += @{ code = $code; message = $message }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'AKS managed-cluster preflight failed'
+            $script:validations.Count | Should -Be 1
+            $script:submissions.Count | Should -Be 1
+            $script:removed.Count | Should -Be 0
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+        }
+
+        It 'Propagates cancellation without querying or cleaning a claimed AKS failure' {
+            $script:outcomes = @('Cancel', 'Succeeded')
+            { Invoke-TemplateDeploymentWithRetry @retryInput } | Should -Throw '*cancelled*'
+            $script:submissions.Count | Should -Be 1
+            $script:removed.Count | Should -Be 0
+            Should -Invoke Get-AzDeployment -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        }
+
+        It 'Preserves the original exception when AKS error evidence is rejected' {
+            $script:regionalError.error.details[0].message = $script:regionalError.error.details[0].message.Replace("are ''", "are '1,2'")
+            Mock New-AzSubscriptionDeployment {
+                try {
+                    Invoke-FixtureSubmission -Name $DeploymentName -Path $TemplateFile -Region $resourceLocation -BaseTime $baseTime -Secret $adminSecret
+                } catch {
+                    $script:originalAksError = $_
+                    throw
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            [object]::ReferenceEquals($result.ErrorRecord.Exception, $script:originalAksError.Exception) | Should -BeTrue
+            $result.Exception | Should -Match 'AKS managed-cluster preflight failed'
+            $script:removed.Count | Should -Be 0
+            $script:submissions.Count | Should -Be 1
+        }
+    }
+
+    It 'Revalidates ML Cosmos capacity in another region only after resources and deployment records are confirmed absent' {
+        Initialize-FixtureMachineLearningCosmosFailure
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.ContainsKey('Exception') | Should -BeFalse
+        @($script:validations) | Should -Be @('norwayeast', 'swedencentral')
+        @($script:submissions) | Should -Be @('norwayeast', 'swedencentral')
+        $result.DeploymentOutput.region.value | Should -Be 'swedencentral'
+        $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+        $script:records.ContainsKey($script:roots[0]) | Should -BeFalse
+        $script:resourceRegion | Should -Be 'swedencentral'
+        $root = $script:roots[0]
+        $script:trace.IndexOf("remove:$script:groupId") | Should -BeLessThan $script:trace.LastIndexOf("GET:$script:groupId")
+        $script:trace.LastIndexOf("GET:$script:groupId") | Should -BeLessThan $script:trace.IndexOf("DELETE:$root")
+        $script:trace.IndexOf("DELETE:$root") | Should -BeLessThan $script:trace.LastIndexOf("GET:$root")
+        $script:trace.LastIndexOf("GET:$root") | Should -BeLessThan $script:trace.IndexOf('validate:swedencentral')
+        $script:trace.IndexOf('validate:swedencentral') | Should -BeLessThan $script:trace.IndexOf('submit:swedencentral')
+        $result.AttemptedLocations | Should -Be @('norwayeast', 'swedencentral')
+        $result.DeploymentAttempts | Should -Be 2
+        $templateInput.AdditionalParameters.resourceLocation | Should -BeExactly ''
+        Should -Invoke New-AzSubscriptionDeployment -Times 2 -Exactly -ParameterFilter { $Location -eq 'WestEurope' }
+    }
+
+    It 'Passes the selected resource region into ML Cosmos validation before submitting anything' {
+        Initialize-FixtureMachineLearningCosmosFailure
+        $script:validationFailures = @('norwayeast')
+        $script:outcomes = @('Succeeded')
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.ContainsKey('Exception') | Should -BeFalse
+        @($script:validations) | Should -Be @('norwayeast', 'swedencentral')
+        @($script:submissions) | Should -Be @('swedencentral')
+        $result.DeploymentAttempts | Should -Be 1
+        $script:removed.Count | Should -Be 0
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+    }
+
+    It 'Preserves the three-region and three-submission limits for repeated ML Cosmos capacity failures' {
+        Initialize-FixtureMachineLearningCosmosFailure
+        $script:outcomes = @('Regional', 'Regional', 'Regional')
+        Mock New-AzSubscriptionDeployment {
+            $script:regionalError = $script:cosmosResponseJson.Replace('Norway East', $resourceLocation) | ConvertFrom-Json -AsHashtable
+            Invoke-FixtureSubmission $DeploymentName $TemplateFile $resourceLocation $baseTime $adminSecret
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.Exception | Should -Match 'Machine Learning workspace database account creation failed'
+        @($script:submissions) | Should -Be $script:regions
+        @($script:validations) | Should -Be $script:regions
+        $result.DeploymentAttempts | Should -Be 3
+        $result.AttemptedLocations | Should -Be $script:regions
+        $result.RemainingDeploymentNames | Should -Be @($script:names[2])
+        $script:removed.Count | Should -Be 2
+    }
+
+    It 'Spends only three candidate slots on ML Cosmos validation failures without submitting deployments' {
+        Initialize-FixtureMachineLearningCosmosFailure
+        $script:validationFailures = $script:regions
+        Mock Test-AzSubscriptionDeployment {
+            $script:regionalError = $script:cosmosResponseJson.Replace('Norway East', $resourceLocation) | ConvertFrom-Json -AsHashtable
+            Invoke-FixtureValidation $TemplateFile $resourceLocation $baseTime $adminSecret
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.Exception | Should -Not -BeNullOrEmpty
+        $result.AttemptedLocations | Should -Be $script:regions
+        $result.DeploymentAttempts | Should -Be 0
+        $script:submissions.Count | Should -Be 0
+        $script:removed.Count | Should -Be 0
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+    }
+
+    It 'Never relocates ML Cosmos capacity with <pin>' -ForEach @(
+        @{ pin = 'custom location' }, @{ pin = 'CI location' }, @{ pin = 'token location' }
+        @{ pin = 'retained resources' }, @{ pin = 'global resources' }, @{ pin = 'resource-group scope' }, @{ pin = 'no movable input' }
+    ) {
+        Initialize-FixtureMachineLearningCosmosFailure
+        switch ($pin) {
+            'custom location' { $retryInput.CustomLocation = 'norwayeast' }
+            'CI location' { $templateInput.AdditionalParameters.resourceLocation = 'norwayeast' }
+            'token location' { $retryInput.TokenResourceLocation = 'Norway East' }
+            'retained resources' { $retryInput.RemoveDeployment = $false }
+            'global resources' { Mock Get-AvailableResourceLocation { @{ Location = 'norwayeast'; IsGlobal = $true } } }
+            'resource-group scope' {
+                $template.'$schema' = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+                $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+            }
+            'no movable input' {
+                $template.variables.Remove('regionToken')
+                $templateInput.AdditionalParameters.Remove('resourceLocation')
+                $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+            }
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.Exception | Should -Match 'Machine Learning workspace database account creation failed'
+        $script:validations.Count | Should -Be 1
+        $script:submissions.Count | Should -Be 1
+        $script:removed.Count | Should -Be 0
+        $result.RemainingDeploymentNames | Should -Be @($script:names)
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+    }
+
+    It 'Does not relocate a fixed secondary Cosmos region during <phase>' -ForEach @(
+        @{ phase = 'validation' }, @{ phase = 'deployment' }
+    ) {
+        Initialize-FixtureMachineLearningCosmosFailure
+        $script:regionalError = $script:cosmosResponseJson.Replace('Norway East', 'Sweden Central') | ConvertFrom-Json -AsHashtable
+        if ($phase -eq 'validation') { $script:validationFailures = @('norwayeast') }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.Exception | Should -Not -BeNullOrEmpty
+        $result.AttemptedLocations | Should -Be @('norwayeast')
+        $script:validations.Count | Should -Be 1
+        $script:submissions.Count | Should -Be ($phase -eq 'validation' ? 0 : 1)
+        $script:removed.Count | Should -Be 0
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+    }
+
+    It 'Requires an authoritative Failed root for ML Cosmos despite a <state> response' -ForEach @(
+        @{ state = 'Running' }, @{ state = 'Accepted' }, @{ state = 'Canceled' }, @{ state = 'Succeeded' }, @{ state = 'Unknown' }
+    ) {
+        Initialize-FixtureMachineLearningCosmosFailure
+        Mock Get-AzDeployment { @{ DeploymentName = $Name; ProvisioningState = $state } }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.Exception | Should -Match 'no retry is safe'
+        $script:validations.Count | Should -Be 1
+        $script:submissions.Count | Should -Be 1
+        $script:removed.Count | Should -Be 0
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+    }
+
+    It 'Retains ML Cosmos cleanup ownership when <failure>' -ForEach @(
+        @{ failure = 'resource removal fails'; expected = 'removal failed' }
+        @{ failure = 'resources remain'; expected = 'still exists after cleanup' }
+        @{ failure = 'record deletion fails'; expected = 'record removal failed' }
+        @{ failure = 'record remains'; expected = 'record .* still exists after cleanup' }
+    ) {
+        Initialize-FixtureMachineLearningCosmosFailure
+        switch ($failure) {
+            'resource removal fails' { Mock Remove-AzResource { throw 'Removal failed.' } }
+            'resources remain' { Mock Remove-AzResource {} }
+            'record deletion fails' {
+                Mock Invoke-AzRestMethod {
+                    if ($Method -eq 'DELETE') { return New-FixtureResponse -StatusCode 403 }
+                    Invoke-FixtureRest $Method $Path
+                }
+            }
+            'record remains' {
+                Mock Invoke-AzRestMethod {
+                    if ($Method -eq 'DELETE') { return New-FixtureResponse -StatusCode 202 }
+                    Invoke-FixtureRest $Method $Path
+                }
+            }
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.Exception | Should -Match $expected
+        $result.Exception | Should -Match 'Machine Learning workspace database account creation failed'
+        $result.RemainingDeploymentNames | Should -Be @($script:names)
+        $script:validations.Count | Should -Be 1
+        $script:submissions.Count | Should -Be 1
+        $script:records.ContainsKey($script:roots[0]) | Should -BeTrue
+    }
+
+    It 'Rejects <proof> cleanup confirmation before ML Cosmos relocation' -ForEach @(
+        @{ proof = 'null' }, @{ proof = 'empty' }, @{ proof = 'wrong name' }, @{ proof = 'extra name' }
+    ) {
+        Initialize-FixtureMachineLearningCosmosFailure
+        Mock Initialize-DeploymentRemoval {
+            $RequireCompleteRemoval | Should -BeTrue
+            switch ($proof) {
+                'null' { return }
+                'empty' { @{ RemovedDeploymentNames = @() } }
+                'wrong name' { @{ RemovedDeploymentNames = @('another-deployment') } }
+                'extra name' { @{ RemovedDeploymentNames = @($DeploymentNames) + @('another-deployment') } }
+            }
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.Exception | Should -Match 'Cleanup did not confirm removal'
+        $script:validations.Count | Should -Be 1
+        $script:submissions.Count | Should -Be 1
+        $result.RemainingDeploymentNames | Should -Be @($script:names)
+    }
+
+    It 'Rejects ML Cosmos evidence when a later operation page has <kind>' -ForEach @(
+        @{ kind = 'permanent error' }, @{ kind = 'running operation' }, @{ kind = 'missing error' }, @{ kind = 'another Cosmos region' }
+        @{ kind = 'extra error information' }
+    ) {
+        Initialize-FixtureMachineLearningCosmosFailure
+        Mock Invoke-AzRestMethod {
+            $root = $script:roots[0]
+            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2021-04-01") {
+                return New-FixtureResponse -Content @{
+                    value = @($script:records[$root].Operations[1])
+                    nextLink = "https://management.azure.com${root}/operations?api-version=2021-04-01&`$skiptoken=next"
+                }
+            }
+            if ($Method -eq 'GET' -and $Path.EndsWith('&$skiptoken=next')) {
+                $operation = switch ($kind) {
+                    'permanent error' { New-FixtureOperation -State Failed -StatusMessage @{ error = @{ code = 'InvalidParameter'; message = 'Invalid encryption key.' } } }
+                    'running operation' { New-FixtureOperation -State Running -StatusMessage $script:regionalError }
+                    'missing error' { New-FixtureOperation -State Failed }
+                    'another Cosmos region' {
+                        New-FixtureOperation -State Failed -StatusMessage ($script:cosmosResponseJson.Replace('Norway East', 'Sweden Central') | ConvertFrom-Json -AsHashtable)
+                    }
+                    'extra error information' {
+                        New-FixtureOperation -State Failed -StatusMessage @{
+                            error = @{ code = 'SkuNotAvailable'; message = 'SKU not available in this location.' }
+                            additionalInfo = @{ code = 'AuthorizationFailed' }
+                        }
+                    }
+                }
+                return New-FixtureResponse -Content @{ value = @($operation) }
+            }
+            Invoke-FixtureRest $Method $Path
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.Exception | Should -Not -BeNullOrEmpty
+        $script:submissions.Count | Should -Be 1
+        $script:validations.Count | Should -Be 1
+        $script:removed.Count | Should -Be 0
+        $result.RemainingDeploymentNames | Should -Be @($script:names)
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Path.EndsWith('&$skiptoken=next') }
+    }
+
+    It 'Preserves the original ML exception when the Cosmos region does not match' {
+        Initialize-FixtureMachineLearningCosmosFailure
+        $script:regionalError = $script:cosmosResponseJson.Replace('Norway East', 'Sweden Central') | ConvertFrom-Json -AsHashtable
+        Mock New-AzSubscriptionDeployment {
+            try {
+                Invoke-FixtureSubmission $DeploymentName $TemplateFile $resourceLocation $baseTime $adminSecret
+            } catch {
+                $script:originalMlError = $_
+                throw
+            }
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        [object]::ReferenceEquals($result.ErrorRecord.Exception, $script:originalMlError.Exception) | Should -BeTrue
+        $result.Exception | Should -Match 'Machine Learning workspace database account creation failed'
+        $script:removed.Count | Should -Be 0
+        $script:submissions.Count | Should -Be 1
     }
 
     It 'Preserves SDK-formatted display messages at <scope> scope' -ForEach @(
