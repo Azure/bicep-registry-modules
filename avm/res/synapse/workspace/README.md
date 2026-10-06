@@ -98,11 +98,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         nodeSize: 'Small'
         nodeSizeFamily: 'MemoryOptimized'
         sessionLevelPackagesEnabled: true
+        sparkVersion: '3.5'
       }
       {
         name: 'depbdp02'
         nodeSize: 'Small'
         nodeSizeFamily: 'MemoryOptimized'
+        sparkVersion: '3.5'
       }
     ]
     tags: {
@@ -159,12 +161,14 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           "name": "depbdp01",
           "nodeSize": "Small",
           "nodeSizeFamily": "MemoryOptimized",
-          "sessionLevelPackagesEnabled": true
+          "sessionLevelPackagesEnabled": true,
+          "sparkVersion": "3.5"
         },
         {
           "name": "depbdp02",
           "nodeSize": "Small",
-          "nodeSizeFamily": "MemoryOptimized"
+          "nodeSizeFamily": "MemoryOptimized",
+          "sparkVersion": "3.5"
         }
       ]
     },
@@ -214,11 +218,13 @@ param bigDataPools = [
     nodeSize: 'Small'
     nodeSizeFamily: 'MemoryOptimized'
     sessionLevelPackagesEnabled: true
+    sparkVersion: '3.5'
   }
   {
     name: 'depbdp02'
     nodeSize: 'Small'
     nodeSizeFamily: 'MemoryOptimized'
+    sparkVersion: '3.5'
   }
 ]
 param tags = {

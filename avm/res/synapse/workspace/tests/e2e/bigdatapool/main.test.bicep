@@ -59,6 +59,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'dep${namePrefix}bdp01'
           nodeSizeFamily: 'MemoryOptimized'
           nodeSize: 'Small'
+          sparkVersion: '3.5'
           autoScale: {
             minNodeCount: 3
             maxNodeCount: 5
@@ -80,6 +81,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'dep${namePrefix}bdp02'
           nodeSizeFamily: 'MemoryOptimized'
           nodeSize: 'Small'
+          sparkVersion: '3.5'
         }
       ]
       tags: {
