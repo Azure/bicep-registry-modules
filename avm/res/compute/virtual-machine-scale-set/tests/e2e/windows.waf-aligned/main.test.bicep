@@ -43,7 +43,11 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     storageAccountName: take('dep${namePrefix}sa${serviceShort}01', 24)
-    storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
+    // Qualified with the root deployment name (same derivation already used for this file's nested module names)
+    // and location to avoid reusing the same deployment-script/container-group identity across retried root
+    // deployment attempts - whether same-region retries or region-relocated retries - while staying stable across
+    // the init/idem test iterations within a single root deployment attempt.
+    storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}-${uniqueString(deployment().name, resourceLocation)}'
   }
 }
 
