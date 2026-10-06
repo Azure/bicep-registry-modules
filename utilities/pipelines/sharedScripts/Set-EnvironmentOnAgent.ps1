@@ -34,6 +34,14 @@ function Install-CustomModule {
         [object[]] $InstalledModule = @()
     )
 
+    if (-not (Get-PSRepository -ErrorAction Stop | Where-Object Name -EQ 'PSGallery')) {
+        if (-not $PSCmdlet.ShouldProcess('PSGallery', 'Register default PowerShell repository')) {
+            return
+        }
+        Write-Verbose 'Registering the default PowerShell Gallery repository.' -Verbose
+        Register-PSRepository -Default -ErrorAction Stop
+    }
+
     # Remove exsisting module in session
     if (Get-Module $Module -ErrorAction 'SilentlyContinue') {
         try {
