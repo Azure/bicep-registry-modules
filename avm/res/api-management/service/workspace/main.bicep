@@ -768,6 +768,7 @@ type subscriptionType = {
   @sys.description('Optional. Primary subscription key. If not specified during request key will be generated automatically.')
   @minLength(1)
   @maxLength(256)
+  @secure()
   primaryKey: string?
 
   @sys.description('Optional. Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".')
@@ -776,6 +777,7 @@ type subscriptionType = {
   @sys.description('Optional. Secondary subscription key. If not specified during request key will be generated automatically.')
   @minLength(1)
   @maxLength(256)
+  @secure()
   secondaryKey: string?
 
   @sys.description('''Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:

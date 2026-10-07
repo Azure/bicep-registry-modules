@@ -5251,7 +5251,7 @@ The security alert policies to create in the server.
 | [`enableTelemetry`](#parameter-securityalertpoliciesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`retentionDays`](#parameter-securityalertpoliciesretentiondays) | int | Specifies the number of days to keep in the Threat Detection audit logs. |
 | [`state`](#parameter-securityalertpoliciesstate) | string | Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database. |
-| [`storageAccountAccessKey`](#parameter-securityalertpoliciesstorageaccountaccesskey) | string | Specifies the identifier key of the Threat Detection audit storage account. |
+| [`storageAccountAccessKey`](#parameter-securityalertpoliciesstorageaccountaccesskey) | securestring | Specifies the identifier key of the Threat Detection audit storage account. |
 | [`storageEndpoint`](#parameter-securityalertpoliciesstorageendpoint) | string | Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs. |
 
 ### Parameter: `securityAlertPolicies.name`
@@ -5326,7 +5326,7 @@ Specifies the state of the policy, whether it is enabled or disabled or a policy
 Specifies the identifier key of the Threat Detection audit storage account.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `securityAlertPolicies.storageEndpoint`
 
