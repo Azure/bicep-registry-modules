@@ -44,7 +44,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-01-01' = {
   }
 }
 
-module virtualMachine '../../../../../compute/virtual-machine/main.bicep' = {
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.3' = {
   name: '${uniqueString(deployment().name, location)}-vm'
   params: {
     name: virtualMachineName
