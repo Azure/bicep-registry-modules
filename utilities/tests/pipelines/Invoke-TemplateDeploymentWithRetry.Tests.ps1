@@ -51,7 +51,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         }
         function New-AzManagementGroupDeployment {
             [CmdletBinding()]
-            param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $ManagementGroupId, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret)
+            param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $ManagementGroupId, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret, [object] $DefaultProfile)
             throw 'Unexpected Azure deployment.'
         }
         function New-AzTenantDeployment {
@@ -286,6 +286,16 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                 }
                 'FailedResult' { return @{ ProvisioningState = 'Failed' } }
                 'Timeout' { throw [System.TimeoutException]::new('Original submission timed out.') }
+                'Forbidden' {
+                    $script:records[$rootId].State = $script:forbiddenState
+                    $exception = [System.InvalidOperationException]::new('Original management-group submission returned HTTP 403.')
+                    $exception | Add-Member -NotePropertyName Response -NotePropertyValue @{ StatusCode = 403 }
+                    $record = [System.Management.Automation.ErrorRecord]::new(
+                        $exception, 'Forbidden', [System.Management.Automation.ErrorCategory]::OperationStopped, $rootId
+                    )
+                    $record.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('Original authorization diagnostic; OperationID: fixture-operation.')
+                    throw $record
+                }
                 'Transport' { throw [System.Net.Http.HttpRequestException]::new('Transport outcome unknown.') }
                 'Cancel' { throw [System.OperationCanceledException]::new('Deployment cancelled.') }
                 'NoResult' { return }
@@ -307,7 +317,12 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                     $exception, 'DeploymentNotFound', [System.Management.Automation.ErrorCategory]::ObjectNotFound, $id
                 )
             }
-            @{ DeploymentName = $Name; ProvisioningState = $script:records[$id].State }
+            @{
+                DeploymentName    = $Name
+                Id                = $id
+                ProvisioningState = $script:records[$id].State
+                Outputs           = @{ region = @{ type = 'string'; value = $script:resourceRegion } }
+            }
         }
 
         function Invoke-FixtureRest {
@@ -356,10 +371,15 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         $script:groupId = "/subscriptions/$script:subscriptionId/resourceGroups/retry-fixture"
         $script:vnetId = "$script:groupId/providers/Microsoft.Network/virtualNetworks/dependencies"
         $script:nestedId = "$script:groupId/providers/Microsoft.Resources/deployments/dependencies"
-        $script:azContext = @{ Subscription = @{ Id = $script:subscriptionId }; Environment = @{ ResourceManagerUrl = 'https://management.azure.com/' } }
+        $script:azContext = @{
+            Subscription = @{ Id = $script:subscriptionId }
+            Tenant       = @{ Id = '22222222-2222-2222-2222-222222222222' }
+            Environment  = @{ ResourceManagerUrl = 'https://management.azure.com/' }
+        }
         $script:clock = [datetime]::new(2026, 10, 3, 8, 51, 48, [DateTimeKind]::Utc)
         $script:regions = @('italynorth', 'swedencentral', 'eastus')
         $script:outcomes = @('Regional', 'Succeeded')
+        $script:forbiddenState = 'Succeeded'
         $script:validationFailures = @()
         $script:records = @{}
         $script:restOverrides = @{}
@@ -420,7 +440,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             if ($Context) {
                 $script:azContext = $Context
             } else {
-                $script:azContext = @{ Subscription = @{ Id = $Subscription }; Environment = $script:azContext.Environment }
+                $script:azContext = @{ Subscription = @{ Id = $Subscription }; Tenant = $script:azContext.Tenant; Environment = $script:azContext.Environment }
             }
         }
         Mock Get-AzContext { $script:azContext }
@@ -2628,6 +2648,113 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         @($script:submissions) | Should -Be @('italynorth', 'swedencentral')
         $result.RemainingDeploymentNames | Should -Be @($script:names[1])
         Should -Invoke Get-AzDeployment -Times 3 -Exactly -ParameterFilter { $Name -eq $script:names[0] }
+    }
+
+    Context 'Management-group authorization reconciliation within shared budgets' -Tag 'ManagementGroupRecovery' {
+        BeforeEach {
+            $template.'$schema' = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
+            $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+            $originalBytes = [System.IO.File]::ReadAllBytes($templatePath)
+            $script:outcomes = @('Forbidden')
+        }
+
+        It 'Recovers outputs with one submission and no intermediate cleanup under <kind> limits' -ForEach @(
+            @{ kind = 'single-attempt'; limit = 1; remove = $true; pin = '' }
+            @{ kind = 'normal'; limit = 3; remove = $true; pin = '' }
+            @{ kind = 'retained-resources'; limit = 3; remove = $false; pin = '' }
+            @{ kind = 'pinned-region'; limit = 3; remove = $true; pin = 'italynorth' }
+        ) {
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput -DeploymentLimit $limit -RegionLimit $limit `
+                -RemoveDeployment $remove -CustomLocation $pin
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $result.DeploymentOutput.region.value | Should -BeExactly 'italynorth'
+            $result.DeploymentAttempts | Should -Be 1
+            $result.AttemptedLocations | Should -Be @('italynorth')
+            $result.DeploymentNames | Should -Be @($script:names)
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+            $result.PendingDeletionDeploymentIds.Count | Should -Be 0
+            $script:names.Count | Should -Be 1
+            @($script:validations) | Should -Be @('italynorth')
+            @($script:submissions) | Should -Be @('italynorth')
+            $script:alive.Count | Should -Be 2
+            Should -Invoke New-AzManagementGroupDeployment -Times 1 -Exactly -ParameterFilter {
+                $DeploymentName -eq $script:names[0] -and $ManagementGroupId -eq 'test-management-group' -and
+                [object]::ReferenceEquals($DefaultProfile, $script:azContext)
+            }
+            Should -Invoke Get-AzManagementGroupDeployment -Times 1 -Exactly -ParameterFilter {
+                $Name -eq $script:names[0] -and $ManagementGroupId -eq 'test-management-group' -and
+                [object]::ReferenceEquals($DefaultProfile, $script:azContext)
+            }
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+        }
+
+        It 'Does not spend another region or submission on <state> despite available budgets and regional operation errors' -ForEach @(
+            @{ state = 'Failed' }, @{ state = 'Unknown' }, @{ state = 'Canceled' }, @{ state = 'Running' }
+            @{ state = 'Forbidden read' }, @{ state = 'Wrong management group' }
+        ) {
+            $script:forbiddenState = $state
+            if ($state -eq 'Running') {
+                Mock Start-Sleep { $script:clock = $script:clock.AddHours(1) }
+            } elseif ($state -eq 'Forbidden read') {
+                Mock Get-AzManagementGroupDeployment {
+                    throw [System.Net.Http.HttpRequestException]::new('Status remains forbidden.', $null, [System.Net.HttpStatusCode]::Forbidden)
+                }
+            } elseif ($state -eq 'Wrong management group') {
+                Mock Get-AzManagementGroupDeployment {
+                    @{ DeploymentName = $Name; Id = "/providers/Microsoft.Management/managementGroups/wrong/providers/Microsoft.Resources/deployments/$Name"; ProvisioningState = 'Succeeded' }
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'Original management-group submission returned HTTP 403'
+            $result.Exception | Should -Match 'Original authorization diagnostic; OperationID: fixture-operation'
+            $result.ContainsKey('DeploymentOutput') | Should -BeFalse
+            $result.DeploymentAttempts | Should -Be 1
+            $result.AttemptedLocations | Should -Be @('italynorth')
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+            $script:names.Count | Should -Be 1
+            @($script:validations) | Should -Be @('italynorth')
+            $script:alive.Count | Should -Be 2
+            Should -Invoke Get-AzManagementGroupDeployment -Times 1 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($templatePath)) | Should -Be ([Convert]::ToBase64String($originalBytes))
+        }
+
+        It 'Preserves earlier attempt ownership when the later original submission is recovered' {
+            $script:outcomes = @('Legacy', 'Forbidden')
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $result.DeploymentOutput.region.value | Should -BeExactly 'italynorth'
+            $result.DeploymentAttempts | Should -Be 2
+            $result.AttemptedLocations | Should -Be @('italynorth')
+            $result.DeploymentNames | Should -Be @($script:names)
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            @($script:names | Select-Object -Unique).Count | Should -Be 2
+            @($script:validations) | Should -Be @('italynorth')
+            Should -Invoke Get-AzManagementGroupDeployment -Times 1 -Exactly -ParameterFilter { $Name -eq $script:names[1] }
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+        }
+
+        It 'Does not turn a validation-stage authorization denial into submitted-deployment recovery' {
+            Mock Test-AzManagementGroupDeployment {
+                throw [System.Net.Http.HttpRequestException]::new('Validation forbidden.', $null, [System.Net.HttpStatusCode]::Forbidden)
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.Exception | Should -Match 'Validation forbidden'
+            $result.DeploymentAttempts | Should -Be 0
+            $result.DeploymentNames.Count | Should -Be 0
+            Should -Invoke New-AzManagementGroupDeployment -Times 0 -Exactly
+            Should -Invoke Get-AzManagementGroupDeployment -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        }
     }
 
     It 'Bounds preparation failures even when no deployment is submitted' {
