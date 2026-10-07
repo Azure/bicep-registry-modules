@@ -9,7 +9,7 @@ Describe 'Regional validation workflow runtime integration' {
         $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $actionPath -Raw)
         $environmentNames = @(
-            'TEMP', 'GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME',
+            'TEMP', 'TMPDIR', 'GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME',
             'localToken_resourceLocation'
         )
 
@@ -139,6 +139,7 @@ Describe 'Regional validation workflow runtime integration' {
             Remove-Item -LiteralPath "Env:\$name" -ErrorAction SilentlyContinue
         }
         $env:TEMP = $TestDrive
+        $env:TMPDIR = $TestDrive
         $env:GITHUB_WORKSPACE = $repoRootPath
         $env:GITHUB_OUTPUT = Join-Path $TestDrive 'step-output.txt'
         $null = New-Item -Path $env:GITHUB_OUTPUT -ItemType File -Force
@@ -196,7 +197,7 @@ Describe 'Regional validation workflow runtime integration' {
         }
         Mock Invoke-AzRestMethod {
             $Method | Should -Be 'GET'
-            $Path | Should -Match '^/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/[^/]+/operations\?api-version=2021-04-01$'
+            $Path | Should -Match '^/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/[^/]+/operations\?api-version=2025-04-01$'
             @{
                 StatusCode = 200
                 Content    = ConvertTo-Json -Depth 10 -InputObject @{ value = @(

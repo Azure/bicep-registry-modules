@@ -534,7 +534,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             @{ pages = 1 }, @{ pages = 2 }
         ) {
             if ($pages -eq 2) {
-                $page = "${script:parentId}/operations?api-version=2021-04-01"
+                $page = "${script:parentId}/operations?api-version=2025-04-01"
                 $nextPage = "$page&`$skiptoken=next"
                 $script:restOverrides["GET $page"] = New-FixtureResponse -Content @{
                     value = @($script:records[$script:parentId].Operations[1..3]); nextLink = "https://management.azure.com$nextPage"
@@ -667,7 +667,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                     $script:records[$script:parentId].Operations += $siblingAction
                 }
                 if ($pages -eq 2) {
-                    $page = "${script:parentId}/operations?api-version=2021-04-01"
+                    $page = "${script:parentId}/operations?api-version=2025-04-01"
                     $nextPage = "$page&`$skiptoken=next"
                     $script:restOverrides["GET $page"] = New-FixtureResponse -Content @{
                         value = @($script:records[$script:parentId].Operations[0..3]); nextLink = "https://management.azure.com$nextPage"
@@ -932,7 +932,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         }
 
         It 'Rejects ambiguous same-child evidence on a later operation page' {
-            $page = "${script:parentId}/operations?api-version=2021-04-01"
+            $page = "${script:parentId}/operations?api-version=2025-04-01"
             $nextPage = "$page&`$skiptoken=next"
             $script:restOverrides["GET $page"] = New-FixtureResponse -Content @{
                 value = $script:records[$script:parentId].Operations; nextLink = "https://management.azure.com$nextPage"
@@ -1022,7 +1022,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                 'nonterminal state' { $script:records[$script:preflightId].State = 'Running' }
                 'missing status after record lookup' { $script:records.Remove($script:preflightId) }
                 'missing operations' {
-                    $script:restOverrides["GET ${script:preflightId}/operations?api-version=2021-04-01"] =
+                    $script:restOverrides["GET ${script:preflightId}/operations?api-version=2025-04-01"] =
                     New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'DeploymentNotFound' } }
                 }
                 'missing descendant' {
@@ -1598,10 +1598,10 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         Initialize-FixtureMachineLearningCosmosFailure
         Mock Invoke-AzRestMethod {
             $root = $script:roots[0]
-            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2021-04-01") {
+            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2025-04-01") {
                 return New-FixtureResponse -Content @{
                     value = @($script:records[$root].Operations[1])
-                    nextLink = "https://management.azure.com${root}/operations?api-version=2021-04-01&`$skiptoken=next"
+                    nextLink = "https://management.azure.com${root}/operations?api-version=2025-04-01&`$skiptoken=next"
                 }
             }
             if ($Method -eq 'GET' -and $Path.EndsWith('&$skiptoken=next')) {
@@ -1677,7 +1677,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                 (New-FixtureOperation -Operation Action -State Failed -StatusMessage $script:regionalError)
             )
         }
-        $firstPage = "${id}/operations?api-version=2021-04-01"
+        $firstPage = "${id}/operations?api-version=2025-04-01"
         $nextPage = "$firstPage&`$skiptoken=next"
         $script:restOverrides["GET $firstPage"] = New-FixtureResponse -Content @{
             value    = @($script:records[$id].Operations[0])
@@ -1751,7 +1751,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
     ) {
         Mock Invoke-AzRestMethod {
             $root = $script:roots[0]
-            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2021-04-01") {
+            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2025-04-01") {
                 $failure = New-FixtureOperation -Id $script:nestedId -State Failed -StatusMessage $script:regionalError
                 $content = @{ value = @($script:records[$root].Operations[1], $failure) }
                 switch ($kind) {
@@ -1801,7 +1801,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
     ) {
         Mock Invoke-AzRestMethod {
             $root = $script:roots[0]
-            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2021-04-01") {
+            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2025-04-01") {
                 return New-FixtureResponse -Content @{ value = @($script:records[$root].Operations) + @(
                         (New-FixtureOperation -Operation $operation -State Failed -StatusMessage @{
                                 error = @{ code = 'InvalidTemplate'; message = 'Invalid configuration.' }
@@ -2341,6 +2341,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             $script:historyReads = 0
             $script:historyDeletes = 0
             $script:historyReadyAfter = 1
+            $script:historyState = 'Failed'
             $script:historyLookupError = $null
             Mock Invoke-AzRestMethod {
                 $id = $Path.Split('?')[0]
@@ -2354,7 +2355,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                     $script:historyReads++
                     if ($script:historyLookupError) { throw $script:historyLookupError }
                     if ($script:historyReads -le $script:historyReadyAfter) {
-                        return New-FixtureResponse -Content @{ id = $id; properties = @{ provisioningState = 'Failed' } }
+                        return New-FixtureResponse -Content @{ id = $id; properties = @{ provisioningState = $script:historyState } }
                     }
                     $script:records.Remove($id)
                     return New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = 'DeploymentNotFound' } }
@@ -2400,6 +2401,21 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             @($script:trace | Where-Object { $_ -like 'remove:*' }) | Should -Be @("remove:$script:groupId")
             $script:trace.LastIndexOf("GET:$($script:roots[0])") | Should -BeLessThan $script:trace.IndexOf('validate:swedencentral')
             $script:trace.IndexOf("remove:$script:groupId") | Should -BeLessThan $script:trace.IndexOf("DELETE:$($script:roots[0])")
+            Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+        }
+
+        It 'Waits through Deleting before authorizing regional relocation' {
+            $script:historyState = 'Deleting'
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $result.DeploymentAttempts | Should -Be 2
+            $result.PendingDeletionDeploymentIds | Should -BeNullOrEmpty
+            $script:historyReads | Should -Be 2
+            $script:historyDeletes | Should -Be 1
+            $script:trace.IndexOf("remove:$script:groupId") | Should -BeLessThan $script:trace.IndexOf("DELETE:$($script:roots[0])")
+            $script:trace.LastIndexOf("GET:$($script:roots[0])") | Should -BeLessThan $script:trace.IndexOf('validate:swedencentral')
             Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
         }
 
@@ -2899,11 +2915,11 @@ module dependency './dependency.bicep' = {
     It 'Traverses every operation page before removing resources' {
         Mock Invoke-AzRestMethod {
             $root = $script:roots[0]
-            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2021-04-01") {
+            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2025-04-01") {
                 $script:trace.Add('first-page')
                 return New-FixtureResponse -Content @{
                     value    = @($script:records[$root].Operations[0])
-                    nextLink = "https://management.azure.com${root}/operations?api-version=2021-04-01&`$skiptoken=next"
+                    nextLink = "https://management.azure.com${root}/operations?api-version=2025-04-01&`$skiptoken=next"
                 }
             }
             if ($Method -eq 'GET' -and $Path.EndsWith('&$skiptoken=next')) {
@@ -2927,12 +2943,12 @@ module dependency './dependency.bicep' = {
             if ($Method -eq 'GET' -and $Path.Contains('/operations?')) {
                 $root = $script:roots[0]
                 $nextLink = switch ($kind) {
-                    'foreign host' { "https://example.invalid${root}/operations?api-version=2021-04-01" }
-                    'different deployment' { "https://management.azure.com${root}-other/operations?api-version=2021-04-01" }
-                    'cycle' { "https://management.azure.com${root}/operations?api-version=2021-04-01" }
-                    'insecure scheme' { "http://management.azure.com${root}/operations?api-version=2021-04-01" }
-                    'userinfo' { "https://other@management.azure.com${root}/operations?api-version=2021-04-01" }
-                    'fragment' { "https://management.azure.com${root}/operations?api-version=2021-04-01#fragment" }
+                    'foreign host' { "https://example.invalid${root}/operations?api-version=2025-04-01" }
+                    'different deployment' { "https://management.azure.com${root}-other/operations?api-version=2025-04-01" }
+                    'cycle' { "https://management.azure.com${root}/operations?api-version=2025-04-01" }
+                    'insecure scheme' { "http://management.azure.com${root}/operations?api-version=2025-04-01" }
+                    'userinfo' { "https://other@management.azure.com${root}/operations?api-version=2025-04-01" }
+                    'fragment' { "https://management.azure.com${root}/operations?api-version=2025-04-01#fragment" }
                     'false link' { $false }
                     'zero link' { 0 }
                     'array link' { , @() }
@@ -2955,10 +2971,10 @@ module dependency './dependency.bicep' = {
     ) {
         Mock Invoke-AzRestMethod {
             $root = $script:roots[0]
-            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2021-04-01") {
+            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2025-04-01") {
                 return New-FixtureResponse -Content @{
                     value    = @($script:records[$root].Operations[1])
-                    nextLink = "https://management.azure.com${root}/operations?api-version=2021-04-01&`$skiptoken=next"
+                    nextLink = "https://management.azure.com${root}/operations?api-version=2025-04-01&`$skiptoken=next"
                 }
             }
             if ($Method -eq 'GET' -and $Path.EndsWith('&$skiptoken=next')) {
@@ -2988,7 +3004,7 @@ module dependency './dependency.bicep' = {
             }
             New-FixtureResponse -Content @{
                 value    = @((New-FixtureOperation -Id $script:groupId))
-                nextLink = "https://management.azure.com$($Path.Split('?')[0])?api-version=2021-04-01&`$skiptoken=next"
+                nextLink = "https://management.azure.com$($Path.Split('?')[0])?api-version=2025-04-01&`$skiptoken=next"
             }
         }
         $result = Get-DeploymentTargetResourceList -DeploymentNames 'known' -Scope subscription
