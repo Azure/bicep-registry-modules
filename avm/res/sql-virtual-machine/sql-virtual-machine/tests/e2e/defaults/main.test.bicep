@@ -5,13 +5,14 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-sqlvm.sqlvm-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-sqlvirtualmachine.sqlvirtualmachines-${serviceShort}-rg'
 
+// Capacity constraints for the SQL Server VM size used by the test dependencies
 #disable-next-line no-hardcoded-location
 var resourceLocation = 'eastus2'
 
-@description('Optional. A short identifier for the kind of deployment.')
-param serviceShort string = 'sqlvmmin'
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'svmmin'
 
 @description('Optional. The administrator password for the virtual machine.')
 @secure()
@@ -25,13 +26,13 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: resourceLocation
 }
 
-module nestedDependencies '../dependencies.bicep' = {
+module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-dependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualMachineName: '${namePrefix}${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
+    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     adminPassword: password
     location: resourceLocation
   }
@@ -43,7 +44,6 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: nestedDependencies.outputs.virtualMachineName
       virtualMachineResourceId: nestedDependencies.outputs.virtualMachineResourceId
       sqlServerLicenseType: 'PAYG'
     }

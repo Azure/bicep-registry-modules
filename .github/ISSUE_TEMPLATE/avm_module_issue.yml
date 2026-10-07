@@ -237,6 +237,7 @@ body:
         - "avm/res/service-networking/traffic-controller"
         - "avm/res/signal-r-service/signal-r"
         - "avm/res/signal-r-service/web-pub-sub"
+        - "avm/res/sql-virtual-machine/sql-virtual-machine"
         - "avm/res/sql/instance-pool"
         - "avm/res/sql/managed-instance"
         - "avm/res/sql/server"

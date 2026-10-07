@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3301491814430652927"
+      "templateHash": "12125803526873611384"
     },
     "name": "SQL Virtual Machine",
     "description": "This module deploys an Azure SQL Virtual Machine."
@@ -126,16 +126,17 @@
     }
   },
   "parameters": {
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The name of the SQL virtual machine. This must match the name of the underlying virtual machine."
-      }
-    },
     "virtualMachineResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. The resource ID of the underlying virtual machine."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[last(split(parameters('virtualMachineResourceId'), '/'))]",
+      "metadata": {
+        "description": "Optional. The name of the SQL virtual machine. Must match the name of the underlying virtual machine. Defaults to the name of the virtual machine referenced in `virtualMachineResourceId`."
       }
     },
     "sqlServerLicenseType": {
@@ -162,7 +163,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01#properties/properties/properties/autoBackupSettings"
         },
-        "description": "Optional. Automated backup settings for SQL Server."
+        "description": "Optional. Automated backup settings for SQL Server. Note: Automated Backup authenticates to the target storage account using a storage account access key, so the storage account must allow shared key access and be reachable from the virtual machine."
       },
       "nullable": true
     },
@@ -172,7 +173,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01#properties/properties/properties/autoPatchingSettings"
         },
-        "description": "Optional. Automated patching settings for the SQL virtual machine."
+        "description": "Optional. Automated patching settings for the SQL virtual machine. Note: Automated Patching is scheduled to retire on September 17, 2027 and should not be used for new environments. Use Azure Update Manager (for example, a maintenance configuration assigned to the underlying virtual machine) instead. Do not combine multiple patching solutions on the same virtual machine."
       },
       "nullable": true
     },
@@ -254,7 +255,7 @@
         "NoAgent"
       ],
       "metadata": {
-        "description": "Optional. SQL Server management mode. Full mode is required for least privilege mode and advanced SQL IaaS Agent features."
+        "description": "Optional. SQL Server IaaS Agent management mode. Although the API documents this property as automatically detected, it must be set to `Full` when `leastPrivilegeMode` is `Enabled`, as the registration may otherwise fall back to `LightWeight` mode and fail."
       }
     },
     "sqlVirtualMachineGroupResourceId": {
@@ -270,7 +271,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01#properties/properties/properties/storageConfigurationSettings"
         },
-        "description": "Optional. SQL Server storage configuration settings."
+        "description": "Optional. SQL Server storage configuration settings. Cannot be combined with `serverConfigurationsManagementSettings.sqlStorageUpdateSettings` or `serverConfigurationsManagementSettings.sqlWorkloadTypeUpdateSettings`; use `storageWorkloadType` instead."
       },
       "nullable": true
     },
@@ -350,7 +351,8 @@
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+      "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
     },
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -364,7 +366,7 @@
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "0.1.0.0",
+          "contentVersion": "1.0.0.0",
           "resources": [],
           "outputs": {
             "telemetry": {

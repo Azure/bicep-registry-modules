@@ -1,11 +1,11 @@
-@description('Required. The name of the SQL virtual machine to create.')
+@description('Required. The name of the virtual machine to create.')
 param virtualMachineName string
 
 @description('Required. The name of the virtual network to create.')
 param virtualNetworkName string
 
-@description('Required. The name of the managed identity to create.')
-param managedIdentityName string
+@description('Required. The name of the network security group to create.')
+param networkSecurityGroupName string
 
 @description('Required. The administrator password for the virtual machine.')
 @secure()
@@ -17,7 +17,7 @@ param location string = resourceGroup().location
 var addressPrefix = '10.0.0.0/16'
 
 resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2025-01-01' = {
-  name: '${virtualNetworkName}-nsg'
+  name: networkSecurityGroupName
   location: location
 }
 
@@ -44,15 +44,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-01-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
-  name: managedIdentityName
-  location: location
-}
-
-module virtualMachine '../../../../compute/virtual-machine/main.bicep' = {
+module virtualMachine '../../../../../compute/virtual-machine/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-vm'
   params: {
     name: virtualMachineName
+    computerName: take(virtualMachineName, 15)
     location: location
     adminUsername: 'localAdminUser'
     adminPassword: adminPassword
@@ -62,9 +58,6 @@ module virtualMachine '../../../../compute/virtual-machine/main.bicep' = {
       offer: 'SQL2022-WS2022'
       sku: 'sqldev-gen2'
       version: 'latest'
-    }
-    managedIdentities: {
-      systemAssigned: true
     }
     nicConfigurations: [
       {
@@ -89,14 +82,5 @@ module virtualMachine '../../../../compute/virtual-machine/main.bicep' = {
   }
 }
 
-@description('The name of the created virtual machine.')
-output virtualMachineName string = virtualMachine.outputs.name
-
 @description('The resource ID of the created virtual machine.')
 output virtualMachineResourceId string = virtualMachine.outputs.resourceId
-
-@description('The resource ID of the created managed identity.')
-output managedIdentityResourceId string = managedIdentity.id
-
-@description('The principal ID of the created managed identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId

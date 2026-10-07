@@ -54,7 +54,6 @@ You can find the full example and the setup of its dependencies in the deploymen
 module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-machine:<version>' = {
   params: {
     // Required parameters
-    name: '<name>'
     sqlServerLicenseType: 'PAYG'
     virtualMachineResourceId: '<virtualMachineResourceId>'
   }
@@ -74,9 +73,6 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "<name>"
-    },
     "sqlServerLicenseType": {
       "value": "PAYG"
     },
@@ -98,7 +94,6 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
 using 'br/public:avm/res/sql-virtual-machine/sql-virtual-machine:<version>'
 
 // Required parameters
-param name = '<name>'
 param sqlServerLicenseType = 'PAYG'
 param virtualMachineResourceId = '<virtualMachineResourceId>'
 ```
@@ -108,7 +103,8 @@ param virtualMachineResourceId = '<virtualMachineResourceId>'
 
 ### Example 2: _Using large parameter set_
 
-This instance deploys the module with most supported features enabled.
+This instance deploys the module with most of its features enabled.
+Key Vault credential settings are not covered as they require an Entra ID service principal secret, and SQL virtual machine group / WSFC settings are not covered as they require a domain-joined Windows Server Failover Cluster.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
@@ -121,7 +117,6 @@ You can find the full example and the setup of its dependencies in the deploymen
 module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-machine:<version>' = {
   params: {
     // Required parameters
-    name: '<name>'
     sqlServerLicenseType: 'PAYG'
     virtualMachineResourceId: '<virtualMachineResourceId>'
     // Non-required parameters
@@ -134,6 +129,22 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
         startTime: '02:00'
         weeklyInterval: 1
       }
+    }
+    autoBackupSettings: {
+      backupScheduleType: 'Manual'
+      backupSystemDbs: true
+      daysOfWeek: [
+        'Sunday'
+      ]
+      enable: true
+      enableEncryption: false
+      fullBackupFrequency: 'Weekly'
+      fullBackupStartTime: 2
+      fullBackupWindowHours: 4
+      logBackupFrequency: 60
+      retentionPeriod: 7
+      storageAccessKey: '<storageAccessKey>'
+      storageAccountUrl: '<storageAccountUrl>'
     }
     autoPatchingSettings: {
       additionalVmPatch: 'MicrosoftUpdate'
@@ -149,28 +160,67 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    name: '<name>'
     roleAssignments: [
+      {
+        name: '7f6e9b2a-3c1d-4e8f-9a0b-1c2d3e4f5a6b'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Virtual Machine Contributor'
+      }
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     serverConfigurationsManagementSettings: {
+      sqlConnectivityUpdateSettings: {
+        connectivityType: 'PRIVATE'
+        port: 1433
+      }
       sqlInstanceSettings: {
         isIfiEnabled: true
         isLpimEnabled: true
         isOptimizeForAdHocWorkloadsEnabled: true
         maxDop: 0
       }
-      sqlWorkloadTypeUpdateSettings: {
-        sqlWorkloadType: 'OLTP'
-      }
     }
     sqlImageOffer: 'SQL2022-WS2022'
     sqlImageSku: 'Developer'
+    sqlManagement: 'Full'
+    storageConfigurationSettings: {
+      diskConfigurationType: 'NEW'
+      sqlDataSettings: {
+        defaultFilePath: 'F:\\SQLData'
+        luns: [
+          0
+        ]
+      }
+      sqlLogSettings: {
+        defaultFilePath: 'G:\\SQLLog'
+        luns: [
+          1
+        ]
+      }
+      sqlSystemDbOnDataDisk: false
+      sqlTempDbSettings: {
+        defaultFilePath: 'H:\\SQLTemp'
+        luns: [
+          2
+        ]
+      }
+      storageWorkloadType: 'OLTP'
+    }
     tags: {
-      resourceType: 'SQL Virtual Machine'
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
     }
     virtualMachineIdentitySettings: {
       type: 'SystemAssigned'
@@ -192,9 +242,6 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "<name>"
-    },
     "sqlServerLicenseType": {
       "value": "PAYG"
     },
@@ -212,6 +259,24 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
           "startTime": "02:00",
           "weeklyInterval": 1
         }
+      }
+    },
+    "autoBackupSettings": {
+      "value": {
+        "backupScheduleType": "Manual",
+        "backupSystemDbs": true,
+        "daysOfWeek": [
+          "Sunday"
+        ],
+        "enable": true,
+        "enableEncryption": false,
+        "fullBackupFrequency": "Weekly",
+        "fullBackupStartTime": 2,
+        "fullBackupWindowHours": 4,
+        "logBackupFrequency": 60,
+        "retentionPeriod": 7,
+        "storageAccessKey": "<storageAccessKey>",
+        "storageAccountUrl": "<storageAccountUrl>"
       }
     },
     "autoPatchingSettings": {
@@ -238,25 +303,40 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
         "name": "myCustomLockName"
       }
     },
+    "name": {
+      "value": "<name>"
+    },
     "roleAssignments": {
       "value": [
         {
+          "name": "7f6e9b2a-3c1d-4e8f-9a0b-1c2d3e4f5a6b",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Virtual Machine Contributor"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
     "serverConfigurationsManagementSettings": {
       "value": {
+        "sqlConnectivityUpdateSettings": {
+          "connectivityType": "PRIVATE",
+          "port": 1433
+        },
         "sqlInstanceSettings": {
           "isIfiEnabled": true,
           "isLpimEnabled": true,
           "isOptimizeForAdHocWorkloadsEnabled": true,
           "maxDop": 0
-        },
-        "sqlWorkloadTypeUpdateSettings": {
-          "sqlWorkloadType": "OLTP"
         }
       }
     },
@@ -266,9 +346,39 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
     "sqlImageSku": {
       "value": "Developer"
     },
+    "sqlManagement": {
+      "value": "Full"
+    },
+    "storageConfigurationSettings": {
+      "value": {
+        "diskConfigurationType": "NEW",
+        "sqlDataSettings": {
+          "defaultFilePath": "F:\\SQLData",
+          "luns": [
+            0
+          ]
+        },
+        "sqlLogSettings": {
+          "defaultFilePath": "G:\\SQLLog",
+          "luns": [
+            1
+          ]
+        },
+        "sqlSystemDbOnDataDisk": false,
+        "sqlTempDbSettings": {
+          "defaultFilePath": "H:\\SQLTemp",
+          "luns": [
+            2
+          ]
+        },
+        "storageWorkloadType": "OLTP"
+      }
+    },
     "tags": {
       "value": {
-        "resourceType": "SQL Virtual Machine"
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
       }
     },
     "virtualMachineIdentitySettings": {
@@ -291,7 +401,6 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
 using 'br/public:avm/res/sql-virtual-machine/sql-virtual-machine:<version>'
 
 // Required parameters
-param name = '<name>'
 param sqlServerLicenseType = 'PAYG'
 param virtualMachineResourceId = '<virtualMachineResourceId>'
 // Non-required parameters
@@ -304,6 +413,22 @@ param assessmentSettings = {
     startTime: '02:00'
     weeklyInterval: 1
   }
+}
+param autoBackupSettings = {
+  backupScheduleType: 'Manual'
+  backupSystemDbs: true
+  daysOfWeek: [
+    'Sunday'
+  ]
+  enable: true
+  enableEncryption: false
+  fullBackupFrequency: 'Weekly'
+  fullBackupStartTime: 2
+  fullBackupWindowHours: 4
+  logBackupFrequency: 60
+  retentionPeriod: 7
+  storageAccessKey: '<storageAccessKey>'
+  storageAccountUrl: '<storageAccountUrl>'
 }
 param autoPatchingSettings = {
   additionalVmPatch: 'MicrosoftUpdate'
@@ -319,28 +444,67 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param name = '<name>'
 param roleAssignments = [
+  {
+    name: '7f6e9b2a-3c1d-4e8f-9a0b-1c2d3e4f5a6b'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Virtual Machine Contributor'
+  }
   {
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Reader'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
 param serverConfigurationsManagementSettings = {
+  sqlConnectivityUpdateSettings: {
+    connectivityType: 'PRIVATE'
+    port: 1433
+  }
   sqlInstanceSettings: {
     isIfiEnabled: true
     isLpimEnabled: true
     isOptimizeForAdHocWorkloadsEnabled: true
     maxDop: 0
   }
-  sqlWorkloadTypeUpdateSettings: {
-    sqlWorkloadType: 'OLTP'
-  }
 }
 param sqlImageOffer = 'SQL2022-WS2022'
 param sqlImageSku = 'Developer'
+param sqlManagement = 'Full'
+param storageConfigurationSettings = {
+  diskConfigurationType: 'NEW'
+  sqlDataSettings: {
+    defaultFilePath: 'F:\\SQLData'
+    luns: [
+      0
+    ]
+  }
+  sqlLogSettings: {
+    defaultFilePath: 'G:\\SQLLog'
+    luns: [
+      1
+    ]
+  }
+  sqlSystemDbOnDataDisk: false
+  sqlTempDbSettings: {
+    defaultFilePath: 'H:\\SQLTemp'
+    luns: [
+      2
+    ]
+  }
+  storageWorkloadType: 'OLTP'
+}
 param tags = {
-  resourceType: 'SQL Virtual Machine'
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 param virtualMachineIdentitySettings = {
   type: 'SystemAssigned'
@@ -352,7 +516,7 @@ param virtualMachineIdentitySettings = {
 
 ### Example 3: _WAF-aligned_
 
-This instance deploys the module using secure, recommended configuration.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework. Patching is delegated to Azure Update Manager via a maintenance configuration on the underlying virtual machine instead of the retiring SQL IaaS Agent Automated Patching feature.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
@@ -365,7 +529,6 @@ You can find the full example and the setup of its dependencies in the deploymen
 module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-machine:<version>' = {
   params: {
     // Required parameters
-    name: '<name>'
     sqlServerLicenseType: 'PAYG'
     virtualMachineResourceId: '<virtualMachineResourceId>'
     // Non-required parameters
@@ -379,15 +542,9 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
         weeklyInterval: 1
       }
     }
-    autoPatchingSettings: {
-      additionalVmPatch: 'MicrosoftUpdate'
-      dayOfWeek: 'Sunday'
-      enable: true
-      maintenanceWindowDuration: 60
-      maintenanceWindowStartingHour: 2
-    }
     enableAutomaticUpgrade: true
     leastPrivilegeMode: 'Enabled'
+    tags: '<tags>'
     virtualMachineIdentitySettings: {
       type: 'SystemAssigned'
     }
@@ -408,9 +565,6 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "<name>"
-    },
     "sqlServerLicenseType": {
       "value": "PAYG"
     },
@@ -430,20 +584,14 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
         }
       }
     },
-    "autoPatchingSettings": {
-      "value": {
-        "additionalVmPatch": "MicrosoftUpdate",
-        "dayOfWeek": "Sunday",
-        "enable": true,
-        "maintenanceWindowDuration": 60,
-        "maintenanceWindowStartingHour": 2
-      }
-    },
     "enableAutomaticUpgrade": {
       "value": true
     },
     "leastPrivilegeMode": {
       "value": "Enabled"
+    },
+    "tags": {
+      "value": "<tags>"
     },
     "virtualMachineIdentitySettings": {
       "value": {
@@ -465,7 +613,6 @@ module sqlVirtualMachine 'br/public:avm/res/sql-virtual-machine/sql-virtual-mach
 using 'br/public:avm/res/sql-virtual-machine/sql-virtual-machine:<version>'
 
 // Required parameters
-param name = '<name>'
 param sqlServerLicenseType = 'PAYG'
 param virtualMachineResourceId = '<virtualMachineResourceId>'
 // Non-required parameters
@@ -479,15 +626,9 @@ param assessmentSettings = {
     weeklyInterval: 1
   }
 }
-param autoPatchingSettings = {
-  additionalVmPatch: 'MicrosoftUpdate'
-  dayOfWeek: 'Sunday'
-  enable: true
-  maintenanceWindowDuration: 60
-  maintenanceWindowStartingHour: 2
-}
 param enableAutomaticUpgrade = true
 param leastPrivilegeMode = 'Enabled'
+param tags = '<tags>'
 param virtualMachineIdentitySettings = {
   type: 'SystemAssigned'
 }
@@ -502,7 +643,6 @@ param virtualMachineIdentitySettings = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the SQL virtual machine. This must match the name of the underlying virtual machine. |
 | [`sqlServerLicenseType`](#parameter-sqlserverlicensetype) | string | The SQL Server license type. |
 | [`virtualMachineResourceId`](#parameter-virtualmachineresourceid) | string | The resource ID of the underlying virtual machine. |
 
@@ -511,32 +651,26 @@ param virtualMachineIdentitySettings = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`assessmentSettings`](#parameter-assessmentsettings) | object | SQL best practices assessment settings. |
-| [`autoBackupSettings`](#parameter-autobackupsettings) | secureObject | Automated backup settings for SQL Server. |
-| [`autoPatchingSettings`](#parameter-autopatchingsettings) | object | Automated patching settings for the SQL virtual machine. |
+| [`autoBackupSettings`](#parameter-autobackupsettings) | secureObject | Automated backup settings for SQL Server. Note: Automated Backup authenticates to the target storage account using a storage account access key, so the storage account must allow shared key access and be reachable from the virtual machine. |
+| [`autoPatchingSettings`](#parameter-autopatchingsettings) | object | Automated patching settings for the SQL virtual machine. Note: Automated Patching is scheduled to retire on September 17, 2027 and should not be used for new environments. Use Azure Update Manager (for example, a maintenance configuration assigned to the underlying virtual machine) instead. Do not combine multiple patching solutions on the same virtual machine. |
 | [`enableAutomaticUpgrade`](#parameter-enableautomaticupgrade) | bool | Enable automatic upgrade of the SQL IaaS Agent extension. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`keyVaultCredentialSettings`](#parameter-keyvaultcredentialsettings) | secureObject | Key Vault credential settings for the SQL virtual machine. |
 | [`leastPrivilegeMode`](#parameter-leastprivilegemode) | string | SQL IaaS Agent least privilege mode. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`name`](#parameter-name) | string | The name of the SQL virtual machine. Must match the name of the underlying virtual machine. Defaults to the name of the virtual machine referenced in `virtualMachineResourceId`. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverConfigurationsManagementSettings`](#parameter-serverconfigurationsmanagementsettings) | secureObject | SQL Server configuration management settings. |
 | [`sqlImageOffer`](#parameter-sqlimageoffer) | string | SQL Server image offer. Examples include SQL2019-WS2022 and SQL2022-WS2022. |
 | [`sqlImageSku`](#parameter-sqlimagesku) | string | SQL Server edition. |
-| [`sqlManagement`](#parameter-sqlmanagement) | string | SQL Server management mode. Full mode is required for least privilege mode and advanced SQL IaaS Agent features. |
+| [`sqlManagement`](#parameter-sqlmanagement) | string | SQL Server IaaS Agent management mode. Although the API documents this property as automatically detected, it must be set to `Full` when `leastPrivilegeMode` is `Enabled`, as the registration may otherwise fall back to `LightWeight` mode and fail. |
 | [`sqlVirtualMachineGroupResourceId`](#parameter-sqlvirtualmachinegroupresourceid) | string | Resource ID of the SQL virtual machine group that this SQL virtual machine is or will be part of. |
-| [`storageConfigurationSettings`](#parameter-storageconfigurationsettings) | object | SQL Server storage configuration settings. |
+| [`storageConfigurationSettings`](#parameter-storageconfigurationsettings) | object | SQL Server storage configuration settings. Cannot be combined with `serverConfigurationsManagementSettings.sqlStorageUpdateSettings` or `serverConfigurationsManagementSettings.sqlWorkloadTypeUpdateSettings`; use `storageWorkloadType` instead. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualMachineIdentitySettings`](#parameter-virtualmachineidentitysettings) | object | Virtual machine identity details used for SQL IaaS Agent extension configurations. |
 | [`wsfcDomainCredentials`](#parameter-wsfcdomaincredentials) | secureObject | Domain credentials for configuring a Windows Server Failover Cluster for a SQL availability group. |
 | [`wsfcStaticIp`](#parameter-wsfcstaticip) | string | Static IP address used for the Windows Server Failover Cluster. |
-
-### Parameter: `name`
-
-The name of the SQL virtual machine. This must match the name of the underlying virtual machine.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `sqlServerLicenseType`
 
@@ -569,14 +703,14 @@ SQL best practices assessment settings.
 
 ### Parameter: `autoBackupSettings`
 
-Automated backup settings for SQL Server.
+Automated backup settings for SQL Server. Note: Automated Backup authenticates to the target storage account using a storage account access key, so the storage account must allow shared key access and be reachable from the virtual machine.
 
 - Required: No
 - Type: secureObject
 
 ### Parameter: `autoPatchingSettings`
 
-Automated patching settings for the SQL virtual machine.
+Automated patching settings for the SQL virtual machine. Note: Automated Patching is scheduled to retire on September 17, 2027 and should not be used for new environments. Use Azure Update Manager (for example, a maintenance configuration assigned to the underlying virtual machine) instead. Do not combine multiple patching solutions on the same virtual machine.
 
 - Required: No
 - Type: object
@@ -671,6 +805,14 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
+### Parameter: `name`
+
+The name of the SQL virtual machine. Must match the name of the underlying virtual machine. Defaults to the name of the virtual machine referenced in `virtualMachineResourceId`.
+
+- Required: No
+- Type: string
+- Default: `[last(split(parameters('virtualMachineResourceId'), '/'))]`
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -683,6 +825,7 @@ Array of role assignments to create.
   - `'Reader'`
   - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
+  - `'Virtual Machine Contributor'`
 
 **Required parameters**
 
@@ -807,7 +950,7 @@ SQL Server edition.
 
 ### Parameter: `sqlManagement`
 
-SQL Server management mode. Full mode is required for least privilege mode and advanced SQL IaaS Agent features.
+SQL Server IaaS Agent management mode. Although the API documents this property as automatically detected, it must be set to `Full` when `leastPrivilegeMode` is `Enabled`, as the registration may otherwise fall back to `LightWeight` mode and fail.
 
 - Required: No
 - Type: string
@@ -830,7 +973,7 @@ Resource ID of the SQL virtual machine group that this SQL virtual machine is or
 
 ### Parameter: `storageConfigurationSettings`
 
-SQL Server storage configuration settings.
+SQL Server storage configuration settings. Cannot be combined with `serverConfigurationsManagementSettings.sqlStorageUpdateSettings` or `serverConfigurationsManagementSettings.sqlWorkloadTypeUpdateSettings`; use `storageWorkloadType` instead.
 
 - Required: No
 - Type: object

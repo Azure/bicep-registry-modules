@@ -1,11 +1,11 @@
 metadata name = 'SQL Virtual Machine'
 metadata description = 'This module deploys an Azure SQL Virtual Machine.'
 
-@description('Required. The name of the SQL virtual machine. This must match the name of the underlying virtual machine.')
-param name string
-
 @description('Required. The resource ID of the underlying virtual machine.')
 param virtualMachineResourceId string
+
+@description('Optional. The name of the SQL virtual machine. Must match the name of the underlying virtual machine. Defaults to the name of the virtual machine referenced in `virtualMachineResourceId`.')
+param name string = last(split(virtualMachineResourceId, '/'))
 
 @description('Required. The SQL Server license type.')
 @allowed([
@@ -19,10 +19,10 @@ param sqlServerLicenseType string
 param location string = resourceGroup().location
 
 @secure()
-@description('Optional. Automated backup settings for SQL Server.')
+@description('Optional. Automated backup settings for SQL Server. Note: Automated Backup authenticates to the target storage account using a storage account access key, so the storage account must allow shared key access and be reachable from the virtual machine.')
 param autoBackupSettings resourceInput<'Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01'>.properties.autoBackupSettings?
 
-@description('Optional. Automated patching settings for the SQL virtual machine.')
+@description('Optional. Automated patching settings for the SQL virtual machine. Note: Automated Patching is scheduled to retire on September 17, 2027 and should not be used for new environments. Use Azure Update Manager (for example, a maintenance configuration assigned to the underlying virtual machine) instead. Do not combine multiple patching solutions on the same virtual machine.')
 param autoPatchingSettings resourceInput<'Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01'>.properties.autoPatchingSettings?
 
 @description('Optional. SQL best practices assessment settings.')
@@ -59,7 +59,7 @@ param sqlImageOffer string?
 ])
 param sqlImageSku string?
 
-@description('Optional. SQL Server management mode. Full mode is required for least privilege mode and advanced SQL IaaS Agent features.')
+@description('Optional. SQL Server IaaS Agent management mode. Although the API documents this property as automatically detected, it must be set to `Full` when `leastPrivilegeMode` is `Enabled`, as the registration may otherwise fall back to `LightWeight` mode and fail.')
 @allowed([
   'Full'
   'LightWeight'
@@ -70,7 +70,7 @@ param sqlManagement string = 'Full'
 @description('Optional. Resource ID of the SQL virtual machine group that this SQL virtual machine is or will be part of.')
 param sqlVirtualMachineGroupResourceId string?
 
-@description('Optional. SQL Server storage configuration settings.')
+@description('Optional. SQL Server storage configuration settings. Cannot be combined with `serverConfigurationsManagementSettings.sqlStorageUpdateSettings` or `serverConfigurationsManagementSettings.sqlWorkloadTypeUpdateSettings`; use `storageWorkloadType` instead.')
 param storageConfigurationSettings resourceInput<'Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01'>.properties.storageConfigurationSettings?
 
 @description('Optional. Virtual machine identity details used for SQL IaaS Agent extension configurations.')
@@ -109,6 +109,10 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
+  'Virtual Machine Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+  )
 }
 
 var formattedRoleAssignments = [
@@ -131,7 +135,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '0.1.0.0'
+      contentVersion: '1.0.0.0'
       resources: []
       outputs: {
         telemetry: {
