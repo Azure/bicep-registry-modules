@@ -12,6 +12,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated `Microsoft.KeyVault/vaults` and `Microsoft.KeyVault/vaults/secrets` from `2023-07-01` to `2026-02-01`
 - Updated the AVM telemetry deployment to API version `2025-04-01`
 - Kept `Microsoft.HybridContainerService/provisionedClusterInstances` on the stable `2024-01-01`, as Azure Local's AKS Arc extension doesn't accept `2026-04-01-preview` for creating clusters at the time of this release; the preview-only `securityProfile` and `gpuCountPerNode` properties are therefore not offered
+- Documented that the key vault for the generated SSH key pair (`keyVaultName`) must allow template deployment (`enabledForTemplateDeployment`)
 - Recompiled template (previously listed as `0.2.2`, which was never published)
 
 ### Breaking Changes

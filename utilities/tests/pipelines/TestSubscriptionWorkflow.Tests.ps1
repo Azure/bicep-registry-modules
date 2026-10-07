@@ -612,9 +612,12 @@ Describe 'Test subscription workflow integration' {
         $env:AZURE_CREDENTIALS | Should -Be $originalCredentials
     }
 
-    It 'Does not require secret credentials for OIDC-capable modules' {
+    It 'Does not require secret credentials for OIDC-capable module <modulePath>' -ForEach @(
+        @{ modulePath = 'avm/res/storage/storage-account' }
+        @{ modulePath = 'avm/res/hybrid-container-service/provisioned-cluster-instance' }
+    ) {
         $env:AZURE_CREDENTIALS = '[invalid-unused-credentials'
-        $script = $exceptionStep.with.inlineScript.Replace('${{ inputs.modulePath }}', 'avm/res/storage/storage-account')
+        $script = $exceptionStep.with.inlineScript.Replace('${{ inputs.modulePath }}', $modulePath)
 
         $null = . ([scriptblock]::Create($script))
         $outputs = Get-StepOutput
@@ -695,7 +698,6 @@ Describe 'Test subscription workflow integration' {
         @{ modulePath = 'avm/res/azure-stack-hci/network-interface' }
         @{ modulePath = 'avm/res/azure-stack-hci/virtual-hard-disk' }
         @{ modulePath = 'avm/res/azure-stack-hci/virtual-machine-instance' }
-        @{ modulePath = 'avm/res/hybrid-container-service/provisioned-cluster-instance' }
     ) {
         foreach ($path in @($modulePath, "$modulePath/child")) {
             $env:AZURE_CREDENTIALS = ''
