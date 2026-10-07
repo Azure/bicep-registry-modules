@@ -687,6 +687,7 @@ type namedValueType = {
   secret: bool?
 
   @sys.description('Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on \'GET\' operations! Use \'/listSecrets\' POST request to get the value.')
+  @secure()
   @maxLength(4096)
   value: string?
 }

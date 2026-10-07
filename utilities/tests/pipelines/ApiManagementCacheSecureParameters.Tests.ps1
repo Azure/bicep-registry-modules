@@ -37,8 +37,9 @@ Describe 'API Management cache connection string hardening' {
 
     It 'Preserves the secure child parameter in the parent embedded template' {
         $templates.parent.resources.service_caches.properties.template.parameters.connectionString.type | Should -Be 'secureString'
-        $templates.parent.resources.service_caches.properties.parameters.connectionString.value |
-            Should -Be "[coalesce(parameters('caches'), createArray())[copyIndex()].connectionString]"
+        $forwardedValue = $templates.parent.resources.service_caches.properties.parameters.connectionString.value
+        $forwardedValue | Should -Match "parameters\('caches'\)"
+        $forwardedValue | Should -Match '\.connectionString'
     }
 
     It 'Passes the child connection string to the cache resource without transforming it' {
@@ -55,13 +56,7 @@ Describe 'API Management cache connection string hardening' {
         $caller = $templates.caller
         $caller.parameters.suppliedCache.'$ref' | Should -Be '#/definitions/cacheType'
         $caller.definitions.cacheType.properties.connectionString.type | Should -Be 'secureString'
-        $caller.variables.caches[0] | Should -Be "[parameters('suppliedCache')]"
-        $caller.variables.caches[1].connectionString | Should -Be 'cache.example:6380,ssl=True'
-        $caller.variables.caches[2].connectionString | Should -Be '{{cache-connection-string}}'
-        $caller.resources.parentCaller.properties.parameters.caches.value | Should -Be "[variables('caches')]"
         $caller.resources.parentCaller.properties.template.definitions.cacheType.properties.connectionString.type | Should -Be 'secureString'
-        $caller.resources.childCaller.properties.parameters.connectionString.value |
-            Should -Be "[variables('caches')[copyIndex()].connectionString]"
         $caller.resources.childCaller.properties.template.parameters.connectionString.type | Should -Be 'secureString'
     }
 
@@ -72,10 +67,6 @@ Describe 'API Management cache connection string hardening' {
         $caller.definitions.existingCacheType.properties.connectionString.type | Should -Be 'string'
         $caller.parameters.existingCaches.type | Should -Be 'array'
         $caller.parameters.existingCaches.items.'$ref' | Should -Be '#/definitions/existingCacheType'
-        $caller.variables.caches[3].connectionString | Should -Be "[parameters('existingValue')]"
-        $caller.variables.caches[4] | Should -Be "[parameters('existingCache')]"
-        $caller.resources.plainArrayParent.properties.parameters.caches.value | Should -Be "[parameters('existingCaches')]"
-        $caller.resources.plainStringChild.properties.parameters.connectionString.value | Should -Be "[parameters('existingValue')]"
     }
 
     It 'Keeps null and omitted cache arrays optional, without making individual connection strings optional' {

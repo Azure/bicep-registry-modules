@@ -1,0 +1,73 @@
+name: ".Platform - Check Secure Parameters"
+
+# Compile-only regression tests; no Azure login, deployments, or secrets.
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - "avm/res/api-management/service/**"
+      - "avm/res/app/managed-environment/**"
+      - "avm/res/sql/server/**"
+      - "utilities/tests/pipelines/ApiManagementCacheSecureParameters.Tests.ps1"
+      - "utilities/tests/pipelines/CredentialLeavesSecureParameters.Tests.ps1"
+      - "utilities/tests/pipelines/src/apiManagementCache/**"
+      - "utilities/tests/pipelines/src/credentialLeaves/**"
+      - "bicepconfig.json"
+      - ".github/workflows/platform.on-pull-request-check-secure-parameters.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-secure-parameters-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  job_check_secure_parameters:
+    name: "Compile secure parameter regression tests"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+
+      # The shared environment action also installs Az modules we don't need here.
+      # Keep its latest-Bicep policy, with only Pester as a PowerShell dependency.
+      - name: "Install compiler and Pester"
+        shell: pwsh
+        run: |
+          $toolPath = Join-Path $env:RUNNER_TEMP 'secure-parameter-tools'
+          $null = New-Item -ItemType Directory -Path $toolPath -Force
+          $bicepPath = Join-Path $toolPath 'bicep'
+          Invoke-WebRequest -Uri 'https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64' -OutFile $bicepPath
+          chmod +x $bicepPath
+          if ($LASTEXITCODE -ne 0) { throw 'Failed to make Bicep executable.' }
+          Add-Content -LiteralPath $env:GITHUB_PATH -Value $toolPath
+          Install-Module -Name Pester -RequiredVersion '5.7.1' -Repository PSGallery -Scope CurrentUser -Force
+
+      - name: "Run focused regression tests"
+        shell: pwsh
+        run: |
+          Import-Module Pester -RequiredVersion '5.7.1'
+          bicep --version
+          if ($LASTEXITCODE -ne 0) { throw 'Bicep is not available.' }
+          $testPaths = @(
+            Join-Path $env:GITHUB_WORKSPACE 'utilities/tests/pipelines/ApiManagementCacheSecureParameters.Tests.ps1'
+            Join-Path $env:GITHUB_WORKSPACE 'utilities/tests/pipelines/CredentialLeavesSecureParameters.Tests.ps1'
+          )
+          $configuration = @{
+            Run = @{
+              Container = New-PesterContainer -Path $testPaths -Data @{ repoRootPath = $env:GITHUB_WORKSPACE }
+              PassThru = $true
+            }
+            Output = @{ Verbosity = 'Detailed' }
+          }
+          $result = Invoke-Pester -Configuration $configuration
+          if ($result.Result -ne 'Passed' -or $result.TotalCount -eq 0) {
+            throw 'Secure parameter regression tests did not pass.'
+          }
