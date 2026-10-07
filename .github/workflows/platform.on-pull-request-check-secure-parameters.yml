@@ -13,8 +13,11 @@ on:
       - "avm/res/sql/server/**"
       - "utilities/tests/pipelines/ApiManagementCacheSecureParameters.Tests.ps1"
       - "utilities/tests/pipelines/CredentialLeavesSecureParameters.Tests.ps1"
+      - "utilities/tests/pipelines/SecureParameterForwarding.Tests.ps1"
+      - "utilities/pipelines/staticValidation/Get-SecureParameterForwarding.ps1"
       - "utilities/tests/pipelines/src/apiManagementCache/**"
       - "utilities/tests/pipelines/src/credentialLeaves/**"
+      - "utilities/tests/pipelines/src/secureParameterForwarding/**"
       - "bicepconfig.json"
       - ".github/workflows/platform.on-pull-request-check-secure-parameters.yml"
   workflow_dispatch:
@@ -59,6 +62,7 @@ jobs:
           $testPaths = @(
             Join-Path $env:GITHUB_WORKSPACE 'utilities/tests/pipelines/ApiManagementCacheSecureParameters.Tests.ps1'
             Join-Path $env:GITHUB_WORKSPACE 'utilities/tests/pipelines/CredentialLeavesSecureParameters.Tests.ps1'
+            Join-Path $env:GITHUB_WORKSPACE 'utilities/tests/pipelines/SecureParameterForwarding.Tests.ps1'
           )
           $configuration = @{
             Run = @{
