@@ -1,0 +1,32 @@
+[
+  {
+    "Module": "avm/res/api-management/service",
+    "Deployment": "/service_workspaces/workspace_loggers",
+    "Target": "credentials",
+    "SinkType": "secureObject",
+    "Source": "loggers.[].credentials",
+    "Status": "Mismatch",
+    "ExpressionHash": "",
+    "Reason": "Deferred workspace logger credentials object mismatch. The service-level logger is already secure. This exception covers only this whole-object binding, not secureString inputs or other logger fields."
+  },
+  {
+    "Module": "avm/res/api-management/service",
+    "Deployment": "/service_namedValues",
+    "Target": "value",
+    "SinkType": "secureString",
+    "Source": "newGuidValue",
+    "Status": "Mismatch",
+    "ExpressionHash": "",
+    "Reason": "Existing nonsecret placeholder fallback when a named value has no supplied value. newGuidValue defaults to newGuid() but is overridable, so it is not inferred secure. The actual namedValues[].value branch is checked separately."
+  },
+  {
+    "Module": "avm/res/sql/server",
+    "Deployment": "/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "secureString",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "828FF217A9A2C2CD75FD77A1FAD4675CFEF5FA87970D69BCFC189F59F9EDD064",
+    "Reason": "Existing SQL secret-export union/if/createObject/format projection is outside the forwarding grammar. Not claimed as analyzed. Pin the exact emitted expression so changes require review; do not exempt the deployment or secretsToSet object generally."
+  }
+]
