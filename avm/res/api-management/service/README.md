@@ -8031,7 +8031,7 @@ Named values to deploy in this workspace.
 | [`keyVault`](#parameter-workspacesnamedvalueskeyvault) | object | KeyVault location details of the namedValue. |
 | [`secret`](#parameter-workspacesnamedvaluessecret) | bool | Determines whether the value is a secret and should be encrypted or not. |
 | [`tags`](#parameter-workspacesnamedvaluestags) | array | Tags that when provided can be used to filter the NamedValue list. |
-| [`value`](#parameter-workspacesnamedvaluesvalue) | string | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
+| [`value`](#parameter-workspacesnamedvaluesvalue) | securestring | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
 
 ### Parameter: `workspaces.namedValues.displayName`
 
@@ -8073,7 +8073,7 @@ Tags that when provided can be used to filter the NamedValue list.
 Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `workspaces.policies`
 

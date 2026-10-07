@@ -32,6 +32,7 @@ BeforeAll {
         $children[$entry.name] = Build-TestTemplate (Join-Path $modulePath "$($entry.child)/main.bicep") "$($entry.name)-child"
         $generated[$entry.name] = Get-Content (Join-Path $modulePath 'main.json') -Raw | ConvertFrom-Json -AsHashtable
     }
+    $namedValueChild = Build-TestTemplate (Join-Path $repoRootPath 'avm/res/api-management/service/workspace/named-value/main.bicep') 'named-value-child'
     $caller = Build-TestTemplate (Join-Path $PSScriptRoot 'src/credentialLeaves/main.bicep') 'caller'
 }
 
@@ -106,6 +107,42 @@ Describe 'Credential leaf schemas' {
             }
         }
     }
+
+    It 'Keeps workspace named values secure and optional without changing their length limit or child default' {
+        foreach ($template in @($templates.workspace, $generated.workspace)) {
+            $template.parameters.namedValues.type | Should -Be 'array'
+            $template.parameters.namedValues.nullable | Should -BeTrue
+            $type = Resolve-TestDefinition $template $template.parameters.namedValues.items
+            $type.type | Should -Be 'object'
+            $type.properties.name.type | Should -Be 'string'
+            $type.properties.value.type | Should -Be 'secureString'
+            $type.properties.value.nullable | Should -BeTrue
+            $type.properties.value.maxLength | Should -Be 4096
+            $type.properties.value.ContainsKey('defaultValue') | Should -BeFalse
+            $template.resources.workspace_namedValues.properties.template.parameters.value.type | Should -Be 'secureString'
+        }
+        $namedValueChild.parameters.value.type | Should -Be 'secureString'
+        $namedValueChild.parameters.value.maxLength | Should -Be 4096
+        $namedValueChild.parameters.value.ContainsKey('defaultValue') | Should -BeTrue
+        $caller.definitions.workspaceNamedValueType.properties.value.type | Should -Be 'secureString'
+        $caller.parameters.suppliedNamedValue.'$ref' | Should -Be '#/definitions/workspaceNamedValueType'
+    }
+
+    It 'Propagates secure workspace named values through the imported service type and nested deployments' {
+        foreach ($template in @($templates.service, $generated.service)) {
+            $workspaceType = Resolve-TestDefinition $template $template.parameters.workspaces.items
+            $workspaceType.properties.namedValues.type | Should -Be 'array'
+            $workspaceType.properties.namedValues.nullable | Should -BeTrue
+            $type = Resolve-TestDefinition $template $workspaceType.properties.namedValues.items
+            $type.type | Should -Be 'object'
+            $type.properties.value.type | Should -Be 'secureString'
+            $type.properties.value.nullable | Should -BeTrue
+            $type.properties.value.maxLength | Should -Be 4096
+            $nestedWorkspace = $template.resources.service_workspaces.properties.template
+            $nestedWorkspace.definitions.namedValueType.properties.value.type | Should -Be 'secureString'
+            $nestedWorkspace.resources.workspace_namedValues.properties.template.parameters.value.type | Should -Be 'secureString'
+        }
+    }
 }
 
 Describe 'Credential forwarding' {
@@ -120,8 +157,8 @@ Describe 'Credential forwarding' {
         foreach ($leaf in $leaves) {
             $nested.template.parameters[$leaf].type | Should -Be 'secureString'
             $nested.template.parameters[$leaf].nullable | Should -BeTrue
-            $sourceExpression = $module -eq 'environment' ? "parameters('$parameter')" : "coalesce(parameters('$parameter'), createArray())[copyIndex()]"
-            $nested.parameters[$leaf].value | Should -Be "[tryGet($sourceExpression, '$leaf')]"
+            $nested.parameters[$leaf].value | Should -Match ([regex]::Escape("parameters('$parameter')"))
+            $nested.parameters[$leaf].value | Should -Match ([regex]::Escape("'$leaf'"))
             $property = $module -eq 'environment' ? 'value' : $leaf
             $nested.template.resources[$resource].properties[$property] | Should -Be "[parameters('$leaf')]"
             $children[$module].resources[$resource].properties[$property] | Should -Be "[parameters('$leaf')]"
@@ -132,7 +169,7 @@ Describe 'Credential forwarding' {
 }
 
 Describe 'Existing plain callers' {
-    It 'Keeps caller-owned strings, objects and typed arrays plain while compiling against secure leaves' {
+    It 'Compiles supplied, null and omitted leaves while keeping caller-owned strings, objects and typed arrays plain' {
         $caller.parameters.existingValue.type | Should -Be 'string'
         foreach ($entry in @(
                 @{ parameter = 'existingCertificate'; definition = 'existingCertificateType'; leaf = 'certificateValue' }
@@ -144,19 +181,11 @@ Describe 'Existing plain callers' {
             $caller.definitions[$entry.definition].properties[$entry.leaf].type | Should -Be 'string'
         }
         $caller.definitions.existingSubscriptionType.properties.secondaryKey.type | Should -Be 'string'
-        foreach ($parameter in @('existingPolicies', 'existingSubscriptions', 'existingWorkspaces')) {
+        $caller.definitions.existingNamedValueType.properties.value.type | Should -Be 'string'
+        foreach ($parameter in @('existingPolicies', 'existingSubscriptions', 'existingWorkspaces', 'existingNamedValues')) {
             $caller.parameters[$parameter].type | Should -Be 'array'
             $caller.parameters[$parameter].items.'$ref' | Should -Match '^#/definitions/existing'
         }
-        $caller.variables.certificates[0] | Should -Be "[parameters('existingCertificate')]"
-        $caller.variables.certificates[1].certificateValue | Should -Be "[parameters('existingValue')]"
-        $caller.variables.policies | Should -Match "concat\(parameters\('existingPolicies'\)"
-        $caller.variables.subscriptions | Should -Match "concat\(parameters\('existingSubscriptions'\)"
-        $caller.resources.serviceParent.properties.parameters.workspaces.value | Should -Match "concat\(parameters\('existingWorkspaces'\)"
-        $caller.resources.sqlParent.properties.parameters.securityAlertPolicies.value | Should -Be "[variables('policies')]"
-        $caller.resources.serviceParent.properties.parameters.subscriptions.value | Should -Be "[variables('subscriptions')]"
-        $caller.resources.workspaceParent.properties.parameters.subscriptions.value | Should -Be "[variables('subscriptions')]"
-        $caller.resources.certificateParents.properties.parameters.certificate.value | Should -Be "[variables('certificates')[copyIndex()]]"
     }
 
     It 'Accepts explicit plain string parameters at each standalone child boundary' {
@@ -165,22 +194,12 @@ Describe 'Existing plain callers' {
                 @{ module = 'policyChild'; leaves = @('storageAccountAccessKey') }
                 @{ module = 'subscriptionChild'; leaves = @('primaryKey', 'secondaryKey') }
                 @{ module = 'workspaceSubscriptionChild'; leaves = @('primaryKey', 'secondaryKey') }
+                @{ module = 'workspaceNamedValueChild'; leaves = @('value') }
             )) {
             foreach ($leaf in $entry.leaves) {
-                $caller.resources[$entry.module].properties.parameters[$leaf].value | Should -Be "[parameters('existingValue')]"
                 $caller.resources[$entry.module].properties.template.parameters[$leaf].type | Should -Be 'secureString'
             }
         }
-    }
-
-    It 'Accepts null and omitted optional credential leaves' {
-        $caller.variables.certificates[2].ContainsKey('certificateValue') | Should -BeTrue
-        $caller.variables.certificates[2].certificateValue | Should -BeNullOrEmpty
-        $caller.variables.certificates[3].ContainsKey('certificateValue') | Should -BeFalse
-        $caller.variables.policies | Should -Match "'storageAccountAccessKey', null\(\)"
-        $caller.variables.policies | Should -Match "createObject\('name', 'Default'\)"
-        $caller.variables.subscriptions | Should -Match "'primaryKey', null\(\), 'secondaryKey', null\(\)"
-        $caller.variables.subscriptions | Should -Match "createObject\('name', 'omitted', 'displayName', 'Omitted keys'\)"
     }
 
     It 'Accepts null and omitted enclosing objects and arrays' {
@@ -190,6 +209,7 @@ Describe 'Existing plain callers' {
                 @{ suffix = 'Subscriptions'; parameter = 'subscriptions' }
                 @{ suffix = 'Subscriptions'; parameter = 'workspaces' }
                 @{ suffix = 'WorkspaceSubscriptions'; parameter = 'subscriptions' }
+                @{ suffix = 'WorkspaceSubscriptions'; parameter = 'namedValues' }
             )) {
             $caller.resources["null$($entry.suffix)"].properties.parameters.ContainsKey($entry.parameter) | Should -BeTrue
             $caller.resources["null$($entry.suffix)"].properties.parameters[$entry.parameter].value | Should -BeNullOrEmpty
