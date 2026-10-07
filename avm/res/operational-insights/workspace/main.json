@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5225717925932222608"
+      "templateHash": "15442608721208904474"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace."
@@ -1095,7 +1095,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions."
+        "description": "Optional. Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions. When enabled, the onboarding API manages this solution instead of a separate gallery deployment."
       }
     },
     "dataRetention": {
@@ -3069,7 +3069,7 @@
         "name": "logAnalyticsWorkspace_solutions",
         "count": "[length(coalesce(parameters('gallerySolutions'), createArray()))]"
       },
-      "condition": "[not(empty(parameters('gallerySolutions')))]",
+      "condition": "[not(and(parameters('onboardWorkspaceToSentinel'), startsWith(coalesce(parameters('gallerySolutions'), createArray())[copyIndex()].name, 'SecurityInsights')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[format('{0}-LAW-Solution-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location'), parameters('name')), copyIndex())]",
