@@ -17,21 +17,6 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param arbLocalAdminAndDeploymentUserPass string = ''
 
-@description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
-@secure()
-#disable-next-line secure-parameter-default
-param arbDeploymentAppId string = ''
-
-@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
-@secure()
-#disable-next-line secure-parameter-default
-param arbDeploymentSPObjectId string = ''
-
-@description('Required. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
-@secure()
-#disable-next-line secure-parameter-default
-param arbDeploymentServicePrincipalSecret string = ''
-
 @description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
 @secure()
 #disable-next-line secure-parameter-default
@@ -66,9 +51,6 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     networkInterfaceName: 'dep-${namePrefix}-mice-${serviceShort}'
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
-    arbDeploymentAppId: arbDeploymentAppId
-    arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
-    arbDeploymentSPObjectId: arbDeploymentSPObjectId
     deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
     diskNamePrefix: 'dep-${namePrefix}-dsk-${serviceShort}'
@@ -87,8 +69,6 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.6.0' = {
     deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
     localAdminUser: 'Administrator'
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
-    servicePrincipalId: arbDeploymentAppId
-    servicePrincipalSecret: arbDeploymentServicePrincipalSecret
     hciResourceProviderObjectId: hciResourceProviderObjectId
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
