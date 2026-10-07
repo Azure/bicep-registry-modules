@@ -107,6 +107,42 @@ Describe 'Deployment submission and cleanup runtime integration' {
             }
         }
 
+        function Get-TestForbiddenError {
+            param([string] $Format = 'Response')
+            $message = "Operation returned an invalid status code 'Forbidden'. Original submission diagnostic."
+            $exception = [System.InvalidOperationException]::new($message)
+            if ($Format -eq 'HttpRequest') {
+                $exception = [System.Net.Http.HttpRequestException]::new($message, $null, [System.Net.HttpStatusCode]::Forbidden)
+            } elseif ($Format -eq 'StatusCode') {
+                $exception | Add-Member -NotePropertyName StatusCode -NotePropertyValue ([System.Net.HttpStatusCode]::Forbidden)
+            } elseif ($Format -notin @('WordingOnly', 'CategoryOnly')) {
+                $status = switch ($Format) {
+                    'Unauthorized' { 401 }
+                    'MalformedStatus' { 'not-a-status' }
+                    'ArrayStatus' { , @(403, 401) }
+                    default { [System.Net.HttpStatusCode]::Forbidden }
+                }
+                $exception | Add-Member -NotePropertyName Response -NotePropertyValue @{ StatusCode = $status }
+            }
+            switch ($Format) {
+                'InnerException' { $exception = [System.InvalidOperationException]::new('Submission failed.', $exception) }
+                'Aggregate' { $exception = [System.AggregateException]::new([System.Exception[]] @($exception)) }
+                'MixedCancellation' {
+                    $exception = [System.AggregateException]::new(
+                        [System.Exception[]] @($exception, [System.OperationCanceledException]::new('Submission cancelled.'))
+                    )
+                }
+            }
+            $record = [System.Management.Automation.ErrorRecord]::new(
+                $exception, 'ManagementGroupForbidden', [System.Management.Automation.ErrorCategory]::PermissionDenied, 'original-submission'
+            )
+            $record.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('Original HTTP 403 details; OperationID: fixture-operation.')
+            if ($Format -eq 'RuntimeException') {
+                return [System.Management.Automation.RuntimeException]::new('Submission stopped.', $null, $record)
+            }
+            return $record
+        }
+
         function Invoke-TestSubmission {
             param([string] $Name, [string] $ResourceLocation, [string] $BaseTime, [securestring] $AdminSecret)
             $script:attemptNames.Add($Name)
@@ -125,6 +161,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 'MissingState' { return @{ Outputs = @{} } }
                 'Unknown' { throw 'The submission outcome is unknown: connection interrupted.' }
                 'RequestTimeout' { throw (Get-TestRequestTimeout -Format $script:timeoutFormat) }
+                'Forbidden' { throw (Get-TestForbiddenError -Format $script:forbiddenFormat) }
                 'EmptyTimeout' { throw [System.Threading.Tasks.TaskCanceledException]::new('', (Get-TestRequestTimeout).InnerException) }
                 'TransportFailure' { throw [System.Net.Http.HttpRequestException]::new('The submission outcome is unknown: connection interrupted.') }
                 'AuthenticationFailure' {
@@ -258,7 +295,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
         }
         function New-AzManagementGroupDeployment {
             [CmdletBinding()]
-            param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $ManagementGroupId, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret)
+            param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $ManagementGroupId, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret, [object] $DefaultProfile)
             throw 'Unexpected Azure deployment.'
         }
         function New-AzTenantDeployment {
@@ -358,6 +395,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
         'The deployment request failed because it would bring the total number of vCores to 4, which exceeds the limit of 0 allowed for the requested hardware family in your subscription. (Code:ProvisioningDisabled)'
         $script:preflightFormat = 'Az'
         $script:timeoutFormat = 'Direct'
+        $script:forbiddenFormat = 'Response'
         $script:attemptNames = [System.Collections.Generic.List[string]]::new()
         $script:attemptRegions = [System.Collections.Generic.List[string]]::new()
         $script:attemptBaseTimes = [System.Collections.Generic.List[string]]::new()
@@ -385,7 +423,9 @@ Describe 'Deployment submission and cleanup runtime integration' {
         Mock Invoke-RestMethod { throw 'Unexpected network request.' }
         Mock Start-Sleep {}
         Mock Set-AzContext {}
-        Mock Get-AzContext { @{ Subscription = @{ Id = $subscriptionId } } }
+        Mock Get-AzContext {
+            @{ Subscription = @{ Id = $subscriptionId }; Tenant = @{ Id = '22222222-2222-2222-2222-222222222222' } }
+        }
         Mock Get-AzDeployment {}
         Mock Get-AzResourceGroupDeployment {}
         Mock Get-AzManagementGroupDeployment {}
@@ -694,7 +734,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
         Should -Invoke Start-Sleep -Times 0 -Exactly
     }
 
-    Context 'Read-only recovery after a submitted request timeout' {
+    Context 'Read-only recovery after a submitted request error' {
         BeforeAll {
             function Get-TestDeploymentStatus {
                 param([string] $Name, [string] $Scope, [object] $Profile, [string] $Target)
@@ -702,6 +742,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 $state = $script:statusStates[$script:statusReads.Count - 1]
                 switch ($state) {
                     'Timeout' { throw (Get-TestRequestTimeout) }
+                    'Forbidden' { throw (Get-TestForbiddenError) }
                     'Authentication' { throw [System.UnauthorizedAccessException]::new('Status read authentication failed.') }
                     'Transport' { throw [System.Net.Http.HttpRequestException]::new('Status read connection failed.') }
                     'NotFound' { throw 'DeploymentNotFound: the original deployment was not found.' }
@@ -711,8 +752,22 @@ Describe 'Deployment submission and cleanup runtime integration' {
                         throw [System.OperationCanceledException]::new('HttpClient.Timeout of 100 seconds elapsing.')
                     }
                     'Missing' { return }
-                    'MissingState' { return @{ DeploymentName = $Name } }
+                    'MissingState' {
+                        return @{ DeploymentName = $Name; Id = "/providers/Microsoft.Management/managementGroups/$Target/providers/Microsoft.Resources/deployments/$Name" }
+                    }
                     'Mismatched' { return @{ DeploymentName = 'another-deployment'; ProvisioningState = 'Failed' } }
+                    'ArrayName' { return @{ DeploymentName = @($Name, $Name); ProvisioningState = 'Succeeded' } }
+                    'MissingId' { return @{ DeploymentName = $Name; ProvisioningState = 'Succeeded' } }
+                    'MismatchedId' {
+                        return @{
+                            DeploymentName    = $Name
+                            Id                = "/providers/Microsoft.Management/managementGroups/another-group/providers/Microsoft.Resources/deployments/$Name"
+                            ProvisioningState = 'Succeeded'
+                        }
+                    }
+                    'ArrayState' {
+                        return @{ DeploymentName = $Name; Id = "/providers/Microsoft.Management/managementGroups/$Target/providers/Microsoft.Resources/deployments/$Name"; ProvisioningState = @('Succeeded', 'Failed') }
+                    }
                     'Ambiguous' {
                         return @(
                             @{ DeploymentName = $Name; ProvisioningState = 'Succeeded' }
@@ -723,6 +778,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
                         if ([string]::IsNullOrEmpty($state)) { throw 'Unexpected extra deployment status read.' }
                         return @{
                             DeploymentName    = $Name
+                            Id                = "/providers/Microsoft.Management/managementGroups/$Target/providers/Microsoft.Resources/deployments/$Name"
                             ProvisioningState = $state
                             Outputs           = @{ recovered = @{ type = 'string'; value = 'ready' } }
                         }
@@ -857,6 +913,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
             @{ state = 'MissingState'; message = 'unsupported recovery state' }
             @{ state = 'Mismatched'; message = 'exactly the original deployment' }
             @{ state = 'Ambiguous'; message = 'exactly the original deployment' }
+            @{ state = 'ArrayName'; message = 'exactly the original deployment' }
             @{ state = 'NotFound'; message = 'DeploymentNotFound' }
             @{ state = 'Authentication'; message = 'authentication failed' }
             @{ state = 'Transport'; message = 'connection failed' }
@@ -1028,6 +1085,220 @@ Describe 'Deployment submission and cleanup runtime integration' {
             $script:statusReads.Count | Should -Be 0
             Should -Invoke Get-AzContext -Times 0 -Exactly
             Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        Context 'Management-group authorization recovery' -Tag 'ManagementGroupRecovery' {
+            BeforeEach {
+                Set-TestTemplateScope -Scope managementgroup
+                $script:outcomes = @('Forbidden')
+                $script:statusStates = @('Succeeded')
+            }
+
+            It 'Recovers a management-group <format> HTTP 403 with the original outputs and a single submission' -ForEach @(
+                @{ format = 'Response' }, @{ format = 'StatusCode' }, @{ format = 'HttpRequest' }
+                @{ format = 'InnerException' }, @{ format = 'Aggregate' }, @{ format = 'RuntimeException' }
+            ) {
+                $script:forbiddenFormat = $format
+                $deploymentInput.DoNotThrow = $false
+                $result = New-TemplateDeployment @deploymentInput
+
+                $result.ContainsKey('Exception') | Should -BeFalse
+                $result.DeploymentOutput.recovered.value | Should -BeExactly 'ready'
+                @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+                $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+                $script:attemptNames.Count | Should -Be 1
+                @($script:attemptRegions) | Should -Be @('swedencentral')
+                @($script:attemptBaseTimes) | Should -Be @($deploymentInput.AdditionalParameters.baseTime)
+                $script:statusReads.Count | Should -Be 1
+                $script:statusReads[0].Name | Should -BeExactly $script:attemptNames[0]
+                $script:statusReads[0].Target | Should -BeExactly 'test-management-group'
+                [object]::ReferenceEquals($script:statusReads[0].Profile, $script:selectedContext) | Should -BeTrue
+                Should -Invoke New-AzManagementGroupDeployment -Times 1 -Exactly -ParameterFilter {
+                    $ManagementGroupId -eq 'test-management-group' -and $Location -eq 'WestEurope' -and
+                    [object]::ReferenceEquals($DefaultProfile, $script:selectedContext)
+                }
+                Should -Invoke Get-AzContext -Times 1 -Exactly
+                Should -Invoke Get-ErrorMessageForScope -Times 0 -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+                Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
+
+            It 'Uses the submitted context even when the ambient context changes after the HTTP 403' {
+                $script:submissionContext = $script:selectedContext
+                Mock New-AzManagementGroupDeployment {
+                    $script:selectedContext = [pscustomobject]@{
+                        Subscription = @{ Id = '33333333-3333-3333-3333-333333333333' }
+                        Tenant       = @{ Id = '44444444-4444-4444-4444-444444444444' }
+                    }
+                    Invoke-TestSubmission $DeploymentName $resourceLocation $baseTime $adminSecret
+                }
+                $result = New-TemplateDeployment @deploymentInput
+                $result.DeploymentOutput.recovered.value | Should -BeExactly 'ready'
+                [object]::ReferenceEquals($script:statusReads[0].Profile, $script:submissionContext) | Should -BeTrue
+                Should -Invoke Get-AzContext -Times 1 -Exactly
+                Should -Invoke Set-AzContext -Times 0 -Exactly
+            }
+
+            It 'Observes active states and bounded read timeouts without another submission' {
+                $script:statusStates = @('Accepted', 'Timeout', 'Running', 'Creating', 'Updating', 'Succeeded')
+                $result = New-TemplateDeployment @deploymentInput
+                $result.DeploymentOutput.recovered.value | Should -BeExactly 'ready'
+                $script:statusReads.Count | Should -Be 6
+                $script:attemptNames.Count | Should -Be 1
+                Should -Invoke Start-Sleep -Times 5 -Exactly -ParameterFilter { $Seconds -eq 15 }
+            }
+
+            It 'Retains the HTTP 403 and original details when observation returns <state>' -ForEach @(
+                @{ state = 'Failed'; message = 'confirmed Failed' }
+                @{ state = 'Unknown'; message = 'unsupported recovery state' }
+                @{ state = 'Canceled'; message = 'unsupported recovery state' }
+                @{ state = 'Missing'; message = 'exactly the original deployment' }
+                @{ state = 'MissingState'; message = 'unsupported recovery state' }
+                @{ state = 'Mismatched'; message = 'exactly the original deployment' }
+                @{ state = 'Ambiguous'; message = 'exactly the original deployment' }
+                @{ state = 'MissingId'; message = 'original management-group deployment ID' }
+                @{ state = 'MismatchedId'; message = 'original management-group deployment ID' }
+                @{ state = 'ArrayState'; message = 'unsupported recovery state' }
+                @{ state = 'NotFound'; message = 'DeploymentNotFound' }
+                @{ state = 'Forbidden'; message = 'Forbidden' }
+                @{ state = 'Authentication'; message = 'authentication failed' }
+                @{ state = 'Transport'; message = 'connection failed' }
+            ) {
+                $script:statusStates = @($state, 'Succeeded')
+                $result = New-TemplateDeployment @deploymentInput
+
+                $result.Exception | Should -Match $message
+                $result.Exception | Should -Match 'Original submission diagnostic'
+                $result.ErrorRecord.ErrorDetails.Message | Should -Match 'Original HTTP 403 details; OperationID: fixture-operation'
+                $result.ErrorRecord.Exception | Should -BeOfType [System.AggregateException]
+                $original = $result.ErrorRecord.Exception.Data['OriginalErrorRecord']
+                $original.FullyQualifiedErrorId | Should -Match '^ManagementGroupForbidden'
+                $original.CategoryInfo.Category | Should -Be 'PermissionDenied'
+                $original.TargetObject | Should -BeExactly 'original-submission'
+                $original.ErrorDetails.Message | Should -BeExactly 'Original HTTP 403 details; OperationID: fixture-operation.'
+                [object]::ReferenceEquals($result.ErrorRecord.Exception.InnerExceptions[0], $original.Exception) | Should -BeTrue
+                $result.ErrorRecord.Exception.Data['RecoveryErrorRecord'] | Should -Not -BeNullOrEmpty
+                $result.RetryAllowed | Should -BeFalse
+                $result.FailureQueryAllowed | Should -BeFalse
+                $result.RecoveredFailure | Should -BeFalse
+                @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+                $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+                $result.ContainsKey('DeploymentOutput') | Should -BeFalse
+                $script:attemptNames.Count | Should -Be 1
+                $script:statusReads.Count | Should -Be 1
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+                Should -Invoke Get-ErrorMessageForScope -Times 0 -Exactly
+            }
+
+            It 'Bounds <kind> observation and never authorizes another attempt' -ForEach @(
+                @{ kind = 'consecutive request timeouts'; states = @('Timeout', 'Timeout', 'Timeout'); reads = 3; message = 'three consecutive request timeouts' }
+                @{ kind = 'active deployment'; states = @('Running'); reads = 1; message = '3600-second recovery window' }
+            ) {
+                $script:statusStates = $states
+                if ($kind -eq 'active deployment') {
+                    Mock Start-Sleep { $script:recoveryClock = $script:recoveryClock.AddMinutes(60) }
+                }
+                $result = New-TemplateDeployment @deploymentInput
+                $result.Exception | Should -Match $message
+                $result.Exception | Should -Match 'Original submission diagnostic'
+                $result.RetryAllowed | Should -BeFalse
+                $result.FailureQueryAllowed | Should -BeFalse
+                $script:statusReads.Count | Should -Be $reads
+                $script:attemptNames.Count | Should -Be 1
+                Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 5 }
+            }
+
+            It 'Throws both the original HTTP 403 and failed observation when DoNotThrow is disabled' {
+                $deploymentInput.DoNotThrow = $false
+                $script:statusStates = @('Failed')
+                { New-TemplateDeployment @deploymentInput } | Should -Throw '*Original submission diagnostic*confirmed Failed*'
+                $script:attemptNames.Count | Should -Be 1
+            }
+
+            It 'Does not recover <format> without an actual HTTP 403 status' -ForEach @(
+                @{ format = 'WordingOnly' }, @{ format = 'CategoryOnly' }, @{ format = 'Unauthorized' }
+                @{ format = 'MalformedStatus' }, @{ format = 'ArrayStatus' }
+            ) {
+                $script:forbiddenFormat = $format
+                $result = New-TemplateDeployment @deploymentInput
+                $result.Exception | Should -Match 'Original submission diagnostic'
+                $script:attemptNames.Count | Should -Be 1
+                $script:statusReads.Count | Should -Be 0
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Does not add HTTP 403 recovery at <scope> scope' -ForEach @(
+                @{ scope = 'resourcegroup' }, @{ scope = 'subscription' }, @{ scope = 'tenant' }
+            ) {
+                Set-TestTemplateScope -Scope $scope
+                $result = New-TemplateDeployment @deploymentInput
+                $result.Exception | Should -Match 'Original submission diagnostic'
+                $script:attemptNames.Count | Should -Be 1
+                $script:statusReads.Count | Should -Be 0
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Does not submit or observe a management-group deployment under WhatIf' {
+                New-TemplateDeployment @deploymentInput -WhatIf
+                $script:attemptNames.Count | Should -Be 0
+                $script:statusReads.Count | Should -Be 0
+                Should -Invoke Get-AzContext -Times 0 -Exactly
+            }
+
+            It 'Keeps typed HTTP 403 ahead of timeout classification but never cancellation' -ForEach @(
+                @{ kind = 'timeout'; expected = 'Forbidden' }
+                @{ kind = 'cancellation'; expected = 'Cancellation' }
+                @{ kind = 'pipeline cancellation'; expected = 'Cancellation' }
+            ) {
+                $forbidden = (Get-TestForbiddenError).Exception
+                $inner = switch ($kind) {
+                    'timeout' { [System.TimeoutException]::new('Request timed out.') }
+                    'cancellation' { [System.OperationCanceledException]::new('Request cancelled.') }
+                    'pipeline cancellation' { [System.Management.Automation.PipelineStoppedException]::new('Pipeline stopped.') }
+                }
+                $record = [System.Management.Automation.ErrorRecord]::new(
+                    [System.AggregateException]::new([System.Exception[]] @($forbidden, $inner)),
+                    'MixedRequestErrors', [System.Management.Automation.ErrorCategory]::OperationStopped, $null
+                )
+                Get-DeploymentErrorKind -ErrorRecord $record | Should -Be $expected
+            }
+
+            It 'Does not submit or recover without the original Azure tenant context' -ForEach @(
+                @{ kind = 'missing context' }, @{ kind = 'missing tenant' }
+            ) {
+                if ($kind -eq 'missing context') { $script:selectedContext = $null }
+                else { $script:selectedContext.Tenant = $null }
+                $result = New-TemplateDeployment @deploymentInput -RetryLimit 1
+                $result.Exception | Should -Match 'Azure context'
+                $script:attemptNames.Count | Should -Be 0
+                $script:statusReads.Count | Should -Be 0
+                $result.DeploymentNames.Count | Should -Be 0
+            }
+
+            It 'Does not observe or retry an HTTP 403 during context lookup before submission' {
+                Mock Get-AzContext { throw (Get-TestForbiddenError) }
+                $result = New-TemplateDeployment @deploymentInput
+                $result.Exception | Should -Match 'Original submission diagnostic'
+                $result.DeploymentNames.Count | Should -Be 0
+                $script:attemptNames.Count | Should -Be 0
+                $script:statusReads.Count | Should -Be 0
+                Should -Invoke Get-AzContext -Times 1 -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Propagates <kind> cancellation without observing another status or resubmitting' -ForEach @(
+                @{ kind = 'mixed submission'; state = 'Succeeded' }
+                @{ kind = 'status read'; state = 'Cancelled' }
+                @{ kind = 'task cancellation'; state = 'TaskCancelled' }
+            ) {
+                if ($kind -eq 'mixed submission') { $script:forbiddenFormat = 'MixedCancellation' }
+                $script:statusStates = @($state)
+                { New-TemplateDeployment @deploymentInput } | Should -Throw '*cancelled*'
+                $script:attemptNames.Count | Should -Be 1
+                $script:statusReads.Count | Should -Be ($kind -eq 'mixed submission' ? 0 : 1)
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
         }
     }
 
@@ -1360,14 +1631,16 @@ Describe 'Deployment submission and cleanup runtime integration' {
         $script:removedIds.Count | Should -Be 0
     }
 
-    It 'Stops the actual deployment action on PipelineStoppedException during <phase> without retrying or emitting cleanup outputs' -ForEach @(
-        @{ phase = 'submission' }, @{ phase = 'recovery' }
+    It 'Stops the actual deployment action on PipelineStoppedException during <scope> <phase> without retrying or emitting cleanup outputs' -ForEach @(
+        @{ scope = 'subscription'; phase = 'submission' }, @{ scope = 'subscription'; phase = 'recovery' }
+        @{ scope = 'managementgroup'; phase = 'submission' }, @{ scope = 'managementgroup'; phase = 'recovery' }
     ) {
+        Set-TestTemplateScope -Scope $scope
         $trace = [System.Collections.Generic.List[string]]::new()
         $pipeline = [powershell]::Create()
         try {
             $null = $pipeline.AddScript(@'
-param($ActionScript, $Trace, $Phase)
+param($ActionScript, $Trace, $Phase, $Scope)
 function Set-AzContext {
     [CmdletBinding()]
     param([string] $Subscription)
@@ -1378,20 +1651,33 @@ function New-AzSubscriptionDeployment {
     param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret)
     $Trace.Add('submit')
     if ($Phase -eq 'recovery') {
+        if ($Scope -eq 'managementgroup') {
+            throw [System.Net.Http.HttpRequestException]::new('Mock HTTP 403', $null, [System.Net.HttpStatusCode]::Forbidden)
+        }
         throw [System.TimeoutException]::new('Mock request timeout')
     }
     throw [System.Management.Automation.PipelineStoppedException]::new('Mock pipeline cancellation')
+}
+function New-AzManagementGroupDeployment {
+    [CmdletBinding()]
+    param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $ManagementGroupId, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret, [object] $DefaultProfile)
+    New-AzSubscriptionDeployment -TemplateFile $TemplateFile -DeploymentName $DeploymentName -Location $Location -resourceLocation $resourceLocation -baseTime $baseTime -adminSecret $adminSecret
 }
 function Test-AzSubscriptionDeployment {
     [CmdletBinding()]
     param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret)
     $Trace.Add('validate')
 }
+function Test-AzManagementGroupDeployment {
+    [CmdletBinding()]
+    param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $ManagementGroupId, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret)
+    $Trace.Add('validate')
+}
 function Get-AzContext {
     [CmdletBinding()]
     param()
     $Trace.Add('read-context')
-    return @{ Subscription = @{ Id = '11111111-1111-1111-1111-111111111111' } }
+    return @{ Subscription = @{ Id = '11111111-1111-1111-1111-111111111111' }; Tenant = @{ Id = '22222222-2222-2222-2222-222222222222' } }
 }
 function Get-AzDeployment {
     [CmdletBinding()]
@@ -1400,7 +1686,12 @@ function Get-AzDeployment {
     throw [System.Management.Automation.PipelineStoppedException]::new('Mock polling cancellation')
 }
 function Get-AzResourceGroupDeployment { throw 'Unexpected resource group status read.' }
-function Get-AzManagementGroupDeployment { throw 'Unexpected management group status read.' }
+function Get-AzManagementGroupDeployment {
+    [CmdletBinding()]
+    param([string] $Name, [string] $ManagementGroupId, [object] $DefaultProfile)
+    $Trace.Add('read-status')
+    throw [System.Management.Automation.PipelineStoppedException]::new('Mock polling cancellation')
+}
 function Get-AzTenantDeployment { throw 'Unexpected tenant status read.' }
 function Start-Sleep {
     param([int] $Seconds)
@@ -1408,12 +1699,16 @@ function Start-Sleep {
 }
 . ([scriptblock]::Create($ActionScript))
 $Trace.Add('returned')
-'@).AddArgument((Get-TestActionScript -Name 'Deploy template file')).AddArgument($trace).AddArgument($phase)
+'@).AddArgument((Get-TestActionScript -Name 'Deploy template file')).AddArgument($trace).AddArgument($phase).AddArgument($scope)
             $null = $pipeline.Invoke()
 
             $pipeline.InvocationStateInfo.State | Should -Be 'Stopped'
             $pipeline.InvocationStateInfo.Reason | Should -BeOfType [System.Management.Automation.PipelineStoppedException]
-            if ($phase -eq 'recovery') {
+            if ($scope -eq 'managementgroup') {
+                $expected = @('validate', 'read-context', 'submit')
+                if ($phase -eq 'recovery') { $expected += 'read-status' }
+                @($trace) | Should -Be $expected
+            } elseif ($phase -eq 'recovery') {
                 @($trace) | Should -Be @('context', 'validate', 'context', 'submit', 'read-context', 'read-status')
             } else {
                 @($trace) | Should -Be @('context', 'validate', 'context', 'submit')
