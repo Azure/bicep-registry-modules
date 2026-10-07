@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.22.4
+
+### Changes
+
+- Typed `extensionDSCConfig` with `extensionDSCConfigType`, marking `protectedSettings` as secure to match the extension child module.
+
+### Breaking Changes
+
+- None
+
 ## 0.22.3
 
 ### Changes

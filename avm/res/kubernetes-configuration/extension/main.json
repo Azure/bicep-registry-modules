@@ -6,10 +6,89 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6129444751223242932"
+      "templateHash": "11080760531257589726"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension."
+  },
+  "definitions": {
+    "fluxConfigurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Flux configuration."
+          }
+        },
+        "namespace": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The namespace to which this configuration is installed to."
+          }
+        },
+        "scope": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/scope"
+            },
+            "description": "Required. Scope at which the configuration will be installed."
+          }
+        },
+        "bucket": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/bucket"
+            },
+            "description": "Optional. Parameters to reconcile to the Bucket source kind type."
+          },
+          "nullable": true
+        },
+        "configurationProtectedSettings": {
+          "type": "secureObject",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/configurationProtectedSettings"
+            },
+            "description": "Optional. Key-value pairs of protected configuration settings for the configuration."
+          },
+          "nullable": true
+        },
+        "gitRepository": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/gitRepository"
+            },
+            "description": "Optional. Parameters to reconcile to the GitRepository source kind type."
+          },
+          "nullable": true
+        },
+        "kustomizations": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/kustomizations"
+            },
+            "description": "Required. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster."
+          }
+        },
+        "suspend": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether this configuration should suspend its reconciliation of its kustomizations and sources."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a Flux configuration."
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -106,12 +185,7 @@
     "fluxConfigurations": {
       "type": "array",
       "items": {
-        "type": "object",
-        "metadata": {
-          "__bicep_resource_derived_type!": {
-            "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties"
-          }
-        }
+        "$ref": "#/definitions/fluxConfigurationType"
       },
       "nullable": true,
       "metadata": {
