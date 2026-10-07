@@ -43,7 +43,6 @@ Describe 'Test subscription workflow integration' {
         $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -Path $actionPath -Raw)
         $selectionStep = $action.runs.steps | Where-Object { $_.id -eq 'get-test-subscription' }
-        $exceptionStep = $action.runs.steps | Where-Object { $_.id -eq 'set-oidc-exception' }
         $matrixActionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-getModuleDeploymentMatrix' 'action.yml'
         $matrixAction = ConvertFrom-Yaml -Yaml (Get-Content -Path $matrixActionPath -Raw)
         $matrixStep = $matrixAction.runs.steps | Where-Object { $_.id -eq 'deployment-matrix' }
@@ -64,7 +63,7 @@ Describe 'Test subscription workflow integration' {
             'SUBSCRIPTION_SELECTION_SEED', 'SUBSCRIPTION_JOB_INDEX', 'SELECTED_SUBSCRIPTION_ID',
             'PRESELECTED_SUBSCRIPTION_INDEX', 'PRESELECTED_SUBSCRIPTION_KEY',
             'MODULE_PATH', 'MODULE_TEST_FILE_PATHS', 'DISPLAY_SUBSCRIPTION_NAMES',
-            'AZURE_CREDENTIALS', 'TEST_SUBSCRIPTIONS', 'AVM_TEST_TENANT',
+            'TEST_SUBSCRIPTIONS', 'AVM_TEST_TENANT',
             'VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID', 'MANAGEMENT_GROUP_ID', 'CI_KEY_VAULT_NAME'
         )
 
@@ -107,12 +106,6 @@ Describe 'Test subscription workflow integration' {
                 -not [string]::IsNullOrEmpty($Context['vars.VALIDATE_SUBSCRIPTION_IDS']) -or
                 -not [string]::IsNullOrEmpty($Context['vars.TEST_SUBSCRIPTION_IDS'])
             )
-        }
-
-        function Get-TestAuthenticationScript {
-            param([string] $ModulePath = 'avm/res/storage/storage-account')
-
-            return [scriptblock]::Create($exceptionStep.with.inlineScript.Replace('${{ inputs.modulePath }}', $ModulePath))
         }
 
         function Get-AzKeyVaultSecret {
@@ -169,7 +162,6 @@ Describe 'Test subscription workflow integration' {
             'secrets.VALIDATE_SUBSCRIPTION_ID'     = $env:VALIDATE_SUBSCRIPTION_ID
             'secrets.VALIDATE_MANAGEMENT_GROUP_ID' = 'secret-management-group'
             'secrets.ARM_MGMTGROUP_ID'             = 'secret-alias-group'
-            'secrets.AZURE_CREDENTIALS'            = '{"clientId":"exception-client","tenantId":"variable-tenant","clientSecret":"synthetic-secret"}'
         }
         Mock Get-AzKeyVaultSecret { throw 'Unexpected Key Vault access.' }
         Mock Invoke-WebRequest { throw 'Unexpected network request.' }
@@ -228,7 +220,6 @@ Describe 'Test subscription workflow integration' {
         $deploymentStep.env.VALIDATE_CLIENT_ID | Should -Be '${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}'
         $deploymentStep.env.VALIDATE_TENANT_ID | Should -Be '${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}'
         $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}'
-        $deploymentStep.env.AZURE_CREDENTIALS | Should -Be '${{ secrets.AZURE_CREDENTIALS }}'
         $deploymentStep.env.CI_KEY_VAULT_NAME | Should -Be '${{ vars.CI_KEY_VAULT_NAME }}'
         $deployment.environment | Should -Be 'avm-validation'
         @($deployment.env.Keys) | Should -Not -Contain 'VALIDATE_CLIENT_ID'
@@ -382,7 +373,6 @@ Describe 'Test subscription workflow integration' {
         $env:VALIDATE_TENANT_ID | Should -Be 'variable-tenant'
         $env:MANAGEMENT_GROUP_ID | Should -Be 'variable-management-group'
         $env:VALIDATE_SUBSCRIPTION_ID | Should -Be '88888888-8888-8888-8888-888888888888'
-        $env:AZURE_CREDENTIALS | Should -Be $routingContext['secrets.AZURE_CREDENTIALS']
         $env:CI_KEY_VAULT_NAME | Should -Be 'contributor-vault'
     }
 
@@ -403,7 +393,6 @@ Describe 'Test subscription workflow integration' {
         $env:VALIDATE_TENANT_ID | Should -Be 'secret-tenant'
         $env:MANAGEMENT_GROUP_ID | Should -Be 'secret-management-group'
         $env:VALIDATE_SUBSCRIPTION_ID | Should -Be $routingContext['secrets.VALIDATE_SUBSCRIPTION_ID']
-        $env:AZURE_CREDENTIALS | Should -Be $routingContext['secrets.AZURE_CREDENTIALS']
     }
 
     It 'Supports variable-only identifiers but never reads credentials from variables in <workflowName>' -ForEach @(
@@ -414,17 +403,13 @@ Describe 'Test subscription workflow integration' {
         foreach ($key in @($routingContext.Keys | Where-Object { $_ -like 'secrets.*' })) {
             $routingContext.Remove($key)
         }
-        $routingContext['vars.AZURE_CREDENTIALS'] = 'must-not-be-used'
         Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
 
         . ([scriptblock]::Create($selectionStep.run))
-        $null = . (Get-TestAuthenticationScript)
 
         (Get-StepOutput).subscriptionId | Should -BeIn $subscriptions.id
-        (Get-StepOutput).oidcException | Should -Be 'false'
         $env:VALIDATE_CLIENT_ID | Should -Be 'variable-client'
         $env:VALIDATE_TENANT_ID | Should -Be 'variable-tenant'
-        $env:AZURE_CREDENTIALS | Should -BeNullOrEmpty
     }
 
     It 'Prefers variables across aliases, then canonical secrets, then legacy secrets in <workflowName>' -ForEach @(
@@ -473,13 +458,6 @@ Describe 'Test subscription workflow integration' {
                 (Get-StepOutput).Count | Should -Be 0
             }
         }
-        foreach ($setting in @('VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID')) {
-            $invalidContext = $routingContext.Clone()
-            $invalidContext["vars.$setting"] = ' '
-            Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $invalidContext
-            { . (Get-TestAuthenticationScript) } | Should -Throw "*OIDC authentication requires [[]$setting[]]*"
-            (Get-StepOutput).Count | Should -Be 0
-        }
     }
 
     It 'Does not use historical provider settings when generic subscriptions are absent' {
@@ -498,21 +476,8 @@ Describe 'Test subscription workflow integration' {
     It 'Does not require an unrelated management group or persistent subscription for OIDC selection' {
         $env:MANAGEMENT_GROUP_ID = ''
         . ([scriptblock]::Create($selectionStep.run))
-        $null = . (Get-TestAuthenticationScript)
 
         (Get-StepOutput).subscriptionId | Should -BeIn $subscriptions.id
-        (Get-StepOutput).oidcException | Should -Be 'false'
-    }
-
-    It 'Requires <setting> for default OIDC without using secret credentials as a fallback' -ForEach @(
-        @{ setting = 'VALIDATE_CLIENT_ID' }
-        @{ setting = 'VALIDATE_TENANT_ID' }
-    ) {
-        [Environment]::SetEnvironmentVariable($setting, '')
-        $env:AZURE_CREDENTIALS = $routingContext['secrets.AZURE_CREDENTIALS']
-
-        { . (Get-TestAuthenticationScript) } | Should -Throw "*OIDC authentication requires [[]$setting[]]*"
-        (Get-StepOutput).Count | Should -Be 0
     }
 
     It 'Resolves a PSRule pool or singleton without requiring authentication or a management group' {
@@ -563,158 +528,16 @@ Describe 'Test subscription workflow integration' {
             $login.with.'subscription-id' | Should -Be '${{ steps.get-test-subscription.outputs.subscriptionId }}'
             $login.with.'client-id' | Should -Be '${{ env.VALIDATE_CLIENT_ID }}'
             $login.with.'tenant-id' | Should -Be '${{ env.VALIDATE_TENANT_ID }}'
-            $login.if | Should -Be '${{ steps.set-oidc-exception.outputs.oidcException == ''false'' && env.skip_deployment_ci == ''false'' }}'
+            $login.if | Should -Be "env.skip_deployment_ci == 'false'"
         }
         foreach ($stepName in @('Replace tokens in template file', 'Deploy template file', 'Remove deployed resources')) {
             $step = $action.runs.steps | Where-Object { $_.name -eq $stepName }
             $step.with.inlineScript | Should -Match ([regex]::Escape('${{ steps.get-test-subscription.outputs.subscriptionId }}'))
             $step.with.inlineScript | Should -Not -Match 'env\.VALIDATE_SUBSCRIPTION_ID'
         }
-        $exceptionLogins = @($action.runs.steps | Where-Object { $_.name -eq 'Azure Login - Exception' })
-        $exceptionLogins.Count | Should -Be 2
-        foreach ($login in $exceptionLogins) {
-            $login.with.creds | Should -Be '${{ steps.set-oidc-exception.outputs.azureCredentials }}'
-            $login.if | Should -Be '${{ steps.set-oidc-exception.outputs.oidcException == ''true''  && env.skip_deployment_ci == ''false''}}'
-        }
-        $exceptionStep.env.SELECTED_SUBSCRIPTION_ID | Should -Be '${{ steps.get-test-subscription.outputs.subscriptionId }}'
-        $exceptionStep.ContainsKey('continue-on-error') | Should -BeFalse
-        foreach ($login in @($defaultLogins + $exceptionLogins)) {
+        foreach ($login in $defaultLogins) {
             [array]::IndexOf($action.runs.steps, $selectionStep) | Should -BeLessThan ([array]::IndexOf($action.runs.steps, $login))
-            [array]::IndexOf($action.runs.steps, $exceptionStep) | Should -BeLessThan ([array]::IndexOf($action.runs.steps, $login))
         }
-    }
-
-    It 'Updates and masks exception credentials without changing the original secret' {
-        $credentials = @{
-            clientId                   = 'different-exception-client'
-            clientSecret               = 'not-a-real-secret'
-            tenantId                   = 'test-tenant'
-            subscriptionId             = $env:VALIDATE_SUBSCRIPTION_ID
-            activeDirectoryEndpointUrl = 'https://login.example.invalid'
-        }
-        $env:AZURE_CREDENTIALS = ConvertTo-Json -InputObject $credentials -Compress
-        $originalCredentials = $env:AZURE_CREDENTIALS
-        $env:SELECTED_SUBSCRIPTION_ID = $subscriptions[2].id
-        $script = $exceptionStep.with.inlineScript.Replace('${{ inputs.modulePath }}', 'avm/res/azure-stack-hci/cluster')
-
-        $messages = @(. ([scriptblock]::Create($script)))
-        $outputs = Get-StepOutput
-        $updatedCredentials = $outputs.azureCredentials | ConvertFrom-Json
-
-        $outputs.oidcException | Should -Be 'true'
-        $updatedCredentials.subscriptionId | Should -Be $subscriptions[2].id
-        $updatedCredentials.clientId | Should -Be $credentials.clientId
-        $updatedCredentials.clientId | Should -Not -Be $env:VALIDATE_CLIENT_ID
-        $updatedCredentials.clientSecret | Should -Be $credentials.clientSecret
-        $updatedCredentials.tenantId | Should -Be $credentials.tenantId
-        $updatedCredentials.activeDirectoryEndpointUrl | Should -Be $credentials.activeDirectoryEndpointUrl
-        $messages | Should -Contain "::add-mask::$($outputs.azureCredentials)"
-        $env:AZURE_CREDENTIALS | Should -Be $originalCredentials
-    }
-
-    It 'Does not require secret credentials for OIDC-capable modules' {
-        $env:AZURE_CREDENTIALS = '[invalid-unused-credentials'
-        $script = $exceptionStep.with.inlineScript.Replace('${{ inputs.modulePath }}', 'avm/res/storage/storage-account')
-
-        $null = . ([scriptblock]::Create($script))
-        $outputs = Get-StepOutput
-
-        $outputs.oidcException | Should -Be 'false'
-        $outputs.ContainsKey('azureCredentials') | Should -BeFalse
-    }
-
-    It 'Preserves credential-only exception authentication without additional identifier requirements' {
-        $env:VALIDATE_CLIENT_ID = ''
-        $env:VALIDATE_TENANT_ID = ''
-        $env:MANAGEMENT_GROUP_ID = ''
-        $env:AZURE_CREDENTIALS = $routingContext['secrets.AZURE_CREDENTIALS']
-
-        $null = . (Get-TestAuthenticationScript -ModulePath 'avm/res/azure-stack-hci/cluster')
-
-        $outputs = Get-StepOutput
-        $outputs.oidcException | Should -Be 'true'
-        $credentials = $outputs.azureCredentials | ConvertFrom-Json
-        $credentials.clientId | Should -Be 'exception-client'
-        $credentials.tenantId | Should -Be 'variable-tenant'
-        $credentials.subscriptionId | Should -Be $env:SELECTED_SUBSCRIPTION_ID
-    }
-
-    It 'Matches tenant names without imposing a GUID-only credential schema' {
-        $env:VALIDATE_TENANT_ID = 'CUSTOMER.onmicrosoft.com'
-        $env:AZURE_CREDENTIALS = '{"clientId":"exception-client","tenantId":"customer.onmicrosoft.com","clientSecret":"synthetic-secret","activeDirectoryEndpointUrl":"https://login.example.invalid"}'
-
-        $null = . (Get-TestAuthenticationScript -ModulePath 'avm/res/azure-stack-hci/cluster')
-
-        $credentials = (Get-StepOutput).azureCredentials | ConvertFrom-Json
-        $credentials.tenantId | Should -BeExactly 'customer.onmicrosoft.com'
-        $credentials.activeDirectoryEndpointUrl | Should -Be 'https://login.example.invalid'
-    }
-
-    It 'Rejects missing or malformed exception credential JSON without exposing it [<caseName>]' -ForEach @(
-        @{ caseName = 'missing'; json = $null }
-        @{ caseName = 'empty'; json = '' }
-        @{ caseName = 'whitespace'; json = ' ' }
-        @{ caseName = 'malformed'; json = '{"clientSecret":"private-value-do-not-log",' }
-        @{ caseName = 'null'; json = 'null' }
-        @{ caseName = 'array'; json = '[{"clientId":"test","tenantId":"test-tenant","clientSecret":"private-value-do-not-log"}]' }
-        @{ caseName = 'string'; json = '"private-value-do-not-log"' }
-    ) {
-        $env:AZURE_CREDENTIALS = $json
-        $errorRecord = { . (Get-TestAuthenticationScript -ModulePath 'avm/res/azure-stack-hci/cluster') } |
-            Should -Throw '*AZURE_CREDENTIALS*' -PassThru
-
-        $errorRecord.Exception.Message | Should -Not -Match 'private-value-do-not-log'
-        (Get-StepOutput).Count | Should -Be 0
-    }
-
-    It 'Requires nonempty string <field> in exception credentials without logging the payload' -ForEach @(
-        @{ field = 'clientId' }
-        @{ field = 'clientSecret' }
-        @{ field = 'tenantId' }
-    ) {
-        foreach ($value in @($null, '', ' ', 123, $false, @(), @{ invalid = 'private-value-do-not-log' })) {
-            $credentials = @{
-                clientId     = 'test-client'
-                tenantId     = 'test-tenant'
-                clientSecret = 'private-value-do-not-log'
-            }
-            $credentials[$field] = $value
-            $env:AZURE_CREDENTIALS = ConvertTo-Json -InputObject $credentials -Compress
-
-            $errorRecord = { . (Get-TestAuthenticationScript -ModulePath 'avm/res/azure-stack-hci/cluster') } |
-                Should -Throw "*AZURE_CREDENTIALS requires a non-empty string [[]$field[]]*" -PassThru
-
-            $errorRecord.Exception.Message | Should -Not -Match 'private-value-do-not-log'
-            (Get-StepOutput).Count | Should -Be 0
-        }
-    }
-
-    It 'Keeps exception path <modulePath> and its descendants fail-closed without matching credentials' -ForEach @(
-        @{ modulePath = 'avm/res/azure-stack-hci/cluster' }
-        @{ modulePath = 'avm/res/azure-stack-hci/logical-network' }
-        @{ modulePath = 'avm/res/azure-stack-hci/network-interface' }
-        @{ modulePath = 'avm/res/azure-stack-hci/virtual-hard-disk' }
-        @{ modulePath = 'avm/res/azure-stack-hci/virtual-machine-instance' }
-        @{ modulePath = 'avm/res/hybrid-container-service/provisioned-cluster-instance' }
-    ) {
-        foreach ($path in @($modulePath, "$modulePath/child")) {
-            $env:AZURE_CREDENTIALS = ''
-            { . (Get-TestAuthenticationScript -ModulePath $path) } | Should -Throw '*requires AZURE_CREDENTIALS*'
-            $env:AZURE_CREDENTIALS = $routingContext['secrets.AZURE_CREDENTIALS']
-            { . (Get-TestAuthenticationScript -ModulePath $path) } | Should -Throw '*tenantId must match*'
-            (Get-StepOutput).Count | Should -Be 0
-        }
-    }
-
-    It 'Rejects a different tenant for an exception before either login can run' {
-        $env:AZURE_CREDENTIALS = $routingContext['secrets.AZURE_CREDENTIALS']
-        { . (Get-TestAuthenticationScript -ModulePath 'avm/res/azure-stack-hci/cluster') } |
-            Should -Throw '*tenantId must match the configured VALIDATE_TENANT_ID*'
-        (Get-StepOutput).Count | Should -Be 0
-
-        $labScript = $exceptionStep.with.inlineScript.Replace('${{ inputs.modulePath }}', 'avm/res/dev-test-lab/lab')
-        $null = . ([scriptblock]::Create($labScript))
-        (Get-StepOutput).oidcException | Should -Be 'false'
     }
 
     It 'Keeps the Key Vault warning and GitHub secret over variable over vault precedence after generic binding' {
