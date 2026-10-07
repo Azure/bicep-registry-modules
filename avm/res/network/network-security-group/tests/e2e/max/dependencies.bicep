@@ -12,7 +12,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
-resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2025-05-01' = {
+resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2025-09-01' = {
   name: applicationSecurityGroupName
   location: location
 }
