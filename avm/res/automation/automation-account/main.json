@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16026018928128254529"
+      "templateHash": "7015420416174934793"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -106,6 +106,41 @@
       },
       "metadata": {
         "__bicep_export!": true
+      }
+    },
+    "variableType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the variable."
+          }
+        },
+        "value": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Required. The value of the variable. For security best practices, this value is always passed as a secure string as it could contain an encrypted value when the \"isEncrypted\" property is set to true."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the variable."
+          }
+        },
+        "isEncrypted": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If the variable should be encrypted. For security reasons encryption of variables should be enabled. Defaults to `true`."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of an Automation Account variable."
       }
     },
     "gallerySolutionType": {
@@ -1010,6 +1045,9 @@
     },
     "variables": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/variableType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. List of variables to be created in the automation account."

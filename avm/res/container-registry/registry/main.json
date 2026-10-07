@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6797553885856222350"
+      "templateHash": "9734010891120775528"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -389,7 +389,7 @@
           }
         },
         "serviceUri": {
-          "type": "string",
+          "type": "securestring",
           "metadata": {
             "description": "Required. The service URI for the webhook to post notifications."
           }

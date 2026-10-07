@@ -43,7 +43,7 @@ param targetNamespace string?
 param version string?
 
 @description('Optional. A list of flux configuraitons.')
-param fluxConfigurations resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties[]?
+param fluxConfigurations fluxConfigurationType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -145,3 +145,36 @@ output resourceId string = clusterType == 'managedCluster' ? managedExtension.id
 
 @description('The name of the resource group the extension was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type of a Flux configuration.')
+type fluxConfigurationType = {
+  @description('Optional. The name of the Flux configuration.')
+  name: string?
+
+  @description('Required. The namespace to which this configuration is installed to.')
+  namespace: string
+
+  @description('Required. Scope at which the configuration will be installed.')
+  scope: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.scope
+
+  @description('Optional. Parameters to reconcile to the Bucket source kind type.')
+  bucket: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.bucket?
+
+  @description('Optional. Key-value pairs of protected configuration settings for the configuration.')
+  @secure()
+  configurationProtectedSettings: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.configurationProtectedSettings?
+
+  @description('Optional. Parameters to reconcile to the GitRepository source kind type.')
+  gitRepository: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.gitRepository?
+
+  @description('Required. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster.')
+  kustomizations: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.kustomizations
+
+  @description('Optional. Whether this configuration should suspend its reconciliation of its kustomizations and sources.')
+  suspend: bool?
+}

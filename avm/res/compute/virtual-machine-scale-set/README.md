@@ -3402,6 +3402,72 @@ The configuration for the [Desired State Configuration] extension. Must at least
   }
   ```
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-extensiondscconfigenabled) | bool | Whether the extension is deployed. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoUpgradeMinorVersion`](#parameter-extensiondscconfigautoupgrademinorversion) | bool | Indicates whether the extension should use a newer minor version if one is available at deployment time. Defaults to `true`. |
+| [`enableAutomaticUpgrade`](#parameter-extensiondscconfigenableautomaticupgrade) | bool | Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`. |
+| [`protectedSettings`](#parameter-extensiondscconfigprotectedsettings) | secureObject | Any object that contains the extension specific protected settings. |
+| [`provisionAfterExtensions`](#parameter-extensiondscconfigprovisionafterextensions) | array | Collection of extension names after which this extension needs to be provisioned. |
+| [`settings`](#parameter-extensiondscconfigsettings) | object | Any object that contains the extension specific settings. |
+| [`typeHandlerVersion`](#parameter-extensiondscconfigtypehandlerversion) | string | The version of the script handler. |
+
+### Parameter: `extensionDSCConfig.enabled`
+
+Whether the extension is deployed.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `extensionDSCConfig.autoUpgradeMinorVersion`
+
+Indicates whether the extension should use a newer minor version if one is available at deployment time. Defaults to `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `extensionDSCConfig.enableAutomaticUpgrade`
+
+Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `extensionDSCConfig.protectedSettings`
+
+Any object that contains the extension specific protected settings.
+
+- Required: No
+- Type: secureObject
+
+### Parameter: `extensionDSCConfig.provisionAfterExtensions`
+
+Collection of extension names after which this extension needs to be provisioned.
+
+- Required: No
+- Type: array
+
+### Parameter: `extensionDSCConfig.settings`
+
+Any object that contains the extension specific settings.
+
+- Required: No
+- Type: object
+
+### Parameter: `extensionDSCConfig.typeHandlerVersion`
+
+The version of the script handler.
+
+- Required: No
+- Type: string
+
 ### Parameter: `extensionHealthConfig`
 
 Turned on by default. The configuration for the [Application Health Monitoring] extension. Must at least contain the ["enabled": true] property to be executed.

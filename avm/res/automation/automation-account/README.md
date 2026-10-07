@@ -2755,6 +2755,48 @@ List of variables to be created in the automation account.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-variablesname) | string | The name of the variable. |
+| [`value`](#parameter-variablesvalue) | securestring | The value of the variable. For security best practices, this value is always passed as a secure string as it could contain an encrypted value when the "isEncrypted" property is set to true. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-variablesdescription) | string | The description of the variable. |
+| [`isEncrypted`](#parameter-variablesisencrypted) | bool | If the variable should be encrypted. For security reasons encryption of variables should be enabled. Defaults to `true`. |
+
+### Parameter: `variables.name`
+
+The name of the variable.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `variables.value`
+
+The value of the variable. For security best practices, this value is always passed as a secure string as it could contain an encrypted value when the "isEncrypted" property is set to true.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `variables.description`
+
+The description of the variable.
+
+- Required: No
+- Type: string
+
+### Parameter: `variables.isEncrypted`
+
+If the variable should be encrypted. For security reasons encryption of variables should be enabled. Defaults to `true`.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `webhooks`
 
 List of webhooks to be created in the automation account.
