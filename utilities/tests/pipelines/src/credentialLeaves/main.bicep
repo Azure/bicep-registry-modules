@@ -1,5 +1,8 @@
 // Compile-only compatibility fixtures: these caller-owned types intentionally have no secure decorators.
 // Production callers should secure credentials at their own deployment boundary too.
+import { namedValueType as workspaceNamedValueType } from '../../../../../avm/res/api-management/service/workspace/main.bicep'
+
+param suppliedNamedValue workspaceNamedValueType
 param existingValue string
 param existingCertificate existingCertificateType
 param existingPolicy existingPolicyType
@@ -7,6 +10,7 @@ param existingPolicies existingPolicyType[]
 param existingSubscription existingSubscriptionType
 param existingSubscriptions existingSubscriptionType[]
 param existingWorkspaces existingWorkspaceType[]
+param existingNamedValues existingNamedValueType[]
 
 type existingCertificateType = {
   name: string?
@@ -32,7 +36,32 @@ type existingWorkspaceType = {
     name: string
   }
   subscriptions: existingSubscriptionType[]?
+  namedValues: existingNamedValueType[]?
 }
+
+type existingNamedValueType = {
+  name: string
+  displayName: string
+  value: string?
+}
+
+var namedValues = concat(existingNamedValues, [
+  suppliedNamedValue
+  {
+    name: 'supplied'
+    displayName: 'supplied'
+    value: existingValue
+  }
+  {
+    name: 'null'
+    displayName: 'null'
+    value: null
+  }
+  {
+    name: 'omitted'
+    displayName: 'omitted'
+  }
+])
 
 var certificates = [
   existingCertificate
@@ -131,6 +160,7 @@ module serviceParent '../../../../../avm/res/api-management/service/main.bicep' 
           name: 'supplied-gateway'
         }
         subscriptions: subscriptions
+        namedValues: namedValues
       }
     ])
   }
@@ -146,6 +176,18 @@ module workspaceParent '../../../../../avm/res/api-management/service/workspace/
       name: 'supplied-gateway'
     }
     subscriptions: subscriptions
+    namedValues: namedValues
+  }
+}
+
+module workspaceNamedValueChild '../../../../../avm/res/api-management/service/workspace/named-value/main.bicep' = {
+  name: 'workspace-named-value-child'
+  params: {
+    apiManagementServiceName: 'credential-test-service'
+    workspaceName: 'supplied'
+    name: 'supplied'
+    displayName: 'supplied'
+    value: existingValue
   }
 }
 
@@ -232,6 +274,7 @@ module nullWorkspaceSubscriptions '../../../../../avm/res/api-management/service
       name: 'supplied-gateway'
     }
     subscriptions: null
+    namedValues: null
   }
 }
 
