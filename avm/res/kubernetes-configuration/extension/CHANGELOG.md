@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/kubernetes-configuration/extension/CHANGELOG.md).
 
+## 0.3.9
+
+### Changes
+
+- Typed `fluxConfigurations` with `fluxConfigurationType`, marking `configurationProtectedSettings` as secure to match the flux-configuration module.
+
+### Breaking Changes
+
+- None
+
 ## 0.3.8
 
 ### Changes

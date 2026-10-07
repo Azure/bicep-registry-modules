@@ -1557,15 +1557,6 @@
     "ExpressionHash": "DC5C1D7D75C459834A9742001ADACAC5D708CC68E8DA82221CE23AAB946B8272"
   },
   {
-    "Module": "avm/res/automation/automation-account",
-    "Deployment": "/automationAccount_variables",
-    "Target": "value",
-    "SinkType": "securestring",
-    "Source": "variables.[].value",
-    "Status": "Mismatch",
-    "ExpressionHash": ""
-  },
-  {
     "Module": "avm/res/cache/redis",
     "Deployment": "/secretsExport",
     "Target": "secretsToSet.[].value",
@@ -1593,15 +1584,6 @@
     "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
   },
   {
-    "Module": "avm/res/compute/virtual-machine",
-    "Deployment": "/vm_desiredStateConfigurationExtension",
-    "Target": "protectedSettings",
-    "SinkType": "secureObject",
-    "Source": "extensionDSCConfig.protectedSettings",
-    "Status": "Mismatch",
-    "ExpressionHash": ""
-  },
-  {
     "Module": "avm/res/compute/virtual-machine-scale-set",
     "Deployment": "/vmss_azureMonitorAgentExtension",
     "Target": "protectedSettings",
@@ -1618,33 +1600,6 @@
     "Source": "",
     "Status": "Unsupported",
     "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
-  },
-  {
-    "Module": "avm/res/compute/virtual-machine-scale-set",
-    "Deployment": "/vmss_desiredStateConfigurationExtension",
-    "Target": "protectedSettings",
-    "SinkType": "secureObject",
-    "Source": "extensionDSCConfig.protectedSettings",
-    "Status": "Mismatch",
-    "ExpressionHash": ""
-  },
-  {
-    "Module": "avm/res/container-registry/registry",
-    "Deployment": "/registry_webhooks",
-    "Target": "serviceUri",
-    "SinkType": "securestring",
-    "Source": "webhooks.[].serviceUri",
-    "Status": "Mismatch",
-    "ExpressionHash": ""
-  },
-  {
-    "Module": "avm/res/container-service/managed-cluster",
-    "Deployment": "/managedCluster_extension",
-    "Target": "configurationProtectedSettings",
-    "SinkType": "secureObject",
-    "Source": "fluxExtension.configurationProtectedSettings",
-    "Status": "Mismatch",
-    "ExpressionHash": ""
   },
   {
     "Module": "avm/res/container-service/managed-cluster",
@@ -1670,15 +1625,6 @@
     "Target": "contentType",
     "SinkType": "securestring",
     "Source": "secrets.[].contentType",
-    "Status": "Mismatch",
-    "ExpressionHash": ""
-  },
-  {
-    "Module": "avm/res/kubernetes-configuration/extension",
-    "Deployment": "/fluxConfiguration",
-    "Target": "configurationProtectedSettings",
-    "SinkType": "secureObject",
-    "Source": "fluxConfigurations.[].configurationProtectedSettings",
     "Status": "Mismatch",
     "ExpressionHash": ""
   },

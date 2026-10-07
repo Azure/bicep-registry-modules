@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-registry/registry/CHANGELOG.md).
 
+## 0.13.2
+
+### Changes
+
+- Marked `serviceUri` as secure in `webhookType`, matching the webhook child module.
+
+### Breaking Changes
+
+- None
+
 ## 0.13.1
 
 ### Changes
