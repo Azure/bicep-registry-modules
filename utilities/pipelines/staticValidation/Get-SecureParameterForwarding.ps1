@@ -5,11 +5,11 @@ Compare forwarded production inputs with secure child-module schemas.
 .DESCRIPTION
 This is AVM interface hygiene, not a Bicep type error or a taint analyzer.
 See utilities/tests/pipelines/src/secureParameterForwarding/coverage.md for the
-supported emitted expressions and the deliberately limited production scope.
+supported emitted expressions, scan scope, and baseline.
 Unrecognized expressions produce Unsupported results; invalid schemas throw.
 
 .PARAMETER Template
-A freshly compiled ARM template, deserialized with ConvertFrom-Json -AsHashtable.
+A compiled ARM template, deserialized with ConvertFrom-Json -AsHashtable.
 
 .PARAMETER ModulePath
 The root module's repository-relative path, used in diagnostics.
@@ -56,9 +56,11 @@ function Get-SecureParameterForwarding {
             [pscustomobject] @{ Path = $Path; Type = $schema['type'] }
             return
         }
-        foreach ($keyword in @('oneOf', 'anyOf', 'allOf', 'prefixItems')) {
+        foreach ($keyword in @('oneOf', 'anyOf', 'allOf')) {
             if ($schema.Contains($keyword)) { throw "Unsupported schema keyword [$keyword]." }
         }
+        # Bicep emits `any` as a schema with no type; it has no secure leaves.
+        if (-not $schema.Contains('type')) { return }
         if ($schema['type'] -notin @('string', 'object', 'array', 'int', 'bool')) {
             throw "Missing or unsupported ARM schema type [$($schema['type'])]."
         }
@@ -74,13 +76,14 @@ function Get-SecureParameterForwarding {
             }
             Get-SecureLeaf -Document $Document -Schema $schema['properties'][$property] -Path ($Path + $property) -Depth ($Depth + 1)
         }
-        if ($schema['items'] -is [System.Collections.IDictionary]) {
-            Get-SecureLeaf -Document $Document -Schema $schema['items'] -Path ($Path + '[]') -Depth ($Depth + 1)
+        # Tuple positions share the '[]' token, so a tuple leaf is secure only if every position is.
+        foreach ($item in @($schema['prefixItems']) + @($schema['items'])) {
+            if ($item -is [System.Collections.IDictionary]) {
+                Get-SecureLeaf -Document $Document -Schema $item -Path ($Path + '[]') -Depth ($Depth + 1)
+            }
         }
         if ($schema['additionalProperties'] -is [System.Collections.IDictionary]) {
-            if (@(Get-SecureLeaf -Document $Document -Schema $schema['additionalProperties'] -Depth ($Depth + 1)).Count -gt 0) {
-                throw 'Secure additionalProperties schemas are not supported.'
-            }
+            Get-SecureLeaf -Document $Document -Schema $schema['additionalProperties'] -Path ($Path + '*') -Depth ($Depth + 1)
         }
     }
 
@@ -142,13 +145,23 @@ function Get-SecureParameterForwarding {
             }
             return $true
         }
-        $next = if ($head -eq '[]') { $schema['items'] } elseif ($schema['properties'] -and $schema['properties'].Contains($head)) {
-            $schema['properties'][$head]
-        } else {
-            $schema['additionalProperties']
+        $next = if ($head -eq '[]') {
+            @(@($schema['prefixItems']) + @($schema['items']) | Where-Object { $_ -is [System.Collections.IDictionary] })
+        } elseif ($head -eq '*') {
+            # Any member can reach a dictionary sink, so declared properties must be secure too,
+            # and members not described by a schema are not known to be secure.
+            if ($schema['additionalProperties'] -ne $false -and $schema['additionalProperties'] -isnot [System.Collections.IDictionary]) { return $false }
+            @(@($schema['properties'].psbase.Values) + @($schema['additionalProperties']) | Where-Object { $_ -is [System.Collections.IDictionary] })
+        } elseif ($schema['properties'] -and $schema['properties'].Contains($head)) {
+            @($schema['properties'][$head])
+        } elseif ($schema['additionalProperties'] -is [System.Collections.IDictionary]) {
+            @($schema['additionalProperties'])
+        } else { @() }
+        if ($next.Count -eq 0) { return $false }
+        foreach ($candidate in $next) {
+            if (-not (Test-SecurePath -Document $Document -Schema $candidate -Path $tail -Depth ($Depth + 1))) { return $false }
         }
-        if ($next -isnot [System.Collections.IDictionary]) { return $false }
-        return Test-SecurePath -Document $Document -Schema $next -Path $tail -Depth ($Depth + 1)
+        return $true
     }
 
     function Test-LiteralValue {
@@ -184,6 +197,10 @@ function Get-SecureParameterForwarding {
             }
             if ($head -eq '[]' -and $Value -is [array]) {
                 foreach ($item in $Value) { Compare-Binding -Document $Document -Value $item -LeafPath $tail -SinkType $SinkType -Deployment $Deployment -Target $Target }
+                return
+            }
+            if ($head -eq '*' -and $Value -is [System.Collections.IDictionary]) {
+                foreach ($item in $Value.psbase.Values) { Compare-Binding -Document $Document -Value $item -LeafPath $tail -SinkType $SinkType -Deployment $Deployment -Target $Target }
                 return
             }
             if ($Value -is [System.Collections.IDictionary]) {
@@ -247,6 +264,11 @@ function Get-SecureParameterForwarding {
             if ($properties -isnot [System.Collections.IDictionary]) { throw 'Unsupported deployment properties expression.' }
             if ($properties['templateLink']) { throw 'Linked templates cannot be inspected; compile embedded modules.' }
             $child = $properties['template']
+            # Bicep stores loadJsonContent() templates in a generated variable.
+            if ($child -is [string] -and $child -cmatch "^\[variables\('(?<name>[^']+)'\)\]$" -and
+                $Document['variables'] -is [System.Collections.IDictionary] -and $Document['variables'].Contains($Matches['name'])) {
+                $child = $Document['variables'][$Matches['name']]
+            }
             if ($child -isnot [System.Collections.IDictionary]) { throw 'Missing embedded deployment template.' }
             $location = "$Deployment/$($entry.Name)"
             foreach ($parameter in $child['parameters'].psbase.Keys) {
@@ -265,4 +287,67 @@ function Get-SecureParameterForwarding {
     }
 
     Get-TemplateBinding -Document $Template -Deployment ''
+}
+
+<#
+.SYNOPSIS
+Run Get-SecureParameterForwarding on every top-level module's committed main.json.
+
+.DESCRIPTION
+Module static validation already fails when main.json is stale, so the committed
+JSON is the compiled interface. Nested child modules are embedded in it.
+#>
+function Get-RepositorySecureParameterForwarding {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string] $RepoRootPath
+    )
+
+    $ErrorActionPreference = 'Stop'
+    $templates = Get-ChildItem -Path (Join-Path $RepoRootPath 'avm') -Filter 'main.json' -Recurse -File | Where-Object {
+        $relative = [IO.Path]::GetRelativePath($RepoRootPath, $_.FullName).Replace('\', '/')
+        $relative -match '^avm/(res|ptn|utl)/[^/]+/[^/]+/main\.json$'
+    } | Sort-Object FullName
+    if (-not $templates) { throw "No module templates found below [$RepoRootPath]." }
+    foreach ($templateFile in $templates) {
+        $modulePath = [IO.Path]::GetRelativePath($RepoRootPath, $templateFile.DirectoryName).Replace('\', '/')
+        $template = Get-Content -LiteralPath $templateFile.FullName -Raw | ConvertFrom-Json -AsHashtable -Depth 200
+        try {
+            Get-SecureParameterForwarding -Template $template -ModulePath $modulePath
+        } catch {
+            throw "[$modulePath] $($_.Exception.Message)"
+        }
+    }
+}
+
+<#
+.SYNOPSIS
+Regenerate the baseline of existing findings that are not reviewed exceptions.
+
+.DESCRIPTION
+Use this only to record findings that already exist on main or to drop stale
+entries. A new insecure forwarding should be fixed with @secure() instead.
+#>
+function Update-SecureParameterForwardingBaseline {
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [Parameter()]
+        [string] $RepoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.FullName
+    )
+
+    $ErrorActionPreference = 'Stop'
+    $dataPath = Join-Path $RepoRootPath 'utilities/tests/pipelines/src/secureParameterForwarding'
+    $keys = @('Module', 'Deployment', 'Target', 'SinkType', 'Source', 'Status', 'ExpressionHash')
+    $exceptionKeys = @(Get-Content (Join-Path $dataPath 'exceptions.json') -Raw | ConvertFrom-Json | ForEach-Object {
+            $exception = $_; ($keys | ForEach-Object { $exception.$_ }) -join "`0"
+        })
+    $baseline = @(Get-RepositorySecureParameterForwarding -RepoRootPath $RepoRootPath | Where-Object {
+            $finding = $_
+            $_.Status -in @('Mismatch', 'Unsupported') -and (($keys | ForEach-Object { $finding.$_ }) -join "`0") -notin $exceptionKeys
+        } | Sort-Object Module, Deployment, Target, Source, ExpressionHash | Select-Object -Property $keys)
+    $baselinePath = Join-Path $dataPath 'baseline.json'
+    if ($PSCmdlet.ShouldProcess($baselinePath, "Write $($baseline.Count) findings")) {
+        ConvertTo-Json -InputObject $baseline -Depth 5 | Set-Content -LiteralPath $baselinePath
+    }
 }

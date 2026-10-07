@@ -6,16 +6,23 @@ param(
 BeforeAll {
     . (Join-Path $repoRootPath 'utilities/pipelines/staticValidation/Get-SecureParameterForwarding.ps1')
     $exceptions = Get-Content (Join-Path $PSScriptRoot 'src/secureParameterForwarding/exceptions.json') -Raw | ConvertFrom-Json -AsHashtable
+    $baseline = @(Get-Content (Join-Path $PSScriptRoot 'src/secureParameterForwarding/baseline.json') -Raw | ConvertFrom-Json -AsHashtable)
+
+    function Get-ForwardingKey {
+        param($Entry)
+        (@('Module', 'Deployment', 'Target', 'SinkType', 'Source', 'Status', 'ExpressionHash') | ForEach-Object { [string] $Entry.$_ }) -join "`0"
+    }
+
+    $allowed = @{}
+    foreach ($entry in @($exceptions) + $baseline) {
+        $key = Get-ForwardingKey $entry
+        if ($allowed.ContainsKey($key)) { throw "Duplicate exception or baseline entry: $($key.Replace("`0", ' | '))" }
+        $allowed[$key] = $entry
+    }
 
     function Find-ForwardingException {
         param($Result)
-        foreach ($exception in $exceptions) {
-            $matchesException = $true
-            foreach ($key in @('Module', 'Deployment', 'Target', 'SinkType', 'Source', 'Status', 'ExpressionHash')) {
-                if ($exception[$key] -ne $Result.$key) { $matchesException = $false; break }
-            }
-            if ($matchesException) { return $exception }
-        }
+        $allowed[(Get-ForwardingKey $Result)]
     }
 
     function Assert-ForwardingResults {
@@ -25,7 +32,7 @@ BeforeAll {
                 $_.Status -in @('Mismatch', 'Unsupported') -and -not (Find-ForwardingException $_)
             })
         if ($unexpected.Count -gt 0) {
-            throw "Unexpected secure forwarding findings: $($unexpected | ConvertTo-Json -Depth 10 -Compress)"
+            throw ("Unexpected secure forwarding findings. Mark the parent input @secure(), or see coverage.md if the finding already exists on main: {0}" -f ($unexpected | ConvertTo-Json -Depth 10 -Compress))
         }
     }
 
@@ -123,33 +130,36 @@ Describe 'Bounded secure input forwarding analysis' {
         (Get-SecureParameterForwarding $template 'fixture').Status | Should -Be 'Secure'
     }
 
-    Context 'Selected production module interfaces' {
+    Context 'Production module interfaces' {
         BeforeAll {
+            $allFindings = @(Get-RepositorySecureParameterForwarding -RepoRootPath $repoRootPath)
+            $findingCounts = @{}
+            foreach ($finding in $allFindings) { $findingCounts[(Get-ForwardingKey $finding)] += 1 }
             $production = @{}
-            $findings = @{}
-            foreach ($family in @('api-management/service', 'app/managed-environment', 'sql/server')) {
-                $module = "avm/res/$family"
-                $production[$module] = Build-ForwardingTemplate (Join-Path $repoRootPath "$module/main.bicep") ($family.Replace('/', '-'))
-                $findings[$module] = @(Get-SecureParameterForwarding $production[$module] $module)
+            foreach ($module in @('avm/res/api-management/service')) {
+                $production[$module] = Get-Content (Join-Path $repoRootPath "$module/main.json") -Raw | ConvertFrom-Json -AsHashtable -Depth 200
             }
         }
 
-        It 'Checks every discovered secure child input below <module>' -TestCases @(
-            @{ module = 'avm/res/api-management/service' }
-            @{ module = 'avm/res/app/managed-environment' }
-            @{ module = 'avm/res/sql/server' }
-        ) {
-            param($module)
-            Assert-ForwardingResults $findings[$module]
+        It 'Checks every discovered secure child input in every top-level module' {
+            # Spot-check modules that need each supported schema form, so a narrowed scan is noticed.
+            foreach ($module in @('avm/res/api-management/service', 'avm/res/web/site', 'avm/ptn/lz/sub-vending', 'avm/ptn/sa/conversation-knowledge-mining')) {
+                $allFindings.Module | Should -Contain $module
+            }
+            Assert-ForwardingResults $allFindings
         }
 
         It 'Keeps every exception visible and rejects stale exclusions' {
-            $allFindings = @($findings.Values | ForEach-Object { $_ })
             foreach ($exception in $exceptions) {
                 $exception.Reason | Should -Not -BeNullOrEmpty
-                @($allFindings | Where-Object { (Find-ForwardingException $_) -eq $exception }).Count | Should -Be 1
+                $findingCounts[(Get-ForwardingKey $exception)] | Should -Be 1
                 Write-Warning "$($exception.Status): $($exception.Module)$($exception.Deployment) -> $($exception.Target): $($exception.Reason)"
             }
+        }
+
+        It 'Rejects stale baseline entries so fixed findings cannot silently return' {
+            $stale = @($baseline | Where-Object { $findingCounts[(Get-ForwardingKey $_)] -ne 1 })
+            $stale | Should -BeNullOrEmpty -Because 'baseline entries must each match exactly one current finding; run Update-SecureParameterForwardingBaseline'
         }
 
         It 'Fails the production gate when a previously secured parent leaf is reverted' {
@@ -282,6 +292,43 @@ Describe 'Bounded secure input forwarding analysis' {
         (Get-SecureParameterForwarding (New-ForwardingTemplate -Value $expression) 'fixture').Status | Should -Be 'Unsupported'
     }
 
+    It 'Checks secure dictionary values and tuple positions' {
+        $sink = @{ type = 'object'; additionalProperties = @{ type = 'object'; properties = @{ accessKey = @{ type = 'secureString' } } } }
+        $template = New-ForwardingTemplate -Sink $sink -Schema @{ type = 'object'; additionalProperties = @{ type = 'object'; properties = @{ accessKey = @{ type = 'string' } } } }
+        $result = Get-SecureParameterForwarding $template 'fixture'
+        $result.Source | Should -Be 'arbitrary.*.accessKey'
+        $result.Status | Should -Be 'Mismatch'
+        $template.parameters.arbitrary = $sink
+        (Get-SecureParameterForwarding $template 'fixture').Status | Should -Be 'Secure'
+        $template.parameters.arbitrary = @{ type = 'object'; properties = @{ plain = @{ type = 'string' } }; additionalProperties = @{ type = 'secureString' } }
+        $template.resources.child.properties.template.parameters.destination = @{ type = 'object'; additionalProperties = @{ type = 'secureString' } }
+        (Get-SecureParameterForwarding $template 'fixture').Status | Should -Be 'Mismatch' -Because 'a declared plain member can also reach the secure dictionary'
+        $template.parameters.arbitrary.properties.plain.type = 'secureString'
+        (Get-SecureParameterForwarding $template 'fixture').Status | Should -Be 'Secure'
+        $template.parameters.arbitrary = $sink
+        $template.resources.child.properties.template.parameters.destination = $sink
+        $template.resources.child.properties.parameters.destination.value = @{ first = @{ accessKey = "[parameters('arbitrary').first.accessKey]" }; second = @{ accessKey = "[parameters('plain')]" } }
+        $template.parameters.plain = @{ type = 'string' }
+        $statuses = @(Get-SecureParameterForwarding $template 'fixture' | Sort-Object Status).Status
+        $statuses | Should -Be @('Mismatch', 'Secure')
+
+        $template = New-ForwardingTemplate -Sink @{ type = 'array'; prefixItems = @(@{ type = 'secureString' }, @{ type = 'string' }); items = $false } `
+            -Schema @{ type = 'array'; prefixItems = @(@{ type = 'secureString' }, @{ type = 'string' }); items = $false }
+        (Get-SecureParameterForwarding $template 'fixture').Status | Should -Be 'Mismatch' -Because 'tuple positions share one path token, so every position must be secure'
+        $template.parameters.arbitrary.prefixItems[1] = @{ type = 'secureString' }
+        (Get-SecureParameterForwarding $template 'fixture').Status | Should -Be 'Secure'
+    }
+
+    It 'Ignores untyped any schemas and follows loadJsonContent templates' {
+        $template = New-ForwardingTemplate -Sink @{ metadata = @{ description = 'any' } }
+        @(Get-SecureParameterForwarding $template 'fixture').Count | Should -Be 0
+
+        $template = New-ForwardingTemplate
+        $template.variables = @{ '$fxv#0' = $template.resources.child.properties.template }
+        $template.resources.child.properties.template = "[variables('`$fxv#0')]"
+        (Get-SecureParameterForwarding $template 'fixture').Status | Should -Be 'Mismatch'
+    }
+
     It 'Fails loudly for malformed schemas, cycles, linked templates, and missing resources' {
         $template = New-ForwardingTemplate -Schema @{ '$ref' = '#/definitions/missing' }
         { Get-SecureParameterForwarding $template 'fixture' } | Should -Throw '*Missing definition*'
@@ -291,8 +338,6 @@ Describe 'Bounded secure input forwarding analysis' {
         $template.resources.child.properties.templateLink = @{ uri = 'https://example.invalid/template.json' }
         { Get-SecureParameterForwarding $template 'fixture' } | Should -Throw '*Linked templates*'
         { Get-SecureParameterForwarding @{} 'fixture' } | Should -Throw '*resources*'
-        $template = New-ForwardingTemplate -Sink @{ type = 'object'; additionalProperties = @{ type = 'secureString' } }
-        { Get-SecureParameterForwarding $template 'fixture' } | Should -Throw '*additionalProperties*'
         $template = New-ForwardingTemplate -Sink @{ anyOf = @(@{ type = 'secureString' }) }
         { Get-SecureParameterForwarding $template 'fixture' } | Should -Throw '*anyOf*'
         $template = New-ForwardingTemplate -Sink @{ type = 'unknown' }

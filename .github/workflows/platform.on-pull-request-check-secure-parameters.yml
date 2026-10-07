@@ -8,9 +8,8 @@ on:
       - reopened
       - synchronize
     paths:
-      - "avm/res/api-management/service/**"
-      - "avm/res/app/managed-environment/**"
-      - "avm/res/sql/server/**"
+      # The forwarding check scans every module's committed main.json.
+      - "avm/**/main.json"
       - "utilities/tests/pipelines/ApiManagementCacheSecureParameters.Tests.ps1"
       - "utilities/tests/pipelines/CredentialLeavesSecureParameters.Tests.ps1"
       - "utilities/tests/pipelines/SecureParameterForwarding.Tests.ps1"
@@ -52,6 +51,28 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Failed to make Bicep executable.' }
           Add-Content -LiteralPath $env:GITHUB_PATH -Value $toolPath
           Install-Module -Name Pester -RequiredVersion '5.7.1' -Repository PSGallery -Scope CurrentUser -Force
+
+      # The baseline only records findings that already exist on the target branch.
+      - name: "Reject additions to the secure forwarding baseline"
+        if: github.event_name == 'pull_request'
+        shell: pwsh
+        run: |
+          $baselinePath = 'utilities/tests/pipelines/src/secureParameterForwarding/baseline.json'
+          git fetch --depth=1 --no-tags origin "refs/heads/$env:GITHUB_BASE_REF"
+          if ($LASTEXITCODE -ne 0) { throw 'Failed to fetch the target branch.' }
+          $baseContent = git show "FETCH_HEAD:$baselinePath" 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host 'The target branch has no baseline yet; skipping.'
+            return
+          }
+          $keys = @('Module', 'Deployment', 'Target', 'SinkType', 'Source', 'Status', 'ExpressionHash')
+          $toKey = { param($entry) ($keys | ForEach-Object { [string] $entry.$_ }) -join ' | ' }
+          $baseKeys = @(($baseContent -join "`n") | ConvertFrom-Json | ForEach-Object { & $toKey $_ })
+          $added = @(Get-Content -LiteralPath $baselinePath -Raw | ConvertFrom-Json | ForEach-Object { & $toKey $_ } | Where-Object { $_ -notin $baseKeys })
+          if ($added.Count -gt 0) {
+            $added | ForEach-Object { Write-Host "::error file=$baselinePath::Baseline entry added: $_" }
+            throw 'Fix new findings with @secure() rather than adding them to the baseline. A renamed existing finding needs maintainer review.'
+          }
 
       - name: "Run focused regression tests"
         shell: pwsh
