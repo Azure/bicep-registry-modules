@@ -279,8 +279,10 @@ Describe 'Pre-deployment <kind> relocation with actual validation and region sel
     BeforeEach {
         $savedTemp = $env:TEMP
         $savedTmp = $env:TMP
+        $savedTmpDir = $env:TMPDIR
         $env:TEMP = $TestDrive
         $env:TMP = $TestDrive
+        $env:TMPDIR = $TestDrive
         '{"Microsoft.RetryTest":{"widgets":{}}}' | Set-Content -LiteralPath (Join-Path $TestDrive 'avm-apiSpecs.json')
         $templatePath = Join-Path $TestDrive 'main.test.json'
         $template = @{
@@ -357,6 +359,7 @@ Describe 'Pre-deployment <kind> relocation with actual validation and region sel
     AfterEach {
         $env:TEMP = $savedTemp
         $env:TMP = $savedTmp
+        $env:TMPDIR = $savedTmpDir
         Should -Invoke Initialize-DeploymentRemoval -Times 0 -Exactly
         Should -Invoke Get-TemplateDeployment -Times 0 -Exactly
         Should -Invoke Get-ErrorMessageForScope -Times 0 -Exactly

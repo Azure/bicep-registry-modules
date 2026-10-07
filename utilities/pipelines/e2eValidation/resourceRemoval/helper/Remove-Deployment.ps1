@@ -1,33 +1,63 @@
 function Test-CleanupResourceAbsent {
     [CmdletBinding()]
     [OutputType([bool])]
-    param ([Parameter(Mandatory)] [string] $ResourceId)
+    param (
+        [Parameter(Mandatory)] [string] $ResourceId,
+        [switch] $AllowDeletingDeployment
+    )
 
     $isGroup = $ResourceId -match '^/subscriptions/[^/]+/resourceGroups/[^/]+$'
     $isDeployment = $ResourceId -match '/providers/Microsoft\.Resources/deployments/[^/]+$'
     if ($isGroup -or $isDeployment) {
         $response = Invoke-AzRestMethod -Method GET -Path "${ResourceId}?api-version=2021-04-01" -ErrorAction Stop
-        $content = ConvertFrom-Json -InputObject $response.Content -NoEnumerate -ErrorAction Stop
+        try {
+            $content = ConvertFrom-Json -InputObject $response.Content -NoEnumerate -ErrorAction Stop
+        } catch {
+            throw "Cannot confirm removal of [$ResourceId]: HTTP [$($response.StatusCode)], invalid JSON response."
+        }
         $absentCodes = $isGroup ? @('ResourceGroupNotFound') : @('DeploymentNotFound')
         if ($isDeployment -and $ResourceId -match '/resourceGroups/') {
             $absentCodes += 'ResourceGroupNotFound'
         }
-        if ($response.StatusCode -eq 404 -and $content -is [System.Management.Automation.PSCustomObject] -and
+        if ($response.StatusCode -isnot [array] -and $response.StatusCode -eq 404 -and
+            $content -is [System.Management.Automation.PSCustomObject] -and
             $content.error -is [System.Management.Automation.PSCustomObject] -and
             $content.error.code -is [string] -and $content.error.code -in $absentCodes -and
             ($null -eq $content.error.target -or
                 ($content.error.target -is [string] -and $content.error.target -ieq $ResourceId))) {
             return $true
         }
-        if ($response.StatusCode -eq 200 -and $content -is [System.Management.Automation.PSCustomObject] -and
+        $visibleStates = @('Failed', 'Succeeded')
+        if ($AllowDeletingDeployment) {
+            $visibleStates += 'Deleting'
+        }
+        if ($response.StatusCode -isnot [array] -and $response.StatusCode -eq 200 -and
+            $content -is [System.Management.Automation.PSCustomObject] -and $null -eq $content.error -and
             $content.id -is [string] -and $content.id -ieq $ResourceId -and
             (-not $isDeployment -or
                 ($content.properties -is [System.Management.Automation.PSCustomObject] -and
                     $content.properties.provisioningState -is [string] -and
-                    $content.properties.provisioningState -in @('Failed', 'Succeeded')))) {
+                    $content.properties.provisioningState -in $visibleStates))) {
             return $false
         }
-        throw "Cannot confirm removal of [$ResourceId]: HTTP [$($response.StatusCode)], error [$($content.error.code)]."
+        $diagnostics = [ordered]@{
+            bodyType = if ($null -eq $content) { '<null>' } else { $content.GetType().Name }
+        }
+        $fields = [ordered]@{
+            id                = $content.id
+            provisioningState = $content.properties.provisioningState
+            errorCode         = $content.error.code
+        }
+        foreach ($field in $fields.GetEnumerator()) {
+            $diagnostics[$field.Key] = if ($null -eq $field.Value) {
+                '<missing>'
+            } elseif ($field.Value -is [string]) {
+                $field.Value
+            } else {
+                "<$($field.Value.GetType().Name)>"
+            }
+        }
+        throw "Cannot confirm removal of [$ResourceId]: HTTP [$($response.StatusCode)], response [$($diagnostics | ConvertTo-Json -Compress)]."
     }
 
     try {
@@ -61,7 +91,7 @@ function Wait-DeploymentRecordRemoval {
     param ([Parameter(Mandatory)] [string] $DeploymentId)
 
     for ($attempt = 1; $attempt -le 3; $attempt++) {
-        if (Test-CleanupResourceAbsent -ResourceId $DeploymentId) {
+        if (Test-CleanupResourceAbsent -ResourceId $DeploymentId -AllowDeletingDeployment) {
             return
         }
         if ($attempt -lt 3) {
@@ -165,6 +195,7 @@ Optional. The order of resource types to remove after all others
 
 .PARAMETER RequireCompleteRemoval
 Optional. Require terminal deployments, complete discovery and confirmed resource/record removal before regional relocation.
+An accepted history deletion may remain Deleting during bounded confirmation; only confirmed absence completes cleanup.
 
 .PARAMETER RequireNoDeploymentScripts
 Optional. Require complete discovery without deployment scripts before cleanup.
