@@ -29,7 +29,7 @@ The repository has schema-walking helpers but no reusable ARM expression parser.
 
 `baseline.json` records the Mismatch and Unsupported findings that already existed on `main` when the scan went repository-wide, so the check can gate new regressions without first fixing every module. It is generated, not hand-edited: dot-source `utilities/pipelines/staticValidation/Get-SecureParameterForwarding.ps1` and run `Update-SecureParameterForwardingBaseline`. Entries use the same exact key as exceptions, and each must match exactly one current finding. Fixing a finding therefore fails the test until the entry is removed, which keeps a fixed binding from quietly regressing later.
 
-The PR workflow compares `baseline.json` with the target branch and fails when entries are added, so a new regression can't be allowed by adding it to the baseline in the same PR. Removals pass. Regenerate the baseline only to drop fixed entries or to follow a rename of an existing finding (for example, a deployment path that moved). A new insecure forwarding should get `@secure()` on the parent input, not a baseline entry. Reviewed, intentional findings with a rationale belong in `exceptions.json` instead.
+Reviewers should reject additions to `baseline.json`: a new regression can't be allowed by adding it to the baseline. Removals are expected. Regenerate the baseline only to drop fixed entries or to follow a rename of an existing finding (for example, a deployment path that moved). A new insecure forwarding should get `@secure()` on the parent input, not a baseline entry. Reviewed, intentional findings with a rationale belong in `exceptions.json` instead.
 
 ## Deliberate exceptions and follow-ups
 
@@ -45,7 +45,7 @@ Do not widen these exceptions to make a new failure green. Either fix the interf
 
 The tests include compiler-generated scalar, nested optional, array-loop, discriminator, and secure-ancestor cases; arbitrary names; `$ref` aliases; literals; runtime and Key Vault values; unsupported expressions; and schema/scan failures. A source mutation removes the fixture's secure type decorator and recompiles it, changing its result from Secure to Mismatch. A production-schema mutation reverts the cache leaf and must fail the same gate used by CI. Another injects a previously unseen child input into the compiled service template and fails without changing a name list.
 
-Unit tests also cover dictionary values, tuple positions, untyped schemas, and `loadJsonContent()` templates. The existing 27 focused checks remain alongside this suite. The workflow stays `pull_request`, read-only, compile-only, without Azure login, secrets, or deployments.
+Unit tests also cover dictionary values, tuple positions, untyped schemas, and `loadJsonContent()` templates. The existing 27 focused checks remain alongside this suite. These suites run with the other platform CI tests (`.github/workflows/platform.ci-tests.yml` via `utilities/tests/Test-CI.ps1`) and are compile-only, without Azure login, secrets, or deployments.
 
 ## Why the built-in linter is not enough
 
