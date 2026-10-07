@@ -8,7 +8,6 @@ Describe 'Required subscription feature workflow integration' {
         $actionPath = Join-Path $RepoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $actionPath -Raw)
         $registrationStep = $action.runs.steps | Where-Object { $_.id -eq 'register-required-features' }
-        $authenticationStep = $action.runs.steps | Where-Object { $_.id -eq 'set-oidc-exception' }
         $environmentNames = @('GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'MODULE_PATH', 'SELECTED_SUBSCRIPTION_ID', 'SELECTED_TENANT_ID', 'VALIDATE_TENANT_ID')
     }
 
@@ -49,15 +48,14 @@ function Register-RequiredSubscriptionFeature {
         }
     }
 
-    It 'Places one success-only registration step after both Azure logins and before token replacement or validation' {
+    It 'Places one success-only registration step between the deployment and post-deployment logins' {
         $steps = @($action.runs.steps)
         @($steps | Where-Object { $_.id -eq 'register-required-features' }).Count | Should -Be 1
         $registrationIndex = [array]::IndexOf($steps, $registrationStep)
-        $initialLogins = @($steps | Where-Object { $_.uses -like 'azure/login@*' } | Select-Object -First 2)
-        $initialLogins.Count | Should -Be 2
-        foreach ($login in $initialLogins) {
-            $registrationIndex | Should -BeGreaterThan ([array]::IndexOf($steps, $login))
-        }
+        $logins = @($steps | Where-Object { $_.uses -like 'azure/login@*' })
+        $logins.Count | Should -Be 2
+        $registrationIndex | Should -BeGreaterThan ([array]::IndexOf($steps, $logins[0]))
+        $registrationIndex | Should -BeLessThan ([array]::IndexOf($steps, $logins[1]))
         foreach ($subsequent in @($steps | Where-Object { $_.id -in @('replace-tokens', 'deploy_step') -or $_.name -eq 'Validate template file' })) {
             $registrationIndex | Should -BeLessThan ([array]::IndexOf($steps, $subsequent))
         }
@@ -67,10 +65,34 @@ function Register-RequiredSubscriptionFeature {
         $registrationStep.run | Should -Not -Match 'catch|always\(\)|Set-AzContext|az account set'
     }
 
+    It 'Uses one standard OIDC login per deployment phase without writing credentials to outputs' {
+        $steps = @($action.runs.steps)
+        $logins = @($steps | Where-Object { $_.uses -like 'azure/login@*' })
+        $logins.Count | Should -Be 2
+        foreach ($login in $logins) {
+            $login.if | Should -Be "env.skip_deployment_ci == 'false'"
+            $login.with.'client-id' | Should -Be '${{ env.VALIDATE_CLIENT_ID }}'
+            $login.with.'tenant-id' | Should -Be '${{ env.VALIDATE_TENANT_ID }}'
+            $login.with.'subscription-id' | Should -Be '${{ steps.get-test-subscription.outputs.subscriptionId }}'
+            $login.with.ContainsKey('creds') | Should -BeFalse
+        }
+
+        $outputScripts = @(
+            foreach ($step in $steps) {
+                foreach ($script in @($step.run, $step.with.inlineScript)) {
+                    if ($script -match '\$env:GITHUB_OUTPUT') {
+                        $script
+                    }
+                }
+            }
+        )
+        ($outputScripts -join "`n") | Should -Not -Match 'credential|clientSecret'
+    }
+
     It 'Passes the exact module and selected subscription and tenant as environment data' {
         $registrationStep.env.MODULE_PATH | Should -Be '${{ inputs.modulePath }}'
         $registrationStep.env.SELECTED_SUBSCRIPTION_ID | Should -Be '${{ steps.get-test-subscription.outputs.subscriptionId }}'
-        $registrationStep.env.SELECTED_TENANT_ID | Should -Be '${{ steps.set-oidc-exception.outputs.tenantId }}'
+        $registrationStep.env.SELECTED_TENANT_ID | Should -Be '${{ env.VALIDATE_TENANT_ID }}'
         $registrationStep.run | Should -Not -Match '\$\{\{'
 
         . ([scriptblock]::Create($registrationStep.run))
@@ -85,34 +107,6 @@ function Register-RequiredSubscriptionFeature {
         $script:failRegistration = $true
 
         { . ([scriptblock]::Create($registrationStep.run)) } | Should -Throw '*Synthetic feature registration failure*'
-    }
-
-    It 'Emits the tenant used for <mode> authentication without exposing credentials' -ForEach @(
-        @{ mode = 'OIDC'; exception = 'false'; expected = '33333333-3333-4333-8333-333333333333' }
-        @{ mode = 'secret'; exception = 'true'; expected = '44444444-4444-4444-8444-444444444444' }
-    ) {
-        $env:VALIDATE_TENANT_ID = '33333333-3333-4333-8333-333333333333'
-        $oidcException = $exception
-        $credentials = @{ tenantId = '44444444-4444-4444-8444-444444444444'; clientSecret = 'synthetic-not-for-output' }
-        $parseErrors = $null
-        $script = $authenticationStep.with.inlineScript.Replace('${{ inputs.modulePath }}', 'avm/res/example/module')
-        $ast = [System.Management.Automation.Language.Parser]::ParseInput($script, [ref] $null, [ref] $parseErrors)
-        $parseErrors.Count | Should -Be 0
-        $assignment = $ast.Find({
-                param ($node)
-                $node -is [System.Management.Automation.Language.AssignmentStatementAst] -and $node.Left.Extent.Text -eq '$tenantId'
-            }, $true)
-        $output = $ast.Find({
-                param ($node)
-                $node -is [System.Management.Automation.Language.PipelineAst] -and $node.Extent.Text -like "Write-Output*'tenantId',*"
-            }, $true)
-        $assignment | Should -Not -BeNullOrEmpty
-        $output | Should -Not -BeNullOrEmpty
-
-        . ([scriptblock]::Create($assignment.Extent.Text + "`n" + $output.Extent.Text))
-
-        (Get-Content -LiteralPath $env:GITHUB_OUTPUT) | Should -Be "tenantId=$expected"
-        (Get-Content -LiteralPath $env:GITHUB_OUTPUT -Raw) | Should -Not -Match 'clientSecret|synthetic-not-for-output'
     }
 
     It 'Keeps registration confined to deployment jobs in <workflowName>' -ForEach @(

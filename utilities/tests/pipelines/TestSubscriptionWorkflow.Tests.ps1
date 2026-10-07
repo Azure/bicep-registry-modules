@@ -63,7 +63,7 @@ Describe 'Test subscription workflow integration' {
             'SUBSCRIPTION_SELECTION_SEED', 'SUBSCRIPTION_JOB_INDEX', 'SELECTED_SUBSCRIPTION_ID',
             'PRESELECTED_SUBSCRIPTION_INDEX', 'PRESELECTED_SUBSCRIPTION_KEY',
             'MODULE_PATH', 'MODULE_TEST_FILE_PATHS', 'DISPLAY_SUBSCRIPTION_NAMES',
-            'AZURE_CREDENTIALS', 'TEST_SUBSCRIPTIONS', 'AVM_TEST_TENANT',
+            'TEST_SUBSCRIPTIONS', 'AVM_TEST_TENANT',
             'VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID', 'MANAGEMENT_GROUP_ID', 'CI_KEY_VAULT_NAME'
         )
 
@@ -162,7 +162,6 @@ Describe 'Test subscription workflow integration' {
             'secrets.VALIDATE_SUBSCRIPTION_ID'     = $env:VALIDATE_SUBSCRIPTION_ID
             'secrets.VALIDATE_MANAGEMENT_GROUP_ID' = 'secret-management-group'
             'secrets.ARM_MGMTGROUP_ID'             = 'secret-alias-group'
-            'secrets.AZURE_CREDENTIALS'            = '{"clientId":"exception-client","tenantId":"variable-tenant","clientSecret":"synthetic-secret"}'
         }
         Mock Get-AzKeyVaultSecret { throw 'Unexpected Key Vault access.' }
         Mock Invoke-WebRequest { throw 'Unexpected network request.' }
@@ -221,7 +220,6 @@ Describe 'Test subscription workflow integration' {
         $deploymentStep.env.VALIDATE_CLIENT_ID | Should -Be '${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}'
         $deploymentStep.env.VALIDATE_TENANT_ID | Should -Be '${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}'
         $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}'
-        $deploymentStep.env.AZURE_CREDENTIALS | Should -Be '${{ secrets.AZURE_CREDENTIALS }}'
         $deploymentStep.env.CI_KEY_VAULT_NAME | Should -Be '${{ vars.CI_KEY_VAULT_NAME }}'
         $deployment.environment | Should -Be 'avm-validation'
         @($deployment.env.Keys) | Should -Not -Contain 'VALIDATE_CLIENT_ID'
@@ -375,7 +373,6 @@ Describe 'Test subscription workflow integration' {
         $env:VALIDATE_TENANT_ID | Should -Be 'variable-tenant'
         $env:MANAGEMENT_GROUP_ID | Should -Be 'variable-management-group'
         $env:VALIDATE_SUBSCRIPTION_ID | Should -Be '88888888-8888-8888-8888-888888888888'
-        $env:AZURE_CREDENTIALS | Should -Be $routingContext['secrets.AZURE_CREDENTIALS']
         $env:CI_KEY_VAULT_NAME | Should -Be 'contributor-vault'
     }
 
@@ -396,7 +393,6 @@ Describe 'Test subscription workflow integration' {
         $env:VALIDATE_TENANT_ID | Should -Be 'secret-tenant'
         $env:MANAGEMENT_GROUP_ID | Should -Be 'secret-management-group'
         $env:VALIDATE_SUBSCRIPTION_ID | Should -Be $routingContext['secrets.VALIDATE_SUBSCRIPTION_ID']
-        $env:AZURE_CREDENTIALS | Should -Be $routingContext['secrets.AZURE_CREDENTIALS']
     }
 
     It 'Supports variable-only identifiers but never reads credentials from variables in <workflowName>' -ForEach @(
