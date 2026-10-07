@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "11402950168123546449"
+      "templateHash": "10431291122179795697"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -732,6 +732,80 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type describing the network interface configuration output."
+      }
+    },
+    "extensionDSCConfigType": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether the extension is deployed."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the extension. Defaults to `DesiredStateConfiguration`."
+          }
+        },
+        "typeHandlerVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the script handler."
+          }
+        },
+        "autoUpgradeMinorVersion": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether the extension should use a newer minor version if one is available at deployment time. Defaults to `true`."
+          }
+        },
+        "enableAutomaticUpgrade": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`."
+          }
+        },
+        "settings": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Any object that contains the extension specific settings."
+          }
+        },
+        "protectedSettings": {
+          "type": "secureObject",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Any object that contains the extension specific protected settings."
+          }
+        },
+        "supressFailures": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether failures stemming from the extension will be suppressed. Defaults to `false`."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Compute/virtualMachines/extensions@2024-11-01#properties/tags"
+            },
+            "description": "Optional. Tags of the resource."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a 'DesiredStateConfiguration' extension."
       }
     },
     "extensionCustomScriptConfigType": {
@@ -2541,7 +2615,7 @@
       }
     },
     "extensionDSCConfig": {
-      "type": "object",
+      "$ref": "#/definitions/extensionDSCConfigType",
       "defaultValue": {
         "enabled": false
       },
