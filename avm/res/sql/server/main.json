@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "15415534570389463212"
+      "templateHash": "11992376005973875225"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -960,7 +960,7 @@
           }
         },
         "storageAccountAccessKey": {
-          "type": "string",
+          "type": "securestring",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specifies the identifier key of the Threat Detection audit storage account."
