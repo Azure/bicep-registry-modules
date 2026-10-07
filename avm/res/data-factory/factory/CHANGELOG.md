@@ -2,6 +2,48 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/data-factory/factory/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- Fixed the Git repository configuration being silently discarded by the resource provider. The configuration is now passed through as a single object that is typed against the resource provider schema, so only properties belonging to the selected repository type can be supplied.
+- Replaced the `gitConfigureLater` flag and the flat `git*` parameters with a single optional `gitConfiguration` parameter. Omitting it deploys the Data Factory without a Git repository configuration.
+- Updated the telemetry deployment to API version `2025-04-01`.
+- Updated the telemetry identifier to the prefix published in the AVM module index.
+- Updated the referenced `avm/res/network/private-endpoint` module to version `0.12.1`.
+
+### Breaking Changes
+
+- The parameters `gitConfigureLater`, `gitRepoType`, `gitAccountName`, `gitProjectName`, `gitRepositoryName`, `gitCollaborationBranch`, `gitDisablePublish`, `gitRootFolder`, `gitHostName`, `gitLastCommitId` and `gitTenantId` were removed and replaced by the `gitConfiguration` parameter.
+- `collaborationBranch` and `rootFolder` no longer default to `'main'` and `'/'`. Both are required by the resource provider and must be supplied explicitly whenever a Git repository configuration is used.
+
+  Before:
+
+  ```bicep
+  gitConfigureLater: false
+  gitRepoType: 'FactoryVSTSConfiguration'
+  gitAccountName: 'contoso'
+  gitProjectName: 'contoso-adf'
+  gitRepositoryName: 'contoso-adf-repo'
+  gitCollaborationBranch: 'main'
+  gitRootFolder: '/'
+  ```
+
+  After:
+
+  ```bicep
+  gitConfiguration: {
+    type: 'FactoryVSTSConfiguration'
+    accountName: 'contoso'
+    projectName: 'contoso-adf'
+    repositoryName: 'contoso-adf-repo'
+    collaborationBranch: 'main'
+    rootFolder: '/'
+  }
+  ```
+
+  Deployments that relied on `gitConfigureLater` defaulting to `true` require no change - omitting `gitConfiguration` preserves the existing behaviour.
+
 ## 0.12.1
 
 ### Changes

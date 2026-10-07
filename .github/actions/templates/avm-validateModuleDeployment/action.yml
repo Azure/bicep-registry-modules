@@ -458,6 +458,7 @@ runs:
           Write-Output ('{0}={1}' -f 'deploymentNames', $deploymentNamesJson) >> $env:GITHUB_OUTPUT
           Write-Output ('{0}={1}' -f 'remainingDeploymentNames', (ConvertTo-Json -InputObject @($res.remainingDeploymentNames ?? @()) -Compress)) >> $env:GITHUB_OUTPUT
           Write-Output ('{0}={1}' -f 'preflightRejectedDeploymentNames', (ConvertTo-Json -InputObject @($res.preflightRejectedDeploymentNames ?? @()) -Compress)) >> $env:GITHUB_OUTPUT
+          Write-Output ('{0}={1}' -f 'pendingDeletionDeploymentIds', (ConvertTo-Json -InputObject @($res.pendingDeletionDeploymentIds ?? @()) -Compress)) >> $env:GITHUB_OUTPUT
 
           # Populate further outputs
           $deploymentOutput = ($res.deploymentOutput | ConvertTo-Json -Depth 99 -Compress) -replace "'", "''" # Escaping single quotes for resilient access in subsequent steps
@@ -607,10 +608,21 @@ runs:
           }
 
           $preflightRejectedDeploymentNames = '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}'
+          $pendingDeletionDeploymentIds = '${{ steps.deploy_step.outputs.pendingDeletionDeploymentIds }}'
+          if (-not [string]::IsNullOrWhiteSpace($pendingDeletionDeploymentIds)) {
+            $pendingIds = ConvertFrom-Json -InputObject $pendingDeletionDeploymentIds -NoEnumerate -ErrorAction Stop
+            if ($pendingIds -isnot [array] -or @($pendingIds | Where-Object { $_ -isnot [string] -or [string]::IsNullOrWhiteSpace($_) }).Count -gt 0) {
+              throw 'Invalid pending deployment deletion metadata.'
+            }
+            $functionInput['PendingDeletionDeploymentIds'] = $pendingIds
+          }
           $remainingDeploymentNames = '${{ steps.deploy_step.outputs.remainingDeploymentNames }}'
           if (-not [string]::IsNullOrWhiteSpace($remainingDeploymentNames)) {
             $functionInput.DeploymentNames = @($remainingDeploymentNames | ConvertFrom-Json -ErrorAction Stop)
             if ($functionInput.DeploymentNames.Count -eq 0) {
+              if ($functionInput.PendingDeletionDeploymentIds.Count -gt 0) {
+                throw 'Pending deployment deletion metadata has no remaining deployment owner.'
+              }
               Write-Verbose 'All submitted deployments were already completely removed.' -Verbose
               Write-Output '::endgroup::'
               return
