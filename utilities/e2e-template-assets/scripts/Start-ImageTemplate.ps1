@@ -3,7 +3,7 @@
 Create image artifacts from a given image template
 
 .DESCRIPTION
-Create image artifacts from a given image template
+Create image artifacts and wait for the submitted build to succeed. The wait uses the template's build timeout, plus five minutes for its final status.
 
 .PARAMETER ImageTemplateName
 Mandatory. The name of the image template
@@ -67,16 +67,78 @@ begin {
 
 process {
     # Create image artifacts from existing image template
-    $resourceActionInputObject = @{
+    $templateInputObject = @{
         ImageTemplateName = $imageTemplateName
         ResourceGroupName = $imageTemplateResourceGroup
+        ErrorAction       = 'Stop'
     }
-    if ($NoWait) {
-        $resourceActionInputObject['NoWait'] = $true
-    }
+    $resourceActionInputObject = $templateInputObject.Clone()
+    $resourceActionInputObject['NoWait'] = $true
+
     if ($PSCmdlet.ShouldProcess('Image template [{0}]' -f $imageTemplateName, 'Start')) {
+        if (-not $NoWait) {
+            $imageTemplates = @(Get-AzImageBuilderTemplate @templateInputObject)
+            if ($imageTemplates.Count -ne 1) {
+                throw ('Expected exactly one image template [{0}] in resource group [{1}].' -f $imageTemplateName, $imageTemplateResourceGroup)
+            }
+            $imageTemplate = $imageTemplates[0]
+            $previousRunStartTime = if ($imageTemplate.LastRunStatusStartTime) { [datetime] $imageTemplate.LastRunStatusStartTime } else { [datetime]::MinValue }
+            $buildTimeoutInMinutes = [int] $imageTemplate.BuildTimeoutInMinute
+            if ($buildTimeoutInMinutes -lt 0) {
+                throw ('Image template [{0}] has an invalid build timeout [{1}].' -f $imageTemplateName, $buildTimeoutInMinutes)
+            }
+            if ($buildTimeoutInMinutes -eq 0) {
+                $buildTimeoutInMinutes = 240
+            }
+            $waitTimeoutInMinutes = $buildTimeoutInMinutes + 5
+            $deadline = (Get-Date).ToUniversalTime().AddMinutes($waitTimeoutInMinutes)
+        }
+
         $null = Start-AzImageBuilderTemplate @resourceActionInputObject
-        Write-Verbose ('Created/initialized creation of image artifacts from image template [{0}] in resource group [{1}]' -f $imageTemplateName, $imageTemplateResourceGroup) -Verbose
+        if ($NoWait) {
+            Write-Verbose ('Started creation of image artifacts from image template [{0}] in resource group [{1}]' -f $imageTemplateName, $imageTemplateResourceGroup) -Verbose
+        } else {
+            $runSucceeded = $false
+            $lastReportedState = $null
+            $submittedRunStartTime = $null
+            while ((Get-Date).ToUniversalTime() -lt $deadline) {
+                $imageTemplates = @(Get-AzImageBuilderTemplate @templateInputObject)
+                if ($imageTemplates.Count -ne 1) {
+                    throw ('Expected exactly one image template [{0}] in resource group [{1}].' -f $imageTemplateName, $imageTemplateResourceGroup)
+                }
+                $imageTemplate = $imageTemplates[0]
+                $runStartTime = if ($imageTemplate.LastRunStatusStartTime) { [datetime] $imageTemplate.LastRunStatusStartTime } else { [datetime]::MinValue }
+                $runState = [string] $imageTemplate.LastRunStatusRunState
+                if ($runStartTime -gt $previousRunStartTime) {
+                    if ($null -eq $submittedRunStartTime) {
+                        $submittedRunStartTime = $runStartTime
+                    } elseif ($runStartTime -gt $submittedRunStartTime) {
+                        throw ('Image build [{0}] changed while waiting for the submitted run to complete.' -f $imageTemplateName)
+                    }
+                }
+                if ($runStartTime -eq $submittedRunStartTime) {
+                    if ($runState -eq 'Succeeded') {
+                        $runSucceeded = $true
+                        break
+                    }
+                    if ($runState -in @('Failed', 'Canceled', 'PartiallySucceeded')) {
+                        throw ('Image build [{0}] ended in state [{1}], substate [{2}]: {3}' -f $imageTemplateName, $runState, $imageTemplate.LastRunStatusRunSubState, $imageTemplate.LastRunStatusMessage)
+                    }
+                    if ($runState -notin @('Running', 'Canceling', '')) {
+                        throw ('Unexpected image build state [{0}] for template [{1}]: {2}' -f $runState, $imageTemplateName, $imageTemplate.LastRunStatusMessage)
+                    }
+                }
+                if ($runState -ne $lastReportedState) {
+                    Write-Verbose ('Waiting for the submitted image build [{0}]. Last reported state [{1}], substate [{2}].' -f $imageTemplateName, $runState, $imageTemplate.LastRunStatusRunSubState) -Verbose
+                    $lastReportedState = $runState
+                }
+                Start-Sleep -Seconds 15
+            }
+            if (-not $runSucceeded) {
+                throw ('Timed out after {0} minutes waiting for the submitted image build [{1}]. Last run state [{2}], substate [{3}]: {4}' -f $waitTimeoutInMinutes, $imageTemplateName, $imageTemplate.LastRunStatusRunState, $imageTemplate.LastRunStatusRunSubState, $imageTemplate.LastRunStatusMessage)
+            }
+            Write-Verbose ('Created image artifacts from image template [{0}] in resource group [{1}]' -f $imageTemplateName, $imageTemplateResourceGroup) -Verbose
+        }
     }
 }
 
