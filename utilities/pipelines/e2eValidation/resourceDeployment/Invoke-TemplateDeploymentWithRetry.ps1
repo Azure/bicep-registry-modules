@@ -89,7 +89,7 @@ function Test-DeploymentRetryError {
     }
 
     $guidPattern = '[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}'
-    $classification = @{ HasCosmosCapacityError = $false; HasAksZoneCapacityError = $false; HasUnclassifiedInformation = $false }
+    $classification = @{ HasCosmosCapacityError = $false; HasAksZoneCapacityError = $false; HasProviderLocationError = $false; HasUnclassifiedInformation = $false }
 
     function Test-MachineLearningCosmosCapacityError {
         param ([string] $Message)
@@ -208,6 +208,10 @@ function Test-DeploymentRetryError {
         if ($Node.code -isnot [string] -or [string]::IsNullOrWhiteSpace($Node.code)) {
             return $false
         }
+        # Az.Resources emits these optional members even when ARM omits them.
+        foreach ($name in @('target', 'details')) {
+            if ($null -eq $Node[$name]) { $Node.Remove($name) }
+        }
         if ($Node.additionalInfo) {
             return $false
         }
@@ -269,6 +273,26 @@ function Test-DeploymentRetryError {
             ($null -eq $Node.target -or ($Node.target -is [string] -and $Node.target -ieq $ResourceTarget))
         }
         switch ($Node.code) {
+            'LocationNotAvailableForResourceType' {
+                if ($Node.code -cne 'LocationNotAvailableForResourceType' -or $classification.HasUnclassifiedInformation -or
+                    [string]::IsNullOrWhiteSpace($ResourceLocation) -or
+                    $Node.Contains('target') -or $Node.Contains('details') -or $Node.Contains('innererror')) {
+                    return $false
+                }
+                $locationPattern = "\AThe provided location '(?<location>[A-Za-z0-9]+(?: [A-Za-z0-9]+)*)' is not available for resource type " +
+                "'Microsoft\.[A-Za-z0-9]+/[A-Za-z0-9]+(?:/[A-Za-z0-9]+)*'\. List of available regions for the resource type is " +
+                "'(?<regions>[a-z0-9]+(?:,[a-z0-9]+)*)'\.\z"
+                $match = [regex]::Match($Node.message, $locationPattern)
+                if (-not $match.Success) { return $false }
+                $reportedLocation = ($match.Groups['location'].Value -replace '\s', '').ToLowerInvariant()
+                $availableRegions = $match.Groups['regions'].Value.Split(',')
+                $isProviderLocationError = $reportedLocation -eq ($ResourceLocation -replace '\s', '').ToLowerInvariant() -and
+                $reportedLocation -ne 'global' -and 'global' -notin $availableRegions -and
+                $reportedLocation -notin $availableRegions -and
+                @($availableRegions | Select-Object -Unique).Count -eq $availableRegions.Count
+                if ($isProviderLocationError) { $classification.HasProviderLocationError = $true }
+                return $isProviderLocationError
+            }
             'AvailabilityZoneNotSupported' {
                 if ($Node.code -cne 'AvailabilityZoneNotSupported' -or $classification.HasUnclassifiedInformation -or
                     [string]::IsNullOrEmpty($AksPreflightMessage) -or
@@ -303,7 +327,7 @@ function Test-DeploymentRetryError {
     }
 
     $regional = Test-RetryErrorNode -Node $errors
-    if ($regional -and $classification.HasAksZoneCapacityError -and $response -is [string]) {
+    if ($regional -and ($classification.HasAksZoneCapacityError -or $classification.HasProviderLocationError) -and $response -is [string]) {
         try {
             $document = [System.Text.Json.JsonDocument]::Parse($response)
         } catch [System.Text.Json.JsonException] {
@@ -329,7 +353,7 @@ function Test-DeploymentRetryError {
             $document.Dispose()
         }
     }
-    return $regional -and (-not ($classification.HasCosmosCapacityError -or $classification.HasAksZoneCapacityError) -or
+    return $regional -and (-not ($classification.HasCosmosCapacityError -or $classification.HasAksZoneCapacityError -or $classification.HasProviderLocationError) -or
         -not $classification.HasUnclassifiedInformation)
 }
 
@@ -338,8 +362,8 @@ function Test-DeploymentRetryError {
 Classify wholly regional structured errors without overriding permission or cancellation evidence.
 
 .PARAMETER ResourceLocation
-Optional. Selected resource location. Required for ML workspace Cosmos DB capacity and AKS preflight
-empty-zone failures, which must name this same region rather than a fixed secondary region.
+Optional. Selected resource location. Required for provider-location availability, ML workspace Cosmos DB
+capacity and AKS preflight empty-zone failures, which must name this region rather than a fixed secondary region.
 #>
 function Test-RegionalValidationError {
     [CmdletBinding()]

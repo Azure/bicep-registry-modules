@@ -83,6 +83,7 @@ Get all deployment operations at a given scope
 
 .DESCRIPTION
 Get all deployment operations at a given scope, following every operation page.
+Responses retain extension metadata needed to verify existing extensible resources.
 By default, results include only 'create' operations, excluding 'read' operations for existing resources.
 
 .PARAMETER Name
@@ -169,7 +170,7 @@ function Get-DeploymentOperationAtScope {
     $resourceId = Get-DeploymentResourceId -Name $Name -Scope $Scope -SubscriptionId $SubscriptionId `
         -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId
     $operationsPath = "$resourceId/operations"
-    $path = "${operationsPath}?api-version=2021-04-01"
+    $path = "${operationsPath}?api-version=2025-04-01"
 
     ##############################################
     # Get all deployment children based on scope #

@@ -21,7 +21,9 @@ Describe 'Available resource location selection' {
 
     BeforeEach {
         $savedTemp = $env:TEMP
+        $savedTmpDir = $env:TMPDIR
         $env:TEMP = $TestDrive
+        $env:TMPDIR = $TestDrive
         '{"Microsoft.DevTestLab":{"labs":{},"labs/virtualMachines":{}}}' |
             Set-Content -LiteralPath (Join-Path $TestDrive 'avm-apiSpecs.json')
         $inputParameters = @{
@@ -55,6 +57,12 @@ Describe 'Available resource location selection' {
 
     AfterEach {
         $env:TEMP = $savedTemp
+        $env:TMPDIR = $savedTmpDir
+    }
+
+    It 'Keeps API specs fixtures in the runtime temporary cache' {
+        $cacheFolderPath = $IsWindows ? $env:TEMP : [System.IO.Path]::GetTempPath()
+        (Join-Path $cacheFolderPath 'avm-apiSpecs.json') | Should -Be (Join-Path $TestDrive 'avm-apiSpecs.json')
     }
 
     It 'Recovers missing registered-only enumeration using explicit namespace metadata' {
