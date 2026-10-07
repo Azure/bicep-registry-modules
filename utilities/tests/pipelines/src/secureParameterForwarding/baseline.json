@@ -1,0 +1,1721 @@
+[
+  {
+    "Module": "avm/ptn/aca-lza/hosting-environment",
+    "Deployment": "/spoke/7/8/vm_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/aca-lza/hosting-environment",
+    "Deployment": "/spoke/8/4/vm_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/aca-lza/hosting-environment",
+    "Deployment": "/supportingServices/1/1/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/aca-lza/hosting-environment",
+    "Deployment": "/supportingServices/2/0/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D85F69178E13D37F18A37FBECFCD14E08DBBF0D6ADA483D81830F35AA2D84387"
+  },
+  {
+    "Module": "avm/ptn/ai-ml/ai-foundry",
+    "Deployment": "/aiSearch/aiSearch/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "DF01DC15681CF4A6C4EA62911C985DC1794ADB99E9B02163387B82B52DB03468"
+  },
+  {
+    "Module": "avm/ptn/ai-ml/ai-foundry",
+    "Deployment": "/foundryAccount/foundryAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D42655A421F002A3E1BCD82C30097922F59DE2B5D645850E4AECAC131ECDBC53"
+  },
+  {
+    "Module": "avm/ptn/ai-ml/ai-foundry",
+    "Deployment": "/keyVault/keyVault/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/ai-ml/ai-foundry",
+    "Deployment": "/storageAccount/storageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B6815C682A36ED2E36A6FF0D960C88EA5A804FB260F51059F030FA797A64D11C"
+  },
+  {
+    "Module": "avm/ptn/ai-platform/baseline",
+    "Deployment": "/keyVault/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/ai-platform/baseline",
+    "Deployment": "/storageAccount/storageAccount_localUsers",
+    "Target": "sshAuthorizedKeys",
+    "SinkType": "secureObject",
+    "Source": "localUsers.[].sshAuthorizedKeys",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/ai-platform/baseline",
+    "Deployment": "/virtualMachine",
+    "Target": "adminUsername",
+    "SinkType": "securestring",
+    "Source": "virtualMachineConfiguration.adminUsername",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/ai-platform/baseline",
+    "Deployment": "/virtualMachine/vm_azureMonitorAgentExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "A7573C7CCADD941582865BC73D68EFE5DD5A2C538FA3953F4399E740C0C387EA"
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/keyVault/keyvault",
+    "Target": "secrets.[].value",
+    "SinkType": "securestring",
+    "Source": "secrets.[].value",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/keyVault/keyvault/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/webAppSite",
+    "Target": "configs.[].@name=authsettings.properties.clientSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B10A60C8030DB63F2ADA20506A2012D7E5C6814B2E3ACEA42DCBD74DA504BE1F"
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/webAppSite",
+    "Target": "configs.[].@name=authsettings.properties.facebookAppSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B10A60C8030DB63F2ADA20506A2012D7E5C6814B2E3ACEA42DCBD74DA504BE1F"
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/webAppSite",
+    "Target": "configs.[].@name=authsettings.properties.gitHubClientSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B10A60C8030DB63F2ADA20506A2012D7E5C6814B2E3ACEA42DCBD74DA504BE1F"
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/webAppSite",
+    "Target": "configs.[].@name=authsettings.properties.googleClientSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B10A60C8030DB63F2ADA20506A2012D7E5C6814B2E3ACEA42DCBD74DA504BE1F"
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/webAppSite",
+    "Target": "configs.[].@name=authsettings.properties.microsoftAccountClientSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B10A60C8030DB63F2ADA20506A2012D7E5C6814B2E3ACEA42DCBD74DA504BE1F"
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/webAppSite",
+    "Target": "configs.[].@name=authsettings.properties.twitterConsumerKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B10A60C8030DB63F2ADA20506A2012D7E5C6814B2E3ACEA42DCBD74DA504BE1F"
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/webAppSite",
+    "Target": "configs.[].@name=authsettings.properties.twitterConsumerSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B10A60C8030DB63F2ADA20506A2012D7E5C6814B2E3ACEA42DCBD74DA504BE1F"
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/webAppSite",
+    "Target": "configs.[].@name=authsettingsV2.properties.identityProviders.twitter.registration.consumerKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B10A60C8030DB63F2ADA20506A2012D7E5C6814B2E3ACEA42DCBD74DA504BE1F"
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/webAppSite",
+    "Target": "configs.[].@name=azurestorageaccounts.properties.*.accessKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B10A60C8030DB63F2ADA20506A2012D7E5C6814B2E3ACEA42DCBD74DA504BE1F"
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/webAppSite",
+    "Target": "configs.[].@name=backup.properties.databases.[].connectionString",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B10A60C8030DB63F2ADA20506A2012D7E5C6814B2E3ACEA42DCBD74DA504BE1F"
+  },
+  {
+    "Module": "avm/ptn/app-service-lza/hosting-environment",
+    "Deployment": "/webAppSite",
+    "Target": "configs.[].@name=web.properties.azureStorageAccounts.*.accessKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B10A60C8030DB63F2ADA20506A2012D7E5C6814B2E3ACEA42DCBD74DA504BE1F"
+  },
+  {
+    "Module": "avm/ptn/app/container-job-toolkit",
+    "Deployment": "/job",
+    "Target": "secrets.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "A14069FB20C5FBF4AA336DC6F11B2DA777C03BEA5DD9663979F69D77A9D95CE8"
+  },
+  {
+    "Module": "avm/ptn/app/container-job-toolkit",
+    "Deployment": "/services/managedEnvironment",
+    "Target": "appLogsConfiguration.logAnalyticsConfiguration.sharedKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "5F83B33EEC9C92766176B0C9E0581E32FB84FD82C7A6069CDA4D08EF716E8A23"
+  },
+  {
+    "Module": "avm/ptn/app/container-job-toolkit",
+    "Deployment": "/services/managedEnvironment/managedEnvironment_certificate",
+    "Target": "certificatePassword",
+    "SinkType": "securestring",
+    "Source": "certificate.certificatePassword",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/app/container-job-toolkit",
+    "Deployment": "/services/storage/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "899E8FCD117E6FE9B276FB33E7E528499042B9D97D2C5CA5DB0BE27FDC4C0A50"
+  },
+  {
+    "Module": "avm/ptn/app/container-job-toolkit",
+    "Deployment": "/services/vault",
+    "Target": "secrets.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "418513D6F9A6B6874C9BC7A71425429EF829078B8B68A572C009E41F96F57C21"
+  },
+  {
+    "Module": "avm/ptn/app/container-job-toolkit",
+    "Deployment": "/services/vault/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/app/function-app",
+    "Deployment": "/storageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B6815C682A36ED2E36A6FF0D960C88EA5A804FB260F51059F030FA797A64D11C"
+  },
+  {
+    "Module": "avm/ptn/app/iaas-vm-cosmosdb-tier4",
+    "Deployment": "/storageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "899E8FCD117E6FE9B276FB33E7E528499042B9D97D2C5CA5DB0BE27FDC4C0A50"
+  },
+  {
+    "Module": "avm/ptn/app/iaas-vm-cosmosdb-tier4",
+    "Deployment": "/virtualMachine",
+    "Target": "adminUsername",
+    "SinkType": "securestring",
+    "Source": "adminUsername",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/app/iaas-vm-cosmosdb-tier4",
+    "Deployment": "/virtualMachine/vm_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/app/paas-ase-cosmosdb-tier4",
+    "Deployment": "/redis/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "6B4D9D61F2BAD63EF101872E4E7A5B48C5DFF3C9F7CC84FD49C6B7BD82F05D58"
+  },
+  {
+    "Module": "avm/ptn/azd/aks",
+    "Deployment": "/keyVault/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/azd/aks",
+    "Deployment": "/managedCluster/managedCluster_extension",
+    "Target": "configurationProtectedSettings",
+    "SinkType": "secureObject",
+    "Source": "fluxExtension.configurationProtectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/azd/aks",
+    "Deployment": "/managedCluster/managedCluster_extension/fluxConfiguration",
+    "Target": "configurationProtectedSettings",
+    "SinkType": "secureObject",
+    "Source": "fluxConfigurations.[].configurationProtectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/azd/aks-automatic-cluster",
+    "Deployment": "/aks/managedCluster_extension",
+    "Target": "configurationProtectedSettings",
+    "SinkType": "secureObject",
+    "Source": "fluxExtension.configurationProtectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/azd/aks-automatic-cluster",
+    "Deployment": "/aks/managedCluster_extension/fluxConfiguration",
+    "Target": "configurationProtectedSettings",
+    "SinkType": "secureObject",
+    "Source": "fluxConfigurations.[].configurationProtectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/azd/container-apps-stack",
+    "Deployment": "/containerAppsEnvironment/managedEnvironment_certificate",
+    "Target": "certificatePassword",
+    "SinkType": "securestring",
+    "Source": "certificate.certificatePassword",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/azd/ml-ai-environment",
+    "Deployment": "/hub/0",
+    "Target": "connections.[].connectionProperties",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "9D551DC80FAAD279B3F23A28F5920740C86687324B75B71E79B9322E9A9F90C7"
+  },
+  {
+    "Module": "avm/ptn/azd/ml-ai-environment",
+    "Deployment": "/hubDependencies/keyVault/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/azd/ml-ai-environment",
+    "Deployment": "/hubDependencies/storageAccount/storageAccount_localUsers",
+    "Target": "sshAuthorizedKeys",
+    "SinkType": "secureObject",
+    "Source": "localUsers.[].sshAuthorizedKeys",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/azd/ml-hub-dependencies",
+    "Deployment": "/cognitiveServices/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B611821AE0D3AA300B7E5599B7FE2EE6EB6F5B76A1753B6BC0EAB2006EAA28AE"
+  },
+  {
+    "Module": "avm/ptn/azd/ml-hub-dependencies",
+    "Deployment": "/keyVault/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/azd/ml-hub-dependencies",
+    "Deployment": "/searchService/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "E7D0AF4A600902DBBFC556FDA16B63D8BC655E5257D52CDDF9503B85A9F09E3F"
+  },
+  {
+    "Module": "avm/ptn/azd/ml-hub-dependencies",
+    "Deployment": "/storageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "4FDAD095CBBA6030695686DDF4B31106C0D68DEFB7EED30FA5E77019436818F0"
+  },
+  {
+    "Module": "avm/ptn/data/private-analytical-workspace",
+    "Deployment": "/kv/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/dev-ops/cicd-agents-and-runners",
+    "Deployment": "/acaPlaceholderJob",
+    "Target": "secrets.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "392E1554B2FDF06FDD6B4CCC4D907D55AF3A4961A88CF0CFC8574BE378734D33"
+  },
+  {
+    "Module": "avm/ptn/dev-ops/cicd-agents-and-runners",
+    "Deployment": "/aciJob",
+    "Target": "containers.[].properties.environmentVariables.[].secureValue",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "AA3459009AB596693984B50E1BBE3B066E1DCBF84B6674A466FD7E7B44E6FD51"
+  },
+  {
+    "Module": "avm/ptn/dev-ops/cicd-agents-and-runners",
+    "Deployment": "/appEnvironment/managedEnvironment_certificate",
+    "Target": "certificatePassword",
+    "SinkType": "securestring",
+    "Source": "certificate.certificatePassword",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/dev-ops/cicd-agents-and-runners",
+    "Deployment": "/deploymentScriptAcrStg/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "899E8FCD117E6FE9B276FB33E7E528499042B9D97D2C5CA5DB0BE27FDC4C0A50"
+  },
+  {
+    "Module": "avm/ptn/dev-ops/cicd-agents-and-runners",
+    "Deployment": "/deploymentScriptStg/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "899E8FCD117E6FE9B276FB33E7E528499042B9D97D2C5CA5DB0BE27FDC4C0A50"
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/dataFactoryResources/deleteOldResources",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "ADFEBC8C81A4BCC98F1715A2614BD7EB9F4828DDCD2A8403D46F19C2ED3AB323"
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/dataFactoryResources/deleteOldResources",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D6F74A3796D2116C6CD8FD97C98E721C16A4E7F98DA2F6FE995390AB634B0D6B"
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/dataFactoryResources/deleteOldResources",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "dataFactoryName",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/dataFactoryResources/startHubTriggers",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "ADFEBC8C81A4BCC98F1715A2614BD7EB9F4828DDCD2A8403D46F19C2ED3AB323"
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/dataFactoryResources/startHubTriggers",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D6F74A3796D2116C6CD8FD97C98E721C16A4E7F98DA2F6FE995390AB634B0D6B"
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/dataFactoryResources/startHubTriggers",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "E5FD34D9BE489B426AFCDBC8F54E332641CE1B917B62B74ADA6FB3A086964D33"
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/dataFactoryResources/startHubTriggers",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "dataFactoryName",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/dataFactoryResources/stopHubTriggers",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "ADFEBC8C81A4BCC98F1715A2614BD7EB9F4828DDCD2A8403D46F19C2ED3AB323"
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/dataFactoryResources/stopHubTriggers",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D6F74A3796D2116C6CD8FD97C98E721C16A4E7F98DA2F6FE995390AB634B0D6B"
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/dataFactoryResources/stopHubTriggers",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "E5FD34D9BE489B426AFCDBC8F54E332641CE1B917B62B74ADA6FB3A086964D33"
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/dataFactoryResources/stopHubTriggers",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "dataFactoryName",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/keyVault/keyVault",
+    "Target": "secrets",
+    "SinkType": "secureObject",
+    "Source": "storageAccountName",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/keyVault/keyVault/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "6CE35E0B2D14C49974235653E8ECC140A335B3393CA50E4B7C4FF49859ED7B52"
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/keyVault/keyVault/keyVault_secrets",
+    "Target": "value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "7270076D7BA7F9D137DCFFACEF7F31CCF5BBDEFB16551BD095DAC31D8A1DAD82"
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/storage/storageAccount/storageAccount_localUsers",
+    "Target": "sshAuthorizedKeys",
+    "SinkType": "secureObject",
+    "Source": "localUsers.[].sshAuthorizedKeys",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/storage/uploadSettings",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "FF1182915DA00AE42A1EA27F6E0672AC04B9F7E869A89F5557370F1284C8BD16"
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/storage/uploadSettings",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "ftkVersion",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/finops-toolkit/finops-hub",
+    "Deployment": "/storage/uploadSettings",
+    "Target": "environmentVariables",
+    "SinkType": "secureObject",
+    "Source": "storageAccountName",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/lz/sub-vending",
+    "Deployment": "/createSubscriptionResources/createDsStorageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "899E8FCD117E6FE9B276FB33E7E528499042B9D97D2C5CA5DB0BE27FDC4C0A50"
+  },
+  {
+    "Module": "avm/ptn/network/virtual-wan",
+    "Deployment": "/s2sVpnGatewayModule",
+    "Target": "vpnConnections.[].sharedKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "738BF52B1CD19F228CB16061B72BCE7ED5B1A2649392B63367C3983686FF0683"
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/aiFoundryAiServices/cognitive_service_dependencies/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D42655A421F002A3E1BCD82C30097922F59DE2B5D645850E4AECAC131ECDBC53"
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/avmStorageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "FDABA03EB150162A87643214E365348B1DD190DB00108EF0DFF4B37C7628D222"
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/jumpboxVM",
+    "Target": "adminUsername",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "7AF173096E344D5E397A096775215E0D8777E139A0FDD48DFA7739D6DDD2A7C5"
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/jumpboxVM/vm_customScriptExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/jumpboxVM/vm_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/keyvault",
+    "Target": "secrets.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "29AD72D2344A86A22DE52729D7B42E19F590E9AC48852AB6D156432AD6D6CEEE"
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/keyvault",
+    "Target": "secrets.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "52780583EEA5BCEA1C111E8AE8E4110B0AEA70CD36B0758254478CE992D2851A"
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/keyvault",
+    "Target": "secrets.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "7624E816597B184D0BC6EC16A84EC80150AD57D8E0154907049579F29C11CDB6"
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/keyvault",
+    "Target": "secrets.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "A00AF5605EF14D44712164E812B6177B8DD4360CA174361FC97D16A58B8F4712"
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/keyvault",
+    "Target": "secrets.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "AC3C80649718DCAB84D7631FCB933ACE53E8976E3ECE38BB3236BBD7A84CF7B6"
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/keyvault",
+    "Target": "secrets.[].value",
+    "SinkType": "securestring",
+    "Source": "azureOpenaiAPIVersion",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/keyvault",
+    "Target": "secrets.[].value",
+    "SinkType": "securestring",
+    "Source": "embeddingModel",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/keyvault/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/saveStorageAccountSecretsInKeyVault/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/searchService/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "6C80F1E286077FB89F9BD794288351E22245C274C8C6CE484270409090610FCD"
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/sqlDBModule/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "828FF217A9A2C2CD75FD77A1FAD4675CFEF5FA87970D69BCFC189F59F9EDD064"
+  },
+  {
+    "Module": "avm/ptn/sa/build-your-own-copilot",
+    "Deployment": "/sqlDBModule/server_securityAlertPolicies",
+    "Target": "storageAccountAccessKey",
+    "SinkType": "securestring",
+    "Source": "securityAlertPolicies.[].storageAccountAccessKey",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/chat-with-your-data",
+    "Deployment": "/adminweb",
+    "Target": "appSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "A65B85994EE658D70EBBA9E384E3AA5AD1603075BA9603B7A365422BFDFC84A6"
+  },
+  {
+    "Module": "avm/ptn/sa/chat-with-your-data",
+    "Deployment": "/function",
+    "Target": "appSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "31561BF46AB4027E12FDAA0B6B911DC6BFDF76FEF6D666FC154F7BC873048ACE"
+  },
+  {
+    "Module": "avm/ptn/sa/chat-with-your-data",
+    "Deployment": "/function/function",
+    "Target": "appSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "1F5EAB476B66B2E9E97C2647FD753BDDBF93681FDBEB913C04B678D1A57575F3"
+  },
+  {
+    "Module": "avm/ptn/sa/chat-with-your-data",
+    "Deployment": "/jumpboxVM/vm_customScriptExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
+  },
+  {
+    "Module": "avm/ptn/sa/chat-with-your-data",
+    "Deployment": "/jumpboxVM/vm_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/chat-with-your-data",
+    "Deployment": "/keyvault",
+    "Target": "secrets.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "277B1EDCDE73A0CB69861BCD55B7D115DCFBE09CAB05816F9109E97A76DF0F33"
+  },
+  {
+    "Module": "avm/ptn/sa/chat-with-your-data",
+    "Deployment": "/keyvault/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/chat-with-your-data",
+    "Deployment": "/searchUpdate/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "DF01DC15681CF4A6C4EA62911C985DC1794ADB99E9B02163387B82B52DB03468"
+  },
+  {
+    "Module": "avm/ptn/sa/chat-with-your-data",
+    "Deployment": "/web",
+    "Target": "appSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "A4572F337279D8CB8DDA7604813DCE6591A7DA47EB46AA9C3C8146F21B99ADD3"
+  },
+  {
+    "Module": "avm/ptn/sa/content-generation",
+    "Deployment": "/aiFoundryAiServices/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D42655A421F002A3E1BCD82C30097922F59DE2B5D645850E4AECAC131ECDBC53"
+  },
+  {
+    "Module": "avm/ptn/sa/content-generation",
+    "Deployment": "/aiSearch/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "DF01DC15681CF4A6C4EA62911C985DC1794ADB99E9B02163387B82B52DB03468"
+  },
+  {
+    "Module": "avm/ptn/sa/content-generation",
+    "Deployment": "/containerRegistry/containerRegistry/registry_webhooks",
+    "Target": "serviceUri",
+    "SinkType": "securestring",
+    "Source": "webhooks.[].serviceUri",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/content-generation",
+    "Deployment": "/storageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B6815C682A36ED2E36A6FF0D960C88EA5A804FB260F51059F030FA797A64D11C"
+  },
+  {
+    "Module": "avm/ptn/sa/content-processing",
+    "Deployment": "/avmAiServices/cognitive_service_dependencies/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "21EE27BA7CCAA16B6082D2B6D363B59C3DF1FB4C0ABABF27437E461F3F90A262"
+  },
+  {
+    "Module": "avm/ptn/sa/content-processing",
+    "Deployment": "/avmContainerRegistry/avmContainerRegistry/registry_webhooks",
+    "Target": "serviceUri",
+    "SinkType": "securestring",
+    "Source": "webhooks.[].serviceUri",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/content-processing",
+    "Deployment": "/avmStorageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B6815C682A36ED2E36A6FF0D960C88EA5A804FB260F51059F030FA797A64D11C"
+  },
+  {
+    "Module": "avm/ptn/sa/content-processing",
+    "Deployment": "/jumpboxVM/vm_customScriptExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
+  },
+  {
+    "Module": "avm/ptn/sa/content-processing",
+    "Deployment": "/jumpboxVM/vm_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/ai_foundry_project/aiServicesAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D42655A421F002A3E1BCD82C30097922F59DE2B5D645850E4AECAC131ECDBC53"
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/ai_search/searchServiceUpdate/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "DF01DC15681CF4A6C4EA62911C985DC1794ADB99E9B02163387B82B52DB03468"
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/backend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.clientSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/backend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.facebookAppSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/backend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.gitHubClientSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/backend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.googleClientSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/backend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.microsoftAccountClientSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/backend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.twitterConsumerKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/backend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.twitterConsumerSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/backend_docker/appService",
+    "Target": "configs.[].@name=authsettingsV2.properties.identityProviders.twitter.registration.consumerKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/backend_docker/appService",
+    "Target": "configs.[].@name=azurestorageaccounts.properties.*.accessKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/backend_docker/appService",
+    "Target": "configs.[].@name=backup.properties.databases.[].connectionString",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/backend_docker/appService",
+    "Target": "configs.[].@name=web.properties.azureStorageAccounts.*.accessKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/container_registry/containerRegistry/registry_webhooks",
+    "Target": "serviceUri",
+    "SinkType": "securestring",
+    "Source": "webhooks.[].serviceUri",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/frontend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.clientSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/frontend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.facebookAppSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/frontend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.gitHubClientSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/frontend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.googleClientSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/frontend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.microsoftAccountClientSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/frontend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.twitterConsumerKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/frontend_docker/appService",
+    "Target": "configs.[].@name=authsettings.properties.twitterConsumerSecret",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/frontend_docker/appService",
+    "Target": "configs.[].@name=authsettingsV2.properties.identityProviders.twitter.registration.consumerKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/frontend_docker/appService",
+    "Target": "configs.[].@name=azurestorageaccounts.properties.*.accessKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/frontend_docker/appService",
+    "Target": "configs.[].@name=backup.properties.databases.[].connectionString",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/frontend_docker/appService",
+    "Target": "configs.[].@name=web.properties.azureStorageAccounts.*.accessKey",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/sqlDBModule/sqlServer/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "828FF217A9A2C2CD75FD77A1FAD4675CFEF5FA87970D69BCFC189F59F9EDD064"
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/sqlDBModule/sqlServer/server_securityAlertPolicies",
+    "Target": "storageAccountAccessKey",
+    "SinkType": "securestring",
+    "Source": "securityAlertPolicies.[].storageAccountAccessKey",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/storage_account/storage/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B6815C682A36ED2E36A6FF0D960C88EA5A804FB260F51059F030FA797A64D11C"
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/virtualMachine",
+    "Target": "adminPassword",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "AF125F2B613A4454F4D7CF2047C6D80CF9AEDBE079FF817E041F3A2C98C38764"
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/virtualMachine",
+    "Target": "adminUsername",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "FD433601C299E819F237D532663F4625C4A3806312E30FA181677543D46632A5"
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/virtualMachine/virtualMachine/vm_customScriptExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
+  },
+  {
+    "Module": "avm/ptn/sa/conversation-knowledge-mining",
+    "Deployment": "/virtualMachine/virtualMachine/vm_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/customer-chatbot",
+    "Deployment": "/aiFoundryAiServices/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D42655A421F002A3E1BCD82C30097922F59DE2B5D645850E4AECAC131ECDBC53"
+  },
+  {
+    "Module": "avm/ptn/sa/customer-chatbot",
+    "Deployment": "/searchServiceUpdate/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "DF01DC15681CF4A6C4EA62911C985DC1794ADB99E9B02163387B82B52DB03468"
+  },
+  {
+    "Module": "avm/ptn/sa/customer-chatbot",
+    "Deployment": "/virtualMachine/vm_customScriptExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
+  },
+  {
+    "Module": "avm/ptn/sa/customer-chatbot",
+    "Deployment": "/virtualMachine/vm_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/document-knowledge-mining",
+    "Deployment": "/avmContainerRegistry/avmContainerRegistry/registry_webhooks",
+    "Target": "serviceUri",
+    "SinkType": "securestring",
+    "Source": "webhooks.[].serviceUri",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/document-knowledge-mining",
+    "Deployment": "/avmOpenAi/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D42655A421F002A3E1BCD82C30097922F59DE2B5D645850E4AECAC131ECDBC53"
+  },
+  {
+    "Module": "avm/ptn/sa/document-knowledge-mining",
+    "Deployment": "/avmSearchSearchServices/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "DF01DC15681CF4A6C4EA62911C985DC1794ADB99E9B02163387B82B52DB03468"
+  },
+  {
+    "Module": "avm/ptn/sa/document-knowledge-mining",
+    "Deployment": "/avmStorageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B6815C682A36ED2E36A6FF0D960C88EA5A804FB260F51059F030FA797A64D11C"
+  },
+  {
+    "Module": "avm/ptn/sa/document-knowledge-mining",
+    "Deployment": "/documentIntelligence/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D42655A421F002A3E1BCD82C30097922F59DE2B5D645850E4AECAC131ECDBC53"
+  },
+  {
+    "Module": "avm/ptn/sa/document-knowledge-mining",
+    "Deployment": "/jumpboxVM",
+    "Target": "adminPassword",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "AF53AA874C1EA621768DB07CD38FE9DB7E00E26594AFC59A46D018AA960E6590"
+  },
+  {
+    "Module": "avm/ptn/sa/document-knowledge-mining",
+    "Deployment": "/jumpboxVM",
+    "Target": "adminUsername",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "7AF173096E344D5E397A096775215E0D8777E139A0FDD48DFA7739D6DDD2A7C5"
+  },
+  {
+    "Module": "avm/ptn/sa/document-knowledge-mining",
+    "Deployment": "/jumpboxVM/vm_customScriptExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
+  },
+  {
+    "Module": "avm/ptn/sa/document-knowledge-mining",
+    "Deployment": "/jumpboxVM/vm_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/document-knowledge-mining",
+    "Deployment": "/managedCluster/managedCluster_extension",
+    "Target": "configurationProtectedSettings",
+    "SinkType": "secureObject",
+    "Source": "fluxExtension.configurationProtectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/document-knowledge-mining",
+    "Deployment": "/managedCluster/managedCluster_extension/fluxConfiguration",
+    "Target": "configurationProtectedSettings",
+    "SinkType": "secureObject",
+    "Source": "fluxConfigurations.[].configurationProtectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/modernize-your-code",
+    "Deployment": "/aiServices/cognitive_service_dependencies/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "611D1987B8081CFAE26BF1B158E8F9B2562075E8660EAE39EACDF28F8006D697"
+  },
+  {
+    "Module": "avm/ptn/sa/modernize-your-code",
+    "Deployment": "/aiServices/existing_cognitive_service_dependencies/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "611D1987B8081CFAE26BF1B158E8F9B2562075E8660EAE39EACDF28F8006D697"
+  },
+  {
+    "Module": "avm/ptn/sa/modernize-your-code",
+    "Deployment": "/keyVault/keyvault/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/modernize-your-code",
+    "Deployment": "/storageAccount/storageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B6815C682A36ED2E36A6FF0D960C88EA5A804FB260F51059F030FA797A64D11C"
+  },
+  {
+    "Module": "avm/ptn/sa/modernize-your-code",
+    "Deployment": "/virtualMachine",
+    "Target": "adminUsername",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "7AF173096E344D5E397A096775215E0D8777E139A0FDD48DFA7739D6DDD2A7C5"
+  },
+  {
+    "Module": "avm/ptn/sa/modernize-your-code",
+    "Deployment": "/virtualMachine/vm_customScriptExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
+  },
+  {
+    "Module": "avm/ptn/sa/modernize-your-code",
+    "Deployment": "/virtualMachine/vm_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/multi-agent-custom-automation-engine",
+    "Deployment": "/aiFoundryAiServices/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D42655A421F002A3E1BCD82C30097922F59DE2B5D645850E4AECAC131ECDBC53"
+  },
+  {
+    "Module": "avm/ptn/sa/multi-agent-custom-automation-engine",
+    "Deployment": "/avmStorageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B6815C682A36ED2E36A6FF0D960C88EA5A804FB260F51059F030FA797A64D11C"
+  },
+  {
+    "Module": "avm/ptn/sa/multi-agent-custom-automation-engine",
+    "Deployment": "/containerRegistry/registry_webhooks",
+    "Target": "serviceUri",
+    "SinkType": "securestring",
+    "Source": "webhooks.[].serviceUri",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/sa/multi-agent-custom-automation-engine",
+    "Deployment": "/searchServiceUpdate/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "DF01DC15681CF4A6C4EA62911C985DC1794ADB99E9B02163387B82B52DB03468"
+  },
+  {
+    "Module": "avm/ptn/sa/multi-agent-custom-automation-engine",
+    "Deployment": "/virtualMachine/vm_customScriptExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
+  },
+  {
+    "Module": "avm/ptn/sa/multi-agent-custom-automation-engine",
+    "Deployment": "/virtualMachine/vm_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/ptn/virtual-machine-images/azure-image-builder",
+    "Deployment": "/assetsStorageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "899E8FCD117E6FE9B276FB33E7E528499042B9D97D2C5CA5DB0BE27FDC4C0A50"
+  },
+  {
+    "Module": "avm/ptn/virtual-machine-images/azure-image-builder",
+    "Deployment": "/dsStorageAccount/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "899E8FCD117E6FE9B276FB33E7E528499042B9D97D2C5CA5DB0BE27FDC4C0A50"
+  },
+  {
+    "Module": "avm/ptn/virtual-machine-images/azure-image-builder",
+    "Deployment": "/storageAccount_upload",
+    "Target": "environmentVariables.[].secureValue",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "DC5C1D7D75C459834A9742001ADACAC5D708CC68E8DA82221CE23AAB946B8272"
+  },
+  {
+    "Module": "avm/res/automation/automation-account",
+    "Deployment": "/automationAccount_variables",
+    "Target": "value",
+    "SinkType": "securestring",
+    "Source": "variables.[].value",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/res/cache/redis",
+    "Deployment": "/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "6B4D9D61F2BAD63EF101872E4E7A5B48C5DFF3C9F7CC84FD49C6B7BD82F05D58"
+  },
+  {
+    "Module": "avm/res/cognitive-services/account",
+    "Deployment": "/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "D42655A421F002A3E1BCD82C30097922F59DE2B5D645850E4AECAC131ECDBC53"
+  },
+  {
+    "Module": "avm/res/compute/virtual-machine",
+    "Deployment": "/vm_customScriptExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
+  },
+  {
+    "Module": "avm/res/compute/virtual-machine",
+    "Deployment": "/vm_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/res/compute/virtual-machine-scale-set",
+    "Deployment": "/vmss_azureMonitorAgentExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "18B23E606BECF2D0207F84CF632ABC0264D1A38B8586A1627A6D1B340D8DD76C"
+  },
+  {
+    "Module": "avm/res/compute/virtual-machine-scale-set",
+    "Deployment": "/vmss_customScriptExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
+  },
+  {
+    "Module": "avm/res/compute/virtual-machine-scale-set",
+    "Deployment": "/vmss_desiredStateConfigurationExtension",
+    "Target": "protectedSettings",
+    "SinkType": "secureObject",
+    "Source": "extensionDSCConfig.protectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/res/container-registry/registry",
+    "Deployment": "/registry_webhooks",
+    "Target": "serviceUri",
+    "SinkType": "securestring",
+    "Source": "webhooks.[].serviceUri",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/res/container-service/managed-cluster",
+    "Deployment": "/managedCluster_extension",
+    "Target": "configurationProtectedSettings",
+    "SinkType": "secureObject",
+    "Source": "fluxExtension.configurationProtectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/res/container-service/managed-cluster",
+    "Deployment": "/managedCluster_extension/fluxConfiguration",
+    "Target": "configurationProtectedSettings",
+    "SinkType": "secureObject",
+    "Source": "fluxConfigurations.[].configurationProtectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/res/event-hub/namespace",
+    "Deployment": "/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "00188200AEF792E82B1A14D1BB5BB8E62A93F69B81267B660CED041C7CE19CEC"
+  },
+  {
+    "Module": "avm/res/key-vault/vault",
+    "Deployment": "/keyVault_secrets",
+    "Target": "contentType",
+    "SinkType": "securestring",
+    "Source": "secrets.[].contentType",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/res/kubernetes-configuration/extension",
+    "Deployment": "/fluxConfiguration",
+    "Target": "configurationProtectedSettings",
+    "SinkType": "secureObject",
+    "Source": "fluxConfigurations.[].configurationProtectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/res/kubernetes-runtime/load-balancer",
+    "Deployment": "/arcnetworking/fluxConfiguration",
+    "Target": "configurationProtectedSettings",
+    "SinkType": "secureObject",
+    "Source": "fluxConfigurations.[].configurationProtectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/res/logic/integration-account",
+    "Deployment": "/integrationAccount_assemblies",
+    "Target": "content",
+    "SinkType": "securestring",
+    "Source": "assemblies.[].content",
+    "Status": "Mismatch",
+    "ExpressionHash": ""
+  },
+  {
+    "Module": "avm/res/search/search-service",
+    "Deployment": "/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "DF01DC15681CF4A6C4EA62911C985DC1794ADB99E9B02163387B82B52DB03468"
+  },
+  {
+    "Module": "avm/res/storage/storage-account",
+    "Deployment": "/secretsExport",
+    "Target": "secretsToSet.[].value",
+    "SinkType": "securestring",
+    "Source": "",
+    "Status": "Unsupported",
+    "ExpressionHash": "B6815C682A36ED2E36A6FF0D960C88EA5A804FB260F51059F030FA797A64D11C"
+  }
+]
