@@ -64,4 +64,24 @@ Describe 'API Management cache connection string hardening' {
             Should -Be "[variables('caches')[copyIndex()].connectionString]"
         $caller.resources.childCaller.properties.template.parameters.connectionString.type | Should -Be 'secureString'
     }
+
+    It 'Accepts existing plain string, object and typed array callers without securing their whole inputs' {
+        $caller = $templates.caller
+        $caller.parameters.existingValue.type | Should -Be 'string'
+        $caller.definitions.existingCacheType.type | Should -Be 'object'
+        $caller.definitions.existingCacheType.properties.connectionString.type | Should -Be 'string'
+        $caller.parameters.existingCaches.type | Should -Be 'array'
+        $caller.parameters.existingCaches.items.'$ref' | Should -Be '#/definitions/existingCacheType'
+        $caller.variables.caches[3].connectionString | Should -Be "[parameters('existingValue')]"
+        $caller.variables.caches[4] | Should -Be "[parameters('existingCache')]"
+        $caller.resources.plainArrayParent.properties.parameters.caches.value | Should -Be "[parameters('existingCaches')]"
+        $caller.resources.plainStringChild.properties.parameters.connectionString.value | Should -Be "[parameters('existingValue')]"
+    }
+
+    It 'Keeps null and omitted cache arrays optional, without making individual connection strings optional' {
+        $templates.caller.resources.nullCaches.properties.parameters.ContainsKey('caches') | Should -BeTrue
+        $templates.caller.resources.nullCaches.properties.parameters.caches.value | Should -BeNullOrEmpty
+        $templates.caller.resources.omittedCaches.properties.parameters.ContainsKey('caches') | Should -BeFalse
+        $templates.parent.definitions.cacheType.properties.connectionString.ContainsKey('nullable') | Should -BeFalse
+    }
 }

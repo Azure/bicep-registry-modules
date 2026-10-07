@@ -1542,7 +1542,7 @@ A Managed Environment Certificate.
 | :-- | :-- | :-- |
 | [`certificateKeyVaultProperties`](#parameter-certificatecertificatekeyvaultproperties) | object | A key vault reference. |
 | [`certificatePassword`](#parameter-certificatecertificatepassword) | securestring | The password of the certificate. |
-| [`certificateValue`](#parameter-certificatecertificatevalue) | string | The value of the certificate. PFX or PEM blob. |
+| [`certificateValue`](#parameter-certificatecertificatevalue) | securestring | The value of the certificate. PFX or PEM blob. |
 | [`location`](#parameter-certificatelocation) | string | The location for the resource. |
 | [`name`](#parameter-certificatename) | string | The name of the certificate. |
 | [`tags`](#parameter-certificatetags) | object | Tags of the resource. |
@@ -1587,7 +1587,7 @@ The password of the certificate.
 The value of the certificate. PFX or PEM blob.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `certificate.location`
 
