@@ -402,7 +402,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
         Mock Get-AzTenantDeploymentOperation { @{ ProvisioningState = 'Failed'; StatusMessage = 'DeploymentFailed: StorageAccountAlreadyTaken' } }
         Mock Invoke-AzRestMethod {
             $Method | Should -Be 'GET'
-            $Path | Should -Match '/providers/Microsoft.Resources/deployments/(?<name>[^/]+)/operations\?api-version=2021-04-01$'
+            $Path | Should -Match '/providers/Microsoft.Resources/deployments/(?<name>[^/]+)/operations\?api-version=2025-04-01$'
             $name = [regex]::Match($Path, '/deployments/([^/]+)/operations').Groups[1].Value
             $script:lookupNames.Add($name)
             $script:lookupPaths.Add($Path)
@@ -553,7 +553,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
             -PreflightRejectedDeploymentNames $result.PreflightRejectedDeploymentNames -SubscriptionId $subscriptionId `
             -ResourceGroupName 'dep-fixture-rg' -ManagementGroupId 'test-management-group'
 
-        $script:lookupPaths | Should -Contain "$pathPrefix/providers/Microsoft.Resources/deployments/$($script:attemptNames[0])/operations?api-version=2021-04-01"
+        $script:lookupPaths | Should -Contain "$pathPrefix/providers/Microsoft.Resources/deployments/$($script:attemptNames[0])/operations?api-version=2025-04-01"
         $script:removedIds | Should -Contain $resourceIds[5]
         if ($scope -eq 'managementgroup') {
             Should -Invoke Get-AzManagementGroupDeploymentOperation -Times 1 -Exactly -ParameterFilter { $ManagementGroupId -eq 'test-management-group' }
@@ -689,7 +689,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
         Initialize-DeploymentRemoval -TemplateFilePath $templatePath -DeploymentNames $result.DeploymentNames `
             -SubscriptionId $subscriptionId -ResourceGroupName 'dep-fixture-rg' -ManagementGroupId 'test-management-group'
 
-        $script:lookupPaths | Should -Contain "$pathPrefix/providers/Microsoft.Resources/deployments/$($script:attemptNames[0])/operations?api-version=2021-04-01"
+        $script:lookupPaths | Should -Contain "$pathPrefix/providers/Microsoft.Resources/deployments/$($script:attemptNames[0])/operations?api-version=2025-04-01"
         $script:removedIds | Should -Contain $resourceIds[5]
         Should -Invoke Start-Sleep -Times 0 -Exactly
     }

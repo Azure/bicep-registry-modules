@@ -196,7 +196,7 @@ Describe 'Regional validation workflow runtime integration' {
         }
         Mock Invoke-AzRestMethod {
             $Method | Should -Be 'GET'
-            $Path | Should -Match '^/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/[^/]+/operations\?api-version=2021-04-01$'
+            $Path | Should -Match '^/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/[^/]+/operations\?api-version=2025-04-01$'
             @{
                 StatusCode = 200
                 Content    = ConvertTo-Json -Depth 10 -InputObject @{ value = @(
