@@ -1611,15 +1611,6 @@
     "ExpressionHash": "00188200AEF792E82B1A14D1BB5BB8E62A93F69B81267B660CED041C7CE19CEC"
   },
   {
-    "Module": "avm/res/key-vault/vault",
-    "Deployment": "/keyVault_secrets",
-    "Target": "contentType",
-    "SinkType": "securestring",
-    "Source": "secrets.[].contentType",
-    "Status": "Mismatch",
-    "ExpressionHash": ""
-  },
-  {
     "Module": "avm/res/logic/integration-account",
     "Deployment": "/integrationAccount_assemblies",
     "Target": "content",
