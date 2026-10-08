@@ -1,14 +1,15 @@
 Describe 'Search fixture global resource identities' {
     Context '<scenario> <kind>' -ForEach @(
-        @{ scenario = 'pe'; kind = 'storage'; parameter = 'storageAccountName'; maximumLength = 24 }
-        @{ scenario = 'max'; kind = 'service'; parameter = 'name'; maximumLength = 60 }
+        @{ scenario = 'pe'; kind = 'storage'; parameter = 'storageAccountName'; maximumLength = 24; expectedLength = 24 }
+        @{ scenario = 'max'; kind = 'service'; parameter = 'name'; maximumLength = 60; expectedLength = 60 }
+        @{ scenario = 'pe'; kind = 'vault'; parameter = 'keyVaultName'; maximumLength = 24; expectedLength = 20 }
     ) {
         BeforeAll {
             $fixturePath = Join-Path $PSScriptRoot '..' 'e2e' $scenario 'main.test.bicep'
             $source = Get-Content -LiteralPath $fixturePath -Raw
-            if ($kind -eq 'storage') {
+            if ($kind -in @('storage', 'vault')) {
                 $nameSource = [regex]::Match($source, '(?ms)^module nestedDependencies\b.*?^}').Value
-                $namePattern = '(?m)^\s+storageAccountName: (?<expression>[^\r\n]+)'
+                $namePattern = "(?m)^\s+${parameter}: (?<expression>[^\r\n]+)"
             } else {
                 $nameSource = [regex]::Match($source, '(?ms)^module testDeployment\b.*\z').Value
                 $namePattern = "(?m)^\s+name: (?<expression>'[^\r\n]*namePrefix[^\r\n]+)"
@@ -35,6 +36,12 @@ Describe 'Search fixture global resource identities' {
                 @{ prefix = ('g' * 100); service = ('s' * 100 + 'b') }
                 @{ prefix = ('g' * 100 + 'b'); service = ('s' * 100 + 'a') }
             )
+            if ($kind -eq 'vault') {
+                $overrides += @(
+                    @{ prefix = 'gci-token'; service = 'ssspr-type' }
+                    @{ prefix = ''; service = '' }
+                )
+            }
             $parameterSource = @('using none')
             for ($index = 0; $index -lt $overrides.Count; $index++) {
                 $values = $defaults.Clone()
@@ -66,8 +73,12 @@ Describe 'Search fixture global resource identities' {
             $resources = $template.resources -is [System.Collections.IDictionary] ? @($template.resources.Values) : @($template.resources)
             $dependencies = @($resources | Where-Object { $_.name -match '-nestedDependencies' })[0]
             $testModule = @($resources | Where-Object { $_.name -match '-test-' })[0]
-            $namedModule = $kind -eq 'storage' ? $dependencies : $testModule
-            $resourceType = $kind -eq 'storage' ? 'Microsoft.Storage/storageAccounts' : 'Microsoft.Search/searchServices'
+            $namedModule = $kind -eq 'service' ? $testModule : $dependencies
+            $resourceType = switch ($kind) {
+                storage { 'Microsoft.Storage/storageAccounts' }
+                service { 'Microsoft.Search/searchServices' }
+                vault { 'Microsoft.KeyVault/vaults' }
+            }
             $namedResources = $namedModule.properties.template.resources
             $namedResources = $namedResources -is [System.Collections.IDictionary] ? @($namedResources.Values) : @($namedResources)
             $namedResource = @($namedResources | Where-Object type -EQ $resourceType)[0]
@@ -84,7 +95,7 @@ Describe 'Search fixture global resource identities' {
         It 'Keeps resource identity stable across root attempts, regions and init/idem' {
             $names.resource0init.value | Should -BeExactly $names.resource3init.value
             $names.resource0init.value | Should -BeExactly $names.resource4init.value
-            foreach ($index in 0..7) {
+            foreach ($index in 0..($overrides.Count - 1)) {
                 $names["resource${index}init"].value | Should -BeExactly $names["resource${index}idem"].value
             }
             $testModule.copy.count | Should -BeExactly "[length(createArray('init', 'idem'))]"
@@ -96,12 +107,16 @@ Describe 'Search fixture global resource identities' {
             foreach ($entry in $names.Values) {
                 if ($kind -eq 'storage') {
                     $entry.value | Should -Match '^[a-z0-9]{3,24}$'
+                } elseif ($kind -eq 'vault') {
+                    $entry.value | Should -Match '^[a-zA-Z][a-zA-Z0-9-]{1,22}[a-zA-Z0-9]$'
+                    $entry.value | Should -Not -Match '--'
                 } else {
                     $entry.value | Should -Match '^[a-z0-9]{2}(?:[a-z0-9-]{0,57}[a-z0-9])?$'
                     $entry.value | Should -Not -Match '--'
                 }
+                $entry.value.Length | Should -BeLessOrEqual $maximumLength
             }
-            $names.resource5init.value.Length | Should -Be $maximumLength
+            $names.resource5init.value.Length | Should -Be $expectedLength
         }
 
         It 'Keeps full prefix and service inputs distinct after truncation' {
@@ -121,6 +136,29 @@ Describe 'Search fixture global resource identities' {
                 $testModule.properties.parameters.sharedPrivateLinkResources.value[0].privateLinkResourceId |
                     Should -Match '\.outputs\.storageAccountResourceId\.value'
                 @($testModule.properties.parameters.sharedPrivateLinkResources.value).Count | Should -Be 2
+                $testModule.properties.parameters.publicNetworkAccess.value | Should -BeExactly 'Disabled'
+            } elseif ($kind -eq 'vault') {
+                $dependencies.resourceGroup | Should -BeExactly "[parameters('resourceGroupName')]"
+                $dependencies.dependsOn | Should -Contain 'resourceGroup'
+                $testModule.dependsOn | Should -Contain 'nestedDependencies'
+                $namedResource.location | Should -BeExactly "[parameters('location')]"
+                $namedResource.properties.tenantId | Should -BeExactly '[tenant().tenantId]'
+                $namedResource.properties.enableRbacAuthorization | Should -BeTrue
+                $namedResource.properties.Contains('accessPolicies') | Should -BeTrue
+                @($namedResource.properties.accessPolicies).Count | Should -Be 0
+                $namedResource.properties.Contains('enablePurgeProtection') | Should -BeTrue
+                $namedResource.properties.enablePurgeProtection | Should -BeNullOrEmpty
+                $namedResource.properties.enabledForTemplateDeployment | Should -BeTrue
+                $namedResource.properties.enabledForDiskEncryption | Should -BeTrue
+                $namedResource.properties.enabledForDeployment | Should -BeTrue
+                $dependencies.properties.template.outputs.keyVaultResourceId.value |
+                    Should -BeExactly "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+                $dependencies.properties.template.outputs.keyVaultLocation.value | Should -Match "parameters\('keyVaultName'\)"
+                $vaultLinks = @($testModule.properties.parameters.sharedPrivateLinkResources.value | Where-Object groupId -EQ 'vault')
+                $vaultLinks.Count | Should -Be 1
+                $vaultLinks[0].privateLinkResourceId | Should -BeExactly "[reference('nestedDependencies').outputs.keyVaultResourceId.value]"
+                @($testModule.properties.parameters.sharedPrivateLinkResources.value).Count | Should -Be 2
+                @($testModule.properties.parameters.privateEndpoints.value).Count | Should -Be 2
                 $testModule.properties.parameters.publicNetworkAccess.value | Should -BeExactly 'Disabled'
             } else {
                 $testModule.properties.parameters.cmkEnforcement.value | Should -BeExactly 'Enabled'

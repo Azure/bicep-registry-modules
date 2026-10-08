@@ -38,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     storageAccountName: '${take('dep${namePrefix}st${serviceShort}', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: 'dep-kv-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     privateDnsZoneName: 'privatelink.search.windows.net'
   }
 }
