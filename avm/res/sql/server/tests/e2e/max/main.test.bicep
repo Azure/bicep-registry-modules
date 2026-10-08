@@ -84,6 +84,15 @@ module testDeployment '../../../main.bicep' = [
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       location: enforcedLocation
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
       roleAssignments: [
         {
           name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
@@ -138,6 +147,12 @@ module testDeployment '../../../main.bicep' = [
               principalType: 'ServicePrincipal'
             }
           ]
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
         }
       ]
       databases: [
@@ -172,13 +187,20 @@ module testDeployment '../../../main.bicep' = [
           backupLongTermRetentionPolicy: {
             monthlyRetention: 'P6M'
             timeBasedImmutability: 'Enabled'
-            timeBasedImmutabilityMode: 'Locked'
+            timeBasedImmutabilityMode: 'Unlocked'
           }
           availabilityZone: -1
           lock: {
             kind: 'CanNotDelete'
             name: 'myCustomLockName'
           }
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'SQL DB Contributor'
+              principalId: nestedDependencies.outputs.serverIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
           customerManagedKey: {
             keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
             keyName: nestedDependencies.outputs.databaseKeyVaultKeyName

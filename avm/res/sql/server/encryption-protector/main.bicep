@@ -1,8 +1,8 @@
 metadata name = 'Azure SQL Server Encryption Protector'
 metadata description = 'This module deploys an Azure SQL Server Encryption Protector.'
 
-@description('Conditional. The name of the sql server. Required if the template is used in a standalone deployment.')
-param sqlServerName string
+@description('Conditional. The name of the parent SQL server. Required if the template is used in a standalone deployment.')
+param serverName string
 
 @description('Required. The name of the server key.')
 param serverKeyName string
@@ -42,7 +42,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
 }
 
 resource sqlServer 'Microsoft.Sql/servers@2025-01-01' existing = {
-  name: sqlServerName
+  name: serverName
 }
 
 resource encryptionProtector 'Microsoft.Sql/servers/encryptionProtector@2025-01-01' = {

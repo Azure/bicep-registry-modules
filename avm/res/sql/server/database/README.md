@@ -23,6 +23,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Sql/servers/databases` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/databases)</li></ul> |
 | `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backuplongtermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/databases/backupLongTermRetentionPolicies)</li></ul> |
@@ -78,6 +79,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`requestedBackupStorageRedundancy`](#parameter-requestedbackupstorageredundancy) | string | The storage account type to be used to store backups for this database. |
 | [`restorableDroppedDatabaseResourceId`](#parameter-restorabledroppeddatabaseresourceid) | string | The resource identifier of the restorable dropped database associated with create operation of this database. |
 | [`restorePointInTime`](#parameter-restorepointintime) | string | Point in time (ISO8601 format) of the source database to restore when createMode set to Restore or PointInTimeRestore. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sampleName`](#parameter-samplename) | string | The name of the sample schema to apply when creating this database. |
 | [`secondaryType`](#parameter-secondarytype) | string | The secondary type of the database if it is a secondary. |
 | [`sku`](#parameter-sku) | object | The database SKU. |
@@ -137,20 +139,12 @@ The long term backup retention policy to create for the database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-backuplongtermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`monthlyRetention`](#parameter-backuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
 | [`timeBasedImmutability`](#parameter-backuplongtermretentionpolicytimebasedimmutability) | string | The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled. |
-| [`timeBasedImmutabilityMode`](#parameter-backuplongtermretentionpolicytimebasedimmutabilitymode) | string | The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked. |
+| [`timeBasedImmutabilityMode`](#parameter-backuplongtermretentionpolicytimebasedimmutabilitymode) | string | The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Defaults to `Unlocked` if time-based immutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked. |
 | [`weeklyRetention`](#parameter-backuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-backuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-backuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
-
-### Parameter: `backupLongTermRetentionPolicy.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `backupLongTermRetentionPolicy.monthlyRetention`
 
@@ -175,7 +169,7 @@ The setting for whether to enable time-based immutability for future backups. Wh
 
 ### Parameter: `backupLongTermRetentionPolicy.timeBasedImmutabilityMode`
 
-The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.
+The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Defaults to `Unlocked` if time-based immutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.
 
 - Required: No
 - Type: string
@@ -220,7 +214,6 @@ The short term backup retention policy to create for the database.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diffBackupIntervalInHours`](#parameter-backupshorttermretentionpolicydiffbackupintervalinhours) | int | Differential backup interval in hours. For Hyperscale tiers this value will be ignored. |
-| [`enableTelemetry`](#parameter-backupshorttermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`retentionDays`](#parameter-backupshorttermretentionpolicyretentiondays) | int | Point-in-time retention in days. |
 
 ### Parameter: `backupShortTermRetentionPolicy.diffBackupIntervalInHours`
@@ -229,13 +222,6 @@ Differential backup interval in hours. For Hyperscale tiers this value will be i
 
 - Required: No
 - Type: int
-
-### Parameter: `backupShortTermRetentionPolicy.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `backupShortTermRetentionPolicy.retentionDays`
 
@@ -741,6 +727,117 @@ Point in time (ISO8601 format) of the source database to restore when createMode
 
 - Required: No
 - Type: string
+
+### Parameter: `roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Log Analytics Contributor'`
+  - `'Log Analytics Reader'`
+  - `'Monitoring Contributor'`
+  - `'Monitoring Metrics Publisher'`
+  - `'Monitoring Reader'`
+  - `'Resource Policy Contributor'`
+  - `'SQL DB Contributor'`
+  - `'SQL Security Manager'`
+  - `'SQL Server Contributor'`
+  - `'SqlDb Migration Role'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `sampleName`
 

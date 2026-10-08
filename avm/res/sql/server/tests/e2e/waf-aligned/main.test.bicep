@@ -80,18 +80,13 @@ module testDeployment '../../../main.bicep' = [
         tenantId: tenant().tenantId
       }
       location: enforcedLocation
-      vulnerabilityAssessmentsObj: {
-        name: 'default'
-        recurringScans: {
-          emailSubscriptionAdmins: true
-          isEnabled: true
-          emails: [
-            'test1@contoso.com'
-            'test2@contoso.com'
-          ]
+      expressVulnerabilityAssessmentState: 'Enabled'
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-      }
+      ]
       elasticPools: [
         {
           name: '${namePrefix}-${serviceShort}-ep-001'
@@ -115,6 +110,7 @@ module testDeployment '../../../main.bicep' = [
           }
           maxSizeBytes: 34359738368
           licenseType: 'LicenseIncluded'
+          requestedBackupStorageRedundancy: 'Zone'
           diagnosticSettings: [
             {
               name: 'customSetting'
@@ -171,13 +167,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      virtualNetworkRules: [
-        {
-          ignoreMissingVnetServiceEndpoint: true
-          name: 'newVnetRule1'
-          virtualNetworkSubnetResourceId: nestedDependencies.outputs.serviceEndpointSubnetResourceId
-        }
-      ]
+      publicNetworkAccess: 'Disabled'
       restrictOutboundNetworkAccess: 'Disabled'
       connectionPolicy: 'Redirect'
       tags: {
