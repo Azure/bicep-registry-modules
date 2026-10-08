@@ -418,7 +418,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
     defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
-    name: 'swenua001'
+    name: '<name>'
     sqlAdministratorLogin: 'synwsadmin'
     // Non-required parameters
     customerManagedKey: {
@@ -450,7 +450,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       "value": "<defaultDataLakeStorageFilesystem>"
     },
     "name": {
-      "value": "swenua001"
+      "value": "<name>"
     },
     "sqlAdministratorLogin": {
       "value": "synwsadmin"
@@ -480,7 +480,7 @@ using 'br/public:avm/res/synapse/workspace:<version>'
 // Required parameters
 param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
 param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
-param name = 'swenua001'
+param name = '<name>'
 param sqlAdministratorLogin = 'synwsadmin'
 // Non-required parameters
 param customerManagedKey = {
