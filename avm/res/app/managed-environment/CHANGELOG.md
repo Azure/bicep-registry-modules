@@ -2,11 +2,12 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/managed-environment/CHANGELOG.md).
 
-## 0.16.1
+## 0.17.0
 
 ### Changes
 
 - Marked certificate values as secure in `certificateType`, matching the certificate child module.
+- Minor version bump to accompany the `certificate` and `storage` child modules' `0.2` versions, which haven't been published yet.
 
 ### Breaking Changes
 
