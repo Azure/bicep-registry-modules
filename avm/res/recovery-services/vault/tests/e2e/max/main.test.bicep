@@ -38,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    sshDeploymentScriptName: '${take('dep-${namePrefix}-ds-${serviceShort}', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'ds')}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
   }
