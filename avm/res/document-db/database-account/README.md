@@ -1190,7 +1190,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'user-mi'
+    name: '<name>'
     // Non-required parameters
     managedIdentities: {
       systemAssigned: true
@@ -1235,7 +1235,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "user-mi"
+      "value": "<name>"
     },
     // Non-required parameters
     "managedIdentities": {
@@ -1284,7 +1284,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'user-mi'
+param name = '<name>'
 // Non-required parameters
 param managedIdentities = {
   systemAssigned: true
@@ -1331,7 +1331,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddamng001'
+    name: '<name>'
     // Non-required parameters
     mongodbDatabases: [
       {
@@ -1538,7 +1538,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddamng001"
+      "value": "<name>"
     },
     // Non-required parameters
     "mongodbDatabases": {
@@ -1747,7 +1747,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddamng001'
+param name = '<name>'
 // Non-required parameters
 param mongodbDatabases = [
   {
@@ -2415,7 +2415,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddasql001'
+    name: '<name>'
     // Non-required parameters
     sqlDatabases: [
       {
@@ -2661,7 +2661,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddasql001"
+      "value": "<name>"
     },
     // Non-required parameters
     "sqlDatabases": {
@@ -2909,7 +2909,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddasql001'
+param name = '<name>'
 // Non-required parameters
 param sqlDatabases = [
   {
@@ -3157,7 +3157,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddarole001'
+    name: '<name>'
     // Non-required parameters
     sqlDatabases: [
       {
@@ -3194,7 +3194,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     sqlRoleDefinitions: [
       {
         assignableScopes: [
-          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+          '<databaseAccountResourceId>'
         ]
         assignments: [
           {
@@ -3211,7 +3211,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       }
       {
         assignableScopes: [
-          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+          '<databaseAccountResourceId>'
         ]
         dataActions: [
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
@@ -3244,7 +3244,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddarole001"
+      "value": "<name>"
     },
     // Non-required parameters
     "sqlDatabases": {
@@ -3287,7 +3287,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": [
         {
           "assignableScopes": [
-            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
+            "<databaseAccountResourceId>"
           ],
           "assignments": [
             {
@@ -3304,7 +3304,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         },
         {
           "assignableScopes": [
-            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
+            "<databaseAccountResourceId>"
           ],
           "dataActions": [
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
@@ -3337,7 +3337,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddarole001'
+param name = '<name>'
 // Non-required parameters
 param sqlDatabases = [
   {
@@ -3374,7 +3374,7 @@ param sqlRoleAssignments = [
 param sqlRoleDefinitions = [
   {
     assignableScopes: [
-      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+      '<databaseAccountResourceId>'
     ]
     assignments: [
       {
@@ -3391,7 +3391,7 @@ param sqlRoleDefinitions = [
   }
   {
     assignableScopes: [
-      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+      '<databaseAccountResourceId>'
     ]
     dataActions: [
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
