@@ -980,7 +980,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrwaf001'
+    name: '<name>'
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Premium'
@@ -1042,7 +1042,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrAdminUserEnabled": {
@@ -1132,7 +1132,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrwaf001'
+param name = '<name>'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Premium'

@@ -181,7 +181,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddacswaf001'
+    name: '<name>'
     // Non-required parameters
     backupPolicyType: 'Periodic'
     capabilitiesToAdd: [
@@ -341,7 +341,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddacswaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "backupPolicyType": {
@@ -525,7 +525,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddacswaf001'
+param name = '<name>'
 // Non-required parameters
 param backupPolicyType = 'Periodic'
 param capabilitiesToAdd = [
@@ -3534,7 +3534,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddawaf001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -3606,7 +3606,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddawaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -3698,7 +3698,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddawaf001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {

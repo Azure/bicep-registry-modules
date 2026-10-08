@@ -6,6 +6,8 @@ Describe 'Cosmos fixture resource identities' {
         @{ scenario = 'managedIdentity'; kind = 'account'; serial = $false; location = 'eastus2' }
         @{ scenario = 'managedIdentity'; kind = 'assignment'; serial = $false; location = 'eastus2' }
         @{ scenario = 'perimeter'; kind = 'account'; serial = $true; location = 'francecentral' }
+        @{ scenario = 'waf-aligned'; kind = 'account'; serial = $false; location = 'australiaeast' }
+        @{ scenario = 'cassandrakeyspaces-waf'; kind = 'account'; serial = $true; location = 'eastus2' }
     ) {
         BeforeAll {
             $fixturePath = Join-Path $PSScriptRoot '..' 'e2e' $scenario 'main.test.bicep'
@@ -180,6 +182,56 @@ Describe 'Cosmos fixture resource identities' {
                 ($parameters.Keys | Sort-Object) -join ',' | Should -BeExactly 'name,networkRestrictions'
                 $parameters.networkRestrictions.value.publicNetworkAccess | Should -BeExactly 'SecuredByPerimeter'
                 $testModule.dependsOn | Should -Contain 'resourceGroup'
+            } elseif ($scenario -in @('waf-aligned', 'cassandrakeyspaces-waf')) {
+                $parameters.disableLocalAuthentication.value | Should -BeTrue
+                $parameters.disableKeyBasedMetadataWriteAccess.value | Should -BeTrue
+                $parameters.enableAutomaticFailover.value | Should -BeTrue
+                $parameters.minimumTlsVersion.value | Should -BeExactly 'Tls12'
+                $parameters.networkRestrictions.value.networkAclBypass | Should -BeExactly 'None'
+                $parameters.networkRestrictions.value.publicNetworkAccess | Should -BeExactly 'Disabled'
+                @($parameters.failoverLocations.value).Count | Should -Be 2
+                $parameters.failoverLocations.value[0].failoverPriority | Should -Be 0
+                $parameters.failoverLocations.value[1].failoverPriority | Should -Be 1
+                $parameters.failoverLocations.value[0].locationName | Should -BeExactly "[variables('enforcedLocation')]"
+                $parameters.failoverLocations.value[1].locationName | Should -BeExactly "[variables('enforcedSecondLocation')]"
+                @($parameters.privateEndpoints.value).Count | Should -Be 1
+                $parameters.privateEndpoints.value[0].subnetResourceId | Should -BeExactly "[reference('nestedDependencies').outputs.subnetResourceId.value]"
+                $parameters.privateEndpoints.value[0].privateDnsZoneGroup.privateDnsZoneGroupConfigs[0].privateDnsZoneResourceId |
+                    Should -BeExactly "[reference('nestedDependencies').outputs.privateDNSZoneResourceId.value]"
+                @($parameters.diagnosticSettings.value).Count | Should -Be 1
+                $testModule.dependsOn | Should -Contain 'nestedDependencies'
+                $testModule.dependsOn | Should -Contain 'diagnosticDependencies'
+                if ($scenario -eq 'waf-aligned') {
+                    $template.variables.enforcedSecondLocation | Should -BeExactly 'francecentral'
+                    $parameters.zoneRedundant.value | Should -BeTrue
+                    foreach ($failover in $parameters.failoverLocations.value) { $failover.isZoneRedundant | Should -BeTrue }
+                    $parameters.privateEndpoints.value[0].service | Should -BeExactly 'Sql'
+                    @($parameters.sqlDatabases.value).Count | Should -Be 1
+                    $parameters.sqlDatabases.value[0].name | Should -BeExactly 'no-containers-specified'
+                } else {
+                    $template.variables.enforcedSecondLocation | Should -BeExactly 'westus2'
+                    $parameters.Contains('zoneRedundant') | Should -BeFalse
+                    foreach ($failover in $parameters.failoverLocations.value) { $failover.isZoneRedundant | Should -BeFalse }
+                    $parameters.enableAnalyticalStorage.value | Should -BeTrue
+                    $parameters.backupPolicyType.value | Should -BeExactly 'Periodic'
+                    @($parameters.capabilitiesToAdd.value).Count | Should -Be 1
+                    $parameters.capabilitiesToAdd.value[0] | Should -BeExactly 'EnableCassandra'
+                    $parameters.privateEndpoints.value[0].service | Should -BeExactly 'Cassandra'
+                    $keyspaces = $parameters.cassandraKeyspaces.value
+                    @($keyspaces).Count | Should -Be 2
+                    $keyspaces[0].throughput | Should -Be 1000
+                    $keyspaces[1].autoscaleSettingsMaxThroughput | Should -Be 4000
+                    $keyspaces[0].tables[0].name | Should -BeExactly 'secure_orders'
+                    $keyspaces[0].tables[0].analyticalStorageTtl | Should -Be 86400
+                    $keyspaces[0].tables[0].defaultTtl | Should -Be 7200
+                    @($keyspaces[0].tables[0].schema.columns).Count | Should -Be 5
+                    @($keyspaces[0].tables[0].schema.clusterKeys).Count | Should -Be 2
+                    $keyspaces[1].tables[0].name | Should -BeExactly 'secure_users'
+                    $keyspaces[1].tables[0].analyticalStorageTtl | Should -Be -1
+                    @($keyspaces[1].tables[0].schema.columns).Count | Should -Be 3
+                    $template.outputs.Count | Should -Be 8
+                    foreach ($output in $template.outputs.Values) { $output.type | Should -BeExactly 'securestring' }
+                }
             } else {
                 $parameters.zoneRedundant.value | Should -BeFalse
             }
