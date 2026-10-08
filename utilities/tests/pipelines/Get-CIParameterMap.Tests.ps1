@@ -14,6 +14,12 @@ Describe 'Get-CIParameterMap' {
             throw 'Unexpected Key Vault access.'
         }
 
+        function Search-AzGraph {
+            [CmdletBinding()]
+            param([string] $Query, [switch] $UseTenantScope, [int] $First)
+            throw 'Unexpected Azure Resource Graph access.'
+        }
+
         $templateParameters = @{
             adminMembersSecret = @{ type = 'secureString' }
             legacyOnly         = @{ type = 'secureString' }
@@ -41,6 +47,7 @@ Describe 'Get-CIParameterMap' {
                 SecretValue = ConvertTo-SecureString -String "vault-$Name" -AsPlainText -Force
             }
         }
+        Mock Search-AzGraph { throw 'Unexpected Azure Resource Graph access.' }
     }
 
     It 'Matches uppercase GitHub names and returns the declared parameter spelling' {
@@ -270,6 +277,55 @@ Describe 'Get-CIParameterMap' {
 
         $result.location | Should -Be 'westus'
         Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
+    }
+
+    It 'Keeps an explicit HCI host image reference instead of querying Azure Resource Graph' {
+        $imageReferenceId = '/subscriptions/test/resourceGroups/test/providers/Microsoft.Compute/galleries/test/images/test/versions/1.0.0'
+
+        $result = Get-CIParameterMap -TemplateParameters @{ hciHostImageReferenceId = @{ type = 'string' } } `
+            -GitHubVariables (@{ CI_HCI_HOST_IMAGE_REFERENCE_ID = $imageReferenceId } | ConvertTo-Json -Compress)
+
+        $result.hciHostImageReferenceId | Should -BeExactly $imageReferenceId
+    }
+
+    It 'Resolves the newest usable HCI host image version through Azure Resource Graph' {
+        $imageReferenceId = '/subscriptions/test/resourceGroups/test/providers/Microsoft.Compute/galleries/AVMHCIVMIMAGEGALLERY/images/hci-host-image/versions/1.10.0'
+        Mock Search-AzGraph { [pscustomobject] @{ id = $imageReferenceId } }
+
+        $result = Get-CIParameterMap -TemplateParameters @{ hciHostImageReferenceId = @{ type = 'string' } }
+
+        $result.hciHostImageReferenceId | Should -BeExactly $imageReferenceId
+        Should -Invoke Search-AzGraph -Times 1 -Exactly -ParameterFilter {
+            $First -eq 1 -and
+            $UseTenantScope -and
+            $Query -match "microsoft\.compute/galleries/images/versions" -and
+            $Query -match "AVMHCIVMIMAGEGALLERY" -and
+            $Query -match "hci-host-image" -and
+            $Query -match "excludeFromLatest" -and
+            $Query -match "publishedDate.*desc"
+        }
+    }
+
+    It 'Uses an empty HCI host image reference when Azure Resource Graph returns no versions' {
+        Mock Search-AzGraph { @() }
+
+        $result = Get-CIParameterMap -TemplateParameters @{ hciHostImageReferenceId = @{ type = 'string' } }
+
+        $result.ContainsKey('hciHostImageReferenceId') | Should -BeTrue
+        $result.hciHostImageReferenceId | Should -BeExactly ''
+        Should -Invoke Search-AzGraph -Times 1 -Exactly
+    }
+
+    It 'Uses an empty HCI host image reference when the Azure Resource Graph query fails' {
+        Mock Search-AzGraph { throw 'Access denied.' }
+
+        $result = Get-CIParameterMap -TemplateParameters @{ hciHostImageReferenceId = @{ type = 'string' } } `
+            -WarningVariable warnings -WarningAction SilentlyContinue
+
+        $result.ContainsKey('hciHostImageReferenceId') | Should -BeTrue
+        $result.hciHostImageReferenceId | Should -BeExactly ''
+        $warnings | Should -Match 'marketplace host fallback will be used'
+        $warnings | Should -Match 'Access denied'
     }
 
     It 'Ignores unrelated credentials and unmatched names' {

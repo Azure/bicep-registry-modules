@@ -9,6 +9,8 @@ GitHub secrets override variables; Key Vault only supplies missing parameters.
 Within each GitHub source, CI_ takes precedence over CI__. Multiple aliases in the
 winning prefix must not target the same template parameter.
 GitHub values are converted to the declared ARM parameter types.
+When hciHostImageReferenceId remains unresolved, Azure Resource Graph supplies the
+newest usable image version or an empty value for the marketplace host fallback.
 
 .PARAMETER TemplateParameters
 The parameters object from the compiled test template.
@@ -48,6 +50,7 @@ function Get-CIParameterMap {
     )
 
     . (Join-Path $PSScriptRoot 'ConvertFrom-CIParameterName.ps1')
+    . (Join-Path $PSScriptRoot 'Resolve-HciHostImageReferenceId.ps1')
     . (Join-Path $PSScriptRoot 'Select-CIParameterAlias.ps1')
 
     $parameterNames = @{}
@@ -184,6 +187,13 @@ function Get-CIParameterMap {
             }
             $parameters[$parameterNames[$name]] = $secret.SecretValue
         }
+    }
+
+    if (
+        $parameterNames.ContainsKey('hciHostImageReferenceId') -and
+        -not $parameters.ContainsKey($parameterNames['hciHostImageReferenceId'])
+    ) {
+        $parameters[$parameterNames['hciHostImageReferenceId']] = Resolve-HciHostImageReferenceId
     }
 
     return $parameters
