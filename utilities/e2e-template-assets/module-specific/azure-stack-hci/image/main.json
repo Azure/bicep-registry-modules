@@ -1,0 +1,383 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.47.16.16243",
+      "templateHash": "7346387687106284356"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "southeastasia",
+      "metadata": {
+        "description": "Location for the HCI host image resources."
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "rg-avm-persistent-hci-image",
+      "metadata": {
+        "description": "Resource group containing the HCI host image resources."
+      }
+    },
+    "galleryName": {
+      "type": "string",
+      "defaultValue": "galavmpersistenthci",
+      "metadata": {
+        "description": "Azure Compute Gallery name."
+      }
+    },
+    "imageDefinitionName": {
+      "type": "string",
+      "defaultValue": "hci-host-image",
+      "metadata": {
+        "description": "Gallery image definition name."
+      }
+    },
+    "imageTemplateName": {
+      "type": "string",
+      "defaultValue": "it-avm-hci-host",
+      "metadata": {
+        "description": "Azure VM Image Builder template name."
+      }
+    },
+    "imageBuilderIdentityName": {
+      "type": "string",
+      "defaultValue": "id-avm-hci-image-builder",
+      "metadata": {
+        "description": "User-assigned identity name used by Azure VM Image Builder."
+      }
+    },
+    "imageVersion": {
+      "type": "string",
+      "defaultValue": "26.1.0",
+      "metadata": {
+        "description": "Deterministic gallery image version produced by the template."
+      }
+    },
+    "sourceImageVersion": {
+      "type": "string",
+      "defaultValue": "20348.587.211009-1609",
+      "metadata": {
+        "description": "Windows Server source image version used by Azure VM Image Builder."
+      }
+    },
+    "payloadUri": {
+      "type": "string",
+      "defaultValue": "https://azlocalvhds.blob.core.windows.net/images/AzLocal2601.vhdx",
+      "metadata": {
+        "description": "Azure Local VHDX copied into the HCI host image."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Tags applied to the image resources."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2024-11-01",
+      "name": "[parameters('resourceGroupName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "hci-host-image",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "galleryName": {
+            "value": "[parameters('galleryName')]"
+          },
+          "imageDefinitionName": {
+            "value": "[parameters('imageDefinitionName')]"
+          },
+          "imageTemplateName": {
+            "value": "[parameters('imageTemplateName')]"
+          },
+          "imageBuilderIdentityName": {
+            "value": "[parameters('imageBuilderIdentityName')]"
+          },
+          "imageVersion": {
+            "value": "[parameters('imageVersion')]"
+          },
+          "sourceImageVersion": {
+            "value": "[parameters('sourceImageVersion')]"
+          },
+          "payloadUri": {
+            "value": "[parameters('payloadUri')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.47.16.16243",
+              "templateHash": "5070978147046186836"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "galleryName": {
+              "type": "string"
+            },
+            "imageDefinitionName": {
+              "type": "string"
+            },
+            "imageTemplateName": {
+              "type": "string"
+            },
+            "imageBuilderIdentityName": {
+              "type": "string"
+            },
+            "imageVersion": {
+              "type": "string"
+            },
+            "sourceImageVersion": {
+              "type": "string"
+            },
+            "payloadUri": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            }
+          },
+          "variables": {
+            "$fxv#0": "Function log {\n    Param (\n        [string]$message,\n        [string]$logPath = 'C:\\temp\\hciHostDeploy-1.log'\n    )\n\n    If (!(Test-Path -Path C:\\temp)) {\n        New-Item -Path C:\\temp -ItemType Directory\n    }\n\n    Write-Host $message\n    Add-Content -Path $logPath -Value \"$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') [hciHostStage1] - $message\"\n}\n\n$ErrorActionPreference = 'Stop'\n\n# prep host - install hyper-v, AD, DHCP, RRAS\nlog 'Installing required features and roles...'\n$features = @('rsat-hyper-v-tools', 'rsat-clustering', 'rsat-adds', 'rsat-dns-server', 'RSAT-RemoteAccess-Mgmt', 'Routing', 'AD-Domain-Services', 'DHCP')\n$missingFeatures = Get-WindowsFeature -Name $features | Where-Object { $_.Installed -eq $false }\n\nForEach ($missingFeature in $missingFeatures) {\n    log \"Installing $($missingFeature.Name)...\"\n    Add-WindowsFeature -Name $missingFeature.Name -IncludeAllSubFeature -IncludeManagementTools\n\n    If ($?) {\n        log \"Successfully installed $($missingFeature.Name)\"\n    } Else {\n        log \"Failed to install $($missingFeature.Name)\"\n    }\n    If (Test-Path -Path C:\\Windows\\winsxs\\pending.xml) {\n        log 'Reboot required, exiting...'\n    }\n}\n\nlog 'Enabling Hyper-V...'\nEnable-WindowsOptionalFeature -Online -FeatureName 'microsoft-hyper-v-online' -All -NoRestart\n\n# create temp directory\nlog 'Creating temp directory...'\nIf (!(Test-Path -Path C:\\temp)) {\n    New-Item -Path C:\\temp -ItemType Directory\n}\n\n# create reboot status file\nIf (Test-Path -Path 'C:\\temp\\Reboot1Completed.status') {\n    log 'Reboot has already been completed, skipping...'\n} ElseIf (Test-Path -Path 'C:\\temp\\Reboot1Initiated.status') {\n    log 'Reboot has already been initiated, skipping...'\n} Else {\n    log 'Reboot required, creating status file...'\n    Set-Content -Path 'C:\\temp\\Reboot1Required.status' -Value 'Reboot 1 Required'\n}\n",
+            "imageBuilderRoleName": "AVM HCI Image Builder",
+            "payloadPath": "C:\\ISOs\\hci_os.vhdx",
+            "prerequisiteScript": "[base64(variables('$fxv#0'))]",
+            "prerequisiteCommands": [
+              "$scriptPath = 'C:\\Windows\\Temp\\hciHostStage1.ps1'",
+              "[format('[IO.File]::WriteAllText($scriptPath, [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(''{0}'')))', variables('prerequisiteScript'))]",
+              "& $scriptPath"
+            ],
+            "payloadCommands": [
+              "[format('$payloadPath = ''{0}''', variables('payloadPath'))]",
+              "New-Item -ItemType Directory -Path (Split-Path -Parent $payloadPath) -Force | Out-Null",
+              "[format('Invoke-WebRequest -Uri ''{0}'' -OutFile $payloadPath -UseBasicParsing', parameters('payloadUri'))]",
+              "if ((Get-Item -LiteralPath $payloadPath).Length -le 0) { throw 'The Azure Local payload is empty.' }"
+            ]
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/galleries",
+              "apiVersion": "2025-03-03",
+              "name": "[parameters('galleryName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "description": "Images used by Azure Verified Modules Azure Local tests."
+              },
+              "tags": "[parameters('tags')]"
+            },
+            {
+              "type": "Microsoft.Compute/galleries/images",
+              "apiVersion": "2025-03-03",
+              "name": "[format('{0}/{1}', parameters('galleryName'), parameters('imageDefinitionName'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "architecture": "x64",
+                "hyperVGeneration": "V2",
+                "identifier": {
+                  "publisher": "AzureVerifiedModules",
+                  "offer": "AzureLocalTestHost",
+                  "sku": "WindowsServer2022"
+                },
+                "osState": "Generalized",
+                "osType": "Windows"
+              },
+              "tags": "[parameters('tags')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/galleries', parameters('galleryName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2024-11-30",
+              "name": "[parameters('imageBuilderIdentityName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]"
+            },
+            {
+              "type": "Microsoft.Authorization/roleDefinitions",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(resourceGroup().id, 'hci-image-builder')]",
+              "properties": {
+                "roleName": "[variables('imageBuilderRoleName')]",
+                "description": "Allows Azure VM Image Builder to publish only to the AVM HCI Compute Gallery.",
+                "type": "CustomRole",
+                "permissions": [
+                  {
+                    "actions": [
+                      "Microsoft.Compute/galleries/read",
+                      "Microsoft.Compute/galleries/images/read",
+                      "Microsoft.Compute/galleries/images/versions/read",
+                      "Microsoft.Compute/galleries/images/versions/write",
+                      "Microsoft.Compute/galleries/images/versions/delete",
+                      "Microsoft.Compute/galleries/images/versions/purge/action"
+                    ],
+                    "notActions": []
+                  }
+                ],
+                "assignableScopes": [
+                  "[resourceGroup().id]"
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(resourceGroup().id, resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('imageBuilderIdentityName')), resourceId('Microsoft.Authorization/roleDefinitions', guid(resourceGroup().id, 'hci-image-builder')))]",
+              "properties": {
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('imageBuilderIdentityName')), '2024-11-30').principalId]",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', guid(resourceGroup().id, 'hci-image-builder'))]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('imageBuilderIdentityName'))]",
+                "[resourceId('Microsoft.Authorization/roleDefinitions', guid(resourceGroup().id, 'hci-image-builder'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.VirtualMachineImages/imageTemplates",
+              "apiVersion": "2025-10-01",
+              "name": "[parameters('imageTemplateName')]",
+              "location": "[parameters('location')]",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('imageBuilderIdentityName')))]": {}
+                }
+              },
+              "properties": {
+                "buildTimeoutInMinutes": 540,
+                "vmProfile": {
+                  "vmSize": "Standard_D8s_v5",
+                  "osDiskSizeGB": 160
+                },
+                "source": {
+                  "type": "PlatformImage",
+                  "publisher": "MicrosoftWindowsServer",
+                  "offer": "WindowsServer",
+                  "sku": "2022-datacenter-g2",
+                  "version": "[parameters('sourceImageVersion')]"
+                },
+                "customize": [
+                  {
+                    "type": "PowerShell",
+                    "name": "InstallHciHostPrerequisites",
+                    "inline": "[variables('prerequisiteCommands')]"
+                  },
+                  {
+                    "type": "WindowsRestart",
+                    "name": "RestartAfterPrerequisites",
+                    "restartCheckCommand": "powershell -command \"& {if (@(Get-WindowsFeature Hyper-V,AD-Domain-Services,DHCP | Where-Object InstallState -ne Installed).Count -gt 0) { exit 1 }}\"",
+                    "restartTimeout": "10m"
+                  },
+                  {
+                    "type": "PowerShell",
+                    "name": "DownloadAzureLocalPayload",
+                    "inline": "[variables('payloadCommands')]"
+                  }
+                ],
+                "distribute": [
+                  {
+                    "type": "SharedImage",
+                    "galleryImageId": "[format('{0}/versions/{1}', resourceId('Microsoft.Compute/galleries/images', parameters('galleryName'), parameters('imageDefinitionName')), parameters('imageVersion'))]",
+                    "runOutputName": "[format('hci-host-{0}', replace(parameters('imageVersion'), '.', '-'))]",
+                    "excludeFromLatest": false,
+                    "replicationRegions": [
+                      "[parameters('location')]"
+                    ],
+                    "artifactTags": "[union(parameters('tags'), createObject('image-version', parameters('imageVersion'), 'payload', 'AzLocal2601'))]"
+                  }
+                ]
+              },
+              "tags": "[parameters('tags')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('imageBuilderIdentityName'))]",
+                "[resourceId('Microsoft.Authorization/roleAssignments', guid(resourceGroup().id, resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('imageBuilderIdentityName')), resourceId('Microsoft.Authorization/roleDefinitions', guid(resourceGroup().id, 'hci-image-builder'))))]",
+                "[resourceId('Microsoft.Compute/galleries/images', parameters('galleryName'), parameters('imageDefinitionName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "galleryId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Compute/galleries', parameters('galleryName'))]"
+            },
+            "imageDefinitionId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Compute/galleries/images', parameters('galleryName'), parameters('imageDefinitionName'))]"
+            },
+            "imageTemplateId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.VirtualMachineImages/imageTemplates', parameters('imageTemplateName'))]"
+            },
+            "imageVersionResourceId": {
+              "type": "string",
+              "value": "[format('{0}/versions/{1}', resourceId('Microsoft.Compute/galleries/images', parameters('galleryName'), parameters('imageDefinitionName')), parameters('imageVersion'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "value": "[parameters('resourceGroupName')]"
+    },
+    "galleryId": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'hci-host-image'), '2025-04-01').outputs.galleryId.value]"
+    },
+    "imageDefinitionId": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'hci-host-image'), '2025-04-01').outputs.imageDefinitionId.value]"
+    },
+    "imageTemplateId": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'hci-host-image'), '2025-04-01').outputs.imageTemplateId.value]"
+    },
+    "imageTemplateName": {
+      "type": "string",
+      "value": "[parameters('imageTemplateName')]"
+    },
+    "imageVersion": {
+      "type": "string",
+      "value": "[parameters('imageVersion')]"
+    },
+    "imageVersionResourceId": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'hci-host-image'), '2025-04-01').outputs.imageVersionResourceId.value]"
+    }
+  }
+}
