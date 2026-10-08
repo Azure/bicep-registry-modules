@@ -3,6 +3,11 @@
     [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.FullName
 )
 
+BeforeDiscovery {
+    $serviceRegionalCases = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'fixtures' 'service-regional-errors.json') -Raw |
+        ConvertFrom-Json -AsHashtable
+}
+
 Describe 'Coordinated regional deployment retries with actual cleanup' {
     BeforeAll {
         . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Invoke-TemplateDeploymentWithRetry.ps1')
@@ -502,6 +507,191 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         (Get-Content -LiteralPath $templatePath -Raw | ConvertFrom-Json).variables.regionToken | Should -Be 'swedencentral'
         Should -Invoke New-AzSubscriptionDeployment -Times 2 -Exactly -ParameterFilter { $Location -eq 'WestEurope' }
         Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+    }
+
+    Context 'Regional service failure: <name>' -Tag 'ServiceRegional' -ForEach $serviceRegionalCases {
+        BeforeEach {
+            $script:regionalError = $response | ConvertTo-Json -Depth 20 | ConvertFrom-Json -AsHashtable
+            $script:serviceErrorTemplate = $response | ConvertTo-Json -Depth 20
+            $script:serviceErrorRegion = $region
+            $script:serviceErrorFollowsRegion = $false
+            $script:regions = @($region, 'westeurope', 'northeurope')
+            $script:incidentMessage = "The deployment '{0}' failed with error(s). Selected resource location '$region'."
+            $script:serviceId = "$script:groupId/providers/$provider/environment"
+            Mock New-AzSubscriptionDeployment {
+                if ($script:serviceErrorFollowsRegion) {
+                    $script:regionalError = $script:serviceErrorTemplate.Replace($script:serviceErrorRegion, $resourceLocation) |
+                        ConvertFrom-Json -AsHashtable
+                }
+                try {
+                    Invoke-FixtureSubmission $DeploymentName $TemplateFile $resourceLocation $baseTime $adminSecret
+                } finally {
+                    if ($script:records.ContainsKey($script:nestedId) -and $script:records[$script:roots[-1]].State -eq 'Failed') {
+                        $script:records[$script:nestedId].Operations +=
+                        New-FixtureOperation -Id $script:serviceId -State Failed -StatusMessage $script:regionalError
+                        $null = $script:alive.Add($script:serviceId)
+                    }
+                }
+            }
+        }
+
+        It 'Revalidates and resubmits only after exact resource and history cleanup' {
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            @($script:submissions) | Should -Be @($region, 'westeurope')
+            @($script:validations) | Should -Be @($region, 'westeurope')
+            $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+            $script:trace | Should -Contain "GET:$script:nestedId/operations"
+            $script:trace | Should -Contain "GET:$script:groupId"
+            $script:trace.IndexOf("remove:$script:groupId") |
+                Should -BeLessThan $script:trace.IndexOf("DELETE:$($script:roots[0])")
+            $script:trace.IndexOf("DELETE:$($script:roots[0])") |
+                Should -BeLessThan $script:trace.IndexOf('validate:westeurope')
+            $script:trace.IndexOf('validate:westeurope') | Should -BeLessThan $script:trace.IndexOf('submit:westeurope')
+            $templateInput.AdditionalParameters.resourceLocation | Should -BeExactly ''
+            Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+        }
+
+        It 'Classifies original validation responses with the selected subscription before any submission' {
+            $script:validationFailures = @($region)
+            $script:outcomes = @('Succeeded')
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            @($script:validations) | Should -Be @($region, 'westeurope')
+            @($script:submissions) | Should -Be @('westeurope')
+            $result.DeploymentAttempts | Should -Be 1
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        }
+
+        It 'Preserves the shared three-region and three-submission budgets' {
+            $script:outcomes = @('Regional', 'Regional', 'Regional')
+            $script:serviceErrorFollowsRegion = $true
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeTrue
+            $result.AttemptedLocations | Should -Be @($region, 'westeurope', 'northeurope')
+            $result.DeploymentAttempts | Should -Be 3
+            @($script:submissions).Count | Should -Be 3
+            $result.RemainingDeploymentNames | Should -Be @($script:names[2])
+            Should -Invoke Remove-AzResource -Times 2 -Exactly -ParameterFilter { $ResourceId -eq $script:groupId }
+        }
+
+        It 'Retains safe failure for <constraint>' -ForEach @(
+            @{ constraint = 'a custom pin' }, @{ constraint = 'a token pin' }
+            @{ constraint = 'global selection' }, @{ constraint = 'retained resources' }
+        ) {
+            switch ($constraint) {
+                'a custom pin' { $retryInput.CustomLocation = $region }
+                'a token pin' { $retryInput.TokenResourceLocation = $region }
+                'global selection' {
+                    Mock Get-AvailableResourceLocation { @{ Location = $script:regions[0]; IsGlobal = $true } }
+                }
+                'retained resources' { $retryInput.RemoveDeployment = $false }
+            }
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeTrue
+            @($script:submissions).Count | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+        }
+
+        It 'Does not move the selected resource region to address a fixed secondary region' {
+            $script:regionalError = ($script:regionalError | ConvertTo-Json -Depth 20).Replace($region, 'westus2') |
+                ConvertFrom-Json -AsHashtable
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeTrue
+            @($script:submissions).Count | Should -Be 1
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+        }
+
+        It 'Cannot relocate after incomplete cleanup confirmation' {
+            Mock Initialize-DeploymentRemoval { @{ RemovedDeploymentNames = @() } }
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeTrue
+            $result.Exception | Should -Match 'Cleanup did not confirm removal'
+            @($script:submissions).Count | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke Initialize-DeploymentRemoval -Times 1 -Exactly -ParameterFilter { $RequireCompleteRemoval }
+        }
+
+        It 'Reads all operation pages before rejecting an unrelated permission error' {
+            Mock Invoke-AzRestMethod {
+                $result = Invoke-FixtureRest $Method $Path
+                if ($Method -eq 'GET' -and $Path -like "$($script:roots[0])/operations?*") {
+                    $body = $result.Content | ConvertFrom-Json -AsHashtable
+                    if ($Path -like '*skiptoken*') {
+                        $body = @{ value = @(
+                                (New-FixtureOperation -Id $script:serviceId -State Failed -StatusMessage @{
+                                        error = @{ code = 'AuthorizationFailed'; message = 'Forbidden.' }
+                                    })
+                            )
+                        }
+                    } else {
+                        $body.nextLink = "https://management.azure.com$Path&`$skiptoken=next"
+                    }
+                    $result.Content = $body | ConvertTo-Json -Depth 20 -Compress
+                }
+                return $result
+            }
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeTrue
+            @($script:submissions).Count | Should -Be 1
+            Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Path -like '*skiptoken*' }
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+        }
+    }
+
+    It 'Rejects <form> in raw operation pages before JSON conversion can discard evidence' -Tag 'ServiceRegional' -ForEach @(
+        @{ form = 'duplicate code' }, @{ form = 'escaped duplicate code' }, @{ form = 'comment' }, @{ form = 'trailing comma' }
+    ) {
+        $script:jsonForm = $form
+        Mock Invoke-AzRestMethod {
+            $result = Invoke-FixtureRest $Method $Path
+            if ($Method -eq 'GET' -and $Path -like "$($script:roots[0])/operations?*") {
+                $result.Content = switch ($script:jsonForm) {
+                    'duplicate code' { $result.Content.Replace('"code":"SkuNotAvailable"', '"code":"AuthorizationFailed","code":"SkuNotAvailable"') }
+                    'escaped duplicate code' { $result.Content.Replace('"code":"SkuNotAvailable"', '"\u0063ode":"AuthorizationFailed","code":"SkuNotAvailable"') }
+                    'comment' { '/* unclassified */' + $result.Content }
+                    'trailing comma' { $result.Content.Insert($result.Content.Length - 1, ',') }
+                }
+            }
+            return $result
+        }
+
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.ContainsKey('Exception') | Should -BeTrue
+        @($script:submissions).Count | Should -Be 1
+        Should -Invoke Remove-AzResource -Times 0 -Exactly
+    }
+
+    It 'Does not infer a MySQL error region from the selected validation candidate' -Tag 'ServiceRegional' {
+        $script:regions = @('koreacentral', 'westeurope', 'eastus')
+        $script:regionalError = @{ error = @{
+                code = 'ZoneNotAvailableForRegion'
+                message = 'The requested size for resource is currently not available in this zone. Please try another zone or deploy to a different location'
+            }
+        }
+
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.ContainsKey('Exception') | Should -BeTrue
+        $result.AttemptedLocations | Should -Be @('koreacentral')
+        @($script:submissions) | Should -Be @('koreacentral')
+        Should -Invoke Remove-AzResource -Times 0 -Exactly
     }
 
     Context 'Preflight-rejected nested deployment discovery' -Tag 'NestedPreflight' {
