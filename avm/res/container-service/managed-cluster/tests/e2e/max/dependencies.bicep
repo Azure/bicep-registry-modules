@@ -102,6 +102,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-10-01' = {
         name: 'appGatewaySubnet'
         properties: {
           addressPrefix: '10.0.16.0/24'
+          delegations: [
+            {
+              name: 'Microsoft.Network/applicationGateways'
+              properties: {
+                serviceName: 'Microsoft.Network/applicationGateways'
+              }
+            }
+          ]
         }
       }
       {

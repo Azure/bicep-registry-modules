@@ -95,6 +95,11 @@ Describe 'Maximum fixture compatibility' {
             throw 'Expected the maximum fixture userpool1.'
         }
         $userPool = $userPools[0]
+        $dependencies = @($fixture.Resources | Where-Object { $_.name -match '-nestedDependencies|-paramNested' })[0]
+        $dependencyResources = $dependencies.properties.template.resources
+        $dependencyResources = $dependencyResources -is [System.Collections.IDictionary] ? @($dependencyResources.Values) : @($dependencyResources)
+        $virtualNetwork = @($dependencyResources | Where-Object type -EQ 'Microsoft.Network/virtualNetworks')[0]
+        $applicationGateway = @($dependencyResources | Where-Object type -EQ 'Microsoft.Network/applicationGateways')[0]
     }
 
     It 'Uses the Dds_v5 size for the user pool' {
@@ -146,6 +151,45 @@ Describe 'Maximum fixture compatibility' {
         $fixture.TestModule.copy.count | Should -Be "[length(createArray('init', 'idem'))]"
         $fixture.TestModule.copy.mode | Should -Be 'serial'
         $fixture.TestModule.copy.batchSize | Should -Be 1
+    }
+
+    It 'Delegates only the gateway subnet to the Application Gateway service' {
+        $subnet = @($virtualNetwork.properties.subnets | Where-Object name -EQ 'appGatewaySubnet')[0]
+        $subnet.properties.Contains('delegations') | Should -BeTrue
+        @($subnet.properties.delegations).Count | Should -Be 1
+        $subnet.properties.delegations[0].properties.serviceName | Should -BeExactly 'Microsoft.Network/applicationGateways'
+        $gatewaySubnets = @($virtualNetwork.properties.subnets | Where-Object {
+                $_.properties.delegations.properties.serviceName -contains 'Microsoft.Network/applicationGateways'
+            })
+        $gatewaySubnets.Count | Should -Be 1
+        $gatewaySubnets[0].name | Should -BeExactly 'appGatewaySubnet'
+    }
+
+    It 'Preserves subnet ranges, policies and the API server delegation' {
+        @($virtualNetwork.properties.subnets).Count | Should -Be 3
+        $defaultSubnet = @($virtualNetwork.properties.subnets | Where-Object name -EQ 'defaultSubnet')[0]
+        $defaultSubnet.properties.addressPrefix | Should -BeExactly '10.0.0.0/20'
+        $defaultSubnet.properties.privateEndpointNetworkPolicies | Should -BeExactly 'Disabled'
+        $defaultSubnet.properties.privateLinkServiceNetworkPolicies | Should -BeExactly 'Enabled'
+        $gatewaySubnet = @($virtualNetwork.properties.subnets | Where-Object name -EQ 'appGatewaySubnet')[0]
+        $gatewaySubnet.properties.addressPrefix | Should -BeExactly '10.0.16.0/24'
+        $apiSubnet = @($virtualNetwork.properties.subnets | Where-Object name -EQ 'apiServerSubnet')[0]
+        $apiSubnet.properties.addressPrefix | Should -BeExactly '10.0.17.0/28'
+        @($apiSubnet.properties.delegations).Count | Should -Be 1
+        $apiSubnet.properties.delegations[0].properties.serviceName | Should -BeExactly 'Microsoft.ContainerService/managedClusters'
+    }
+
+    It 'Keeps the gateway and ingress add-on connected to the delegated subnet' {
+        $applicationGateway.properties.gatewayIPConfigurations[0].properties.subnet.id | Should -Match '/subnets/appGatewaySubnet'
+        $applicationGateway.properties.gatewayIPConfigurations[0].properties.subnet.id | Should -Match "parameters\('virtualNetworkName'\)"
+        $applicationGateway.properties.sku.name | Should -BeExactly 'Standard_v2'
+        $applicationGateway.properties.sku.capacity | Should -Be 2
+        $gatewayOutputs = @($dependencies.properties.template.outputs.GetEnumerator() | Where-Object {
+                $_.Value.value -match 'Microsoft.Network/applicationGateways'
+            })
+        $gatewayOutputs.Count | Should -Be 1
+        $parameters | ConvertTo-Json -Depth 30 -Compress |
+            Should -Match "\.outputs\.$([regex]::Escape($gatewayOutputs[0].Key))\.value"
     }
 }
 

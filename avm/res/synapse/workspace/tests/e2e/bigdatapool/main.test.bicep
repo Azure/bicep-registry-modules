@@ -36,7 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     location: enforcedLocation
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
+    storageAccountName: '${take('dep${namePrefix}sa${serviceShort}01', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
   }
 }
 

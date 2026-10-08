@@ -50,7 +50,7 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     loadBalancerName: 'dep-${namePrefix}-lb-${serviceShort}'
     recoveryServicesVaultName: 'dep-${namePrefix}-rsv-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
+    storageAccountName: '${take('dep${namePrefix}sa${serviceShort}01', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     storageUploadDeploymentScriptName: '${take('dep-${namePrefix}-sads-${serviceShort}', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'sads')}'
     sshDeploymentScriptName: '${take('dep-${namePrefix}-ds-${serviceShort}', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'ds')}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'

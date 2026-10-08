@@ -39,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     certname: 'dep-${namePrefix}-cert-${serviceShort}'
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    storageAccountName: '${take('dep${namePrefix}sa${serviceShort}', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
   }
 }
 

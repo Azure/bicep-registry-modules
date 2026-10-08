@@ -35,7 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    storageAccountName: '${take('dep${namePrefix}sa${serviceShort}', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     automationAccountName: 'dep-${namePrefix}-auto-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     replicationRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'

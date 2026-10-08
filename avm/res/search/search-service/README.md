@@ -214,7 +214,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
   params: {
     // Required parameters
-    name: 'sssmax001'
+    name: '<name>'
     // Non-required parameters
     authOptions: {
       aadOrApiKey: {
@@ -310,7 +310,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sssmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "authOptions": {
@@ -438,7 +438,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 using 'br/public:avm/res/search/search-service:<version>'
 
 // Required parameters
-param name = 'sssmax001'
+param name = '<name>'
 // Non-required parameters
 param authOptions = {
   aadOrApiKey: {
