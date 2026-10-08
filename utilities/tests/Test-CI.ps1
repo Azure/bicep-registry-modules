@@ -64,6 +64,9 @@ function Test-CI {
         return
     }
 
+    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Initialize-AvmPester.ps1')
+    Initialize-AvmPester -RepoRootPath $RepoRootPath
+
     # ------------------- #
     # Invoke Pester tests #
     # ------------------- #

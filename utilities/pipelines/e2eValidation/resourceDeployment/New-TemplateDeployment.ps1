@@ -1,4 +1,5 @@
 ﻿. (Join-Path $PSScriptRoot '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
+. (Join-Path $PSScriptRoot '..' '..' 'sharedScripts' 'Get-DeploymentOperationAtScope.ps1')
 
 #region helper
 
@@ -43,15 +44,21 @@ function Get-TemplateDeployment {
             'managementgroup' { Get-AzManagementGroupDeployment @readInputs -ManagementGroupId $ManagementGroupId }
             'tenant' { Get-AzTenantDeployment @readInputs }
         })
-    if ($records.Count -ne 1 -or $records[0].DeploymentName -cne $DeploymentName) {
+    if ($records.Count -ne 1 -or $records[0].DeploymentName -isnot [string] -or $records[0].DeploymentName -cne $DeploymentName) {
         throw "Status recovery did not return exactly the original deployment [$DeploymentName]."
+    }
+    if ($DeploymentScope -eq 'managementgroup') {
+        $expectedId = Get-DeploymentResourceId -Scope $DeploymentScope -Name $DeploymentName -ManagementGroupId $ManagementGroupId
+        if ([string]::IsNullOrWhiteSpace($ManagementGroupId) -or $records[0].Id -isnot [string] -or $records[0].Id -ine $expectedId) {
+            throw "Status recovery did not return the original management-group deployment ID [$expectedId]."
+        }
     }
     return $records[0]
 }
 
 <#
 .SYNOPSIS
-Observe the original deployment after a request timeout without submitting it again.
+Observe the original deployment after a request error without submitting it again.
 #>
 function Wait-TemplateDeployment {
     [CmdletBinding()]
@@ -73,6 +80,9 @@ function Wait-TemplateDeployment {
         [string] $ManagementGroupId,
 
         [Parameter()]
+        [object] $DefaultProfile,
+
+        [Parameter()]
         [ValidateRange(1, 3600)]
         [int] $TimeoutSeconds = 3600,
 
@@ -81,7 +91,7 @@ function Wait-TemplateDeployment {
         [int] $PollIntervalSeconds = 15
     )
 
-    $context = Get-AzContext -ErrorAction Stop
+    $context = $DefaultProfile ?? (Get-AzContext -ErrorAction Stop)
     if ($null -eq $context -or (
             $DeploymentScope -in @('resourcegroup', 'subscription') -and
             -not [string]::IsNullOrEmpty($SubscriptionId) -and [guid] $context.Subscription.Id -ne [guid] $SubscriptionId
@@ -112,10 +122,10 @@ function Wait-TemplateDeployment {
         }
 
         if ($null -ne $deployment) {
-            if ($deployment.ProvisioningState -in @('Succeeded', 'Failed')) {
+            if ($deployment.ProvisioningState -is [string] -and $deployment.ProvisioningState -in @('Succeeded', 'Failed')) {
                 return $deployment
             }
-            if ($deployment.ProvisioningState -notin @('Accepted', 'Running', 'Creating', 'Updating')) {
+            if ($deployment.ProvisioningState -isnot [string] -or $deployment.ProvisioningState -notin @('Accepted', 'Running', 'Creating', 'Updating')) {
                 throw "Deployment [$DeploymentName] has unsupported recovery state [$($deployment.ProvisioningState)]."
             }
             Write-Verbose "Deployment [$DeploymentName] remains [$($deployment.ProvisioningState)]; observing the same deployment." -Verbose
@@ -219,7 +229,8 @@ Optional. The resource group to search the deployment in, if the scope is 'resou
 Optional. The management group to search the deployment in, if the scope is 'managementgroup'
 
 .PARAMETER AsObject
-Optional. Return structured failed-operation errors. Unknown states cannot authorize relocation.
+Optional. Read structured failed-operation errors from every ARM operation page, not formatted Az messages.
+Unknown states or incomplete operation data cannot authorize relocation.
 
 .EXAMPLE
 Get-ErrorMessageForScope -DeploymentScope 'resourcegroup' -DeploymentName 'storageAccounts-20220105T0701282538Z' -ResourceGroupName 'validation-rg'
@@ -251,6 +262,45 @@ function Get-ErrorMessageForScope {
         [switch] $AsObject
     )
 
+    if ($AsObject) {
+        try {
+            $context = Get-AzContext -ErrorAction Stop
+            if (($DeploymentScope -in @('resourcegroup', 'subscription') -and [string]::IsNullOrWhiteSpace($context.Subscription.Id)) -or
+                ($DeploymentScope -eq 'resourcegroup' -and [string]::IsNullOrWhiteSpace($ResourceGroupName)) -or
+                ($DeploymentScope -eq 'managementgroup' -and [string]::IsNullOrWhiteSpace($ManagementGroupId))) {
+                throw 'The deployment scope is incomplete.'
+            }
+            $deployments = Get-DeploymentOperationAtScope -Scope $DeploymentScope -Name $DeploymentName `
+                -SubscriptionId $context.Subscription.Id -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId `
+                -IncludeAllOperations -ErrorAction Stop
+        } catch [System.Management.Automation.PipelineStoppedException] {
+            throw
+        } catch {
+            if ((Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Cancellation') {
+                throw
+            }
+            throw "Failed to read complete deployment operation pages for deployment [$DeploymentName]; regional retry is unsafe."
+        }
+
+        $errors = [System.Collections.Generic.List[object]]::new()
+        foreach ($operation in $deployments) {
+            if ($operation.provisioningState -isnot [string] -or $operation.provisioningState -notin @('Succeeded', 'Failed')) {
+                throw "Deployment [$DeploymentName] has an operation without a terminal provisioning state; regional retry is unsafe."
+            }
+            if ($operation.provisioningState -eq 'Succeeded') {
+                continue
+            }
+            if ($operation.statusMessage -isnot [System.Management.Automation.PSCustomObject] -and
+                $operation.statusMessage -isnot [System.Collections.IDictionary]) {
+                Write-Warning "Deployment [$DeploymentName] has no structured ARM operation error; it cannot authorize regional relocation."
+                $errors.Add($null)
+            } else {
+                $errors.Add($operation.statusMessage)
+            }
+        }
+        return , @($errors)
+    }
+
     switch ($deploymentScope) {
         'resourcegroup' {
             $deployments = Get-AzResourceGroupDeploymentOperation -DeploymentName $deploymentName -ResourceGroupName $ResourceGroupName -ErrorAction Stop
@@ -270,25 +320,6 @@ function Get-ErrorMessageForScope {
         }
     }
     $failedOperations = @($deployments | Where-Object { $_.ProvisioningState -ne 'Succeeded' })
-    if ($AsObject) {
-        $errors = [System.Collections.Generic.List[object]]::new()
-        foreach ($operation in $failedOperations) {
-            if ($operation.ProvisioningState -ne 'Failed') {
-                throw "Deployment [$DeploymentName] has an operation in state [$($operation.ProvisioningState)]; regional retry is unsafe."
-            }
-            if ($operation.StatusMessage -is [string]) {
-                try {
-                    $errors.Add((ConvertFrom-Json -InputObject $operation.StatusMessage -AsHashtable -NoEnumerate -ErrorAction Stop))
-                } catch {
-                    Write-Warning "Deployment [$DeploymentName] has an unstructured operation error; it cannot authorize regional relocation."
-                    $errors.Add($null)
-                }
-            } else {
-                $errors.Add($operation.StatusMessage)
-            }
-        }
-        return , @($errors)
-    }
     return $failedOperations.StatusMessage
 }
 
@@ -302,6 +333,8 @@ Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
 After a submitted request times out, observe the same deployment for up to 60 minutes.
+Management-group HTTP 403 submissions use the same observation window and original Azure context.
+Only a matching Succeeded deployment recovers its outputs; authorization errors never permit replay.
 Only confirmed failure permits another submission; unknown outcomes retain attempted names for cleanup.
 
 .PARAMETER TemplateFilePath
@@ -485,6 +518,7 @@ function New-TemplateDeploymentInner {
             $res = $null
             $submissionStarted = $false
             $submissionReturned = $false
+            $submissionContext = $null
 
             try {
                 switch ($deploymentScope) {
@@ -520,9 +554,14 @@ function New-TemplateDeploymentInner {
                     }
                     'managementgroup' {
                         if ($PSCmdlet.ShouldProcess('Management group level deployment', 'Create')) {
+                            $submissionContext = Get-AzContext -ErrorAction Stop
+                            if ($null -eq $submissionContext -or [string]::IsNullOrWhiteSpace($submissionContext.Tenant.Id)) {
+                                throw 'The Azure context must identify the tenant before submitting a management-group deployment.'
+                            }
                             $submissionStarted = $true
                             $usedDeploymentNames += $deploymentName
-                            $res = New-AzManagementGroupDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -ManagementGroupId $ManagementGroupId
+                            $res = New-AzManagementGroupDeployment @DeploymentInputs -Location $DeploymentMetadataLocation `
+                                -ManagementGroupId $ManagementGroupId -DefaultProfile $submissionContext
                         }
                         break
                     }
@@ -569,11 +608,44 @@ function New-TemplateDeploymentInner {
                 if ($errorKind -eq 'Cancellation') {
                     throw
                 }
+                if ($submissionStarted -and -not $submissionReturned -and $null -eq $res -and
+                    $deploymentScope -eq 'managementgroup' -and $errorKind -eq 'Forbidden') {
+                    Write-Warning "Request for deployment [$deploymentName] returned HTTP 403; observing the original deployment without resubmitting. $($deploymentError.ErrorDetails.Message ?? $deploymentError.Exception.Message)"
+                    try {
+                        $res = Wait-TemplateDeployment -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
+                            -ManagementGroupId $ManagementGroupId -DefaultProfile $submissionContext
+                        if ($res.ProvisioningState -ne 'Succeeded') {
+                            throw "Deployment [$deploymentName] was confirmed Failed during authorization recovery; no retry is safe."
+                        }
+                        $Stoploop = $true
+                        continue
+                    } catch [System.Management.Automation.PipelineStoppedException] {
+                        throw
+                    } catch {
+                        if ((Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Cancellation') {
+                            throw
+                        }
+                        $originalDetails = $deploymentError.ErrorDetails.Message
+                        $exception = [System.AggregateException]::new(
+                            "Authorization recovery for deployment [$deploymentName] did not confirm success; no deployment will be resubmitted.",
+                            [System.Exception[]] @($deploymentError.Exception, $_.Exception)
+                        )
+                        $exception.Data['OriginalErrorRecord'] = $deploymentError
+                        $exception.Data['RecoveryErrorRecord'] = $_
+                        $deploymentError = [System.Management.Automation.ErrorRecord]::new(
+                            $exception, 'DeploymentAuthorizationRecoveryFailed', [System.Management.Automation.ErrorCategory]::PermissionDenied, $deploymentName
+                        )
+                        if ($originalDetails) {
+                            $deploymentError.ErrorDetails = [System.Management.Automation.ErrorDetails]::new("$($exception.Message) Original request details: $originalDetails")
+                        }
+                        $recoveryFailed = $true
+                    }
+                }
                 if ($submissionStarted -and $null -eq $res -and $errorKind -eq 'Timeout') {
                     Write-Warning "Request for deployment [$deploymentName] timed out; observing its status without resubmitting. $($deploymentError.Exception.Message)"
                     try {
                         $res = Wait-TemplateDeployment -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
-                            -SubscriptionId $SubscriptionId -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId
+                            -SubscriptionId $SubscriptionId -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId -DefaultProfile $submissionContext
                     } catch [System.Management.Automation.PipelineStoppedException] {
                         throw
                     } catch {
@@ -627,7 +699,7 @@ function New-TemplateDeploymentInner {
                 $failedDeploymentMessage = "^(?:\d{2}:\d{2}:\d{2} - )?The deployment '$([regex]::Escape($deploymentName))' failed with error\(s\)\. (?:Showing \d+ out of \d+ error\(s\)\. Status Message: (?:(?!\(Code:)[^\r\n])* )?\(Code: DeploymentFailed\)(?:\s|$)"
                 $confirmedFailure = $res.ProvisioningState -eq 'Failed' -or ($errorKind -eq 'Other' -and $deploymentError.Exception.Message -cmatch $failedDeploymentMessage)
                 $unknownSubmission = $submissionStarted -and -not $preflightRejected -and -not $confirmedFailure
-                $retryAllowed = -not $unknownSubmission -and -not $recoveryFailed -and $errorKind -notin @('Timeout', 'Transport')
+                $retryAllowed = -not $unknownSubmission -and -not $recoveryFailed -and $errorKind -notin @('Timeout', 'Transport', 'Forbidden')
                 if ($retryCount -ge $RetryLimit -or -not $retryAllowed) {
                     if ($DoNotThrow) {
                         $exceptionMessage = $deploymentError.Exception.Message
@@ -642,7 +714,7 @@ function New-TemplateDeploymentInner {
                             ErrorRecord                      = $deploymentError
                             RetryAllowed                     = $retryAllowed
                             FailureQueryAllowed              = $submissionStarted -and -not $preflightRejected -and -not $recoveryFailed -and
-                            $errorKind -eq 'Other' -and (($null -eq $res -and -not $submissionReturned) -or $res.ProvisioningState -eq 'Failed')
+                            $errorKind -in @('Other', 'Forbidden') -and (($null -eq $res -and -not $submissionReturned) -or $res.ProvisioningState -eq 'Failed')
                             RecoveredFailure                 = $deploymentError.FullyQualifiedErrorId -eq 'DeploymentFailedAfterTimeout' -and -not $recoveryFailed
                         }
                     } else {
@@ -685,6 +757,8 @@ Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
 After a submitted request times out, observe the same deployment for up to 60 minutes.
+Management-group HTTP 403 submissions use the same observation window and original Azure context.
+Only a matching Succeeded deployment recovers its outputs; authorization errors never permit replay.
 Only confirmed failure permits another submission; unknown outcomes retain attempted names for cleanup.
 
 .PARAMETER TemplateFilePath

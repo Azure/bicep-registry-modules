@@ -9,7 +9,7 @@ Describe 'Regional validation workflow runtime integration' {
         $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $actionPath -Raw)
         $environmentNames = @(
-            'TEMP', 'GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME',
+            'TEMP', 'TMPDIR', 'GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME',
             'localToken_resourceLocation'
         )
 
@@ -48,8 +48,9 @@ Describe 'Regional validation workflow runtime integration' {
             [CmdletBinding()]
             param(
                 [string] $TemplateFilePath, [string[]] $DeploymentNames, [string[]] $PreflightRejectedDeploymentNames,
+                [string[]] $PendingDeletionDeploymentIds,
                 [string] $ManagementGroupId, [string] $SubscriptionId, [string] $ResourceGroupName,
-                [switch] $RequireCompleteRemoval
+                [switch] $RequireCompleteRemoval, [switch] $RequireNoDeploymentScripts
             )
             throw 'Unexpected Azure cleanup.'
         }
@@ -67,6 +68,11 @@ Describe 'Regional validation workflow runtime integration' {
             [CmdletBinding()]
             param([string] $DeploymentName)
             throw 'Unexpected Azure operation lookup.'
+        }
+        function Invoke-AzRestMethod {
+            [CmdletBinding()]
+            param([string] $Method, [string] $Path)
+            throw 'Unexpected Azure REST request.'
         }
 
         function Get-StepOutput {
@@ -108,6 +114,7 @@ Describe 'Regional validation workflow runtime integration' {
                 '${{ steps.deploy_step.outputs.remainingDeploymentNames }}'         = $Outputs.remainingDeploymentNames ?? ''
                 '${{ steps.deploy_step.outputs.deploymentNames }}'                  = $Outputs.deploymentNames ?? ''
                 '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}' = $Outputs.preflightRejectedDeploymentNames ?? ''
+                '${{ steps.deploy_step.outputs.pendingDeletionDeploymentIds }}'     = $Outputs.pendingDeletionDeploymentIds ?? ''
             }
             foreach ($key in $values.Keys) {
                 $script = $script.Replace($key, $values[$key])
@@ -132,6 +139,7 @@ Describe 'Regional validation workflow runtime integration' {
             Remove-Item -LiteralPath "Env:\$name" -ErrorAction SilentlyContinue
         }
         $env:TEMP = $TestDrive
+        $env:TMPDIR = $TestDrive
         $env:GITHUB_WORKSPACE = $repoRootPath
         $env:GITHUB_OUTPUT = Join-Path $TestDrive 'step-output.txt'
         $null = New-Item -Path $env:GITHUB_OUTPUT -ItemType File -Force
@@ -156,6 +164,7 @@ Describe 'Regional validation workflow runtime integration' {
         $script:deploymentRegions = [System.Collections.Generic.List[string]]::new()
         $script:deploymentTokens = [System.Collections.Generic.List[string]]::new()
         $script:deploymentNames = [System.Collections.Generic.List[string]]::new()
+        $script:operationError = @{ error = @{ code = 'InvalidTemplate'; message = 'Nonregional failure.' } }
         $script:regionalFailure = @{
             Code    = 'InvalidTemplateDeployment'
             Details = @(@{ Code = 'RequestDisallowedByAzure'; Message = 'Region is not accepting new customers. See https://aka.ms/locationineligible.' })
@@ -184,7 +193,18 @@ Describe 'Regional validation workflow runtime integration' {
         Mock Get-AzContext { @{ Subscription = @{ Id = '11111111-1111-1111-1111-111111111111' } } }
         Mock Get-AzDeployment { @{ DeploymentName = $Name; ProvisioningState = 'Failed' } }
         Mock Get-AzDeploymentOperation {
-            @{ ProvisioningState = 'Failed'; StatusMessage = '{"error":{"code":"InvalidTemplate","message":"Nonregional failure"}}' }
+            @{ ProvisioningState = 'Failed'; StatusMessage = 'Nonregional failure. (Code: InvalidTemplate)' }
+        }
+        Mock Invoke-AzRestMethod {
+            $Method | Should -Be 'GET'
+            $Path | Should -Match '^/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/[^/]+/operations\?api-version=2025-04-01$'
+            @{
+                StatusCode = 200
+                Content    = ConvertTo-Json -Depth 10 -InputObject @{ value = @(
+                        @{ properties = @{ provisioningState = 'Failed'; provisioningOperation = 'Create'; statusMessage = $script:operationError } }
+                    )
+                }
+            }
         }
         Mock Test-AzSubscriptionDeployment {
             $script:validationRegions.Add($resourceLocation)
@@ -283,12 +303,14 @@ Describe 'Regional validation workflow runtime integration' {
             $content.variables.subscriptionToken | Should -Be '11111111-1111-1111-1111-111111111111'
             ConvertFrom-SecureString -SecureString $adminSecret -AsPlainText | Should -Be 'secret-value-not-for-logs'
             if ($script:deploymentNames.Count -eq 1) {
-                throw "08:51:48 - The deployment '$DeploymentName' failed with error(s). Status Message: Nested deployment preflight failed. (Code: InvalidTemplateDeployment) Standard_B12ms is unavailable in location centralus. (Code:SkuNotAvailable)"
+                throw "08:51:48 - The deployment '$DeploymentName' failed with error(s). Status Message: Nested deployment preflight failed. (Code: InvalidTemplateDeployment) ExampleSku is unavailable in location centralus. (Code:SkuNotAvailable)"
             }
             @{ ProvisioningState = 'Succeeded'; Outputs = @{ selectedRegion = @{ Type = 'String'; Value = $resourceLocation } } }
         }
-        Mock Get-AzDeploymentOperation {
-            @{ ProvisioningState = 'Failed'; StatusMessage = '{"error":{"code":"ResourceDeploymentFailure","details":[{"code":"SkuNotAvailable","message":"Standard_B12ms is not available in location centralus."}]}}' }
+        $script:operationError = @{ error = @{ code = 'ResourceDeploymentFailure'; details = @(
+                    @{ code = 'SkuNotAvailable'; message = 'ExampleSku is not available in location centralus.' }
+                )
+            }
         }
         Mock Initialize-DeploymentRemoval {
             if ($RequireCompleteRemoval) {
@@ -327,9 +349,7 @@ Describe 'Regional validation workflow runtime integration' {
             $script:deploymentNames.Add($DeploymentName)
             throw "The deployment '$DeploymentName' failed with error(s). (Code: InvalidTemplateDeployment) Regional capacity failure."
         }
-        Mock Get-AzDeploymentOperation {
-            @{ ProvisioningState = 'Failed'; StatusMessage = '{"error":{"code":"SkuNotAvailable","message":"The SKU is not available in location centralus."}}' }
-        }
+        $script:operationError = @{ error = @{ code = 'SkuNotAvailable'; message = 'The SKU is not available in location centralus.' } }
         Mock Initialize-DeploymentRemoval { @{ RemovedDeploymentNames = @($DeploymentNames) } }
 
         { Invoke-ValidationAndDeployment } | Should -Throw '*Regional capacity failure*'
@@ -348,9 +368,7 @@ Describe 'Regional validation workflow runtime integration' {
             $script:deploymentNames.Add($DeploymentName)
             throw "The deployment '$DeploymentName' failed with error(s). (Code: InvalidTemplateDeployment) Regional capacity failure."
         }
-        Mock Get-AzDeploymentOperation {
-            @{ ProvisioningState = 'Failed'; StatusMessage = '{"error":{"code":"SkuNotAvailable","message":"The SKU is not available in location centralus."}}' }
-        }
+        $script:operationError = @{ error = @{ code = 'SkuNotAvailable'; message = 'The SKU is not available in location centralus.' } }
         Mock Initialize-DeploymentRemoval {
             if ($RequireCompleteRemoval) { throw 'Removal still pending.' }
         }
@@ -365,6 +383,52 @@ Describe 'Regional validation workflow runtime integration' {
         }
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
         Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+    }
+
+    It 'Passes accepted history deletions to final cleanup without claiming the deployment was removed' -Tag 'HistoryRemoval' {
+        Mock Test-AzSubscriptionDeployment {}
+        Mock New-AzSubscriptionDeployment {
+            $script:deploymentNames.Add($DeploymentName)
+            throw "The deployment '$DeploymentName' failed with error(s). (Code: InvalidTemplateDeployment) Regional capacity failure."
+        }
+        $script:operationError = @{ error = @{ code = 'SkuNotAvailable'; message = 'The SKU is not available in location centralus.' } }
+        Mock Initialize-DeploymentRemoval {
+            if ($RequireCompleteRemoval) {
+                $exception = [System.InvalidOperationException]::new('Deployment history deletion is still pending.')
+                $exception.Data['PendingDeletionDeploymentIds'] = @(
+                    "/subscriptions/$SubscriptionId/providers/Microsoft.Resources/deployments/$($DeploymentNames[0])"
+                )
+                throw $exception
+            }
+        }
+
+        { Invoke-ValidationAndDeployment } | Should -Throw '*Regional capacity failure*'
+        $outputs = Get-StepOutput
+        $pendingId = "/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/$($script:deploymentNames[0])"
+        @($outputs.pendingDeletionDeploymentIds | ConvertFrom-Json) | Should -Be @($pendingId)
+        @($outputs.remainingDeploymentNames | ConvertFrom-Json) | Should -Be @($script:deploymentNames)
+        $null = Invoke-DeploymentStep -Name 'Remove deployed resources' -Outputs $outputs
+        Should -Invoke Initialize-DeploymentRemoval -Times 1 -Exactly -ParameterFilter {
+            -not $RequireCompleteRemoval -and $PendingDeletionDeploymentIds.Count -eq 1 -and
+            $PendingDeletionDeploymentIds[0] -eq $pendingId -and $DeploymentNames[0] -eq $script:deploymentNames[0]
+        }
+        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+    }
+
+    It 'Rejects <kind> pending history output before final cleanup' -Tag 'HistoryRemoval' -ForEach @(
+        @{ kind = 'a scalar'; pending = '"owned"'; remaining = '["owned"]' }
+        @{ kind = 'an object'; pending = '{}'; remaining = '["owned"]' }
+        @{ kind = 'a null ID'; pending = '[null]'; remaining = '["owned"]' }
+        @{ kind = 'a blank ID'; pending = '[" "]'; remaining = '["owned"]' }
+        @{ kind = 'an ownerless ID'; pending = '["/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/owned"]'; remaining = '[]' }
+    ) {
+        $outputs = @{
+            deploymentNames = '["owned"]'
+            remainingDeploymentNames = $remaining
+            pendingDeletionDeploymentIds = $pending
+        }
+        { Invoke-DeploymentStep -Name 'Remove deployed resources' -Outputs $outputs } | Should -Throw '*pending*deletion*metadata*'
+        Should -Invoke Initialize-DeploymentRemoval -Times 0 -Exactly
     }
 
     It 'Preserves deployment names for cleanup when all same-region deployment attempts fail' {

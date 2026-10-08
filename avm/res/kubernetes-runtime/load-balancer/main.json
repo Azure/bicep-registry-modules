@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13673527029511258966"
+      "templateHash": "1388503970042201742"
     },
     "name": "Kubernetes Runtime Load Balancers",
     "description": "This module deploys a Kubernetes Runtime Load Balancer for MetalLB and related networking services."
@@ -93,7 +93,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -113,7 +113,7 @@
     "connectedCluster": {
       "existing": true,
       "type": "Microsoft.Kubernetes/connectedClusters",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2026-05-01",
       "name": "[parameters('clusterName')]"
     },
     "loadBalancerConnectedCluster": {
