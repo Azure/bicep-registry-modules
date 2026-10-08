@@ -217,7 +217,7 @@ param defaultIdentity defaultIdentityType = {
 }
 
 @description('Optional. Flag to indicate if All Versions and Deletes Change feed feature is enabled on the account.')
-param enableAllVersionsAndDeletesChangeFeed bool?
+param enableAllVersionsAndDeletesChangeFeed bool = false
 
 import { customerManagedKeyAndVaultOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition. If specified, the parameter `defaultIdentity` must be configured as well.')

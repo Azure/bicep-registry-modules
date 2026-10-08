@@ -4603,6 +4603,7 @@ Flag to indicate if All Versions and Deletes Change feed feature is enabled on t
 
 - Required: No
 - Type: bool
+- Default: `False`
 
 ### Parameter: `enableAnalyticalStorage`
 
