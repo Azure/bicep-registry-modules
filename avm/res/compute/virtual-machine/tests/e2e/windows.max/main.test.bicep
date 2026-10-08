@@ -56,7 +56,7 @@ module nestedDependencies 'dependencies.bicep' = {
     loadBalancerName: 'dep-${namePrefix}-lb-${serviceShort}'
     recoveryServicesVaultName: 'dep-${namePrefix}-rsv-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
+    storageUploadDeploymentScriptName: '${take('dep-${namePrefix}-sads-${serviceShort}', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'sads')}'
     proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
     backupManagementServiceApplicationObjectId: builtInServicePrincipalObjectId != null
       ? builtInServicePrincipalObjectId!
@@ -64,7 +64,7 @@ module nestedDependencies 'dependencies.bicep' = {
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
     preCreatedDiskName: 'dep-${namePrefix}-shared-disk-${serviceShort}'
-    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
+    waitDeploymentScriptName: '${take('dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'waitForBackupRolePropagation')}'
   }
 }
 

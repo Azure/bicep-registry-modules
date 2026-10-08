@@ -51,14 +51,14 @@ module nestedDependencies 'dependencies.bicep' = {
     loadBalancerName: 'dep-${namePrefix}-lb-${serviceShort}'
     recoveryServicesVaultName: 'dep-${namePrefix}-rsv-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
-    sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    storageUploadDeploymentScriptName: '${take('dep-${namePrefix}-sads-${serviceShort}', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'sads')}'
+    sshDeploymentScriptName: '${take('dep-${namePrefix}-ds-${serviceShort}', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'ds')}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     backupManagementServiceApplicationObjectId: builtInServicePrincipalObjectId != null
       ? builtInServicePrincipalObjectId!
       : backupManagementService!.id
-    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
+    waitDeploymentScriptName: '${take('dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'waitForBackupRolePropagation')}'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
   }
 }
