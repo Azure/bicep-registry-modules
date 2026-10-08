@@ -60,7 +60,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
   params: {
-    name: 'sssmin002'
+    name: '<name>'
   }
 }
 ```
@@ -78,7 +78,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "sssmin002"
+      "value": "<name>"
     }
   }
 }
@@ -94,7 +94,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/search/search-service:<version>'
 
-param name = 'sssmin002'
+param name = '<name>'
 ```
 
 </details>

@@ -4,6 +4,7 @@ Describe 'Search fixture global resource identities' {
         @{ scenario = 'max'; kind = 'service'; parameter = 'name'; maximumLength = 60; expectedLength = 60 }
         @{ scenario = 'pe'; kind = 'vault'; parameter = 'keyVaultName'; maximumLength = 24; expectedLength = 20 }
         @{ scenario = 'pe'; kind = 'service'; parameter = 'name'; maximumLength = 60; expectedLength = 60 }
+        @{ scenario = 'defaults'; kind = 'service'; parameter = 'name'; maximumLength = 60; expectedLength = 60 }
     ) {
         BeforeAll {
             $fixturePath = Join-Path $PSScriptRoot '..' 'e2e' $scenario 'main.test.bicep'
@@ -178,6 +179,11 @@ Describe 'Search fixture global resource identities' {
                 $parameters.sharedPrivateLinkResources.value[1].privateLinkResourceId |
                     Should -BeExactly "[reference('nestedDependencies').outputs.keyVaultResourceId.value]"
                 $testModule.dependsOn | Should -Contain 'nestedDependencies'
+            } elseif ($scenario -eq 'defaults') {
+                @($testModule.properties.parameters.Keys).Count | Should -Be 1
+                $testModule.properties.parameters.Contains('name') | Should -BeTrue
+                $testModule.resourceGroup | Should -BeExactly "[parameters('resourceGroupName')]"
+                $dependencies | Should -BeNullOrEmpty
             } else {
                 $testModule.properties.parameters.cmkEnforcement.value | Should -BeExactly 'Enabled'
                 $testModule.properties.parameters.hostingMode.value | Should -BeExactly 'HighDensity'

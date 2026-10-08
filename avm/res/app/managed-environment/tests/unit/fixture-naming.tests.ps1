@@ -109,3 +109,119 @@ Describe 'Maximum managed environment storage fixture identity' {
         $storage.sku.name | Should -BeExactly 'Premium_LRS'
     }
 }
+
+Describe 'Secondary managed environment vault fixture identity' {
+        BeforeAll {
+            $vaultFixturePath = Join-Path $PSScriptRoot '..' 'e2e' 'secondary-rg' 'main.test.bicep'
+            $vaultSource = Get-Content -LiteralPath $vaultFixturePath -Raw
+            $secondarySource = [regex]::Match($vaultSource, '(?ms)^module secondaryDependencies\b.*?^}').Value
+            $vaultMatch = [regex]::Match($secondarySource, '(?m)^\s+keyVaultName: (?<expression>[^\r\n]+)')
+            $ownerSource = [regex]::Match($vaultSource, '(?ms)^resource secondaryResourceGroup\b.*?^}').Value
+            $ownerMatch = [regex]::Match($ownerSource, '(?m)^\s+name: (?<expression>[^\r\n]+)')
+            $vaultService = [regex]::Match($vaultSource, "(?m)^param serviceShort string = '(?<value>[^']+)'")
+            if (-not $vaultMatch.Success -or -not $ownerMatch.Success -or -not $vaultService.Success) {
+                throw 'Missing secondary vault name, owning group or service identifier.'
+            }
+            $vaultDefaults = $defaults.Clone()
+            $vaultDefaults.service = $vaultService.Groups['value'].Value
+            $vaultOverrides = $overrides + @(@{ prefix = 'gci-token'; service = 'amecert-type' }, @{ prefix = ''; service = '' })
+            $vaultParameterSource = @('using none')
+            for ($index = 0; $index -lt $vaultOverrides.Count; $index++) {
+                $values = $vaultDefaults.Clone()
+                foreach ($key in $vaultOverrides[$index].Keys) { $values[$key] = $vaultOverrides[$index][$key] }
+                $ownerExpression = $ownerMatch.Groups['expression'].Value.Replace('resourceGroupName', "'$($values.group)'")
+                $ownerId = "'/subscriptions/$($values.subscription)/resourceGroups/`${($ownerExpression)}'"
+                foreach ($iteration in @('init', 'idem')) {
+                    $expression = $vaultMatch.Groups['expression'].Value.
+                    Replace('secondaryResourceGroup.id', "($ownerId)").
+                    Replace('primaryResourceGroup.id', "'/subscriptions/$($values.subscription)/resourceGroups/$($values.group)'").
+                    Replace('subscription().subscriptionId', "'$($values.subscription)'").
+                    Replace('resourceGroupName', "'$($values.group)'").
+                    Replace('deployment().name', "'$($values.root)'").
+                    Replace('resourceLocation', "'$($values.location)'").
+                    Replace('namePrefix', "'$($values.prefix)'").
+                    Replace('serviceShort', "'$($values.service)'").
+                    Replace('iteration', "'$iteration'")
+                    $vaultParameterSource += "param vault${index}${iteration} = $expression"
+                }
+            }
+            $vaultParameterPath = Join-Path $TestDrive 'secondary-vault.bicepparam'
+            $vaultParameterOutput = Join-Path $TestDrive 'secondary-vault-names.json'
+            $vaultParameterSource -join "`n" | Set-Content -LiteralPath $vaultParameterPath
+            $diagnostics = bicep build-params $vaultParameterPath --no-restore --outfile $vaultParameterOutput 2>&1
+            if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+            $vaultNames = (Get-Content -LiteralPath $vaultParameterOutput -Raw | ConvertFrom-Json -AsHashtable).parameters
+            $vaultFixtureOutput = Join-Path $TestDrive 'secondary-rg.json'
+            $diagnostics = bicep build $vaultFixturePath --no-restore --outfile $vaultFixtureOutput 2>&1
+            if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+            $vaultTemplate = Get-Content -LiteralPath $vaultFixtureOutput -Raw | ConvertFrom-Json -AsHashtable -Depth 100
+            $vaultResources = $vaultTemplate.resources -is [System.Collections.IDictionary] ? @($vaultTemplate.resources.Values) : @($vaultTemplate.resources)
+            $vaultDependencies = @($vaultResources | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and $_.properties.parameters.Contains('keyVaultName')
+                })[0]
+            $vaultTestModule = @($vaultResources | Where-Object { $_.name -match '-test-' })[0]
+            $nestedVaultResources = $vaultDependencies.properties.template.resources
+            $nestedVaultResources = $nestedVaultResources -is [System.Collections.IDictionary] ? @($nestedVaultResources.Values) : @($nestedVaultResources)
+            $vault = @($nestedVaultResources | Where-Object type -EQ 'Microsoft.KeyVault/vaults')[0]
+        }
+
+        It 'Separates otherwise identical deployments in different subscriptions' {
+            $vaultNames.vault0init.value | Should -Not -Be $vaultNames.vault1init.value
+        }
+
+        It 'Separates deployments in different owning resource groups' {
+            $vaultNames.vault0init.value | Should -Not -Be $vaultNames.vault2init.value
+        }
+
+        It 'Keeps vault identity stable across roots, regions and serial init/idem' {
+            $vaultNames.vault0init.value | Should -BeExactly $vaultNames.vault3init.value
+            $vaultNames.vault0init.value | Should -BeExactly $vaultNames.vault4init.value
+            foreach ($index in 0..($vaultOverrides.Count - 1)) {
+                $vaultNames["vault${index}init"].value | Should -BeExactly $vaultNames["vault${index}idem"].value
+            }
+            $vaultTestModule.copy.count | Should -BeExactly "[length(createArray('init', 'idem'))]"
+            $vaultTestModule.copy.mode | Should -BeExactly 'serial'
+            $vaultTestModule.copy.batchSize | Should -Be 1
+        }
+
+        It 'Meets vault character and length constraints for all prefix inputs' {
+            foreach ($entry in $vaultNames.Values) {
+                $entry.value | Should -Match '^[a-zA-Z][a-zA-Z0-9-]{1,22}[a-zA-Z0-9]$'
+                $entry.value | Should -Not -Match '--'
+            }
+            $vaultNames.vault5init.value.Length | Should -Be 20
+        }
+
+        It 'Keeps full prefix and service inputs distinct' {
+            $vaultNames.vault5init.value | Should -Not -Be $vaultNames.vault6init.value
+            $vaultNames.vault5init.value | Should -Not -Be $vaultNames.vault7init.value
+        }
+
+        It 'Uses the actual secondary scope rather than the consuming primary group' {
+            $vaultDependencies.resourceGroup | Should -BeExactly "[format('{0}-snd', parameters('resourceGroupName'))]"
+            $vaultDependencies.properties.parameters.keyVaultName.value |
+                Should -Match "uniqueString\(subscriptionResourceId\('Microsoft.Resources/resourceGroups', format\('\{0\}-snd', parameters\('resourceGroupName'\)\)\)"
+            $vaultTestModule.resourceGroup | Should -BeExactly "[parameters('resourceGroupName')]"
+            $vault.name | Should -BeExactly "[parameters('keyVaultName')]"
+        }
+
+        It 'Preserves vault security and the external certificate identity and URI chain' {
+            $vault.properties.enableRbacAuthorization | Should -BeTrue
+            @($vault.properties.accessPolicies).Count | Should -Be 0
+            $vault.properties.Contains('enablePurgeProtection') | Should -BeTrue
+            $vault.properties.enablePurgeProtection | Should -BeNullOrEmpty
+            $vault.properties.enabledForTemplateDeployment | Should -BeTrue
+            $vault.properties.enabledForDiskEncryption | Should -BeTrue
+            $vault.properties.enabledForDeployment | Should -BeTrue
+            $vaultDependencies.properties.template.outputs.keyVaultResourceId.value |
+                Should -BeExactly "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+            $certScript = @($nestedVaultResources | Where-Object type -EQ 'Microsoft.Resources/deploymentScripts')[0]
+            $certScript.properties.arguments | Should -Match "parameters\('keyVaultName'\)"
+            $certificate = $vaultTestModule.properties.parameters.certificate.value.certificateKeyVaultProperties
+            $certificate.identityResourceId | Should -Match '\.outputs\.managedIdentityResourceId\.value'
+            $certificate.keyVaultUrl | Should -Match '\.outputs\.keyVaultUri\.value'
+            $certificate.keyVaultUrl | Should -Match '\.outputs\.certificateSecretUrl\.value'
+            $vaultTestModule.properties.parameters.internal.value | Should -BeTrue
+            @($vaultTestModule.properties.parameters.managedIdentities.value.userAssignedResourceIds).Count | Should -Be 1
+        }
+}

@@ -107,3 +107,91 @@ Describe 'Linux maximum VM storage fixture identity' {
         $testModule.properties.parameters.osType.value | Should -BeExactly 'Linux'
     }
 }
+
+Describe 'Linux maximum VM vault fixture identity' {
+        BeforeAll {
+            $vaultMatch = [regex]::Match($dependencySource, '(?m)^\s+keyVaultName: (?<expression>[^\r\n]+)')
+            if (-not $vaultMatch.Success) { throw 'Missing Linux maximum fixture vault name.' }
+            $vaultOverrides = $overrides + @(@{ prefix = 'gci-token'; service = 'vmlimax-type' }, @{ prefix = ''; service = '' })
+            $vaultParameterSource = @('using none')
+            for ($index = 0; $index -lt $vaultOverrides.Count; $index++) {
+                $values = $defaults.Clone()
+                foreach ($key in $vaultOverrides[$index].Keys) { $values[$key] = $vaultOverrides[$index][$key] }
+                foreach ($iteration in @('init', 'idem')) {
+                    $expression = $vaultMatch.Groups['expression'].Value.
+                    Replace('resourceGroup.id', "'/subscriptions/$($values.subscription)/resourceGroups/$($values.group)'").
+                    Replace('subscription().subscriptionId', "'$($values.subscription)'").
+                    Replace('resourceGroupName', "'$($values.group)'").
+                    Replace('deployment().name', "'$($values.root)'").
+                    Replace('resourceLocation', "'$($values.location)'").
+                    Replace('namePrefix', "'$($values.prefix)'").
+                    Replace('serviceShort', "'$($values.service)'").
+                    Replace('iteration', "'$iteration'")
+                    $vaultParameterSource += "param vault${index}${iteration} = $expression"
+                }
+            }
+            $vaultParameterPath = Join-Path $TestDrive 'linux-max-vault.bicepparam'
+            $vaultParameterOutput = Join-Path $TestDrive 'linux-max-vault-names.json'
+            $vaultParameterSource -join "`n" | Set-Content -LiteralPath $vaultParameterPath
+            $diagnostics = bicep build-params $vaultParameterPath --no-restore --outfile $vaultParameterOutput 2>&1
+            if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+            $vaultNames = (Get-Content -LiteralPath $vaultParameterOutput -Raw | ConvertFrom-Json -AsHashtable).parameters
+            $vault = @($dependencyResources | Where-Object type -EQ 'Microsoft.KeyVault/vaults')[0]
+        }
+
+        It 'Separates otherwise identical deployments in different subscriptions' {
+            $vaultNames.vault0init.value | Should -Not -Be $vaultNames.vault1init.value
+        }
+
+        It 'Separates deployments in different resource groups' {
+            $vaultNames.vault0init.value | Should -Not -Be $vaultNames.vault2init.value
+        }
+
+        It 'Keeps vault identity stable across roots, regions and repeated deployment' {
+            $vaultNames.vault0init.value | Should -BeExactly $vaultNames.vault3init.value
+            $vaultNames.vault0init.value | Should -BeExactly $vaultNames.vault4init.value
+            foreach ($index in 0..($vaultOverrides.Count - 1)) {
+                $vaultNames["vault${index}init"].value | Should -BeExactly $vaultNames["vault${index}idem"].value
+            }
+            $dependencies.Contains('copy') | Should -BeFalse
+            $testModule.Contains('copy') | Should -BeFalse
+        }
+
+        It 'Meets vault character and length constraints for all prefix inputs' {
+            foreach ($entry in $vaultNames.Values) {
+                $entry.value | Should -Match '^[a-zA-Z][a-zA-Z0-9-]{1,22}[a-zA-Z0-9]$'
+                $entry.value | Should -Not -Match '--'
+            }
+            $vaultNames.vault5init.value.Length | Should -Be 20
+        }
+
+        It 'Keeps full prefix and service inputs distinct' {
+            $vaultNames.vault5init.value | Should -Not -Be $vaultNames.vault6init.value
+            $vaultNames.vault5init.value | Should -Not -Be $vaultNames.vault7init.value
+        }
+
+        It 'Passes the owning scope-qualified name to the vault' {
+            $dependencies.resourceGroup | Should -BeExactly "[parameters('resourceGroupName')]"
+            $dependencies.properties.parameters.keyVaultName.value | Should -Match 'uniqueString\('
+            $dependencies.properties.parameters.keyVaultName.value | Should -Match "parameters\('resourceGroupName'\)"
+            $vault.name | Should -BeExactly "[parameters('keyVaultName')]"
+        }
+
+        It 'Preserves vault security and disk encryption references' {
+            $vault.properties.enableRbacAuthorization | Should -BeTrue
+            @($vault.properties.accessPolicies).Count | Should -Be 0
+            $vault.properties.Contains('enablePurgeProtection') | Should -BeTrue
+            $vault.properties.enablePurgeProtection | Should -BeNullOrEmpty
+            $vault.properties.enabledForTemplateDeployment | Should -BeTrue
+            $vault.properties.enabledForDiskEncryption | Should -BeTrue
+            $vault.properties.enabledForDeployment | Should -BeTrue
+            $dependencies.properties.template.outputs.keyVaultResourceId.value |
+                Should -BeExactly "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+            $dependencies.properties.template.outputs.keyVaultEncryptionKeyUrl.value | Should -Match "parameters\('keyVaultName'\)"
+            $encryptionSettings = $testModule.properties.parameters.extensionAzureDiskEncryptionConfig.value.settings
+            $encryptionSettings.KeyVaultResourceId | Should -Match '\.outputs\.keyVaultResourceId\.value'
+            $encryptionSettings.KeyVaultURL | Should -Match '\.outputs\.keyVaultUrl\.value'
+            $encryptionSettings.KeyEncryptionKeyURL | Should -Match '\.outputs\.keyVaultEncryptionKeyUrl\.value'
+            $testModule.properties.parameters.osType.value | Should -BeExactly 'Linux'
+        }
+}
