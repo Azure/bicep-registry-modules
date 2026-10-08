@@ -1602,15 +1602,6 @@
     "ExpressionHash": "03D8A390D82E8A2539A58F2039C7488823F1AC49EC3C3490AFDCCD843D558A2A"
   },
   {
-    "Module": "avm/res/container-service/managed-cluster",
-    "Deployment": "/managedCluster_extension/fluxConfiguration",
-    "Target": "configurationProtectedSettings",
-    "SinkType": "secureObject",
-    "Source": "fluxConfigurations.[].configurationProtectedSettings",
-    "Status": "Mismatch",
-    "ExpressionHash": ""
-  },
-  {
     "Module": "avm/res/event-hub/namespace",
     "Deployment": "/secretsExport",
     "Target": "secretsToSet.[].value",
@@ -1625,15 +1616,6 @@
     "Target": "contentType",
     "SinkType": "securestring",
     "Source": "secrets.[].contentType",
-    "Status": "Mismatch",
-    "ExpressionHash": ""
-  },
-  {
-    "Module": "avm/res/kubernetes-runtime/load-balancer",
-    "Deployment": "/arcnetworking/fluxConfiguration",
-    "Target": "configurationProtectedSettings",
-    "SinkType": "secureObject",
-    "Source": "fluxConfigurations.[].configurationProtectedSettings",
     "Status": "Mismatch",
     "ExpressionHash": ""
   },
