@@ -5,6 +5,7 @@ Describe 'Cosmos fixture resource identities' {
         @{ scenario = 'sqlroles'; kind = 'account'; serial = $true; location = 'spaincentral' }
         @{ scenario = 'managedIdentity'; kind = 'account'; serial = $false; location = 'eastus2' }
         @{ scenario = 'managedIdentity'; kind = 'assignment'; serial = $false; location = 'eastus2' }
+        @{ scenario = 'perimeter'; kind = 'account'; serial = $true; location = 'francecentral' }
     ) {
         BeforeAll {
             $fixturePath = Join-Path $PSScriptRoot '..' 'e2e' $scenario 'main.test.bicep'
@@ -175,7 +176,13 @@ Describe 'Cosmos fixture resource identities' {
         }
 
         It 'Preserves scenario coverage and all coupled account and principal references' {
-            $parameters.zoneRedundant.value | Should -BeFalse
+            if ($scenario -eq 'perimeter') {
+                ($parameters.Keys | Sort-Object) -join ',' | Should -BeExactly 'name,networkRestrictions'
+                $parameters.networkRestrictions.value.publicNetworkAccess | Should -BeExactly 'SecuredByPerimeter'
+                $testModule.dependsOn | Should -Contain 'resourceGroup'
+            } else {
+                $parameters.zoneRedundant.value | Should -BeFalse
+            }
             if ($scenario -eq 'mongodb') {
                 @($parameters.mongodbDatabases.value).Count | Should -Be 2
                 foreach ($database in $parameters.mongodbDatabases.value) {
@@ -215,7 +222,7 @@ Describe 'Cosmos fixture resource identities' {
                         $names["scope4case${index}${iteration}"].value | Should -BeExactly "$accountId/dbs/simple-db/colls/container-001"
                     }
                 }
-            } else {
+            } elseif ($scenario -eq 'managedIdentity') {
                 $roles = $parameters.roleAssignments.value
                 @($roles).Count | Should -Be 3
                 $roles[0].roleDefinitionIdOrName | Should -BeExactly 'Reader'

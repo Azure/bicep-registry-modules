@@ -2101,7 +2101,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddansp001'
+    name: '<name>'
     // Non-required parameters
     networkRestrictions: {
       publicNetworkAccess: 'SecuredByPerimeter'
@@ -2124,7 +2124,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddansp001"
+      "value": "<name>"
     },
     // Non-required parameters
     "networkRestrictions": {
@@ -2147,7 +2147,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddansp001'
+param name = '<name>'
 // Non-required parameters
 param networkRestrictions = {
   publicNetworkAccess: 'SecuredByPerimeter'

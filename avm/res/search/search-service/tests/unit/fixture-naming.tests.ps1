@@ -3,6 +3,7 @@ Describe 'Search fixture global resource identities' {
         @{ scenario = 'pe'; kind = 'storage'; parameter = 'storageAccountName'; maximumLength = 24; expectedLength = 24 }
         @{ scenario = 'max'; kind = 'service'; parameter = 'name'; maximumLength = 60; expectedLength = 60 }
         @{ scenario = 'pe'; kind = 'vault'; parameter = 'keyVaultName'; maximumLength = 24; expectedLength = 20 }
+        @{ scenario = 'pe'; kind = 'service'; parameter = 'name'; maximumLength = 60; expectedLength = 60 }
     ) {
         BeforeAll {
             $fixturePath = Join-Path $PSScriptRoot '..' 'e2e' $scenario 'main.test.bicep'
@@ -160,6 +161,23 @@ Describe 'Search fixture global resource identities' {
                 @($testModule.properties.parameters.sharedPrivateLinkResources.value).Count | Should -Be 2
                 @($testModule.properties.parameters.privateEndpoints.value).Count | Should -Be 2
                 $testModule.properties.parameters.publicNetworkAccess.value | Should -BeExactly 'Disabled'
+            } elseif ($scenario -eq 'pe') {
+                $parameters = $testModule.properties.parameters
+                $parameters.publicNetworkAccess.value | Should -BeExactly 'Disabled'
+                @($parameters.privateEndpoints.value).Count | Should -Be 2
+                foreach ($endpoint in $parameters.privateEndpoints.value) {
+                    $endpoint.subnetResourceId | Should -BeExactly "[reference('nestedDependencies').outputs.subnetResourceId.value]"
+                    $endpoint.privateDnsZoneGroup.privateDnsZoneGroupConfigs[0].privateDnsZoneResourceId |
+                        Should -BeExactly "[reference('nestedDependencies').outputs.privateDNSZoneResourceId.value]"
+                }
+                $parameters.privateEndpoints.value[0].applicationSecurityGroupResourceIds[0] |
+                    Should -BeExactly "[reference('nestedDependencies').outputs.applicationSecurityGroupResourceId.value]"
+                @($parameters.sharedPrivateLinkResources.value).Count | Should -Be 2
+                $parameters.sharedPrivateLinkResources.value[0].privateLinkResourceId |
+                    Should -BeExactly "[reference('nestedDependencies').outputs.storageAccountResourceId.value]"
+                $parameters.sharedPrivateLinkResources.value[1].privateLinkResourceId |
+                    Should -BeExactly "[reference('nestedDependencies').outputs.keyVaultResourceId.value]"
+                $testModule.dependsOn | Should -Contain 'nestedDependencies'
             } else {
                 $testModule.properties.parameters.cmkEnforcement.value | Should -BeExactly 'Enabled'
                 $testModule.properties.parameters.hostingMode.value | Should -BeExactly 'HighDensity'
