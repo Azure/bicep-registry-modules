@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter()]
     [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.FullName
 )
@@ -26,16 +26,49 @@ BeforeAll {
         param([Parameter(ValueFromPipeline)] [object] $InputObject, [switch] $Force, [switch] $SkipPublisherCheck, [switch] $AllowClobber)
         process { throw 'Unexpected module installation.' }
     }
+    function Get-PackageProvider {
+        [CmdletBinding()]
+        param()
+        throw 'Unexpected package provider lookup.'
+    }
+    function Get-ArchiveFailure {
+        param(
+            [string] $Name = 'Fixture.Module',
+            [string] $Detail = 'End of Central Directory record could not be found.',
+            [string] $ErrorId = "Package '{0}' failed to be installed because: {1},Microsoft.PowerShell.PackageManagement.Cmdlets.InstallPackage",
+            [System.Management.Automation.ErrorCategory] $Category = 'InvalidResult'
+        )
+        [System.Management.Automation.ErrorRecord]::new(
+            [Exception]::new("Package '$Name' failed to be installed because: $Detail"),
+            $ErrorId, $Category, $Name
+        )
+    }
 }
 
 Describe 'PowerShell Gallery initialization' {
     BeforeEach {
-        Mock Get-Module {
-            if ($ListAvailable) { @{ Name = 'Fixture.Module'; Version = [version] '1.2.3' } }
+        $script:moduleBase = Join-Path $TestDrive 'Fixture.Module\1.2.3'
+        $script:installedFixture = [pscustomobject] @{
+            Name       = 'Fixture.Module'
+            Version    = [version] '1.2.3'
+            ModuleBase = $script:moduleBase
         }
+        Mock Get-Module {
+            if ($ListAvailable) { $script:installedFixture }
+        }
+        Mock Get-Module { @{ Version = [version] '2.2.5' } } -ParameterFilter { $Name -eq 'PowerShellGet' }
+        Mock Get-Module { @{ Version = [version] '1.4.8.1' } } -ParameterFilter { $Name -eq 'PackageManagement' }
+        Mock Get-PackageProvider { @{ Name = 'NuGet'; Version = [version] '3.0.0.1' } }
+        Mock Test-Path { $true } -ParameterFilter { $LiteralPath -eq (Join-Path $script:moduleBase 'Fixture.Module.psd1') }
+        Mock Import-Module { $script:installedFixture }
+        Mock Start-Sleep {}
+        Mock Write-Warning {}
+        Mock Remove-Module { throw 'A loaded module must not be removed.' }
         Mock Get-PSRepository { @{ Name = 'PSGallery' } }
         Mock Register-PSRepository {}
-        Mock Find-Module { @{ Name = 'Fixture.Module'; Version = [version] '1.2.3' } }
+        Mock Find-Module {
+            [pscustomobject] @{ Name = 'Fixture.Module'; Version = [version] '1.2.3'; Dependencies = @() }
+        }
         Mock Install-Module {}
     }
 
@@ -48,7 +81,10 @@ Describe 'PowerShell Gallery initialization' {
 
     It 'Registers PowerShell Gallery before resolving a module when it is missing' {
         $script:galleryRegistered = $false
-        Mock Get-PSRepository { @{ Name = 'ExistingPrivateRepository' } }
+        Mock Get-PSRepository {
+            @{ Name = 'ExistingPrivateRepository' }
+            if ($script:galleryRegistered) { @{ Name = 'PSGallery' } }
+        }
         Mock Register-PSRepository { $script:galleryRegistered = $true } -ParameterFilter { $Default }
         Mock Find-Module {
             if (-not $script:galleryRegistered) { throw 'PowerShell Gallery was not registered before module resolution.' }
@@ -64,7 +100,9 @@ Describe 'PowerShell Gallery initialization' {
     }
 
     It 'Registers PowerShell Gallery when no repositories are configured' {
-        Mock Get-PSRepository {}
+        $script:galleryRegistered = $false
+        Mock Get-PSRepository { if ($script:galleryRegistered) { @{ Name = 'PSGallery' } } }
+        Mock Register-PSRepository { $script:galleryRegistered = $true }
 
         Install-CustomModule -Module @{ Name = 'Fixture.Module' }
 
@@ -106,10 +144,35 @@ Describe 'PowerShell Gallery initialization' {
         Mock Find-Module { Write-Error "Unable to find repository 'PSGallery'." }
 
         { Install-CustomModule -Module @{ Name = 'Fixture.Module' } -ErrorAction Continue } |
-            Should -Throw "*Unable to find repository 'PSGallery'.*"
+            Should -Throw '*PSGallery*not available*2*registration attempts*'
 
-        Should -Invoke Register-PSRepository -Times 1 -Exactly -ParameterFilter { $Default }
+        Should -Invoke Register-PSRepository -Times 2 -Exactly -ParameterFilter { $Default }
+        Should -Invoke Find-Module -Times 0 -Exactly
         Should -Invoke Install-Module -Times 0 -Exactly
+    }
+
+    It 'Retries a no-op default registration only after confirming PSGallery is still absent' {
+        $script:registrationAttempts = 0
+        $script:repositoryChecks = 0
+        Mock Get-PSRepository {
+            $script:repositoryChecks++
+            if ($script:registrationAttempts -eq 2) { @{ Name = 'PSGallery' } }
+        }
+        Mock Register-PSRepository {
+            $script:repositoryChecks | Should -Be ($script:registrationAttempts + 1)
+            $script:registrationAttempts++
+        }
+        Mock Find-Module {
+            if ($script:registrationAttempts -ne 2) { throw "Unable to find repository 'PSGallery'." }
+            [pscustomobject] @{ Name = 'Fixture.Module'; Version = [version] '1.2.3'; Dependencies = @() }
+        }
+
+        Install-CustomModule -Module @{ Name = 'Fixture.Module'; Version = '1.2.3' }
+
+        Should -Invoke Register-PSRepository -Times 2 -Exactly -ParameterFilter { $Default }
+        Should -Invoke Get-PSRepository -Times 3 -Exactly
+        Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 2 }
+        Should -Invoke Find-Module -Times 1 -Exactly -ParameterFilter { $RequiredVersion -eq '1.2.3' }
     }
 
     It 'Does not require repository access for an already installed <requirement> module' -ForEach @(
@@ -129,6 +192,8 @@ Describe 'PowerShell Gallery initialization' {
         Should -Invoke Register-PSRepository -Times 0 -Exactly
         Should -Invoke Find-Module -Times 0 -Exactly
         Should -Invoke Install-Module -Times 0 -Exactly
+        Should -Invoke Get-PackageProvider -Times 0 -Exactly
+        Should -Invoke Import-Module -Times 0 -Exactly
     }
 
     It 'Does not mistake an installed wrong version or another module for the required dependency: <kind>' -ForEach @(
@@ -179,5 +244,262 @@ Describe 'PowerShell Gallery initialization' {
 
         { Install-CustomModule -Module @{ Name = 'Fixture.Module' } -ErrorAction Continue } |
             Should -Throw '*Installation failed.*'
+
+        Should -Invoke Install-Module -Times 1 -Exactly
+        Should -Invoke Import-Module -Times 0 -Exactly
+    }
+
+    It 'Retries the exact resolved dependency once after the known NuGet archive failure' {
+        $script:installAttempts = 0
+        Mock Install-Module {
+            $script:installAttempts++
+            if ($script:installAttempts -eq 1) { throw (Get-ArchiveFailure) }
+        }
+
+        Install-CustomModule -Module @{ Name = 'Fixture.Module'; Version = '1.2.3' }
+
+        Should -Invoke Find-Module -Times 1 -Exactly -ParameterFilter { $RequiredVersion -eq '1.2.3' }
+        Should -Invoke Install-Module -Times 2 -Exactly -ParameterFilter {
+            $InputObject.Name -eq 'Fixture.Module' -and $InputObject.Version -eq [version] '1.2.3' -and
+            $Force -and $AllowClobber -and $SkipPublisherCheck -and $ErrorAction -eq 'Stop'
+        }
+        Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 2 }
+        Should -Invoke Import-Module -Times 1 -Exactly -ParameterFilter {
+            $FullyQualifiedName.Name -eq (Join-Path $script:moduleBase 'Fixture.Module.psd1') -and
+            $FullyQualifiedName.RequiredVersion -eq [version] '1.2.3' -and $PassThru -and -not $Force
+        }
+    }
+
+    It 'Stops after two corrupt archives without accepting a stale module' {
+        Mock Install-Module { throw (Get-ArchiveFailure) }
+
+        { Install-CustomModule -Module @{ Name = 'Fixture.Module' } -ErrorAction Continue } |
+            Should -Throw '*End of Central Directory record could not be found.*'
+
+        Should -Invoke Install-Module -Times 2 -Exactly
+        Should -Invoke Start-Sleep -Times 1 -Exactly
+        Should -Invoke Import-Module -Times 0 -Exactly
+    }
+
+    It 'Preserves a different failure from the second installation attempt' {
+        $script:installAttempts = 0
+        Mock Install-Module {
+            $script:installAttempts++
+            if ($script:installAttempts -eq 1) { throw (Get-ArchiveFailure) }
+            throw 'Publisher validation failed.'
+        }
+
+        { Install-CustomModule -Module @{ Name = 'Fixture.Module' } } |
+            Should -Throw '*Publisher validation failed.*'
+
+        Should -Invoke Install-Module -Times 2 -Exactly
+        Should -Invoke Import-Module -Times 0 -Exactly
+    }
+
+    It 'Does not accept a stale version after a retry returns without installing the resolved module' {
+        $script:installAttempts = 0
+        Mock Install-Module {
+            $script:installAttempts++
+            if ($script:installAttempts -eq 1) { throw (Get-ArchiveFailure) }
+        }
+        Mock Get-Module {
+            if ($ListAvailable) { @{ Name = 'Fixture.Module'; Version = [version] '1.1.0' } }
+        } -ParameterFilter { $Name -eq 'Fixture.Module' }
+
+        { Install-CustomModule -Module @{ Name = 'Fixture.Module' } } |
+            Should -Throw '*Installation of module*failed*'
+
+        Should -Invoke Install-Module -Times 2 -Exactly
+        Should -Invoke Import-Module -Times 0 -Exactly
+    }
+
+    It 'Does not retry an archive-like error outside the proved contract: <kind>' -ForEach @(
+        @{ kind = 'different error identifier'; errorInput = @{ ErrorId = 'UnrelatedError' } }
+        @{ kind = 'different category'; errorInput = @{ Category = 'InvalidOperation' } }
+        @{ kind = 'different package'; errorInput = @{ Name = 'Another.Module' } }
+        @{ kind = 'other installation failure'; errorInput = @{ Detail = 'Access to the path is denied.' } }
+    ) {
+        Mock Install-Module { throw (Get-ArchiveFailure @errorInput) }
+
+        { Install-CustomModule -Module @{ Name = 'Fixture.Module' } } | Should -Throw
+
+        Should -Invoke Install-Module -Times 1 -Exactly
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
+    It 'Does not replay an installation with <kind> dependency metadata' -ForEach @(
+        @{ kind = 'declared'; dependency = @(@{ Name = 'Another.Module'; RequiredVersion = '1.0.0' }); hasProperty = $true }
+        @{ kind = 'missing'; dependency = $null; hasProperty = $false }
+        @{ kind = 'null'; dependency = $null; hasProperty = $true }
+    ) {
+        Mock Find-Module {
+            $result = [pscustomobject] @{ Name = 'Fixture.Module'; Version = [version] '1.2.3' }
+            if ($hasProperty) { $result | Add-Member Dependencies $dependency }
+            $result
+        }
+        Mock Install-Module { throw (Get-ArchiveFailure) }
+
+        { Install-CustomModule -Module @{ Name = 'Fixture.Module' } } | Should -Throw
+
+        Should -Invoke Install-Module -Times 1 -Exactly
+    }
+
+    It 'Does not retry an unverified <component> runtime' -ForEach @(
+        @{ component = 'PowerShellGet' }
+        @{ component = 'PackageManagement' }
+        @{ component = 'NuGet' }
+    ) {
+        if ($component -eq 'NuGet') {
+            Mock Get-PackageProvider { @{ Name = 'NuGet'; Version = [version] '9.9.9' } }
+        } else {
+            Mock Get-Module { @{ Version = [version] '9.9.9' } } -ParameterFilter { $Name -eq $component }
+        }
+        Mock Install-Module { throw (Get-ArchiveFailure) }
+
+        { Install-CustomModule -Module @{ Name = 'Fixture.Module' } } | Should -Throw
+
+        Should -Invoke Install-Module -Times 1 -Exactly
+    }
+
+    It 'Does not install, retry, import, or unload with an existing repository under WhatIf' {
+        Install-CustomModule -Module @{ Name = 'Fixture.Module' } -WhatIf
+
+        Should -Invoke Install-Module -Times 0 -Exactly
+        Should -Invoke Get-PackageProvider -Times 0 -Exactly
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+        Should -Invoke Import-Module -Times 0 -Exactly
+        Should -Invoke Remove-Module -Times 0 -Exactly
+    }
+
+    It 'Checks the resolved version even when the request did not specify a version' {
+        Mock Get-Module {
+            if ($ListAvailable) { @{ Name = 'Fixture.Module'; Version = [version] '1.1.0' } }
+        }
+
+        { Install-CustomModule -Module @{ Name = 'Fixture.Module' } } |
+            Should -Throw '*Installation of module*failed*'
+    }
+
+    It 'Does not accept a matching module directory without its manifest' {
+        Mock Test-Path { $false } -ParameterFilter { $LiteralPath -eq (Join-Path $script:moduleBase 'Fixture.Module.psd1') }
+
+        { Install-CustomModule -Module @{ Name = 'Fixture.Module' } } |
+            Should -Throw '*manifest*'
+
+        Should -Invoke Import-Module -Times 0 -Exactly
+    }
+
+    It 'Rejects a module that cannot be imported' {
+        Mock Import-Module { throw 'Module initialization failed.' }
+
+        { Install-CustomModule -Module @{ Name = 'Fixture.Module' } } |
+            Should -Throw '*Module initialization failed.*'
+
+        Should -Invoke Install-Module -Times 1 -Exactly
+    }
+
+    It 'Rejects an imported module with the wrong <mismatch>' -ForEach @(
+        @{ mismatch = 'name'; name = 'Another.Module'; version = '1.2.3'; useOtherPath = $false }
+        @{ mismatch = 'version'; name = 'Fixture.Module'; version = '1.1.0'; useOtherPath = $false }
+        @{ mismatch = 'path'; name = 'Fixture.Module'; version = '1.2.3'; useOtherPath = $true }
+    ) {
+        Mock Import-Module {
+            [pscustomobject] @{
+                Name       = $name
+                Version    = [version] $version
+                ModuleBase = $useOtherPath ? (Join-Path $TestDrive 'other') : $script:moduleBase
+            }
+        }
+
+        { Install-CustomModule -Module @{ Name = 'Fixture.Module' } } |
+            Should -Throw '*imported module*does not match*'
+    }
+
+    It 'Does not replace an incompatible loaded Pester engine' {
+        Mock Find-Module {
+            [pscustomobject] @{ Name = 'Pester'; Version = [version] '5.7.1'; Dependencies = @() }
+        }
+        Mock Get-Module {
+            if ($ListAvailable) {
+                [pscustomobject] @{ Name = 'Pester'; Version = [version] '5.7.1'; ModuleBase = (Join-Path $TestDrive 'Pester\5.7.1') }
+            } else {
+                [pscustomobject] @{ Name = 'Pester'; Version = [version] '5.5.0'; ModuleBase = (Join-Path $TestDrive 'Pester\5.5.0') }
+            }
+        } -ParameterFilter { $Name -eq 'Pester' }
+
+        { Install-CustomModule -Module @{ Name = 'Pester'; Version = '5.7.1' } } |
+            Should -Throw '*already loaded*'
+
+        Should -Invoke Remove-Module -Times 0 -Exactly
+        Should -Invoke Import-Module -Times 0 -Exactly
+    }
+}
+
+Describe 'Installed dependency usability' {
+    BeforeAll {
+        if (Get-Module -Name Avm.BootstrapFixture -ListAvailable) { throw 'The fixture module name is already installed.' }
+        $script:originalModulePath = $env:PSModulePath
+        $script:originalPester = Get-Module -Name Pester
+    }
+
+    BeforeEach {
+        $script:fixtureRoot = Join-Path $TestDrive ([guid]::NewGuid().ToString('N'))
+        $script:fixtureBase = Join-Path $script:fixtureRoot 'Avm.BootstrapFixture\1.2.3'
+        $script:fixtureManifest = Join-Path $script:fixtureBase 'Avm.BootstrapFixture.psd1'
+        $script:fixtureScript = Join-Path $script:fixtureBase 'Avm.BootstrapFixture.psm1'
+        $null = New-Item -ItemType Directory -Path $script:fixtureBase -Force
+        $env:PSModulePath = $script:fixtureRoot + [System.IO.Path]::PathSeparator + $script:originalModulePath
+        Set-Content -LiteralPath $script:fixtureManifest -Value "@{ ModuleVersion = '1.2.3'; RootModule = 'Avm.BootstrapFixture.psm1'; FunctionsToExport = @('Get-AvmBootstrapFixtureValue') }"
+        Set-Content -LiteralPath $script:fixtureScript -Value "function Get-AvmBootstrapFixtureValue { 'fixture-ready' }"
+        Mock Get-PSRepository { @{ Name = 'PSGallery' } }
+        Mock Find-Module {
+            [pscustomobject] @{ Name = 'Avm.BootstrapFixture'; Version = [version] '1.2.3'; Dependencies = @() }
+        }
+        Mock Install-Module {}
+        Mock Start-Sleep {}
+    }
+
+    AfterEach {
+        Get-Module -Name Avm.BootstrapFixture |
+            Where-Object ModuleBase -EQ $script:fixtureBase |
+            Remove-Module -ErrorAction Stop
+        $env:PSModulePath = $script:originalModulePath
+        $pester = Get-Module -Name Pester
+        $pester.Version | Should -Be $script:originalPester.Version
+        $pester.ModuleBase | Should -BeExactly $script:originalPester.ModuleBase
+    }
+
+    It 'Imports the exact manifest and makes the installed fixture usable' {
+        Install-CustomModule -Module @{ Name = 'Avm.BootstrapFixture'; Version = '1.2.3' }
+
+        Get-AvmBootstrapFixtureValue | Should -BeExactly 'fixture-ready'
+        $loaded = Get-Module -Name Avm.BootstrapFixture
+        $loaded.Version | Should -Be ([version] '1.2.3')
+        $loaded.ModuleBase | Should -BeExactly $script:fixtureBase
+    }
+
+    It 'Rejects a real manifest whose root module fails to initialize' {
+        Set-Content -LiteralPath $script:fixtureScript -Value "throw 'Offline fixture initialization failed.'"
+
+        { Install-CustomModule -Module @{ Name = 'Avm.BootstrapFixture'; Version = '1.2.3' } } |
+            Should -Throw '*Offline fixture initialization failed.*'
+
+        Should -Invoke Install-Module -Times 1 -Exactly
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
+    It 'Rejects a manifest whose required root file is missing' {
+        Remove-Item -LiteralPath $script:fixtureScript
+
+        { Install-CustomModule -Module @{ Name = 'Avm.BootstrapFixture'; Version = '1.2.3' } } | Should -Throw
+
+        Should -Invoke Install-Module -Times 1 -Exactly
+    }
+
+    It 'Does not accept an empty leftover version directory' {
+        Remove-Item -LiteralPath $script:fixtureScript, $script:fixtureManifest
+
+        { Install-CustomModule -Module @{ Name = 'Avm.BootstrapFixture'; Version = '1.2.3' } } |
+            Should -Throw '*Installation of module*failed*'
     }
 }
