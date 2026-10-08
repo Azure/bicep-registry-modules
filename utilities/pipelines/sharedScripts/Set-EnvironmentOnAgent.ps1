@@ -7,6 +7,8 @@ Installes given PowerShell modules
 
 .DESCRIPTION
 Installes given PowerShell modules
+Reuses installed modules that satisfy the request without querying PSGallery.
+Resolution and installation failures terminate the command.
 
 .PARAMETER Module
 Required. Modules to be installed, must be Object
@@ -33,6 +35,14 @@ function Install-CustomModule {
         [Parameter(Mandatory = $false)]
         [object[]] $InstalledModule = @()
     )
+
+    $alreadyInstalled = @($InstalledModule | Where-Object { $_.Name -eq $Module.Name -and
+                (-not $Module.Version -or $_.Version -eq $Module.Version) } |
+            Sort-Object -Culture 'en-US' -Property 'Version' -Descending)
+    if ($alreadyInstalled.Count -gt 0) {
+        Write-Verbose ('Module [{0}] already installed with version [{1}]' -f $alreadyInstalled[0].Name, $alreadyInstalled[0].Version) -Verbose
+        return
+    }
 
     if (-not (Get-PSRepository -ErrorAction Stop | Where-Object Name -EQ 'PSGallery')) {
         if (-not $PSCmdlet.ShouldProcess('PSGallery', 'Register default PowerShell repository')) {
@@ -61,23 +71,12 @@ function Install-CustomModule {
     }
 
     # Get all modules that match a certain name. In case of e.g. 'Az' it returns several.
-    $foundModules = Find-Module @moduleImportInputObject
+    $foundModules = @(Find-Module @moduleImportInputObject -ErrorAction Stop)
+    if ($foundModules.Count -eq 0) {
+        throw ('Required module [{0}] could not be resolved from PSGallery.' -f $Module.Name)
+    }
 
     foreach ($foundModule in $foundModules) {
-
-        # Check if already installed as required
-        if ($alreadyInstalled = $InstalledModule | Where-Object { $_.Name -eq $Module.Name }) {
-            if ($Module.Version) {
-                $alreadyInstalled = $alreadyInstalled | Where-Object { $_.Version -eq $Module.Version }
-            } else {
-                # Get latest in case of multiple
-                $alreadyInstalled = ($alreadyInstalled | Sort-Object -Culture 'en-US' -Property 'Version' -Descending)[0]
-            }
-            if ($alreadyInstalled) {
-                Write-Verbose ('Module [{0}] already installed with version [{1}]' -f $alreadyInstalled.Name, $alreadyInstalled.Version) -Verbose
-                continue
-            }
-        }
 
         # Check if not to be excluded
         if ($Module.ExcludeModules -and $Module.excludeModules.contains($foundModule.Name)) {
@@ -87,11 +86,12 @@ function Install-CustomModule {
 
         Write-Verbose ('Install module [{0}] with version [{1}]' -f $foundModule.Name, $foundModule.Version) -Verbose
         if ($PSCmdlet.ShouldProcess('Module [{0}]' -f $foundModule.Name, 'Install')) {
-            $foundModule | Install-Module -Force -SkipPublisherCheck -AllowClobber
-            if ($installed = Get-Module -Name $foundModule.Name -ListAvailable) {
+            $foundModule | Install-Module -Force -SkipPublisherCheck -AllowClobber -ErrorAction Stop
+            if ($installed = @(Get-Module -Name $foundModule.Name -ListAvailable -ErrorAction Stop |
+                        Where-Object { -not $Module.Version -or $_.Version -eq $Module.Version })) {
                 Write-Verbose ('Module [{0}] is installed with version [{1}]' -f $installed[0].name, ($installed.Version -join ', ')) -Verbose
             } else {
-                Write-Error ('Installation of module [{0}] failed' -f $foundModule.Name)
+                throw ('Installation of module [{0}] failed' -f $foundModule.Name)
             }
         }
     }

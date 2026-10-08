@@ -1,4 +1,40 @@
-﻿function Get-DeploymentResourceId {
+﻿function Test-DeploymentResponseJson {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory)]
+        [AllowEmptyString()]
+        [string] $Json
+    )
+
+    try {
+        $document = [System.Text.Json.JsonDocument]::Parse($Json)
+    } catch [System.Text.Json.JsonException] {
+        return $false
+    }
+    try {
+        $nodes = [System.Collections.Generic.Stack[System.Text.Json.JsonElement]]::new()
+        $nodes.Push($document.RootElement)
+        while ($nodes.Count -gt 0) {
+            $node = $nodes.Pop()
+            if ($node.ValueKind -eq [System.Text.Json.JsonValueKind]::Object) {
+                $names = @{}
+                foreach ($property in $node.EnumerateObject()) {
+                    if ($names.ContainsKey($property.Name)) { return $false }
+                    $names[$property.Name] = $true
+                    $nodes.Push($property.Value)
+                }
+            } elseif ($node.ValueKind -eq [System.Text.Json.JsonValueKind]::Array) {
+                foreach ($child in $node.EnumerateArray()) { $nodes.Push($child) }
+            }
+        }
+        return $true
+    } finally {
+        $document.Dispose()
+    }
+}
+
+function Get-DeploymentResourceId {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -183,6 +219,10 @@ function Get-DeploymentOperationAtScope {
             throw "Deployment [$Name] returned repeated or excessive operation pages."
         }
         $response = Invoke-AzRestMethod -Method 'GET' -Path $path -ErrorAction Stop
+        if ($IncludeAllOperations -and ($response.Content -isnot [string] -or
+                -not (Test-DeploymentResponseJson -Json $response.Content))) {
+            throw "Deployment [$Name] returned invalid or ambiguous operation JSON; regional retry is unsafe."
+        }
         $content = $response.Content | ConvertFrom-Json -NoEnumerate -ErrorAction Stop
 
         if ($response.StatusCode -ne 200) {
