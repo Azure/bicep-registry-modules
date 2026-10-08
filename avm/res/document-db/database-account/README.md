@@ -3788,6 +3788,7 @@ param zoneRedundant = true
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true. |
 | [`disableLocalAuthentication`](#parameter-disablelocalauthentication) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
+| [`enableAllVersionsAndDeletesChangeFeed`](#parameter-enableallversionsanddeleteschangefeed) | bool | Flag to indicate if All Versions and Deletes Change feed feature is enabled on the account. |
 | [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
 | [`enableAutomaticFailover`](#parameter-enableautomaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
 | [`enableBurstCapacity`](#parameter-enableburstcapacity) | bool | Flag to indicate enabling/disabling of Burst Capacity feature on the account. Cannot be enabled for serverless accounts. |
@@ -4595,6 +4596,13 @@ Opt-out of local authentication and ensure that only Microsoft Entra can be used
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `enableAllVersionsAndDeletesChangeFeed`
+
+Flag to indicate if All Versions and Deletes Change feed feature is enabled on the account.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `enableAnalyticalStorage`
 
