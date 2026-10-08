@@ -101,7 +101,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-management/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apiscon001'
+    name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -124,7 +124,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apiscon001"
+      "value": "<name>"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -151,7 +151,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apiscon001'
+param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
@@ -176,7 +176,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-management/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apismin001'
+    name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
   }
@@ -197,7 +197,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apismin001"
+      "value": "<name>"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -220,7 +220,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apismin001'
+param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 ```
@@ -243,7 +243,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-management/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apisdev001'
+    name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -267,7 +267,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apisdev001"
+      "value": "<name>"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -297,7 +297,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apisdev001'
+param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
@@ -2894,7 +2894,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-management/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apisv2min001'
+    name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -2918,7 +2918,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apisv2min001"
+      "value": "<name>"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -2948,7 +2948,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apisv2min001'
+param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters

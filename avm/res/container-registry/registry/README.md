@@ -137,7 +137,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrencr001'
+    name: '<name>'
     // Non-required parameters
     acrSku: 'Premium'
     customerManagedKey: {
@@ -165,7 +165,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrencr001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrSku": {
@@ -199,7 +199,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrencr001'
+param name = '<name>'
 // Non-required parameters
 param acrSku = 'Premium'
 param customerManagedKey = {

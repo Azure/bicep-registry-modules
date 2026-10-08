@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${take('${namePrefix}${serviceShort}001', 37)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
       location: resourceLocation
       acrSku: 'Premium'
       customerManagedKey: {
