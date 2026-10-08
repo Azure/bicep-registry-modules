@@ -212,12 +212,14 @@ Describe 'Provider-specific service error boundaries' {
     }
 
     It 'Accepts the same complete Container Apps diagnostic with Windows line endings' {
-        $sample = $cases[2].response
-        $leaf = Get-ServiceErrorLeaf $sample
-        $leaf.message = $leaf.message.Replace("`n", "`r`n")
+        foreach ($case in @($cases | Where-Object provider -EQ 'Microsoft.App/managedEnvironments')) {
+            $sample = $case.response
+            $leaf = Get-ServiceErrorLeaf $sample
+            $leaf.message = $leaf.message.Replace("`n", "`r`n")
 
-        Test-RegionalValidationError -ErrorRecord (New-ServiceErrorRecord $sample) -ResourceLocation centralus `
-            -SubscriptionId '11111111-1111-1111-1111-111111111111' | Should -BeTrue
+            Test-RegionalValidationError -ErrorRecord (New-ServiceErrorRecord $sample) -ResourceLocation $case.region `
+                -SubscriptionId '11111111-1111-1111-1111-111111111111' | Should -BeTrue
+        }
     }
 
     It 'Requires Container Apps identity and consistent complete embedded AKS evidence: <change>' -ForEach @(
@@ -228,31 +230,36 @@ Describe 'Provider-specific service error boundaries' {
         @{ change = 'malformed body' }, @{ change = 'nonempty subcode' }, @{ change = 'HTTP 403' }
         @{ change = 'missing availability link' }, @{ change = 'unclassified trailing line' }, @{ change = 'duplicate HTTP header' }
     ) {
-        $sample = $cases[2].response
-        $leaf = Get-ServiceErrorLeaf $sample
-        $subscription = '11111111-1111-1111-1111-111111111111'
-        switch ($change) {
-            'missing managed-environment target' { $sample.error.details[0].Remove('target') }
-            'wrong managed-environment provider' {
-                $sample.error.details[0].target = $sample.error.details[0].target.Replace('Microsoft.App/managedEnvironments', 'Microsoft.ContainerService/managedClusters')
+        foreach ($case in @($cases | Where-Object provider -EQ 'Microsoft.App/managedEnvironments')) {
+            $sample = $case.response
+            $leaf = Get-ServiceErrorLeaf $sample
+            $subscription = '11111111-1111-1111-1111-111111111111'
+            switch ($change) {
+                'missing managed-environment target' { $sample.error.details[0].Remove('target') }
+                'wrong managed-environment provider' {
+                    $sample.error.details[0].target = $sample.error.details[0].target.Replace('Microsoft.App/managedEnvironments', 'Microsoft.ContainerService/managedClusters')
+                }
+                'wrong subscription' { $subscription = '22222222-2222-2222-2222-222222222222' }
+                'missing subscription' { $subscription = '' }
+                'body permission code' { $leaf.message = $leaf.message.Replace('"code": "AKSCapacityHeavyUsage"', '"code": "AuthorizationFailed"') }
+                'duplicate body code' { $leaf.message = $leaf.message.Replace('"code":', '"code": "AuthorizationFailed", "code":') }
+                'case duplicate body code' { $leaf.message = $leaf.message.Replace('"code":', '"Code": "AuthorizationFailed", "code":') }
+                'escaped duplicate body code' { $leaf.message = $leaf.message.Replace('"code":', '"\u0063ode": "AuthorizationFailed", "code":') }
+                'mixed body details' { $leaf.message = $leaf.message.Replace('"details": null', '"details": [{"code": "AuthorizationFailed"}]') }
+                'unknown body field' { $leaf.message = $leaf.message.Replace('"details": null', '"details": null, "unknown": null') }
+                'body region mismatch' {
+                    $pattern = '("message": "[^"]*region )' + [regex]::Escape($case.region)
+                    $leaf.message = $leaf.message -creplace $pattern, '${1}westus2'
+                }
+                'malformed body' { $leaf.message = $leaf.message.Replace('"subcode": ""', '"subcode": ') }
+                'nonempty subcode' { $leaf.message = $leaf.message.Replace('"subcode": ""', '"subcode": "PermissionDenied"') }
+                'HTTP 403' { $leaf.message = $leaf.message.Replace('400 (Bad Request)', '403 (Forbidden)') }
+                'missing availability link' { $leaf.message = $leaf.message.Replace('https://aka.ms/akscapacityheavyusage', 'https://example.invalid/capacity') }
+                'unclassified trailing line' { $leaf.message += "AuthorizationFailed`n" }
+                'duplicate HTTP header' { $leaf.message += "Content-Type: text/plain`n" }
             }
-            'wrong subscription' { $subscription = '22222222-2222-2222-2222-222222222222' }
-            'missing subscription' { $subscription = '' }
-            'body permission code' { $leaf.message = $leaf.message.Replace('"code": "AKSCapacityHeavyUsage"', '"code": "AuthorizationFailed"') }
-            'duplicate body code' { $leaf.message = $leaf.message.Replace('"code":', '"code": "AuthorizationFailed", "code":') }
-            'case duplicate body code' { $leaf.message = $leaf.message.Replace('"code":', '"Code": "AuthorizationFailed", "code":') }
-            'escaped duplicate body code' { $leaf.message = $leaf.message.Replace('"code":', '"\u0063ode": "AuthorizationFailed", "code":') }
-            'mixed body details' { $leaf.message = $leaf.message.Replace('"details": null', '"details": [{"code": "AuthorizationFailed"}]') }
-            'unknown body field' { $leaf.message = $leaf.message.Replace('"details": null', '"details": null, "unknown": null') }
-            'body region mismatch' { $leaf.message = $leaf.message.Replace('"message": "AKS is experiencing heavy usage in region centralus.', '"message": "AKS is experiencing heavy usage in region westus2.') }
-            'malformed body' { $leaf.message = $leaf.message.Replace('"subcode": ""', '"subcode": ') }
-            'nonempty subcode' { $leaf.message = $leaf.message.Replace('"subcode": ""', '"subcode": "PermissionDenied"') }
-            'HTTP 403' { $leaf.message = $leaf.message.Replace('400 (Bad Request)', '403 (Forbidden)') }
-            'missing availability link' { $leaf.message = $leaf.message.Replace('https://aka.ms/akscapacityheavyusage', 'https://example.invalid/capacity') }
-            'unclassified trailing line' { $leaf.message += "AuthorizationFailed`n" }
-            'duplicate HTTP header' { $leaf.message += "Content-Type: text/plain`n" }
+            Test-RegionalValidationError -ErrorRecord (New-ServiceErrorRecord $sample) -ResourceLocation $case.region `
+                -SubscriptionId $subscription | Should -BeFalse
         }
-        Test-RegionalValidationError -ErrorRecord (New-ServiceErrorRecord $sample) -ResourceLocation centralus `
-            -SubscriptionId $subscription | Should -BeFalse
     }
 }

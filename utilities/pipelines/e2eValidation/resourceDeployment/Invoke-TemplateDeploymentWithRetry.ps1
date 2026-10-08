@@ -134,8 +134,10 @@ function Test-DeploymentRetryError {
                 'Please refer to https://aka\.ms/semanticsearchavailability for list of available regions\.\z'
             }
             'ManagedEnvironmentCapacityHeavyUsageError' {
-                $summary = "AKS is experiencing heavy usage in region $regionPattern\. We are working on adding new capacity\. " +
-                'In the meantime, please consider creating new AKS clusters in a different region\. For a list of all the Azure regions, visit https://aka\.ms/aks/regions\. ' +
+                $summary = "(?:AKS is experiencing heavy usage in region $regionPattern\. We are working on adding new capacity\. " +
+                'In the meantime, please consider creating new AKS clusters in a different region\.|' +
+                "Creating a new cluster is unavailable at this time in region $regionPattern\. To create a new cluster, we recommend using an alternate region\.) " +
+                'For a list of all the Azure regions, visit https://aka\.ms/aks/regions\. ' +
                 'For more details on this error, visit https://aka\.ms/akscapacityheavyusage\.'
                 $pattern = "\A(?<summary>$summary)\r?\nStatus: 400 \(Bad Request\)\r?\nErrorCode: AKSCapacityHeavyUsage\r?\n\r?\n" +
                 'Content:\r?\n(?<json>\{[\s\S]*\})\r?\n\r?\nHeaders:\r?\n(?<headers>(?:[A-Za-z0-9-]+: [^\r\n]+\r?\n)+)\z'

@@ -50,5 +50,29 @@
         ]
       }
     }
+  },
+  {
+    "name": "Container Apps new-cluster capacity",
+    "region": "eastus",
+    "provider": "Microsoft.App/managedEnvironments",
+    "response": {
+      "error": {
+        "code": "DeploymentFailed",
+        "message": "At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-deployment-operations for usage details.",
+        "details": [
+          {
+            "code": "ResourceDeploymentFailure",
+            "target": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/retry-fixture/providers/Microsoft.App/managedEnvironments/environment",
+            "message": "The resource write operation failed to complete successfully, because it reached terminal provisioning state 'Failed'.",
+            "details": [
+              {
+                "code": "ManagedEnvironmentCapacityHeavyUsageError",
+                "message": "Creating a new cluster is unavailable at this time in region eastus. To create a new cluster, we recommend using an alternate region. For a list of all the Azure regions, visit https://aka.ms/aks/regions. For more details on this error, visit https://aka.ms/akscapacityheavyusage.\nStatus: 400 (Bad Request)\nErrorCode: AKSCapacityHeavyUsage\n\nContent:\n{\n  \"code\": \"AKSCapacityHeavyUsage\",\n  \"details\": null,\n  \"message\": \"Creating a new cluster is unavailable at this time in region eastus. To create a new cluster, we recommend using an alternate region. For a list of all the Azure regions, visit https://aka.ms/aks/regions. For more details on this error, visit https://aka.ms/akscapacityheavyusage.\",\n  \"subcode\": \"\"\n}\n\nHeaders:\nContent-Type: application/json\n"
+              }
+            ]
+          }
+        ]
+      }
+    }
   }
 ]

@@ -515,7 +515,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             $script:serviceErrorTemplate = $response | ConvertTo-Json -Depth 20
             $script:serviceErrorRegion = $region
             $script:serviceErrorFollowsRegion = $false
-            $script:regions = @($region, 'westeurope', 'eastus')
+            $script:regions = @($region, 'westeurope', 'northeurope')
             $script:incidentMessage = "The deployment '{0}' failed with error(s). Selected resource location '$region'."
             $script:serviceId = "$script:groupId/providers/$provider/environment"
             Mock New-AzSubscriptionDeployment {
@@ -574,7 +574,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             $result = Invoke-TemplateDeploymentWithRetry @retryInput
 
             $result.ContainsKey('Exception') | Should -BeTrue
-            $result.AttemptedLocations | Should -Be @($region, 'westeurope', 'eastus')
+            $result.AttemptedLocations | Should -Be @($region, 'westeurope', 'northeurope')
             $result.DeploymentAttempts | Should -Be 3
             @($script:submissions).Count | Should -Be 3
             $result.RemainingDeploymentNames | Should -Be @($script:names[2])
