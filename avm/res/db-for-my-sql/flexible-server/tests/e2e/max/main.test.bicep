@@ -56,7 +56,7 @@ module nestedDependencies2 'dependencies2.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    geoBackupKeyVaultName: 'dep-${namePrefix}-kvp-${serviceShort}-${substring(uniqueString(baseTime), 0, 2)}'
+    geoBackupKeyVaultName: 'dep-kvp-${uniqueString(resourceGroup.id, namePrefix, serviceShort, baseTime)}'
     geoBackupManagedIdentityName: 'dep-${namePrefix}-msip-${serviceShort}'
     geoBackupLocation: nestedDependencies1.outputs.pairedRegionName
   }
