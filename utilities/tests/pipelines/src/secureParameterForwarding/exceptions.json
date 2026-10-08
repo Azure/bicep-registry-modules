@@ -28,5 +28,25 @@
     "Status": "Unsupported",
     "ExpressionHash": "828FF217A9A2C2CD75FD77A1FAD4675CFEF5FA87970D69BCFC189F59F9EDD064",
     "Reason": "Existing SQL secret-export union/if/createObject/format projection is outside the forwarding grammar. Not claimed as analyzed. Pin the exact emitted expression so changes require review; do not exempt the deployment or secretsToSet object generally."
+  },
+  {
+    "Module": "avm/res/container-service/managed-cluster",
+    "Deployment": "/managedCluster_extension/fluxConfiguration",
+    "Target": "configurationProtectedSettings",
+    "SinkType": "secureObject",
+    "Source": "fluxConfigurations.[].configurationProtectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": "",
+    "Reason": "Fixed in kubernetes-configuration/extension 0.3.9 (fluxConfigurationType secures configurationProtectedSettings). This module still references published 0.3.8; bump the reference once 0.3.9 publishes, then remove this exception."
+  },
+  {
+    "Module": "avm/res/kubernetes-runtime/load-balancer",
+    "Deployment": "/arcnetworking/fluxConfiguration",
+    "Target": "configurationProtectedSettings",
+    "SinkType": "secureObject",
+    "Source": "fluxConfigurations.[].configurationProtectedSettings",
+    "Status": "Mismatch",
+    "ExpressionHash": "",
+    "Reason": "Fixed in kubernetes-configuration/extension 0.3.9 (fluxConfigurationType secures configurationProtectedSettings). This module still references published 0.3.7; bump the reference once 0.3.9 publishes, then remove this exception."
   }
 ]
