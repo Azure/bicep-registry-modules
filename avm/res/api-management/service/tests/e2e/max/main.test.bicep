@@ -73,7 +73,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-var apimName = '${namePrefix}${serviceShort}001'
+var apimName = '${take('${namePrefix}${serviceShort}001', 17)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
 var backend1Name = 'backend1'
 var workspace1Name = 'workspace1'
 var workspace1Backend1Name = 'workspace1-backend1'

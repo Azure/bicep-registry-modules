@@ -70,7 +70,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-var apimName = '${namePrefix}${serviceShort}002'
+var apimName = '${take('${namePrefix}${serviceShort}002', 36)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
 var backend1Name = 'backend1'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
