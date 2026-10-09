@@ -423,6 +423,88 @@ function Get-ErrorMessageForScope {
 
 <#
 .SYNOPSIS
+Detect explicit authorization denials in structured ARM deployment errors.
+#>
+function Test-DeploymentAuthorizationError {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory)]
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [object] $ErrorResponse
+    )
+
+    $json = if ($ErrorResponse -is [string]) { $ErrorResponse } else { ConvertTo-Json -InputObject $ErrorResponse -Depth 30 -WarningAction Stop }
+    if (-not (Test-DeploymentResponseJson -Json $json)) {
+        throw 'Deployment authorization classification requires complete structured ARM errors.'
+    }
+    $response = ConvertFrom-Json -InputObject $json -AsHashtable -ErrorAction Stop
+    $guidPattern = '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
+    $roleAssignmentPattern = "\AThe template deployment failed with error: 'Authorization failed for template resource '(?<assignment>$guidPattern)' " +
+    "of type 'Microsoft\.Authorization/roleAssignments'\. The client '[^'\r\n]+' with object id '$guidPattern' " +
+    "does not have permission to perform action 'Microsoft\.Authorization/roleAssignments/write' at scope " +
+    "'/subscriptions/$guidPattern/resourceGroups/[^/'\r\n]+/(?:providers/[^/'\r\n]+/[^/'\r\n]+/[^/'\r\n]+/)*" +
+    "providers/Microsoft\.Authorization/roleAssignments/\k<assignment>'\.'\.\z"
+
+    function Test-AuthorizationErrorNode {
+        param([object] $Node, [int] $Depth = 0)
+
+        if ($Depth -gt 20 -or $null -eq $Node) {
+            throw 'Deployment authorization classification encountered incomplete ARM errors.'
+        }
+        if ($Node -is [array]) {
+            if ($Node.Count -eq 0) { throw 'Deployment authorization classification found no ARM errors.' }
+            $denied = $false
+            foreach ($child in $Node) {
+                if (Test-AuthorizationErrorNode -Node $child -Depth ($Depth + 1)) { $denied = $true }
+            }
+            return $denied
+        }
+        if ($Node -isnot [System.Collections.IDictionary]) {
+            throw 'Deployment authorization classification encountered an unstructured ARM error.'
+        }
+        $properties = @{}
+        foreach ($key in $Node.psbase.Keys) {
+            if ($properties.ContainsKey($key)) { throw 'Deployment authorization classification encountered ambiguous ARM error properties.' }
+            $properties[$key] = $Node[$key]
+        }
+        $Node = $properties
+        if ($Node.Contains('status') -and ($Node.status -isnot [string] -or $Node.status -cne 'Failed')) {
+            throw 'Deployment authorization classification requires failed ARM errors.'
+        }
+        if ($Node.Contains('error')) {
+            if (@($Node.Keys | Where-Object { $_ -notin @('error', 'status') }).Count -gt 0) {
+                throw 'Deployment authorization classification encountered an ambiguous ARM error envelope.'
+            }
+            return Test-AuthorizationErrorNode -Node $Node.error -Depth ($Depth + 1)
+        }
+        if (($Node.Contains('code') -and ($Node.code -isnot [string] -or [string]::IsNullOrWhiteSpace($Node.code))) -or
+            ($Node.Contains('message') -and $Node.message -isnot [string]) -or
+            (-not $Node.Contains('code') -and -not $Node.Contains('message')) -or
+            ($null -ne $Node.target -and $Node.target -isnot [string]) -or
+            @($Node.Keys | Where-Object { $_ -notin @('code', 'message', 'target', 'details', 'innererror', 'additionalInfo') }).Count -gt 0) {
+            throw 'Deployment authorization classification encountered malformed ARM error details.'
+        }
+        $denied = $Node.code -cin @('AuthorizationFailed', 'LinkedAuthorizationFailed', 'InvalidAuthenticationToken') -or
+        ($Node.code -ceq 'InvalidTemplateDeployment' -and $Node.message -is [string] -and $Node.message -cmatch $roleAssignmentPattern)
+        if ($null -ne $Node.details) {
+            if ($Node.details -isnot [array]) { throw 'Deployment authorization classification encountered malformed ARM error children.' }
+            foreach ($child in $Node.details) {
+                if (Test-AuthorizationErrorNode -Node $child -Depth ($Depth + 1)) { $denied = $true }
+            }
+        }
+        if ($null -ne $Node.innererror -and (Test-AuthorizationErrorNode -Node $Node.innererror -Depth ($Depth + 1))) {
+            $denied = $true
+        }
+        return $denied
+    }
+
+    return Test-AuthorizationErrorNode -Node $response
+}
+
+<#
+.SYNOPSIS
 Run a template deployment using a given parameter file
 
 .DESCRIPTION
@@ -436,6 +518,7 @@ That recovery never uses legacy replay; confirmed failure still requires coordin
 Management-group HTTP 403 submissions use the same observation window and original Azure context.
 Only a matching Succeeded deployment recovers its outputs; authorization errors never permit replay.
 Only confirmed failure permits another submission; unknown outcomes retain attempted names for cleanup.
+Returned Failed results require matching root status and complete structured error details before legacy retry.
 
 .PARAMETER TemplateFilePath
 Mandatory. The path to the deployment file
@@ -619,6 +702,8 @@ function New-TemplateDeploymentInner {
             $submissionStarted = $false
             $submissionReturned = $false
             $submissionContext = $null
+            $returnedFailure = $false
+            $returnedFailureDetailsRead = $false
 
             try {
                 switch ($deploymentScope) {
@@ -684,7 +769,7 @@ function New-TemplateDeploymentInner {
                 }
                 if ($res.ProvisioningState -eq 'Failed') {
                     # Deployment failed but no exception was thrown. Hence we must do it for the command.
-
+                    $returnedFailure = $true
                     $errorInputObject = @{
                         DeploymentScope   = $deploymentScope
                         DeploymentName    = $deploymentName
@@ -692,6 +777,7 @@ function New-TemplateDeploymentInner {
                         ManagementGroupId = $ManagementGroupId
                     }
                     $exceptionMessage = Get-ErrorMessageForScope @errorInputObject
+                    $returnedFailureDetailsRead = $true
 
                     throw "Deployed failed with provisioning state [Failed]. Error Message: [$exceptionMessage]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                 }
@@ -704,10 +790,35 @@ function New-TemplateDeploymentInner {
             } catch {
                 $deploymentError = $_
                 $errorKind = Get-DeploymentErrorKind -ErrorRecord $deploymentError
-                $recoveryFailed = $false
+                $recoveryFailed = $returnedFailure -and -not $returnedFailureDetailsRead
                 $nestedReadRecovery = $false
+                $authorizationDenied = $false
                 if ($errorKind -eq 'Cancellation') {
                     throw
+                }
+                if ($returnedFailure -and -not $recoveryFailed) {
+                    try {
+                        $deployment = Get-TemplateDeployment @errorInputObject -SubscriptionId $SubscriptionId -DefaultProfile $submissionContext -ErrorAction Stop
+                        if ($deployment -is [array] -or $deployment.ProvisioningState -isnot [string] -or $deployment.ProvisioningState -ne 'Failed') {
+                            throw "Deployment [$deploymentName] is [$($deployment.ProvisioningState)]; no retry is safe."
+                        }
+                        $errors = Get-ErrorMessageForScope @errorInputObject -AsObject -ErrorAction Stop
+                        $authorizationDenied = Test-DeploymentAuthorizationError -ErrorResponse $errors
+                    } catch [System.Management.Automation.PipelineStoppedException] {
+                        throw
+                    } catch {
+                        if ((Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Cancellation') { throw }
+                        $exception = [System.AggregateException]::new(
+                            "Deployment [$deploymentName] failure details could not be established; no deployment will be resubmitted.",
+                            [System.Exception[]] @($deploymentError.Exception, $_.Exception)
+                        )
+                        $exception.Data['OriginalErrorRecord'] = $deploymentError
+                        $exception.Data['RecoveryErrorRecord'] = $_
+                        $deploymentError = [System.Management.Automation.ErrorRecord]::new(
+                            $exception, 'DeploymentFailureDetailsUnavailable', [System.Management.Automation.ErrorCategory]::InvalidResult, $deploymentName
+                        )
+                        $recoveryFailed = $true
+                    }
                 }
                 if ($submissionStarted -and -not $submissionReturned -and $null -eq $res -and
                     $deploymentScope -eq 'subscription' -and
@@ -845,7 +956,8 @@ function New-TemplateDeploymentInner {
                 $failedDeploymentMessage = "^(?:\d{2}:\d{2}:\d{2} - )?The deployment '$([regex]::Escape($deploymentName))' failed with error\(s\)\. (?:Showing \d+ out of \d+ error\(s\)\. Status Message: (?:(?!\(Code:)[^\r\n])* )?\(Code: DeploymentFailed\)(?:\s|$)"
                 $confirmedFailure = $res.ProvisioningState -eq 'Failed' -or ($errorKind -eq 'Other' -and $deploymentError.Exception.Message -cmatch $failedDeploymentMessage)
                 $unknownSubmission = $submissionStarted -and -not $preflightRejected -and -not $confirmedFailure
-                $retryAllowed = -not $unknownSubmission -and -not $recoveryFailed -and -not $nestedReadRecovery -and $errorKind -notin @('Timeout', 'Transport', 'Forbidden')
+                $retryAllowed = -not $unknownSubmission -and -not $recoveryFailed -and -not $nestedReadRecovery -and -not $authorizationDenied -and
+                $errorKind -notin @('Timeout', 'Transport', 'Forbidden')
                 if ($retryCount -ge $RetryLimit -or -not $retryAllowed) {
                     if ($DoNotThrow) {
                         $exceptionMessage = $deploymentError.Exception.Message
@@ -859,7 +971,7 @@ function New-TemplateDeploymentInner {
                             Exception                        = $exceptionMessage
                             ErrorRecord                      = $deploymentError
                             RetryAllowed                     = $retryAllowed
-                            FailureQueryAllowed              = $submissionStarted -and -not $preflightRejected -and -not $recoveryFailed -and
+                            FailureQueryAllowed              = $submissionStarted -and -not $preflightRejected -and -not $recoveryFailed -and -not $authorizationDenied -and
                             $errorKind -in @('Other', 'Forbidden') -and (($null -eq $res -and -not $submissionReturned) -or $res.ProvisioningState -eq 'Failed')
                             RecoveredFailure                 = $deploymentError.FullyQualifiedErrorId -in @('DeploymentFailedAfterTimeout', 'DeploymentFailedAfterReadRecovery') -and -not $recoveryFailed
                         }
@@ -908,6 +1020,7 @@ That recovery never uses legacy replay; confirmed failure still requires coordin
 Management-group HTTP 403 submissions use the same observation window and original Azure context.
 Only a matching Succeeded deployment recovers its outputs; authorization errors never permit replay.
 Only confirmed failure permits another submission; unknown outcomes retain attempted names for cleanup.
+Returned Failed results require matching root status and complete structured error details before legacy retry.
 
 .PARAMETER TemplateFilePath
 Mandatory. The path to the deployment file

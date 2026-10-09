@@ -493,6 +493,7 @@ Pins, global resources and resource-group scope never relocate. Retained resourc
 cleaned between attempts. Metadata location, non-location parameters and tokens stay fixed.
 Results distinguish all submitted names from names still requiring final cleanup.
 Wholly transient InternalServerError resource failures may retry in the same movable location after the same complete cleanup.
+Structured authorization denials override legacy same-region retry permission.
 
 .PARAMETER TemplateInput
 Required. Common template, scope and parameter inputs. Only one parameter file is supported.
@@ -703,6 +704,9 @@ function Invoke-TemplateDeploymentWithRetry {
                 $errorInput = $stateInput.Clone()
                 $errorInput.Remove('SubscriptionId')
                 $errors = Get-ErrorMessageForScope @errorInput -AsObject -ErrorAction Stop
+                if (Test-DeploymentAuthorizationError -ErrorResponse $errors) {
+                    throw $lastError
+                }
                 $classificationError = $lastError
                 if ($attemptResult.RecoveredFailure) {
                     $classificationError = [System.Management.Automation.ErrorRecord]::new(
