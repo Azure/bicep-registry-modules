@@ -2974,7 +2974,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-management/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apiswaf002'
+    name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -3193,7 +3193,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apiswaf002"
+      "value": "<name>"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -3454,7 +3454,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apiswaf002'
+param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters

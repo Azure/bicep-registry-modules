@@ -4,6 +4,7 @@ Describe 'API Management fixture identities' {
         @{ scenario = 'developerSku'; sku = 'Developer'; developerPortal = $true }
         @{ scenario = 'consumptionSku'; sku = 'Consumption'; developerPortal = $false }
         @{ scenario = 'defaults'; sku = ''; developerPortal = $false }
+        @{ scenario = 'waf-aligned'; sku = ''; developerPortal = $false }
     ) {
         BeforeAll {
             $fixturePath = Join-Path $PSScriptRoot '..' 'e2e' $scenario 'main.test.bicep'
@@ -38,6 +39,8 @@ Describe 'API Management fixture identities' {
                     $expression = $nameMatch.Groups['expression'].Value.
                         Replace('resourceGroup.id', "'/subscriptions/$($values.subscription)/resourceGroups/$($values.group)'").
                         Replace('deployment().name', "'$($values.root)'").
+                        Replace('secondaryEnforcedLocation', "'$($values.location)'").
+                        Replace('enforcedLocation', "'$($values.location)'").
                         Replace('resourceLocation', "'$($values.location)'").
                         Replace('namePrefix', "'$($values.prefix)'").
                         Replace('serviceShort', "'$($values.service)'").
@@ -107,6 +110,9 @@ Describe 'API Management fixture identities' {
             $service.name | Should -BeExactly "[parameters('name')]"
             $nested.outputs.name.value | Should -BeExactly "[parameters('name')]"
             $nested.outputs.resourceId.value | Should -BeExactly "[resourceId('Microsoft.ApiManagement/service', parameters('name'))]"
+            if ($scenario -eq 'waf-aligned') {
+                $names.case0init.value | Should -Match '^gciapiswaf002-[a-z0-9]{13}$'
+            }
         }
 
         It 'Preserves SKU, publisher, portal and inherited security settings' {
@@ -123,6 +129,45 @@ Describe 'API Management fixture identities' {
                 $parameters.enableDeveloperPortal.value | Should -BeTrue
             } else {
                 $parameters.Contains('enableDeveloperPortal') | Should -BeFalse
+            }
+            if ($scenario -eq 'waf-aligned') {
+                $expectedParameters += @(
+                    'additionalLocations', 'customProperties', 'apis', 'apiVersionSets', 'authorizationServers',
+                    'backends', 'caches', 'diagnosticSettings', 'identityProviders', 'loggers', 'managedIdentities',
+                    'namedValues', 'policies', 'portalsettings', 'products', 'subscriptions', 'virtualNetworkType',
+                    'tags', 'publicNetworkAccess', 'privateEndpoints'
+                )
+                $template.variables.enforcedLocation | Should -BeExactly 'germanywestcentral'
+                $template.variables.secondaryEnforcedLocation | Should -BeExactly 'northeurope'
+                $parameters.additionalLocations.value | Should -HaveCount 1
+                $additionalLocation = $parameters.additionalLocations.value[0]
+                $additionalLocation.location | Should -BeExactly "[variables('secondaryEnforcedLocation')]"
+                $additionalLocation.sku.name | Should -BeExactly 'Premium'
+                $additionalLocation.sku.capacity | Should -Be 3
+                $additionalLocation.availabilityZones -join ',' | Should -BeExactly '1,2,3'
+                $additionalLocation.disableGateway | Should -BeFalse
+                $parameters.customProperties.value.Count | Should -Be 15
+                foreach ($property in $parameters.customProperties.value.GetEnumerator()) {
+                    $property.Value | Should -BeExactly (
+                        $property.Key -eq 'Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2' ? 'True' : 'False'
+                    )
+                }
+                $parameters.backends.value[0].tls.validateCertificateChain | Should -BeTrue
+                $parameters.backends.value[0].tls.validateCertificateName | Should -BeTrue
+                $parameters.managedIdentities.value.systemAssigned | Should -BeTrue
+                $parameters.managedIdentities.value.userAssignedResourceIds | Should -HaveCount 1
+                $parameters.managedIdentities.value.userAssignedResourceIds[0] | Should -Match '\.outputs\.managedIdentityResourceId\.value'
+                $parameters.portalsettings.value.name -join ',' | Should -BeExactly 'signin,signup'
+                foreach ($portal in $parameters.portalsettings.value) { $portal.properties.enabled | Should -BeFalse }
+                $parameters.namedValues.value[0].secret | Should -BeTrue
+                $parameters.virtualNetworkType.value | Should -BeExactly 'None'
+                $parameters.publicNetworkAccess | Should -BeExactly "[if(equals(createArray('init', 'idem')[copyIndex()], 'init'), createObject('value', 'Enabled'), createObject('value', null()))]"
+                $parameters.privateEndpoints.value | Should -HaveCount 1
+                $endpoint = $parameters.privateEndpoints.value[0]
+                $endpoint.subnetResourceId | Should -Match '\.outputs\.subnetResourceId\.value'
+                $endpoint.privateDnsZoneGroup.privateDnsZoneGroupConfigs[0].privateDnsZoneResourceId | Should -Match '\.outputs\.privateDNSZoneResourceId\.value'
+                @($testModule.dependsOn | Where-Object { $_ -match 'nestedDependencies' }) | Should -HaveCount 1
+                @($testModule.dependsOn | Where-Object { $_ -match 'diagnosticDependencies' }) | Should -HaveCount 1
             }
             ($parameters.Keys | Sort-Object) -join ',' | Should -BeExactly (($expectedParameters | Sort-Object) -join ',')
             $parameters.publisherEmail.value | Should -BeExactly 'apimgmt-noreply@mail.windowsazure.com'
