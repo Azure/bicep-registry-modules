@@ -42,7 +42,7 @@ param targetNamespace string?
 @description('Optional. Version of the extension for this extension, if it is "pinned" to a specific version.')
 param version string?
 
-@description('Optional. A list of flux configuraitons.')
+@description('Optional. A list of flux configurations.')
 param fluxConfigurations fluxConfigurationType[]?
 
 var enableReferencedModulesTelemetry = false
