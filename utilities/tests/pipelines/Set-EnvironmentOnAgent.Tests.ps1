@@ -415,6 +415,74 @@ Describe 'PowerShell Gallery initialization' {
             Should -Throw '*imported module*does not match*'
     }
 
+    Context 'Manifest initializer module metadata' -Tag 'YamlImportIdentity' {
+        It 'Accepts initializer metadata <position> the requested module with caller preference <preference>' -ForEach @(
+            @{ position = 'before'; initializerFirst = $true; preference = 'Continue' }
+            @{ position = 'after'; initializerFirst = $false; preference = 'Continue' }
+            @{ position = 'before'; initializerFirst = $true; preference = 'Stop' }
+            @{ position = 'after'; initializerFirst = $false; preference = 'Stop' }
+        ) {
+            $ErrorActionPreference = $preference
+            Mock Import-Module {
+                $initializer = [pscustomobject] @{
+                    Name       = 'Load-Assemblies'
+                    Version    = [version] '0.0'
+                    ModuleBase = $script:moduleBase
+                }
+                if ($initializerFirst) { $initializer }
+                $script:installedFixture
+                if (-not $initializerFirst) { $initializer }
+            }
+
+            Install-CustomModule -Module @{ Name = 'Fixture.Module'; Version = '1.2.3' } -ErrorAction $preference
+
+            Should -Invoke Import-Module -Times 1 -Exactly -ParameterFilter {
+                $FullyQualifiedName.Name -ceq (Join-Path $script:moduleBase 'Fixture.Module.psd1') -and
+                $FullyQualifiedName.RequiredVersion -eq [version] '1.2.3' -and $Global -and $PassThru -and
+                $ErrorAction -eq 'Stop' -and -not $Force
+            }
+            Should -Invoke Install-Module -Times 1 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+            Should -Invoke Remove-Module -Times 0 -Exactly
+            $ErrorActionPreference | Should -Be $preference
+        }
+
+        It 'Rejects <shape> alongside initializer metadata' -ForEach @(
+            @{ shape = 'no requested module'; moduleCount = 0; candidateName = 'Fixture.Module'; candidateVersion = '1.2.3'; useOtherPath = $false }
+            @{ shape = 'different name casing'; moduleCount = 1; candidateName = 'fixture.module'; candidateVersion = '1.2.3'; useOtherPath = $false }
+            @{ shape = 'the wrong requested version'; moduleCount = 1; candidateName = 'Fixture.Module'; candidateVersion = '1.1.0'; useOtherPath = $false }
+            @{ shape = 'the wrong requested origin'; moduleCount = 1; candidateName = 'Fixture.Module'; candidateVersion = '1.2.3'; useOtherPath = $true }
+            @{ shape = 'duplicate requested modules'; moduleCount = 2; candidateName = 'Fixture.Module'; candidateVersion = '1.2.3'; useOtherPath = $false }
+            @{ shape = 'conflicting requested versions'; moduleCount = 2; candidateName = 'Fixture.Module'; candidateVersion = '1.1.0'; useOtherPath = $false }
+            @{ shape = 'conflicting requested origins'; moduleCount = 2; candidateName = 'Fixture.Module'; candidateVersion = '1.2.3'; useOtherPath = $true }
+        ) {
+            $script:importedFixtures = @(
+                [pscustomobject] @{
+                    Name       = 'Load-Assemblies'
+                    Version    = [version] '0.0'
+                    ModuleBase = $script:moduleBase
+                }
+                if ($moduleCount -gt 1) { $script:installedFixture }
+                if ($moduleCount -gt 0) {
+                    [pscustomobject] @{
+                        Name       = $candidateName
+                        Version    = [version] $candidateVersion
+                        ModuleBase = $useOtherPath ? (Join-Path $TestDrive 'other') : $script:moduleBase
+                    }
+                }
+            )
+            Mock Import-Module { $script:importedFixtures }
+
+            { Install-CustomModule -Module @{ Name = 'Fixture.Module'; Version = '1.2.3' } -ErrorAction Continue } |
+                Should -Throw '*imported module*does not match*'
+
+            Should -Invoke Import-Module -Times 1 -Exactly
+            Should -Invoke Install-Module -Times 1 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+            Should -Invoke Remove-Module -Times 0 -Exactly
+        }
+    }
+
     It 'Does not replace an incompatible loaded Pester engine' {
         Mock Find-Module {
             [pscustomobject] @{ Name = 'Pester'; Version = [version] '5.7.1'; Dependencies = @() }
@@ -460,7 +528,7 @@ Describe 'Installed dependency usability' {
     }
 
     AfterEach {
-        Get-Module -Name Avm.BootstrapFixture |
+        Get-Module -Name Avm.BootstrapFixture, Load-Assemblies |
             Where-Object ModuleBase -EQ $script:fixtureBase |
             Remove-Module -ErrorAction Stop
         $env:PSModulePath = $script:originalModulePath
@@ -476,6 +544,43 @@ Describe 'Installed dependency usability' {
         $loaded = Get-Module -Name Avm.BootstrapFixture
         $loaded.Version | Should -Be ([version] '1.2.3')
         $loaded.ModuleBase | Should -BeExactly $script:fixtureBase
+    }
+
+    It 'Imports a usable manifest with ScriptsToProcess under caller preference <preference>' -Tag 'YamlImportIdentity' -ForEach @(
+        @{ preference = 'Continue' }
+        @{ preference = 'Stop' }
+    ) {
+        $ErrorActionPreference = $preference
+        Set-Content -LiteralPath (Join-Path $script:fixtureBase 'Load-Assemblies.ps1') -Value '$null = 1'
+        Set-Content -LiteralPath $script:fixtureManifest -Value "@{ ModuleVersion = '1.2.3'; RootModule = 'Avm.BootstrapFixture.psm1'; FunctionsToExport = @('Get-AvmBootstrapFixtureValue'); ScriptsToProcess = @('Load-Assemblies.ps1') }"
+
+        Install-CustomModule -Module @{ Name = 'Avm.BootstrapFixture'; Version = '1.2.3' } -ErrorAction $preference
+
+        Get-AvmBootstrapFixtureValue | Should -BeExactly 'fixture-ready'
+        $loaded = @(Get-Module -Name Avm.BootstrapFixture)
+        $loaded.Count | Should -Be 1
+        $loaded[0].Version | Should -Be ([version] '1.2.3')
+        $loaded[0].ModuleBase | Should -BeExactly $script:fixtureBase
+        Should -Invoke Install-Module -Times 1 -Exactly
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+        $ErrorActionPreference | Should -Be $preference
+    }
+
+    It 'Preserves a root initialization error after ScriptsToProcess with caller preference <preference>' -Tag 'YamlImportIdentity' -ForEach @(
+        @{ preference = 'Continue' }
+        @{ preference = 'Stop' }
+    ) {
+        $ErrorActionPreference = $preference
+        Set-Content -LiteralPath (Join-Path $script:fixtureBase 'Load-Assemblies.ps1') -Value '$null = 1'
+        Set-Content -LiteralPath $script:fixtureManifest -Value "@{ ModuleVersion = '1.2.3'; RootModule = 'Avm.BootstrapFixture.psm1'; FunctionsToExport = @('Get-AvmBootstrapFixtureValue'); ScriptsToProcess = @('Load-Assemblies.ps1') }"
+        Set-Content -LiteralPath $script:fixtureScript -Value "Write-Error 'Offline initialized fixture failed.'"
+
+        { Install-CustomModule -Module @{ Name = 'Avm.BootstrapFixture'; Version = '1.2.3' } -ErrorAction $preference } |
+            Should -Throw '*Offline initialized fixture failed.*'
+
+        Should -Invoke Install-Module -Times 1 -Exactly
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+        $ErrorActionPreference | Should -Be $preference
     }
 
     It 'Rejects a real manifest whose root module fails to initialize' {

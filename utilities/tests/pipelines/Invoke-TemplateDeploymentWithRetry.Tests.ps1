@@ -2098,6 +2098,204 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 5 }
     }
 
+    Context 'Authoritative authorization failures never replay' -Tag 'AuthorizationReplay' {
+        BeforeEach {
+            $assignment = '22222222-2222-2222-2222-222222222222'
+            $script:authorizationMessage = "The template deployment failed with error: 'Authorization failed for template resource '$assignment' " +
+            "of type 'Microsoft.Authorization/roleAssignments'. The client 'offline-fixture' with object id '33333333-3333-3333-3333-333333333333' " +
+            "does not have permission to perform action 'Microsoft.Authorization/roleAssignments/write' at scope " +
+            "'$script:groupId/providers/Microsoft.ApiManagement/service/offline-fixture/providers/Microsoft.Authorization/roleAssignments/$assignment'.'."
+            $script:regionalError = @{ error = @{ code = 'InvalidTemplateDeployment'; message = $script:authorizationMessage } }
+            $script:operationStatusMessage = "$script:authorizationMessage (Code:InvalidTemplateDeployment)"
+            $script:incidentMessage = "07:41:52 - The deployment '{0}' failed with error(s). Showing 1 out of 1 error(s). Status Message: " +
+            "$script:authorizationMessage (Code:InvalidTemplateDeployment)"
+        }
+
+        It 'Stops the logged denial after one submission for <shape>' -ForEach @(
+            @{ shape = 'returned Failed'; outcomes = @('FailedResult', 'FailedResult', 'FailedResult') }
+            @{ shape = 'Az-style thrown failure'; outcomes = @('Regional') }
+            @{ shape = 'returned then thrown'; outcomes = @('FailedResult', 'Regional') }
+            @{ shape = 'legacy-confirmed thrown failure'; outcomes = @('Regional', 'Regional', 'Regional'); legacy = $true }
+        ) {
+            $script:outcomes = $outcomes
+            if ($legacy) {
+                $script:incidentMessage = "The deployment '{0}' failed with error(s). (Code: DeploymentFailed) $script:authorizationMessage"
+            }
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match ([regex]::Escape($script:authorizationMessage))
+            $result.ErrorRecord.Exception | Should -Not -BeOfType ([System.AggregateException])
+            $result.DeploymentAttempts | Should -Be 1
+            $result.DeploymentNames | Should -Be @($script:names)
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+            $result.PendingDeletionDeploymentIds.Count | Should -Be 0
+            $result.ContainsKey('DeploymentOutput') | Should -BeFalse
+            $script:submissions.Count | Should -Be 1
+            $script:validations.Count | Should -Be 1
+            $script:removed.Count | Should -Be 0
+            $script:alive | Should -Contain $script:groupId
+            $script:records.ContainsKey($script:roots[0]) | Should -BeTrue
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
+        }
+
+        It 'Does not replay a returned denial with <policy> settings' -ForEach @(
+            @{ policy = 'custom pin' }, @{ policy = 'CI pin' }, @{ policy = 'token pin' }
+            @{ policy = 'retained resources' }, @{ policy = 'global resource' }, @{ policy = 'resource-group scope' }
+            @{ policy = 'no movable input' }, @{ policy = 'one region candidate' }
+        ) {
+            $script:outcomes = @('FailedResult', 'Succeeded')
+            switch ($policy) {
+                'custom pin' { $retryInput.CustomLocation = 'italynorth' }
+                'CI pin' { $templateInput.AdditionalParameters.resourceLocation = 'italynorth' }
+                'token pin' { $retryInput.TokenResourceLocation = 'italynorth' }
+                'retained resources' { $retryInput.RemoveDeployment = $false }
+                'global resource' { Mock Get-AvailableResourceLocation { @{ Location = 'italynorth'; IsGlobal = $true } } }
+                'resource-group scope' {
+                    $template.'$schema' = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+                    $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+                }
+                'no movable input' {
+                    $template.variables.Remove('regionToken')
+                    $templateInput.AdditionalParameters.Remove('resourceLocation')
+                    $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+                }
+                'one region candidate' { $retryInput.RegionLimit = 1 }
+            }
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'does not have permission'
+            $result.ErrorRecord.Exception | Should -Not -BeOfType ([System.AggregateException])
+            $result.DeploymentAttempts | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $script:removed.Count | Should -Be 0
+            $script:alive | Should -Contain $script:groupId
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
+        }
+
+        It 'Does not let a <shape> returned denial fall through to legacy retry' -ForEach @(
+            @{ shape = 'structured authorization code'; code = 'AuthorizationFailed' }
+            @{ shape = 'linked authorization code'; code = 'LinkedAuthorizationFailed' }
+            @{ shape = 'authentication code'; code = 'InvalidAuthenticationToken' }
+            @{ shape = 'nested denial'; nested = $true }
+            @{ shape = 'mixed regional and denial'; mixed = $true }
+            @{ shape = 'denial wrapper over regional details'; wrapper = $true }
+        ) {
+            $script:outcomes = @('FailedResult', 'Succeeded')
+            if ($code) {
+                $script:regionalError = @{ error = @{ code = $code; message = 'Structured authorization diagnostic.' } }
+            } elseif ($nested -or $mixed) {
+                $denial = $script:regionalError.error
+                $script:regionalError = @{ error = @{ code = 'DeploymentFailed'; details = @($denial) } }
+                if ($mixed) {
+                    $script:regionalError.error.details += @{ code = 'SkuNotAvailable'; message = "SKU is not available in location 'italynorth'." }
+                }
+            } elseif ($wrapper) {
+                $script:regionalError.error.details = @(@{ code = 'SkuNotAvailable'; message = "SKU is not available in location 'italynorth'." })
+            }
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'does not have permission'
+            $result.ErrorRecord.Exception | Should -Not -BeOfType ([System.AggregateException])
+            $result.DeploymentAttempts | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $script:removed.Count | Should -Be 0
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Preserves the original thrown ErrorRecord when scoped evidence vetoes a legacy replay' {
+            $script:outcomes = @('Regional', 'Succeeded')
+            $script:incidentMessage = "The deployment '{0}' failed with error(s). (Code: DeploymentFailed) $script:authorizationMessage"
+            $script:submissionError = $null
+            Mock New-AzSubscriptionDeployment {
+                try {
+                    Invoke-FixtureSubmission -Name $DeploymentName -Path $TemplateFile -Region $resourceLocation -BaseTime $baseTime -Secret $adminSecret
+                } catch {
+                    $script:submissionError = [System.Management.Automation.ErrorRecord]::new(
+                        $_.Exception, 'OriginalAuthorizationFailure', [System.Management.Automation.ErrorCategory]::InvalidOperation, $DeploymentName
+                    )
+                    $script:submissionError.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('Original structured-operation authorization diagnostic.')
+                    throw $script:submissionError
+                }
+            }
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            [object]::ReferenceEquals($result.ErrorRecord.Exception, $script:submissionError.Exception) | Should -BeTrue
+            $result.ErrorRecord.FullyQualifiedErrorId | Should -BeLike 'OriginalAuthorizationFailure*'
+            $result.ErrorRecord.ErrorDetails.Message | Should -BeExactly $script:submissionError.ErrorDetails.Message
+            $result.ErrorRecord.TargetObject | Should -BeExactly $script:submissionError.TargetObject
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $script:submissions.Count | Should -Be 1
+            $script:removed.Count | Should -Be 0
+        }
+
+        It 'Uses structured evidence rather than <nearMiss> to identify a denial' -ForEach @(
+            @{ nearMiss = 'an unknown code'; change = 'code' }
+            @{ nearMiss = 'a policy code'; change = 'policy' }
+            @{ nearMiss = 'loose permission wording'; change = 'message' }
+            @{ nearMiss = 'a different denied action'; change = 'action' }
+            @{ nearMiss = 'a mismatched role-assignment ID'; change = 'assignment' }
+            @{ nearMiss = 'an invalid principal ID'; change = 'principal' }
+            @{ nearMiss = 'an unrelated scope'; change = 'scope' }
+            @{ nearMiss = 'an unstructured provider message'; change = 'no code' }
+            @{ nearMiss = 'an appended message'; change = 'suffix' }
+            @{ nearMiss = 'a negated denial'; change = 'negation' }
+        ) {
+            $node = $script:regionalError.error.Clone()
+            switch ($change) {
+                'code' { $node.code = 'Unknown' }
+                'policy' { $node.code = 'RequestDisallowedByPolicy' }
+                'message' { $node.message = 'A resource might not have permission.' }
+                'action' { $node.message = $node.message.Replace('roleAssignments/write', 'roleAssignments/read') }
+                'assignment' { $node.message = $node.message.Replace('/roleAssignments/22222222-2222-2222-2222-222222222222', '/roleAssignments/44444444-4444-4444-4444-444444444444') }
+                'principal' { $node.message = $node.message.Replace('33333333-3333-3333-3333-333333333333', 'unknown') }
+                'scope' { $node.message = $node.message.Replace('/subscriptions/11111111-1111-1111-1111-111111111111/', '/unrelated/') }
+                'no code' { $node.Remove('code') }
+                'suffix' { $node.message += ' This is only an example.' }
+                'negation' { $node.message = $node.message.Replace('does not have permission', 'does have permission') }
+            }
+
+            Test-DeploymentAuthorizationError -ErrorResponse @{ error = $node } | Should -BeFalse
+            Test-DeploymentAuthorizationError -ErrorResponse $script:regionalError | Should -BeTrue
+            $script:submissions.Count | Should -Be 0
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        }
+
+        It 'Finds explicit authorization codes in inner errors' {
+            Test-DeploymentAuthorizationError -ErrorResponse @{
+                error = @{ code = 'DeploymentFailed'; innererror = @{ code = 'AuthorizationFailed'; message = 'Fixture denial.' } }
+            } | Should -BeTrue
+        }
+
+        It 'Bounds authorization traversal at <depth> levels' -ForEach @(
+            @{ depth = 20; exceedsLimit = $false }, @{ depth = 21; exceedsLimit = $true }
+        ) {
+            $response = @{ code = 'AuthorizationFailed'; message = 'Fixture denial.' }
+            foreach ($index in 1..$depth) { $response = @{ error = $response } }
+
+            if ($exceedsLimit) {
+                { Test-DeploymentAuthorizationError -ErrorResponse $response } | Should -Throw '*incomplete ARM errors*'
+            } else {
+                Test-DeploymentAuthorizationError -ErrorResponse $response | Should -BeTrue
+            }
+        }
+
+        It 'Rejects an ambiguous or truncated structured authorization response: <shape>' -ForEach @(
+            @{ shape = 'duplicate code'; response = '{"error":{"code":"QuotaExceeded","Code":"AuthorizationFailed","message":"Fixture."}}' }
+            @{ shape = 'mixed envelope'; response = @{ error = @{ code = 'AuthorizationFailed' }; code = 'QuotaExceeded' } }
+            @{ shape = 'nonterminal envelope'; response = @{ status = 'Running'; error = @{ code = 'AuthorizationFailed' } } }
+            @{ shape = 'invalid JSON'; response = '{"error":' }
+        ) {
+            { Test-DeploymentAuthorizationError -ErrorResponse $response } | Should -Throw
+        }
+    }
+
     It 'Never relocates a <kind> error tree' -ForEach @(
         @{ kind = 'mixed'; code = 'AuthorizationFailed' }
         @{ kind = 'quota'; code = 'QuotaExceeded' }

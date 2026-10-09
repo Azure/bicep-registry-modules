@@ -10,6 +10,7 @@ Installes given PowerShell modules
 Reuses installed modules that satisfy the request without querying PSGallery.
 Retries no-op default repository registration and a known pre-install archive failure once.
 Other resolution, installation, and exact-module import failures terminate the command.
+Validates the requested module separately from manifest initializer module metadata.
 
 .PARAMETER Module
 Required. Modules to be installed, must be Object
@@ -135,8 +136,9 @@ function Install-CustomModule {
                 throw ('Installation of module [{0}] did not produce its manifest [{1}].' -f $foundModule.Name, $manifestPath)
             }
             $specification = @{ ModuleName = $manifestPath; RequiredVersion = $version }
-            $imported = @(Import-Module -FullyQualifiedName $specification -Global -PassThru -ErrorAction Stop)
-            if ($imported.Count -ne 1 -or $imported[0].Name -cne $foundModule.Name -or $imported[0].Version -ne $version -or
+            $imported = @(Import-Module -FullyQualifiedName $specification -Global -PassThru -ErrorAction Stop |
+                    Where-Object Name -CEQ $foundModule.Name)
+            if ($imported.Count -ne 1 -or $imported[0].Version -ne $version -or
                 -not [string]::Equals($imported[0].ModuleBase, $moduleBase, $pathComparison)) {
                 throw ('The imported module does not match [{0}] version [{1}] at [{2}].' -f $foundModule.Name, $version, $moduleBase)
             }
