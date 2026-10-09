@@ -144,6 +144,62 @@ function Install-CustomModule {
         }
     }
 }
+
+<#
+.SYNOPSIS
+Installs the latest Bicep CLI after validating the downloaded executable.
+
+.DESCRIPTION
+Keeps the installed compiler until the official Linux x64 download passes a version check.
+Download, validation, and installation failures terminate the command.
+
+.EXAMPLE
+Install-BicepCli
+#>
+function Install-BicepCli {
+    [CmdletBinding()]
+    param()
+
+    $ErrorActionPreference = 'Stop'
+    $PSNativeCommandUseErrorActionPreference = $false
+    $candidate = New-TemporaryFile
+    try {
+        $diagnostics = curl --fail --location --silent --show-error --output $candidate.FullName 'https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64' 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "Bicep CLI download failed with exit code ${LASTEXITCODE}: $($diagnostics -join [Environment]::NewLine)"
+        }
+
+        $diagnostics = chmod +x $candidate.FullName 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "Bicep CLI permission update failed with exit code ${LASTEXITCODE}: $($diagnostics -join [Environment]::NewLine)"
+        }
+
+        $candidateVersion = & $candidate.FullName --version 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "Bicep CLI candidate validation failed with exit code ${LASTEXITCODE}: $($candidateVersion -join [Environment]::NewLine)"
+        }
+        if (($candidateVersion -join [Environment]::NewLine) -notmatch '^Bicep CLI version \d+\.\d+\.\d+\b') {
+            throw "Bicep CLI candidate returned an unexpected version: $($candidateVersion -join [Environment]::NewLine)"
+        }
+
+        $diagnostics = sudo mv $candidate.FullName /usr/local/bin/bicep 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "Bicep CLI installation failed with exit code ${LASTEXITCODE}: $($diagnostics -join [Environment]::NewLine)"
+        }
+
+        Write-Verbose 'Bicep CLI version after install:' -Verbose
+        $installedVersion = bicep --version 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "Installed Bicep CLI version check failed with exit code ${LASTEXITCODE}: $($installedVersion -join [Environment]::NewLine)"
+        }
+        Write-Output $installedVersion
+    } finally {
+        if (Test-Path -LiteralPath $candidate.FullName) {
+            # Cleanup errors must not hide the installation error.
+            Remove-Item -LiteralPath $candidate.FullName -Force -ErrorAction Continue
+        }
+    }
+}
 #endregion
 
 <#
@@ -235,15 +291,7 @@ function Set-EnvironmentOnAgent {
     bicep --version
 
     Write-Verbose ('Install latest Bicep CLI') -Verbose
-    # Fetch the latest Bicep CLI binary
-    curl -Lo bicep 'https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64'
-    # Mark it as executable
-    chmod +x ./bicep
-    # Add Bicep to your PATH (requires admin)
-    sudo mv ./bicep /usr/local/bin/bicep
-
-    Write-Verbose 'Bicep CLI version after install:' -Verbose
-    bicep --version
+    Install-BicepCli
 
     ###############################
     ##   Install Extensions CLI   #
