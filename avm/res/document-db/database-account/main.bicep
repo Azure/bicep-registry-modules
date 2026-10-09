@@ -216,6 +216,9 @@ param defaultIdentity defaultIdentityType = {
   name: 'FirstPartyIdentity'
 }
 
+@description('Optional. Flag to indicate if All Versions and Deletes Change feed feature is enabled on the account.')
+param enableAllVersionsAndDeletesChangeFeed bool = false
+
 import { customerManagedKeyAndVaultOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition. If specified, the parameter `defaultIdentity` must be configured as well.')
 param customerManagedKey customerManagedKeyAndVaultOnlyType?
@@ -324,6 +327,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-previ
   kind: !empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
     enableBurstCapacity: capacityMode == 'Serverless' ? false : enableBurstCapacity
+    enableAllVersionsAndDeletesChangeFeed: enableAllVersionsAndDeletesChangeFeed
     databaseAccountOfferType: databaseAccountOfferType
     analyticalStorageConfiguration: analyticalStorageConfiguration
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
