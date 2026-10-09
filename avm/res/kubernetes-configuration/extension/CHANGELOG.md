@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Typed `fluxConfigurations` with `fluxConfigurationType`, marking `configurationProtectedSettings` as secure to match the flux-configuration module.
+- Fixed a typo in the `fluxConfigurations` description.
 
 ### Breaking Changes
 

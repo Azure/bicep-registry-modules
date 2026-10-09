@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "11080760531257589726"
+      "templateHash": "3877059634733218151"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension."
@@ -189,7 +189,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. A list of flux configuraitons."
+        "description": "Optional. A list of flux configurations."
       }
     }
   },

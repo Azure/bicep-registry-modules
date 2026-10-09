@@ -639,7 +639,7 @@ param version = '0.5.2'
 | [`configurationProtectedSettings`](#parameter-configurationprotectedsettings) | secureObject | Configuration settings that are sensitive, as name-value pairs for configuring this extension. |
 | [`configurationSettings`](#parameter-configurationsettings) | object | Configuration settings, as name-value pairs for configuring this extension. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`fluxConfigurations`](#parameter-fluxconfigurations) | array | A list of flux configuraitons. |
+| [`fluxConfigurations`](#parameter-fluxconfigurations) | array | A list of flux configurations. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`releaseNamespace`](#parameter-releasenamespace) | string | Namespace where the extension Release must be placed, for a Cluster scoped extension. If this namespace does not exist, it will be created. |
 | [`releaseTrain`](#parameter-releasetrain) | string | ReleaseTrain this extension participates in for auto-upgrade (e.g. Stable, Preview, etc.) - only if autoUpgradeMinorVersion is "true". |
@@ -706,7 +706,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `fluxConfigurations`
 
-A list of flux configuraitons.
+A list of flux configurations.
 
 - Required: No
 - Type: array
