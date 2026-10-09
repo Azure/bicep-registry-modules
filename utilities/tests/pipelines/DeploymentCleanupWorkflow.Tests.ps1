@@ -588,6 +588,19 @@ Describe 'Deployment submission and cleanup runtime integration' {
     ) {
         Set-TestTemplateScope -Scope $scope
         $script:outcomes[0] = 'FailedResult'
+        Mock Get-AzDeployment { @{ DeploymentName = $Name; ProvisioningState = 'Failed' } }
+        Mock Get-AzResourceGroupDeployment { @{ DeploymentName = $Name; ProvisioningState = 'Failed' } }
+        Mock Get-AzManagementGroupDeployment {
+            @{
+                DeploymentName = $Name
+                Id = "/providers/Microsoft.Management/managementGroups/$ManagementGroupId/providers/Microsoft.Resources/deployments/$Name"
+                ProvisioningState = 'Failed'
+            }
+        }
+        Mock Get-AzTenantDeployment { @{ DeploymentName = $Name; ProvisioningState = 'Failed' } }
+        Mock Get-ErrorMessageForScope {
+            , @(@{ error = @{ code = 'StorageAccountAlreadyTaken'; message = 'The fixture storage name is unavailable.' } })
+        } -ParameterFilter { $AsObject }
         $result = New-TemplateDeployment @deploymentInput
         $result.Exception | Should -Match 'InvalidTemplateDeployment'
         $result.DeploymentNames.Count | Should -Be 3
@@ -611,6 +624,192 @@ Describe 'Deployment submission and cleanup runtime integration' {
         $result.ContainsKey('Exception') | Should -BeFalse
         $result.DeploymentNames | Should -Be @($script:attemptNames)
         @($result.PreflightRejectedDeploymentNames) | Should -Be @($script:attemptNames[0])
+    }
+
+    Context 'Returned authorization failures for direct callers' -Tag 'AuthorizationReplay' {
+        BeforeEach {
+            $script:outcomes = @('FailedResult', 'Succeeded')
+            $script:returnedFailureDetails = @(@{ error = @{ code = 'AuthorizationFailed'; message = 'The fixture client cannot perform the requested action.' } })
+            Mock Get-AzDeployment { @{ DeploymentName = $Name; ProvisioningState = 'Failed' } }
+            Mock Get-AzResourceGroupDeployment { @{ DeploymentName = $Name; ProvisioningState = 'Failed' } }
+            Mock Get-AzManagementGroupDeployment {
+                @{
+                    DeploymentName = $Name
+                    Id = "/providers/Microsoft.Management/managementGroups/$ManagementGroupId/providers/Microsoft.Resources/deployments/$Name"
+                    ProvisioningState = 'Failed'
+                }
+            }
+            Mock Get-AzTenantDeployment { @{ DeploymentName = $Name; ProvisioningState = 'Failed' } }
+            Mock Get-ErrorMessageForScope {
+                if ($AsObject) { return , $script:returnedFailureDetails }
+                'DeploymentFailed: AuthorizationFailed: Original returned failure diagnostic.'
+            }
+        }
+
+        It 'Does not replay a returned denial at <scope> scope with DoNotThrow=<noThrow>' -ForEach @(
+            @{ scope = 'resourcegroup'; noThrow = $true }, @{ scope = 'resourcegroup'; noThrow = $false }
+            @{ scope = 'subscription'; noThrow = $true }, @{ scope = 'subscription'; noThrow = $false }
+            @{ scope = 'managementgroup'; noThrow = $true }, @{ scope = 'managementgroup'; noThrow = $false }
+            @{ scope = 'tenant'; noThrow = $true }, @{ scope = 'tenant'; noThrow = $false }
+        ) {
+            Set-TestTemplateScope -Scope $scope
+            $deploymentInput.DoNotThrow = $noThrow
+            if ($noThrow) {
+                $result = New-TemplateDeployment @deploymentInput
+                $result.Exception | Should -Match 'Original returned failure diagnostic'
+                $result.ErrorRecord.Exception.Message | Should -BeExactly $result.Exception
+                $result.ErrorRecord.Exception | Should -Not -BeOfType ([System.AggregateException])
+                $result.DeploymentNames | Should -Be @($script:attemptNames)
+                $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+                $result.RetryAllowed | Should -BeFalse
+                $result.FailureQueryAllowed | Should -BeFalse
+                $result.ContainsKey('DeploymentOutput') | Should -BeFalse
+            } else {
+                { New-TemplateDeployment @deploymentInput } | Should -Throw '*Original returned failure diagnostic*'
+            }
+            $script:attemptNames.Count | Should -Be 1
+            $script:removedIds.Count | Should -Be 0
+            Should -Invoke Get-ErrorMessageForScope -Times 1 -Exactly -ParameterFilter {
+                $AsObject -and $DeploymentName -eq $script:attemptNames[0] -and $DeploymentScope -eq $scope
+            }
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Retains the existing bounded direct retry for a structured non-authorization failure' {
+            $script:returnedFailureDetails = @(@{ error = @{ code = 'QuotaExceeded'; message = 'Nonregional fixture quota failure.' } })
+            Mock Get-ErrorMessageForScope {
+                if ($AsObject) { return , $script:returnedFailureDetails }
+                'Nonregional fixture quota failure.'
+            }
+            $result = New-TemplateDeployment @deploymentInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $result.DeploymentNames | Should -Be @($script:attemptNames)
+            $script:attemptNames.Count | Should -Be 2
+            @($script:attemptRegions | Select-Object -Unique) | Should -Be @('swedencentral')
+            $script:removedIds.Count | Should -Be 0
+            Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 5 }
+        }
+
+        It 'Preserves the <limit>-submission direct budget for returned quota failures' -ForEach @(
+            @{ limit = 1 }, @{ limit = 2 }, @{ limit = 3 }
+        ) {
+            $deploymentInput.RetryLimit = $limit
+            $script:outcomes = @('FailedResult', 'FailedResult', 'FailedResult')
+            $script:returnedFailureDetails = @(@{ error = @{ code = 'QuotaExceeded'; message = 'Nonregional fixture quota failure.' } })
+            Mock Get-ErrorMessageForScope {
+                if ($AsObject) { return , $script:returnedFailureDetails }
+                'Nonregional fixture quota failure.'
+            }
+
+            $result = New-TemplateDeployment @deploymentInput
+
+            $result.Exception | Should -Match 'Nonregional fixture quota failure'
+            $result.RetryAllowed | Should -BeTrue
+            $result.DeploymentNames | Should -Be @($script:attemptNames)
+            $script:attemptNames.Count | Should -Be $limit
+            @($script:attemptRegions | Select-Object -Unique) | Should -Be @('swedencentral')
+            $script:removedIds.Count | Should -Be 0
+            Should -Invoke Start-Sleep -Times ($limit - 1) -Exactly -ParameterFilter { $Seconds -eq 5 }
+        }
+
+        It 'Fails closed when returned failure details are <shape>' -ForEach @(
+            @{ shape = 'absent'; response = @() }
+            @{ shape = 'unstructured'; response = @($null) }
+            @{ shape = 'unknown response'; response = @(@{ unexpected = 'body' }) }
+            @{ shape = 'malformed details'; response = @(@{ error = @{ code = 'DeploymentFailed'; details = 'not an error object' } }) }
+            @{ shape = 'mixed malformed'; response = @(@{ error = @{ code = 'QuotaExceeded'; message = 'Known quota failure.' } }, $null) }
+        ) {
+            $script:returnedFailureDetails = $response
+            $result = New-TemplateDeployment @deploymentInput
+
+            $result.Exception | Should -Match 'Original returned failure diagnostic'
+            $result.RetryAllowed | Should -BeFalse
+            $result.FailureQueryAllowed | Should -BeFalse
+            $result.DeploymentNames | Should -Be @($script:attemptNames)
+            $script:attemptNames.Count | Should -Be 1
+            $script:removedIds.Count | Should -Be 0
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Retains both errors without replay when the returned failure query reports <kind>' -ForEach @(
+            @{ kind = 'permission denied'; exception = [System.UnauthorizedAccessException]::new('Fixture permission denied.') }
+            @{ kind = 'transport failure'; exception = [System.Net.Http.HttpRequestException]::new('Fixture transport failure.') }
+            @{ kind = 'exhausted read'; exception = [System.TimeoutException]::new('Fixture bounded read exhausted.') }
+        ) {
+            $script:returnedReadException = $exception
+            Mock Get-ErrorMessageForScope { throw $script:returnedReadException } -ParameterFilter { $AsObject }
+
+            $result = New-TemplateDeployment @deploymentInput
+
+            $result.Exception | Should -Match 'Original returned failure diagnostic'
+            $result.Exception | Should -Match ([regex]::Escape($exception.Message))
+            $result.ErrorRecord.Exception.Data['OriginalErrorRecord'].Exception.Message | Should -Match 'Original returned failure diagnostic'
+            [object]::ReferenceEquals($result.ErrorRecord.Exception.Data['RecoveryErrorRecord'].Exception, $exception) | Should -BeTrue
+            $result.RetryAllowed | Should -BeFalse
+            $result.FailureQueryAllowed | Should -BeFalse
+            $result.DeploymentNames | Should -Be @($script:attemptNames)
+            $script:attemptNames.Count | Should -Be 1
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Propagates caller cancellation during the returned failure query' {
+            Mock Get-ErrorMessageForScope { throw [System.OperationCanceledException]::new('Returned failure query cancelled.') } -ParameterFilter { $AsObject }
+
+            { New-TemplateDeployment @deploymentInput } | Should -Throw '*Returned failure query cancelled*'
+
+            $script:attemptNames.Count | Should -Be 1
+            $script:removedIds.Count | Should -Be 0
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Does not retry or query further when formatted failure details report <kind>' -ForEach @(
+            @{ kind = 'permission denied'; exception = [System.UnauthorizedAccessException]::new('Original formatted detail permission failure.') }
+            @{ kind = 'transport failure'; exception = [System.Net.Http.HttpRequestException]::new('Original formatted detail transport failure.') }
+            @{ kind = 'unknown read error'; exception = [System.InvalidOperationException]::new('Original formatted detail read failure.') }
+        ) {
+            $script:formattedReadException = $exception
+            Mock Get-ErrorMessageForScope { throw $script:formattedReadException } -ParameterFilter { -not $AsObject }
+
+            $result = New-TemplateDeployment @deploymentInput
+
+            $result.Exception | Should -BeExactly $exception.Message
+            [object]::ReferenceEquals($result.ErrorRecord.Exception, $exception) | Should -BeTrue
+            $result.RetryAllowed | Should -BeFalse
+            $result.FailureQueryAllowed | Should -BeFalse
+            $result.DeploymentNames | Should -Be @($script:attemptNames)
+            $script:attemptNames.Count | Should -Be 1
+            Should -Invoke Get-ErrorMessageForScope -Times 0 -Exactly -ParameterFilter { $AsObject }
+            Should -Invoke Get-AzDeployment -Times 0 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Requires the exact Failed root before reading returned failure details: <state>' -ForEach @(
+            @{ state = 'Running' }, @{ state = 'Unknown' }, @{ state = 'Succeeded' }
+            @{ state = 'missing name' }, @{ state = 'wrong name' }, @{ state = 'wrong subscription' }
+        ) {
+            $script:returnedRootState = $state
+            Mock Get-AzDeployment {
+                switch ($script:returnedRootState) {
+                    'missing name' { return @{ ProvisioningState = 'Failed' } }
+                    'wrong name' { return @{ DeploymentName = 'another-deployment'; ProvisioningState = 'Failed' } }
+                    default { return @{ DeploymentName = $Name; ProvisioningState = $script:returnedRootState } }
+                }
+            }
+            if ($state -eq 'wrong subscription') {
+                Mock Get-AzContext { @{ Subscription = @{ Id = '44444444-4444-4444-4444-444444444444' } } }
+            }
+
+            $result = New-TemplateDeployment @deploymentInput
+
+            $result.Exception | Should -Match 'Original returned failure diagnostic'
+            $result.RetryAllowed | Should -BeFalse
+            $result.FailureQueryAllowed | Should -BeFalse
+            $result.DeploymentNames | Should -Be @($script:attemptNames)
+            $script:attemptNames.Count | Should -Be 1
+            Should -Invoke Get-ErrorMessageForScope -Times 0 -Exactly -ParameterFilter { $AsObject }
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
     }
 
     It 'Fails but emits the accepted name and reaches actual cleanup on a <format> HTTP timeout' -ForEach @(
