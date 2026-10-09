@@ -83,6 +83,9 @@ function Wait-TemplateDeployment {
         [object] $DefaultProfile,
 
         [Parameter()]
+        [string] $ExpectedDeploymentId,
+
+        [Parameter()]
         [ValidateRange(1, 3600)]
         [int] $TimeoutSeconds = 3600,
 
@@ -108,20 +111,29 @@ function Wait-TemplateDeployment {
         } catch [System.Management.Automation.PipelineStoppedException] {
             throw
         } catch {
-            if ((Get-DeploymentErrorKind -ErrorRecord $_) -ne 'Timeout') {
+            if (-not (Test-DeploymentReadTimeout -ErrorRecord $_)) {
                 throw
             }
             $consecutiveTimeouts++
             if ($consecutiveTimeouts -ge 3) {
-                throw [System.TimeoutException]::new(
+                $exception = [System.TimeoutException]::new(
                     "Status recovery for deployment [$DeploymentName] stopped after three consecutive request timeouts.", $_.Exception
                 )
+                $exception.Data['ReadErrorRecord'] = $_
+                throw $exception
             }
             Write-Warning "Status read for deployment [$DeploymentName] timed out ($consecutiveTimeouts/3); no deployment is being resubmitted."
             $deployment = $null
         }
 
         if ($null -ne $deployment) {
+            if ($ExpectedDeploymentId -and (
+                    $deployment.Id -isnot [string] -or $deployment.Id -ine $ExpectedDeploymentId -or
+                    $null -ne $deployment.Error -or
+                    ($null -ne $deployment.Outputs -and $deployment.Outputs -isnot [System.Collections.IDictionary])
+                )) {
+                throw "Status recovery did not return an unambiguous original deployment [$ExpectedDeploymentId]."
+            }
             if ($deployment.ProvisioningState -is [string] -and $deployment.ProvisioningState -in @('Succeeded', 'Failed')) {
                 return $deployment
             }
@@ -137,6 +149,92 @@ function Wait-TemplateDeployment {
         }
     }
     throw [System.TimeoutException]::new("Status recovery for deployment [$DeploymentName] exceeded the $TimeoutSeconds-second recovery window.")
+}
+
+function Get-NestedDeploymentReadFailure {
+    [CmdletBinding()]
+    [OutputType([uri])]
+    param (
+        [Parameter(Mandatory)]
+        [System.Management.Automation.ErrorRecord] $ErrorRecord,
+
+        [Parameter(Mandatory)]
+        [string] $DeploymentName,
+
+        [Parameter(Mandatory)]
+        [AllowEmptyString()]
+        [string] $SubscriptionId
+    )
+
+    $subscriptionGuid = [guid]::Empty
+    if (-not [guid]::TryParse($SubscriptionId, [ref] $subscriptionGuid) -or
+        $ErrorRecord.CategoryInfo.Category -in @('AuthenticationError', 'PermissionDenied', 'SecurityError', 'OperationStopped') -or
+        (Get-DeploymentErrorKind -ErrorRecord $ErrorRecord) -ne 'Other') {
+        return
+    }
+    $candidate = $null
+    $visited = [System.Collections.Generic.HashSet[System.Exception]]::new()
+    $exception = $ErrorRecord.Exception
+    while ($null -ne $exception) {
+        if (-not $visited.Add($exception) -or $exception -is [System.UnauthorizedAccessException]) { return }
+        if ($exception -is [System.AggregateException]) {
+            if ($exception.InnerExceptions.Count -ne 1) { return }
+            $exception = $exception.InnerExceptions[0]
+            continue
+        }
+        if ($null -ne $exception.StatusCode -and (
+                $exception.StatusCode -isnot [int] -and $exception.StatusCode -isnot [System.Net.HttpStatusCode] -or
+                $exception.StatusCode -ne 404
+            )) { return }
+        if ($null -ne $exception.Response -or $null -ne $exception.Request) {
+            if ($null -ne $candidate -or $exception.Response -is [array] -or
+                ($exception.Response.StatusCode -isnot [int] -and $exception.Response.StatusCode -isnot [System.Net.HttpStatusCode]) -or
+                $exception.Response.StatusCode -ne 404 -or
+                ($exception.Request.Method -isnot [string] -and $exception.Request.Method -isnot [System.Net.Http.HttpMethod]) -or
+                $exception.Request.Method.ToString() -cne 'GET' -or
+                ($exception.Request.RequestUri -isnot [string] -and $exception.Request.RequestUri -isnot [uri])) { return }
+
+            $requestUri = $null
+            if (-not [uri]::TryCreate([string] $exception.Request.RequestUri, [UriKind]::Absolute, [ref] $requestUri) -or
+                $requestUri.Scheme -ne 'https' -or $requestUri.UserInfo -or $requestUri.Fragment -or
+                $requestUri.Query -cnotmatch '^\?api-version=[0-9]{4}-[0-9]{2}-[0-9]{2}$' -or
+                $requestUri.AbsolutePath -notmatch '^/subscriptions/(?<subscription>[0-9a-f-]{36})/resourceGroups/[a-z0-9_.()-]+/providers/Microsoft\.Resources/deployments/(?<name>[a-z0-9_.()-]+)/operations$') { return }
+            $nestedName = $Matches.name
+            $nestedSubscription = [guid]::Empty
+            if (-not [guid]::TryParse($Matches.subscription, [ref] $nestedSubscription) -or
+                $nestedSubscription -ne $subscriptionGuid -or $nestedName -ieq $DeploymentName) { return }
+            $message = "Deployment '$nestedName' could not be found."
+            if ($exception.Body.Code -isnot [string] -or $exception.Body.Code -cne 'DeploymentNotFound' -or
+                $exception.Body.Message -isnot [string] -or $exception.Body.Message -cne $message -or
+                $exception.Response.Content -isnot [string] -or
+                -not (Test-DeploymentResponseJson -Json $exception.Response.Content)) { return }
+            $content = ConvertFrom-Json -InputObject $exception.Response.Content -AsHashtable -ErrorAction Stop
+            if ($content -isnot [System.Collections.IDictionary] -or $content.Count -ne 1 -or
+                $content.Keys -cnotcontains 'error' -or $content.error -isnot [System.Collections.IDictionary]) { return }
+            if ($content.error.Keys -cnotcontains 'code' -or $content.error.Keys -cnotcontains 'message' -or
+                $content.error.code -isnot [string] -or $content.error.code -cne 'DeploymentNotFound' -or
+                $content.error.message -isnot [string] -or $content.error.message -cne $message) { return }
+            foreach ($key in $content.error.Keys) {
+                if ($key -cnotin @('code', 'message', 'target')) { return }
+            }
+            if ($content.error.Contains('target') -and (
+                    $content.error.target -isnot [string] -or
+                    $content.error.target -cne $requestUri.AbsolutePath.Substring(0, $requestUri.AbsolutePath.Length - '/operations'.Length)
+                )) { return }
+            $candidate = $requestUri
+        }
+        $next = $exception.InnerException
+        if ($exception -is [System.Management.Automation.RuntimeException] -and $null -ne $exception.ErrorRecord) {
+            if ($exception.ErrorRecord.CategoryInfo.Category -in @('AuthenticationError', 'PermissionDenied', 'SecurityError', 'OperationStopped')) { return }
+            $recordException = $exception.ErrorRecord.Exception
+            if (-not [object]::ReferenceEquals($recordException, $exception)) {
+                if ($null -ne $next -and -not [object]::ReferenceEquals($next, $recordException)) { return }
+                $next = $recordException
+            }
+        }
+        $exception = $next
+    }
+    return $candidate
 }
 
 function Test-DeploymentPreflightRejection {
@@ -333,6 +431,8 @@ Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
 After a submitted request times out, observe the same deployment for up to 60 minutes.
+Structured nested-operation GET 404s during subscription submission observe only the exact original root.
+That recovery never uses legacy replay; confirmed failure still requires coordinated classification and complete cleanup.
 Management-group HTTP 403 submissions use the same observation window and original Azure context.
 Only a matching Succeeded deployment recovers its outputs; authorization errors never permit replay.
 Only confirmed failure permits another submission; unknown outcomes retain attempted names for cleanup.
@@ -605,8 +705,54 @@ function New-TemplateDeploymentInner {
                 $deploymentError = $_
                 $errorKind = Get-DeploymentErrorKind -ErrorRecord $deploymentError
                 $recoveryFailed = $false
+                $nestedReadRecovery = $false
                 if ($errorKind -eq 'Cancellation') {
                     throw
+                }
+                if ($submissionStarted -and -not $submissionReturned -and $null -eq $res -and
+                    $deploymentScope -eq 'subscription' -and
+                    ($nestedReadFailure = Get-NestedDeploymentReadFailure -ErrorRecord $deploymentError -DeploymentName $deploymentName -SubscriptionId $SubscriptionId)) {
+                    $nestedReadRecovery = $true
+                    Write-Warning "Nested operation read for deployment [$deploymentName] returned DeploymentNotFound; observing only the original root without resubmitting."
+                    try {
+                        $submissionContext = Get-AzContext -ErrorAction Stop
+                        $endpoint = $null
+                        if (-not [uri]::TryCreate([string] $submissionContext.Environment.ResourceManagerUrl, [UriKind]::Absolute, [ref] $endpoint) -or
+                            $endpoint.Scheme -ne 'https' -or $endpoint.UserInfo -or $endpoint.Fragment -or $endpoint.Query -or
+                            $endpoint.AbsolutePath -ne '/' -or $nestedReadFailure.Authority -ine $endpoint.Authority) {
+                            throw 'The failed nested operation read does not match the current ARM endpoint.'
+                        }
+                        $expectedId = Get-DeploymentResourceId -Scope $deploymentScope -Name $deploymentName -SubscriptionId $SubscriptionId
+                        $res = Wait-TemplateDeployment -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
+                            -SubscriptionId $SubscriptionId -DefaultProfile $submissionContext -ExpectedDeploymentId $expectedId
+                        if ($res.ProvisioningState -eq 'Succeeded') {
+                            $Stoploop = $true
+                            continue
+                        }
+                        $failureDetails = Get-ErrorMessageForScope -DeploymentScope $deploymentScope -DeploymentName $deploymentName
+                        $exception = [System.InvalidOperationException]::new(
+                            "Deployment [$deploymentName] was confirmed Failed during nested read recovery. Error Message: [$failureDetails]. Original request error: $($deploymentError.Exception.Message)",
+                            $deploymentError.Exception
+                        )
+                        $exception.Data['OriginalErrorRecord'] = $deploymentError
+                        $deploymentError = [System.Management.Automation.ErrorRecord]::new(
+                            $exception, 'DeploymentFailedAfterReadRecovery', [System.Management.Automation.ErrorCategory]::InvalidResult, $deploymentName
+                        )
+                    } catch [System.Management.Automation.PipelineStoppedException] {
+                        throw
+                    } catch {
+                        if ((Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Cancellation') { throw }
+                        $exception = [System.AggregateException]::new(
+                            "Nested read recovery for deployment [$deploymentName] did not establish a usable terminal result; no deployment will be resubmitted.",
+                            [System.Exception[]] @($deploymentError.Exception, $_.Exception)
+                        )
+                        $exception.Data['OriginalErrorRecord'] = $deploymentError
+                        $exception.Data['RecoveryErrorRecord'] = $_
+                        $deploymentError = [System.Management.Automation.ErrorRecord]::new(
+                            $exception, 'DeploymentReadRecoveryFailed', [System.Management.Automation.ErrorCategory]::InvalidResult, $deploymentName
+                        )
+                        $recoveryFailed = $true
+                    }
                 }
                 if ($submissionStarted -and -not $submissionReturned -and $null -eq $res -and
                     $deploymentScope -eq 'managementgroup' -and $errorKind -eq 'Forbidden') {
@@ -699,7 +845,7 @@ function New-TemplateDeploymentInner {
                 $failedDeploymentMessage = "^(?:\d{2}:\d{2}:\d{2} - )?The deployment '$([regex]::Escape($deploymentName))' failed with error\(s\)\. (?:Showing \d+ out of \d+ error\(s\)\. Status Message: (?:(?!\(Code:)[^\r\n])* )?\(Code: DeploymentFailed\)(?:\s|$)"
                 $confirmedFailure = $res.ProvisioningState -eq 'Failed' -or ($errorKind -eq 'Other' -and $deploymentError.Exception.Message -cmatch $failedDeploymentMessage)
                 $unknownSubmission = $submissionStarted -and -not $preflightRejected -and -not $confirmedFailure
-                $retryAllowed = -not $unknownSubmission -and -not $recoveryFailed -and $errorKind -notin @('Timeout', 'Transport', 'Forbidden')
+                $retryAllowed = -not $unknownSubmission -and -not $recoveryFailed -and -not $nestedReadRecovery -and $errorKind -notin @('Timeout', 'Transport', 'Forbidden')
                 if ($retryCount -ge $RetryLimit -or -not $retryAllowed) {
                     if ($DoNotThrow) {
                         $exceptionMessage = $deploymentError.Exception.Message
@@ -715,7 +861,7 @@ function New-TemplateDeploymentInner {
                             RetryAllowed                     = $retryAllowed
                             FailureQueryAllowed              = $submissionStarted -and -not $preflightRejected -and -not $recoveryFailed -and
                             $errorKind -in @('Other', 'Forbidden') -and (($null -eq $res -and -not $submissionReturned) -or $res.ProvisioningState -eq 'Failed')
-                            RecoveredFailure                 = $deploymentError.FullyQualifiedErrorId -eq 'DeploymentFailedAfterTimeout' -and -not $recoveryFailed
+                            RecoveredFailure                 = $deploymentError.FullyQualifiedErrorId -in @('DeploymentFailedAfterTimeout', 'DeploymentFailedAfterReadRecovery') -and -not $recoveryFailed
                         }
                     } else {
                         throw $deploymentError
@@ -757,6 +903,8 @@ Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
 After a submitted request times out, observe the same deployment for up to 60 minutes.
+Structured nested-operation GET 404s during subscription submission observe only the exact original root.
+That recovery never uses legacy replay; confirmed failure still requires coordinated classification and complete cleanup.
 Management-group HTTP 403 submissions use the same observation window and original Azure context.
 Only a matching Succeeded deployment recovers its outputs; authorization errors never permit replay.
 Only confirmed failure permits another submission; unknown outcomes retain attempted names for cleanup.

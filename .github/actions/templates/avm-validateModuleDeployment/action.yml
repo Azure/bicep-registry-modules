@@ -299,6 +299,7 @@ runs:
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Invoke-TemplateDeploymentWithRetry.ps1')
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Resolve-CIParameterFallback.ps1')
 
           # Prepare general parameters
           # --------------------------
@@ -353,6 +354,15 @@ runs:
             KeyVaultName        = $env:CI_KEY_VAULT_NAME
           }
           $ciParameters = Get-CIParameterMap @ciParameterInput
+          $ciParameterFallbackInput = @{
+            TemplateParameters = $moduleTemplateParameters
+            ResolvedParameters = $ciParameters
+            GitHubVariables    = $env:AVM_CI_VARIABLES
+          }
+          $resolvedCIParameterFallbacks = Resolve-CIParameterFallback @ciParameterFallbackInput
+          foreach ($parameter in $resolvedCIParameterFallbacks.GetEnumerator()) {
+            $ciParameters[$parameter.Key] = $parameter.Value
+          }
           foreach ($parameter in $ciParameters.GetEnumerator()) {
             $functionInput.AdditionalParameters[$parameter.Key] = $parameter.Value
           }

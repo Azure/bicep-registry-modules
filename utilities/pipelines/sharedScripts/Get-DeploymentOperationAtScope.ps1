@@ -1,4 +1,6 @@
-﻿function Test-DeploymentResponseJson {
+﻿. (Join-Path $PSScriptRoot 'Invoke-DeploymentRead.ps1')
+
+function Test-DeploymentResponseJson {
     [CmdletBinding()]
     [OutputType([bool])]
     param (
@@ -120,6 +122,7 @@ Get all deployment operations at a given scope
 .DESCRIPTION
 Get all deployment operations at a given scope, following every operation page.
 Responses retain extension metadata needed to verify existing extensible resources.
+Each operation-page GET retries typed request timeouts at most twice without replaying earlier pages.
 By default, results include only 'create' operations, excluding 'read' operations for existing resources.
 
 .PARAMETER Name
@@ -218,10 +221,15 @@ function Get-DeploymentOperationAtScope {
         if (-not $visitedPages.Add($path) -or $visitedPages.Count -gt 1000) {
             throw "Deployment [$Name] returned repeated or excessive operation pages."
         }
-        $response = Invoke-AzRestMethod -Method 'GET' -Path $path -ErrorAction Stop
-        if ($IncludeAllOperations -and ($response.Content -isnot [string] -or
+        $response = Invoke-DeploymentRead -Read {
+            Invoke-AzRestMethod -Method 'GET' -Path $path -ErrorAction Stop
+        }
+        if (($IncludeAllOperations -or $RequireCompleteRemoval) -and (
+                $response -is [array] -or
+                ($response.StatusCode -isnot [int] -and $response.StatusCode -isnot [System.Net.HttpStatusCode]) -or
+                $response.Content -isnot [string] -or
                 -not (Test-DeploymentResponseJson -Json $response.Content))) {
-            throw "Deployment [$Name] returned invalid or ambiguous operation JSON; regional retry is unsafe."
+            throw "Deployment [$Name] returned invalid or ambiguous operation JSON or HTTP status; regional retry is unsafe."
         }
         $content = $response.Content | ConvertFrom-Json -NoEnumerate -ErrorAction Stop
 
@@ -243,6 +251,10 @@ function Get-DeploymentOperationAtScope {
         }
         if ($content -isnot [System.Management.Automation.PSCustomObject] -or $content.value -isnot [array]) {
             throw "Invalid deployment operations response for deployment [$Name] in scope [$Scope]."
+        }
+        if (($IncludeAllOperations -or $RequireCompleteRemoval) -and
+            @($content.PSObject.Properties.Name | Where-Object { $_ -cnotin @('value', 'nextLink') }).Count -gt 0) {
+            throw "Deployment [$Name] returned mixed or unknown operation response fields; regional retry is unsafe."
         }
         foreach ($operation in $content.value) {
             if ($IncludeAllOperations -and ($operation -isnot [System.Management.Automation.PSCustomObject] -or
