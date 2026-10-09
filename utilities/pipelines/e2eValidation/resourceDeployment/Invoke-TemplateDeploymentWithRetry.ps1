@@ -706,7 +706,7 @@ function Invoke-TemplateDeploymentWithRetry {
                 $classificationError = $lastError
                 if ($attemptResult.RecoveredFailure) {
                     $classificationError = [System.Management.Automation.ErrorRecord]::new(
-                        [System.InvalidOperationException]::new('Deployment failure confirmed after timeout recovery.'),
+                        [System.InvalidOperationException]::new('Deployment failure confirmed after status recovery.'),
                         'ConfirmedDeploymentFailure', [System.Management.Automation.ErrorCategory]::InvalidResult, $null
                     )
                 } elseif ($lastError.CategoryInfo.Category -eq 'OperationStopped') {

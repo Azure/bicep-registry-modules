@@ -284,6 +284,22 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                     return @{ ProvisioningState = 'Succeeded'; Outputs = @{ region = @{ type = 'string'; value = $Region } } }
                 }
                 'Regional' { throw ($script:incidentMessage -f $Name) }
+                'NestedReadNotFound' {
+                    $message = "Deployment 'dependencies' could not be found."
+                    $exception = [System.InvalidOperationException]::new($message)
+                    $exception | Add-Member -NotePropertyName Body -NotePropertyValue @{ Code = 'DeploymentNotFound'; Message = $message }
+                    $exception | Add-Member -NotePropertyName Request -NotePropertyValue @{
+                        Method = [System.Net.Http.HttpMethod]::Get
+                        RequestUri = [uri] "https://management.azure.com$script:nestedId/operations?api-version=2024-11-01"
+                    }
+                    $exception | Add-Member -NotePropertyName Response -NotePropertyValue @{
+                        StatusCode = [System.Net.HttpStatusCode]::NotFound
+                        Content = ConvertTo-Json -InputObject @{ error = @{ code = 'DeploymentNotFound'; message = $message } } -Compress
+                    }
+                    throw [System.Management.Automation.ErrorRecord]::new(
+                        $exception, 'ResourceManagerCloudException', [System.Management.Automation.ErrorCategory]::ObjectNotFound, $Name
+                    )
+                }
                 'Legacy' {
                     $script:operationError = @{ error = @{ code = 'QuotaExceeded'; message = 'Nonregional quota failure.' } }
                     $script:records[$rootId].Operations[1].properties.statusMessage = $script:operationError
@@ -633,8 +649,8 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                     if ($Path -like '*skiptoken*') {
                         $body = @{ value = @(
                                 (New-FixtureOperation -Id $script:serviceId -State Failed -StatusMessage @{
-                                        error = @{ code = 'AuthorizationFailed'; message = 'Forbidden.' }
-                                    })
+                                    error = @{ code = 'AuthorizationFailed'; message = 'Forbidden.' }
+                                })
                             )
                         }
                     } else {
@@ -1994,8 +2010,8 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2025-04-01") {
                 return New-FixtureResponse -Content @{ value = @($script:records[$root].Operations) + @(
                         (New-FixtureOperation -Operation $operation -State Failed -StatusMessage @{
-                                error = @{ code = 'InvalidTemplate'; message = 'Invalid configuration.' }
-                            })
+                            error = @{ code = 'InvalidTemplate'; message = 'Invalid configuration.' }
+                        })
                     )
                 }
             }
@@ -2836,6 +2852,119 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($templatePath)) | Should -Be ([Convert]::ToBase64String($originalBytes))
     }
 
+    Context 'Container Instance cleanup read recovery' -Tag 'DeploymentReadRecovery' {
+        BeforeEach {
+            $script:regions = @('norwayeast', 'swedencentral', 'eastus')
+            $script:vnetId = "$script:groupId/providers/Microsoft.ContainerInstance/containerGroups/capacity-waf"
+            $script:capacityMessage = "The requested resource is not available in the location 'norwayeast' at this moment. " +
+            "Please retry with a different resource request or in another location. Resource requested: '4' CPU '4' GB memory 'Linux' OS"
+            $script:regionalError = New-FixtureResourceFailure -ResourceId $script:vnetId -Leaf @{ message = $script:capacityMessage }
+            $script:incidentMessage = "The deployment '{0}' failed with error(s). (Code: DeploymentFailed) $script:capacityMessage"
+            $script:cleanupReads = 0
+            $script:timeoutLimit = 2
+            $script:readFailure = [System.Threading.Tasks.TaskCanceledException]::new(
+                'The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.',
+                [System.TimeoutException]::new('The operation was canceled.', [System.Threading.Tasks.TaskCanceledException]::new())
+            )
+        }
+
+        It 'Retries only the failed <read> before authorizing complete cleanup and relocation' -ForEach @(
+            @{ read = 'nested operations' }, @{ read = 'nested status' }
+        ) {
+            if ($read -eq 'nested operations') {
+                Mock Invoke-AzRestMethod {
+                    if ($Method -eq 'GET' -and $Path -eq "$script:nestedId/operations?api-version=2025-04-01" -and
+                        ++$script:cleanupReads -le $script:timeoutLimit) {
+                        throw $script:readFailure
+                    }
+                    Invoke-FixtureRest $Method $Path
+                }
+            } else {
+                Mock Get-AzResourceGroupDeployment {
+                    if (++$script:cleanupReads -le $script:timeoutLimit) { throw $script:readFailure }
+                    Get-FixtureStatus -Name $Name -Scope resourcegroup -ResourceGroupName $ResourceGroupName -DefaultProfile $DefaultProfile
+                }
+            }
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $result.DeploymentAttempts | Should -Be 2
+            $script:cleanupReads | Should -Be 3
+            @($script:submissions) | Should -Be @('norwayeast', 'swedencentral')
+            $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+            $script:trace.IndexOf("remove:$script:groupId") | Should -BeLessThan $script:trace.IndexOf("DELETE:$($script:roots[0])")
+            $script:trace.IndexOf("DELETE:$($script:roots[0])") | Should -BeLessThan $script:trace.IndexOf('validate:swedencentral')
+            Should -Invoke New-AzSubscriptionDeployment -Times 2 -Exactly
+            Should -Invoke Start-Sleep -Times 2 -Exactly -ParameterFilter { $Seconds -eq 5 }
+        }
+
+        It 'Keeps cleanup incomplete after exhausted operation reads without removal or resubmission' {
+            Mock Invoke-AzRestMethod {
+                if ($Method -eq 'GET' -and $Path -eq "$script:nestedId/operations?api-version=2025-04-01") {
+                    $script:cleanupReads++
+                    throw $script:readFailure
+                }
+                Invoke-FixtureRest $Method $Path
+            }
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'Complete cleanup discovery failed'
+            $result.Exception | Should -Match 'HttpClient.Timeout'
+            $script:cleanupReads | Should -Be 3
+            $result.DeploymentAttempts | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $result.PendingDeletionDeploymentIds.Count | Should -Be 0
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+            Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+        }
+    }
+
+    It 'Keeps Container App terminal ResourceNotFound distinct from a nested deployment polling 404' -Tag 'DeploymentReadRecovery' {
+        $script:regions = @('centralus', 'koreacentral', 'eastus')
+        $script:outcomes = @('Regional', 'Regional')
+        $script:regionalError = @{ error = @{ code = 'SkuNotAvailable'; message = 'Capacity is not available in this location.' } }
+        Mock Wait-TemplateDeployment { throw 'Provider ResourceNotFound must not enter submission-status recovery.' }
+        Mock New-AzSubscriptionDeployment {
+            if ($script:names.Count -eq 1) {
+                $message = "The Resource 'Microsoft.App/containerApps/gciacafunc001' under resource group 'dep-gci-app.containerApps-acafunc-rg' was not found. " +
+                'For more details please go to https://aka.ms/ARMResourceNotFoundFix'
+                $script:incidentMessage = "14:05:34 - The deployment '{0}' failed with error(s). Showing 1 out of 1 error(s).`n" +
+                'Status Message: At least one resource deployment operation failed. Please list deployment operations for details. ' +
+                "Please see https://aka.ms/arm-deployment-operations for usage details. (Code: DeploymentFailed)`n - $message (Code:ResourceNotFound)"
+                $script:regionalError = @{ error = @{
+                        code = 'DeploymentFailed'
+                        details = @(@{ code = 'ResourceNotFound'; message = $message })
+                    } }
+            }
+            try {
+                Invoke-FixtureSubmission -Name $DeploymentName -Path $TemplateFile -Region $resourceLocation -BaseTime $baseTime -Secret $adminSecret
+            } finally {
+                if ($script:names.Count -eq 2) {
+                    $script:records[$script:roots[-1]].Operations +=
+                    New-FixtureOperation -Id "${script:nestedId}-test-acafunc-init" -State Succeeded
+                }
+            }
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.Exception | Should -Match 'ResourceNotFound'
+        $result.Exception | Should -Match 'Microsoft.App/containerApps/gciacafunc001'
+        $result.DeploymentOutput | Should -BeNullOrEmpty
+        $result.DeploymentAttempts | Should -Be 2
+        @($script:submissions) | Should -Be @('centralus', 'koreacentral')
+        $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+        $script:records[$script:roots[1]].State | Should -BeExactly 'Failed'
+        $script:trace.IndexOf("DELETE:$($script:roots[0])") | Should -BeLessThan $script:trace.IndexOf('submit:koreacentral')
+        Should -Invoke Wait-TemplateDeployment -Times 0 -Exactly
+        Should -Invoke New-AzSubscriptionDeployment -Times 2 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter {
+            $Method -eq 'DELETE' -and $Path.StartsWith($script:roots[1])
+        }
+    }
+
     It 'Does not inspect or replay <outcome> uncertainty' -ForEach @(
         @{ outcome = 'Transport' }, @{ outcome = 'NoResult' }, @{ outcome = 'Running' }
     ) {
@@ -2854,6 +2983,157 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         @($script:submissions) | Should -Be @('italynorth', 'swedencentral')
         $result.RemainingDeploymentNames | Should -Be @($script:names[1])
         Should -Invoke Get-AzDeployment -Times 3 -Exactly -ParameterFilter { $Name -eq $script:names[0] }
+    }
+
+    Context 'Nested deployment read reconciliation within shared budgets' -Tag 'DeploymentReadRecovery' {
+        BeforeEach {
+            $script:outcomes = @('NestedReadNotFound', 'Succeeded')
+            $script:readRecoveryStates = [System.Collections.Generic.Queue[string]]::new([string[]] @('Running', 'Failed'))
+            Mock Get-AzDeployment {
+                if ($script:readRecoveryStates.Count -gt 0) {
+                    $script:records[$script:roots[-1]].State = $script:readRecoveryStates.Dequeue()
+                }
+                $state = Get-FixtureStatus -Name $Name -Scope subscription -DefaultProfile $DefaultProfile
+                $script:trace.Add("observed:$($state.ProvisioningState)")
+                $state
+            }
+        }
+
+        It 'Recovers only original outputs with <kind> limits' -ForEach @(
+            @{ kind = 'single-attempt'; limit = 1; remove = $true; pin = '' }
+            @{ kind = 'normal'; limit = 3; remove = $true; pin = '' }
+            @{ kind = 'retained-resources'; limit = 3; remove = $false; pin = '' }
+            @{ kind = 'pinned-region'; limit = 3; remove = $true; pin = 'italynorth' }
+            @{ kind = 'global'; limit = 3; remove = $true; pin = '' }
+        ) {
+            $script:readRecoveryStates = [System.Collections.Generic.Queue[string]]::new([string[]] @('Running', 'Succeeded'))
+            if ($kind -eq 'global') {
+                Mock Get-AvailableResourceLocation { @{ Location = 'italynorth'; IsGlobal = $true } }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput -DeploymentLimit $limit -RegionLimit $limit `
+                -RemoveDeployment $remove -CustomLocation $pin
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $result.DeploymentOutput.region.value | Should -BeExactly 'italynorth'
+            $result.DeploymentAttempts | Should -Be 1
+            $result.AttemptedLocations | Should -Be @('italynorth')
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+            $result.PendingDeletionDeploymentIds.Count | Should -Be 0
+            Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        }
+
+        It 'Relocates only after the original Running root becomes Failed and all resources and history are removed' {
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $result.DeploymentAttempts | Should -Be 2
+            @($script:submissions) | Should -Be @('italynorth', 'swedencentral')
+            $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+            $script:trace.IndexOf('observed:Running') | Should -BeLessThan $script:trace.IndexOf('observed:Failed')
+            $script:trace.IndexOf('observed:Failed') | Should -BeLessThan $script:trace.IndexOf("remove:$script:groupId")
+            $script:trace.IndexOf("remove:$script:groupId") | Should -BeLessThan $script:trace.IndexOf("DELETE:$($script:roots[0])")
+            $script:trace.IndexOf("DELETE:$($script:roots[0])") | Should -BeLessThan $script:trace.IndexOf('validate:swedencentral')
+            Should -Invoke New-AzSubscriptionDeployment -Times 2 -Exactly
+        }
+
+        It 'Never resubmits when root observation is <state>' -ForEach @(
+            @{ state = 'Running' }, @{ state = 'Unknown' }
+        ) {
+            $script:readRecoveryStates = [System.Collections.Generic.Queue[string]]::new([string[]] @($state))
+            Mock Start-Sleep { $script:clock = $script:clock.AddHours(1) }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'read recovery'
+            $result.DeploymentAttempts | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $result.PendingDeletionDeploymentIds.Count | Should -Be 0
+            Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+        }
+
+        It 'Keeps failed recovery inside the three-submission budget' {
+            $script:outcomes = @('NestedReadNotFound', 'NestedReadNotFound', 'NestedReadNotFound')
+            $script:regionalError = @{ error = @{ code = 'SkuNotAvailable'; message = 'Capacity is not available in this location.' } }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'confirmed Failed'
+            $result.DeploymentAttempts | Should -Be 3
+            $result.AttemptedLocations | Should -Be @('italynorth', 'swedencentral', 'eastus')
+            @($script:submissions) | Should -Be @('italynorth', 'swedencentral', 'eastus')
+            $result.RemainingDeploymentNames | Should -Be @($script:names[2])
+            $script:records.ContainsKey($script:roots[0]) | Should -BeFalse
+            $script:records.ContainsKey($script:roots[1]) | Should -BeFalse
+            Should -Invoke New-AzSubscriptionDeployment -Times 3 -Exactly
+        }
+
+        It 'Does not replay after <kind> prevents complete cleanup or classification' -ForEach @(
+            @{ kind = 'exhausted nested status reads' }, @{ kind = 'history deletion permission failure' }
+            @{ kind = 'mixed authorization evidence' }
+        ) {
+            switch ($kind) {
+                'exhausted nested status reads' {
+                    Mock Get-AzResourceGroupDeployment { throw [System.TimeoutException]::new('Nested status deadline elapsed.') }
+                }
+                'history deletion permission failure' {
+                    Mock Invoke-AzRestMethod {
+                        if ($Method -eq 'DELETE') { throw [System.UnauthorizedAccessException]::new('History deletion is forbidden.') }
+                        Invoke-FixtureRest $Method $Path
+                    }
+                }
+                'mixed authorization evidence' {
+                    $script:regionalError.error.details += @{ code = 'AuthorizationFailed'; message = 'Permission denied.' }
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'confirmed Failed'
+            $result.DeploymentAttempts | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+            if ($kind -ne 'history deletion permission failure') {
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+                Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+            } else {
+                Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+            }
+        }
+
+        It 'Retains same-region retry safety with deployment scripts <presence>' -ForEach @(
+            @{ presence = 'absent' }, @{ presence = 'present' }
+        ) {
+            $script:vnetId = "$script:groupId/providers/Microsoft.Network/privateEndpoints/failed-resource"
+            $script:regionalError = New-FixtureResourceFailure -ResourceId $script:vnetId `
+                -Leaf @{ code = 'InternalServerError'; message = 'An error occurred.'; details = @() }
+            if ($presence -eq 'present') {
+                Mock New-AzSubscriptionDeployment {
+                    try {
+                        Invoke-FixtureSubmission -Name $DeploymentName -Path $TemplateFile -Region $resourceLocation -BaseTime $baseTime -Secret $adminSecret
+                    } finally {
+                        $script:records[$script:roots[-1]].Operations +=
+                        New-FixtureOperation -Id "$script:groupId/providers/Microsoft.Resources/deploymentScripts/setup"
+                    }
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            if ($presence -eq 'present') {
+                $result.Exception | Should -Match 'deployment scripts'
+                $result.DeploymentAttempts | Should -Be 1
+                $result.RemainingDeploymentNames | Should -Be @($script:names)
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+                Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+            } else {
+                $result.ContainsKey('Exception') | Should -BeFalse
+                $result.DeploymentAttempts | Should -Be 2
+                @($script:submissions) | Should -Be @('italynorth', 'italynorth')
+                @($script:validations) | Should -Be @('italynorth')
+                $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+            }
+        }
     }
 
     Context 'Management-group authorization reconciliation within shared budgets' -Tag 'ManagementGroupRecovery' {

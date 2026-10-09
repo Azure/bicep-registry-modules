@@ -161,6 +161,10 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 'MissingState' { return @{ Outputs = @{} } }
                 'Unknown' { throw 'The submission outcome is unknown: connection interrupted.' }
                 'RequestTimeout' { throw (Get-TestRequestTimeout -Format $script:timeoutFormat) }
+                'NestedReadNotFound' {
+                    $script:submissionReadError = Get-TestNestedReadError -Name $Name
+                    throw $script:submissionReadError
+                }
                 'Forbidden' { throw (Get-TestForbiddenError -Format $script:forbiddenFormat) }
                 'EmptyTimeout' { throw [System.Threading.Tasks.TaskCanceledException]::new('', (Get-TestRequestTimeout).InnerException) }
                 'TransportFailure' { throw [System.Net.Http.HttpRequestException]::new('The submission outcome is unknown: connection interrupted.') }
@@ -736,10 +740,61 @@ Describe 'Deployment submission and cleanup runtime integration' {
 
     Context 'Read-only recovery after a submitted request error' {
         BeforeAll {
+            function Get-TestNestedReadError {
+                param ([string] $Name)
+                $message = "Deployment 'fixture-dependencies' could not be found."
+                $cloud = [System.InvalidOperationException]::new($message)
+                $cloud | Add-Member -NotePropertyName Body -NotePropertyValue @{ Code = 'DeploymentNotFound'; Message = $message }
+                $cloud | Add-Member -NotePropertyName Request -NotePropertyValue @{
+                    Method = [System.Net.Http.HttpMethod]::Get
+                    RequestUri = [uri] "https://management.azure.com$resourceGroupId/providers/Microsoft.Resources/deployments/fixture-dependencies/operations?api-version=2024-11-01"
+                }
+                $cloud | Add-Member -NotePropertyName Response -NotePropertyValue @{
+                    StatusCode = [System.Net.HttpStatusCode]::NotFound
+                    Content = ConvertTo-Json -InputObject @{ error = @{ code = 'DeploymentNotFound'; message = $message } } -Compress
+                }
+                if ($script:readErrorMutation) { . $script:readErrorMutation $cloud $Name }
+                $exception = [System.InvalidOperationException]::new("$message`nStatusCode: 404`nReasonPhrase: Not Found`nOperationID : fixture-operation", $cloud)
+                switch ($script:readErrorFormat) {
+                    'Direct' { $exception = $cloud }
+                    'Aggregate' { $exception = [System.AggregateException]::new([System.Exception[]] @($exception)) }
+                    'MixedUnknown' {
+                        $exception = [System.AggregateException]::new([System.Exception[]] @(
+                                $exception, [System.InvalidOperationException]::new('Unknown submission failure.')
+                            ))
+                    }
+                    'RuntimeMixedCancellation' {
+                        $cancellation = [System.Management.Automation.ErrorRecord]::new(
+                            [System.OperationCanceledException]::new('Caller cancelled.'),
+                            'CallerCancelled', [System.Management.Automation.ErrorCategory]::OperationStopped, $Name
+                        )
+                        $exception = [System.Management.Automation.RuntimeException]::new('Caller cancelled.', $exception, $cancellation)
+                    }
+                    'MixedCancellation' {
+                        $exception = [System.AggregateException]::new([System.Exception[]] @(
+                                $exception, [System.OperationCanceledException]::new('Caller cancelled.')
+                            ))
+                    }
+                }
+                $record = [System.Management.Automation.ErrorRecord]::new(
+                    $exception, 'ResourceManagerCloudException', $script:readErrorCategory, $Name
+                )
+                $record.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('Original nested-read details; OperationID: fixture-operation.')
+                if ($script:readErrorFormat -eq 'RuntimeException') {
+                    $record = [System.Management.Automation.ErrorRecord]::new(
+                        [System.Management.Automation.RuntimeException]::new('Submission stopped.', $null, $record),
+                        'WrappedReadError', [System.Management.Automation.ErrorCategory]::InvalidOperation, $Name
+                    )
+                }
+                return $record
+            }
+
             function Get-TestDeploymentStatus {
                 param([string] $Name, [string] $Scope, [object] $Profile, [string] $Target)
                 $script:statusReads.Add(@{ Name = $Name; Scope = $Scope; Profile = $Profile; Target = $Target })
                 $state = $script:statusStates[$script:statusReads.Count - 1]
+                $id = Get-DeploymentResourceId -Name $Name -Scope $Scope -SubscriptionId $Profile.Subscription.Id `
+                    -ResourceGroupName $Target -ManagementGroupId $Target
                 switch ($state) {
                     'Timeout' { throw (Get-TestRequestTimeout) }
                     'Forbidden' { throw (Get-TestForbiddenError) }
@@ -758,6 +813,11 @@ Describe 'Deployment submission and cleanup runtime integration' {
                     'Mismatched' { return @{ DeploymentName = 'another-deployment'; ProvisioningState = 'Failed' } }
                     'ArrayName' { return @{ DeploymentName = @($Name, $Name); ProvisioningState = 'Succeeded' } }
                     'MissingId' { return @{ DeploymentName = $Name; ProvisioningState = 'Succeeded' } }
+                    'ArrayId' { return @{ DeploymentName = $Name; Id = @($id); ProvisioningState = 'Succeeded' } }
+                    'InvalidOutputs' { return @{ DeploymentName = $Name; Id = $id; ProvisioningState = 'Succeeded'; Outputs = 'unknown' } }
+                    'MixedError' {
+                        return @{ DeploymentName = $Name; Id = $id; ProvisioningState = 'Succeeded'; Error = @{ code = 'AuthorizationFailed' } }
+                    }
                     'MismatchedId' {
                         return @{
                             DeploymentName    = $Name
@@ -778,7 +838,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
                         if ([string]::IsNullOrEmpty($state)) { throw 'Unexpected extra deployment status read.' }
                         return @{
                             DeploymentName    = $Name
-                            Id                = "/providers/Microsoft.Management/managementGroups/$Target/providers/Microsoft.Resources/deployments/$Name"
+                            Id                = $id
                             ProvisioningState = $state
                             Outputs           = @{ recovered = @{ type = 'string'; value = 'ready' } }
                         }
@@ -1085,6 +1145,250 @@ Describe 'Deployment submission and cleanup runtime integration' {
             $script:statusReads.Count | Should -Be 0
             Should -Invoke Get-AzContext -Times 0 -Exactly
             Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        Context 'Nested deployment read reconciliation' -Tag 'DeploymentReadRecovery' {
+            BeforeEach {
+                $script:outcomes = @('NestedReadNotFound')
+                $script:readErrorFormat = 'SdkWrapper'
+                $script:readErrorCategory = [System.Management.Automation.ErrorCategory]::ObjectNotFound
+                $script:readErrorMutation = $null
+                $script:selectedContext | Add-Member -NotePropertyName Environment -NotePropertyValue @{
+                    ResourceManagerUrl = 'https://management.azure.com/'
+                }
+            }
+
+            It 'Recovers the original Running root after a <format> nested operation 404' -ForEach @(
+                @{ format = 'Direct' }, @{ format = 'SdkWrapper' }
+                @{ format = 'RuntimeException' }, @{ format = 'Aggregate' }
+            ) {
+                $script:readErrorFormat = $format
+                $result = New-TemplateDeployment @deploymentInput
+
+                $result.ContainsKey('Exception') | Should -BeFalse
+                $result.DeploymentOutput.recovered.value | Should -BeExactly 'ready'
+                $result.DeploymentNames | Should -Be @($script:attemptNames)
+                $script:statusReads.Count | Should -Be 2
+                foreach ($read in $script:statusReads) {
+                    $read.Name | Should -BeExactly $script:attemptNames[0]
+                    $read.Scope | Should -BeExactly 'subscription'
+                    [object]::ReferenceEquals($read.Profile, $script:selectedContext) | Should -BeTrue
+                }
+                Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+                Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+                Should -Invoke Get-ErrorMessageForScope -Times 0 -Exactly
+                Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
+
+            It 'Keeps the existing observation budget for <kind>' -ForEach @(
+                @{ kind = 'active states'; states = @('Accepted', 'Running', 'Creating', 'Updating', 'Succeeded') }
+                @{ kind = 'intermittent timeouts'; states = @('Timeout', 'Timeout', 'Running', 'Timeout', 'Succeeded') }
+                @{ kind = 'already succeeded'; states = @('Succeeded') }
+            ) {
+                $script:statusStates = $states
+                $result = New-TemplateDeployment @deploymentInput
+
+                $result.DeploymentOutput.recovered.value | Should -BeExactly 'ready'
+                $script:statusReads.Count | Should -Be $states.Count
+                Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+                Should -Invoke Start-Sleep -Times ($states.Count - 1) -Exactly -ParameterFilter { $Seconds -eq 15 }
+            }
+
+            It 'Reports the actual root failure and preserves the original read error without legacy replay' {
+                $script:statusStates = @('Running', 'Failed')
+                $result = New-TemplateDeployment @deploymentInput
+
+                $result.Exception | Should -Match 'confirmed Failed.*vCore quota was exceeded'
+                $result.Exception | Should -Match 'fixture-dependencies'
+                $result.RetryAllowed | Should -BeFalse
+                $result.FailureQueryAllowed | Should -BeTrue
+                $result.RecoveredFailure | Should -BeTrue
+                $original = $result.ErrorRecord.Exception.Data['OriginalErrorRecord']
+                [object]::ReferenceEquals($original.Exception, $script:submissionReadError.Exception) | Should -BeTrue
+                $original.ErrorDetails.Message | Should -BeExactly $script:submissionReadError.ErrorDetails.Message
+                $original.TargetObject | Should -BeExactly $script:attemptNames[0]
+                $original.FullyQualifiedErrorId | Should -Match '^ResourceManagerCloudException'
+                $result.ContainsKey('DeploymentOutput') | Should -BeFalse
+                Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+                Should -Invoke Get-ErrorMessageForScope -Times 1 -Exactly -ParameterFilter {
+                    $DeploymentScope -eq 'subscription' -and $DeploymentName -eq $script:attemptNames[0]
+                }
+            }
+
+            It 'Keeps ownership and both ErrorRecords when the root read returns <state>' -ForEach @(
+                @{ state = 'Missing' }, @{ state = 'Mismatched' }, @{ state = 'Ambiguous' }
+                @{ state = 'ArrayName' }, @{ state = 'MissingId' }, @{ state = 'MismatchedId' }
+                @{ state = 'ArrayId' }, @{ state = 'ArrayState' }, @{ state = 'InvalidOutputs' }
+                @{ state = 'MixedError' }, @{ state = 'Unknown' }, @{ state = 'Canceled' }
+                @{ state = 'NotFound' }, @{ state = 'Forbidden' }, @{ state = 'Authentication' }
+                @{ state = 'Transport' }
+            ) {
+                $script:statusStates = @($state, 'Succeeded')
+                $result = New-TemplateDeployment @deploymentInput
+
+                $result.Exception | Should -Match 'read recovery'
+                $result.RetryAllowed | Should -BeFalse
+                $result.FailureQueryAllowed | Should -BeFalse
+                $result.RecoveredFailure | Should -BeFalse
+                $result.DeploymentNames | Should -Be @($script:attemptNames)
+                $result.ContainsKey('DeploymentOutput') | Should -BeFalse
+                $original = $result.ErrorRecord.Exception.Data['OriginalErrorRecord']
+                [object]::ReferenceEquals($original.Exception, $script:submissionReadError.Exception) | Should -BeTrue
+                $original.ErrorDetails.Message | Should -BeExactly $script:submissionReadError.ErrorDetails.Message
+                $original.TargetObject | Should -BeExactly $script:attemptNames[0]
+                $original.FullyQualifiedErrorId | Should -Match '^ResourceManagerCloudException'
+                $result.ErrorRecord.Exception.Data['RecoveryErrorRecord'] | Should -Not -BeNullOrEmpty
+                $script:statusReads.Count | Should -Be 1
+                Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Stops on <kind> without changing the deployment submission budget' -ForEach @(
+                @{ kind = 'three consecutive timeouts'; states = @('Timeout', 'Timeout', 'Timeout'); reads = 3 }
+                @{ kind = 'a running root beyond the recovery window'; states = @('Running'); reads = 1 }
+            ) {
+                $script:statusStates = $states
+                if ($reads -eq 1) { Mock Start-Sleep { $script:recoveryClock = $script:recoveryClock.AddMinutes(60) } }
+                $result = New-TemplateDeployment @deploymentInput
+
+                $result.Exception | Should -Match 'read recovery'
+                $result.RetryAllowed | Should -BeFalse
+                $result.FailureQueryAllowed | Should -BeFalse
+                $result.DeploymentNames | Should -Be @($script:attemptNames)
+                $script:statusReads.Count | Should -Be $reads
+                Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 5 }
+            }
+
+            It 'Does not authorize cleanup when confirmed failure details cannot be read' {
+                $script:statusStates = @('Failed')
+                Mock Get-ErrorMessageForScope { throw [System.UnauthorizedAccessException]::new('Operation detail authentication failed.') }
+                $result = New-TemplateDeployment @deploymentInput
+
+                $result.Exception | Should -Match 'Operation detail authentication failed'
+                $result.FailureQueryAllowed | Should -BeFalse
+                $result.RetryAllowed | Should -BeFalse
+                $result.ErrorRecord.Exception.Data['RecoveryErrorRecord'].Exception | Should -BeOfType [System.UnauthorizedAccessException]
+                Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+            }
+
+            It 'Propagates <state> cancellation during root observation' -ForEach @(
+                @{ state = 'Cancelled' }, @{ state = 'TaskCancelled' }, @{ state = 'TimeoutWordingOnly' }
+            ) {
+                $script:statusStates = @($state)
+                { New-TemplateDeployment @deploymentInput } | Should -Throw
+                $script:statusReads.Count | Should -Be 1
+                Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Rejects a <kind> context without reading root status' -ForEach @(
+                @{ kind = 'different subscription' }, @{ kind = 'different ARM endpoint' }
+            ) {
+                if ($kind -eq 'different subscription') {
+                    $script:selectedContext.Subscription.Id = '33333333-3333-3333-3333-333333333333'
+                } else {
+                    $script:selectedContext.Environment.ResourceManagerUrl = 'https://management.usgovcloudapi.net/'
+                }
+                $result = New-TemplateDeployment @deploymentInput
+                $result.Exception | Should -Not -BeNullOrEmpty
+                $result.RetryAllowed | Should -BeFalse
+                $script:statusReads.Count | Should -Be 0
+                Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+            }
+
+            It 'Does not recover an arbitrary 404 or mixed error: <kind>' -ForEach @(
+                @{ kind = 'HTTP 403' }, @{ kind = 'HTTP 401' }, @{ kind = 'array status' }
+                @{ kind = 'missing request' }, @{ kind = 'POST' }, @{ kind = 'PUT' }, @{ kind = 'DELETE' }
+                @{ kind = 'different subscription' }, @{ kind = 'root operation read' }
+                @{ kind = 'non-deployment resource' }, @{ kind = 'near-match provider' }, @{ kind = 'malformed JSON' }
+                @{ kind = 'duplicate JSON code' }, @{ kind = 'unknown body code' }
+                @{ kind = 'mismatched body message' }, @{ kind = 'contradictory raw message' }
+                @{ kind = 'mixed raw error' }, @{ kind = 'extra error fields' }
+                @{ kind = 'unrecognized query' }, @{ kind = 'insecure URI' }
+                @{ kind = 'permission category' }, @{ kind = 'mixed unknown exception' }
+            ) {
+                $script:readErrorKind = $kind
+                $script:readErrorMutation = {
+                    param ($Cloud, $RootName)
+                    switch ($script:readErrorKind) {
+                        'HTTP 403' { $Cloud.Response.StatusCode = [System.Net.HttpStatusCode]::Forbidden }
+                        'HTTP 401' { $Cloud.Response.StatusCode = [System.Net.HttpStatusCode]::Unauthorized }
+                        'array status' { $Cloud.Response.StatusCode = @(404) }
+                        'missing request' { $Cloud.Request = $null }
+                        { $_ -in @('POST', 'PUT', 'DELETE') } { $Cloud.Request.Method = $script:readErrorKind }
+                        'different subscription' {
+                            $Cloud.Request.RequestUri = [uri] $Cloud.Request.RequestUri.AbsoluteUri.Replace($subscriptionId, '33333333-3333-3333-3333-333333333333')
+                        }
+                        'root operation read' {
+                            $Cloud.Request.RequestUri = [uri] "https://management.azure.com/subscriptions/$subscriptionId/providers/Microsoft.Resources/deployments/$RootName/operations?api-version=2024-11-01"
+                        }
+                        'non-deployment resource' {
+                            $Cloud.Request.RequestUri = [uri] "https://management.azure.com$resourceGroupId/providers/Microsoft.Compute/images/fixture-dependencies?api-version=2024-11-01"
+                        }
+                        'near-match provider' {
+                            $Cloud.Request.RequestUri = [uri] $Cloud.Request.RequestUri.AbsoluteUri.Replace('Microsoft.Resources', 'MicrosoftXResources')
+                        }
+                        'malformed JSON' { $Cloud.Response.Content = '{"error":' }
+                        'duplicate JSON code' {
+                            $Cloud.Response.Content = '{"error":{"code":"DeploymentNotFound","code":"AuthorizationFailed","message":"Deployment ''fixture-dependencies'' could not be found."}}'
+                        }
+                        'unknown body code' { $Cloud.Body.Code = 'ResourceNotFound' }
+                        'mismatched body message' { $Cloud.Body.Message = "Deployment 'another' could not be found." }
+                        'contradictory raw message' { $Cloud.Response.Content = $Cloud.Response.Content.Replace('fixture-dependencies', 'another') }
+                        'mixed raw error' {
+                            $Cloud.Response.Content = '{"error":{"code":"DeploymentNotFound","message":"Deployment ''fixture-dependencies'' could not be found."},"code":"AuthorizationFailed"}'
+                        }
+                        'extra error fields' {
+                            $Cloud.Response.Content = '{"error":{"code":"DeploymentNotFound","message":"Deployment ''fixture-dependencies'' could not be found.","details":[{"code":"AuthorizationFailed"}]}}'
+                        }
+                        'unrecognized query' { $Cloud.Request.RequestUri = [uri] ($Cloud.Request.RequestUri.AbsoluteUri + '&unknown=true') }
+                        'insecure URI' { $Cloud.Request.RequestUri = [uri] $Cloud.Request.RequestUri.AbsoluteUri.Replace('https:', 'http:') }
+                        'permission category' { $script:readErrorCategory = [System.Management.Automation.ErrorCategory]::PermissionDenied }
+                        'mixed unknown exception' { $script:readErrorFormat = 'MixedUnknown' }
+                    }
+                }
+                $result = New-TemplateDeployment @deploymentInput
+
+                $result.Exception | Should -Not -BeNullOrEmpty
+                $result.RetryAllowed | Should -BeFalse
+                $result.RecoveredFailure | Should -BeFalse
+                $script:statusReads.Count | Should -Be 0
+                Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Does not extend nested 404 recovery to <scope> submissions' -ForEach @(
+                @{ scope = 'resourcegroup' }, @{ scope = 'managementgroup' }, @{ scope = 'tenant' }
+            ) {
+                Set-TestTemplateScope -Scope $scope
+                $result = New-TemplateDeployment @deploymentInput
+                $result.Exception | Should -Not -BeNullOrEmpty
+                $script:attemptNames.Count | Should -Be 1
+                $script:statusReads.Count | Should -Be 0
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Gives <format> cancellation precedence over the nested 404' -ForEach @(
+                @{ format = 'MixedCancellation' }, @{ format = 'RuntimeMixedCancellation' }
+            ) {
+                $script:readErrorFormat = $format
+                { New-TemplateDeployment @deploymentInput } | Should -Throw '*Caller cancelled*'
+                $script:statusReads.Count | Should -Be 0
+                Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+            }
+
+            It 'Publishes only original root outputs and ownership through the action' {
+                Invoke-TestActionStep -Name 'Deploy template file'
+                $outputs = Get-TestStepOutput
+                ($outputs.deploymentOutput | ConvertFrom-Json).recovered.value | Should -BeExactly 'ready'
+                @($outputs.deploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+                @($outputs.remainingDeploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+                $outputs.preflightRejectedDeploymentNames | Should -BeExactly '[]'
+                Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
         }
 
         Context 'Management-group authorization recovery' -Tag 'ManagementGroupRecovery' {
@@ -1440,7 +1744,8 @@ Describe 'Deployment submission and cleanup runtime integration' {
 
         $script:removedIds | Should -Contain $resourceGroupId
         $script:lookupNames | Should -Contain $script:attemptNames[2]
-        @($script:lookupNames | Where-Object { $_ -eq $name }).Count | Should -Be 1
+        @($script:lookupNames | Where-Object { $_ -eq $name }).Count | Should -Be 3
+        Should -Invoke Start-Sleep -Times 4 -Exactly -ParameterFilter { $Seconds -eq 5 }
         Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
     }
 
@@ -1453,8 +1758,9 @@ Describe 'Deployment submission and cleanup runtime integration' {
         { Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs } | Should -Throw '*HttpClient.Timeout*'
 
         $script:removedIds.Count | Should -Be 0
-        $script:lookupNames.Count | Should -Be 1
-        Should -Invoke Start-Sleep -Times 0 -Exactly
+        $script:lookupNames.Count | Should -Be 3
+        Should -Invoke Start-Sleep -Times 2 -Exactly -ParameterFilter { $Seconds -eq 5 }
+        Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
     }
 
     It 'Does not suppress a <target> timeout carrying a DeploymentNotFound error ID' -ForEach @(
@@ -1470,7 +1776,8 @@ Describe 'Deployment submission and cleanup runtime integration' {
         { Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs } | Should -Throw '*HttpClient.Timeout*'
 
         $script:removedIds | Should -Contain $resourceGroupId
-        @($script:lookupNames | Where-Object { $_ -eq $name }).Count | Should -Be 1
+        @($script:lookupNames | Where-Object { $_ -eq $name }).Count | Should -Be 3
+        Should -Invoke Start-Sleep -Times 4 -Exactly -ParameterFilter { $Seconds -eq 5 }
         Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
     }
 
