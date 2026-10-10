@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/event-hub/namespace/CHANGELOG.md).
 
+## 0.15.2
+
+### Changes
+
+- Fixed `eventhubs[].captureDescription` so that setting `enabled` to `false` is honored instead of omitting the capture configuration. The `destination` property is now only emitted when provided.
+
+### Breaking Changes
+
+- None
+
 ## 0.15.1
 
 ### Changes
