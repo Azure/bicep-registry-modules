@@ -30,6 +30,39 @@ Function log {
     Add-Content -Path $logPath -Value "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') [hciHostStage7] - $message"
 }
 
+function Initialize-HciEdgeDevice {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [ValidatePattern('(?i)^/subscriptions/[0-9a-f-]{36}/resourceGroups/[^/]+/providers/Microsoft\.HybridCompute/machines/[^/]+$')]
+        [string] $MachineResourceId
+    )
+
+    $path = "$MachineResourceId/providers/Microsoft.AzureStackHCI/edgeDevices/default?api-version=2024-04-01"
+    $response = Invoke-AzRestMethod -Method GET -Path $path -ErrorAction Stop
+    if ([int] $response.StatusCode -eq 200) {
+        $edgeDevice = $response.Content | ConvertFrom-Json -ErrorAction Stop
+        if ($edgeDevice.kind -ne 'HCI') {
+            throw "The existing edge device on '$MachineResourceId' is not an HCI edge device."
+        }
+        if ($edgeDevice.properties.provisioningState -in @('Failed', 'Canceled')) {
+            throw "The HCI edge device on '$MachineResourceId' is in state '$($edgeDevice.properties.provisioningState)'."
+        }
+        log "HCI edge device already exists on '$MachineResourceId'."
+        return
+    }
+    if ([int] $response.StatusCode -ne 404) {
+        throw "Failed to read the HCI edge device on '$MachineResourceId' (HTTP $($response.StatusCode)). $($response.Content)"
+    }
+
+    $payload = @{ kind = 'HCI'; properties = @{} } | ConvertTo-Json -Depth 4 -Compress
+    $response = Invoke-AzRestMethod -Method PUT -Path $path -Payload $payload -ErrorAction Stop
+    if ([int] $response.StatusCode -notin @(200, 201, 202)) {
+        throw "Failed to create the HCI edge device on '$MachineResourceId' (HTTP $($response.StatusCode)). $($response.Content)"
+    }
+    log "Requested an HCI edge device on '$MachineResourceId' so Azure installs the matching extensions."
+}
+
 $ErrorActionPreference = 'Stop'
 
 $hciNodeNames = @()
@@ -57,6 +90,10 @@ If ($timer.Elapsed.TotalMinutes -gt 60) {
     Exit 1
 } Else {
     log "All HCI Arc Machines exist in the resource group '$($resourceGroupName)'"
+}
+
+foreach ($arcMachine in $arcMachines) {
+    Initialize-HciEdgeDevice -MachineResourceId $arcMachine.Id
 }
 
 log 'Waiting up to two hours for HCI Arc Machine extensions to be installed...'

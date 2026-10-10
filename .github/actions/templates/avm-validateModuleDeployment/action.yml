@@ -433,6 +433,9 @@ runs:
         # Set repo root path
         $repoRootPath = $env:GITHUB_WORKSPACE
 
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Initialize-AvmPester.ps1')
+        Initialize-AvmPester -RepoRootPath $repoRootPath
+
         $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
         $moduleTestFolderPath = Split-Path $moduleTestFilePath
         $moduleTestFolderName = Split-Path $moduleTestFolderPath -Leaf

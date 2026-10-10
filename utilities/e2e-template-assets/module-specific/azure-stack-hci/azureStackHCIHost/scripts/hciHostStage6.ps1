@@ -67,6 +67,33 @@ Function log {
     Add-Content -Path $logPath -Value "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') [hciHostStage6] - $message"
 }
 
+function Wait-HciArcInitializationJob {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [System.Management.Automation.Job[]] $Job,
+
+        [ValidateRange(1, 3600)]
+        [int] $TimeoutSeconds = 1800
+    )
+
+    $null = $Job | Wait-Job -Timeout $TimeoutSeconds
+    $allJobs = @($Job) + @($Job | ForEach-Object { $_.ChildJobs })
+    $failed = @($allJobs | Where-Object { $_.State -eq 'Failed' })
+    if ($failed.Count -gt 0) {
+        $failed | Receive-Job -ErrorAction Stop | ForEach-Object { log ($_ | Out-String) }
+    }
+    $incomplete = @($allJobs | Where-Object { $_.State -ne 'Completed' })
+    if ($incomplete.Count -gt 0) {
+        $states = ($incomplete | ForEach-Object { '{0}: {1}' -f $_.Location, $_.State }) -join ', '
+        throw "Azure Arc initialization did not complete successfully within $TimeoutSeconds seconds. Job states: $states"
+    }
+
+    foreach ($completedJob in $Job) {
+        $completedJob | Receive-Job -ErrorAction Stop | ForEach-Object { log ($_ | Out-String) }
+    }
+}
+
 $ErrorActionPreference = 'Stop'
 
 # export or re-import local administrator credential
@@ -329,10 +356,7 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
         }
     }
     try {
-        # Use new bootstrapping approach for newer HCI OS versions
-        # Invoke-AzStackHciArcInitialization is the recommended approach per:
-        # https://learn.microsoft.com/en-us/azure/azure-local/deploy/deployment-without-azure-arc-gateway
-        Import-Module AzsHCI.ARCinstaller -ErrorAction Continue
+        Get-Command Invoke-AzStackHciArcInitialization -ErrorAction Stop | Out-Null
         Write-Output "[$env:COMPUTERNAME] Starting Arc initialization using Invoke-AzStackHciArcInitialization..."
 
         Invoke-AzStackHciArcInitialization `
@@ -353,19 +377,5 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
 
 log 'Waiting up to 30 minutes for Azure Arc initialization to complete on nodes...'
 
-$arcInitializationJobs | Wait-Job -Timeout 1800
-
-# check for failed arc initialization jobs
-log 'Checking status of Azure Arc initialization jobs...'
-$arcInitializationJobs | ForEach-Object {
-    $job = $_
-    log "[$($job.ComputerName)] Job output (Receive-Job): '$($job | Receive-Job -Keep -ErrorAction Continue | Out-String)'"
-    Get-Job -Id $job.Id -IncludeChildJob | Receive-Job -ErrorAction SilentlyContinue | ForEach-Object {
-        If ($_.Exception -or $_.state -eq 'Failed') {
-            log "Azure Arc initialization failed on node '$($job.Location)' with error: $($_.Exception.Message)"
-            Exit 1
-        } Else {
-            log "[$($job.ComputerName)] Job output: '$($_ | ConvertTo-Json -Compress)'"
-        }
-    }
-}
+Wait-HciArcInitializationJob -Job $arcInitializationJobs
+log 'Azure Arc initialization completed successfully on all HCI nodes.'
