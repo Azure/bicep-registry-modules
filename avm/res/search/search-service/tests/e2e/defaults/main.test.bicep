@@ -41,7 +41,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}002'
+      name: '${take('${namePrefix}${serviceShort}002', 46)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     }
   }
 ]

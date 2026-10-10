@@ -51,7 +51,7 @@ module secondaryDependencies 'dependencies.secondary.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: 'dep-kv-${uniqueString(secondaryResourceGroup.id, namePrefix, serviceShort)}'
     certname: 'dep-${namePrefix}-cert-${serviceShort}'
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }

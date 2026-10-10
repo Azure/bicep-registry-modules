@@ -49,7 +49,7 @@ param tables tableType[]?
 @description('Optional. List of gallerySolutions to be created in the log analytics workspace.')
 param gallerySolutions gallerySolutionType[]?
 
-@description('Optional. Onboard the Log Analytics Workspace to Sentinel. Requires \'SecurityInsights\' solution to be in gallerySolutions.')
+@description('Optional. Onboard the Log Analytics Workspace to Sentinel. Requires \'SecurityInsights\' solution to be in gallerySolutions. When enabled, the onboarding API manages this solution instead of a separate gallery deployment.')
 param onboardWorkspaceToSentinel bool = false
 
 @description('Optional. Number of days data will be retained for.')
@@ -377,7 +377,10 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [
 ]
 
 module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.3.1' = [
-  for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(gallerySolutions)) {
+  for (gallerySolution, index) in gallerySolutions ?? []: if (!(onboardWorkspaceToSentinel && startsWith(
+    gallerySolution.name,
+    'SecurityInsights'
+  ))) {
     name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-LAW-Solution-${index}'
     params: {
       name: gallerySolution.name

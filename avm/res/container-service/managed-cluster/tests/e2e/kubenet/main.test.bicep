@@ -84,7 +84,7 @@ module testDeployment '../../../main.bicep' = [
           osDiskSizeGB: 0
           osType: 'Linux'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS4_v2'
+          vmSize: 'Standard_D8ds_v5'
         }
       ]
       agentPools: [
@@ -102,7 +102,7 @@ module testDeployment '../../../main.bicep' = [
               manual: [
                 {
                   count: 2
-                  size: 'Standard_DS4_v2'
+                  size: 'Standard_D8ds_v5'
                 }
               ]
             }
@@ -127,7 +127,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           name: guid('Owner assignment ${namePrefix}${serviceShort}')
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
@@ -140,7 +140,7 @@ module testDeployment '../../../main.bicep' = [
         {
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

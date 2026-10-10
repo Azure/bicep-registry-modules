@@ -26,7 +26,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/accessPolicies` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/accessPolicies)</li></ul> |
+| `Microsoft.KeyVault/vaults/accessPolicies` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/accessPolicies)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
@@ -98,11 +98,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         nodeSize: 'Small'
         nodeSizeFamily: 'MemoryOptimized'
         sessionLevelPackagesEnabled: true
+        sparkVersion: '3.5'
       }
       {
         name: 'depbdp02'
         nodeSize: 'Small'
         nodeSizeFamily: 'MemoryOptimized'
+        sparkVersion: '3.5'
       }
     ]
     tags: {
@@ -159,12 +161,14 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           "name": "depbdp01",
           "nodeSize": "Small",
           "nodeSizeFamily": "MemoryOptimized",
-          "sessionLevelPackagesEnabled": true
+          "sessionLevelPackagesEnabled": true,
+          "sparkVersion": "3.5"
         },
         {
           "name": "depbdp02",
           "nodeSize": "Small",
-          "nodeSizeFamily": "MemoryOptimized"
+          "nodeSizeFamily": "MemoryOptimized",
+          "sparkVersion": "3.5"
         }
       ]
     },
@@ -214,11 +218,13 @@ param bigDataPools = [
     nodeSize: 'Small'
     nodeSizeFamily: 'MemoryOptimized'
     sessionLevelPackagesEnabled: true
+    sparkVersion: '3.5'
   }
   {
     name: 'depbdp02'
     nodeSize: 'Small'
     nodeSizeFamily: 'MemoryOptimized'
+    sparkVersion: '3.5'
   }
 ]
 param tags = {
@@ -412,7 +418,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
     defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
-    name: 'swenua001'
+    name: '<name>'
     sqlAdministratorLogin: 'synwsadmin'
     // Non-required parameters
     customerManagedKey: {
@@ -444,7 +450,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       "value": "<defaultDataLakeStorageFilesystem>"
     },
     "name": {
-      "value": "swenua001"
+      "value": "<name>"
     },
     "sqlAdministratorLogin": {
       "value": "synwsadmin"
@@ -474,7 +480,7 @@ using 'br/public:avm/res/synapse/workspace:<version>'
 // Required parameters
 param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
 param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
-param name = 'swenua001'
+param name = '<name>'
 param sqlAdministratorLogin = 'synwsadmin'
 // Non-required parameters
 param customerManagedKey = {
@@ -869,7 +875,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         name: '499f9243-2170-4204-807d-ee6d0f94a0d0'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -1120,7 +1126,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           "name": "499f9243-2170-4204-807d-ee6d0f94a0d0",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1345,7 +1351,7 @@ param roleAssignments = [
     name: '499f9243-2170-4204-807d-ee6d0f94a0d0'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

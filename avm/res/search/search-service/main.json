@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7022399176033672399"
+      "templateHash": "4347275618029734977"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service."
@@ -1022,7 +1022,9 @@
     "searchService_privateEndpoints": {
       "copy": {
         "name": "searchService_privateEndpoints",
-        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -1856,7 +1858,8 @@
         }
       },
       "dependsOn": [
-        "searchService"
+        "searchService",
+        "searchService_privateEndpoints"
       ]
     },
     "secretsExport": {
@@ -1887,7 +1890,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13388062897833845351"
+              "templateHash": "4536754760662241313"
             }
           },
           "definitions": {
@@ -1950,7 +1953,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secrets": {
@@ -1959,7 +1962,7 @@
                 "count": "[length(parameters('secretsToSet'))]"
               },
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"

@@ -36,7 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     location: enforcedLocation
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
+    storageAccountName: '${take('dep${namePrefix}sa${serviceShort}01', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
   }
 }
 
@@ -59,6 +59,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'dep${namePrefix}bdp01'
           nodeSizeFamily: 'MemoryOptimized'
           nodeSize: 'Small'
+          sparkVersion: '3.5'
           autoScale: {
             minNodeCount: 3
             maxNodeCount: 5
@@ -80,6 +81,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'dep${namePrefix}bdp02'
           nodeSizeFamily: 'MemoryOptimized'
           nodeSize: 'Small'
+          sparkVersion: '3.5'
         }
       ]
       tags: {

@@ -4,8 +4,8 @@ param location string = resourceGroup().location
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
-@description('Required. The name of the Deployment Script to create to get the paired region name.')
-param pairedRegionScriptName string
+@description('Required. The name of the Deployment Script to select a supported replication region.')
+param replicationRegionScriptName string
 
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
@@ -65,8 +65,8 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: pairedRegionScriptName
+resource getReplicationRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+  name: replicationRegionScriptName
   location: location
   kind: 'AzurePowerShell'
   identity: {
@@ -78,16 +78,16 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01
   properties: {
     azPowerShellVersion: '8.0'
     retentionInterval: 'P1D'
-    arguments: '-Location \\"${location}\\"'
-    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
+    arguments: '-Location \\"${location}\\" -ResourceType \\"Microsoft.ContainerRegistry/registries/replications\\"'
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-ReplicationRegion.ps1')
   }
   dependsOn: [
     roleAssignment
   ]
 }
 
-@description('The name of the paired region.')
-output pairedRegionName string = getPairedRegionScript.properties.outputs.pairedRegionName
+@description('The name of the supported replication region.')
+output replicationRegionName string = getReplicationRegionScript.properties.outputs.replicationRegionName
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
