@@ -1,5 +1,5 @@
 metadata name = 'Network Security Groups'
-metadata description = 'This module deploys a Network security Group (NSG).'
+metadata description = 'This module deploys a Network Security Group (NSG).'
 
 @description('Required. Name of the Network Security Group.')
 param name string
@@ -7,10 +7,10 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the built-in roles will be deployed.')
+@description('Optional. Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the default security rules will be deployed. Note: The provided rules replace all custom security rules of the Network Security Group on each deployment, including rules added outside of this module.')
 param securityRules securityRuleType[]?
 
-@description('Optional. When enabled, flows created from Network Security Group connections will be re-evaluated when rules are updates. Initial enablement will trigger re-evaluation. Network Security Group connection flushing is not available in all regions.')
+@description('Optional. When enabled, flows created from Network Security Group connections will be re-evaluated when rules are updated. Initial enablement will trigger re-evaluation. Note: Network Security Group connection flushing is not available in all regions and the deployment fails if it is enabled in a region that does not support it.')
 param flushConnection bool = false
 
 import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
@@ -26,7 +26,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the NSG resource.')
-param tags resourceInput<'Microsoft.Network/networkSecurityGroups@2025-05-01'>.tags?
+param tags resourceInput<'Microsoft.Network/networkSecurityGroups@2025-09-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -63,7 +63,7 @@ var formattedRoleAssignments = [
 var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -81,7 +81,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2025-05-01' = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2025-09-01' = {
   name: name
   location: location
   tags: tags
@@ -205,7 +205,7 @@ type securityRuleType = {
     @description('Optional. The description of the security rule.')
     description: string?
 
-    @description('Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.')
+    @description('Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.')
     destinationAddressPrefix: string?
 
     @description('Optional. The destination address prefixes. CIDR or destination IP ranges.')
@@ -225,7 +225,7 @@ type securityRuleType = {
 
     @minValue(100)
     @maxValue(4096)
-    @description('Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.')
+    @description('Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.')
     priority: int
 
     @description('Required. Network protocol this rule applies to.')
