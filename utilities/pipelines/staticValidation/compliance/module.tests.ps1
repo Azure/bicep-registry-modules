@@ -1206,7 +1206,8 @@ Describe 'Module tests' -Tag 'Module' {
                 foreach ($variable in $Variables) {
                     # ^[a-z]+[a-zA-Z0-9]+$ = starts with lower-case letter & may have uppercase letter or numbers later
                     # ^\$fxv#[0-9]+$ = starts with [$fxv#] & ends with a number. This function value is created as a variable when using a Bicep function like loadFileAsBase64() or loadFromJson()
-                    if ($variable -cnotmatch '^[a-z]+[a-zA-Z0-9]+$|^\$fxv#[0-9]+$' -or $variable -match '-') {
+                    # Bicep qualifies imported variables with a generated namespace, including anonymous loaded-file constants.
+                    if ($variable -cnotmatch '^[a-z]+[a-zA-Z0-9]+$|^\$fxv#[0-9]+$|^_[0-9]+\.(?:[a-z][a-zA-Z0-9]*|_[0-9]+)$' -or $variable -match '-') {
                         $incorrectVariables += $variable
                     }
                 }
