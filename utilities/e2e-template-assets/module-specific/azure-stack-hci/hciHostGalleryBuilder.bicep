@@ -1,7 +1,16 @@
 targetScope = 'subscription'
 
-@description('Optional. Location for the HCI host image resources.')
+@description('Optional. Location for the resource group, gallery, image definition, and managed identity.')
 param location string = 'southeastasia'
+
+@description('Optional. Location for the image template and build VM. Use a new imageTemplateName when changing an existing template location.')
+param buildLocation string = location
+
+@minLength(1)
+@description('Optional. Regions where the image version must be available. The image definition and build locations are always included.')
+param replicationRegions string[] = [
+  location
+]
 
 @description('Optional. Name of the resource group that contains the persistent HCI host image resources.')
 param resourceGroupName string = 'rg-avm-persistent-hci-image'
@@ -21,7 +30,7 @@ param imageVersion string = '26.1.0'
 @description('Optional. Name of the user-assigned managed identity used by Azure VM Image Builder.')
 param imageBuilderIdentityName string = 'id-avm-persistent-hci-image-builder'
 
-@description('Optional. Name of the Azure VM Image Builder template.')
+@description('Optional. Name of the Azure VM Image Builder template. Use a new name when changing its build location.')
 param imageTemplateName string = 'hci-host-image-builder'
 
 @description('Optional. Base URI containing this asset and the authoritative HCI host scripts. Pin this URI to the same repository commit as this template.')
@@ -113,6 +122,7 @@ module imageTemplate 'hciHostGalleryBuilder.template.bicep' = {
   scope: resourceGroupScope
   params: {
     assetBaseUri: assetBaseUri
+    buildLocation: buildLocation
     buildTimeoutInMinutes: buildTimeoutInMinutes
     buildVmSize: buildVmSize
     galleryImageDefinitionResourceId: imageAssets.outputs.imageDefinitionResourceId
@@ -121,6 +131,7 @@ module imageTemplate 'hciHostGalleryBuilder.template.bicep' = {
     imageTemplateName: imageTemplateName
     imageVersion: imageVersion
     location: location
+    replicationRegions: replicationRegions
     sourceImage: sourceImage
     tags: tags
   }
