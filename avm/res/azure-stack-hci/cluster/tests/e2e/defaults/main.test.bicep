@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration'
 metadata description = 'This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster.'
 
@@ -12,6 +14,9 @@ param serviceShort string = 'ashclmin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
 
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
@@ -32,11 +37,6 @@ param arbDeploymentSPObjectId string = ''
 #disable-next-line secure-parameter-default
 param arbDeploymentServicePrincipalSecret string = ''
 
-@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the Microsoft.AzureStackHCI provider was registered in the subscription.')
-@secure()
-#disable-next-line secure-parameter-default
-param hciResourceProviderObjectId string = ''
-
 @description('Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM. Injected via CI-hciHostImageReferenceId secret.')
 @secure()
 #disable-next-line secure-parameter-default
@@ -45,6 +45,10 @@ param hciHostImageReferenceId string = ''
 @description('Optional. The location to deploy resources into. Defaults to southeastasia. Can be overridden via the CI customLocation input when quota is unavailable.')
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region is used as default in the AVM testing subscription
 param enforcedLocation string = 'southeastasia'
+
+resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
+  appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'
+}
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
@@ -93,7 +97,7 @@ module testDeployment '../../../main.bicep' = {
       localAdminPassword: arbLocalAdminAndDeploymentUserPass
       servicePrincipalId: arbDeploymentAppId
       servicePrincipalSecret: arbDeploymentServicePrincipalSecret
-      hciResourceProviderObjectId: hciResourceProviderObjectId
+      hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
       deploymentSettings: {
         customLocationName: '${namePrefix}${serviceShort}-location'
         clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
