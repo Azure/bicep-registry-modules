@@ -11,6 +11,9 @@ Optional. The name(s) of the deployment(s). Combined with resources provide via 
 .PARAMETER PreflightRejectedDeploymentNames
 Optional. Attempt names rejected by preflight validation. Only a confirmed DeploymentNotFound skips their lookup retries.
 
+.PARAMETER PendingDeletionDeploymentIds
+Optional. Exact root IDs with confirmed resource removal and accepted history deletion, awaiting final absence confirmation.
+
 .PARAMETER ResourceId(s)
 Optional. The resource Id(s) of the resources to remove. Combined with resources found via the deployment name(s).
 
@@ -25,6 +28,12 @@ Optional. The ID of the management group to fetch deployments from. Relevant for
 
 .PARAMETER PurgeTestResources
 Optional. Specify to fetch and remove all resources in the current context that match the 'dep-' pattern
+
+.PARAMETER RequireCompleteRemoval
+Optional. Confirm complete removal of terminal deployments and their records before regional relocation.
+
+.PARAMETER RequireNoDeploymentScripts
+Optional. Reject attempts containing deployment scripts before cleanup can authorize same-region replay.
 
 .EXAMPLE
 Initialize-DeploymentRemoval -DeploymentName 'n-vw-t1-20211204T1812029146Z' -TemplateFilePath "$home/ResourceModules/modules/network/virtual-wan/main.bicep" -resourceGroupName 'test-virtualWan-rg'
@@ -41,6 +50,9 @@ function Initialize-DeploymentRemoval {
 
         [Parameter(Mandatory = $false)]
         [string[]] $PreflightRejectedDeploymentNames = @(),
+
+        [Parameter()]
+        [string[]] $PendingDeletionDeploymentIds = @(),
 
         [Parameter(Mandatory = $false)]
         [Alias('ResourceId')]
@@ -59,7 +71,13 @@ function Initialize-DeploymentRemoval {
         [string] $ManagementGroupId,
 
         [Parameter(Mandatory = $false)]
-        [switch] $PurgeTestResources
+        [switch] $PurgeTestResources,
+
+        [Parameter()]
+        [switch] $RequireCompleteRemoval,
+
+        [Parameter()]
+        [switch] $RequireNoDeploymentScripts
     )
 
     begin {
@@ -173,10 +191,13 @@ function Initialize-DeploymentRemoval {
         $inputObject = @{
             DeploymentNames                  = $DeploymentNames
             PreflightRejectedDeploymentNames = $PreflightRejectedDeploymentNames
+            PendingDeletionDeploymentIds     = $PendingDeletionDeploymentIds
             ResourceIds                      = $ResourceIds
             TemplateFilePath                 = $TemplateFilePath
             RemoveFirstSequence              = $removeFirstSequence
             RemoveLastSequence               = $removeLastSequence
+            RequireCompleteRemoval           = $RequireCompleteRemoval
+            RequireNoDeploymentScripts       = $RequireNoDeploymentScripts
         }
         if (-not [String]::IsNullOrEmpty($TemplateFilePath)) {
             $inputObject['TemplateFilePath'] = $TemplateFilePath

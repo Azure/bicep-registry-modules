@@ -4,8 +4,9 @@ Assign test subscriptions and deployment locks before scheduling deployment jobs
 
 .DESCRIPTION
 Preserves seeded round-robin selection while exposing only pool positions and ID digests.
-Subscription locks are invariant across revisions. Management-group, tenant or unresolved
-linked templates additionally require a shared deployment-phase lock.
+Ignored tests use unique groups and do not share deployment locks.
+Subscription locks are invariant across revisions. Management-group and tenant scopes, plus
+linked or expression-based templates, additionally require a shared deployment-phase lock.
 #>
 function Get-ModuleDeploymentMatrix {
 
@@ -56,7 +57,7 @@ function Get-ModuleDeploymentMatrix {
             $template = ConvertFrom-Json -InputObject ($compiledTemplate -join [Environment]::NewLine) -AsHashtable
             $templates = @($template)
             foreach ($deployment in (Get-NestedResourceList -TemplateFileContent $template | Where-Object { $_.type -eq 'Microsoft.Resources/deployments' })) {
-                if ($deployment.properties.templateLink) {
+                if ($deployment.properties.templateLink -or $deployment.properties.template -is [string]) {
                     $sharedScope = $true
                 } elseif ($deployment.properties.template) {
                     $templates += $deployment.properties.template
@@ -81,7 +82,7 @@ function Get-ModuleDeploymentMatrix {
             subscriptionIndex = ''
             subscriptionKey   = ''
             subscriptionName  = 'Deployment disabled'
-            concurrencyGroup  = "avm-deploy-$moduleKey-ignored"
+            concurrencyGroup  = "avm-deploy-$moduleKey-ignored-$([guid]::NewGuid().ToString('N'))"
         }
         if (-not $ignored) {
             $subscription = $subscriptions[$jobIndex % $subscriptions.Count]

@@ -15,6 +15,7 @@ on:
       - "utilities/pipelines/staticValidation/*E2eResourceName*.ps1"
       - "utilities/pipelines/staticValidation/global-resource-names.json"
       - "utilities/pipelines/sharedScripts/Get-ModuleWorkflowMatrix.ps1"
+      - "utilities/pipelines/sharedScripts/Initialize-AvmPester.ps1"
       - "utilities/pipelines/sharedScripts/Set-EnvironmentOnAgent.ps1"
       - "utilities/pipelines/sharedScripts/helper/Build-ViaRPC.ps1"
       - "utilities/tests/pipelines/E2eResourceNames.Tests.ps1"
@@ -75,7 +76,7 @@ jobs:
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')
           Set-EnvironmentOnAgent -PSModules @(
-            @{ Name = 'Pester'; Version = '5.7.1' }
+            @{ Name = 'Avm.Authoring' }
             @{ Name = 'PSRule.Rules.Azure'; Version = '1.47.0' }
           )
 
@@ -83,7 +84,8 @@ jobs:
         if: steps.affected.outputs.count != '0'
         shell: pwsh
         run: |
-          Import-Module Pester -MinimumVersion 5.7.1
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Initialize-AvmPester.ps1')
+          Initialize-AvmPester -RepoRootPath $env:GITHUB_WORKSPACE
           $testPaths = @(
             (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tests' 'pipelines' 'UniqueResourceName.Tests.ps1')
             (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tests' 'pipelines' 'E2eResourceNames.Tests.ps1')

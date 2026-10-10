@@ -76,6 +76,7 @@ Describe 'Module deployment matrix' {
             $matrix[$index].subscriptionName | Should -Be $selected.name
             $matrix[$index].path | Should -Be $testFiles[$index].path
             $matrix[$index].name | Should -Be $testFiles[$index].name
+            $matrix[$index].e2eIgnore | Should -BeFalse
             $matrix[$index].concurrencyGroup | Should -Be "avm-deploy-avm/res/example/module-$($selected.key)"
         }
         @($matrix[0..2].concurrencyGroup | Sort-Object -Unique).Count | Should -Be 3
@@ -198,28 +199,117 @@ Describe 'Module deployment matrix' {
         Should -Invoke Invoke-RestMethod -Times 0 -Exactly
     }
 
-    It 'Preserves round-robin positions around ignored tests without acquiring their deployment locks' {
-        $testFiles[1].e2eIgnore = $true
+    It 'Requires a shared lock for <expression> within a compiled module with <resourceFormat> resources' -ForEach @(
+        @{ expression = '[variables(''$fxv#0'')]'; resourceFormat = 'array' }
+        @{ expression = '[variables(''$fxv#0'')]'; resourceFormat = 'symbolic' }
+        @{ expression = '[parameters(''nestedTemplate'')]'; resourceFormat = 'array' }
+        @{ expression = '[parameters(''nestedTemplate'')]'; resourceFormat = 'symbolic' }
+    ) {
+        $nested = @{
+            type       = 'Microsoft.Resources/deployments'
+            properties = @{ template = $expression }
+        }
+        $nestedResources = @($nested)
+        if ($resourceFormat -eq 'symbolic') {
+            $nestedResources = @{ nested = $nested }
+        }
+        $registryTemplate = New-ScopeTemplate -Scope resourcegroup -Resources $nestedResources
+        $registryTemplate.variables = @{
+            '$fxv#0' = (New-ScopeTemplate -Scope resourcegroup -Resources @(@{
+                        type = 'Microsoft.Authorization/roleAssignments'
+                        name = 'test-role-assignment'
+                    }))
+        }
+        $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $testFiles[1].path)] =
+            New-ScopeTemplate -Resources @{
+                compiledModule = @{
+                    type       = 'Microsoft.Resources/deployments'
+                    properties = @{ template = $registryTemplate }
+                }
+            }
+
+        $selection = Get-ModuleDeploymentMatrix @matrixInput
+        $shuffled = @(Get-TestSubscriptionList -TestSubscriptionIds $subscriptionJson -RandomSeed 12345)
+
+        $selection.sharedScope | Should -BeTrue
+        $selection.testCases.Count | Should -Be $testFiles.Count
+        foreach ($index in 0..7) {
+            $subscription = $shuffled[$index % $shuffled.Count]
+            $selection.testCases[$index].subscriptionKey | Should -BeExactly $subscription.key
+            $selection.testCases[$index].concurrencyGroup | Should -BeExactly "avm-deploy-avm/res/example/module-$($subscription.key)"
+        }
+        Should -Invoke Invoke-WebRequest -Times 0 -Exactly
+        Should -Invoke Invoke-RestMethod -Times 0 -Exactly
+    }
+
+    It 'Preserves invalid concrete schema errors when expression-based templates are also present' {
+        $expressionTemplate = @{
+            type       = 'Microsoft.Resources/deployments'
+            properties = @{ template = '[variables(''$fxv#0'')]' }
+        }
+        $invalidTemplate = @{
+            type       = 'Microsoft.Resources/deployments'
+            properties = @{ template = @{ '$schema' = 'https://example.invalid/unknown.json#' } }
+        }
+        $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $testFiles[0].path)] =
+            New-ScopeTemplate -Resources @($expressionTemplate, $invalidTemplate)
+
+        { Get-ModuleDeploymentMatrix @matrixInput } | Should -Throw '*non-supported ARM template schema*'
+    }
+
+    It 'Preserves ignored tests with unique locks and round-robin positions with a <flagType> flag' -ForEach @(
+        @{ flagType = 'boolean'; flag = $true }
+        @{ flagType = 'string'; flag = 'true' }
+    ) {
+        foreach ($index in @(0, 3, 7)) {
+            $testFiles[$index].e2eIgnore = $flag
+        }
         $shuffled = @(Get-TestSubscriptionList -TestSubscriptionIds $subscriptionJson -RandomSeed 12345)
 
         $matrix = (Get-ModuleDeploymentMatrix @matrixInput).testCases
 
-        $matrix[1].e2eIgnore | Should -BeTrue
-        $matrix[1].subscriptionKey | Should -BeNullOrEmpty
-        $matrix[1].concurrencyGroup | Should -Be 'avm-deploy-avm/res/example/module-ignored'
-        $matrix[2].subscriptionKey | Should -Be $shuffled[2].key
-        Should -Invoke bicep -Times 7 -Exactly
+        $matrix.Count | Should -Be $testFiles.Count
+        $matrix.name | Should -Be $testFiles.name
+        foreach ($index in 0..($matrix.Count - 1)) {
+            if ($index -in @(0, 3, 7)) {
+                $matrix[$index].e2eIgnore | Should -BeTrue
+                $matrix[$index].subscriptionIndex | Should -BeNullOrEmpty
+                $matrix[$index].subscriptionKey | Should -BeNullOrEmpty
+                $matrix[$index].subscriptionName | Should -Be 'Deployment disabled'
+                $matrix[$index].concurrencyGroup | Should -Match '^avm-deploy-avm/res/example/module-ignored-[0-9a-f]{32}$'
+            } else {
+                $subscription = $shuffled[$index % $shuffled.Count]
+                $matrix[$index].e2eIgnore | Should -BeFalse
+                $matrix[$index].subscriptionKey | Should -Be $subscription.key
+                $matrix[$index].concurrencyGroup | Should -Be "avm-deploy-avm/res/example/module-$($subscription.key)"
+            }
+        }
+        @($matrix | Where-Object e2eIgnore | Select-Object -ExpandProperty concurrencyGroup -Unique).Count | Should -Be 3
+        Should -Invoke bicep -Times 5 -Exactly
     }
 
-    It 'Does not require subscriptions or compile templates when all deployment tests are ignored' {
-        $testFiles | ForEach-Object { $_.e2eIgnore = $true }
+    It 'Keeps all ignored tests independent across matrices without subscriptions or compilation for a <flagType> flag' -ForEach @(
+        @{ flagType = 'boolean'; flag = $true }
+        @{ flagType = 'string'; flag = 'true' }
+    ) {
+        $testFiles | ForEach-Object { $_.e2eIgnore = $flag }
         $matrixInput.TestSubscriptionIds = ''
         $selection = Get-ModuleDeploymentMatrix @matrixInput
-        $matrix = $selection.testCases
+        $nextSelection = Get-ModuleDeploymentMatrix @matrixInput
 
         $selection.sharedScope | Should -BeFalse
-        $matrix.Count | Should -Be 8
-        @($matrix.subscriptionName | Sort-Object -Unique) | Should -Be @('Deployment disabled')
+        $nextSelection.sharedScope | Should -BeFalse
+        $selection.testCases.Count | Should -Be $testFiles.Count
+        $nextSelection.testCases.Count | Should -Be $testFiles.Count
+        $entries = @($selection.testCases) + @($nextSelection.testCases)
+        @($entries.subscriptionName | Sort-Object -Unique) | Should -Be @('Deployment disabled')
+        foreach ($entry in $entries) {
+            $entry.e2eIgnore | Should -BeTrue
+            $entry.subscriptionIndex | Should -BeNullOrEmpty
+            $entry.subscriptionKey | Should -BeNullOrEmpty
+            $entry.concurrencyGroup | Should -Match '^avm-deploy-avm/res/example/module-ignored-[0-9a-f]{32}$'
+        }
+        @($entries.concurrencyGroup | Sort-Object -Unique).Count | Should -Be ($testFiles.Count * 2)
         Should -Invoke bicep -Times 0 -Exactly
     }
 

@@ -88,7 +88,6 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      gitConfigureLater: true
       globalParameters: {
         testParameter1: {
           type: 'String'

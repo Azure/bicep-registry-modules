@@ -133,8 +133,6 @@ module testDeployment '../../../main.bicep' = [
           integrationRuntimeCustomDescription: 'WAF-aligned self-hosted integration runtime with enhanced security'
         }
       ]
-      // WAF Security - Disable git configuration during deployment for security
-      gitConfigureLater: true
       // WAF Cost Optimization & Operational Excellence - Add comprehensive tagging
       tags: {
         'hidden-title': 'This is visible in the resource name'

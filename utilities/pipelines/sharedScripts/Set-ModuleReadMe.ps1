@@ -488,7 +488,19 @@ function Set-DefinitionSection {
             if (-not [String]::IsNullOrEmpty($example)) {
                 # allign content to the left by removing trailing whitespaces
                 $leadingSpacesToTrim = ($example -match '^(\s+).+') ? $matches[1].Length : 0
-                $exampleLines = $example -split '\n'
+
+                switch ($example) {
+                    { $_ -is [string] } {
+                        $exampleLines = $example -split '\n'
+                    }
+                    { $_ -is [Hashtable] } {
+                        $exampleLines = "{`n$(ConvertTo-FormattedBicep $example | Out-String)`n}" -split '\n'
+                    }
+                    default {
+                        throw 'Not supported example syntax. Please check.'
+                    }
+                }
+
                 # Removing excess leading spaces
                 $example = ($exampleLines | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" -replace "^\s{$leadingSpacesToTrim}" } | Out-String).TrimEnd()
 
@@ -837,6 +849,9 @@ Mandatory. The file path to the module's root
 .PARAMETER FullModuleIdentifier
 Mandatory. The full identifier of the module (i.e., ProviderNamespace + ResourceType)
 
+.PARAMETER ModuleType
+Mandatory. The type of the module (e.g., 'res', 'ptn', 'utl')
+
 .PARAMETER TemplateFileContent
 Mandatory. The template file content object to crawl data from
 
@@ -856,7 +871,7 @@ Optional. Pre-Loaded content. May be used to reuse the same data for multiple in
 Optional. Define whether or not to force refresh cache data. Note, the cache automatically expires after 1 day.
 
 .EXAMPLE
-Set-CrossReferencesSection -ModuleRoot 'C:/key-vault/vault' -FullModuleIdentifier 'key-vault/vault' -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...) -PreLoadedContent @{ CrossReferencedModuleList = @{ ... } }
+Set-CrossReferencesSection -ModuleRoot 'C:/key-vault/vault' -FullModuleIdentifier 'key-vault/vault' -ModuleType 'res' -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...) -PreLoadedContent @{ CrossReferencedModuleList = @{ ... } }
 Update the given readme file's 'Cross-referenced modules' section based on the given template file content
 #>
 function Set-CrossReferencesSection {
@@ -868,6 +883,9 @@ function Set-CrossReferencesSection {
 
         [Parameter(Mandatory = $true)]
         [string] $FullModuleIdentifier,
+
+        [Parameter(Mandatory = $true)]
+        [string] $ModuleType,
 
         [Parameter(Mandatory)]
         [hashtable] $TemplateFileContent,
@@ -892,7 +910,7 @@ function Set-CrossReferencesSection {
         $CrossReferencedModuleList = $PreLoadedContent.CrossReferencedModuleList
     }
 
-    $dependencies = $CrossReferencedModuleList[$FullModuleIdentifier]
+    $dependencies = $CrossReferencedModuleList["$ModuleType/$FullModuleIdentifier"]
 
     if (-not $dependencies -or ($dependencies -and -not $dependencies['localPathReferences'] -and -not $dependencies['remoteReferences'])) {
         # no cross references in the template
@@ -1227,6 +1245,9 @@ function ConvertTo-FormattedJSONParameterObject {
             continue
         }
 
+        # Preserve quoted values, including URLs, when removing inline comments.
+        $line = $line -replace '("(?:\\.|[^"\\])*")|//.*$', '$1'
+
         # [2.4] Syntax:
         # - Everything left of a leftest ':' should be wrapped in quotes (as a parameter name is always a string)
         # - However, we don't want to accidently catch something like "CriticalAddonsOnly=true:NoSchedule"
@@ -1241,7 +1262,7 @@ function ConvertTo-FormattedJSONParameterObject {
 
             # Individual checks
             $isLineWithEmptyObjectValue = $line -match '^.+:\s*{\s*}\s*$' # e.g., test: {}
-            $isLineWithObjectPropertyReferenceValue = $lineValue -match '(?<=[^"])\b\.\b(?=[^"]*$)' # e.g., resourceGroupResources.outputs.virtualWWANResourceId, but not "domainName": "onmicrosoft.com"
+            $isLineWithObjectPropertyReferenceValue = $lineValue -match '^(?:(?!\/\/)[^"''])*\b\.\b(?=[^"'']*$)' # e.g., resourceGroupResources.outputs.virtualWWANResourceId, but not "domainName": "onmicrosoft.com"
             $isLineWithReferenceInLineKey = ($line -split ':')[0].Trim() -like '*.*'
             $isLineWithStringNestedReference = $lineValue -match "['|`"]{1}.*(?<!\\)\$\{.+" # e.g., "Download ${initializeSoftwareScriptName}"  or '${last(...)}', but NOT "abc: \${xyz}"
             $isLineWithStringValue = $lineValue -match '^".+"$' # e.g. "value"
@@ -1332,14 +1353,7 @@ function ConvertTo-FormattedJSONParameterObject {
             continue
         }
 
-        if ( $paramInJSONFormatArray[$index] -match '(?<![:\/])\/\/.*$' ) {
-            # Has inline comment (i.e., a situation where you have '//' not enclosed by quotes)
-            $lineElements = $paramInJSONFormatArray[$index] -split '(?<![:\/])\/\/.*$'
-            $paramInJSONFormatArray[$index] = '{0}, // {1}' -f $lineElements[0].Trim(), $lineElements[1].Trim()
-
-        } else {
-            $paramInJSONFormatArray[$index] = '{0},' -f $paramInJSONFormatArray[$index].Trim()
-        }
+        $paramInJSONFormatArray[$index] = '{0},' -f $paramInJSONFormatArray[$index].Trim()
     }
 
     # [2.8] Format the final JSON string to an object to enable processing
@@ -2013,10 +2027,16 @@ function Initialize-ReadMe {
 
     if ($ReadMeFilePath -match 'avm.(?:res)') {
         # Resource module
-        $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier -ForceCacheRefresh:$ForceCacheRefresh
+        $metadataFilePath = Join-Path (Split-Path $TemplateFilePath -Parent) 'metadata.json'
+        [string] $formattedResourceType = if (Test-Path -LiteralPath $metadataFilePath) {
+            (Get-Content -LiteralPath $metadataFilePath -Raw | ConvertFrom-Json -ErrorAction Stop).canonicalType
+        }
+        if ($formattedResourceType -notmatch '^[^/]+\.[^/]+/') {
+            $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier -ForceCacheRefresh:$ForceCacheRefresh
+        }
 
         $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
-            $_ -match "^$formattedResourceType$"
+            $_ -eq $formattedResourceType
         }
 
         if ($inTemplateResourceType) {
@@ -2230,7 +2250,9 @@ function Set-ModuleReadMe {
     }
 
     $moduleRoot = Split-Path $TemplateFilePath -Parent
-    $fullModuleIdentifier = ($moduleRoot -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/'
+    $fullModuleIdentifierParts = ($moduleRoot -replace '\\', '/') -split '\/avm\/(res|ptn|utl)\/'
+    $moduleType = $fullModuleIdentifierParts[1]
+    $fullModuleIdentifier = $fullModuleIdentifierParts[2]
     # Custom modules are modules having the same resource type but different properties based on the name
     # E.g., web/site/config--appsetting vs web/site/config--authsettingv2
     $customModuleSeparator = '--'
@@ -2352,6 +2374,7 @@ function Set-ModuleReadMe {
         $inputObject = @{
             ModuleRoot           = $ModuleRoot
             FullModuleIdentifier = $fullModuleIdentifier
+            ModuleType           = $moduleType
             ReadMeFileContent    = $readMeFileContent
             TemplateFileContent  = $templateFileContent
             PreLoadedContent     = $PreLoadedContent

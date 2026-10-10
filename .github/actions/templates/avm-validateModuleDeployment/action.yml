@@ -31,11 +31,13 @@
 
 name: "Deploy module"
 description: >-
-  Validate and deploy a module. Before deployment, wholly regional validation failures
-  may select up to three distinct supported, allowed resource regions. Custom, CI and
-  token locations are pinned; global resources and resource-group-scope validation
-  do not relocate. Deployment metadata keeps its original location. Deployment
-  retries stay in the validated region. Cleanup retains all attempt names and only
+  Validate and deploy with at most three distinct supported, allowed resource regions
+  and three total deployment attempts. Wholly regional deployment failures may relocate
+  only after the exact deployment is confirmed Failed and its resources and records
+  are completely removed. Existing safe same-region retries share the total attempt
+  budget. Custom, CI and token locations, global resources and resource-group scope
+  do not relocate. Retained resources disable intermediate cleanup and relocation.
+  Metadata location and other inputs remain fixed. Cleanup retains attempt tracking and only
   skips missing records after confirmed preflight rejection and DeploymentNotFound.
   After a submission request timeout, observe the same deployment for up to 60 minutes
   without resubmitting; only confirmed failure permits a bounded retry. Unknown
@@ -44,7 +46,12 @@ description: >-
 
 inputs:
   modulePath:
-    description: "The path to the module file directory used to determine the resource location"
+    description: >-
+      Exact module directory path used to determine the resource location and look up
+      optional subscription features. Root .required-features.json maps module paths
+      to arrays of "Namespace/FeatureName" strings. Registration runs after login,
+      before validation, and persists after testing. Missing or empty requirements
+      are skipped; the test identity needs feature and provider registration permissions.
     required: true
   templateFilePath:
     description: "The path to the template file to use for deployment"
@@ -173,79 +180,10 @@ runs:
         Write-Output ("subscriptionId={0}" -f $subscription.id) >> $env:GITHUB_OUTPUT
         Write-Verbose ("Using test subscription [{0}] from a pool of [{1}]." -f $subscription.name, $subscriptions.Count) -Verbose
 
-    # [Azure login] task(s)
-    # ------------------------------
-    - name: "Set OIDC temporary exception"
-      id: set-oidc-exception
-      if: env.skip_deployment_ci == 'false'
-      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
-      env:
-        SELECTED_SUBSCRIPTION_ID: ${{ steps.get-test-subscription.outputs.subscriptionId }}
-      with:
-        azPSVersion: "latest"
-        inlineScript: |
-          # Grouping task logs
-          Write-Output '::group::Set OIDC exception'
-
-          # List of modules requiring service principal + secret authentication
-          $modulePath = "${{ inputs.modulePath }}"
-          $exceptionModulePaths = @(
-            'avm/res/azure-stack-hci/cluster'                    # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/azure-stack-hci/logical-network'            # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/azure-stack-hci/network-interface'          # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/azure-stack-hci/virtual-hard-disk'          # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/azure-stack-hci/virtual-machine-instance'   # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/hybrid-container-service/provisioned-cluster-instance' # Failing on resource deletion when trying to delete RBAC at subscription level
-          )
-          if (@(
-            $exceptionModulePaths | Where-Object { $modulePath -eq $_ -or $modulePath.StartsWith("$_/") }
-          ).Count -gt 0) {
-            $oidcException = 'true'
-            Write-Verbose ('The module [{0}] is in the list of modules temporarily requiring an exception to OIDC.' -f $modulePath) -Verbose
-          } else {
-            foreach ($name in @('VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID')) {
-              if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name))) {
-                throw "OIDC authentication requires [$name]."
-              }
-            }
-            $oidcException = 'false'
-            Write-Verbose ('The module [{0}] supports OIDC.' -f $modulePath) -Verbose
-          }
-
-          if ($oidcException -eq 'true') {
-            if ([string]::IsNullOrWhiteSpace($env:AZURE_CREDENTIALS)) {
-              throw 'This module requires AZURE_CREDENTIALS for service principal authentication.'
-            }
-            try {
-              $credentials = ConvertFrom-Json -InputObject $env:AZURE_CREDENTIALS -AsHashtable -NoEnumerate -ErrorAction Stop
-            } catch [System.ArgumentException] {
-              throw 'AZURE_CREDENTIALS must be a valid JSON object.'
-            }
-            if ($credentials -isnot [System.Collections.IDictionary]) {
-              throw 'AZURE_CREDENTIALS must be a JSON object.'
-            }
-            foreach ($name in @('clientId', 'clientSecret', 'tenantId')) {
-              if ($credentials[$name] -isnot [string] -or [string]::IsNullOrWhiteSpace($credentials[$name])) {
-                throw "AZURE_CREDENTIALS requires a non-empty string [$name]."
-              }
-            }
-            if (-not [string]::IsNullOrEmpty($env:VALIDATE_TENANT_ID) -and
-                $credentials['tenantId'] -ine $env:VALIDATE_TENANT_ID) {
-              throw 'AZURE_CREDENTIALS tenantId must match the configured VALIDATE_TENANT_ID.'
-            }
-            $credentials['subscriptionId'] = $env:SELECTED_SUBSCRIPTION_ID
-            $credentialsJson = ConvertTo-Json -InputObject $credentials -Depth 10 -Compress
-            Write-Output "::add-mask::$credentialsJson"
-            Write-Output "azureCredentials=$credentialsJson" >> $env:GITHUB_OUTPUT
-          }
-
-          Write-Output ('{0}={1}' -f 'oidcException', $oidcException) >> $env:GITHUB_OUTPUT
-          Write-Output '::endgroup::'
-
-    # Default: support both OIDC and service principal with secret
+    # Default: use OIDC
     # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
-      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' && env.skip_deployment_ci == 'false' }}
+      if: env.skip_deployment_ci == 'false'
       uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
         client-id: ${{ env.VALIDATE_CLIENT_ID }}
@@ -253,14 +191,25 @@ runs:
         subscription-id: ${{ steps.get-test-subscription.outputs.subscriptionId }}
         enable-AzPSSession: true
 
-    # Exception: module requires login by using service principal with secret
-    # Should only be leveraged by modules listed in $exceptionModulePaths above
-    - name: "Azure Login - Exception"
-      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true'  && env.skip_deployment_ci == 'false'}}
-      uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
-      with:
-        creds: ${{ steps.set-oidc-exception.outputs.azureCredentials }}
-        enable-AzPSSession: true
+    - name: "Register required subscription features"
+      id: register-required-features
+      if: env.skip_deployment_ci == 'false'
+      shell: pwsh
+      env:
+        MODULE_PATH: ${{ inputs.modulePath }}
+        SELECTED_SUBSCRIPTION_ID: ${{ steps.get-test-subscription.outputs.subscriptionId }}
+        SELECTED_TENANT_ID: ${{ env.VALIDATE_TENANT_ID }}
+      run: |
+        $ErrorActionPreference = 'Stop'
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Register-RequiredSubscriptionFeature.ps1')
+
+        $functionInput = @{
+          RepoRootPath   = $env:GITHUB_WORKSPACE
+          ModulePath     = $env:MODULE_PATH
+          SubscriptionId = $env:SELECTED_SUBSCRIPTION_ID
+          TenantId       = $env:SELECTED_TENANT_ID
+        }
+        $null = Register-RequiredSubscriptionFeature @functionInput -Verbose
 
     # [Token replacement] task(s)
     # ---------------------------
@@ -334,8 +283,8 @@ runs:
 
           Write-Output '::endgroup::'
 
-    - name: "Validate template file"
-      id: validate-template
+    - name: "Deploy template file"
+      id: deploy_step
       if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
       env:
@@ -345,11 +294,12 @@ runs:
         azPSVersion: "latest"
         inlineScript: |
           # Grouping task logs
-          Write-Output '::group::Validate template file'
+          Write-Output '::group::Validate and deploy template file'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeploymentWithRetry.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Invoke-TemplateDeploymentWithRetry.ps1')
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Resolve-CIParameterFallback.ps1')
 
           # Prepare general parameters
           # --------------------------
@@ -404,6 +354,15 @@ runs:
             KeyVaultName        = $env:CI_KEY_VAULT_NAME
           }
           $ciParameters = Get-CIParameterMap @ciParameterInput
+          $ciParameterFallbackInput = @{
+            TemplateParameters = $moduleTemplateParameters
+            ResolvedParameters = $ciParameters
+            GitHubVariables    = $env:AVM_CI_VARIABLES
+          }
+          $resolvedCIParameterFallbacks = Resolve-CIParameterFallback @ciParameterFallbackInput
+          foreach ($parameter in $resolvedCIParameterFallbacks.GetEnumerator()) {
+            $ciParameters[$parameter.Key] = $parameter.Value
+          }
           foreach ($parameter in $ciParameters.GetEnumerator()) {
             $functionInput.AdditionalParameters[$parameter.Key] = $parameter.Value
           }
@@ -413,108 +372,23 @@ runs:
           $logInput.AdditionalParameters = @($functionInput.AdditionalParameters.psbase.Keys)
           Write-Verbose ($logInput | ConvertTo-Json | Out-String) -Verbose
 
-          $validationInput = @{
-            ValidationInput       = $functionInput
+          $retryInput = @{
+            TemplateInput         = $functionInput
             ModuleRoot            = '${{ inputs.modulePath }}'
             CustomLocation        = '${{ inputs.customLocation }}'
             TokenResourceLocation = '${{ steps.replace-tokens.outputs.resourceLocation }}'
+            RemoveDeployment      = '${{ inputs.removeDeployment }}' -eq 'true'
+            DoNotThrow            = $true
           }
-          $resourceLocation = Test-TemplateDeploymentWithRetry @validationInput -Verbose
-          Write-Output ('resourceLocation={0}' -f $resourceLocation) >> $env:GITHUB_OUTPUT
-
-          Write-Output '::endgroup::'
-
-    # [Deployment execution] task(s)
-    # ------------------------------
-    - name: "Deploy template file"
-      if: env.skip_deployment_ci == 'false'
-      id: deploy_step
-      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
-      env:
-        AVM_CI_VARIABLES: ${{ inputs.githubVariables }}
-        AVM_CI_SECRETS: ${{ inputs.githubSecrets }}
-      with:
-        azPSVersion: "latest"
-        inlineScript: |
-          # Grouping task logs
-          Write-Output '::group::Deploy template file'
-
-          # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
-
-          # Prepare general parameters
-          # --------------------------
-          $subscriptionId = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
-          $managementGroupId = '${{ inputs.managementGroupId }}'
-
-          # Resolve template file path
-          $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
-
-          # Determine possible parameters depending on file type
-          if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
-            $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
-            if ($LASTEXITCODE -ne 0) {
-              throw 'Failed to compile the test template.'
-            }
-          } else {
-            $moduleTemplateContent = Get-Content $moduleTestFilePath -Raw | ConvertFrom-Json -AsHashtable
-          }
-          $moduleTemplateParameters = $moduleTemplateContent.parameters ?? @{}
-          $moduleTemplatePossibleParameters = $moduleTemplateParameters.psbase.Keys
-
-          # ----------------- #
-          # Invoke deployment #
-          # ----------------- #
-          $functionInput = @{
-            TemplateFilePath           = $moduleTestFilePath
-            DeploymentMetadataLocation = '${{ inputs.deploymentMetadataLocation }}'
-            SubscriptionId             = $subscriptionId
-            ManagementGroupId          = $managementGroupId
-            DoNotThrow                 = $true
-            RepoRoot                   = $env:GITHUB_WORKSPACE
-            AdditionalParameters       = @{}
-          }
-
-          if($moduleTemplatePossibleParameters -contains 'baseTime') {
-            $functionInput.AdditionalParameters += @{
-              baseTime = (Get-Date).ToString('u') # Setting base time explicitly so that any potential retry will reuse the same timestamp
-            }
-          }
-
-          $ciParameterInput = @{
-            TemplateParameters  = $moduleTemplateParameters
-            TemplateDefinitions = $moduleTemplateContent.definitions ?? @{}
-            GitHubVariables     = $env:AVM_CI_VARIABLES
-            GitHubSecrets       = $env:AVM_CI_SECRETS
-            KeyVaultName        = $env:CI_KEY_VAULT_NAME
-          }
-          $ciParameters = Get-CIParameterMap @ciParameterInput
-          foreach ($parameter in $ciParameters.GetEnumerator()) {
-            $functionInput.AdditionalParameters[$parameter.Key] = $parameter.Value
-          }
-
-          $validatedLocation = '${{ steps.validate-template.outputs.resourceLocation }}'
-          if ([string]::IsNullOrWhiteSpace($validatedLocation)) {
-            throw 'The validated resource location is missing.'
-          }
-          if($moduleTemplatePossibleParameters -contains 'resourceLocation') {
-            $functionInput.AdditionalParameters['resourceLocation'] = $validatedLocation
-          }
-
-          Write-Verbose 'Invoke task with' -Verbose
-          $logInput = $functionInput.Clone()
-          $logInput.AdditionalParameters = @($functionInput.AdditionalParameters.psbase.Keys)
-          Write-Verbose ($logInput | ConvertTo-Json | Out-String) -Verbose
-
-          # Invoke deployment
-          $res = New-TemplateDeployment @functionInput -Verbose
+          $res = Invoke-TemplateDeploymentWithRetry @retryInput -Verbose
 
           # Get deployment name
           $deploymentNames = @($res.deploymentNames ?? @())
           $deploymentNamesJson = $deploymentNames.Count -gt 0 ? (ConvertTo-Json -InputObject $deploymentNames -Compress) : ''
           Write-Output ('{0}={1}' -f 'deploymentNames', $deploymentNamesJson) >> $env:GITHUB_OUTPUT
+          Write-Output ('{0}={1}' -f 'remainingDeploymentNames', (ConvertTo-Json -InputObject @($res.remainingDeploymentNames ?? @()) -Compress)) >> $env:GITHUB_OUTPUT
           Write-Output ('{0}={1}' -f 'preflightRejectedDeploymentNames', (ConvertTo-Json -InputObject @($res.preflightRejectedDeploymentNames ?? @()) -Compress)) >> $env:GITHUB_OUTPUT
+          Write-Output ('{0}={1}' -f 'pendingDeletionDeploymentIds', (ConvertTo-Json -InputObject @($res.pendingDeletionDeploymentIds ?? @()) -Compress)) >> $env:GITHUB_OUTPUT
 
           # Populate further outputs
           $deploymentOutput = ($res.deploymentOutput | ConvertTo-Json -Depth 99 -Compress) -replace "'", "''" # Escaping single quotes for resilient access in subsequent steps
@@ -526,29 +400,21 @@ runs:
             # Happens only if there is an exception
             throw $res.exception
           }
+          Write-Output ('resourceLocation={0}' -f $res.resourceLocation) >> $env:GITHUB_OUTPUT
 
           Write-Output '::endgroup::'
 
     # [Azure login] task(s)
     # ------------------------------
-    # Default: support both OIDC and service principal with secret
+    # Default: use OIDC
     # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
-      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' && env.skip_deployment_ci == 'false' }}
+      if: env.skip_deployment_ci == 'false'
       uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
         client-id: ${{ env.VALIDATE_CLIENT_ID }}
         tenant-id: ${{ env.VALIDATE_TENANT_ID }}
         subscription-id: ${{ steps.get-test-subscription.outputs.subscriptionId }}
-        enable-AzPSSession: true
-
-    # Exception: module requires login by using service principal with secret
-    # Should only be leveraged by modules listed in $exceptionModulePaths above
-    - name: "Azure Login - Exception"
-      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true'  && env.skip_deployment_ci == 'false'}}
-      uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
-      with:
-        creds: ${{ steps.set-oidc-exception.outputs.azureCredentials }}
         enable-AzPSSession: true
 
     # [Post-Deployment test] task(s)
@@ -563,9 +429,11 @@ runs:
 
         # Load used functions
         . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Initialize-AvmPester.ps1')
 
         # Set repo root path
         $repoRootPath = $env:GITHUB_WORKSPACE
+        Initialize-AvmPester -RepoRootPath $repoRootPath
 
         $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
         $moduleTestFolderPath = Split-Path $moduleTestFilePath
@@ -663,8 +531,29 @@ runs:
           }
 
           $preflightRejectedDeploymentNames = '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}'
+          $pendingDeletionDeploymentIds = '${{ steps.deploy_step.outputs.pendingDeletionDeploymentIds }}'
+          if (-not [string]::IsNullOrWhiteSpace($pendingDeletionDeploymentIds)) {
+            $pendingIds = ConvertFrom-Json -InputObject $pendingDeletionDeploymentIds -NoEnumerate -ErrorAction Stop
+            if ($pendingIds -isnot [array] -or @($pendingIds | Where-Object { $_ -isnot [string] -or [string]::IsNullOrWhiteSpace($_) }).Count -gt 0) {
+              throw 'Invalid pending deployment deletion metadata.'
+            }
+            $functionInput['PendingDeletionDeploymentIds'] = $pendingIds
+          }
+          $remainingDeploymentNames = '${{ steps.deploy_step.outputs.remainingDeploymentNames }}'
+          if (-not [string]::IsNullOrWhiteSpace($remainingDeploymentNames)) {
+            $functionInput.DeploymentNames = @($remainingDeploymentNames | ConvertFrom-Json -ErrorAction Stop)
+            if ($functionInput.DeploymentNames.Count -eq 0) {
+              if ($functionInput.PendingDeletionDeploymentIds.Count -gt 0) {
+                throw 'Pending deployment deletion metadata has no remaining deployment owner.'
+              }
+              Write-Verbose 'All submitted deployments were already completely removed.' -Verbose
+              Write-Output '::endgroup::'
+              return
+            }
+          }
           if (-not [string]::IsNullOrWhiteSpace($preflightRejectedDeploymentNames)) {
-            $functionInput['PreflightRejectedDeploymentNames'] = @($preflightRejectedDeploymentNames | ConvertFrom-Json -ErrorAction Stop)
+            $functionInput['PreflightRejectedDeploymentNames'] = @($preflightRejectedDeploymentNames | ConvertFrom-Json -ErrorAction Stop |
+              Where-Object { $_ -in $functionInput.DeploymentNames })
           }
 
           if (-not [String]::IsNullOrEmpty('${{ steps.get-test-subscription.outputs.subscriptionId }}')) {

@@ -29,7 +29,7 @@ function Invoke-E2eResourceNameValidation {
     try {
         for ($offset = 0; $offset -lt $paths.Count; $offset += 25) {
             $batch = $paths[$offset..([Math]::Min($offset + 24, $paths.Count - 1))]
-            $compiled = Build-ViaRPC -BicepFilePath $batch -PassThru
+            $compiled = Build-ViaRPC -BicepFilePath $batch -PassThru -ErrorAction Continue
             foreach ($path in $batch) {
                 $result = [pscustomobject]@{
                     TestFilePath = $path
