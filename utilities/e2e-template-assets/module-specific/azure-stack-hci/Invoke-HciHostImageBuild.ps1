@@ -170,7 +170,8 @@ function Get-ImageVersionAvailability {
                 continue
             }
             if ($replicas[0].state -ne 'Completed') {
-                $issues.Add("Region [$region] replication state [$($replicas[0].state)]. $($replicas[0].details)")
+                $replicaDetails = if ($replicas[0].PSObject.Properties.Name -contains 'details') { $replicas[0].details } else { '' }
+                $issues.Add("Region [$region] replication state [$($replicas[0].state)]. $replicaDetails")
                 if ($replicas[0].state -eq 'Failed') {
                     $canWait = $false
                 }
