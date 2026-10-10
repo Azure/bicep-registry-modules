@@ -409,7 +409,7 @@ runs:
     # Default: use OIDC
     # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
-      if: env.skip_deployment_ci == 'false'
+      if: ${{ (success() || (failure() && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '')) && env.skip_deployment_ci == 'false' }}
       uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
         client-id: ${{ env.VALIDATE_CLIENT_ID }}
