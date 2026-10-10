@@ -270,6 +270,154 @@ Describe 'Private fixture compatibility' {
     }
 }
 
+Describe 'AKS fixture scope isolation: <Scenario>' -ForEach @(
+    @{ Scenario = 'priv' }
+    @{ Scenario = 'waf-aligned' }
+) {
+    BeforeAll {
+        $fixture = Get-AksFixture -Name $Scenario
+        $sourcePath = Join-Path $modulePath 'tests' 'e2e' $Scenario 'main.test.bicep'
+        $source = Get-Content -LiteralPath $sourcePath -Raw
+        $dependencySource = Get-Content -LiteralPath (Join-Path (Split-Path $sourcePath) 'dependencies.bicep') -Raw
+        $moduleSource = Get-Content -LiteralPath (Join-Path $modulePath 'main.bicep') -Raw
+        $expressions = @{}
+        foreach ($item in @(
+                @{ Name = 'Group'; Source = $source; Pattern = '(?m)^param resourceGroupName string = (?<expression>[^\r\n]+)' }
+                @{ Name = 'Cluster'; Source = $source; Pattern = '(?s)module testDeployment .*?params:\s*\{\s*name:\s*(?<expression>[^\r\n]+)' }
+                @{ Name = 'Network'; Source = $source; Pattern = '(?m)^\s+virtualNetworkName:\s*(?<expression>[^\r\n]+)' }
+                @{ Name = 'Identity'; Source = $source; Pattern = '(?m)^\s+managedIdentityName:\s*(?<expression>[^\r\n]+)' }
+                @{ Name = 'Dns'; Source = $source; Pattern = '(?m)^\s+privateDnsZoneName:\s*(?<expression>[^\r\n]+)' }
+                @{ Name = 'NodeGroup'; Source = $moduleSource; Pattern = '(?m)^param nodeResourceGroup string = (?<expression>[^\r\n]+)' }
+                @{ Name = 'NetworkRole'; Source = $dependencySource; Pattern = "(?s)resource msiVnetRoleAssignment '[^']+' = \{\s*name:\s*(?<expression>[^\r\n]+)" }
+                @{ Name = 'DnsRole'; Source = $dependencySource; Pattern = "(?s)resource msiPrivDnsZoneRoleAssignment '[^']+' = \{\s*name:\s*(?<expression>[^\r\n]+)" }
+            )) {
+            $matches = [regex]::Matches($item.Source, $item.Pattern)
+            if ($matches.Count -ne 1) { throw "Expected one $($item.Name) naming expression in the $Scenario fixture." }
+            $expressions[$item.Name] = $matches[0].Groups['expression'].Value.Trim()
+        }
+
+        $cases = @(
+            @{ Deployment = 'root-one'; Location = 'norwayeast'; Prefix = 'gci' }
+            @{ Deployment = 'root-two'; Location = 'koreacentral'; Prefix = 'gci' }
+            @{ Deployment = 'root-three'; Location = 'swedencentral'; Prefix = 'gci' }
+            @{ Deployment = 'later-run'; Location = 'norwayeast'; Prefix = 'gci' }
+            @{ Deployment = 'root-one'; Location = 'norwayeast'; Prefix = 'gci' }
+            @{ Deployment = 'root-one'; Location = 'koreacentral'; Prefix = 'gci' }
+            @{ Deployment = 'root-one'; Location = 'norwayeast'; Prefix = 'gci'; Subscription = '22222222-2222-2222-2222-222222222222' }
+            @{ Deployment = ('r' * 64); Location = 'australiasoutheast'; Prefix = 'local' }
+            @{ Deployment = ('r' * 64); Location = 'australiasoutheast'; Prefix = 'abcdefghij' }
+        )
+        $parameterLines = @('using none')
+        for ($index = 0; $index -lt $cases.Count; $index++) {
+            $case = $cases[$index]
+            $subscription = $case.Subscription ?? '11111111-1111-1111-1111-111111111111'
+            $bound = @{}
+            foreach ($key in @('Group', 'Cluster', 'Network', 'Identity', 'Dns')) {
+                $bound[$key] = $expressions[$key].
+                Replace('deployment().name', "'$($case.Deployment)'").
+                Replace('resourceLocation', "'$($case.Location)'").
+                Replace('namePrefix', "'$($case.Prefix)'").
+                Replace('serviceShort', "'$($fixture.Template.parameters.serviceShort.defaultValue)'")
+            }
+            $nodeExpression = $expressions.NodeGroup.Replace('resourceGroup().name', "group$index")
+            $nodeExpression = [regex]::Replace($nodeExpression, '\bname\b', "cluster$index")
+            $networkRole = $expressions.NetworkRole.Replace('resourceGroup().id', "groupId$index").Replace('managedIdentity.id', "identityId$index")
+            $dnsRole = $expressions.DnsRole.Replace('resourceGroup().id', "groupId$index").Replace('managedIdentity.id', "identityId$index")
+            $parameterLines += @"
+var group$index = $($bound.Group)
+var cluster$index = $($bound.Cluster)
+var nodeGroup$index = $nodeExpression
+var groupId$index = concat('/subscriptions/$subscription/resourceGroups/', group$index)
+var networkId$index = concat(groupId$index, '/providers/Microsoft.Network/virtualNetworks/', $($bound.Network))
+var identityId$index = concat(groupId$index, '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/', $($bound.Identity))
+var dnsId$index = concat(groupId$index, '/providers/Microsoft.Network/privateDnsZones/', $($bound.Dns))
+param names$index = {
+  group: group$index
+  nodeGroup: nodeGroup$index
+  groupId: groupId$index
+  networkId: networkId$index
+  identityId: identityId$index
+  dnsId: dnsId$index
+  clusterId: concat(groupId$index, '/providers/Microsoft.ContainerService/managedClusters/', cluster$index)
+  nodeGroupId: concat('/subscriptions/$subscription/resourceGroups/', nodeGroup$index)
+  networkRoleId: concat(networkId$index, '/providers/Microsoft.Authorization/roleAssignments/', $networkRole)
+  dnsRoleId: concat(dnsId$index, '/providers/Microsoft.Authorization/roleAssignments/', $dnsRole)
+}
+"@
+        }
+        $parameterPath = Join-Path $TestDrive "$Scenario-scopes.bicepparam"
+        $parameterOutput = Join-Path $TestDrive "$Scenario-scopes.json"
+        $parameterLines -join "`n" | Set-Content -LiteralPath $parameterPath
+        $diagnostics = bicep build-params $parameterPath --no-restore --outfile $parameterOutput 2>&1
+        if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+        $names = (Get-Content -LiteralPath $parameterOutput -Raw | ConvertFrom-Json -AsHashtable).parameters
+    }
+
+    It 'Separates retries, later runs and changed locations into different resource groups' {
+        $groups = @(0, 1, 2, 3, 5 | ForEach-Object { $names["names$_"].value.groupId })
+        @($groups | Select-Object -Unique).Count | Should -Be 5
+    }
+
+    It 'Does not reuse cluster, network, identity, DNS, node-group or role IDs after an earlier deployment' {
+        foreach ($property in @('clusterId', 'networkId', 'identityId', 'dnsId', 'nodeGroupId', 'networkRoleId', 'dnsRoleId')) {
+            $ids = @(0..3 | ForEach-Object { $names["names$_"].value[$property] })
+            @($ids | Select-Object -Unique).Count | Should -Be 4 -Because "$property must not be targeted by earlier cleanup"
+        }
+    }
+
+    It 'Keeps names deterministic for the same root deployment and location' {
+        $names.names0.value | ConvertTo-Json -Compress |
+            Should -BeExactly ($names.names4.value | ConvertTo-Json -Compress)
+    }
+
+    It 'Scopes initial and idempotency deployments to the same resource group' {
+        $fixture.TestModule.copy.count | Should -Be "[length(createArray('init', 'idem'))]"
+        $fixture.TestModule.copy.mode | Should -Be 'serial'
+        $fixture.TestModule.copy.batchSize | Should -Be 1
+        $fixture.TestModule.resourceGroup | Should -Be "[parameters('resourceGroupName')]"
+        $fixture.TestModule.properties.parameters.name.value | Should -Not -Match 'copyIndex'
+        $fixture.TestModule.properties.parameters.ContainsKey('nodeResourceGroup') | Should -BeFalse
+        $fixture.TestModule.properties.template.parameters.nodeResourceGroup.defaultValue | Should -Match 'resourceGroup\(\)\.name'
+    }
+
+    It 'Preserves the caller resource-group override for every fixture module' {
+        $overrideSource = Join-Path $TestDrive "$Scenario-override.bicepparam"
+        $overrideOutput = Join-Path $TestDrive "$Scenario-override.json"
+        @"
+using './$Scenario.json'
+param resourceGroupName = 'explicit-aks-test-rg'
+"@ | Set-Content -LiteralPath $overrideSource
+        $diagnostics = bicep build-params $overrideSource --no-restore --outfile $overrideOutput 2>&1
+        if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+        $override = Get-Content -LiteralPath $overrideOutput -Raw | ConvertFrom-Json -AsHashtable
+        $override.parameters.resourceGroupName.value | Should -BeExactly 'explicit-aks-test-rg'
+        $fixture.Template.parameters.resourceGroupName.type | Should -Be 'string'
+        $fixture.Template.parameters.resourceGroupName.maxLength | Should -Be 90
+        $groups = @($fixture.Resources | Where-Object type -EQ 'Microsoft.Resources/resourceGroups')
+        $groups.Count | Should -Be 1
+        $groups[0].name | Should -Be "[parameters('resourceGroupName')]"
+        foreach ($module in @($fixture.Resources | Where-Object type -EQ 'Microsoft.Resources/deployments')) {
+            $module.resourceGroup | Should -Be "[parameters('resourceGroupName')]"
+        }
+    }
+
+    It 'Produces valid main and node resource-group names for CI and local prefixes' {
+        foreach ($entry in $names.Values) {
+            $entry.value.group | Should -Match '^[a-zA-Z0-9_.()-]{1,90}$'
+            $entry.value.group | Should -Match '^dep-'
+            $entry.value.nodeGroup | Should -Match '^[a-zA-Z0-9_.()-]{1,80}$'
+        }
+    }
+
+    It 'Keeps all resource IDs subscription-scoped' {
+        foreach ($property in @('groupId', 'clusterId', 'networkId', 'identityId', 'dnsId', 'nodeGroupId', 'networkRoleId', 'dnsRoleId')) {
+            $names.names0.value[$property] | Should -Match '^/subscriptions/11111111-1111-1111-1111-111111111111/'
+            $names.names6.value[$property] | Should -Match '^/subscriptions/22222222-2222-2222-2222-222222222222/'
+            $names.names0.value[$property] | Should -Not -Be $names.names6.value[$property]
+        }
+    }
+}
+
 Describe 'Automatic fixture compatibility' {
     BeforeAll {
         $fixture = Get-AksFixture -Name 'automatic'
