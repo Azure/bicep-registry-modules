@@ -560,13 +560,35 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             $result.RemainingDeploymentNames | Should -Be @($script:names[1])
             $script:trace | Should -Contain "GET:$script:nestedId/operations"
             $script:trace | Should -Contain "GET:$script:groupId"
+            $script:trace | Should -Contain "state:$($script:roots[0])"
+            $script:trace | Should -Contain "GET:$($script:roots[0])"
             $script:trace.IndexOf("remove:$script:groupId") |
                 Should -BeLessThan $script:trace.IndexOf("DELETE:$($script:roots[0])")
             $script:trace.IndexOf("DELETE:$($script:roots[0])") |
+                Should -BeLessThan $script:trace.LastIndexOf("GET:$($script:roots[0])")
+            $script:trace.LastIndexOf("GET:$($script:roots[0])") |
                 Should -BeLessThan $script:trace.IndexOf('validate:westeurope')
             $script:trace.IndexOf('validate:westeurope') | Should -BeLessThan $script:trace.IndexOf('submit:westeurope')
             $templateInput.AdditionalParameters.resourceLocation | Should -BeExactly ''
             Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+        }
+
+        It 'Requires a confirmed Failed root before service cleanup: <state>' -ForEach @(
+            @{ state = 'Running' }, @{ state = 'Accepted' }, @{ state = 'Canceled' }
+            @{ state = 'Succeeded' }, @{ state = 'Unknown' }
+        ) {
+            Mock Initialize-DeploymentRemoval { throw 'Unexpected cleanup without a confirmed Failed root.' }
+            Mock Get-AzDeployment { @{ DeploymentName = $Name; ProvisioningState = $state } }
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'no retry is safe'
+            $result.AttemptedLocations | Should -Be @($region)
+            @($script:submissions) | Should -Be @($region)
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke Initialize-DeploymentRemoval -Times 0 -Exactly
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
         }
 
         It 'Classifies original validation responses with the selected subscription before any submission' {

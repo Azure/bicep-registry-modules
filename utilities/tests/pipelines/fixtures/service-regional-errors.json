@@ -28,6 +28,23 @@
     }
   },
   {
+    "name": "Search service capacity",
+    "region": "swedencentral",
+    "provider": "Microsoft.Search/searchServices",
+    "response": {
+      "error": {
+        "code": "DeploymentFailed",
+        "message": "At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-deployment-operations for usage details.",
+        "details": [
+          {
+            "code": "InsufficientResourcesAvailable",
+            "message": "The region 'swedencentral' is currently out of the resources required to provision new services. Try creating the service in another region. RequestId: aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+          }
+        ]
+      }
+    }
+  },
+  {
     "name": "Container Apps capacity",
     "region": "centralus",
     "provider": "Microsoft.App/managedEnvironments",
