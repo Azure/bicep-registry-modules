@@ -27,8 +27,8 @@ param builtInServicePrincipalObjectId string?
 #disable-next-line secure-parameter-default
 param hciHostImageReferenceId string = ''
 
-#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'southeastasia'
+#disable-next-line no-hardcoded-location // Requires HCI service support and the configured nested-virtualization host VM size.
+var enforcedLocation = 'australiaeast'
 
 resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'
