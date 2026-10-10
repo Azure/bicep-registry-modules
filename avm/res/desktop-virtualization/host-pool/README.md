@@ -40,7 +40,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using multiple personal desktops](#example-3-using-multiple-personal-desktops)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -533,7 +534,87 @@ param vmTemplate = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using multiple personal desktops_
+
+This instance deploys a Personal host pool that allows multiple personal desktops per user.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/personal-multiple-desktops]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dvhpmulti001'
+    // Non-required parameters
+    hostPoolType: 'Personal'
+    loadBalancerType: 'MultiplePersistent'
+    location: '<location>'
+    personalDesktopAssignmentType: 'Direct'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dvhpmulti001"
+    },
+    // Non-required parameters
+    "hostPoolType": {
+      "value": "Personal"
+    },
+    "loadBalancerType": {
+      "value": "MultiplePersistent"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "personalDesktopAssignmentType": {
+      "value": "Direct"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/host-pool:<version>'
+
+// Required parameters
+param name = 'dvhpmulti001'
+// Non-required parameters
+param hostPoolType = 'Personal'
+param loadBalancerType = 'MultiplePersistent'
+param location = '<location>'
+param personalDesktopAssignmentType = 'Direct'
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -656,7 +737,7 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the scaling plan. |
 | [`hostPoolType`](#parameter-hostpooltype) | string | Set this parameter to Personal if you would like to enable Persistent Desktop experience. Defaults to Pooled. |
-| [`loadBalancerType`](#parameter-loadbalancertype) | string | Type of load balancer algorithm. |
+| [`loadBalancerType`](#parameter-loadbalancertype) | string | Type of load balancer algorithm. Use MultiplePersistent with a Personal host pool to allow multiple personal desktops per user. |
 | [`location`](#parameter-location) | string | Location of the scaling plan. Defaults to resource group location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedPrivateUDP`](#parameter-managedprivateudp) | string | Where direct UDP connectivity is established between the client and the session host when using a private connection, such as a virtual private network (VPN).<br>- Default: AVD-wide settings are used to determine connection availability<br>- Enabled: UDP will attempt this connection type when making connections. This means that this connection is possible, but is not guaranteed, as there are other factors that may prevent this connection type<br>- Disabled: UDP will not attempt this connection type when making connections. |
@@ -880,7 +961,7 @@ Set this parameter to Personal if you would like to enable Persistent Desktop ex
 
 ### Parameter: `loadBalancerType`
 
-Type of load balancer algorithm.
+Type of load balancer algorithm. Use MultiplePersistent with a Personal host pool to allow multiple personal desktops per user.
 
 - Required: No
 - Type: string
@@ -890,6 +971,7 @@ Type of load balancer algorithm.
   [
     'BreadthFirst'
     'DepthFirst'
+    'MultiplePersistent'
     'Persistent'
   ]
   ```
