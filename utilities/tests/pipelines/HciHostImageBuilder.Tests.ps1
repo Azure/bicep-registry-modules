@@ -235,6 +235,26 @@ Describe 'HCI host image builder' {
             Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
         }
 
+        It 'Reports an unavailable replica without optional details under StrictMode Latest without rebuilding' {
+            Set-TestRegions @('southeastasia', 'australiaeast')
+            $script:versionResource.properties.replicationStatus.aggregatedState = 'InProgress'
+            $script:versionResource.properties.replicationStatus.summary[1].state = 'InProgress'
+            $script:versionResource.properties.replicationStatus.summary[1].progress = 50
+
+            $failure = {
+                & {
+                    Set-StrictMode -Version Latest
+                    . $buildScript -AssetBaseUri 'https://example.test/assets' -BuildLocation australiaeast -ReplicationRegions @('southeastasia', 'australiaeast')
+                }
+            } | Should -Throw '*already exists but is unavailable*No deployment or build was started*Wait for or repair replication before retrying*' -PassThru
+
+            $failure.Exception | Should -Not -BeOfType [System.Management.Automation.PropertyNotFoundException]
+            $failure.Exception.Message | Should -Match 'Region \[australiaeast\] replication state \[InProgress\]\.'
+            Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        }
+
         It 'Never rebuilds an existing version with <problem>' -ForEach @(
             @{ problem = 'a missing target'; change = 'target'; expectedError = '*eastus*publishingProfile.targetRegions*' }
             @{ problem = 'a missing source replica'; change = 'source'; expectedError = '*southeastasia*replication status*' }
