@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using managed HSM Customer-Managed-Keys with User-Assigned identity'
@@ -55,7 +57,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
+    storageAccountName: uniqueResourceName('dep${namePrefix}sa${serviceShort}01', resourceGroup.id, 24)
     deploymentMSIResourceId: deploymentMSIResourceId
     managedHSMResourceId: managedHSMResourceId
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'

@@ -101,7 +101,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-management/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apiscon001'
+    name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -124,7 +124,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apiscon001"
+      "value": "<name>"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -151,7 +151,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apiscon001'
+param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
@@ -176,7 +176,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-management/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apismin001'
+    name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
   }
@@ -197,7 +197,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apismin001"
+      "value": "<name>"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -220,7 +220,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apismin001'
+param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 ```
@@ -243,7 +243,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-management/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apisdev001'
+    name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -267,7 +267,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apisdev001"
+      "value": "<name>"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -297,7 +297,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apisdev001'
+param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
@@ -567,7 +567,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
-        name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -826,7 +826,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         ]
         roleAssignments: [
           {
-            name: '832142e9-a3da-4881-9838-c2b8c73ad1e7'
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -1174,7 +1174,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "6352c3e3-ac6b-43d5-ac43-1077ff373721",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1445,7 +1445,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           ],
           "roleAssignments": [
             {
-              "name": "832142e9-a3da-4881-9838-c2b8c73ad1e7",
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -1749,7 +1749,7 @@ param products = [
 param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
-    name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -2008,7 +2008,7 @@ param workspaces = [
     ]
     roleAssignments: [
       {
-        name: '832142e9-a3da-4881-9838-c2b8c73ad1e7'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -2280,7 +2280,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     restore: false
     roleAssignments: [
       {
-        name: '6432d807-dc34-488e-8b15-9c560f79b111'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -2576,7 +2576,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "6432d807-dc34-488e-8b15-9c560f79b111",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -2842,7 +2842,7 @@ param publicNetworkAccess = 'Enabled'
 param restore = false
 param roleAssignments = [
   {
-    name: '6432d807-dc34-488e-8b15-9c560f79b111'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -2894,7 +2894,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-management/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apisv2min001'
+    name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -2918,7 +2918,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apisv2min001"
+      "value": "<name>"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -2948,7 +2948,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apisv2min001'
+param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
@@ -2974,7 +2974,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-management/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apiswaf002'
+    name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -3193,7 +3193,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apiswaf002"
+      "value": "<name>"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -3454,7 +3454,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apiswaf002'
+param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters

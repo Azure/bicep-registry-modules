@@ -73,7 +73,7 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'sbnhsmu001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -108,7 +108,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sbnhsmu001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -147,7 +147,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 using 'br/public:avm/res/service-bus/namespace:<version>'
 
 // Required parameters
-param name = 'sbnhsmu001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -184,7 +184,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'sbnencr001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -213,7 +213,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sbnencr001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -244,7 +244,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 using 'br/public:avm/res/service-bus/namespace:<version>'
 
 // Required parameters
-param name = 'sbnencr001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -275,7 +275,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'sbnmin001'
+    name: '<name>'
     // Non-required parameters
     skuObject: {
       capacity: 2
@@ -299,7 +299,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sbnmin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "skuObject": {
@@ -323,7 +323,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 using 'br/public:avm/res/service-bus/namespace:<version>'
 
 // Required parameters
-param name = 'sbnmin001'
+param name = '<name>'
 // Non-required parameters
 param skuObject = {
   capacity: 2
@@ -349,7 +349,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'sbnmax001'
+    name: '<name>'
     // Non-required parameters
     authorizationRules: [
       {
@@ -511,7 +511,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '2c42f915-20bf-4094-ba42-fee1f811d374'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -644,7 +644,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sbnmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "authorizationRules": {
@@ -830,7 +830,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "2c42f915-20bf-4094-ba42-fee1f811d374",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -967,7 +967,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 using 'br/public:avm/res/service-bus/namespace:<version>'
 
 // Required parameters
-param name = 'sbnmax001'
+param name = '<name>'
 // Non-required parameters
 param authorizationRules = [
   {
@@ -1129,7 +1129,7 @@ param queues = [
 ]
 param roleAssignments = [
   {
-    name: '2c42f915-20bf-4094-ba42-fee1f811d374'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -1264,7 +1264,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'sbnwaf001'
+    name: '<name>'
     // Non-required parameters
     authorizationRules: [
       {
@@ -1401,7 +1401,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sbnwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "authorizationRules": {
@@ -1552,7 +1552,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 using 'br/public:avm/res/service-bus/namespace:<version>'
 
 // Required parameters
-param name = 'sbnwaf001'
+param name = '<name>'
 // Non-required parameters
 param authorizationRules = [
   {

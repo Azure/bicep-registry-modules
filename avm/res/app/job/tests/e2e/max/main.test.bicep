@@ -21,7 +21,7 @@ param serviceShort string = 'ajmax'
 param namePrefix string = '#_namePrefix_#'
 
 // needed for the storage account itself and for using listKeys in the secrets, as the storage account is created in the nested deployment and the value needs to exist at the time of deployment
-var storageAccountName = uniqueString('dep-${namePrefix}-menv-${serviceShort}storage')
+var storageAccountName = uniqueResourceName('dep${namePrefix}${serviceShort}storage', resourceGroup.id, 24)
 
 // =========== //
 // Deployments //
@@ -201,13 +201,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: 'be1bb251-6a44-49f7-8658-d836d0049fc4'
+          name: guid(resourceGroup.id, 'be1bb251-6a44-49f7-8658-d836d0049fc4')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -224,3 +224,4 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'

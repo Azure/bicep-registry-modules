@@ -258,7 +258,7 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
     ]
     roleAssignments: [
       {
-        name: 'af62023f-9f34-4bc0-8f05-2374886daf28'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -450,7 +450,7 @@ module privateLinkScope 'br/public:avm/res/insights/private-link-scope:<version>
     "roleAssignments": {
       "value": [
         {
-          "name": "af62023f-9f34-4bc0-8f05-2374886daf28",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -634,7 +634,7 @@ param privateEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: 'af62023f-9f34-4bc0-8f05-2374886daf28'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

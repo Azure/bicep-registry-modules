@@ -404,7 +404,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     }
     roleAssignments: [
       {
-        name: 'a9329bd8-d7c8-4915-9dfe-04197fa5bf45'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -497,7 +497,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "a9329bd8-d7c8-4915-9dfe-04197fa5bf45",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -572,7 +572,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'a9329bd8-d7c8-4915-9dfe-04197fa5bf45'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

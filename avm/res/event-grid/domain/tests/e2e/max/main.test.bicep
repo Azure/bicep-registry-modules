@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -37,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}001'
+    storageAccountName: uniqueResourceName('dep${namePrefix}sa${serviceShort}001', resourceGroup.id, 24)
     location: resourceLocation
   }
 }
@@ -66,11 +68,11 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 50)
       location: resourceLocation
       managedIdentities: {
         systemAssigned: true
-      }         
+      }
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -124,13 +126,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: '1d2dba39-c8fe-45f9-a3af-6dc15caa95a5'
+          name: guid(resourceGroup.id, '1d2dba39-c8fe-45f9-a3af-6dc15caa95a5')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -159,7 +161,7 @@ module testDeployment '../../../main.bicep' = [
           destination: {
             endpointType: 'StorageQueue'
             properties: {
-              resourceId: nestedDependencies.outputs.storageAccountResourceId 
+              resourceId: nestedDependencies.outputs.storageAccountResourceId
               queueName: nestedDependencies.outputs.storageQueueName
             }
           }
@@ -169,7 +171,7 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
         }
-      ]       
+      ]
     }
     dependsOn: [
       nestedDependencies

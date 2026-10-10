@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Advanced features'
@@ -35,9 +37,9 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    storageAccountName: uniqueResourceName('dep${namePrefix}sa${serviceShort}', resourceGroup.id, 24)
     automationAccountName: 'dep-${namePrefix}-auto-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-ehn-${serviceShort}'
+    eventHubNamespaceName: uniqueResourceName('dep-${namePrefix}-ehn-${serviceShort}', resourceGroup.id, 50)
     eventHubName: 'dep-${namePrefix}-eh-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }

@@ -487,7 +487,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     }
     roleAssignments: [
       {
-        name: 'e9bac1ee-aebe-4513-9337-49e87a7be05e'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -654,7 +654,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "e9bac1ee-aebe-4513-9337-49e87a7be05e",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -809,7 +809,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: 'e9bac1ee-aebe-4513-9337-49e87a7be05e'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

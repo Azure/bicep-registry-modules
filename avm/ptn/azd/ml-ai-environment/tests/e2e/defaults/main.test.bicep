@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
@@ -43,12 +45,12 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: enforcedLocation
-      keyVaultName: '${namePrefix}${serviceShort}kv01'
-      storageAccountName: '${namePrefix}${serviceShort}sa001'
+      keyVaultName: uniqueResourceName('${namePrefix}${serviceShort}kv01', resourceGroup.id, 24)
+      storageAccountName: uniqueResourceName('${namePrefix}${serviceShort}sa001', resourceGroup.id, 24)
       hubName: '${namePrefix}${serviceShort}hub001'
       projectName: '${namePrefix}${serviceShort}pro001'
       userAssignedtName: '${namePrefix}${serviceShort}ua001'
-      cognitiveServicesName: '${namePrefix}${serviceShort}cs001'
+      cognitiveServicesName: uniqueResourceName('${namePrefix}${serviceShort}cs001', resourceGroup.id, 64)
       openAiConnectionName: '${namePrefix}${serviceShort}ai001-connection'
       searchConnectionName: '${namePrefix}${serviceShort}search001-connection'
     }

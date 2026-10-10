@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Deploying with a key vault reference to save secrets'
@@ -32,7 +34,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
   }
 }
 
@@ -44,7 +46,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    name: '${namePrefix}-kv-ref'
+    name: uniqueResourceName('${namePrefix}-kv-ref', resourceGroup.id, 60)
     disableLocalAuth: false
     authOptions: {
       aadOrApiKey: {

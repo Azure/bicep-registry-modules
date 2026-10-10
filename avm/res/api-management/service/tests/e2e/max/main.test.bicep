@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -47,7 +49,7 @@ module nestedDependencies 'dependencies.bicep' = {
     locationRegion2: locationRegion2
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     publicIPNamePrefix: 'dep-${namePrefix}-pip-${serviceShort}'
-    publicIpDnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, enforcedLocation)}'
+    publicIpDnsLabelPrefix: uniqueResourceName('dep-${namePrefix}-dns-${serviceShort}', resourceGroup.id, 63)
     networkSecurityGroupNamePrefix: 'dep-${namePrefix}-nsg-${serviceShort}'
     virtualNetworkNamePrefix: 'dep-${namePrefix}-vnet-${serviceShort}'
     routeTableNamePrefix: 'dep-${namePrefix}-rt-${serviceShort}'
@@ -73,7 +75,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-var apimName = '${namePrefix}${serviceShort}001'
+var apimName = uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 50)
 var backend1Name = 'backend1'
 var workspace1Name = 'workspace1'
 var workspace1Backend1Name = 'workspace1-backend1'
@@ -343,13 +345,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
+          name: guid(resourceGroup.id, '6352c3e3-ac6b-43d5-ac43-1077ff373721')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -585,13 +587,13 @@ module testDeployment '../../../main.bicep' = [
           ]
           roleAssignments: [
             {
-              name: '832142e9-a3da-4881-9838-c2b8c73ad1e7'
+              name: guid(resourceGroup.id, '832142e9-a3da-4881-9838-c2b8c73ad1e7')
               roleDefinitionIdOrName: 'Owner'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
             {
-              name: guid('Custom seed ${namePrefix}${serviceShort}${workspace1Name}')
+              name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}${workspace1Name}')
               roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'

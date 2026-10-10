@@ -118,7 +118,7 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     }
     roleAssignments: [
       {
-        name: '360a3e7e-49bf-4e94-839f-14c91e8e0c23'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -177,7 +177,7 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "360a3e7e-49bf-4e94-839f-14c91e8e0c23",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -230,7 +230,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '360a3e7e-49bf-4e94-839f-14c91e8e0c23'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

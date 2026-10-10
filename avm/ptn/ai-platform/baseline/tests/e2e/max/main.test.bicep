@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -43,7 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     location: resourceLocation
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    storageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
     managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     networkSecurityGroupName: 'dep${namePrefix}nsg${serviceShort}'
@@ -61,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}'
+      name: uniqueResourceName('${namePrefix}${serviceShort}', resourceGroup.id, 20)
       managedIdentityName: nestedDependencies.outputs.managedIdentityName
       logAnalyticsConfiguration: {
         name: '${namePrefix}-log-${serviceShort}'
@@ -71,12 +73,12 @@ module testDeployment '../../../main.bicep' = [
         enablePurgeProtection: false
       }
       storageAccountConfiguration: {
-        name: '${namePrefix}st${serviceShort}'
+        name: uniqueResourceName('${namePrefix}st${serviceShort}', resourceGroup.id, 24)
         sku: 'Standard_GRS'
         allowSharedKeyAccess: true
       }
       containerRegistryConfiguration: {
-        name: '${namePrefix}cr${serviceShort}'
+        name: uniqueResourceName('${namePrefix}cr${serviceShort}', resourceGroup.id, 50)
         trustPolicyStatus: 'disabled'
       }
       applicationInsightsConfiguration: {

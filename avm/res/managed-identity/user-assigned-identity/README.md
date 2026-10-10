@@ -148,7 +148,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
     }
     roleAssignments: [
       {
-        name: 'b1a2c427-c4b1-435a-9b82-40c1b59537ac'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -226,7 +226,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
     "roleAssignments": {
       "value": [
         {
-          "name": "b1a2c427-c4b1-435a-9b82-40c1b59537ac",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -294,7 +294,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'b1a2c427-c4b1-435a-9b82-40c1b59537ac'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

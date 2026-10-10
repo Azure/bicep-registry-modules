@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
@@ -34,7 +36,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 // Test Execution //
 // ============== //
-var resourceName = '${namePrefix}${serviceShort}001'
+var resourceName = uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 64)
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
