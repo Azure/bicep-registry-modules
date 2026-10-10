@@ -128,7 +128,7 @@ param extensionHealthConfig extensionHealthConfigType = {
 }
 
 @description('Optional. The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionDSCConfig object = {
+param extensionDSCConfig extensionDSCConfigType = {
   enabled: false
 }
 
@@ -952,6 +952,32 @@ type nicConfigurationType = {
 
   @description('Optional. The resource ID of a network security group to associate with the NIC.')
   networkSecurityGroupResourceId: string?
+}
+
+@export()
+@description('The type of a \'DesiredStateConfiguration\' extension.')
+type extensionDSCConfigType = {
+  @description('Required. Whether the extension is deployed.')
+  enabled: bool
+
+  @description('Optional. The version of the script handler.')
+  typeHandlerVersion: string?
+
+  @description('Optional. Indicates whether the extension should use a newer minor version if one is available at deployment time. Defaults to `true`.')
+  autoUpgradeMinorVersion: bool?
+
+  @description('Optional. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`.')
+  enableAutomaticUpgrade: bool?
+
+  @description('Optional. Any object that contains the extension specific settings.')
+  settings: object?
+
+  @description('Optional. Any object that contains the extension specific protected settings.')
+  @secure()
+  protectedSettings: object?
+
+  @description('Optional. Collection of extension names after which this extension needs to be provisioned.')
+  provisionAfterExtensions: string[]?
 }
 
 @export()

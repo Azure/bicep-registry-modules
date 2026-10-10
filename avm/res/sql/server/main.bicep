@@ -1069,6 +1069,7 @@ type securityAlertPolicyType = {
   state: 'Enabled' | 'Disabled'?
 
   @description('Optional. Specifies the identifier key of the Threat Detection audit storage account.')
+  @secure()
   storageAccountAccessKey: string?
 
   @description('Optional. Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs.')

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8334971876229707370"
+      "templateHash": "7884885604104235471"
     },
     "name": "API Management Service Workspace",
     "description": "This module deploys an API Management Service Workspace."
@@ -637,7 +637,7 @@
           }
         },
         "value": {
-          "type": "string",
+          "type": "securestring",
           "nullable": true,
           "maxLength": 4096,
           "metadata": {
@@ -819,7 +819,7 @@
           }
         },
         "primaryKey": {
-          "type": "string",
+          "type": "securestring",
           "nullable": true,
           "minLength": 1,
           "maxLength": 256,
@@ -835,7 +835,7 @@
           }
         },
         "secondaryKey": {
-          "type": "string",
+          "type": "securestring",
           "nullable": true,
           "minLength": 1,
           "maxLength": 256,

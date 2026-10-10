@@ -4872,7 +4872,7 @@ Caches.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectionString`](#parameter-cachesconnectionstring) | string | Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}. |
+| [`connectionString`](#parameter-cachesconnectionstring) | securestring | Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}. |
 | [`name`](#parameter-cachesname) | string | Identifier of the Cache entity. Cache identifier (should be either 'default' or valid Azure region identifier). |
 | [`useFromLocation`](#parameter-cachesusefromlocation) | string | Location identifier to use cache from (should be either 'default' or valid Azure region identifier). |
 
@@ -4888,7 +4888,7 @@ Caches.
 Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `caches.name`
 
@@ -6684,9 +6684,9 @@ Subscriptions.
 | :-- | :-- | :-- |
 | [`allowTracing`](#parameter-subscriptionsallowtracing) | bool | Determines whether tracing can be enabled. |
 | [`ownerId`](#parameter-subscriptionsownerid) | string | User (user ID path) for whom subscription is being created in form /users/{userId}. |
-| [`primaryKey`](#parameter-subscriptionsprimarykey) | string | Primary subscription key. If not specified during request key will be generated automatically. |
+| [`primaryKey`](#parameter-subscriptionsprimarykey) | securestring | Primary subscription key. If not specified during request key will be generated automatically. |
 | [`scope`](#parameter-subscriptionsscope) | string | Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}". |
-| [`secondaryKey`](#parameter-subscriptionssecondarykey) | string | Secondary subscription key. If not specified during request key will be generated automatically. |
+| [`secondaryKey`](#parameter-subscriptionssecondarykey) | securestring | Secondary subscription key. If not specified during request key will be generated automatically. |
 | [`state`](#parameter-subscriptionsstate) | string | Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:<p>* active - the subscription is active<p>* suspended - the subscription is blocked, and the subscriber cannot call any APIs of the product<p>* submitted - the subscription request has been made by the developer, but has not yet been approved or rejected<p>* rejected - the subscription request has been denied by an administrator<p>* cancelled - the subscription has been cancelled by the developer or administrator<p>* expired - the subscription reached its expiration date and was deactivated. |
 
 ### Parameter: `subscriptions.displayName`
@@ -6722,7 +6722,7 @@ User (user ID path) for whom subscription is being created in form /users/{userI
 Primary subscription key. If not specified during request key will be generated automatically.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `subscriptions.scope`
 
@@ -6736,7 +6736,7 @@ Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".
 Secondary subscription key. If not specified during request key will be generated automatically.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `subscriptions.state`
 
@@ -8031,7 +8031,7 @@ Named values to deploy in this workspace.
 | [`keyVault`](#parameter-workspacesnamedvalueskeyvault) | object | KeyVault location details of the namedValue. |
 | [`secret`](#parameter-workspacesnamedvaluessecret) | bool | Determines whether the value is a secret and should be encrypted or not. |
 | [`tags`](#parameter-workspacesnamedvaluestags) | array | Tags that when provided can be used to filter the NamedValue list. |
-| [`value`](#parameter-workspacesnamedvaluesvalue) | string | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
+| [`value`](#parameter-workspacesnamedvaluesvalue) | securestring | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
 
 ### Parameter: `workspaces.namedValues.displayName`
 
@@ -8073,7 +8073,7 @@ Tags that when provided can be used to filter the NamedValue list.
 Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `workspaces.policies`
 
@@ -8455,9 +8455,9 @@ Subscriptions to deploy in this workspace.
 | :-- | :-- | :-- |
 | [`allowTracing`](#parameter-workspacessubscriptionsallowtracing) | bool | Determines whether tracing can be enabled. |
 | [`ownerId`](#parameter-workspacessubscriptionsownerid) | string | User (user ID path) for whom subscription is being created in form /users/{userId}. |
-| [`primaryKey`](#parameter-workspacessubscriptionsprimarykey) | string | Primary subscription key. If not specified during request key will be generated automatically. |
+| [`primaryKey`](#parameter-workspacessubscriptionsprimarykey) | securestring | Primary subscription key. If not specified during request key will be generated automatically. |
 | [`scope`](#parameter-workspacessubscriptionsscope) | string | Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}". |
-| [`secondaryKey`](#parameter-workspacessubscriptionssecondarykey) | string | Secondary subscription key. If not specified during request key will be generated automatically. |
+| [`secondaryKey`](#parameter-workspacessubscriptionssecondarykey) | securestring | Secondary subscription key. If not specified during request key will be generated automatically. |
 | [`state`](#parameter-workspacessubscriptionsstate) | string | Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:<p>* active - the subscription is active<p>* suspended - the subscription is blocked, and the subscriber cannot call any APIs of the product<p>* submitted - the subscription request has been made by the developer, but has not yet been approved or rejected<p>* rejected - the subscription request has been denied by an administrator<p>* cancelled - the subscription has been cancelled by the developer or administrator<p>* expired - the subscription reached its expiration date and was deactivated. |
 
 ### Parameter: `workspaces.subscriptions.displayName`
@@ -8493,7 +8493,7 @@ User (user ID path) for whom subscription is being created in form /users/{userI
 Primary subscription key. If not specified during request key will be generated automatically.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `workspaces.subscriptions.scope`
 
@@ -8507,7 +8507,7 @@ Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".
 Secondary subscription key. If not specified during request key will be generated automatically.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `workspaces.subscriptions.state`
 

@@ -811,6 +811,7 @@ type webhookType = {
   name: string?
 
   @description('Required. The service URI for the webhook to post notifications.')
+  @secure()
   serviceUri: string
 
   @description('Optional. The status of the webhook at the time the operation was called.')

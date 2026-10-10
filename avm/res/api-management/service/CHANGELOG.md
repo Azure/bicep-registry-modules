@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
+## 0.15.1
+
+### Changes
+
+- Marked cache connection strings as secure in `cacheType` and the cache child module. Named-value references such as `{{cache-connection-string}}` remain supported.
+- Marked primary and secondary subscription keys as secure in service and workspace subscription types, matching their child modules. Keys remain optional.
+- Marked workspace named values as secure through the imported workspace type, matching the named-value child module.
+
+### Breaking Changes
+
+- None
+
 ## 0.15.0
 
 ### Changes
