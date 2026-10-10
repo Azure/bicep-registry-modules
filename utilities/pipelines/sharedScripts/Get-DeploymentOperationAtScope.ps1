@@ -1,4 +1,42 @@
-﻿function Get-DeploymentResourceId {
+﻿. (Join-Path $PSScriptRoot 'Invoke-DeploymentRead.ps1')
+
+function Test-DeploymentResponseJson {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param (
+        [Parameter(Mandatory)]
+        [AllowEmptyString()]
+        [string] $Json
+    )
+
+    try {
+        $document = [System.Text.Json.JsonDocument]::Parse($Json)
+    } catch [System.Text.Json.JsonException] {
+        return $false
+    }
+    try {
+        $nodes = [System.Collections.Generic.Stack[System.Text.Json.JsonElement]]::new()
+        $nodes.Push($document.RootElement)
+        while ($nodes.Count -gt 0) {
+            $node = $nodes.Pop()
+            if ($node.ValueKind -eq [System.Text.Json.JsonValueKind]::Object) {
+                $names = @{}
+                foreach ($property in $node.EnumerateObject()) {
+                    if ($names.ContainsKey($property.Name)) { return $false }
+                    $names[$property.Name] = $true
+                    $nodes.Push($property.Value)
+                }
+            } elseif ($node.ValueKind -eq [System.Text.Json.JsonValueKind]::Array) {
+                foreach ($child in $node.EnumerateArray()) { $nodes.Push($child) }
+            }
+        }
+        return $true
+    } finally {
+        $document.Dispose()
+    }
+}
+
+function Get-DeploymentResourceId {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -84,6 +122,7 @@ Get all deployment operations at a given scope
 .DESCRIPTION
 Get all deployment operations at a given scope, following every operation page.
 Responses retain extension metadata needed to verify existing extensible resources.
+Each operation-page GET retries typed request timeouts at most twice without replaying earlier pages.
 By default, results include only 'create' operations, excluding 'read' operations for existing resources.
 
 .PARAMETER Name
@@ -182,7 +221,16 @@ function Get-DeploymentOperationAtScope {
         if (-not $visitedPages.Add($path) -or $visitedPages.Count -gt 1000) {
             throw "Deployment [$Name] returned repeated or excessive operation pages."
         }
-        $response = Invoke-AzRestMethod -Method 'GET' -Path $path -ErrorAction Stop
+        $response = Invoke-DeploymentRead -Read {
+            Invoke-AzRestMethod -Method 'GET' -Path $path -ErrorAction Stop
+        }
+        if (($IncludeAllOperations -or $RequireCompleteRemoval) -and (
+                $response -is [array] -or
+                ($response.StatusCode -isnot [int] -and $response.StatusCode -isnot [System.Net.HttpStatusCode]) -or
+                $response.Content -isnot [string] -or
+                -not (Test-DeploymentResponseJson -Json $response.Content))) {
+            throw "Deployment [$Name] returned invalid or ambiguous operation JSON or HTTP status; regional retry is unsafe."
+        }
         $content = $response.Content | ConvertFrom-Json -NoEnumerate -ErrorAction Stop
 
         if ($response.StatusCode -ne 200) {
@@ -203,6 +251,10 @@ function Get-DeploymentOperationAtScope {
         }
         if ($content -isnot [System.Management.Automation.PSCustomObject] -or $content.value -isnot [array]) {
             throw "Invalid deployment operations response for deployment [$Name] in scope [$Scope]."
+        }
+        if (($IncludeAllOperations -or $RequireCompleteRemoval) -and
+            @($content.PSObject.Properties.Name | Where-Object { $_ -cnotin @('value', 'nextLink') }).Count -gt 0) {
+            throw "Deployment [$Name] returned mixed or unknown operation response fields; regional retry is unsafe."
         }
         foreach ($operation in $content.value) {
             if ($IncludeAllOperations -and ($operation -isnot [System.Management.Automation.PSCustomObject] -or

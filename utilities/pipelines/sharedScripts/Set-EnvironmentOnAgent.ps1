@@ -1,4 +1,4 @@
-# Note: The installation commands in this script are optimized for Linux
+﻿# Note: The installation commands in this script are optimized for Linux
 
 #region Helper Functions
 <#
@@ -7,6 +7,10 @@ Installes given PowerShell modules
 
 .DESCRIPTION
 Installes given PowerShell modules
+Reuses installed modules that satisfy the request without querying PSGallery.
+Retries no-op default repository registration and a known pre-install archive failure once.
+Other resolution, installation, and exact-module import failures terminate the command.
+Validates the requested module separately from manifest initializer module metadata.
 
 .PARAMETER Module
 Required. Modules to be installed, must be Object
@@ -26,7 +30,7 @@ Installes pester and saves it to C:\Modules
 function Install-CustomModule {
 
     [CmdletBinding(SupportsShouldProcess)]
-    Param (
+    param (
         [Parameter(Mandatory = $true)]
         [Hashtable] $Module,
 
@@ -34,20 +38,28 @@ function Install-CustomModule {
         [object[]] $InstalledModule = @()
     )
 
-    if (-not (Get-PSRepository -ErrorAction Stop | Where-Object Name -EQ 'PSGallery')) {
+    $alreadyInstalled = @($InstalledModule | Where-Object { $_.Name -eq $Module.Name -and
+            (-not $Module.Version -or $_.Version -eq $Module.Version) } |
+            Sort-Object -Culture 'en-US' -Property 'Version' -Descending)
+    if ($alreadyInstalled.Count -gt 0) {
+        Write-Verbose ('Module [{0}] already installed with version [{1}]' -f $alreadyInstalled[0].Name, $alreadyInstalled[0].Version) -Verbose
+        return
+    }
+
+    $gallery = Get-PSRepository -ErrorAction Stop | Where-Object Name -EQ 'PSGallery'
+    for ($attempt = 1; -not $gallery; $attempt++) {
         if (-not $PSCmdlet.ShouldProcess('PSGallery', 'Register default PowerShell repository')) {
             return
         }
         Write-Verbose 'Registering the default PowerShell Gallery repository.' -Verbose
         Register-PSRepository -Default -ErrorAction Stop
-    }
-
-    # Remove exsisting module in session
-    if (Get-Module $Module -ErrorAction 'SilentlyContinue') {
-        try {
-            Remove-Module $Module -Force
-        } catch {
-            Write-Error ('Unable to remove module [{0}] because of exception [{1}]. Stack Trace: [{2}]' -f $Module.Name, $_.Exception, $_.ScriptStackTrace)
+        $gallery = Get-PSRepository -ErrorAction Stop | Where-Object Name -EQ 'PSGallery'
+        if (-not $gallery) {
+            if ($attempt -eq 2) {
+                throw 'PSGallery is not available after 2 default registration attempts.'
+            }
+            Write-Warning 'Default registration did not create PSGallery. Retrying once.'
+            Start-Sleep -Seconds 2
         }
     }
 
@@ -61,23 +73,12 @@ function Install-CustomModule {
     }
 
     # Get all modules that match a certain name. In case of e.g. 'Az' it returns several.
-    $foundModules = Find-Module @moduleImportInputObject
+    $foundModules = @(Find-Module @moduleImportInputObject -ErrorAction Stop)
+    if ($foundModules.Count -eq 0) {
+        throw ('Required module [{0}] could not be resolved from PSGallery.' -f $Module.Name)
+    }
 
     foreach ($foundModule in $foundModules) {
-
-        # Check if already installed as required
-        if ($alreadyInstalled = $InstalledModule | Where-Object { $_.Name -eq $Module.Name }) {
-            if ($Module.Version) {
-                $alreadyInstalled = $alreadyInstalled | Where-Object { $_.Version -eq $Module.Version }
-            } else {
-                # Get latest in case of multiple
-                $alreadyInstalled = ($alreadyInstalled | Sort-Object -Culture 'en-US' -Property 'Version' -Descending)[0]
-            }
-            if ($alreadyInstalled) {
-                Write-Verbose ('Module [{0}] already installed with version [{1}]' -f $alreadyInstalled.Name, $alreadyInstalled.Version) -Verbose
-                continue
-            }
-        }
 
         # Check if not to be excluded
         if ($Module.ExcludeModules -and $Module.excludeModules.contains($foundModule.Name)) {
@@ -87,12 +88,117 @@ function Install-CustomModule {
 
         Write-Verbose ('Install module [{0}] with version [{1}]' -f $foundModule.Name, $foundModule.Version) -Verbose
         if ($PSCmdlet.ShouldProcess('Module [{0}]' -f $foundModule.Name, 'Install')) {
-            $foundModule | Install-Module -Force -SkipPublisherCheck -AllowClobber
-            if ($installed = Get-Module -Name $foundModule.Name -ListAvailable) {
-                Write-Verbose ('Module [{0}] is installed with version [{1}]' -f $installed[0].name, ($installed.Version -join ', ')) -Verbose
-            } else {
-                Write-Error ('Installation of module [{0}] failed' -f $foundModule.Name)
+            for ($attempt = 1; $attempt -le 2; $attempt++) {
+                try {
+                    $foundModule | Install-Module -Force -SkipPublisherCheck -AllowClobber -ErrorAction Stop
+                    break
+                } catch {
+                    $archiveErrorId = "Package '{0}' failed to be installed because: {1},Microsoft.PowerShell.PackageManagement.Cmdlets.InstallPackage"
+                    $archiveErrorMessage = "Package '$($foundModule.Name)' failed to be installed because: End of Central Directory record could not be found."
+                    if ($attempt -eq 2 -or $_.FullyQualifiedErrorId -cne $archiveErrorId -or
+                        $_.CategoryInfo.Category -ne [System.Management.Automation.ErrorCategory]::InvalidResult -or
+                        $_.TargetObject -cne $foundModule.Name -or $_.Exception.Message -cne $archiveErrorMessage -or
+                        -not $foundModule.PSObject.Properties['Dependencies'] -or
+                        $null -eq $foundModule.Dependencies -or $foundModule.Dependencies.Count -ne 0) {
+                        throw
+                    }
+
+                    # Retry only the verified fresh-staging contract for dependency-free modules.
+                    $powerShellGet = @(Get-Module -Name PowerShellGet -ErrorAction Stop)
+                    $packageManagement = @(Get-Module -Name PackageManagement -ErrorAction Stop)
+                    $nuGet = @(Get-PackageProvider -ErrorAction Stop | Where-Object Name -EQ 'NuGet')
+                    if ($powerShellGet.Count -ne 1 -or $powerShellGet[0].Version -ne [version] '2.2.5' -or
+                        $packageManagement.Count -ne 1 -or $packageManagement[0].Version -ne [version] '1.4.8.1' -or
+                        $nuGet.Count -ne 1 -or $nuGet[0].Version -ne [version] '3.0.0.1') {
+                        throw
+                    }
+                    Write-Warning ('Module [{0}] version [{1}] returned an invalid archive. Retrying once with a fresh download.' -f $foundModule.Name, $foundModule.Version)
+                    Start-Sleep -Seconds 2
+                }
             }
+
+            $version = [version] $foundModule.Version
+            $installed = @(Get-Module -Name $foundModule.Name -ListAvailable -ErrorAction Stop |
+                    Where-Object { $_.Version -eq $version })
+            if ($installed.Count -eq 0) {
+                throw ('Installation of module [{0}] failed' -f $foundModule.Name)
+            }
+
+            $moduleBase = $installed[0].ModuleBase
+            $pathComparison = $IsWindows ? [StringComparison]::OrdinalIgnoreCase : [StringComparison]::Ordinal
+            foreach ($loaded in (Get-Module -Name $foundModule.Name -ErrorAction Stop)) {
+                if ($loaded.Version -ne $version -or -not [string]::Equals($loaded.ModuleBase, $moduleBase, $pathComparison)) {
+                    throw ('Module [{0}] is already loaded from a different version or path. Start a fresh PowerShell session.' -f $foundModule.Name)
+                }
+            }
+            $manifestPath = Join-Path $moduleBase "$($foundModule.Name).psd1"
+            if (-not (Test-Path -LiteralPath $manifestPath -PathType Leaf)) {
+                throw ('Installation of module [{0}] did not produce its manifest [{1}].' -f $foundModule.Name, $manifestPath)
+            }
+            $specification = @{ ModuleName = $manifestPath; RequiredVersion = $version }
+            $imported = @(Import-Module -FullyQualifiedName $specification -Global -PassThru -ErrorAction Stop |
+                    Where-Object Name -CEQ $foundModule.Name)
+            if ($imported.Count -ne 1 -or $imported[0].Version -ne $version -or
+                -not [string]::Equals($imported[0].ModuleBase, $moduleBase, $pathComparison)) {
+                throw ('The imported module does not match [{0}] version [{1}] at [{2}].' -f $foundModule.Name, $version, $moduleBase)
+            }
+            Write-Verbose ('Module [{0}] is installed with version [{1}]' -f $foundModule.Name, $version) -Verbose
+        }
+    }
+}
+
+<#
+.SYNOPSIS
+Installs the latest Bicep CLI after validating the downloaded executable.
+
+.DESCRIPTION
+Keeps the installed compiler until the official Linux x64 download passes a version check.
+Download, validation, and installation failures terminate the command.
+
+.EXAMPLE
+Install-BicepCli
+#>
+function Install-BicepCli {
+    [CmdletBinding()]
+    param()
+
+    $ErrorActionPreference = 'Stop'
+    $PSNativeCommandUseErrorActionPreference = $false
+    $candidate = New-TemporaryFile
+    try {
+        $diagnostics = curl --fail --location --silent --show-error --output $candidate.FullName 'https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64' 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "Bicep CLI download failed with exit code ${LASTEXITCODE}: $($diagnostics -join [Environment]::NewLine)"
+        }
+
+        $diagnostics = chmod +x $candidate.FullName 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "Bicep CLI permission update failed with exit code ${LASTEXITCODE}: $($diagnostics -join [Environment]::NewLine)"
+        }
+
+        $candidateVersion = & $candidate.FullName --version 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "Bicep CLI candidate validation failed with exit code ${LASTEXITCODE}: $($candidateVersion -join [Environment]::NewLine)"
+        }
+        if (($candidateVersion -join [Environment]::NewLine) -notmatch '^Bicep CLI version \d+\.\d+\.\d+\b') {
+            throw "Bicep CLI candidate returned an unexpected version: $($candidateVersion -join [Environment]::NewLine)"
+        }
+
+        $diagnostics = sudo mv $candidate.FullName /usr/local/bin/bicep 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "Bicep CLI installation failed with exit code ${LASTEXITCODE}: $($diagnostics -join [Environment]::NewLine)"
+        }
+
+        Write-Verbose 'Bicep CLI version after install:' -Verbose
+        $installedVersion = bicep --version 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "Installed Bicep CLI version check failed with exit code ${LASTEXITCODE}: $($installedVersion -join [Environment]::NewLine)"
+        }
+        Write-Output $installedVersion
+    } finally {
+        if (Test-Path -LiteralPath $candidate.FullName) {
+            # Cleanup errors must not hide the installation error.
+            Remove-Item -LiteralPath $candidate.FullName -Force -ErrorAction Continue
         }
     }
 }
@@ -187,15 +293,7 @@ function Set-EnvironmentOnAgent {
     bicep --version
 
     Write-Verbose ('Install latest Bicep CLI') -Verbose
-    # Fetch the latest Bicep CLI binary
-    curl -Lo bicep 'https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64'
-    # Mark it as executable
-    chmod +x ./bicep
-    # Add Bicep to your PATH (requires admin)
-    sudo mv ./bicep /usr/local/bin/bicep
-
-    Write-Verbose 'Bicep CLI version after install:' -Verbose
-    bicep --version
+    Install-BicepCli
 
     ###############################
     ##   Install Extensions CLI   #
