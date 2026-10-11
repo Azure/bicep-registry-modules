@@ -122,7 +122,43 @@ function Test-SynapseCmkKeyActive {
         $key.properties -isnot [System.Collections.IDictionary] -or
         -not [string]::Equals($key.properties.keyVaultUrl, $KeyVaultUrl, [System.StringComparison]::Ordinal) -or
         $key.properties.isActiveCMK -isnot [bool]) {
-        throw 'The Synapse workspace key response does not match the expected resource ID, key URL and activation boolean.'
+        $properties = $null
+        if ($key -is [System.Collections.IDictionary]) { $properties = $key.properties }
+        $diagnostics = [ordered]@{
+            responseIsObject = $key -is [System.Collections.IDictionary]
+            responseType = if ($null -eq $key) { 'null' } else { $key.GetType().FullName }
+        }
+        foreach ($field in @(
+                @{ name = 'id'; container = $key }
+                @{ name = 'properties'; container = $key }
+                @{ name = 'keyVaultUrl'; container = $properties }
+                @{ name = 'isActiveCMK'; container = $properties }
+            )) {
+            $container = $field.container
+            $present = $container -is [System.Collections.IDictionary] -and
+                $container.psbase.Keys -icontains $field.name
+            $value = $null
+            if ($present) { $value = $container.($field.name) }
+            $valid = switch ($field.name) {
+                'id' {
+                    $value -is [string] -and
+                    [string]::Equals($value, $KeyResourceId, [System.StringComparison]::OrdinalIgnoreCase)
+                }
+                'properties' { $value -is [System.Collections.IDictionary] }
+                'keyVaultUrl' {
+                    $value -is [string] -and
+                    [string]::Equals($value, $KeyVaultUrl, [System.StringComparison]::Ordinal)
+                }
+                'isActiveCMK' { $value -is [bool] }
+            }
+            $diagnostics[$field.name] = @{
+                present = $present
+                type = if (-not $present) { 'missing' } elseif ($null -eq $value) { 'null' } else { $value.GetType().FullName }
+                length = if ($value -is [string]) { $value.Length } else { $null }
+                valid = $valid
+            }
+        }
+        throw "The Synapse workspace key response does not match the expected resource ID, key URL and activation boolean. Validation diagnostics: $($diagnostics | ConvertTo-Json -Depth 4 -Compress)"
     }
     return $key.properties.isActiveCMK
 }

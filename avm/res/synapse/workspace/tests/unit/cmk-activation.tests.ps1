@@ -342,6 +342,106 @@ Describe 'Synapse CMK permission classifier' -Tag 'CmkActivationRuntime' {
         Test-SynapseCmkPermissionError -ErrorDetail $detail | Should -BeFalse
     }
 }
+Describe 'Synapse CMK response contract diagnostics' -Tag 'CmkResponseDiagnostics' {
+    It 'Accepts the documented key response shape with a Boolean activation value (<Active>)' -ForEach @(
+        @{ Active = $true }
+        @{ Active = $false }
+    ) {
+        $id = '/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/ExampleResourceGroup/providers/Microsoft.Synapse/workspaces/ExampleWorkspace/keys/somekey'
+        $url = 'https://vault.azure.net/keys/key1'
+        $response = [pscustomobject]@{
+            StatusCode = 200
+            Content = @{
+                id = $id
+                name = 'somekey'
+                type = 'Microsoft.Synapse/workspaces/keys'
+                properties = @{ isActiveCMK = $Active; keyVaultUrl = $url }
+            } | ConvertTo-Json -Compress
+        }
+
+        Test-SynapseCmkKeyActive -Response $response -KeyResourceId $id -KeyVaultUrl $url |
+            Should -Be $Active
+    }
+
+    It 'Identifies the failing response field without exposing values (<Case>)' -ForEach @(
+        @{ Case = 'missing ID'; Field = 'id'; Container = 'root'; Change = 'remove'; Present = $false; ValueType = 'missing' }
+        @{ Case = 'null ID'; Field = 'id'; Container = 'root'; Change = 'null'; Present = $true; ValueType = 'null' }
+        @{ Case = 'different ID'; Field = 'id'; Container = 'root'; Change = 'string'; Present = $true; ValueType = 'System.String' }
+        @{ Case = 'missing properties'; Field = 'properties'; Container = 'root'; Change = 'remove'; Present = $false; ValueType = 'missing' }
+        @{ Case = 'non-object properties'; Field = 'properties'; Container = 'root'; Change = 'string'; Present = $true; ValueType = 'System.String' }
+        @{ Case = 'missing URL'; Field = 'keyVaultUrl'; Container = 'properties'; Change = 'remove'; Present = $false; ValueType = 'missing' }
+        @{ Case = 'null URL'; Field = 'keyVaultUrl'; Container = 'properties'; Change = 'null'; Present = $true; ValueType = 'null' }
+        @{ Case = 'different URL'; Field = 'keyVaultUrl'; Container = 'properties'; Change = 'string'; Present = $true; ValueType = 'System.String' }
+        @{ Case = 'missing activation Boolean'; Field = 'isActiveCMK'; Container = 'properties'; Change = 'remove'; Present = $false; ValueType = 'missing' }
+        @{ Case = 'null activation Boolean'; Field = 'isActiveCMK'; Container = 'properties'; Change = 'null'; Present = $true; ValueType = 'null' }
+        @{ Case = 'string activation value'; Field = 'isActiveCMK'; Container = 'properties'; Change = 'string'; Present = $true; ValueType = 'System.String' }
+    ) {
+        $canary = 'response-value-must-not-be-logged'
+        $body = @{
+            id = $keyResourceId
+            properties = @{ keyVaultUrl = $keyVaultUrl; isActiveCMK = $false }
+            unrecognized = @{ token = $canary }
+        }
+        $target = if ($Container -eq 'root') { $body } else { $body.properties }
+        switch ($Change) {
+            'remove' { $target.Remove($Field) }
+            'null' { $target[$Field] = $null }
+            'string' { $target[$Field] = $canary }
+        }
+        $response = [pscustomobject]@{ StatusCode = 200; Content = $body | ConvertTo-Json -Depth 8 -Compress }
+        $caught = try {
+            Test-SynapseCmkKeyActive -Response $response -KeyResourceId $keyResourceId -KeyVaultUrl $keyVaultUrl
+        } catch { $_ }
+
+        $caught | Should -BeOfType ([System.Management.Automation.ErrorRecord])
+        $message = $caught.Exception.Message
+        $message | Should -Match 'Validation diagnostics: '
+        $diagnostics = ($message -split 'Validation diagnostics: ', 2)[1] | ConvertFrom-Json -AsHashtable
+        $diagnostics[$Field].present | Should -Be $Present
+        $diagnostics[$Field].type | Should -BeExactly $ValueType
+        $diagnostics[$Field].valid | Should -BeFalse
+        $message | Should -Not -Match ([regex]::Escape($canary))
+        $message | Should -Not -Match ([regex]::Escape($keyResourceId))
+        $message | Should -Not -Match ([regex]::Escape($keyVaultUrl))
+    }
+
+    It 'Identifies a non-object response without inferring a missing key (<Content>)' -ForEach @(
+        @{ Content = 'null'; ValueType = 'null' }
+        @{ Content = 'false'; ValueType = 'System.Boolean' }
+    ) {
+        $response = [pscustomobject]@{ StatusCode = 200; Content = $Content }
+        $caught = try {
+            Test-SynapseCmkKeyActive -Response $response -KeyResourceId $keyResourceId -KeyVaultUrl $keyVaultUrl
+        } catch { $_ }
+
+        $caught.Exception.Message | Should -Match 'Validation diagnostics: '
+        $diagnostics = ($caught.Exception.Message -split 'Validation diagnostics: ', 2)[1] |
+            ConvertFrom-Json -AsHashtable
+        $diagnostics.responseIsObject | Should -BeFalse
+        $diagnostics.responseType | Should -BeExactly $ValueType
+    }
+
+    It 'Reports simultaneous identity and URL mismatches without dumping the response' {
+        $body = @{
+            id = 'private-identity-canary'
+            properties = @{ keyVaultUrl = 'private-url-canary'; isActiveCMK = $false }
+            unrecognized = 'private-body-canary'
+        }
+        $response = [pscustomobject]@{ StatusCode = 200; Content = $body | ConvertTo-Json -Compress }
+        $caught = try {
+            Test-SynapseCmkKeyActive -Response $response -KeyResourceId $keyResourceId -KeyVaultUrl $keyVaultUrl
+        } catch { $_ }
+
+        $caught.Exception.Message | Should -Match 'Validation diagnostics: '
+        $diagnostics = ($caught.Exception.Message -split 'Validation diagnostics: ', 2)[1] |
+            ConvertFrom-Json -AsHashtable
+        $diagnostics.id.valid | Should -BeFalse
+        $diagnostics.keyVaultUrl.valid | Should -BeFalse
+        $diagnostics.isActiveCMK.valid | Should -BeTrue
+        $caught.Exception.Message | Should -Not -Match 'private-.*-canary'
+    }
+}
+
 Describe 'Synapse CMK activation template' -Tag 'CmkActivationTemplate' {
     BeforeAll {
         $moduleRoot = Join-Path $PSScriptRoot '..' '..'
