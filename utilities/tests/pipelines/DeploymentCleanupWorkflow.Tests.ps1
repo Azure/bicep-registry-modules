@@ -19,9 +19,9 @@ Describe 'Deployment submission and cleanup runtime integration' {
             "$resourceGroupId/providers/Microsoft.Compute/diskEncryptionSets/dep-fixture-des"
             "$resourceGroupId/providers/Microsoft.KeyVault/vaults/dep-fixture-kv"
             "$resourceGroupId/providers/Microsoft.KeyVault/vaults/dep-fixture-kv/keys/encryptionKey"
-            "$resourceGroupId/providers/Microsoft.KeyVault/vaults/dep-fixture-kv/providers/Microsoft.Authorization/roleAssignments/kv-reader"
+            "$resourceGroupId/providers/Microsoft.KeyVault/vaults/dep-fixture-kv/providers/Microsoft.Authorization/roleAssignments/33333333-3333-3333-3333-333333333333"
             "$resourceGroupId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-fixture-msi"
-            "$resourceGroupId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-fixture-msi/providers/Microsoft.Authorization/roleAssignments/msi-reader"
+            "$resourceGroupId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-fixture-msi/providers/Microsoft.Authorization/roleAssignments/44444444-4444-4444-4444-444444444444"
             "$resourceGroupId/providers/Microsoft.Network/virtualNetworks/dep-fixture-vnet"
             "$resourceGroupId/providers/Microsoft.Storage/storageAccounts/depfixturestorage"
         )
@@ -469,11 +469,15 @@ Describe 'Deployment submission and cleanup runtime integration' {
             @{ ActiveKey = @{ SourceVault = @{ Id = $script:fixtureResourceIds[2] } }; Identity = @{ PrincipalId = 'test-des-identity' } }
         }
         Mock Remove-AzKeyVaultAccessPolicy {}
-        Mock Get-AzRoleAssignment {
-            $script:fixtureResourceIds | Where-Object { $_ -like "$Scope/providers/Microsoft.Authorization/roleAssignments/*" } |
-                ForEach-Object { @{ RoleAssignmentId = $_ } }
-        }
-        Mock Remove-AzRoleAssignment { $script:removedIds.Add($InputObject.RoleAssignmentId) }
+        Mock Get-AzRoleAssignment { throw 'Directory token refresh must not be required for cleanup.' }
+        Mock Remove-AzRoleAssignment { throw 'Directory-backed role removal must not be used.' }
+        Mock Invoke-AzRestMethod {
+            $id = $Path.Split('?')[0]
+            $script:fixtureResourceIds | Should -Contain $id
+            $Path | Should -Match '/providers/Microsoft.Authorization/roleAssignments/[0-9a-f-]+\?api-version=2022-04-01$'
+            $script:removedIds.Add($id)
+            @{ StatusCode = 204; Content = '' }
+        } -ParameterFilter { $Method -eq 'DELETE' }
         Mock Get-AzKeyVault { @{ ResourceId = $script:fixtureResourceIds[2]; EnablePurgeProtection = $true } }
         Mock Remove-AzKeyVault { throw 'A purge-protected fixture vault must not be purged.' }
     }
