@@ -83,6 +83,125 @@ Describe 'Kubenet fixture compatibility' {
         $testModule.copy.mode | Should -Be 'serial'
         $testModule.copy.batchSize | Should -Be 1
     }
+
+    Context 'Custom role-assignment names' {
+        BeforeAll {
+            $source = Get-Content -LiteralPath (Join-Path $modulePath 'tests' 'e2e' 'kubenet' 'main.test.bicep') -Raw
+            $roleMatches = [regex]::Matches($source, '(?s)\{\s*name:\s*(?<expression>guid\(.*?)\s+roleDefinitionIdOrName:')
+            if ($roleMatches.Count -ne 2) { throw 'Expected exactly two explicit kubenet role-assignment names.' }
+            $expressions = @($roleMatches | ForEach-Object { $_.Groups['expression'].Value.Trim() })
+            $scenarios = @(
+                @{}
+                @{ Subscription = '22222222-2222-2222-2222-222222222222' }
+                @{ Group = 'fixture-b' }
+                @{ Principal = '44444444-4444-4444-4444-444444444444' }
+                @{ Prefix = 'local' }
+                @{ Short = 'another' }
+            )
+            $parameterLines = @('using none')
+            for ($scopeIndex = 0; $scopeIndex -lt $scenarios.Count; $scopeIndex++) {
+                $scenario = $scenarios[$scopeIndex]
+                $subscription = $scenario.Subscription ?? '11111111-1111-1111-1111-111111111111'
+                $group = $scenario.Group ?? 'fixture-a'
+                $principal = $scenario.Principal ?? '33333333-3333-3333-3333-333333333333'
+                $prefix = $scenario.Prefix ?? 'gci'
+                $short = $scenario.Short ?? $template.parameters.serviceShort.defaultValue
+                $groupId = "/subscriptions/$subscription/resourceGroups/$group"
+                $identityId = "$groupId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/fixture-identity"
+                foreach ($attempt in 1..3) {
+                    $location = @('norwayeast', 'swedencentral', 'koreacentral')[$attempt - 1]
+                    foreach ($iteration in @('init', 'idem')) {
+                        for ($roleIndex = 0; $roleIndex -lt $expressions.Count; $roleIndex++) {
+                            $expression = $expressions[$roleIndex].
+                            Replace('resourceGroup.id', "'$groupId'").
+                            Replace('resourceGroup.name', "'$group'").
+                            Replace('subscription().subscriptionId', "'$subscription'").
+                            Replace('nestedDependencies.outputs.managedIdentityPrincipalId', "'$principal'").
+                            Replace('nestedDependencies.outputs.managedIdentityResourceId', "'$identityId'").
+                            Replace('namePrefix', "'$prefix'").
+                            Replace('serviceShort', "'$short'").
+                            Replace('deployment().name', "'root-$attempt'").
+                            Replace('deployment().location', "'$location'").
+                            Replace('resourceLocation', "'$location'").
+                            Replace('iteration', "'$iteration'")
+                            $parameterLines += "param role${roleIndex}scope${scopeIndex}t${attempt}${iteration} = $expression"
+                        }
+                    }
+                }
+            }
+            $parameterPath = Join-Path $TestDrive 'kubenet-role-names.bicepparam'
+            $parameterOutput = Join-Path $TestDrive 'kubenet-role-names.json'
+            $parameterLines -join "`n" | Set-Content -LiteralPath $parameterPath
+            $diagnostics = bicep build-params $parameterPath --no-restore --outfile $parameterOutput 2>&1
+            if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+            $names = (Get-Content -LiteralPath $parameterOutput -Raw | ConvertFrom-Json -AsHashtable).parameters
+            $assignments = @($parameters.roleAssignments.value)
+        }
+
+        It 'Separates <role> assignment names across <dimension>' -ForEach @(
+            @{ role = 'Reader'; roleIndex = 0; dimension = 'subscriptions'; scopeIndex = 1 }
+            @{ role = 'Contributor'; roleIndex = 1; dimension = 'subscriptions'; scopeIndex = 1 }
+            @{ role = 'Reader'; roleIndex = 0; dimension = 'resource groups'; scopeIndex = 2 }
+            @{ role = 'Contributor'; roleIndex = 1; dimension = 'resource groups'; scopeIndex = 2 }
+            @{ role = 'Reader'; roleIndex = 0; dimension = 'recreated principals'; scopeIndex = 3 }
+            @{ role = 'Contributor'; roleIndex = 1; dimension = 'recreated principals'; scopeIndex = 3 }
+            @{ role = 'Reader'; roleIndex = 0; dimension = 'cluster name prefixes'; scopeIndex = 4 }
+            @{ role = 'Contributor'; roleIndex = 1; dimension = 'cluster name prefixes'; scopeIndex = 4 }
+            @{ role = 'Reader'; roleIndex = 0; dimension = 'cluster short names'; scopeIndex = 5 }
+            @{ role = 'Contributor'; roleIndex = 1; dimension = 'cluster short names'; scopeIndex = 5 }
+        ) {
+            $names["role${roleIndex}scope${scopeIndex}t1init"].value |
+                Should -Not -Be $names["role${roleIndex}scope0t1init"].value
+        }
+
+        It 'Keeps <role> names stable for retained resources across init, idem and regional retries' -ForEach @(
+            @{ role = 'Reader'; roleIndex = 0 }
+            @{ role = 'Contributor'; roleIndex = 1 }
+        ) {
+            for ($scopeIndex = 0; $scopeIndex -lt $scenarios.Count; $scopeIndex++) {
+                $scopedNames = @(
+                    foreach ($attempt in 1..3) {
+                        foreach ($iteration in @('init', 'idem')) {
+                            $names["role${roleIndex}scope${scopeIndex}t${attempt}${iteration}"].value
+                        }
+                    }
+                )
+                @($scopedNames | Select-Object -Unique).Count | Should -Be 1
+            }
+        }
+
+        It 'Produces distinct valid GUIDs for both explicit assignments' {
+            foreach ($entry in $names.Values) {
+                $entry.value | Should -Match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+            }
+            for ($scopeIndex = 0; $scopeIndex -lt $scenarios.Count; $scopeIndex++) {
+                $names["role0scope${scopeIndex}t1init"].value |
+                    Should -Not -Be $names["role1scope${scopeIndex}t1init"].value
+            }
+        }
+
+        It 'Keeps two explicit-name cases and the third automatic-name case' {
+            $assignments.Count | Should -Be 3
+            $assignments[0].ContainsKey('name') | Should -BeTrue
+            $assignments[1].ContainsKey('name') | Should -BeTrue
+            $assignments[2].ContainsKey('name') | Should -BeFalse
+        }
+
+        It 'Preserves all roles, principal types and managed-identity references' {
+            $assignments[0].roleDefinitionIdOrName | Should -BeExactly 'Reader'
+            $assignments[1].roleDefinitionIdOrName | Should -BeExactly 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            $assignments[2].roleDefinitionIdOrName |
+                Should -BeExactly "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]"
+            foreach ($assignment in $assignments) {
+                $assignment.principalType | Should -BeExactly 'ServicePrincipal'
+                $assignment.principalId | Should -BeExactly $assignments[0].principalId
+                $assignment.principalId | Should -Match '\.outputs\.managedIdentityPrincipalId\.value'
+            }
+            $identities = @($parameters.managedIdentities.value.userAssignedResourceIds)
+            $identities.Count | Should -Be 1
+            $identities[0] | Should -Match '\.outputs\.managedIdentityResourceId\.value'
+        }
+    }
 }
 
 Describe 'Maximum fixture compatibility' {
