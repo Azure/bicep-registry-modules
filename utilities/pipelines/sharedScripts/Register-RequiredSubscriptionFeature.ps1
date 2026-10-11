@@ -1,4 +1,110 @@
-﻿function Get-RequiredSubscriptionFeature {
+﻿function Get-RequiredSubscriptionRequirement {
+    [CmdletBinding()]
+    [OutputType([pscustomobject[]])]
+    param (
+        [Parameter(Mandatory)]
+        [string] $RepoRootPath,
+
+        [Parameter(Mandatory)]
+        [string] $ModulePath,
+
+        [Parameter(Mandatory)]
+        [ValidateSet('Feature', 'Provider')]
+        [string] $Kind
+    )
+
+    $ErrorActionPreference = 'Stop'
+    $modulePattern = '\Aavm/(res|ptn|utl)/[a-z0-9]+(?:-[a-z0-9]+)*(?:/[a-z0-9]+(?:-[a-z0-9]+)*)+\z'
+    if ($ModulePath -cnotmatch $modulePattern) {
+        throw 'ModulePath must be an exact repository-relative AVM module directory, using lowercase names and forward slashes.'
+    }
+
+    $isFeature = $Kind -eq 'Feature'
+    $fileName = $isFeature ? '.required-features.json' : '.required-resource-providers.json'
+    $requirementLabel = $isFeature ? 'feature' : 'resource provider'
+    $requirementFormat = $isFeature ? 'Namespace/FeatureName' : 'provider namespace'
+    $lengthLimit = $isFeature ? '128 characters per part maximum' : '128 characters maximum'
+    $requirementPattern = '\A(?<namespace>[A-Za-z][A-Za-z0-9]*(?:\.[A-Za-z][A-Za-z0-9]*)+)'
+    $requirementPattern += $isFeature ? '/(?<name>[A-Za-z][A-Za-z0-9]*(?:[._-][A-Za-z0-9]+)*)\z' : '\z'
+
+    $files = @(Get-ChildItem -LiteralPath $RepoRootPath -Force | Where-Object { $_.Name -ieq $fileName })
+    if ($files.Count -eq 0) {
+        Write-Verbose "No root $fileName found; no subscription ${requirementLabel}s are required." -Verbose
+        return
+    }
+    if ($files.Count -ne 1 -or $files[0].Name -cne $fileName -or $files[0].PSIsContainer) {
+        throw "Required subscription ${requirementLabel}s must be declared in a file named exactly $fileName at the repository root."
+    }
+    if ($files[0].Length -gt 65536) {
+        throw "$fileName exceeds the 64 KiB limit."
+    }
+
+    $contents = Get-Content -LiteralPath $files[0].FullName -Raw -Encoding utf8
+    if ([string]::IsNullOrWhiteSpace($contents)) {
+        throw "$fileName must contain a valid JSON object mapping module paths to $requirementLabel arrays."
+    }
+    try {
+        $document = [System.Text.Json.JsonDocument]::Parse([string] $contents)
+    } catch [System.Text.Json.JsonException] {
+        throw [System.ArgumentException]::new("$fileName must contain a valid JSON object mapping module paths to $requirementLabel arrays.", $_.Exception)
+    }
+
+    try {
+        if ($document.RootElement.ValueKind -ne [System.Text.Json.JsonValueKind]::Object) {
+            throw "$fileName must contain a JSON object mapping module paths to $requirementLabel arrays."
+        }
+
+        $modules = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+        $requirements = [System.Collections.Generic.List[pscustomobject]]::new()
+        foreach ($module in $document.RootElement.EnumerateObject()) {
+            if ($module.Name -cnotmatch $modulePattern) {
+                throw "$fileName key [$($module.Name)] must be an exact repository-relative AVM module directory."
+            }
+            if (-not $modules.Add($module.Name)) {
+                throw "Duplicate module path [$($module.Name)] in $fileName."
+            }
+            if ($module.Value.ValueKind -ne [System.Text.Json.JsonValueKind]::Array) {
+                throw "$fileName entry [$($module.Name)] must be a JSON array of $requirementFormat strings."
+            }
+            if ($module.Value.GetArrayLength() -gt 32) {
+                throw "$fileName entry [$($module.Name)] must contain no more than 32 ${requirementLabel}s."
+            }
+
+            $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+            foreach ($entry in $module.Value.EnumerateArray()) {
+                if ($entry.ValueKind -ne [System.Text.Json.JsonValueKind]::String) {
+                    throw "$fileName entry [$($module.Name)] must contain only $requirementFormat strings."
+                }
+                $name = $entry.GetString()
+                $match = [regex]::Match($name, $requirementPattern)
+                if (-not $match.Success -or
+                    $match.Groups['namespace'].Value.Length -gt 128 -or
+                    $match.Groups['name'].Value.Length -gt 128) {
+                    throw "$fileName entry [$($module.Name)] must use ASCII $requirementFormat strings without whitespace, extra path segments or command arguments ($lengthLimit)."
+                }
+                if (-not $seen.Add($name)) {
+                    throw "Duplicate $requirementLabel [$name] in $fileName entry [$($module.Name)] (case-insensitive)."
+                }
+                if ($module.Name -ceq $ModulePath) {
+                    $requirements.Add([pscustomobject]@{
+                            Namespace = $match.Groups['namespace'].Value
+                            Name      = $match.Groups['name'].Value
+                            FullName  = $name
+                        })
+                }
+            }
+        }
+
+        if ($requirements.Count -eq 0) {
+            Write-Verbose "No subscription ${requirementLabel}s are required for exact module path [$ModulePath]." -Verbose
+        }
+        return $requirements.ToArray()
+    } finally {
+        $document.Dispose()
+    }
+}
+
+function Get-RequiredSubscriptionFeature {
     [CmdletBinding()]
     [OutputType([pscustomobject[]])]
     param (
@@ -9,88 +115,7 @@
         [string] $ModulePath
     )
 
-    $ErrorActionPreference = 'Stop'
-    $modulePattern = '\Aavm/(res|ptn|utl)/[a-z0-9]+(?:-[a-z0-9]+)*(?:/[a-z0-9]+(?:-[a-z0-9]+)*)+\z'
-    if ($ModulePath -cnotmatch $modulePattern) {
-        throw 'ModulePath must be an exact repository-relative AVM module directory, using lowercase names and forward slashes.'
-    }
-
-    $files = @(Get-ChildItem -LiteralPath $RepoRootPath -Force | Where-Object { $_.Name -ieq '.required-features.json' })
-    if ($files.Count -eq 0) {
-        Write-Verbose 'No root .required-features.json found; no subscription features are required.' -Verbose
-        return
-    }
-    if ($files.Count -ne 1 -or $files[0].Name -cne '.required-features.json' -or $files[0].PSIsContainer) {
-        throw 'Required subscription features must be declared in a file named exactly .required-features.json at the repository root.'
-    }
-    if ($files[0].Length -gt 65536) {
-        throw '.required-features.json exceeds the 64 KiB limit.'
-    }
-
-    $contents = Get-Content -LiteralPath $files[0].FullName -Raw -Encoding utf8
-    if ([string]::IsNullOrWhiteSpace($contents)) {
-        throw '.required-features.json must contain a valid JSON object mapping module paths to feature arrays.'
-    }
-    try {
-        $document = [System.Text.Json.JsonDocument]::Parse([string] $contents)
-    } catch [System.Text.Json.JsonException] {
-        throw [System.ArgumentException]::new('.required-features.json must contain a valid JSON object mapping module paths to feature arrays.', $_.Exception)
-    }
-
-    try {
-        if ($document.RootElement.ValueKind -ne [System.Text.Json.JsonValueKind]::Object) {
-            throw '.required-features.json must contain a JSON object mapping module paths to feature arrays.'
-        }
-
-        $modules = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-        $features = [System.Collections.Generic.List[pscustomobject]]::new()
-        $featurePattern = '\A(?<namespace>[A-Za-z][A-Za-z0-9]*(?:\.[A-Za-z][A-Za-z0-9]*)+)/(?<name>[A-Za-z][A-Za-z0-9]*(?:[._-][A-Za-z0-9]+)*)\z'
-        foreach ($module in $document.RootElement.EnumerateObject()) {
-            if ($module.Name -cnotmatch $modulePattern) {
-                throw ".required-features.json key [$($module.Name)] must be an exact repository-relative AVM module directory."
-            }
-            if (-not $modules.Add($module.Name)) {
-                throw "Duplicate module path [$($module.Name)] in .required-features.json."
-            }
-            if ($module.Value.ValueKind -ne [System.Text.Json.JsonValueKind]::Array) {
-                throw ".required-features.json entry [$($module.Name)] must be a JSON array of Namespace/FeatureName strings."
-            }
-            if ($module.Value.GetArrayLength() -gt 32) {
-                throw ".required-features.json entry [$($module.Name)] must contain no more than 32 features."
-            }
-
-            $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-            foreach ($entry in $module.Value.EnumerateArray()) {
-                if ($entry.ValueKind -ne [System.Text.Json.JsonValueKind]::String) {
-                    throw ".required-features.json entry [$($module.Name)] must contain only Namespace/FeatureName strings."
-                }
-                $name = $entry.GetString()
-                $match = [regex]::Match($name, $featurePattern)
-                if (-not $match.Success -or
-                    $match.Groups['namespace'].Value.Length -gt 128 -or
-                    $match.Groups['name'].Value.Length -gt 128) {
-                    throw ".required-features.json entry [$($module.Name)] must use ASCII Namespace/FeatureName strings without whitespace, extra path segments or command arguments (128 characters per part maximum)."
-                }
-                if (-not $seen.Add($name)) {
-                    throw "Duplicate feature [$name] in .required-features.json entry [$($module.Name)] (case-insensitive)."
-                }
-                if ($module.Name -ceq $ModulePath) {
-                    $features.Add([pscustomobject]@{
-                            Namespace = $match.Groups['namespace'].Value
-                            Name      = $match.Groups['name'].Value
-                            FullName  = $name
-                        })
-                }
-            }
-        }
-
-        if ($features.Count -eq 0) {
-            Write-Verbose "No subscription features are required for exact module path [$ModulePath]." -Verbose
-        }
-        return $features.ToArray()
-    } finally {
-        $document.Dispose()
-    }
+    return Get-RequiredSubscriptionRequirement -RepoRootPath $RepoRootPath -ModulePath $ModulePath -Kind Feature
 }
 
 function Invoke-RequiredFeatureAzCli {
@@ -114,7 +139,7 @@ function Invoke-RequiredFeatureAzCli {
     try {
         $command = Get-Command -Name az -CommandType Application -ErrorAction Stop | Select-Object -First 1
     } catch [System.Management.Automation.CommandNotFoundException] {
-        throw 'Azure CLI is required to register subscription features. Install az and authenticate with the same identity used for deployment tests.'
+        throw 'Azure CLI is required to register subscription features or resource providers. Install az and authenticate with the same identity used for deployment tests.'
     }
     if (-not $command -or -not [System.IO.Path]::IsPathRooted($command.Source)) {
         throw 'Azure CLI must resolve to an installed executable.'
@@ -181,6 +206,41 @@ function Invoke-RequiredFeatureAzCli {
     }
 }
 
+function Assert-RequiredSubscriptionAccount {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string] $RepoRootPath,
+
+        [Parameter(Mandatory)]
+        [string] $SubscriptionId,
+
+        [Parameter(Mandatory)]
+        [string] $TenantId,
+
+        [Parameter(Mandatory)]
+        [ValidateSet('Feature', 'Provider')]
+        [string] $Kind
+    )
+
+    $ErrorActionPreference = 'Stop'
+    $response = Invoke-RequiredFeatureAzCli -ArgumentList @('account', 'show', '--output', 'json', '--only-show-errors') `
+        -RepoRootPath $RepoRootPath -Operation 'verify the selected Azure subscription and tenant'
+    if ([string]::IsNullOrWhiteSpace($response)) {
+        throw 'Azure CLI returned empty account JSON while verifying the selected test subscription and tenant.'
+    }
+    try {
+        $account = ConvertFrom-Json -InputObject $response -AsHashtable -NoEnumerate -ErrorAction Stop
+    } catch [System.ArgumentException] {
+        throw [System.InvalidOperationException]::new('Azure CLI returned invalid account JSON while verifying the selected test subscription and tenant.', $_.Exception)
+    }
+    if ($account -isnot [System.Collections.IDictionary] -or
+        $account['id'] -isnot [string] -or $account['id'] -ine $SubscriptionId -or
+        $account['tenantId'] -isnot [string] -or $account['tenantId'] -ine $TenantId) {
+        throw "Azure CLI must be authenticated to the selected test subscription [$SubscriptionId] and login tenant [$TenantId]. Refusing $($Kind.ToLowerInvariant()) registration."
+    }
+}
+
 function Get-RequiredFeatureRegistrationState {
     [CmdletBinding()]
     [OutputType([string])]
@@ -233,7 +293,9 @@ function Get-RequiredFeatureRegistrationState {
         }
         $state = $data['properties']['state']
     } else {
-        if ($data['namespace'] -isnot [string] -or $data['namespace'] -ine $Namespace) {
+        $expectedId = "/subscriptions/$SubscriptionId/providers/$Namespace"
+        if ($data['namespace'] -isnot [string] -or $data['namespace'] -ine $Namespace -or
+            ($data.Contains('id') -and ($data['id'] -isnot [string] -or $data['id'] -ine $expectedId))) {
             throw "Azure CLI returned an unexpected provider identity for [$Namespace] in subscription [$SubscriptionId]."
         }
         $state = $data['registrationState']
@@ -391,21 +453,7 @@ function Register-RequiredSubscriptionFeature {
         return $result
     }
 
-    $response = Invoke-RequiredFeatureAzCli -ArgumentList @('account', 'show', '--output', 'json', '--only-show-errors') `
-        -RepoRootPath $RepoRootPath -Operation 'verify the selected Azure subscription and tenant'
-    if ([string]::IsNullOrWhiteSpace($response)) {
-        throw 'Azure CLI returned empty account JSON while verifying the selected test subscription and tenant.'
-    }
-    try {
-        $account = ConvertFrom-Json -InputObject $response -AsHashtable -NoEnumerate -ErrorAction Stop
-    } catch [System.ArgumentException] {
-        throw [System.InvalidOperationException]::new('Azure CLI returned invalid account JSON while verifying the selected test subscription and tenant.', $_.Exception)
-    }
-    if ($account -isnot [System.Collections.IDictionary] -or
-        $account['id'] -isnot [string] -or $account['id'] -ine $SubscriptionId -or
-        $account['tenantId'] -isnot [string] -or $account['tenantId'] -ine $TenantId) {
-        throw "Azure CLI must be authenticated to the selected test subscription [$SubscriptionId] and login tenant [$TenantId]. Refusing feature registration."
-    }
+    Assert-RequiredSubscriptionAccount -RepoRootPath $RepoRootPath -SubscriptionId $SubscriptionId -TenantId $TenantId -Kind Feature
 
     foreach ($feature in $features) {
         $stateInput = @{

@@ -1,0 +1,17 @@
+{
+  "avm/res/hybrid-container-service/provisioned-cluster-instance": [
+    "Microsoft.HybridCompute",
+    "Microsoft.GuestConfiguration",
+    "Microsoft.HybridConnectivity",
+    "Microsoft.AzureStackHCI",
+    "Microsoft.Kubernetes",
+    "Microsoft.KubernetesConfiguration",
+    "Microsoft.ExtendedLocation",
+    "Microsoft.ResourceConnector",
+    "Microsoft.HybridContainerService",
+    "Microsoft.Attestation",
+    "Microsoft.Storage",
+    "Microsoft.Insights",
+    "Microsoft.KeyVault"
+  ]
+}
