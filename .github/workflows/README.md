@@ -1,6 +1,6 @@
 # Bicep Module Workflows
 
-Module-specific workflows and [`avm.module.yml`](./avm.module.yml) are registry-owned callers. This migration prepares shared workflows and actions in [Azure/azure-verified-modules-tools](https://github.com/Azure/azure-verified-modules-tools), with common validation supplied by a qualified `Avm.Authoring` release. The cutover prerequisites below must be completed before replacing the current local workflow implementation.
+Module-specific workflows and [`avm.module.yml`](./avm.module.yml) are registry-owned callers that pin shared workflows and actions in [Azure/azure-verified-modules-tools](https://github.com/Azure/azure-verified-modules-tools), with common validation supplied by a qualified `Avm.Authoring` release. Draft caller changes do not authorize execution or retire the retained local implementation. Complete the cutover prerequisites below before merging or enabling the new route.
 
 | Tools workflow                  | Purpose                                                                                                                  |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -15,7 +15,7 @@ The registry retains module files, tests and configuration. The shared workflow 
 
 ## Cutover prerequisites
 
-1. Publish a qualified `Avm.Authoring` release containing the complete packaged Bicep static validation route and canonical README template, existing end-to-end handling of the root required-feature manifest, required policy selectors, and unit/policy version-check forwarding. Its manifest must advertise `PrivateData.AvmCapabilities.BicepPackagedCompliance = 1`; intermediate packages without that capability are rejected.
+1. Publish a qualified `Avm.Authoring` release containing the complete packaged Bicep static validation route and canonical README template, approved native deployment retries and final post-hook/cleanup behavior, existing end-to-end handling of the root required-feature manifest, required policy selectors, and unit/policy version-check forwarding. Its manifest must advertise `PrivateData.AvmCapabilities.BicepPackagedCompliance = 1`; intermediate packages without that capability are rejected.
 1. Make the reviewed tools workflows and actions available at one immutable commit. Every tools `uses` reference and `tools-ref` input must identify that same commit. A candidate branch commit is for draft qualification only; select a merged tools commit before registry cutover.
 1. Verify the module identity mapping, tenant and subscription pool. Separately approve any required live application of stable module credentials matching the existing owner/repository/environment subject. This preparation does not change the repository subject template or remove existing credentials.
 1. Configure the registry's `AVM_AUTHORING_VERSION` variable to that exact qualified release before merging the caller migration. It has no fallback; unset or invalid versions must fail rather than select `latest`.
@@ -24,11 +24,13 @@ Each module workflow includes its own file in its main-branch push filter. Mergi
 
 Tools revision updates must change all `uses` pins and `tools-ref` inputs together and use a compatible qualified `Avm.Authoring` release. Rerun the caller regression tests and obtain separate approval for the rollout. Dependabot updates `uses` declarations but not the matching inputs, so these tools dependencies use coordinated manual upgrades. Other action updates remain enabled.
 
+The tools commit supplies orchestration and support code; it does not select or install its own native source as the runtime package. All callers forward `vars.AVM_AUTHORING_VERSION`, which must identify the separately qualified PowerShell Gallery release. A published tools revision or an open runtime change does not establish package readiness.
+
 ## Module identities
 
 Tools deployment workflows select the client from `vars.VALIDATE_MODULE_CLIENT_IDS`, a flat JSON object mapping canonical root module paths to unique, nonzero client GUIDs. Child paths resolve through the existing canonical-root rules and use their root's entry. Missing, malformed or invalid mappings must fail before login; there is no fallback to `VALIDATE_CLIENT_ID` or `AZURE_CREDENTIALS`. Caller workflows do not need an additional identity input or their own mapping parser.
 
-`VALIDATE_TENANT_ID` and `VALIDATE_SUBSCRIPTION_IDS` remain separate settings. The tools workflow enables both Azure CLI and PowerShell login contexts and explicitly forwards the subscription pool through `TestSubscriptionIds`; `UseCiInputs` does not read that plural variable implicitly. The selected client, tenant and subscription remain consistent through deployment, retries and final cleanup.
+`VALIDATE_TENANT_ID` and `VALIDATE_SUBSCRIPTION_IDS` remain separate settings. The tools workflow enables both Azure CLI and PowerShell login contexts and explicitly supplies the pool to workflow selection, then passes the selected `SubscriptionId` and `TenantId` to native execution. `UseCiInputs` does not read the plural pool implicitly. The selected client, tenant and subscription remain consistent through deployment, retries and final cleanup.
 
 The current GitHub subject configuration in both repositories uses exactly `repository_owner_id`, `repository_id` and `context`. For deployment jobs, the context is `environment:avm-validation`. Stable federation source is owned by the tools repository and matches the registry owner, repository and environment. A Tools-repository credential cannot substitute for a registry caller because its repository ID differs.
 
@@ -46,6 +48,7 @@ The following consumers prevent wholesale removal of registry utilities:
 
 | Entry point                                                | Remaining consumers                                                                                                                     |
 | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `avm.template.module*.yml` local workflows                 | Retained deployment/publication regression coverage; their removal remains gated on qualified replacements and rollout approval.        |
 | `avm-getWorkflowInput` local action                        | `platform.check.psrule.yml`, `platform.ci-tests.yml`, `platform.deployment.history.cleanup.yml`, `platform.rerun-failed-workflows.yml`. |
 | `avm-setEnvironment` local action                          | `platform.check.psrule.yml`, `platform.ci-tests.yml`, `platform.deployment.history.cleanup.yml`, `copilot-setup-steps.yml`.             |
 | `utilities/pipelines/staticValidation`                     | Local module validation, the standalone metadata gate, platform PSRule checks and their regression tests.                               |
@@ -111,7 +114,7 @@ Selecting `createReleaseTag` requires approval through the `publish-approval` en
 
 ## Reusable workflows
 
-After cutover, the entry workflow will use these separate tools workflows to preserve the existing permission boundaries:
+The entry workflow references these separate tools workflows to preserve the existing permission boundaries:
 
 | Workflow                        | Used for                                             | Repository permissions                                   |
 | ------------------------------- | ---------------------------------------------------- | -------------------------------------------------------- |
@@ -122,4 +125,4 @@ After cutover, the entry workflow will use these separate tools workflows to pre
 
 These workflows are intentionally separate because GitHub validates permissions for every job in a reusable workflow, including jobs that would be skipped.
 
-Module-specific callers will use `bicep-module.yml` with their existing dispatch defaults, upstream/manual guards and main-only push filters. The SQL instance-pool cleanup default and the current FinOps hub location input must be preserved.
+Module-specific callers reference `bicep-module.yml` with their existing dispatch defaults, upstream/manual guards and main-only push filters. The SQL instance-pool cleanup default and the current FinOps hub location input are preserved.

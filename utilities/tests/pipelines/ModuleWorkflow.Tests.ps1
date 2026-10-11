@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter()]
     [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.FullName
 )
@@ -204,10 +204,10 @@ Describe 'Generic module workflow' {
 
         $initialize.if | Should -Match ([regex]::Escape("contains(github.event.pull_request.labels.*.name, 'PR: Run Checks')"))
         $initialize.if | Should -Match ([regex]::Escape("github.event.label.name == 'PR: Run Checks'"))
-        $matrixStep.env.BASE_SHA | Should -Be '${{ case(github.event_name == ''pull_request'', github.event.pull_request.base.sha, github.event.before) }}'
-        $matrixStep.env.HEAD_SHA | Should -Be '${{ github.sha }}'
-        $matrixStep.run | Should -Match 'Pull request base commit'
-        $matrixStep.run | Should -Match ([regex]::Escape('-ExcludeMetadataChanges:($env:EVENT_NAME -ne ''pull_request'')'))
+        $matrixStep.with.baseCommit | Should -Be '${{ case(github.event_name == ''pull_request'', github.event.pull_request.base.sha, github.event.before) }}'
+        $matrixStep.with.targetCommit | Should -Be '${{ github.sha }}'
+        $matrixStep.with.eventName | Should -Be '${{ github.event_name }}'
+        $matrixStep.ContainsKey('run') | Should -BeFalse
     }
 
     It 'limits optional pull request deployment validation to internal branches' {
@@ -222,8 +222,8 @@ Describe 'Generic module workflow' {
         $fork = $workflow.jobs.call_module_fork_static
         $fork.if | Should -Match "github.event_name == 'pull_request'"
         $fork.if | Should -Match 'github.event.pull_request.head.repo.full_name != github.repository'
-        $fork.uses | Should -Be './.github/workflows/avm.template.module.static.yml'
-        @($fork.with.Keys) | Should -Be @('modulePath')
+        $fork.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-static\.yml@[0-9a-f]{40}$'
+        @($fork.with.Keys | Sort-Object) | Should -Be @('avm-authoring-version', 'modulePath', 'tools-ref')
         $fork.permissions.Count | Should -Be 1
         $fork.permissions.ContainsKey('id-token') | Should -BeFalse
         $fork.ContainsKey('secrets') | Should -BeFalse
@@ -240,7 +240,8 @@ Describe 'Generic module workflow' {
     It 'excludes metadata-only pushes without changing manual publishing' {
         $workflow.on.push.paths | Should -Be @('avm/**', '!avm/**/README.md', '!avm/**/metadata.json')
         $matrixStep = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.id -eq 'get-module-matrix' }
-        $matrixStep.run | Should -Match ([regex]::Escape('Get-ModuleWorkflowMatrix -ChangedFilePath $changedFilePaths -ExcludeMetadataChanges'))
+        $matrixStep.with.eventName | Should -Be '${{ github.event_name }}'
+        $matrixStep.with.modulePaths | Should -Be '${{ inputs.modulePaths }}'
         $workflow.jobs.call_module_preview.if | Should -Match "github.event_name == 'push'"
         foreach ($jobName in @('call_module_publish', 'call_module_publish_only')) {
             $workflow.jobs[$jobName].if | Should -Match "github.event_name == 'workflow_dispatch'"
@@ -265,10 +266,10 @@ Describe 'Generic module workflow' {
     }
 
     It 'uses isolated reusable workflows for each permission boundary' {
-        $workflow.jobs.call_module_preview.uses | Should -Be './.github/workflows/avm.template.module.preview.yml'
-        $workflow.jobs.call_module_fork_static.uses | Should -Be './.github/workflows/avm.template.module.static.yml'
-        $workflow.jobs.call_module_publish.uses | Should -Be './.github/workflows/avm.template.module.publish.yml'
-        $workflow.jobs.call_module_publish_only.uses | Should -Be './.github/workflows/avm.template.module.publish-only.yml'
+        $workflow.jobs.call_module_preview.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-preview\.yml@[0-9a-f]{40}$'
+        $workflow.jobs.call_module_fork_static.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-static\.yml@[0-9a-f]{40}$'
+        $workflow.jobs.call_module_publish.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-publish\.yml@[0-9a-f]{40}$'
+        $workflow.jobs.call_module_publish_only.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-publish-only\.yml@[0-9a-f]{40}$'
     }
 
     It 'uses the same stable generic name prefix for PSRule and deployment validation' {
@@ -379,7 +380,7 @@ Describe 'Generic module pull request opt-in' {
             AddedLabel = $AddedLabel
         }
         $runChecks = Test-WorkflowExpression -Expression $initialize.if @context
-        $runDeployment = Test-WorkflowExpression -Expression $matrixStep.env.DEPLOYMENT_VALIDATION @context
+        $runDeployment = Test-WorkflowExpression -Expression $matrixStep.with.deploymentValidation @context
 
         $runChecks | Should -Be $Checks
         ($runChecks -and $runDeployment) | Should -Be $E2E
@@ -392,118 +393,8 @@ Describe 'Generic module pull request opt-in' {
         @{ EventName = 'workflow_dispatch'; ManualDeployment = $true; Expected = $true }
     ) {
         Test-WorkflowExpression -Expression $initialize.if -EventName $EventName | Should -BeTrue
-        Test-WorkflowExpression -Expression $matrixStep.env.DEPLOYMENT_VALIDATION -EventName $EventName -ManualDeployment $ManualDeployment |
+        Test-WorkflowExpression -Expression $matrixStep.with.deploymentValidation -EventName $EventName -ManualDeployment $ManualDeployment |
             Should -Be $Expected
-    }
-}
-
-Describe 'Generic module pull request matrix' {
-
-    BeforeAll {
-        $workflowPath = Join-Path $repoRootPath '.github' 'workflows' 'avm.module.yml'
-        $workflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $workflowPath -Raw)
-        $matrixStep = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.id -eq 'get-module-matrix' }
-        $testRepo = Join-Path $TestDrive 'module-repo'
-        $scriptFolder = Join-Path $testRepo 'utilities' 'pipelines' 'sharedScripts'
-        $moduleFolder = Join-Path $testRepo 'avm' 'res' 'test' 'module'
-        $null = New-Item -Path $scriptFolder, $moduleFolder -ItemType Directory -Force
-        Copy-Item -Path (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleWorkflowMatrix.ps1') -Destination $scriptFolder
-        Set-Content -Path (Join-Path $moduleFolder 'main.bicep') -Value "metadata name = 'test'"
-
-        git -C $testRepo init --quiet
-        git -C $testRepo config core.autocrlf false
-        git -C $testRepo add --all
-        git -C $testRepo -c user.name=WorkflowTest -c user.email=test@example.invalid commit --quiet -m base
-        if ($LASTEXITCODE -ne 0) { throw 'Failed to create the test base commit.' }
-        $baseCommit = git -C $testRepo rev-parse HEAD
-
-        Set-Content -Path (Join-Path $moduleFolder 'metadata.json') -Value '{"name":"test"}'
-        git -C $testRepo add --all
-        git -C $testRepo -c user.name=WorkflowTest -c user.email=test@example.invalid commit --quiet -m metadata
-        if ($LASTEXITCODE -ne 0) { throw 'Failed to create the test head commit.' }
-        $headCommit = git -C $testRepo rev-parse HEAD
-
-        $environmentNames = @(
-            'BASE_SHA', 'CREATE_RELEASE_TAG', 'CUSTOM_LOCATION', 'DEPLOYMENT_VALIDATION',
-            'EVENT_NAME', 'HEAD_SHA', 'MODULE_PATH_INPUT', 'PUBLISH_ONLY',
-            'REMOVE_DEPLOYMENT', 'STATIC_VALIDATION', 'GITHUB_WORKSPACE', 'GITHUB_OUTPUT'
-        )
-
-        function Invoke-MatrixStep {
-            Push-Location $testRepo
-            try {
-                $null = . ([scriptblock]::Create($matrixStep.run))
-                $outputs = @{}
-                foreach ($line in (Get-Content -Path $env:GITHUB_OUTPUT)) {
-                    $name, $value = $line.Split('=', 2)
-                    $outputs[$name] = $value
-                }
-                return $outputs
-            } finally {
-                Pop-Location
-            }
-        }
-    }
-
-    BeforeEach {
-        $savedEnvironment = @{}
-        foreach ($name in $environmentNames) {
-            $savedEnvironment[$name] = [Environment]::GetEnvironmentVariable($name)
-        }
-        $savedExitCode = $global:LASTEXITCODE
-        $env:BASE_SHA = $baseCommit
-        $env:CREATE_RELEASE_TAG = 'false'
-        $env:CUSTOM_LOCATION = ''
-        $env:DEPLOYMENT_VALIDATION = 'true'
-        $env:HEAD_SHA = $headCommit
-        $env:MODULE_PATH_INPUT = ''
-        $env:PUBLISH_ONLY = 'false'
-        $env:REMOVE_DEPLOYMENT = 'true'
-        $env:STATIC_VALIDATION = 'true'
-        $env:GITHUB_WORKSPACE = $testRepo
-        $env:GITHUB_OUTPUT = Join-Path $TestDrive ("matrix-{0}.txt" -f [guid]::NewGuid())
-    }
-
-    AfterEach {
-        foreach ($name in $environmentNames) {
-            [Environment]::SetEnvironmentVariable($name, $savedEnvironment[$name])
-        }
-        $global:LASTEXITCODE = $savedExitCode
-    }
-
-    It 'selects metadata-only pull request changes with deployment validation <DeploymentValidation>' -ForEach @(
-        @{ DeploymentValidation = 'false' }
-        @{ DeploymentValidation = 'true' }
-    ) {
-        $env:EVENT_NAME = 'pull_request'
-        $env:DEPLOYMENT_VALIDATION = $DeploymentValidation
-
-        $outputs = Invoke-MatrixStep
-
-        $outputs.baseCommit | Should -Be $baseCommit
-        $outputs.targetCommit | Should -Be $headCommit
-        $outputs.hasModules | Should -Be 'true'
-        $outputs.includeAllVersionedModules | Should -Be 'false'
-        @(($outputs.moduleMatrix | ConvertFrom-Json).include.modulePath) | Should -Be @('avm/res/test/module')
-        ($outputs.workflowInput | ConvertFrom-Json).staticValidation | Should -Be 'true'
-        ($outputs.workflowInput | ConvertFrom-Json).deploymentValidation | Should -Be $DeploymentValidation
-    }
-
-    It 'still excludes metadata-only changes on pushes' {
-        $env:EVENT_NAME = 'push'
-
-        $outputs = Invoke-MatrixStep
-
-        $outputs.hasModules | Should -Be 'false'
-        @(($outputs.moduleMatrix | ConvertFrom-Json).include).Count | Should -Be 0
-    }
-
-    It 'rejects an unavailable pull request base instead of checking every module' {
-        $env:EVENT_NAME = 'pull_request'
-        $env:BASE_SHA = '0000000000000000000000000000000000000000'
-
-        { Invoke-MatrixStep } | Should -Throw '*Pull request base commit*unavailable*'
-        Test-Path -Path $env:GITHUB_OUTPUT | Should -BeFalse
     }
 }
 
@@ -514,7 +405,7 @@ Describe 'Module workflow path filters' {
             Get-ChildItem -Path (Join-Path $repoRootPath '.github' 'workflows') -File -Filter '*.yml' |
             ForEach-Object {
                 $workflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $_.FullName -Raw)
-                if ($workflow.jobs.Values.uses -contains './.github/workflows/avm.template.module.yml') {
+                if ($_.Name -match '^avm\.(res|ptn|utl)\.') {
                     @{
                         WorkflowFileName = $_.Name
                         Workflow         = $workflow
