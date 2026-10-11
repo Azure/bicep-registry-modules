@@ -93,6 +93,24 @@ Describe 'Synapse CMK activation state machine' -Tag 'CmkActivationRuntime' {
         Should -Invoke Start-Sleep -Times 0 -Exactly
     }
 
+    It 'Preserves activation and IDEM with response IDs missing the leading slash' -Tag 'CmkResponseId' {
+        $responseId = $keyResourceId.Substring(1)
+        Add-CmkResponse GET (New-CmkKeyResponse -Id $responseId)
+        Add-CmkResponse PUT (New-CmkKeyResponse -Id $responseId)
+        Add-CmkResponse GET (New-CmkKeyResponse -Id $responseId -Active $true)
+        Add-CmkResponse GET (New-CmkKeyResponse -Id $responseId -Active $true)
+        foreach ($iteration in @('init', 'idem')) {
+            $result = Invoke-SynapseCmkActivation -KeyResourceId $keyResourceId -KeyVaultUrl $keyVaultUrl
+            $result.isActiveCMK | Should -BeTrue -Because $iteration
+            $result.keyResourceId | Should -BeExactly $keyResourceId
+        }
+        ($script:requests.Method -join ',') | Should -BeExactly 'GET,PUT,GET,GET'
+        foreach ($request in $script:requests) {
+            $request.Path | Should -BeExactly "${keyResourceId}?api-version=2021-06-01"
+        }
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
     It 'Uses one deadline for failed PUTs, accepted PUTs, reads and readiness waits' {
         Add-CmkResponse GET (New-CmkKeyResponse) -ElapsedSeconds 1
         Add-CmkResponse PUT (New-CmkErrorResponse) -ElapsedSeconds 1
@@ -439,6 +457,112 @@ Describe 'Synapse CMK response contract diagnostics' -Tag 'CmkResponseDiagnostic
         $diagnostics.keyVaultUrl.valid | Should -BeFalse
         $diagnostics.isActiveCMK.valid | Should -BeTrue
         $caught.Exception.Message | Should -Not -Match 'private-.*-canary'
+    }
+}
+
+Describe 'Synapse CMK response ID representation' -Tag 'CmkResponseId' {
+    It 'Accepts the captured missing-leading-slash shape (<Active>, <UpperCase>)' -ForEach @(
+        @{ Active = $false; UpperCase = $false }
+        @{ Active = $true; UpperCase = $false }
+        @{ Active = $false; UpperCase = $true }
+        @{ Active = $true; UpperCase = $true }
+    ) {
+        $responseId = $keyResourceId.Substring(1)
+        if ($UpperCase) { $responseId = $responseId.ToUpperInvariant() }
+        $response = [pscustomobject]@{
+            StatusCode = 200
+            Content = @{
+                id = $responseId
+                name = $keyResourceId.Split('/')[-1]
+                type = 'Microsoft.Synapse/workspaces/keys'
+                properties = @{ keyVaultUrl = $keyVaultUrl; isActiveCMK = $Active }
+            } | ConvertTo-Json -Compress
+        }
+
+        $result = Test-SynapseCmkKeyActive -Response $response -KeyResourceId $keyResourceId -KeyVaultUrl $keyVaultUrl
+        $result | Should -BeOfType ([bool])
+        $result | Should -Be $Active
+    }
+
+    It 'Rejects ID differences beyond one omitted leading slash (<Case>)' -ForEach @(
+        @{ Case = 'extra leading slash' }
+        @{ Case = 'leading space' }
+        @{ Case = 'trailing space' }
+        @{ Case = 'leading space without slash' }
+        @{ Case = 'leading tab without slash' }
+        @{ Case = 'trailing newline without slash' }
+        @{ Case = 'relative dot prefix' }
+        @{ Case = 'relative parent prefix' }
+        @{ Case = 'encoded leading slash' }
+        @{ Case = 'encoded delimiter' }
+        @{ Case = 'encoded key name' }
+        @{ Case = 'opaque key name' }
+        @{ Case = 'changed subscription' }
+        @{ Case = 'changed resource group' }
+        @{ Case = 'changed provider' }
+        @{ Case = 'changed workspace' }
+        @{ Case = 'changed key' }
+        @{ Case = 'trailing slash' }
+        @{ Case = 'appended segment' }
+        @{ Case = 'absolute URL' }
+    ) {
+        $withoutSlash = $keyResourceId.Substring(1)
+        $responseId = switch ($Case) {
+            'extra leading slash' { "/$keyResourceId" }
+            'leading space' { " $keyResourceId" }
+            'trailing space' { "$keyResourceId " }
+            'leading space without slash' { " $withoutSlash" }
+            'leading tab without slash' { "`t$withoutSlash" }
+            'trailing newline without slash' { "$withoutSlash`n" }
+            'relative dot prefix' { "./$withoutSlash" }
+            'relative parent prefix' { "../$withoutSlash" }
+            'encoded leading slash' { "%2F$withoutSlash" }
+            'encoded delimiter' { $withoutSlash.Replace('/resourceGroups/', '%2FresourceGroups%2F') }
+            'encoded key name' { $withoutSlash -replace '/keys/[^/]+$', '/keys/test%2Dkey' }
+            'opaque key name' { $keyResourceId.Split('/')[-1] }
+            'changed subscription' { $withoutSlash -replace '^subscriptions/[^/]+/', 'subscriptions/00000000-0000-4000-8000-000000000002/' }
+            'changed resource group' { $withoutSlash -replace '/resourceGroups/[^/]+/', '/resourceGroups/other-rg/' }
+            'changed provider' { $withoutSlash.Replace('/providers/Microsoft.Synapse/', '/providers/Microsoft.Other/') }
+            'changed workspace' { $withoutSlash -replace '/workspaces/[^/]+/', '/workspaces/other-workspace/' }
+            'changed key' { $withoutSlash -replace '/keys/[^/]+$', '/keys/other-key' }
+            'trailing slash' { "$withoutSlash/" }
+            'appended segment' { "$keyResourceId/child" }
+            'absolute URL' { "https://management.azure.com$keyResourceId" }
+        }
+        $response = New-CmkKeyResponse -Id $responseId -Active $true
+        $caught = try {
+            Test-SynapseCmkKeyActive -Response $response -KeyResourceId $keyResourceId -KeyVaultUrl $keyVaultUrl
+        } catch { $_ }
+
+        $caught | Should -BeOfType ([System.Management.Automation.ErrorRecord])
+        $diagnostics = ($caught.Exception.Message -split 'Validation diagnostics: ', 2)[1] |
+            ConvertFrom-Json -AsHashtable
+        $diagnostics.id.valid | Should -BeFalse
+        $diagnostics.keyVaultUrl.valid | Should -BeTrue
+        $diagnostics.isActiveCMK.valid | Should -BeTrue
+    }
+
+    It 'Reports an equivalent ID as valid when another field fails (<Field>)' -ForEach @(
+        @{ Field = 'keyVaultUrl' }
+        @{ Field = 'isActiveCMK' }
+    ) {
+        $response = New-CmkKeyResponse -Id $keyResourceId.Substring(1)
+        $body = $response.Content | ConvertFrom-Json -AsHashtable
+        if ($Field -eq 'keyVaultUrl') {
+            $body.properties.keyVaultUrl = "$keyVaultUrl/"
+        } else {
+            $body.properties.isActiveCMK = 'false'
+        }
+        $response.Content = $body | ConvertTo-Json -Compress
+        $caught = try {
+            Test-SynapseCmkKeyActive -Response $response -KeyResourceId $keyResourceId -KeyVaultUrl $keyVaultUrl
+        } catch { $_ }
+
+        $caught | Should -BeOfType ([System.Management.Automation.ErrorRecord])
+        $diagnostics = ($caught.Exception.Message -split 'Validation diagnostics: ', 2)[1] |
+            ConvertFrom-Json -AsHashtable
+        $diagnostics.id.valid | Should -BeTrue
+        $diagnostics[$Field].valid | Should -BeFalse
     }
 }
 

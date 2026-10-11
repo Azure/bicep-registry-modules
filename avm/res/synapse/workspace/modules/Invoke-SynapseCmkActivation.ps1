@@ -117,8 +117,12 @@ function Test-SynapseCmkKeyActive {
 
     if ($Response.StatusCode -ne 200) { Write-SynapseCmkHttpFailure -Method GET -Response $Response }
     $key = $Response.Content | ConvertFrom-Json -AsHashtable -Depth 32 -ErrorAction Stop
+    $idMatches = $key -is [System.Collections.IDictionary] -and $key.id -is [string] -and (
+        [string]::Equals($key.id, $KeyResourceId, [System.StringComparison]::OrdinalIgnoreCase) -or
+        [string]::Equals("/$($key.id)", $KeyResourceId, [System.StringComparison]::OrdinalIgnoreCase)
+    )
     if ($key -isnot [System.Collections.IDictionary] -or
-        -not [string]::Equals($key.id, $KeyResourceId, [System.StringComparison]::OrdinalIgnoreCase) -or
+        -not $idMatches -or
         $key.properties -isnot [System.Collections.IDictionary] -or
         -not [string]::Equals($key.properties.keyVaultUrl, $KeyVaultUrl, [System.StringComparison]::Ordinal) -or
         $key.properties.isActiveCMK -isnot [bool]) {
@@ -140,10 +144,7 @@ function Test-SynapseCmkKeyActive {
             $value = $null
             if ($present) { $value = $container.($field.name) }
             $valid = switch ($field.name) {
-                'id' {
-                    $value -is [string] -and
-                    [string]::Equals($value, $KeyResourceId, [System.StringComparison]::OrdinalIgnoreCase)
-                }
+                'id' { $idMatches }
                 'properties' { $value -is [System.Collections.IDictionary] }
                 'keyVaultUrl' {
                     $value -is [string] -and
