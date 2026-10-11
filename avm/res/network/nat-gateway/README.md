@@ -377,7 +377,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '69d7ed51-8af4-4eed-bcea-bdadcccb1200'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -479,7 +479,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "69d7ed51-8af4-4eed-bcea-bdadcccb1200",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -571,7 +571,7 @@ param publicIPAddresses = [
 ]
 param roleAssignments = [
   {
-    name: '69d7ed51-8af4-4eed-bcea-bdadcccb1200'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

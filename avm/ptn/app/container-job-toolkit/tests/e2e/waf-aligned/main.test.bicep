@@ -30,7 +30,7 @@ module dependencies './dependencies.bicep' = {
   params: {
     lawName: 'dep${namePrefix}law${serviceShort}'
     appInsightsName: 'dep${namePrefix}ai${serviceShort}'
-    userIdentityName: 'dep${namePrefix}uid${serviceShort}'
+    userIdentityName: uniqueResourceName('dep${namePrefix}uid${serviceShort}', resourceGroup.id, 128)
   }
 }
 
@@ -52,6 +52,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      keyVaultName: uniqueResourceName('kv${namePrefix}${serviceShort}', resourceGroup.id, 24)
       location: location
       containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsResourceId
@@ -76,3 +77,4 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'

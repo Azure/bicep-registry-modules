@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -69,13 +71,15 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // ============== //
 // Test Execution //
 // ============== //
+var serverName = uniqueResourceName('${namePrefix}-${serviceShort}', resourceGroup.id, 63)
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}-${serviceShort}'
+      name: serverName
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -86,13 +90,13 @@ module testDeployment '../../../main.bicep' = [
       location: enforcedLocation
       roleAssignments: [
         {
-          name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
+          name: guid(resourceGroup.id, '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.serverIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.serverIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -165,7 +169,7 @@ module testDeployment '../../../main.bicep' = [
               workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
             }
           ]
-          elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
+          elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${serverName}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
           backupShortTermRetentionPolicy: {
             retentionDays: 14
           }

@@ -179,7 +179,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
     publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
-        name: 'ba1328f0-c7ab-47bf-afbf-0637b9c02bbe'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -300,7 +300,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "ba1328f0-c7ab-47bf-afbf-0637b9c02bbe",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -405,7 +405,7 @@ param privateEndpoints = [
 param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
-    name: 'ba1328f0-c7ab-47bf-afbf-0637b9c02bbe'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

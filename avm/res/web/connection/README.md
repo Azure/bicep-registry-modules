@@ -150,7 +150,7 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
     }
     roleAssignments: [
       {
-        name: '396667c8-de54-4dcb-916a-72af71359f34'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -213,7 +213,7 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "396667c8-de54-4dcb-916a-72af71359f34",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -266,7 +266,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '396667c8-de54-4dcb-916a-72af71359f34'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

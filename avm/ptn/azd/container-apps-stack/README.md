@@ -67,7 +67,7 @@ module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>'
   params: {
     // Required parameters
     containerAppsEnvironmentName: 'acasstcae001'
-    containerRegistryName: 'acasstcr001'
+    containerRegistryName: '<containerRegistryName>'
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     // Non-required parameters
     location: '<location>'
@@ -102,7 +102,7 @@ module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>'
       "value": "acasstcae001"
     },
     "containerRegistryName": {
-      "value": "acasstcr001"
+      "value": "<containerRegistryName>"
     },
     "logAnalyticsWorkspaceName": {
       "value": "<logAnalyticsWorkspaceName>"
@@ -143,7 +143,7 @@ using 'br/public:avm/ptn/azd/container-apps-stack:<version>'
 
 // Required parameters
 param containerAppsEnvironmentName = 'acasstcae001'
-param containerRegistryName = 'acasstcr001'
+param containerRegistryName = '<containerRegistryName>'
 param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
 // Non-required parameters
 param location = '<location>'
@@ -178,7 +178,7 @@ module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>'
   params: {
     // Required parameters
     containerAppsEnvironmentName: 'acaszrcae001'
-    containerRegistryName: 'acaszrcr001'
+    containerRegistryName: '<containerRegistryName>'
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     // Non-required parameters
     acrSku: 'Standard'
@@ -219,7 +219,7 @@ module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>'
       "value": "acaszrcae001"
     },
     "containerRegistryName": {
-      "value": "acaszrcr001"
+      "value": "<containerRegistryName>"
     },
     "logAnalyticsWorkspaceName": {
       "value": "<logAnalyticsWorkspaceName>"
@@ -278,7 +278,7 @@ using 'br/public:avm/ptn/azd/container-apps-stack:<version>'
 
 // Required parameters
 param containerAppsEnvironmentName = 'acaszrcae001'
-param containerRegistryName = 'acaszrcr001'
+param containerRegistryName = '<containerRegistryName>'
 param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
 // Non-required parameters
 param acrSku = 'Standard'

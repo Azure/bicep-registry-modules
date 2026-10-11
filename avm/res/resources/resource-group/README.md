@@ -117,7 +117,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
     }
     roleAssignments: [
       {
-        name: '3566ddd3-870d-4618-bd22-3d50915a21ef'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -172,7 +172,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "3566ddd3-870d-4618-bd22-3d50915a21ef",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -221,7 +221,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '3566ddd3-870d-4618-bd22-3d50915a21ef'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

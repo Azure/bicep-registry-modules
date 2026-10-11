@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Web App, using large parameter set'
@@ -38,10 +40,10 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
-    relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    relayNamespaceName: uniqueResourceName('dep-${namePrefix}-ns-${serviceShort}', resourceGroup.id, 50)
+    storageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
-    apiManagementName: 'dep-${namePrefix}-apim-${serviceShort}'
+    apiManagementName: uniqueResourceName('dep-${namePrefix}-apim-${serviceShort}', resourceGroup.id, 50)
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
   }
 }
@@ -68,7 +70,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 60)
       location: enforcedLocation
       kind: 'app'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
@@ -149,13 +151,13 @@ module testDeployment '../../../main.bicep' = [
           ]
           roleAssignments: [
             {
-              name: '845ed19c-78e7-4422-aa3d-b78b67cd78a2'
+              name: guid(resourceGroup.id, '845ed19c-78e7-4422-aa3d-b78b67cd78a2')
               roleDefinitionIdOrName: 'Owner'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
             {
-              name: guid('Custom seed ${namePrefix}${serviceShort}')
+              name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
               roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
@@ -241,7 +243,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: '0c2c82ef-069c-4085-b1bc-01614e0aa5ff'
+          name: guid(resourceGroup.id, '0c2c82ef-069c-4085-b1bc-01614e0aa5ff')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

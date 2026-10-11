@@ -225,7 +225,7 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
     }
     roleAssignments: [
       {
-        name: 'a66da6bc-b3ee-484e-9bdb-9294938bb327'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -393,7 +393,7 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
     "roleAssignments": {
       "value": [
         {
-          "name": "a66da6bc-b3ee-484e-9bdb-9294938bb327",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -551,7 +551,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'a66da6bc-b3ee-484e-9bdb-9294938bb327'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

@@ -147,7 +147,7 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
     }
     roleAssignments: [
       {
-        name: 'd7aa3dfa-6ba6-4ed8-b561-2164fbb1327e'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -226,7 +226,7 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
     "roleAssignments": {
       "value": [
         {
-          "name": "d7aa3dfa-6ba6-4ed8-b561-2164fbb1327e",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -285,7 +285,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: 'd7aa3dfa-6ba6-4ed8-b561-2164fbb1327e'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

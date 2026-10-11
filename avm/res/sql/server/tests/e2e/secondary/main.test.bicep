@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'With a secondary database'
@@ -39,7 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    serverName: 'dep-${namePrefix}-${serviceShort}-pri'
+    serverName: uniqueResourceName('dep-${namePrefix}-${serviceShort}-pri', resourceGroup.id, 63)
     location: resourceLocation
   }
 }
@@ -53,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}-${serviceShort}-sec'
+      name: uniqueResourceName('${namePrefix}-${serviceShort}-sec', resourceGroup.id, 63)
       location: resourceLocation
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password

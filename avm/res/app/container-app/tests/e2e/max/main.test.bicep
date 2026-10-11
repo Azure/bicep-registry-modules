@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -41,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     managedEnvironmentName: 'dep-${namePrefix}-menv-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
     keyVaultSecretName: 'dep-${namePrefix}-kv-secret-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
@@ -82,13 +84,13 @@ module testDeployment '../../../main.bicep' = [
       activeRevisionsMode: 'Single'
       roleAssignments: [
         {
-          name: 'e9bac1ee-aebe-4513-9337-49e87a7be05e'
+          name: guid(resourceGroup.id, 'e9bac1ee-aebe-4513-9337-49e87a7be05e')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -124,7 +126,7 @@ module testDeployment '../../../main.bicep' = [
           identity: nestedDependencies.outputs.managedIdentityResourceId
         }
       ]
-      service:{
+      service: {
         type: 'Web'
       }
       containers: [

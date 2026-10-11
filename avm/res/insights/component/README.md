@@ -157,7 +157,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
     requestSource: 'Azure'
     roleAssignments: [
       {
-        name: '8aacced3-3fce-41bc-a416-959df1acec57'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -252,7 +252,7 @@ module component 'br/public:avm/res/insights/component:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "8aacced3-3fce-41bc-a416-959df1acec57",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -323,7 +323,7 @@ param lock = {
 param requestSource = 'Azure'
 param roleAssignments = [
   {
-    name: '8aacced3-3fce-41bc-a416-959df1acec57'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

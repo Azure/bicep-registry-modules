@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Private endpoint-enabled deployment'
@@ -50,7 +52,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}0001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}0001', resourceGroup.id, 22)
       sku: 'Standard_E2ads_v5'
       enablePublicNetworkAccess: false
       publicIPType: 'IPv4'

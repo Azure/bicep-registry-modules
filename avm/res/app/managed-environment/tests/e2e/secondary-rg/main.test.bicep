@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'With an external certificate'
@@ -51,7 +53,7 @@ module secondaryDependencies 'dependencies.secondary.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', secondaryResourceGroup.id, 24)
     certname: 'dep-${namePrefix}-cert-${serviceShort}'
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }

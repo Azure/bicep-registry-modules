@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using bounded consistency'
@@ -37,7 +39,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    name: '${namePrefix}-bounded'
+    name: uniqueResourceName('${namePrefix}-bounded', resourceGroup.id, 44)
     defaultConsistencyLevel: 'BoundedStaleness'
     maxIntervalInSeconds: 600
     maxStalenessPrefix: 200000

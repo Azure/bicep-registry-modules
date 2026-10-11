@@ -195,7 +195,7 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
     }
     roleAssignments: [
       {
-        name: '3ab52119-85d9-4374-a454-2410b84f19f9'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -274,7 +274,7 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "3ab52119-85d9-4374-a454-2410b84f19f9",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -349,7 +349,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '3ab52119-85d9-4374-a454-2410b84f19f9'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

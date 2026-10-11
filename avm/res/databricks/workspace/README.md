@@ -387,7 +387,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     requireInfrastructureEncryption: true
     roleAssignments: [
       {
-        name: '2754e64b-b96e-44bc-9cb2-6e39b057f515'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -570,7 +570,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "2754e64b-b96e-44bc-9cb2-6e39b057f515",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -709,7 +709,7 @@ param requiredNsgRules = 'NoAzureDatabricksRules'
 param requireInfrastructureEncryption = true
 param roleAssignments = [
   {
-    name: '2754e64b-b96e-44bc-9cb2-6e39b057f515'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

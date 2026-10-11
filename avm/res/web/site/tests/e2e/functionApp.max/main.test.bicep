@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Function App, using large parameter set'
@@ -38,9 +40,9 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    storageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
-    relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
+    relayNamespaceName: uniqueResourceName('dep-${namePrefix}-ns-${serviceShort}', resourceGroup.id, 50)
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
   }
 }
@@ -68,7 +70,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 60)
       location: enforcedLocation
       kind: 'functionapp'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
@@ -203,13 +205,13 @@ module testDeployment '../../../main.bicep' = [
           ]
           roleAssignments: [
             {
-              name: '845ed19c-78e7-4422-aa3d-b78b67cd1234'
+              name: guid(resourceGroup.id, '845ed19c-78e7-4422-aa3d-b78b67cd1234')
               roleDefinitionIdOrName: 'Owner'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
             {
-              name: guid('A custom seed ${namePrefix}${serviceShort}')
+              name: guid(resourceGroup.id, 'A custom seed ${namePrefix}${serviceShort}')
               roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
@@ -308,13 +310,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: '9efc9c10-f482-4af0-9acb-03b5a16f947e'
+          name: guid(resourceGroup.id, '9efc9c10-f482-4af0-9acb-03b5a16f947e')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

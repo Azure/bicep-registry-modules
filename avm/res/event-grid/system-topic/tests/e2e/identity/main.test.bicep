@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using managed identity authentication'
@@ -36,9 +38,9 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    storageAccountName: uniqueResourceName('dep${namePrefix}sa${serviceShort}', resourceGroup.id, 24)
     storageQueueName: 'dep${namePrefix}sq${serviceShort}'
-    serviceBusNamespaceName: 'dep-${namePrefix}-sbn-${serviceShort}'
+    serviceBusNamespaceName: uniqueResourceName('dep-${namePrefix}-sbn-${serviceShort}', resourceGroup.id, 50)
     serviceBusTopicName: 'dep-${namePrefix}-sbt-${serviceShort}'
     location: resourceLocation
   }

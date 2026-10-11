@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -36,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    storageAccountName: uniqueResourceName('dep${namePrefix}sa${serviceShort}', resourceGroup.id, 24)
     storageQueueName: 'dep${namePrefix}sq${serviceShort}'
     location: resourceLocation
   }
@@ -115,13 +117,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
+          name: guid(resourceGroup.id, 'c9beca28-efcf-4d1d-99aa-8f334484a2c2')
           roleDefinitionIdOrName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

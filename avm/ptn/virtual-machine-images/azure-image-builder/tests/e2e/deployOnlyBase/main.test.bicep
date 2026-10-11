@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Deploying only the base services'
@@ -33,7 +35,11 @@ module testDeployment '../../../main.bicep' = [
       deploymentsToPerform: 'Only base'
       resourceGroupName: resourceGroupName
       location: resourceLocation
-      assetsStorageAccountName: 'st${namePrefix}${serviceShort}'
+      assetsStorageAccountName: uniqueResourceName(
+        'st${namePrefix}${serviceShort}',
+        subscriptionResourceId('Microsoft.Resources/resourceGroups', resourceGroupName),
+        24
+      )
       imageManagedIdentityName: 'msi-it-${namePrefix}-${serviceShort}'
       computeGalleryName: 'gal${namePrefix}${serviceShort}'
       computeGalleryImageDefinitionName: computeGalleryImageDefinitionName

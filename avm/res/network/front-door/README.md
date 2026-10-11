@@ -492,7 +492,7 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
     }
     roleAssignments: [
       {
-        name: 'b2c1ef5f-3422-4a49-8e55-7789fe980b64'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -668,7 +668,7 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "b2c1ef5f-3422-4a49-8e55-7789fe980b64",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -826,7 +826,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'b2c1ef5f-3422-4a49-8e55-7789fe980b64'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

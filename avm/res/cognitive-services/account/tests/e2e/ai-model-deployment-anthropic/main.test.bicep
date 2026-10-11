@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using `AIServices` with a GA partner (Anthropic) `deployments` in parameter set'
@@ -55,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       kind: 'AIServices'
-      customSubDomainName: '${namePrefix}x${serviceShort}ai'
+      customSubDomainName: uniqueResourceName('${namePrefix}x${serviceShort}ai', resourceGroup.id, 64)
       deployments: [
         {
           name: 'claude-sonnet-4-6'

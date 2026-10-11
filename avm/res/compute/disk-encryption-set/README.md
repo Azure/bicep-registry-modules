@@ -509,7 +509,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
     }
     roleAssignments: [
       {
-        name: 'c331c327-6458-473a-9398-95b382c6f04f'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -579,7 +579,7 @@ module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version
     "roleAssignments": {
       "value": [
         {
-          "name": "c331c327-6458-473a-9398-95b382c6f04f",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -639,7 +639,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: 'c331c327-6458-473a-9398-95b382c6f04f'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

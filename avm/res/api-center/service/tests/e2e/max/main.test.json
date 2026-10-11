@@ -1,15 +1,69 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "12936954448785973142"
+      "version": "0.47.16.16243",
+      "templateHash": "10575943709249028028"
     },
     "name": "Using large parameter set",
     "description": "This instance deploys the module with most of its features enabled."
   },
+  "definitions": {
+    "_1.maximumNameLength": {
+      "type": "int",
+      "minValue": 2,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep"
+        }
+      }
+    },
+    "_1.nameSeed": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep"
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "namespace": "__bicep",
+      "members": {
+        "uniqueResourceName": {
+          "parameters": [
+            {
+              "$ref": "#/definitions/_1.nameSeed",
+              "name": "baseName"
+            },
+            {
+              "$ref": "#/definitions/_1.nameSeed",
+              "name": "scopeId"
+            },
+            {
+              "$ref": "#/definitions/_1.maximumNameLength",
+              "name": "maxLength"
+            }
+          ],
+          "output": {
+            "type": "string",
+            "value": "[format('{0}{1}', take(parameters('baseName'), max(1, sub(parameters('maxLength'), 13))), take(uniqueString(parameters('scopeId'), parameters('baseName')), min(13, sub(parameters('maxLength'), 1))))]"
+          },
+          "metadata": {
+            "description": "Preserves a valid base-name prefix and adds a stable scope-specific suffix within the supplied length limit. Include the subscription in scopeId.",
+            "__bicep_imported_from!": {
+              "sourceTemplate": "../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep"
+            }
+          }
+        }
+      }
+    }
+  ],
   "parameters": {
     "resourceGroupName": {
       "type": "string",
@@ -28,7 +82,7 @@
     },
     "serviceShort": {
       "type": "string",
-      "defaultValue": "apicavmmax",
+      "defaultValue": "aacavmmax",
       "metadata": {
         "description": "Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints."
       }
@@ -39,16 +93,23 @@
       "metadata": {
         "description": "Optional. A token to inject into the name of each resource."
       }
+    },
+    "serviceNameSuffix": {
+      "type": "string",
+      "defaultValue": "[take(uniqueString(deployment().name), 5)]",
+      "metadata": {
+        "description": "Optional. A temporary per-run suffix to avoid API Center soft-delete name reuse while API Center purge is unavailable."
+      }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "resourceGroup": {
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2025-04-01",
       "name": "[parameters('resourceGroupName')]",
       "location": "[parameters('resourceLocation')]"
     },
-    {
+    "nestedDependencies": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation')))]",
@@ -63,7 +124,7 @@
             "value": "[format('dep-{0}-msi-{1}', parameters('namePrefix'), parameters('serviceShort'))]"
           },
           "apiManagementServiceName": {
-            "value": "[format('dep-{0}-apim-{1}', parameters('namePrefix'), parameters('serviceShort'))]"
+            "value": "[__bicep.uniqueResourceName(format('dep-{0}-apim-{1}', parameters('namePrefix'), parameters('serviceShort')), subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName')), 50)]"
           }
         },
         "template": {
@@ -72,8 +133,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "13231524543683219793"
+              "version": "0.47.16.16243",
+              "templateHash": "9101370196079482530"
             }
           },
           "parameters": {
@@ -103,6 +164,21 @@
               "apiVersion": "2024-11-30",
               "name": "[parameters('managedIdentityName')]",
               "location": "[parameters('location')]"
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.ApiManagement/service', parameters('apiManagementServiceName'))]",
+              "name": "[guid(resourceId('Microsoft.ApiManagement/service', parameters('apiManagementServiceName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.Authorization/roleDefinitions', '71522526-b88f-4d52-b57f-d31fc3546d0d'))]",
+              "properties": {
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '71522526-b88f-4d52-b57f-d31fc3546d0d')]",
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2024-11-30').principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('apiManagementServiceName'))]",
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+              ]
             },
             {
               "type": "Microsoft.ApiManagement/service",
@@ -220,10 +296,10 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+        "resourceGroup"
       ]
     },
-    {
+    "testDeployment": {
       "copy": {
         "name": "testDeployment",
         "count": "[length(createArray('init', 'idem'))]",
@@ -241,7 +317,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}{1}001', parameters('namePrefix'), parameters('serviceShort'))]"
+            "value": "[format('{0}{1}{2}', parameters('namePrefix'), parameters('serviceShort'), parameters('serviceNameSuffix'))]"
           },
           "location": {
             "value": "[parameters('resourceLocation')]"
@@ -253,33 +329,33 @@
             "value": {
               "systemAssigned": true,
               "userAssignedResourceIds": [
-                "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation')))), '2025-04-01').outputs.managedIdentityResourceId.value]"
+                "[reference('nestedDependencies').outputs.managedIdentityResourceId.value]"
               ]
             }
           },
           "lock": {
             "value": {
               "kind": "CanNotDelete",
-              "name": "myCustomLockName"
+              "name": "ApiCenterDeleteLock"
             }
           },
           "roleAssignments": {
             "value": [
               {
-                "name": "73ec30e0-2e25-475f-beec-d90cab332eb7",
+                "name": "[guid(subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName')), '73ec30e0-2e25-475f-beec-d90cab332eb7')]",
                 "roleDefinitionIdOrName": "Owner",
-                "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation')))), '2025-04-01').outputs.managedIdentityPrincipalId.value]",
+                "principalId": "[reference('nestedDependencies').outputs.managedIdentityPrincipalId.value]",
                 "principalType": "ServicePrincipal"
               },
               {
-                "name": "[guid(format('Custom seed {0}{1}', parameters('namePrefix'), parameters('serviceShort')))]",
+                "name": "[guid(subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName')), format('Custom seed {0}{1}', parameters('namePrefix'), parameters('serviceShort')))]",
                 "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-                "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation')))), '2025-04-01').outputs.managedIdentityPrincipalId.value]",
+                "principalId": "[reference('nestedDependencies').outputs.managedIdentityPrincipalId.value]",
                 "principalType": "ServicePrincipal"
               },
               {
                 "roleDefinitionIdOrName": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation')))), '2025-04-01').outputs.managedIdentityPrincipalId.value]",
+                "principalId": "[reference('nestedDependencies').outputs.managedIdentityPrincipalId.value]",
                 "principalType": "ServicePrincipal"
               }
             ]
@@ -331,7 +407,7 @@
                 "kind": "production",
                 "description": "Production Azure API Management environment.",
                 "customProperties": {
-                  "apiCostCenter": "IT-1234"
+                  "apiCostCenter": "CC-1001"
                 },
                 "server": {
                   "type": "Azure API Management",
@@ -341,9 +417,9 @@
                 },
                 "onboarding": {
                   "developerPortalUri": [
-                    "https://developer.contoso.com"
+                    "https://contoso.com/develop"
                   ],
-                  "instructions": "Sign up at the developer portal to get started with our APIs."
+                  "instructions": "Sign up using the developer portal to get started with our APIs."
                 }
               },
               {
@@ -366,17 +442,17 @@
                 "description": "A sample REST API for managing pets.",
                 "summary": "Petstore management API.",
                 "customProperties": {
-                  "apiCostCenter": "IT-1234",
+                  "apiCostCenter": "CC-2001",
                   "apiTeamOwner": "Platform Engineering"
                 },
                 "externalDocumentation": [
                   {
-                    "url": "https://docs.contoso.com/petstore",
+                    "url": "https://contoso.com/docs/petstore",
                     "title": "API Documentation",
                     "description": "Full reference documentation for the Petstore API."
                   },
                   {
-                    "url": "https://docs.contoso.com/petstore/getting-started",
+                    "url": "https://contoso.com/petstore/getting-started",
                     "title": "Getting Started Guide"
                   }
                 ],
@@ -389,12 +465,18 @@
                 ],
                 "license": {
                   "name": "MIT License",
+                  "identifier": "mit",
                   "url": "https://opensource.org/licenses/MIT"
                 },
                 "termsOfService": {
                   "url": "https://contoso.com/terms-of-service"
                 },
                 "versions": [
+                  {
+                    "name": "v0-9-0",
+                    "title": "v0.9.0",
+                    "lifecycleStage": "retired"
+                  },
                   {
                     "name": "v1-0-0",
                     "title": "v1.0.0",
@@ -413,50 +495,37 @@
                     "lifecycleStage": "preview",
                     "definitions": [
                       {
-                        "name": "openapi-spec-v2",
-                        "title": "OpenAPI Specification v2",
-                        "description": "The OpenAPI 3.1 specification for the Petstore API v2."
+                        "name": "openapi-spec",
+                        "title": "OpenAPI Specification",
+                        "description": "The OpenAPI 3.0 specification for the Petstore API v2."
                       }
                     ]
                   }
                 ],
                 "deployments": [
                   {
+                    "name": "petstore-staging-deployment",
+                    "title": "Petstore Staging",
+                    "environment": "staging-apim",
+                    "version": "v2-0-0-preview",
+                    "definition": "openapi-spec"
+                  },
+                  {
                     "name": "petstore-prod-deployment",
                     "title": "Petstore Production",
                     "description": "Production deployment of the Petstore API.",
-                    "environmentId": "/workspaces/default/environments/production-apim",
-                    "definitionId": "/workspaces/default/apis/petstore-api/versions/v1-0-0/definitions/openapi-spec",
+                    "environment": "production-apim",
+                    "version": "v1-0-0",
+                    "definition": "openapi-spec",
                     "state": "active",
+                    "customProperties": {
+                      "apiTeamOwner": "Platform Engineering"
+                    },
                     "server": {
                       "runtimeUri": [
-                        "https://petstore.contoso.com/api"
+                        "https://contoso.com/petstore/api"
                       ]
                     }
-                  }
-                ]
-              },
-              {
-                "name": "order-api",
-                "title": "Order API",
-                "kind": "rest",
-                "description": "A REST API for managing customer orders.",
-                "summary": "Order management API.",
-                "customProperties": {
-                  "apiCostCenter": "CM-7001",
-                  "apiTeamOwner": "Commerce Team"
-                },
-                "contacts": [
-                  {
-                    "name": "Commerce Team",
-                    "email": "commerce@contoso.com"
-                  }
-                ],
-                "versions": [
-                  {
-                    "name": "v1-0-0",
-                    "title": "v1.0.0",
-                    "lifecycleStage": "production"
                   }
                 ]
               },
@@ -464,46 +533,45 @@
                 "name": "graphql-api",
                 "title": "GraphQL API",
                 "kind": "graphql",
-                "description": "A sample GraphQL API for querying data.",
-                "summary": "GraphQL data query API.",
+                "description": "A GraphQL API",
                 "customProperties": {
-                  "apiCostCenter": "GQ-2001"
+                  "apiCostCenter": "CC-2001"
                 }
               },
               {
-                "name": "legacy-soap-api",
-                "title": "Legacy SOAP API",
+                "name": "soap-api",
+                "title": "SOAP API",
                 "kind": "soap",
-                "description": "A legacy SOAP-based API for backward compatibility.",
+                "description": "A SOAP-based API",
                 "customProperties": {
-                  "apiCostCenter": "SP-3001"
+                  "apiCostCenter": "CC-3001"
                 }
               },
               {
                 "name": "webhook-notifications",
                 "title": "Webhook Notifications",
                 "kind": "webhook",
-                "description": "A webhook API for event-driven notifications.",
+                "description": "A webhook API",
                 "customProperties": {
-                  "apiCostCenter": "WH-4001"
+                  "apiCostCenter": "CC-4001"
                 }
               },
               {
-                "name": "grpc-service",
-                "title": "gRPC Service",
+                "name": "grpc-api",
+                "title": "gRPC API",
                 "kind": "grpc",
-                "description": "A gRPC API for high-performance inter-service communication.",
+                "description": "A gRPC API",
                 "customProperties": {
-                  "apiCostCenter": "GR-5001"
+                  "apiCostCenter": "CC-5001"
                 }
               },
               {
-                "name": "realtime-ws-api",
-                "title": "Real-Time WebSocket API",
+                "name": "ws-api",
+                "title": "WebSocket API",
                 "kind": "websocket",
-                "description": "A WebSocket API for real-time bidirectional communication.",
+                "description": "A WebSocket API",
                 "customProperties": {
-                  "apiCostCenter": "WS-6001"
+                  "apiCostCenter": "CC-6001"
                 }
               }
             ]
@@ -514,9 +582,10 @@
                 "name": "apim-import-source",
                 "importSpecification": "always",
                 "targetLifecycleStage": "production",
+                "targetEnvironment": "production-apim",
                 "azureApiManagementSource": {
-                  "resourceId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation')))), '2025-04-01').outputs.apiManagementServiceResourceId.value]",
-                  "msiResourceId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation')))), '2025-04-01').outputs.managedIdentityResourceId.value]"
+                  "resourceId": "[reference('nestedDependencies').outputs.apiManagementServiceResourceId.value]",
+                  "msiResourceId": "[reference('nestedDependencies').outputs.managedIdentityResourceId.value]"
                 }
               }
             ]
@@ -529,8 +598,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "12971144593987463970"
+              "version": "0.47.16.16243",
+              "templateHash": "17286936942965315258"
             },
             "name": "API Center Services",
             "description": "This module deploys an API Center Service."
@@ -562,7 +631,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Whether the assignment is deprecated."
+                    "description": "Optional. Whether the metadata property is deprecated."
                   }
                 }
               },
@@ -585,7 +654,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The resource ID of the managed identity that has access to the API Management instance."
+                    "description": "Optional. The resource ID of the managed identity that has access to the API Management instance. If not provided, system-assigned identity is used and granted Api Management Service Reader role."
                   }
                 }
               },
@@ -677,18 +746,22 @@
                     "description": "Optional. The description of the deployment."
                   }
                 },
-                "environmentId": {
+                "environment": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The API center-scoped environment resource ID."
+                    "description": "Required. The target environment name of the deployment."
                   }
                 },
-                "definitionId": {
+                "version": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The API center-scoped definition resource ID."
+                    "description": "Required. The deployed version name."
+                  }
+                },
+                "definition": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The deployed definition name."
                   }
                 },
                 "state": {
@@ -703,11 +776,13 @@
                   }
                 },
                 "customProperties": {
-                  "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.ApiCenter/services/workspaces/apis/deployments@2024-03-01#properties/properties/properties/customProperties"
+                    },
                     "description": "Optional. The custom metadata defined for API catalog entities."
-                  }
+                  },
+                  "nullable": true
                 },
                 "server": {
                   "$ref": "#/definitions/_3.deploymentServerType",
@@ -925,15 +1000,6 @@
                 },
                 "type": {
                   "type": "string",
-                  "allowedValues": [
-                    "AWS API Gateway",
-                    "Apigee API Management",
-                    "Azure API Management",
-                    "Azure compute service",
-                    "Kong API Gateway",
-                    "Kubernetes",
-                    "MuleSoft API Management"
-                  ],
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The type of server that represents the environment."
@@ -969,11 +1035,11 @@
                     "description": "Optional. Indicates if the specification should be imported along with metadata."
                   }
                 },
-                "targetEnvironmentId": {
+                "targetEnvironment": {
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The target environment resource ID within API Center."
+                    "description": "Optional. The target environment name. If not provided a new environment will be created."
                   }
                 },
                 "targetLifecycleStage": {
@@ -994,16 +1060,8 @@
                 },
                 "azureApiManagementSource": {
                   "$ref": "#/definitions/_2.azureApiManagementSourceType",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. Configuration for importing APIs from Azure API Management."
-                  }
-                },
-                "enableDefaultRoleAssignment": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true."
+                    "description": "Required. Configuration for importing APIs from Azure API Management."
                   }
                 }
               },
@@ -1063,11 +1121,13 @@
                   }
                 },
                 "customProperties": {
-                  "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.ApiCenter/services/workspaces/apis@2024-03-01#properties/properties/properties/customProperties"
+                    },
                     "description": "Optional. The custom metadata defined for API catalog entities."
-                  }
+                  },
+                  "nullable": true
                 },
                 "externalDocumentation": {
                   "type": "array",
@@ -1169,11 +1229,13 @@
                   }
                 },
                 "customProperties": {
-                  "type": "object",
-                  "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.ApiCenter/services/workspaces/environments@2024-03-01#properties/properties/properties/customProperties"
+                    },
                     "description": "Optional. The custom metadata defined for API catalog entities."
-                  }
+                  },
+                  "nullable": true
                 },
                 "server": {
                   "$ref": "#/definitions/_5.environmentServerType",
@@ -1396,10 +1458,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiCenter/services@2024-03-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "lock": {
               "$ref": "#/definitions/lockType",
@@ -1410,13 +1475,13 @@
             },
             "sku": {
               "type": "string",
-              "defaultValue": "Standard",
               "allowedValues": [
                 "Free",
                 "Standard"
               ],
+              "defaultValue": "Standard",
               "metadata": {
-                "description": "Optional. The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments."
+                "description": "Optional. The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments. Defaults to Standard."
               }
             },
             "roleAssignments": {
@@ -1485,6 +1550,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
+            "$fxv#0": "46d3xbcp.res.e353a06",
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
             "identity": {
               "type": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'))]",
@@ -1500,7 +1566,8 @@
               "Azure API Center Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7244dfb-f447-457d-b2ba-3999044d1706')]",
               "Azure API Center Service Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'dd24193f-ef65-44e5-8a7e-6fa6e03f7713')]",
               "Azure API Center Service Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6cba8790-29c5-48e5-bab1-c7541b01cb04')]"
-            }
+            },
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "service": {
@@ -1554,7 +1621,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.apicenter-service.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1604,8 +1671,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "18080993589897227447"
+                      "version": "0.47.16.16243",
+                      "templateHash": "244754756955007937"
                     },
                     "name": "API Center Service Metadata Schemas",
                     "description": "This module deploys an API Center Service Metadata Schema."
@@ -1637,7 +1704,7 @@
                           "type": "bool",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. Whether the assignment is deprecated."
+                            "description": "Optional. Whether the metadata property is deprecated."
                           }
                         }
                       },
@@ -1723,7 +1790,7 @@
                       "name": "[format('{0}/{1}', parameters('serviceName'), parameters('name'))]",
                       "properties": {
                         "schema": "[parameters('schema')]",
-                        "assignedTo": "[parameters('assignedTo')]"
+                        "assignedTo": "[if(not(equals(parameters('assignedTo'), null())), parameters('assignedTo'), createArray())]"
                       }
                     }
                   },
@@ -1792,8 +1859,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "18140129251774785043"
+                      "version": "0.47.16.16243",
+                      "templateHash": "5440506546912824745"
                     },
                     "name": "API Center Service Workspaces",
                     "description": "This module deploys an API Center Service Workspace."
@@ -1838,11 +1905,13 @@
                           }
                         },
                         "customProperties": {
-                          "type": "object",
-                          "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.ApiCenter/services/workspaces/environments@2024-03-01#properties/properties/properties/customProperties"
+                            },
                             "description": "Optional. The custom metadata defined for API catalog entities."
-                          }
+                          },
+                          "nullable": true
                         },
                         "server": {
                           "$ref": "#/definitions/environmentServerType",
@@ -1913,11 +1982,13 @@
                           }
                         },
                         "customProperties": {
-                          "type": "object",
-                          "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.ApiCenter/services/workspaces/apis@2024-03-01#properties/properties/properties/customProperties"
+                            },
                             "description": "Optional. The custom metadata defined for API catalog entities."
-                          }
+                          },
+                          "nullable": true
                         },
                         "externalDocumentation": {
                           "type": "array",
@@ -2001,11 +2072,11 @@
                             "description": "Optional. Indicates if the specification should be imported along with metadata."
                           }
                         },
-                        "targetEnvironmentId": {
+                        "targetEnvironment": {
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. The target environment resource ID within API Center."
+                            "description": "Optional. The target environment name. If not provided a new environment will be created."
                           }
                         },
                         "targetLifecycleStage": {
@@ -2026,16 +2097,8 @@
                         },
                         "azureApiManagementSource": {
                           "$ref": "#/definitions/azureApiManagementSourceType",
-                          "nullable": true,
                           "metadata": {
-                            "description": "Optional. Configuration for importing APIs from Azure API Management."
-                          }
-                        },
-                        "enableDefaultRoleAssignment": {
-                          "type": "bool",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true."
+                            "description": "Required. Configuration for importing APIs from Azure API Management."
                           }
                         }
                       },
@@ -2076,7 +2139,7 @@
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. The resource ID of the managed identity that has access to the API Management instance."
+                            "description": "Optional. The resource ID of the managed identity that has access to the API Management instance. If not provided, system-assigned identity is used and granted Api Management Service Reader role."
                           }
                         }
                       },
@@ -2148,18 +2211,22 @@
                             "description": "Optional. The description of the deployment."
                           }
                         },
-                        "environmentId": {
+                        "environment": {
                           "type": "string",
-                          "nullable": true,
                           "metadata": {
-                            "description": "Optional. The API center-scoped environment resource ID."
+                            "description": "Required. The target environment name of the deployment."
                           }
                         },
-                        "definitionId": {
+                        "version": {
                           "type": "string",
-                          "nullable": true,
                           "metadata": {
-                            "description": "Optional. The API center-scoped definition resource ID."
+                            "description": "Required. The deployed version name."
+                          }
+                        },
+                        "definition": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The deployed definition name."
                           }
                         },
                         "state": {
@@ -2174,11 +2241,13 @@
                           }
                         },
                         "customProperties": {
-                          "type": "object",
-                          "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.ApiCenter/services/workspaces/apis/deployments@2024-03-01#properties/properties/properties/customProperties"
+                            },
                             "description": "Optional. The custom metadata defined for API catalog entities."
-                          }
+                          },
+                          "nullable": true
                         },
                         "server": {
                           "$ref": "#/definitions/_1.deploymentServerType",
@@ -2236,15 +2305,6 @@
                         },
                         "type": {
                           "type": "string",
-                          "allowedValues": [
-                            "AWS API Gateway",
-                            "Apigee API Management",
-                            "Azure API Management",
-                            "Azure compute service",
-                            "Kong API Gateway",
-                            "Kubernetes",
-                            "MuleSoft API Management"
-                          ],
                           "nullable": true,
                           "metadata": {
                             "description": "Optional. The type of server that represents the environment."
@@ -2544,8 +2604,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "14506585940986807415"
+                              "version": "0.47.16.16243",
+                              "templateHash": "2113819937584046969"
                             },
                             "name": "API Center Service Workspace Environments",
                             "description": "This module deploys an API Center Service Workspace Environment."
@@ -2566,15 +2626,6 @@
                                 },
                                 "type": {
                                   "type": "string",
-                                  "allowedValues": [
-                                    "AWS API Gateway",
-                                    "Apigee API Management",
-                                    "Azure API Management",
-                                    "Azure compute service",
-                                    "Kong API Gateway",
-                                    "Kubernetes",
-                                    "MuleSoft API Management"
-                                  ],
                                   "nullable": true,
                                   "metadata": {
                                     "description": "Optional. The type of server that represents the environment."
@@ -2644,9 +2695,9 @@
                               "type": "string",
                               "allowedValues": [
                                 "development",
-                                "testing",
+                                "production",
                                 "staging",
-                                "production"
+                                "testing"
                               ],
                               "metadata": {
                                 "description": "Required. The kind of environment."
@@ -2660,11 +2711,13 @@
                               }
                             },
                             "customProperties": {
-                              "type": "object",
-                              "nullable": true,
                               "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.ApiCenter/services/workspaces/environments@2024-03-01#properties/properties/properties/customProperties"
+                                },
                                 "description": "Optional. The custom metadata defined for API catalog entities."
-                              }
+                              },
+                              "nullable": true
                             },
                             "server": {
                               "$ref": "#/definitions/environmentServerType",
@@ -2801,8 +2854,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "8090603996998261773"
+                              "version": "0.47.16.16243",
+                              "templateHash": "14001660642716308393"
                             },
                             "name": "API Center Service Workspace APIs",
                             "description": "This module deploys an API Center Service Workspace API."
@@ -2946,18 +2999,22 @@
                                     "description": "Optional. The description of the deployment."
                                   }
                                 },
-                                "environmentId": {
+                                "environment": {
                                   "type": "string",
-                                  "nullable": true,
                                   "metadata": {
-                                    "description": "Optional. The API center-scoped environment resource ID."
+                                    "description": "Required. The target environment name of the deployment."
                                   }
                                 },
-                                "definitionId": {
+                                "version": {
                                   "type": "string",
-                                  "nullable": true,
                                   "metadata": {
-                                    "description": "Optional. The API center-scoped definition resource ID."
+                                    "description": "Required. The deployed version name."
+                                  }
+                                },
+                                "definition": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The deployed definition name."
                                   }
                                 },
                                 "state": {
@@ -2972,11 +3029,13 @@
                                   }
                                 },
                                 "customProperties": {
-                                  "type": "object",
-                                  "nullable": true,
                                   "metadata": {
+                                    "__bicep_resource_derived_type!": {
+                                      "source": "Microsoft.ApiCenter/services/workspaces/apis/deployments@2024-03-01#properties/properties/properties/customProperties"
+                                    },
                                     "description": "Optional. The custom metadata defined for API catalog entities."
-                                  }
+                                  },
+                                  "nullable": true
                                 },
                                 "server": {
                                   "$ref": "#/definitions/deploymentServerType",
@@ -3117,9 +3176,9 @@
                             "kind": {
                               "type": "string",
                               "allowedValues": [
-                                "rest",
                                 "graphql",
                                 "grpc",
+                                "rest",
                                 "soap",
                                 "webhook",
                                 "websocket"
@@ -3145,11 +3204,13 @@
                               }
                             },
                             "customProperties": {
-                              "type": "object",
-                              "nullable": true,
                               "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.ApiCenter/services/workspaces/apis@2024-03-01#properties/properties/properties/customProperties"
+                                },
                                 "description": "Optional. The custom metadata defined for API catalog entities."
-                              }
+                              },
+                              "nullable": true
                             },
                             "externalDocumentation": {
                               "type": "array",
@@ -3278,8 +3339,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.43.8.12551",
-                                      "templateHash": "7712247646685698149"
+                                      "version": "0.47.16.16243",
+                                      "templateHash": "16207919601685014878"
                                     },
                                     "name": "API Center Service Workspace API Versions",
                                     "description": "This module deploys an API Center Service Workspace API Version."
@@ -3352,13 +3413,13 @@
                                     "lifecycleStage": {
                                       "type": "string",
                                       "allowedValues": [
+                                        "deprecated",
                                         "design",
                                         "development",
-                                        "testing",
                                         "preview",
                                         "production",
-                                        "deprecated",
-                                        "retired"
+                                        "retired",
+                                        "testing"
                                       ],
                                       "metadata": {
                                         "description": "Required. The lifecycle stage of the API version."
@@ -3446,8 +3507,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.43.8.12551",
-                                              "templateHash": "3710889989242840994"
+                                              "version": "0.47.16.16243",
+                                              "templateHash": "10161678119252581582"
                                             },
                                             "name": "API Center Service Workspace API Version Definitions",
                                             "description": "This module deploys an API Center Service Workspace API Version Definition."
@@ -3627,11 +3688,14 @@
                                   "description": {
                                     "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'description')]"
                                   },
-                                  "environmentId": {
-                                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'environmentId')]"
+                                  "environment": {
+                                    "value": "[coalesce(parameters('deployments'), createArray())[copyIndex()].environment]"
                                   },
-                                  "definitionId": {
-                                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'definitionId')]"
+                                  "version": {
+                                    "value": "[coalesce(parameters('deployments'), createArray())[copyIndex()].version]"
+                                  },
+                                  "definition": {
+                                    "value": "[coalesce(parameters('deployments'), createArray())[copyIndex()].definition]"
                                   },
                                   "state": {
                                     "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'state')]"
@@ -3650,8 +3714,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.43.8.12551",
-                                      "templateHash": "10230305764403580088"
+                                      "version": "0.47.16.16243",
+                                      "templateHash": "3062393670156721783"
                                     },
                                     "name": "API Center Service Workspace API Deployments",
                                     "description": "This module deploys an API Center Service Workspace API Deployment."
@@ -3720,37 +3784,43 @@
                                         "description": "Optional. The description of the deployment."
                                       }
                                     },
-                                    "environmentId": {
+                                    "environment": {
                                       "type": "string",
-                                      "nullable": true,
                                       "metadata": {
-                                        "description": "Optional. The API center-scoped environment resource ID."
+                                        "description": "Required. The target environment name of the deployment."
                                       }
                                     },
-                                    "definitionId": {
+                                    "version": {
                                       "type": "string",
-                                      "nullable": true,
                                       "metadata": {
-                                        "description": "Optional. The API center-scoped definition resource ID."
+                                        "description": "Required. The deployed version name."
+                                      }
+                                    },
+                                    "definition": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "Required. The deployed definition name."
                                       }
                                     },
                                     "state": {
                                       "type": "string",
-                                      "nullable": true,
                                       "allowedValues": [
                                         "active",
                                         "inactive"
                                       ],
+                                      "nullable": true,
                                       "metadata": {
                                         "description": "Optional. The state of the API deployment."
                                       }
                                     },
                                     "customProperties": {
-                                      "type": "object",
-                                      "nullable": true,
                                       "metadata": {
+                                        "__bicep_resource_derived_type!": {
+                                          "source": "Microsoft.ApiCenter/services/workspaces/apis/deployments@2024-03-01#properties/properties/properties/customProperties"
+                                        },
                                         "description": "Optional. The custom metadata defined for API catalog entities."
-                                      }
+                                      },
+                                      "nullable": true
                                     },
                                     "server": {
                                       "$ref": "#/definitions/deploymentServerType",
@@ -3786,11 +3856,11 @@
                                       "properties": {
                                         "title": "[parameters('title')]",
                                         "description": "[parameters('description')]",
-                                        "environmentId": "[parameters('environmentId')]",
-                                        "definitionId": "[parameters('definitionId')]",
+                                        "environmentId": "[format('/workspaces/{0}/environments/{1}', parameters('workspaceName'), parameters('environment'))]",
+                                        "definitionId": "[format('/workspaces/{0}/apis/{1}/versions/{2}/definitions/{3}', parameters('workspaceName'), parameters('apiName'), parameters('version'), parameters('definition'))]",
                                         "state": "[parameters('state')]",
                                         "customProperties": "[parameters('customProperties')]",
-                                        "server": "[parameters('server')]"
+                                        "server": "[if(or(equals(parameters('server'), null()), equals(tryGet(parameters('server'), 'runtimeUri'), null())), createObject('runtimeUri', createArray()), parameters('server'))]"
                                       }
                                     }
                                   },
@@ -3881,17 +3951,14 @@
                           "importSpecification": {
                             "value": "[tryGet(coalesce(parameters('apiSources'), createArray())[copyIndex()], 'importSpecification')]"
                           },
-                          "targetEnvironmentId": {
-                            "value": "[tryGet(coalesce(parameters('apiSources'), createArray())[copyIndex()], 'targetEnvironmentId')]"
+                          "targetEnvironment": {
+                            "value": "[tryGet(coalesce(parameters('apiSources'), createArray())[copyIndex()], 'targetEnvironment')]"
                           },
                           "targetLifecycleStage": {
                             "value": "[tryGet(coalesce(parameters('apiSources'), createArray())[copyIndex()], 'targetLifecycleStage')]"
                           },
                           "azureApiManagementSource": {
                             "value": "[tryGet(coalesce(parameters('apiSources'), createArray())[copyIndex()], 'azureApiManagementSource')]"
-                          },
-                          "enableDefaultRoleAssignment": {
-                            "value": "[coalesce(tryGet(coalesce(parameters('apiSources'), createArray())[copyIndex()], 'enableDefaultRoleAssignment'), true())]"
                           }
                         },
                         "template": {
@@ -3901,8 +3968,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "8501693241772296127"
+                              "version": "0.47.16.16243",
+                              "templateHash": "8852908814336592144"
                             },
                             "name": "API Center Service Workspace API Sources",
                             "description": "This module deploys an API Center Service Workspace API Source for importing APIs from external sources like Azure API Management."
@@ -3921,7 +3988,7 @@
                                   "type": "string",
                                   "nullable": true,
                                   "metadata": {
-                                    "description": "Optional. The resource ID of the managed identity that has access to the API Management instance."
+                                    "description": "Optional. The resource ID of the managed identity that has access to the API Management instance. If not provided, system-assigned identity is used and granted Api Management Service Reader role."
                                   }
                                 }
                               },
@@ -3953,35 +4020,35 @@
                             },
                             "importSpecification": {
                               "type": "string",
-                              "nullable": true,
                               "allowedValues": [
+                                "always",
                                 "never",
-                                "ondemand",
-                                "always"
+                                "ondemand"
                               ],
+                              "nullable": true,
                               "metadata": {
                                 "description": "Optional. Indicates if the specification should be imported along with metadata."
                               }
                             },
-                            "targetEnvironmentId": {
+                            "targetEnvironment": {
                               "type": "string",
                               "nullable": true,
                               "metadata": {
-                                "description": "Optional. The target environment resource ID within API Center."
+                                "description": "Optional. The target environment name. If not provided a new environment will be created."
                               }
                             },
                             "targetLifecycleStage": {
                               "type": "string",
-                              "nullable": true,
                               "allowedValues": [
+                                "deprecated",
                                 "design",
                                 "development",
-                                "testing",
                                 "preview",
                                 "production",
-                                "deprecated",
-                                "retired"
+                                "retired",
+                                "testing"
                               ],
+                              "nullable": true,
                               "metadata": {
                                 "description": "Optional. The target lifecycle stage for imported APIs."
                               }
@@ -3991,18 +4058,10 @@
                               "metadata": {
                                 "description": "Required. Configuration for importing APIs from an Azure API Management instance."
                               }
-                            },
-                            "enableDefaultRoleAssignment": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true."
-                              }
                             }
                           },
                           "variables": {
-                            "useManagedIdentity": "[not(empty(coalesce(tryGet(parameters('azureApiManagementSource'), 'msiResourceId'), '')))]",
-                            "msiResourceIdSegments": "[split(coalesce(tryGet(parameters('azureApiManagementSource'), 'msiResourceId'), format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/placeholder', subscription().subscriptionId, resourceGroup().name)), '/')]",
+                            "useSystemAssignedIdentity": "[empty(coalesce(tryGet(parameters('azureApiManagementSource'), 'msiResourceId'), ''))]",
                             "apimResourceIdSegments": "[split(parameters('azureApiManagementSource').resourceId, '/')]"
                           },
                           "resources": {
@@ -4018,22 +4077,13 @@
                               "apiVersion": "2024-06-01-preview",
                               "name": "[parameters('serviceName')]"
                             },
-                            "managedIdentity": {
-                              "condition": "[variables('useManagedIdentity')]",
-                              "existing": true,
-                              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-                              "apiVersion": "2024-11-30",
-                              "subscriptionId": "[variables('msiResourceIdSegments')[2]]",
-                              "resourceGroup": "[variables('msiResourceIdSegments')[4]]",
-                              "name": "[variables('msiResourceIdSegments')[8]]"
-                            },
                             "apiSource": {
                               "type": "Microsoft.ApiCenter/services/workspaces/apiSources",
                               "apiVersion": "2024-06-01-preview",
                               "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]",
                               "properties": {
                                 "importSpecification": "[parameters('importSpecification')]",
-                                "targetEnvironmentId": "[parameters('targetEnvironmentId')]",
+                                "targetEnvironmentId": "[if(not(empty(parameters('targetEnvironment'))), format('/workspaces/{0}/environments/{1}', parameters('workspaceName'), parameters('targetEnvironment')), null())]",
                                 "targetLifecycleStage": "[parameters('targetLifecycleStage')]",
                                 "azureApiManagementSource": "[parameters('azureApiManagementSource')]"
                               },
@@ -4042,7 +4092,7 @@
                               ]
                             },
                             "apimRoleAssignment": {
-                              "condition": "[parameters('enableDefaultRoleAssignment')]",
+                              "condition": "[variables('useSystemAssignedIdentity')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2025-04-01",
                               "name": "[format('{0}-ApiSource-ApimRbac', uniqueString(deployment().name))]",
@@ -4057,7 +4107,9 @@
                                   "apimServiceName": {
                                     "value": "[last(variables('apimResourceIdSegments'))]"
                                   },
-                                  "principalId": "[if(variables('useManagedIdentity'), createObject('value', reference('managedIdentity').principalId), createObject('value', coalesce(tryGet(tryGet(reference('service', '2024-06-01-preview', 'full'), 'identity'), 'principalId'), '')))]"
+                                  "principalId": {
+                                    "value": "[tryGet(tryGet(reference('service', '2024-06-01-preview', 'full'), 'identity'), 'principalId')]"
+                                  }
                                 },
                                 "template": {
                                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -4065,8 +4117,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.43.8.12551",
-                                      "templateHash": "13386089810313622890"
+                                      "version": "0.47.16.16243",
+                                      "templateHash": "8834957109244747392"
                                     }
                                   },
                                   "parameters": {
@@ -4083,17 +4135,14 @@
                                       }
                                     }
                                   },
-                                  "variables": {
-                                    "apiManagementServiceReaderRoleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '71522526-b88f-4d52-b57f-d31fc3546d0d')]"
-                                  },
                                   "resources": [
                                     {
                                       "type": "Microsoft.Authorization/roleAssignments",
                                       "apiVersion": "2022-04-01",
                                       "scope": "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]",
-                                      "name": "[guid(resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName')), parameters('principalId'), variables('apiManagementServiceReaderRoleDefinitionId'))]",
+                                      "name": "[guid(resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName')), parameters('principalId'), resourceId('Microsoft.Authorization/roleDefinitions', '71522526-b88f-4d52-b57f-d31fc3546d0d'))]",
                                       "properties": {
-                                        "roleDefinitionId": "[variables('apiManagementServiceReaderRoleDefinitionId')]",
+                                        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '71522526-b88f-4d52-b57f-d31fc3546d0d')]",
                                         "principalId": "[parameters('principalId')]",
                                         "principalType": "ServicePrincipal"
                                       }
@@ -4102,7 +4151,6 @@
                                 }
                               },
                               "dependsOn": [
-                                "managedIdentity",
                                 "service"
                               ]
                             }
@@ -4133,7 +4181,8 @@
                         }
                       },
                       "dependsOn": [
-                        "workspace"
+                        "workspace",
+                        "workspace_environments"
                       ]
                     }
                   },
@@ -4209,9 +4258,9 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation'))))]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+        "nestedDependencies",
+        "resourceGroup"
       ]
     }
-  ]
+  }
 }

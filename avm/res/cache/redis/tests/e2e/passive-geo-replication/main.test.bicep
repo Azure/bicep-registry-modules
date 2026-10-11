@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Passive Geo-Replicated Redis Cache'
@@ -46,7 +48,7 @@ module nestedDependencies2 'dependencies2.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies2'
   params: {
     location: nestedDependencies1.outputs.pairedRegionName
-    redisName: 'dep-${namePrefix}-redis-sec-${serviceShort}'
+    redisName: uniqueResourceName('dep-${namePrefix}-redis-sec-${serviceShort}', resourceGroup.id, 63)
   }
 }
 
@@ -60,7 +62,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 63)
       capacity: 2
       enableNonSslPort: true
       minimumTlsVersion: '1.2'

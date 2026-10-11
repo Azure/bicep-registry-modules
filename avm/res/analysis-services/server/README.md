@@ -55,7 +55,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/analysis-services/server:<version>' = {
   params: {
     // Required parameters
-    name: 'assmin'
+    name: '<name>'
     // Non-required parameters
     location: '<location>'
   }
@@ -76,7 +76,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "assmin"
+      "value": "<name>"
     },
     // Non-required parameters
     "location": {
@@ -97,7 +97,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
 using 'br/public:avm/res/analysis-services/server:<version>'
 
 // Required parameters
-param name = 'assmin'
+param name = '<name>'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -120,7 +120,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/analysis-services/server:<version>' = {
   params: {
     // Required parameters
-    name: 'assmax'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -161,7 +161,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
     }
     roleAssignments: [
       {
-        name: '0a657697-dd80-427e-b1bc-7970ab74f937'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -203,7 +203,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "assmax"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -254,7 +254,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "0a657697-dd80-427e-b1bc-7970ab74f937",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -300,7 +300,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
 using 'br/public:avm/res/analysis-services/server:<version>'
 
 // Required parameters
-param name = 'assmax'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -341,7 +341,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '0a657697-dd80-427e-b1bc-7970ab74f937'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -385,7 +385,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/analysis-services/server:<version>' = {
   params: {
     // Required parameters
-    name: 'asswaf'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -432,7 +432,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "asswaf"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -489,7 +489,7 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
 using 'br/public:avm/res/analysis-services/server:<version>'
 
 // Required parameters
-param name = 'asswaf'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {

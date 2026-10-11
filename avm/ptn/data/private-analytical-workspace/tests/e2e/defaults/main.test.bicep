@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
@@ -42,7 +44,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}002'
+      name: uniqueResourceName('${namePrefix}${serviceShort}002', resourceGroup.id, 21)
       advancedOptions: {
         keyVault: {
           enablePurgeProtection: false // For the purposes of the test, we disable purge protection

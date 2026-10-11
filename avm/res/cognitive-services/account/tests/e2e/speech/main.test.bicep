@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'As Speech Service'
@@ -53,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       kind: 'SpeechServices'
       location: resourceLocation
-      customSubDomainName: '${namePrefix}speechdomain'
+      customSubDomainName: uniqueResourceName('${namePrefix}speechdomain', resourceGroup.id, 64)
       privateEndpoints: [
         {
           privateDnsZoneGroup: {

@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
@@ -35,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    trafficManagerProfileName: 'dep-${namePrefix}-tmp-${serviceShort}'
+    trafficManagerProfileName: uniqueResourceName('dep-${namePrefix}-tmp-${serviceShort}', resourceGroup.id, 63)
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }

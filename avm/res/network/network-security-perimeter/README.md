@@ -169,7 +169,7 @@ module networkSecurityPerimeter 'br/public:avm/res/network/network-security-peri
     ]
     roleAssignments: [
       {
-        name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -267,7 +267,7 @@ module networkSecurityPerimeter 'br/public:avm/res/network/network-security-peri
     "roleAssignments": {
       "value": [
         {
-          "name": "b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -353,7 +353,7 @@ param resourceAssociations = [
 ]
 param roleAssignments = [
   {
-    name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

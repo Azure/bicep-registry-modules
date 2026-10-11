@@ -62,7 +62,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module namespace 'br/public:avm/res/relay/namespace:<version>' = {
   params: {
-    name: 'rnmin001'
+    name: '<name>'
   }
 }
 ```
@@ -80,7 +80,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "rnmin001"
+      "value": "<name>"
     }
   }
 }
@@ -96,7 +96,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/relay/namespace:<version>'
 
-param name = 'rnmin001'
+param name = '<name>'
 ```
 
 </details>
@@ -117,7 +117,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/relay/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'rnmax001'
+    name: '<name>'
     // Non-required parameters
     authorizationRules: [
       {
@@ -220,7 +220,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
     ]
     roleAssignments: [
       {
-        name: 'd3dff05a-96d7-4d63-82c2-0fd8ac7b859d'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -274,7 +274,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "rnmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "authorizationRules": {
@@ -393,7 +393,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "d3dff05a-96d7-4d63-82c2-0fd8ac7b859d",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -451,7 +451,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
 using 'br/public:avm/res/relay/namespace:<version>'
 
 // Required parameters
-param name = 'rnmax001'
+param name = '<name>'
 // Non-required parameters
 param authorizationRules = [
   {
@@ -554,7 +554,7 @@ param privateEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: 'd3dff05a-96d7-4d63-82c2-0fd8ac7b859d'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -610,7 +610,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/relay/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'rnwaf001'
+    name: '<name>'
     // Non-required parameters
     authorizationRules: [
       {
@@ -712,7 +712,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "rnwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "authorizationRules": {
@@ -826,7 +826,7 @@ module namespace 'br/public:avm/res/relay/namespace:<version>' = {
 using 'br/public:avm/res/relay/namespace:<version>'
 
 // Required parameters
-param name = 'rnwaf001'
+param name = '<name>'
 // Non-required parameters
 param authorizationRules = [
   {

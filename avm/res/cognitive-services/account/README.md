@@ -79,7 +79,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'AIServices'
     name: 'csadan001'
     // Non-required parameters
-    customSubDomainName: 'xcsadanai'
+    customSubDomainName: '<customSubDomainName>'
     deployments: [
       {
         model: {
@@ -124,7 +124,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xcsadanai"
+      "value": "<customSubDomainName>"
     },
     "deployments": {
       "value": [
@@ -165,7 +165,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 param kind = 'AIServices'
 param name = 'csadan001'
 // Non-required parameters
-param customSubDomainName = 'xcsadanai'
+param customSubDomainName = '<customSubDomainName>'
 param deployments = [
   {
     model: {
@@ -208,7 +208,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'AIServices'
     name: 'csadpa003'
     // Non-required parameters
-    customSubDomainName: 'xcsadpaai'
+    customSubDomainName: '<customSubDomainName>'
     deployments: [
       {
         model: {
@@ -269,7 +269,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xcsadpaai"
+      "value": "<customSubDomainName>"
     },
     "deployments": {
       "value": [
@@ -332,7 +332,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 param kind = 'AIServices'
 param name = 'csadpa003'
 // Non-required parameters
-param customSubDomainName = 'xcsadpaai'
+param customSubDomainName = '<customSubDomainName>'
 param deployments = [
   {
     model: {
@@ -391,7 +391,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'AIServices'
     name: 'csadp003'
     // Non-required parameters
-    customSubDomainName: 'xcsadpai'
+    customSubDomainName: '<customSubDomainName>'
     deployments: [
       {
         model: {
@@ -447,7 +447,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xcsadpai"
+      "value": "<customSubDomainName>"
     },
     "deployments": {
       "value": [
@@ -503,7 +503,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 param kind = 'AIServices'
 param name = 'csadp003'
 // Non-required parameters
-param customSubDomainName = 'xcsadpai'
+param customSubDomainName = '<customSubDomainName>'
 param deployments = [
   {
     model: {
@@ -557,7 +557,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'AIServices'
     name: 'csad002'
     // Non-required parameters
-    customSubDomainName: 'xcsadai'
+    customSubDomainName: '<customSubDomainName>'
     deployments: [
       {
         model: {
@@ -597,7 +597,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xcsadai"
+      "value": "<customSubDomainName>"
     },
     "deployments": {
       "value": [
@@ -633,7 +633,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 param kind = 'AIServices'
 param name = 'csad002'
 // Non-required parameters
-param customSubDomainName = 'xcsadai'
+param customSubDomainName = '<customSubDomainName>'
 param deployments = [
   {
     model: {
@@ -673,7 +673,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   params: {
     // Required parameters
     kind: 'SpeechServices'
-    name: 'csahsmu001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -710,7 +710,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "SpeechServices"
     },
     "name": {
-      "value": "csahsmu001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -753,7 +753,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 
 // Required parameters
 param kind = 'SpeechServices'
-param name = 'csahsmu001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -895,7 +895,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   params: {
     // Required parameters
     kind: 'SpeechServices'
-    name: 'csaencr001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -926,7 +926,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "SpeechServices"
     },
     "name": {
-      "value": "csaencr001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -961,7 +961,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 
 // Required parameters
 param kind = 'SpeechServices'
-param name = 'csaencr001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -992,7 +992,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   params: {
     // Required parameters
     kind: 'SpeechServices'
-    name: 'csakv001'
+    name: '<name>'
     // Non-required parameters
     disableLocalAuth: false
     secretsExportConfiguration: {
@@ -1021,7 +1021,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "SpeechServices"
     },
     "name": {
-      "value": "csakv001"
+      "value": "<name>"
     },
     // Non-required parameters
     "disableLocalAuth": {
@@ -1050,7 +1050,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 
 // Required parameters
 param kind = 'SpeechServices'
-param name = 'csakv001'
+param name = '<name>'
 // Non-required parameters
 param disableLocalAuth = false
 param secretsExportConfiguration = {
@@ -1079,7 +1079,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   params: {
     // Required parameters
     kind: 'SpeechServices'
-    name: 'csamin001'
+    name: '<name>'
   }
 }
 ```
@@ -1101,7 +1101,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "SpeechServices"
     },
     "name": {
-      "value": "csamin001"
+      "value": "<name>"
     }
   }
 }
@@ -1119,7 +1119,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 
 // Required parameters
 param kind = 'SpeechServices'
-param name = 'csamin001'
+param name = '<name>'
 ```
 
 </details>
@@ -1144,7 +1144,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     name: 'csamax001'
     // Non-required parameters
     allowProjectManagement: false
-    customSubDomainName: 'xcsamax'
+    customSubDomainName: '<customSubDomainName>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1308,7 +1308,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": false
     },
     "customSubDomainName": {
-      "value": "xcsamax"
+      "value": "<customSubDomainName>"
     },
     "diagnosticSettings": {
       "value": [
@@ -1488,7 +1488,7 @@ param kind = 'AIServices'
 param name = 'csamax001'
 // Non-required parameters
 param allowProjectManagement = false
-param customSubDomainName = 'xcsamax'
+param customSubDomainName = '<customSubDomainName>'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1647,7 +1647,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'OpenAI'
     name: 'csoai002'
     // Non-required parameters
-    customSubDomainName: 'xcsoaiai'
+    customSubDomainName: '<customSubDomainName>'
     deployments: [
       {
         model: {
@@ -1700,7 +1700,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xcsoaiai"
+      "value": "<customSubDomainName>"
     },
     "deployments": {
       "value": [
@@ -1753,7 +1753,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 param kind = 'OpenAI'
 param name = 'csoai002'
 // Non-required parameters
-param customSubDomainName = 'xcsoaiai'
+param customSubDomainName = '<customSubDomainName>'
 param deployments = [
   {
     model: {
@@ -1804,7 +1804,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'SpeechServices'
     name: 'csaspeech001'
     // Non-required parameters
-    customSubDomainName: 'speechdomain'
+    customSubDomainName: '<customSubDomainName>'
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -1860,7 +1860,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "speechdomain"
+      "value": "<customSubDomainName>"
     },
     "location": {
       "value": "<location>"
@@ -1920,7 +1920,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 param kind = 'SpeechServices'
 param name = 'csaspeech001'
 // Non-required parameters
-param customSubDomainName = 'speechdomain'
+param customSubDomainName = '<customSubDomainName>'
 param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
@@ -1974,7 +1974,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'Face'
     name: 'csawaf001'
     // Non-required parameters
-    customSubDomainName: 'xcsawaf'
+    customSubDomainName: '<customSubDomainName>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2034,7 +2034,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xcsawaf"
+      "value": "<customSubDomainName>"
     },
     "diagnosticSettings": {
       "value": [
@@ -2098,7 +2098,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 param kind = 'Face'
 param name = 'csawaf001'
 // Non-required parameters
-param customSubDomainName = 'xcsawaf'
+param customSubDomainName = '<customSubDomainName>'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'

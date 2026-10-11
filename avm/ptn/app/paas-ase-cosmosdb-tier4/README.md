@@ -89,7 +89,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module paasAseCosmosdbTier4 'br/public:avm/ptn/app/paas-ase-cosmosdb-tier4:<version>' = {
   params: {
     // Required parameters
-    name: 'apactwaf001'
+    name: '<name>'
     // Non-required parameters
     defaultSubnetAddressPrefix: '192.168.250.0/24'
     privateEndpointSubnetAddressPrefix: '192.168.251.0/24'
@@ -118,7 +118,7 @@ module paasAseCosmosdbTier4 'br/public:avm/ptn/app/paas-ase-cosmosdb-tier4:<vers
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apactwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "defaultSubnetAddressPrefix": {
@@ -155,7 +155,7 @@ module paasAseCosmosdbTier4 'br/public:avm/ptn/app/paas-ase-cosmosdb-tier4:<vers
 using 'br/public:avm/ptn/app/paas-ase-cosmosdb-tier4:<version>'
 
 // Required parameters
-param name = 'apactwaf001'
+param name = '<name>'
 // Non-required parameters
 param defaultSubnetAddressPrefix = '192.168.250.0/24'
 param privateEndpointSubnetAddressPrefix = '192.168.251.0/24'

@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'VPN Active Passive without BGP settings'
@@ -31,6 +33,8 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: resourceLocation
 }
 
+var publicIpDomainNameLabel = uniqueResourceName('${namePrefix}-dm-${serviceShort}', resourceGroup.id, 60)
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
@@ -61,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
       }
 
       domainNameLabel: [
-        '${namePrefix}-dm-${serviceShort}'
+        publicIpDomainNameLabel
       ]
       publicIpAvailabilityZones: [
         1

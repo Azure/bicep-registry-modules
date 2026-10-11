@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Deploying only the assets & image'
@@ -36,8 +38,16 @@ module nestedDependencies 'dependencies.bicep' = {
     resourceGroupName: resourceGroupName
     imageTemplateResourceGroupName: '${resourceGroupName}-image-build'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    deploymentScriptStorageAccountName: 'dep${namePrefix}dsst${serviceShort}'
-    assetsStorageAccountName: 'dep${namePrefix}ast${serviceShort}'
+    deploymentScriptStorageAccountName: uniqueResourceName(
+      'dep${namePrefix}dsst${serviceShort}',
+      subscriptionResourceId('Microsoft.Resources/resourceGroups', resourceGroupName),
+      24
+    )
+    assetsStorageAccountName: uniqueResourceName(
+      'dep${namePrefix}ast${serviceShort}',
+      subscriptionResourceId('Microsoft.Resources/resourceGroups', resourceGroupName),
+      24
+    )
     location: resourceLocation
   }
 }

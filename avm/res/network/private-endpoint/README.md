@@ -210,7 +210,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     ]
     roleAssignments: [
       {
-        name: '6804f270-b4e9-455f-a11b-7f2a64e38f7c'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -326,7 +326,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     "roleAssignments": {
       "value": [
         {
-          "name": "6804f270-b4e9-455f-a11b-7f2a64e38f7c",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -420,7 +420,7 @@ param privateLinkServiceConnections = [
 ]
 param roleAssignments = [
   {
-    name: '6804f270-b4e9-455f-a11b-7f2a64e38f7c'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

@@ -895,7 +895,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     }
     roleAssignments: [
       {
-        name: '35288372-e6b4-4333-9ee6-dd997b96d52b'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1328,7 +1328,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "35288372-e6b4-4333-9ee6-dd997b96d52b",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1739,7 +1739,7 @@ param replicationAlertSettings = {
 }
 param roleAssignments = [
   {
-    name: '35288372-e6b4-4333-9ee6-dd997b96d52b'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

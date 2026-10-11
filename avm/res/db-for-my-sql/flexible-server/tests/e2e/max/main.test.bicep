@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -85,7 +87,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 63)
       location: enforcedLocation
       lock: {
         kind: 'CanNotDelete'
@@ -93,13 +95,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          name: '2478b63b-0cae-457f-9bd3-9feb00e1925b'
+          name: guid(resourceGroup.id, '2478b63b-0cae-457f-9bd3-9feb00e1925b')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -116,7 +118,7 @@ module testDeployment '../../../main.bicep' = [
       tags: {
         'hidden-title': 'This is visible in the resource name'
         resourceType: 'MySQL Flexible Server'
-        serverName: '${namePrefix}${serviceShort}001'
+        serverName: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 63)
       }
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password

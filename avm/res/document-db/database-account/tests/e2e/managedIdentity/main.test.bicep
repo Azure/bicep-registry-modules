@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Deploying with Managed identities'
@@ -50,7 +52,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    name: '${namePrefix}-user-mi'
+    name: uniqueResourceName('${namePrefix}-user-mi', resourceGroup.id, 44)
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -64,7 +66,7 @@ module testDeployment '../../../main.bicep' = {
         principalType: 'ServicePrincipal'
       }
       {
-        name: guid('Custom seed ${namePrefix}${serviceShort}')
+        name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'

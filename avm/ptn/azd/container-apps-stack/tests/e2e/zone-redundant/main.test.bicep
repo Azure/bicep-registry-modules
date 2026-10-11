@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'With zoneRedundant enabled'
@@ -51,7 +53,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       containerAppsEnvironmentName: '${namePrefix}${serviceShort}cae001'
-      containerRegistryName: '${namePrefix}${serviceShort}cr001'
+      containerRegistryName: uniqueResourceName('${namePrefix}${serviceShort}cr001', resourceGroup.id, 50)
       logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
       location: resourceLocation
       acrSku: 'Standard'

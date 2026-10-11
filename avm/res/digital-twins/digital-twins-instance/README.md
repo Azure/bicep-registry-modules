@@ -58,7 +58,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-instance:<version>' = {
   params: {
-    name: 'dtdimin001'
+    name: '<name>'
   }
 }
 ```
@@ -76,7 +76,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "dtdimin001"
+      "value": "<name>"
     }
   }
 }
@@ -92,7 +92,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 ```bicep-params
 using 'br/public:avm/res/digital-twins/digital-twins-instance:<version>'
 
-param name = 'dtdimin001'
+param name = '<name>'
 ```
 
 </details>
@@ -113,7 +113,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'dtdmax001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -262,7 +262,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dtdmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -425,7 +425,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 using 'br/public:avm/res/digital-twins/digital-twins-instance:<version>'
 
 // Required parameters
-param name = 'dtdmax001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -576,7 +576,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'dtdpep001'
+    name: '<name>'
     // Non-required parameters
     privateEndpoints: [
       {
@@ -618,7 +618,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dtdpep001"
+      "value": "<name>"
     },
     // Non-required parameters
     "privateEndpoints": {
@@ -660,7 +660,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 using 'br/public:avm/res/digital-twins/digital-twins-instance:<version>'
 
 // Required parameters
-param name = 'dtdpep001'
+param name = '<name>'
 // Non-required parameters
 param privateEndpoints = [
   {
@@ -704,7 +704,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'dtdiwaf001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -759,7 +759,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dtdiwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -818,7 +818,7 @@ module digitalTwinsInstance 'br/public:avm/res/digital-twins/digital-twins-insta
 using 'br/public:avm/res/digital-twins/digital-twins-instance:<version>'
 
 // Required parameters
-param name = 'dtdiwaf001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {

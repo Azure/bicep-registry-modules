@@ -235,7 +235,7 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
     publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
-        name: '6bfff821-2b18-4790-89fa-2849d86bc6be'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -397,7 +397,7 @@ module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "6bfff821-2b18-4790-89fa-2849d86bc6be",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -547,7 +547,7 @@ param lock = {
 param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
-    name: '6bfff821-2b18-4790-89fa-2849d86bc6be'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

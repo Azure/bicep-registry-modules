@@ -73,7 +73,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'dfpshsmu003'
+    name: '<name>'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -116,7 +116,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": -1
     },
     "name": {
-      "value": "dfpshsmu003"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -167,7 +167,7 @@ using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'dfpshsmu003'
+param name = '<name>'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -210,7 +210,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'dfpcfg001'
+    name: '<name>'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -243,7 +243,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": 1
     },
     "name": {
-      "value": "dfpcfg001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -286,7 +286,7 @@ using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'dfpcfg001'
+param name = '<name>'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -319,7 +319,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'dfpsmin001'
+    name: '<name>'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -351,7 +351,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": 1
     },
     "name": {
-      "value": "dfpsmin001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -385,7 +385,7 @@ using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'dfpsmin001'
+param name = '<name>'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -417,7 +417,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'dfpfmax001'
+    name: '<name>'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -469,7 +469,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": 1
     },
     "name": {
-      "value": "dfpfmax001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -551,7 +551,7 @@ using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'dfpfmax001'
+param name = '<name>'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -603,7 +603,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'dfpspvt001'
+    name: '<name>'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -690,7 +690,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": -1
     },
     "name": {
-      "value": "dfpspvt001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -797,7 +797,7 @@ using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'dfpspvt001'
+param name = '<name>'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -884,7 +884,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'dfpspe001'
+    name: '<name>'
     skuName: 'Standard_D2ds_v5'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -940,7 +940,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": -1
     },
     "name": {
-      "value": "dfpspe001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2ds_v5"
@@ -1010,7 +1010,7 @@ using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'dfpspe001'
+param name = '<name>'
 param skuName = 'Standard_D2ds_v5'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -1066,7 +1066,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'dfpspub001'
+    name: '<name>'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -1170,7 +1170,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": 1
     },
     "name": {
-      "value": "dfpspub001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -1300,7 +1300,7 @@ using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'dfpspub001'
+param name = '<name>'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -1404,7 +1404,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'dfpsrep001'
+    name: '<name>'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -1435,7 +1435,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": -1
     },
     "name": {
-      "value": "dfpsrep001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -1478,7 +1478,7 @@ using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'dfpsrep001'
+param name = '<name>'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -1509,7 +1509,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'dfpswaf001'
+    name: '<name>'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -1589,7 +1589,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": 1
     },
     "name": {
-      "value": "dfpswaf001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
@@ -1689,7 +1689,7 @@ using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'dfpswaf001'
+param name = '<name>'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
 // Non-required parameters

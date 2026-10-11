@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 metadata name = 'App Service Environment'
 metadata description = 'This instance deploys ASE v3 with a Linux container workload behind Application Gateway.'
 
@@ -46,7 +48,7 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: take('${namePrefix}aselw', 10)
+      workloadName: uniqueResourceName('${namePrefix}aselw', resourceGroup.id, 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'

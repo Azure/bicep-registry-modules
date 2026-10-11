@@ -140,7 +140,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     }
     roleAssignments: [
       {
-        name: 'c2c1c560-2169-405a-a8dc-7427e403e5ac'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -333,7 +333,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     "roleAssignments": {
       "value": [
         {
-          "name": "c2c1c560-2169-405a-a8dc-7427e403e5ac",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -514,7 +514,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'c2c1c560-2169-405a-a8dc-7427e403e5ac'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

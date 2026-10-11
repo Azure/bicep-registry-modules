@@ -80,7 +80,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'functionapp'
-    name: 'wsfamin001'
+    name: '<name>'
     serverFarmResourceId: '<serverFarmResourceId>'
   }
 }
@@ -103,7 +103,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "functionapp"
     },
     "name": {
-      "value": "wsfamin001"
+      "value": "<name>"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -124,7 +124,7 @@ using 'br/public:avm/res/web/site:<version>'
 
 // Required parameters
 param kind = 'functionapp'
-param name = 'wsfamin001'
+param name = '<name>'
 param serverFarmResourceId = '<serverFarmResourceId>'
 ```
 
@@ -147,7 +147,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'functionapp'
-    name: 'wsfamax001'
+    name: '<name>'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     basicPublishingCredentialsPolicies: [
@@ -310,7 +310,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
-        name: '9efc9c10-f482-4af0-9acb-03b5a16f947e'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -399,7 +399,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         ]
         roleAssignments: [
           {
-            name: '845ed19c-78e7-4422-aa3d-b78b67cd1234'
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -448,7 +448,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "functionapp"
     },
     "name": {
-      "value": "wsfamax001"
+      "value": "<name>"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -645,7 +645,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "9efc9c10-f482-4af0-9acb-03b5a16f947e",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -740,7 +740,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
           ],
           "roleAssignments": [
             {
-              "name": "845ed19c-78e7-4422-aa3d-b78b67cd1234",
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -785,7 +785,7 @@ using 'br/public:avm/res/web/site:<version>'
 
 // Required parameters
 param kind = 'functionapp'
-param name = 'wsfamax001'
+param name = '<name>'
 param serverFarmResourceId = '<serverFarmResourceId>'
 // Non-required parameters
 param basicPublishingCredentialsPolicies = [
@@ -948,7 +948,7 @@ param privateEndpoints = [
 param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
-    name: '9efc9c10-f482-4af0-9acb-03b5a16f947e'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -1037,7 +1037,7 @@ param slots = [
     ]
     roleAssignments: [
       {
-        name: '845ed19c-78e7-4422-aa3d-b78b67cd1234'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1231,7 +1231,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'app,linux,container'
-    name: 'wslwamin001'
+    name: '<name>'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     siteConfig: {
@@ -1266,7 +1266,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "app,linux,container"
     },
     "name": {
-      "value": "wslwamin001"
+      "value": "<name>"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -1301,7 +1301,7 @@ using 'br/public:avm/res/web/site:<version>'
 
 // Required parameters
 param kind = 'app,linux,container'
-param name = 'wslwamin001'
+param name = '<name>'
 param serverFarmResourceId = '<serverFarmResourceId>'
 // Non-required parameters
 param siteConfig = {
@@ -1336,7 +1336,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'app'
-    name: 'wswaf001'
+    name: '<name>'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     basicPublishingCredentialsPolicies: [
@@ -1420,7 +1420,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "app"
     },
     "name": {
-      "value": "wswaf001"
+      "value": "<name>"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -1522,7 +1522,7 @@ using 'br/public:avm/res/web/site:<version>'
 
 // Required parameters
 param kind = 'app'
-param name = 'wswaf001'
+param name = '<name>'
 param serverFarmResourceId = '<serverFarmResourceId>'
 // Non-required parameters
 param basicPublishingCredentialsPolicies = [
@@ -1606,7 +1606,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'app'
-    name: 'wsacr001'
+    name: '<name>'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     configs: [
@@ -1682,7 +1682,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "app"
     },
     "name": {
-      "value": "wsacr001"
+      "value": "<name>"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -1762,7 +1762,7 @@ using 'br/public:avm/res/web/site:<version>'
 
 // Required parameters
 param kind = 'app'
-param name = 'wsacr001'
+param name = '<name>'
 param serverFarmResourceId = '<serverFarmResourceId>'
 // Non-required parameters
 param configs = [
@@ -1838,7 +1838,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'app'
-    name: 'wsazstor001'
+    name: '<name>'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     configs: [
@@ -1902,7 +1902,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "app"
     },
     "name": {
-      "value": "wsazstor001"
+      "value": "<name>"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -1968,7 +1968,7 @@ using 'br/public:avm/res/web/site:<version>'
 
 // Required parameters
 param kind = 'app'
-param name = 'wsazstor001'
+param name = '<name>'
 param serverFarmResourceId = '<serverFarmResourceId>'
 // Non-required parameters
 param configs = [
@@ -2032,7 +2032,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'app'
-    name: 'wswamin001'
+    name: '<name>'
     serverFarmResourceId: '<serverFarmResourceId>'
   }
 }
@@ -2055,7 +2055,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "app"
     },
     "name": {
-      "value": "wswamin001"
+      "value": "<name>"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -2076,7 +2076,7 @@ using 'br/public:avm/res/web/site:<version>'
 
 // Required parameters
 param kind = 'app'
-param name = 'wswamin001'
+param name = '<name>'
 param serverFarmResourceId = '<serverFarmResourceId>'
 ```
 
@@ -2099,7 +2099,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'app'
-    name: 'wswamax001'
+    name: '<name>'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     basicPublishingCredentialsPolicies: [
@@ -2244,7 +2244,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     reserved: false
     roleAssignments: [
       {
-        name: '0c2c82ef-069c-4085-b1bc-01614e0aa5ff'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -2334,7 +2334,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         ]
         roleAssignments: [
           {
-            name: '845ed19c-78e7-4422-aa3d-b78b67cd78a2'
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -2401,7 +2401,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "app"
     },
     "name": {
-      "value": "wswamax001"
+      "value": "<name>"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -2584,7 +2584,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "0c2c82ef-069c-4085-b1bc-01614e0aa5ff",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -2680,7 +2680,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
           ],
           "roleAssignments": [
             {
-              "name": "845ed19c-78e7-4422-aa3d-b78b67cd78a2",
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -2743,7 +2743,7 @@ using 'br/public:avm/res/web/site:<version>'
 
 // Required parameters
 param kind = 'app'
-param name = 'wswamax001'
+param name = '<name>'
 param serverFarmResourceId = '<serverFarmResourceId>'
 // Non-required parameters
 param basicPublishingCredentialsPolicies = [
@@ -2888,7 +2888,7 @@ param publicNetworkAccess = 'Disabled'
 param reserved = false
 param roleAssignments = [
   {
-    name: '0c2c82ef-069c-4085-b1bc-01614e0aa5ff'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -2978,7 +2978,7 @@ param slots = [
     ]
     roleAssignments: [
       {
-        name: '845ed19c-78e7-4422-aa3d-b78b67cd78a2'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -3045,7 +3045,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'app,linux'
-    name: 'wswalmin001'
+    name: '<name>'
     serverFarmResourceId: '<serverFarmResourceId>'
   }
 }
@@ -3068,7 +3068,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "app,linux"
     },
     "name": {
-      "value": "wswalmin001"
+      "value": "<name>"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -3089,7 +3089,7 @@ using 'br/public:avm/res/web/site:<version>'
 
 // Required parameters
 param kind = 'app,linux'
-param name = 'wswalmin001'
+param name = '<name>'
 param serverFarmResourceId = '<serverFarmResourceId>'
 ```
 
@@ -3112,7 +3112,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'app,linux'
-    name: 'wswalmax001'
+    name: '<name>'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     basicPublishingCredentialsPolicies: [
@@ -3354,7 +3354,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "app,linux"
     },
     "name": {
-      "value": "wswalmax001"
+      "value": "<name>"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -3634,7 +3634,7 @@ using 'br/public:avm/res/web/site:<version>'
 
 // Required parameters
 param kind = 'app,linux'
-param name = 'wswalmax001'
+param name = '<name>'
 param serverFarmResourceId = '<serverFarmResourceId>'
 // Non-required parameters
 param basicPublishingCredentialsPolicies = [
@@ -3876,7 +3876,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'app,container,windows'
-    name: 'wswcamin001'
+    name: '<name>'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     siteConfig: {
@@ -3911,7 +3911,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "app,container,windows"
     },
     "name": {
-      "value": "wswcamin001"
+      "value": "<name>"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -3946,7 +3946,7 @@ using 'br/public:avm/res/web/site:<version>'
 
 // Required parameters
 param kind = 'app,container,windows'
-param name = 'wswcamin001'
+param name = '<name>'
 param serverFarmResourceId = '<serverFarmResourceId>'
 // Non-required parameters
 param siteConfig = {

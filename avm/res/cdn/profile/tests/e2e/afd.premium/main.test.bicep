@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'As Azure Front Door Premium'
@@ -102,7 +104,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       afdEndpoints: [
         {
-          name: '${namePrefix}-test-afd-${serviceShort}-afd-endpoint'
+          name: uniqueResourceName('${namePrefix}-test-afd-${serviceShort}-afd-endpoint', resourceGroup.id, 46)
           routes: [
             {
               name: '${namePrefix}-test-${serviceShort}-afd-route'

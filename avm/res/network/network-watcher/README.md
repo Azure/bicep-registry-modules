@@ -178,7 +178,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
     name: '<name>'
     roleAssignments: [
       {
-        name: 'e8e93fb7-f450-41d5-ae86-a32d34e72578'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -298,7 +298,7 @@ module networkWatcher 'br/public:avm/res/network/network-watcher:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "e8e93fb7-f450-41d5-ae86-a32d34e72578",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -410,7 +410,7 @@ param location = '<location>'
 param name = '<name>'
 param roleAssignments = [
   {
-    name: 'e8e93fb7-f450-41d5-ae86-a32d34e72578'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

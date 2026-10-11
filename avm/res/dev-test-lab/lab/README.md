@@ -284,7 +284,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
     premiumDataDisks: 'Enabled'
     roleAssignments: [
       {
-        name: 'b08c589c-2c79-41bd-8195-d5e62ad12f67'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -605,7 +605,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "b08c589c-2c79-41bd-8195-d5e62ad12f67",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -896,7 +896,7 @@ param policies = [
 param premiumDataDisks = 'Enabled'
 param roleAssignments = [
   {
-    name: 'b08c589c-2c79-41bd-8195-d5e62ad12f67'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

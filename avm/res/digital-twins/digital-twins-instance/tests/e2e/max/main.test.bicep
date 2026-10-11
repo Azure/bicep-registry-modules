@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -39,9 +41,9 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     eventHubName: 'dep-${serviceShort}-evh-01'
-    eventHubNamespaceName: 'dep-${serviceShort}-evhns-01'
-    serviceBusNamespaceName: 'dep-${serviceShort}-sb-01'
-    eventGridTopicName: 'dep-${serviceShort}-evgt-01'
+    eventHubNamespaceName: uniqueResourceName('dep-${serviceShort}-evhns-01', resourceGroup.id, 50)
+    serviceBusNamespaceName: uniqueResourceName('dep-${serviceShort}-sb-01', resourceGroup.id, 50)
+    eventGridTopicName: uniqueResourceName('dep-${serviceShort}-evgt-01', resourceGroup.id, 50)
   }
 }
 
@@ -69,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 63)
       location: resourceLocation
       managedIdentities: {
         systemAssigned: true

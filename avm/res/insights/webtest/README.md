@@ -163,7 +163,7 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
     }
     roleAssignments: [
       {
-        name: '86bf66a0-940f-438d-977e-624c00ccb2d8'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -238,7 +238,7 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "86bf66a0-940f-438d-977e-624c00ccb2d8",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -301,7 +301,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '86bf66a0-940f-438d-977e-624c00ccb2d8'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

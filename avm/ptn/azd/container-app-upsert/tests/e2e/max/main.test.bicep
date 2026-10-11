@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -42,10 +44,10 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     managedEnvironmentName: 'dep-${namePrefix}-me-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
     keyVaultSecretName: 'dep-${namePrefix}-kv-secret-${serviceShort}'
     containerAppName: 'dep-${namePrefix}-ca-${serviceShort}'
-    containerRegistryName: 'dep${namePrefix}cr${serviceShort}'
+    containerRegistryName: uniqueResourceName('dep${namePrefix}cr${serviceShort}', resourceGroup.id, 50)
   }
 }
 

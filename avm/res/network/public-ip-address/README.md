@@ -145,7 +145,7 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     publicIpPrefixResourceId: '<publicIpPrefixResourceId>'
     roleAssignments: [
       {
-        name: '902f366b-ba61-4eb6-aa3a-786d317f2dbc'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -246,7 +246,7 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     "roleAssignments": {
       "value": [
         {
-          "name": "902f366b-ba61-4eb6-aa3a-786d317f2dbc",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -327,7 +327,7 @@ param publicIPAllocationMethod = 'Static'
 param publicIpPrefixResourceId = '<publicIpPrefixResourceId>'
 param roleAssignments = [
   {
-    name: '902f366b-ba61-4eb6-aa3a-786d317f2dbc'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

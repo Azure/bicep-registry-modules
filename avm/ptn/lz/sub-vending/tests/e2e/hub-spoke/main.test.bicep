@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 metadata name = 'Hub and spoke topology.'
 metadata description = 'This instance deploys a subscription with a hub-spoke network topology.'
 
@@ -97,7 +99,11 @@ module testDeployment '../../../main.bicep' = {
     deploymentScriptName: 'ds-${namePrefix}-${serviceShort}'
     deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}${substring(uniqueString(deployment().name), 0, 4)}'
+    deploymentScriptStorageAccountName: uniqueResourceName(
+      'stgds${namePrefix}${serviceShort}',
+      '${vnetHubSubId}/${subscriptionGuid}',
+      24
+    )
     deploymentScriptLocation: resourceLocation
     roleAssignmentEnabled: true
     roleAssignments: [

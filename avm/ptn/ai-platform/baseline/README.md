@@ -189,7 +189,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
   params: {
     // Required parameters
-    name: 'aipbmax'
+    name: '<name>'
     // Non-required parameters
     applicationInsightsConfiguration: {
       name: 'appi-aipbmax'
@@ -208,7 +208,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       subnetAddressPrefix: '10.1.1.0/26'
     }
     containerRegistryConfiguration: {
-      name: 'craipbmax'
+      name: '<name>'
       trustPolicyStatus: 'disabled'
     }
     keyVaultConfiguration: {
@@ -221,7 +221,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     managedIdentityName: '<managedIdentityName>'
     storageAccountConfiguration: {
       allowSharedKeyAccess: true
-      name: 'staipbmax'
+      name: '<name>'
       sku: 'Standard_GRS'
     }
     virtualMachineConfiguration: {
@@ -311,7 +311,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "aipbmax"
+      "value": "<name>"
     },
     // Non-required parameters
     "applicationInsightsConfiguration": {
@@ -336,7 +336,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     },
     "containerRegistryConfiguration": {
       "value": {
-        "name": "craipbmax",
+        "name": "<name>",
         "trustPolicyStatus": "disabled"
       }
     },
@@ -357,7 +357,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
     "storageAccountConfiguration": {
       "value": {
         "allowSharedKeyAccess": true,
-        "name": "staipbmax",
+        "name": "<name>",
         "sku": "Standard_GRS"
       }
     },
@@ -451,7 +451,7 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
 using 'br/public:avm/ptn/ai-platform/baseline:<version>'
 
 // Required parameters
-param name = 'aipbmax'
+param name = '<name>'
 // Non-required parameters
 param applicationInsightsConfiguration = {
   name: 'appi-aipbmax'
@@ -470,7 +470,7 @@ param bastionConfiguration = {
   subnetAddressPrefix: '10.1.1.0/26'
 }
 param containerRegistryConfiguration = {
-  name: 'craipbmax'
+  name: '<name>'
   trustPolicyStatus: 'disabled'
 }
 param keyVaultConfiguration = {
@@ -483,7 +483,7 @@ param logAnalyticsConfiguration = {
 param managedIdentityName = '<managedIdentityName>'
 param storageAccountConfiguration = {
   allowSharedKeyAccess: true
-  name: 'staipbmax'
+  name: '<name>'
   sku: 'Standard_GRS'
 }
 param virtualMachineConfiguration = {

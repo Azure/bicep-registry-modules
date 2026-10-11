@@ -157,7 +157,7 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
     }
     roleAssignments: [
       {
-        name: '38837eb6-838b-4c77-8d7d-baa102195d9f'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -238,7 +238,7 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
     "roleAssignments": {
       "value": [
         {
-          "name": "38837eb6-838b-4c77-8d7d-baa102195d9f",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -311,7 +311,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '38837eb6-838b-4c77-8d7d-baa102195d9f'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

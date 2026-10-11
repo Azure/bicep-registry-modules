@@ -122,7 +122,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         name: 'cgmax-appd-002'
         roleAssignments: [
           {
-            name: '4ef8d3d3-54be-4522-92c3-284977292d87'
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -302,7 +302,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     }
     roleAssignments: [
       {
-        name: '3bd58a78-108d-4f87-b404-0a03e49303d8'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -355,7 +355,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "name": "cgmax-appd-002",
           "roleAssignments": [
             {
-              "name": "4ef8d3d3-54be-4522-92c3-284977292d87",
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -545,7 +545,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "3bd58a78-108d-4f87-b404-0a03e49303d8",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -596,7 +596,7 @@ param applications = [
     name: 'cgmax-appd-002'
     roleAssignments: [
       {
-        name: '4ef8d3d3-54be-4522-92c3-284977292d87'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -776,7 +776,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '3bd58a78-108d-4f87-b404-0a03e49303d8'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

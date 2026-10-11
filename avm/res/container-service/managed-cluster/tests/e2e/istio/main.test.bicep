@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using Istio Service Mesh add-on'
@@ -39,7 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     caOrganization: 'Istio'
     caSubjectName: 'istiod.aks-istio.system.svc'
     cacertDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }

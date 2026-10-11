@@ -537,7 +537,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               publicIpNameSuffix: '-pip-01'
               roleAssignments: [
                 {
-                  name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
+                  name: '<name>'
                   principalId: '<principalId>'
                   principalType: 'ServicePrincipal'
                   roleDefinitionIdOrName: 'Owner'
@@ -560,7 +560,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         name: 'nic-test-01'
         roleAssignments: [
           {
-            name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -711,7 +711,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     imageReference: {
       offer: '0001-com-ubuntu-server-focal'
       publisher: 'Canonical'
-      sku: '20_04-lts-gen2'
+      sku: '<sku>'
       version: 'latest'
     }
     location: '<location>'
@@ -735,7 +735,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     rebootSetting: 'IfRequired'
     roleAssignments: [
       {
-        name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -839,7 +839,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                 "publicIpNameSuffix": "-pip-01",
                 "roleAssignments": [
                   {
-                    "name": "696e6067-3ddc-4b71-bf97-9caebeba441a",
+                    "name": "<name>",
                     "principalId": "<principalId>",
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "Owner"
@@ -862,7 +862,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "name": "nic-test-01",
           "roleAssignments": [
             {
-              "name": "ff72f58d-a3cf-42fd-9c27-c61906bdddfe",
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -1053,7 +1053,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "offer": "0001-com-ubuntu-server-focal",
         "publisher": "Canonical",
-        "sku": "20_04-lts-gen2",
+        "sku": "<sku>",
         "version": "latest"
       }
     },
@@ -1091,7 +1091,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "eb01de52-d2be-4272-a7b9-13de6c399e27",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1191,7 +1191,7 @@ param nicConfigurations = [
           publicIpNameSuffix: '-pip-01'
           roleAssignments: [
             {
-              name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
+              name: '<name>'
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: 'Owner'
@@ -1214,7 +1214,7 @@ param nicConfigurations = [
     name: 'nic-test-01'
     roleAssignments: [
       {
-        name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1365,7 +1365,7 @@ param extensionNetworkWatcherAgentConfig = {
 param imageReference = {
   offer: '0001-com-ubuntu-server-focal'
   publisher: 'Canonical'
-  sku: '20_04-lts-gen2'
+  sku: '<sku>'
   version: 'latest'
 }
 param location = '<location>'
@@ -1389,7 +1389,7 @@ param publicKeys = [
 param rebootSetting = 'IfRequired'
 param roleAssignments = [
   {
-    name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -3268,7 +3268,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               publicIPAddressResourceId: '<publicIPAddressResourceId>'
               roleAssignments: [
                 {
-                  name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
+                  name: '<name>'
                   principalId: '<principalId>'
                   principalType: 'ServicePrincipal'
                   roleDefinitionIdOrName: 'Owner'
@@ -3291,7 +3291,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         name: 'nic-test-01'
         roleAssignments: [
           {
-            name: '95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7'
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -3514,7 +3514,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     rebootSetting: 'IfRequired'
     roleAssignments: [
       {
-        name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -3614,7 +3614,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                 "publicIPAddressResourceId": "<publicIPAddressResourceId>",
                 "roleAssignments": [
                   {
-                    "name": "e962e7c1-261a-4afd-b5ad-17a640a0b7bc",
+                    "name": "<name>",
                     "principalId": "<principalId>",
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "Owner"
@@ -3637,7 +3637,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "name": "nic-test-01",
           "roleAssignments": [
             {
-              "name": "95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7",
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -3922,7 +3922,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "c70e8c48-6945-4607-9695-1098ba5a86ed",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -4018,7 +4018,7 @@ param nicConfigurations = [
           publicIPAddressResourceId: '<publicIPAddressResourceId>'
           roleAssignments: [
             {
-              name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
+              name: '<name>'
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: 'Owner'
@@ -4041,7 +4041,7 @@ param nicConfigurations = [
     name: 'nic-test-01'
     roleAssignments: [
       {
-        name: '95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -4264,7 +4264,7 @@ param proximityPlacementGroupResourceId = '<proximityPlacementGroupResourceId>'
 param rebootSetting = 'IfRequired'
 param roleAssignments = [
   {
-    name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

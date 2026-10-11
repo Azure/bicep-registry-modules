@@ -134,7 +134,7 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
     }
     roleAssignments: [
       {
-        name: 'e9143a6b-a031-419c-a597-cc4ac9bd39ed'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -197,7 +197,7 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:<version>'
     "roleAssignments": {
       "value": [
         {
-          "name": "e9143a6b-a031-419c-a597-cc4ac9bd39ed",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -252,7 +252,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: 'e9143a6b-a031-419c-a597-cc4ac9bd39ed'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

@@ -58,7 +58,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   params: {
     // Required parameters
-    name: 'bbamin001'
+    name: '<name>'
     storageAccountResourceId: '<storageAccountResourceId>'
   }
 }
@@ -78,7 +78,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "bbamin001"
+      "value": "<name>"
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
@@ -98,7 +98,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
 using 'br/public:avm/res/batch/batch-account:<version>'
 
 // Required parameters
-param name = 'bbamin001'
+param name = '<name>'
 param storageAccountResourceId = '<storageAccountResourceId>'
 ```
 
@@ -120,7 +120,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   params: {
     // Required parameters
-    name: 'bbaencr001'
+    name: '<name>'
     storageAccountResourceId: '<storageAccountResourceId>'
     // Non-required parameters
     customerManagedKey: {
@@ -152,7 +152,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "bbaencr001"
+      "value": "<name>"
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
@@ -192,7 +192,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
 using 'br/public:avm/res/batch/batch-account:<version>'
 
 // Required parameters
-param name = 'bbaencr001'
+param name = '<name>'
 param storageAccountResourceId = '<storageAccountResourceId>'
 // Non-required parameters
 param customerManagedKey = {
@@ -226,7 +226,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   params: {
     // Required parameters
-    name: 'bbamax001'
+    name: '<name>'
     storageAccountResourceId: '<storageAccountResourceId>'
     // Non-required parameters
     diagnosticSettings: [
@@ -289,7 +289,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         }
         roleAssignments: [
           {
-            name: '9afa4fb3-2157-40db-aebb-039ce73c50ca'
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -348,7 +348,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     ]
     roleAssignments: [
       {
-        name: 'd57821b0-52b3-4a42-9799-533a9cdb7eec'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -390,7 +390,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "bbamax001"
+      "value": "<name>"
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
@@ -469,7 +469,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           },
           "roleAssignments": [
             {
-              "name": "9afa4fb3-2157-40db-aebb-039ce73c50ca",
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -530,7 +530,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "d57821b0-52b3-4a42-9799-533a9cdb7eec",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -576,7 +576,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
 using 'br/public:avm/res/batch/batch-account:<version>'
 
 // Required parameters
-param name = 'bbamax001'
+param name = '<name>'
 param storageAccountResourceId = '<storageAccountResourceId>'
 // Non-required parameters
 param diagnosticSettings = [
@@ -639,7 +639,7 @@ param privateEndpoints = [
     }
     roleAssignments: [
       {
-        name: '9afa4fb3-2157-40db-aebb-039ce73c50ca'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -698,7 +698,7 @@ param privateEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: 'd57821b0-52b3-4a42-9799-533a9cdb7eec'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -742,7 +742,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   params: {
     // Required parameters
-    name: 'bbawaf001'
+    name: '<name>'
     storageAccountResourceId: '<storageAccountResourceId>'
     // Non-required parameters
     diagnosticSettings: [
@@ -795,7 +795,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "bbawaf001"
+      "value": "<name>"
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
@@ -862,7 +862,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
 using 'br/public:avm/res/batch/batch-account:<version>'
 
 // Required parameters
-param name = 'bbawaf001'
+param name = '<name>'
 param storageAccountResourceId = '<storageAccountResourceId>'
 // Non-required parameters
 param diagnosticSettings = [
