@@ -63,7 +63,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourceId: '<customLocationResourceId>'
-    name: 'hcpcimin001'
+    name: '<name>'
     // Non-required parameters
     keyVaultName: '<keyVaultName>'
   }
@@ -96,7 +96,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       "value": "<customLocationResourceId>"
     },
     "name": {
-      "value": "hcpcimin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "keyVaultName": {
@@ -125,7 +125,7 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourceId = '<customLocationResourceId>'
-param name = 'hcpcimin001'
+param name = '<name>'
 // Non-required parameters
 param keyVaultName = '<keyVaultName>'
 ```
@@ -156,7 +156,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourceId: '<customLocationResourceId>'
-    name: 'hcpcimax001'
+    name: '<name>'
     // Non-required parameters
     agentPoolProfiles: [
       {
@@ -241,7 +241,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       "value": "<customLocationResourceId>"
     },
     "name": {
-      "value": "hcpcimax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "agentPoolProfiles": {
@@ -344,7 +344,7 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourceId = '<customLocationResourceId>'
-param name = 'hcpcimax001'
+param name = '<name>'
 // Non-required parameters
 param agentPoolProfiles = [
   {
@@ -427,7 +427,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourceId: '<customLocationResourceId>'
-    name: 'hcpciwaf001'
+    name: '<name>'
     // Non-required parameters
     agentPoolProfiles: [
       {
@@ -487,7 +487,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       "value": "<customLocationResourceId>"
     },
     "name": {
-      "value": "hcpciwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "agentPoolProfiles": {
@@ -549,7 +549,7 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourceId = '<customLocationResourceId>'
-param name = 'hcpciwaf001'
+param name = '<name>'
 // Non-required parameters
 param agentPoolProfiles = [
   {
@@ -598,7 +598,7 @@ param keyVaultName = '<keyVaultName>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the key vault. The key vault name. Required if no existing SSH keys. |
+| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the key vault that stores the generated SSH key pair. Required if `linuxProfile` is not provided. The key vault must allow template deployment (`enabledForTemplateDeployment`), so that later deployments can read the stored public key instead of generating and storing a new key pair. |
 | [`keyvaultResourceGroup`](#parameter-keyvaultresourcegroup) | string | Key vault resource group, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different resource group. |
 | [`keyvaultSubscriptionId`](#parameter-keyvaultsubscriptionid) | string | Key vault subscription ID, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different subscription. |
 
@@ -674,7 +674,7 @@ The name of the provisioned cluster instance.
 
 ### Parameter: `keyVaultName`
 
-The name of the key vault. The key vault name. Required if no existing SSH keys.
+The name of the key vault that stores the generated SSH key pair. Required if `linuxProfile` is not provided. The key vault must allow template deployment (`enabledForTemplateDeployment`), so that later deployments can read the stored public key instead of generating and storing a new key pair.
 
 - Required: No
 - Type: string

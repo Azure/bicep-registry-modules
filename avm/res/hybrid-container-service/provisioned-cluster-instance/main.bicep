@@ -25,7 +25,7 @@ param keyvaultSubscriptionId string?
 @description('Conditional. Key vault resource group, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different resource group.')
 param keyvaultResourceGroup string?
 
-@description('Conditional. The name of the key vault. The key vault name. Required if no existing SSH keys.')
+@description('Conditional. The name of the key vault that stores the generated SSH key pair. Required if `linuxProfile` is not provided. The key vault must allow template deployment (`enabledForTemplateDeployment`), so that later deployments can read the stored public key instead of generating and storing a new key pair.')
 param keyVaultName string?
 
 @description('Required. The id of the Custom location that used to create hybrid aks.')

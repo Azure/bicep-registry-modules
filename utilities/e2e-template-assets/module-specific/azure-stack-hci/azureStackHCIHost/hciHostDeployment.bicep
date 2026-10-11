@@ -62,6 +62,43 @@ param waitDeploymentScriptPrefixName string
 @description('Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM. When provided, deploys from the gallery image instead of marketplace.')
 param imageReferenceId string = ''
 
+@description('Optional. The HCI resource-provider principal ID for resource-group-scoped Arc permissions. Omit when these permissions are preconfigured.')
+@secure()
+param hciResourceProviderObjectId string?
+
+var hciNodeNames = [for index in range(0, hciNodeCount): 'hcinode${index + 1}']
+var azureConnectedMachineResourceManagerRoleID = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'f5819b54-e033-4d82-ac66-4fec3cbf3f4c'
+)
+
+// Match the cluster module's assignment IDs so its later deployment reuses these grants.
+resource spConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (hciResourceProviderObjectId != null) {
+  name: guid(
+    subscription().subscriptionId,
+    hciResourceProviderObjectId!,
+    'ConnectedMachineResourceManagerRolePermissions',
+    resourceGroup().id
+  )
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: azureConnectedMachineResourceManagerRoleID
+    principalId: hciResourceProviderObjectId!
+    principalType: 'ServicePrincipal'
+    description: 'Created by Azure Stack HCI deployment template'
+  }
+}
+
+// Keep out-of-band Arc identity lookups in a deployment started after registration.
+module hciNodeRoleAssignments './modules/hciNodeRoleAssignments.bicep' = if (hciResourceProviderObjectId != null) {
+  name: '${uniqueString(deployment().name, location)}-hci-node-permissions'
+  params: {
+    hciNodeNames: hciNodeNames
+    hciResourceProviderObjectId: hciResourceProviderObjectId!
+  }
+  dependsOn: [runCommand6]
+}
+
 // =================================//
 // Deploy Host VM Infrastructure    //
 // =================================//
@@ -575,7 +612,10 @@ resource runCommand6 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     ]
     treatFailureAsDeploymentFailure: true
   }
-  dependsOn: [runCommand5]
+  dependsOn: [
+    runCommand5
+    spConnectedMachineResourceManagerRolePermissions
+  ]
 }
 
 // waits for HCI extensions to be in succeeded state
@@ -607,7 +647,11 @@ resource runCommand7 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     ]
     treatFailureAsDeploymentFailure: true
   }
-  dependsOn: [runCommand6]
+  dependsOn: [
+    runCommand6
+    spConnectedMachineResourceManagerRolePermissions
+    hciNodeRoleAssignments
+  ]
 }
 
 // ============================================= //
