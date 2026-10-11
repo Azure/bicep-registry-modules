@@ -62,6 +62,93 @@ param waitDeploymentScriptPrefixName string
 @description('Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM. When provided, deploys from the gallery image instead of marketplace.')
 param imageReferenceId string = ''
 
+@description('Optional. The HCI resource-provider principal ID for resource-group-scoped Arc permissions. Omit when these permissions are preconfigured.')
+@secure()
+param hciResourceProviderObjectId string?
+
+var hciNodeNames = [for index in range(0, hciNodeCount): 'hcinode${index + 1}']
+var arcNodeResourceIds = [for nodeName in hciNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)]
+var azureConnectedMachineResourceManagerRoleID = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'f5819b54-e033-4d82-ac66-4fec3cbf3f4c'
+)
+var azureStackHCIDeviceManagementRole = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '865ae368-6a45-4bd1-8fbf-0d5151f56fc1'
+)
+var readerRoleID = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+)
+
+// Match the cluster module's assignment IDs so its later deployment reuses these grants.
+resource spConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (hciResourceProviderObjectId != null) {
+  name: guid(
+    subscription().subscriptionId,
+    hciResourceProviderObjectId!,
+    'ConnectedMachineResourceManagerRolePermissions',
+    resourceGroup().id
+  )
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: azureConnectedMachineResourceManagerRoleID
+    principalId: hciResourceProviderObjectId!
+    principalType: 'ServicePrincipal'
+    description: 'Created by Azure Stack HCI deployment template'
+  }
+}
+
+resource nodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for hciNode in arcNodeResourceIds: if (hciResourceProviderObjectId != null) {
+    name: guid(
+      subscription().subscriptionId,
+      hciResourceProviderObjectId!,
+      'azureConnectedMachineResourceManager',
+      hciNode,
+      resourceGroup().id
+    )
+    properties: {
+      roleDefinitionId: azureConnectedMachineResourceManagerRoleID
+      principalId: reference(hciNode, '2026-07-15', 'Full').identity.principalId
+      principalType: 'ServicePrincipal'
+      description: 'Created by Azure Stack HCI deployment template'
+    }
+    dependsOn: [runCommand6]
+  }
+]
+
+resource nodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for hciNode in arcNodeResourceIds: if (hciResourceProviderObjectId != null) {
+    name: guid(
+      subscription().subscriptionId,
+      hciResourceProviderObjectId!,
+      'azureStackHCIDeviceManagementRole',
+      hciNode,
+      resourceGroup().id
+    )
+    properties: {
+      roleDefinitionId: azureStackHCIDeviceManagementRole
+      principalId: reference(hciNode, '2026-07-15', 'Full').identity.principalId
+      principalType: 'ServicePrincipal'
+      description: 'Created by Azure Stack HCI deployment template'
+    }
+    dependsOn: [runCommand6]
+  }
+]
+
+resource nodereaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for hciNode in arcNodeResourceIds: if (hciResourceProviderObjectId != null) {
+    name: guid(subscription().subscriptionId, hciResourceProviderObjectId!, 'reader', hciNode, resourceGroup().id)
+    properties: {
+      roleDefinitionId: readerRoleID
+      principalId: reference(hciNode, '2026-07-15', 'Full').identity.principalId
+      principalType: 'ServicePrincipal'
+      description: 'Created by Azure Stack HCI deployment template'
+    }
+    dependsOn: [runCommand6]
+  }
+]
+
 // =================================//
 // Deploy Host VM Infrastructure    //
 // =================================//
@@ -575,7 +662,10 @@ resource runCommand6 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     ]
     treatFailureAsDeploymentFailure: true
   }
-  dependsOn: [runCommand5]
+  dependsOn: [
+    runCommand5
+    spConnectedMachineResourceManagerRolePermissions
+  ]
 }
 
 // waits for HCI extensions to be in succeeded state
@@ -607,7 +697,13 @@ resource runCommand7 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     ]
     treatFailureAsDeploymentFailure: true
   }
-  dependsOn: [runCommand6]
+  dependsOn: [
+    runCommand6
+    spConnectedMachineResourceManagerRolePermissions
+    nodeAzureConnectedMachineResourceManagerRolePermissions
+    nodeazureStackHCIDeviceManagementRole
+    nodereaderRoleIDPermissions
+  ]
 }
 
 // ============================================= //

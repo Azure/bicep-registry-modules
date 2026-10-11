@@ -30,7 +30,7 @@ Function log {
     Add-Content -Path $logPath -Value "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') [hciHostStage7] - $message"
 }
 
-function Initialize-HciEdgeDevice {
+function Get-HciEdgeDevice {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -46,15 +46,39 @@ function Initialize-HciEdgeDevice {
             throw "The existing edge device on '$MachineResourceId' is not an HCI edge device."
         }
         if ($edgeDevice.properties.provisioningState -in @('Failed', 'Canceled')) {
-            throw "The HCI edge device on '$MachineResourceId' is in state '$($edgeDevice.properties.provisioningState)'."
+            $details = ''
+            $reported = $edgeDevice.properties.PSObject.Properties['reportedProperties']
+            if ($reported -and $reported.Value) {
+                $extensionProfile = $reported.Value.PSObject.Properties['extensionProfile']
+                if ($extensionProfile -and $extensionProfile.Value) {
+                    $details = $extensionProfile.Value | ConvertTo-Json -Depth 10 -Compress
+                    $details = $details -replace 'eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+', '[redacted-token]'
+                    $details = $details -replace '(?i)(sig|access_token|client_secret|password)=([^&\s"]+)', '$1=[redacted]'
+                }
+            }
+            throw "The HCI edge device on '$MachineResourceId' is in state '$($edgeDevice.properties.provisioningState)'. $details"
         }
-        log "HCI edge device already exists on '$MachineResourceId'."
-        return
+        return $edgeDevice
     }
     if ([int] $response.StatusCode -ne 404) {
         throw "Failed to read the HCI edge device on '$MachineResourceId' (HTTP $($response.StatusCode)). $($response.Content)"
     }
+}
 
+function Initialize-HciEdgeDevice {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [ValidatePattern('(?i)^/subscriptions/[0-9a-f-]{36}/resourceGroups/[^/]+/providers/Microsoft\.HybridCompute/machines/[^/]+$')]
+        [string] $MachineResourceId
+    )
+
+    if (Get-HciEdgeDevice -MachineResourceId $MachineResourceId) {
+        log "HCI edge device already exists on '$MachineResourceId'."
+        return
+    }
+
+    $path = "$MachineResourceId/providers/Microsoft.AzureStackHCI/edgeDevices/default?api-version=2024-04-01"
     $payload = @{ kind = 'HCI'; properties = @{} } | ConvertTo-Json -Depth 4 -Compress
     $response = Invoke-AzRestMethod -Method PUT -Path $path -Payload $payload -ErrorAction Stop
     if ([int] $response.StatusCode -notin @(200, 201, 202)) {
@@ -102,6 +126,12 @@ $allExtensionsReady = $false
 while (!$allExtensionsReady -and $timer.Elapsed.TotalMinutes -lt 120) {
     $allExtensionsReadyCheck = $true
     foreach ($arcMachine in $arcMachines) {
+        $edgeDevice = Get-HciEdgeDevice -MachineResourceId $arcMachine.Id
+        if (!$edgeDevice -or $edgeDevice.properties.provisioningState -ne 'Succeeded') {
+            log "Waiting for the HCI edge device on '$($arcMachine.Name)' to finish provisioning..."
+            $allExtensionsReadyCheck = $false
+            continue
+        }
         $extensions = Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $arcMachine.Name
         if ($extensions.MachineExtensionType -notcontains 'TelemetryAndDiagnostics' -or $extensions.MachineExtensionType -notcontains 'DeviceManagementExtension' -or $extensions.MachineExtensionType -notcontains 'LcmController' -or $extensions.MachineExtensionType -notcontains 'EdgeRemoteSupport') {
             log "Waiting for extensions to be installed on HCI Arc Machine '$($arcMachine.Name)'..."

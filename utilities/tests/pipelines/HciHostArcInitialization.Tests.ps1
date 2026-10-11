@@ -15,7 +15,7 @@ Describe 'HCI host Arc initialization' {
             )
             if ($parseErrors.Count -gt 0) { throw ($parseErrors.Message -join '; ') }
         }
-        foreach ($name in @('Wait-HciArcInitializationJob', 'Initialize-HciEdgeDevice')) {
+        foreach ($name in @('Wait-HciArcInitializationJob', 'Get-HciEdgeDevice', 'Initialize-HciEdgeDevice')) {
             $functionAst = @($scripts.Values | ForEach-Object {
                 $_.FindAll({
                     param($node)
@@ -124,6 +124,44 @@ Describe 'HCI host Arc initialization' {
             [pscustomobject] @{ StatusCode = 403; Content = 'AuthorizationFailed' }
         } -ParameterFilter { $Method -eq 'PUT' }
         { Initialize-HciEdgeDevice -MachineResourceId $machineId } | Should -Throw '*HTTP 403*AuthorizationFailed*'
+    }
+
+    It 'Reports asynchronous provider failure without repeating the creation request' {
+        $script:edgeReads = 0
+        Mock Invoke-AzRestMethod {
+            $script:edgeReads++
+            if ($script:edgeReads -eq 1) { return [pscustomobject] @{ StatusCode = 404; Content = '' } }
+            [pscustomobject] @{
+                StatusCode = 200
+                Content = '{"kind":"HCI","properties":{"provisioningState":"Failed","reportedProperties":{"extensionProfile":{"extensions":[{"extensionName":"LcmController","state":"Failed","errorDetails":[{"exception":"AuthorizationFailed: Microsoft.HybridCompute/machines/extensions/read"}]}]}}}}'
+            }
+        } -ParameterFilter { $Method -eq 'GET' }
+        Mock Invoke-AzRestMethod {
+            [pscustomobject] @{ StatusCode = 202; Content = '' }
+        } -ParameterFilter { $Method -eq 'PUT' }
+
+        Initialize-HciEdgeDevice -MachineResourceId $machineId
+        { Get-HciEdgeDevice -MachineResourceId $machineId } |
+            Should -Throw '*AuthorizationFailed*Microsoft.HybridCompute/machines/extensions/read*'
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'PUT' }
+    }
+
+    It 'Treats an unpropagated edge-device read as pending without creating it again' {
+        Mock Invoke-AzRestMethod { [pscustomobject] @{ StatusCode = 404; Content = '' } }
+        Get-HciEdgeDevice -MachineResourceId $machineId | Should -BeNullOrEmpty
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'PUT' }
+    }
+
+    It 'Removes credentials from provider failure diagnostics' {
+        Mock Invoke-AzRestMethod {
+            [pscustomobject] @{
+                StatusCode = 200
+                Content = '{"kind":"HCI","properties":{"provisioningState":"Failed","reportedProperties":{"extensionProfile":{"extensions":[{"errorDetails":[{"exception":"AuthorizationFailed eyJfake.payload.signature https://example.invalid/package?sig=test-secret&sv=1"}]}]}}}}'
+            }
+        }
+        $message = try { Get-HciEdgeDevice -MachineResourceId $machineId; '' } catch { $_.Exception.Message }
+        $message | Should -Match 'AuthorizationFailed'
+        $message | Should -Not -Match 'eyJfake|test-secret'
     }
 
     It 'Initializes each discovered machine before the extension-wait loop' {

@@ -60,6 +60,9 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     diskNamePrefix: 'dep-${namePrefix}-dsk-${serviceShort}'
     waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
     hciHostImageReferenceId: hciHostImageReferenceId
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : hciResourceProvider!.id
     location: enforcedLocation
   }
 }
