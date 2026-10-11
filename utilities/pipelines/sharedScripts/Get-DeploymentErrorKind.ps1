@@ -47,8 +47,15 @@ function Get-DeploymentErrorKind {
                 ($statusCode -is [System.Net.HttpStatusCode] -or $statusCode -is [int]) -and $statusCode -eq 403
             )
             $innerException = $exception.InnerException
-            if ($null -eq $innerException -and $exception -is [System.Management.Automation.RuntimeException]) {
-                $innerException = $exception.ErrorRecord.Exception
+            if ($exception -is [System.Management.Automation.RuntimeException]) {
+                $recordException = $exception.ErrorRecord.Exception
+                if ($null -eq $innerException) {
+                    $innerException = $recordException
+                } elseif ($null -ne $recordException -and
+                    -not [object]::ReferenceEquals($recordException, $exception) -and
+                    -not [object]::ReferenceEquals($recordException, $innerException)) {
+                    $pending.Push($recordException)
+                }
             }
             $exception = $innerException
         }

@@ -83,8 +83,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
     userAssignedIdentityName: userAssignedIdentityName
     virtualMachineName: virtualMachineName
     waitDeploymentScriptPrefixName: waitDeploymentScriptPrefixName
-    hciVHDXDownloadURL: ''    // empty - VHDX pre-baked in gallery image
-    hciISODownloadURL: ''     // empty - VHDX pre-baked in gallery image
+    hciVHDXDownloadURL: 'https://azlocalvhds.blob.core.windows.net/images/AzLocal2601.vhdx'
   }
 }
 

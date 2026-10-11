@@ -318,9 +318,7 @@ resource maintenanceAssignment_hciHost 'Microsoft.Maintenance/configurationAssig
 // Install Host Roles  //
 // ====================//
 
-// REMOVED - runCommand1, runCommand2, wait1 are baked into the gallery image
-/*
-resource runCommand1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+resource runCommand1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = if (empty(imageReferenceId)) {
   parent: vm
   location: location
   name: 'runCommand1'
@@ -333,7 +331,7 @@ resource runCommand1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
 }
 
 // schedules a reboot of the VM
-resource runCommand2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+resource runCommand2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = if (empty(imageReferenceId)) {
   parent: vm
   location: location
   name: 'runCommand2'
@@ -347,7 +345,7 @@ resource runCommand2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
 }
 
 // initiates a wait for the VM to reboot
-resource wait1 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+resource wait1 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (empty(imageReferenceId)) {
   location: location
   kind: 'AzurePowerShell'
   name: '${waitDeploymentScriptPrefixName}-wait1'
@@ -358,14 +356,12 @@ resource wait1 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   }
   dependsOn: [runCommand2]
 }
-*/
 
 // ======================//
 // Configure Host Roles  //
 // ======================//
 
-// mounts data disks, copies VHDX from gallery image, configures AD, routing, DNS, DHCP
-// VHDX download skipped - already pre-baked in gallery image at C:\ISOs\hci_os.vhdx
+// mounts data disks, obtains the HCI VHDX, configures AD, routing, DNS, DHCP
 resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   location: location
@@ -377,11 +373,11 @@ resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     parameters: [
       {
         name: 'hciVHDXDownloadURL'
-        value: ''              // empty - VHDX already in gallery image
+        value: empty(imageReferenceId) ? hciVHDXDownloadURL : ''
       }
       {
         name: 'hciISODownloadURL'
-        value: ''              // empty - VHDX already in gallery image
+        value: empty(imageReferenceId) ? hciISODownloadURL : ''
       }
       {
         name: 'hciNodeCount'
@@ -390,6 +386,7 @@ resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     ]
     treatFailureAsDeploymentFailure: true
   }
+  dependsOn: [wait1]
 }
 
 // schedules a reboot of the VM after AD DS install
