@@ -225,3 +225,133 @@ Describe 'Secondary managed environment vault fixture identity' {
             @($vaultTestModule.properties.parameters.managedIdentities.value.userAssignedResourceIds).Count | Should -Be 1
         }
 }
+
+Describe 'Maximum managed environment custom role identity' {
+    BeforeAll {
+        $roleBlock = [regex]::Match($source, '(?ms)^      roleAssignments:\s*\[(?<assignments>.*?)^      \]')
+        $roleMatches = [regex]::Matches($roleBlock.Groups['assignments'].Value, '(?s)\{\s*name:\s*(?<expression>.*?)\s+roleDefinitionIdOrName:')
+        if (-not $roleBlock.Success -or $roleMatches.Count -ne 1) {
+            throw 'Expected exactly one explicit environment role-assignment name.'
+        }
+        $nameExpression = $roleMatches[0].Groups['expression'].Value.Trim()
+        $roleDefaults = $defaults.Clone()
+        $roleDefaults.principal = '00000000-0000-4000-8000-000000000003'
+        $script:environmentRoleScenarios = @(
+            @{}
+            @{ subscription = '00000000-0000-4000-8000-000000000002' }
+            @{ group = 'fixture-two' }
+            @{ principal = '00000000-0000-4000-8000-000000000004' }
+            @{ prefix = 'local' }
+            @{ service = 'another' }
+        )
+        $roleParameters = @('using none')
+        for ($scopeIndex = 0; $scopeIndex -lt $script:environmentRoleScenarios.Count; $scopeIndex++) {
+            $values = $roleDefaults.Clone()
+            foreach ($key in $script:environmentRoleScenarios[$scopeIndex].Keys) {
+                $values[$key] = $script:environmentRoleScenarios[$scopeIndex][$key]
+            }
+            $groupId = "/subscriptions/$($values.subscription)/resourceGroups/$($values.group)"
+            $identityId = "$groupId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/fixture-identity"
+            foreach ($attempt in 1..3) {
+                $location = @('eastus', 'norwayeast', 'swedencentral')[$attempt - 1]
+                foreach ($iteration in @('init', 'idem')) {
+                    $expression = $nameExpression.
+                    Replace('resourceGroup.id', "'$groupId'").
+                    Replace('subscription().subscriptionId', "'$($values.subscription)'").
+                    Replace('resourceGroupName', "'$($values.group)'").
+                    Replace('nestedDependencies.outputs.managedIdentityPrincipalId', "'$($values.principal)'").
+                    Replace('nestedDependencies.outputs.managedIdentityResourceId', "'$identityId'").
+                    Replace('namePrefix', "'$($values.prefix)'").
+                    Replace('serviceShort', "'$($values.service)'").
+                    Replace('deployment().name', "'attempt-$attempt'").
+                    Replace('deployment().location', "'$location'").
+                    Replace('resourceLocation', "'$location'").
+                    Replace('iteration', "'$iteration'")
+                    $roleParameters += "param rolescope${scopeIndex}t${attempt}${iteration} = $expression"
+                }
+            }
+        }
+        $roleParameterPath = Join-Path $TestDrive 'max-role-name.bicepparam'
+        $roleParameterOutput = Join-Path $TestDrive 'max-role-name.json'
+        $roleParameters -join "`n" | Set-Content -LiteralPath $roleParameterPath
+        $diagnostics = bicep build-params $roleParameterPath --no-restore --outfile $roleParameterOutput 2>&1
+        if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+        $script:environmentRoleNames = (Get-Content -LiteralPath $roleParameterOutput -Raw | ConvertFrom-Json -AsHashtable).parameters
+        $script:environmentRoleAssignments = @($testModule.properties.parameters.roleAssignments.value)
+    }
+
+    It 'Separates Contributor assignment names across <dimension>' -ForEach @(
+        @{ dimension = 'subscriptions'; scopeIndex = 1 }
+        @{ dimension = 'resource groups'; scopeIndex = 2 }
+        @{ dimension = 'recreated principals'; scopeIndex = 3 }
+        @{ dimension = 'environment prefixes'; scopeIndex = 4 }
+        @{ dimension = 'environment short names'; scopeIndex = 5 }
+    ) {
+        $script:environmentRoleNames["rolescope${scopeIndex}t1init"].value |
+            Should -Not -Be $script:environmentRoleNames.rolescope0t1init.value
+    }
+
+    It 'Keeps the retained principal name stable across root, location and init/idem changes' {
+        for ($scopeIndex = 0; $scopeIndex -lt $script:environmentRoleScenarios.Count; $scopeIndex++) {
+            $roleNames = @(
+                foreach ($attempt in 1..3) {
+                    foreach ($iteration in @('init', 'idem')) {
+                        $script:environmentRoleNames["rolescope${scopeIndex}t${attempt}${iteration}"].value
+                    }
+                }
+            )
+            @($roleNames | Select-Object -Unique).Count | Should -Be 1
+        }
+    }
+
+    It 'Produces a distinct valid GUID for each scope, principal and environment name combination' {
+        foreach ($entry in $script:environmentRoleNames.Values) {
+            $entry.value | Should -Match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+        }
+        @($script:environmentRoleNames.Values.value | Select-Object -Unique).Count |
+            Should -Be $script:environmentRoleScenarios.Count
+    }
+
+    It 'Keeps only the Contributor custom name and both automatic-name cases' {
+        $script:environmentRoleAssignments.Count | Should -Be 3
+        $script:environmentRoleAssignments[0].Contains('name') | Should -BeFalse
+        $script:environmentRoleAssignments[1].Contains('name') | Should -BeTrue
+        $script:environmentRoleAssignments[2].Contains('name') | Should -BeFalse
+    }
+
+    It 'Preserves the roles, ServicePrincipal types and actual managed-identity reference' {
+        $script:environmentRoleAssignments[0].roleDefinitionIdOrName | Should -BeExactly 'Reader'
+        $script:environmentRoleAssignments[1].roleDefinitionIdOrName | Should -BeExactly 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        $script:environmentRoleAssignments[2].roleDefinitionIdOrName |
+            Should -BeExactly "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]"
+        foreach ($assignment in $script:environmentRoleAssignments) {
+            $assignment.principalType | Should -BeExactly 'ServicePrincipal'
+            $assignment.principalId | Should -BeExactly $script:environmentRoleAssignments[1].principalId
+            $assignment.principalId | Should -Match '\.outputs\.managedIdentityPrincipalId\.value'
+        }
+        $testModule.properties.parameters.managedIdentities.value.systemAssigned | Should -BeTrue
+        @($testModule.properties.parameters.managedIdentities.value.userAssignedResourceIds).Count | Should -Be 1
+        $testModule.properties.parameters.managedIdentities.value.userAssignedResourceIds[0] |
+            Should -Match '\.outputs\.managedIdentityResourceId\.value'
+    }
+
+    It 'Forwards the full environment scope and assignment principal into the custom name' {
+        $assignment = $script:environmentRoleAssignments[1]
+        $assignment.name | Should -Match 'Microsoft\.App/managedEnvironments/'
+        $assignment.name | Should -Match "subscriptionResourceId\('Microsoft.Resources/resourceGroups', parameters\('resourceGroupName'\)\)"
+        $assignment.name | Should -Match "parameters\('namePrefix'\)"
+        $assignment.name | Should -Match "parameters\('serviceShort'\)"
+        $principalExpression = $assignment.principalId.Substring(1, $assignment.principalId.Length - 2)
+        $assignment.name | Should -Match ([regex]::Escape($principalExpression))
+    }
+
+    It 'Keeps location unpinned, the environment name unchanged and init/idem serial' {
+        $template.parameters.resourceLocation.defaultValue | Should -BeExactly '[deployment().location]'
+        $testModule.properties.parameters.location.value | Should -BeExactly "[parameters('resourceLocation')]"
+        $testModule.properties.parameters.name.value |
+            Should -BeExactly "[format('{0}{1}001', parameters('namePrefix'), parameters('serviceShort'))]"
+        $testModule.copy.mode | Should -BeExactly 'serial'
+        $testModule.copy.batchSize | Should -Be 1
+        $testModule.copy.count | Should -BeExactly "[length(createArray('init', 'idem'))]"
+    }
+}
