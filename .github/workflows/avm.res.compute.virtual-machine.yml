@@ -53,12 +53,12 @@ jobs:
           fetch-depth: 0
       - name: "Set input parameters to output variables"
         id: get-workflow-param
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-workflow-input@053d362184ace786c8c2977b673f3085a5203ddd
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-workflow-input@2f5fa861a543179f4b310a36b7bca7b99d7297a2
         with:
           workflowPath: "${{ env.workflowPath}}"
       - name: "Get module test file paths"
         id: get-module-test-file-paths
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-module-test-files@053d362184ace786c8c2977b673f3085a5203ddd
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-module-test-files@2f5fa861a543179f4b310a36b7bca7b99d7297a2
         with:
           modulePath: "${{ env.modulePath }}"
     outputs:
@@ -77,9 +77,9 @@ jobs:
       contents: write # For release tags
     needs:
       - job_initialize_pipeline
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module.yml@053d362184ace786c8c2977b673f3085a5203ddd
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module.yml@2f5fa861a543179f4b310a36b7bca7b99d7297a2
     with:
-      tools-ref: 053d362184ace786c8c2977b673f3085a5203ddd
+      tools-ref: 2f5fa861a543179f4b310a36b7bca7b99d7297a2
       avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
