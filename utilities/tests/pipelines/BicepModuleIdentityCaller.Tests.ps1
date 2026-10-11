@@ -40,7 +40,7 @@ Describe 'Module identity caller context' {
                 Should -Be '${{needs.job_initialize_pipeline.outputs.modulePath}}'
             $call.permissions.'id-token' | Should -Be 'write'
             $call.secrets | Should -Be 'inherit'
-            @($call.with.Keys | Where-Object { $_ -match '(?i)client.?id|credential|tenant.?id|subscription.?id' }) |
+            @($call.with.Keys | Where-Object { $_ -match '(?i)client.?id|credential|tenant.?id|subscription.?id|workflow.?ref|subject' }) |
                 Should -BeNullOrEmpty
             @($Workflow.env.Keys | Where-Object { $_ -match '^(VALIDATE_MODULE_CLIENT_IDS|VALIDATE_CLIENT_ID|AZURE_CREDENTIALS)$' }) |
                 Should -BeNullOrEmpty
@@ -89,6 +89,10 @@ Describe 'Module identity caller context' {
             Mutate = { param($workflow) $workflow.jobs.'call-workflow-passing-data'.with.'client-id' = '${{ vars.VALIDATE_CLIENT_ID }}' }
         }
         @{
+            Name   = 'a new workflow-ref authentication input'
+            Mutate = { param($workflow) $workflow.jobs.'call-workflow-passing-data'.with.'workflow-ref' = '${{ github.workflow_ref }}' }
+        }
+        @{
             Name   = 'a caller-local identity mapping override'
             Mutate = { param($workflow) $workflow.env.VALIDATE_MODULE_CLIENT_IDS = '{}' }
         }
@@ -114,8 +118,19 @@ Describe 'Generic module identity caller context' {
         $workflow.on.workflow_dispatch.inputs.deploymentValidation.default | Should -BeTrue
         @($workflow.on.push.branches) | Should -Be @('main')
         @($workflow.on.workflow_dispatch.inputs.Keys |
-            Where-Object { $_ -match '(?i)client.?id|credential|tenant.?id|subscription.?id' }) |
+            Where-Object { $_ -match '(?i)client.?id|credential|tenant.?id|subscription.?id|workflow.?ref|subject' }) |
             Should -BeNullOrEmpty
+    }
+
+    It 'preserves pull-request selection without adding workflow-ref or base-branch gates' {
+        @($workflow.on.pull_request.Keys) | Should -Be @('types')
+        $workflow.on.pull_request.types | Should -Be @('labeled', 'synchronize')
+        foreach ($job in @('job_initialize_pipeline', 'call_module_preview', 'call_module_fork_static')) {
+            $workflow.jobs[$job].if |
+                Should -Not -Match 'github\.(base_ref|event\.pull_request\.base\.ref|workflow_ref|job_workflow_ref)'
+        }
+        $workflow.jobs.call_module_preview.if |
+            Should -Be '${{ (github.event_name == ''push'' || (github.event_name == ''pull_request'' && github.event.pull_request.head.repo.full_name == github.repository)) && needs.job_initialize_pipeline.outputs.hasModules == ''true'' }}'
     }
 
     It 'checks out the event commit before resolving generic module roots' {
@@ -134,7 +149,7 @@ Describe 'Generic module identity caller context' {
         $call.with.workflowInput | Should -Be '${{ needs.job_initialize_pipeline.outputs.workflowInput }}'
         $call.permissions.'id-token' | Should -Be 'write'
         $call.secrets | Should -Be 'inherit'
-        @($call.with.Keys | Where-Object { $_ -match '(?i)client.?id|credential|tenant.?id|subscription.?id' }) |
+        @($call.with.Keys | Where-Object { $_ -match '(?i)client.?id|credential|tenant.?id|subscription.?id|workflow.?ref|subject' }) |
             Should -BeNullOrEmpty
     }
 
