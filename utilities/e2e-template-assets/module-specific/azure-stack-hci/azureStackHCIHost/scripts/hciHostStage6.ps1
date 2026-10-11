@@ -67,6 +67,77 @@ Function log {
     Add-Content -Path $logPath -Value "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') [hciHostStage6] - $message"
 }
 
+function Wait-HciArcInitializationJob {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [System.Management.Automation.Job[]] $Job,
+
+        [ValidateRange(1, 3600)]
+        [int] $TimeoutSeconds = 1800
+    )
+
+    $null = $Job | Wait-Job -Timeout $TimeoutSeconds
+    $allJobs = @($Job) + @($Job | ForEach-Object { $_.ChildJobs })
+    $failed = @($allJobs | Where-Object { $_.State -eq 'Failed' })
+    if ($failed.Count -gt 0) {
+        $failed | Receive-Job -ErrorAction Stop | ForEach-Object { log ($_ | Out-String) }
+    }
+    $incomplete = @($allJobs | Where-Object { $_.State -ne 'Completed' })
+    if ($incomplete.Count -gt 0) {
+        $states = ($incomplete | ForEach-Object { '{0}: {1}' -f $_.Location, $_.State }) -join ', '
+        throw "Azure Arc initialization did not complete successfully within $TimeoutSeconds seconds. Job states: $states"
+    }
+
+    foreach ($completedJob in $Job) {
+        $completedJob | Receive-Job -ErrorAction Stop | ForEach-Object { log ($_ | Out-String) }
+    }
+}
+
+function Wait-HciArcNodeIdentity {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [ValidatePattern('(?i)^/subscriptions/[0-9a-f-]{36}/resourceGroups/[^/]+/providers/Microsoft\.HybridCompute/machines/[^/]+$')]
+        [string] $MachineResourceId,
+
+        [ValidateRange(1, 60)]
+        [int] $MaximumAttempts = 30,
+
+        [ValidateRange(0, 60)]
+        [int] $RetryDelaySeconds = 10
+    )
+
+    $path = '{0}?api-version=2026-07-15' -f $MachineResourceId
+    for ($attempt = 1; $attempt -le $MaximumAttempts; $attempt++) {
+        $response = Invoke-AzRestMethod -Method GET -Path $path -ErrorAction Stop
+        $statusCode = [int] $response.StatusCode
+        if ($statusCode -eq 200) {
+            $machine = $response.Content | ConvertFrom-Json -ErrorAction Stop
+            if ($machine.id -ine $MachineResourceId) {
+                throw "Arc identity readback returned an unexpected resource for '$MachineResourceId'."
+            }
+            $identity = $machine.PSObject.Properties['identity']
+            if ($identity -and $identity.Value) {
+                $principal = $identity.Value.PSObject.Properties['principalId']
+                $principalId = [guid]::Empty
+                if ($principal -and [guid]::TryParse([string] $principal.Value, [ref] $principalId) -and
+                    $principalId -ne [guid]::Empty) {
+                    log "Arc machine '$MachineResourceId' is available with its managed identity."
+                    return
+                }
+            }
+        } elseif ($statusCode -notin @(404, 408, 429, 500, 502, 503, 504)) {
+            throw "Failed to read Arc machine '$MachineResourceId' (HTTP $statusCode). $($response.Content)"
+        }
+        if ($attempt -lt $MaximumAttempts) {
+            log "Waiting for Arc machine '$MachineResourceId' and its managed identity ($attempt/$MaximumAttempts, HTTP $statusCode)..."
+            Start-Sleep -Seconds $RetryDelaySeconds
+        }
+    }
+    throw "Arc machine '$MachineResourceId' was not available with a valid managed identity after $MaximumAttempts checks (last HTTP $statusCode)."
+}
+
 $ErrorActionPreference = 'Stop'
 
 # export or re-import local administrator credential
@@ -329,10 +400,7 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
         }
     }
     try {
-        # Use new bootstrapping approach for newer HCI OS versions
-        # Invoke-AzStackHciArcInitialization is the recommended approach per:
-        # https://learn.microsoft.com/en-us/azure/azure-local/deploy/deployment-without-azure-arc-gateway
-        Import-Module AzsHCI.ARCinstaller -ErrorAction Continue
+        Get-Command Invoke-AzStackHciArcInitialization -ErrorAction Stop | Out-Null
         Write-Output "[$env:COMPUTERNAME] Starting Arc initialization using Invoke-AzStackHciArcInitialization..."
 
         Invoke-AzStackHciArcInitialization `
@@ -353,19 +421,9 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
 
 log 'Waiting up to 30 minutes for Azure Arc initialization to complete on nodes...'
 
-$arcInitializationJobs | Wait-Job -Timeout 1800
-
-# check for failed arc initialization jobs
-log 'Checking status of Azure Arc initialization jobs...'
-$arcInitializationJobs | ForEach-Object {
-    $job = $_
-    log "[$($job.ComputerName)] Job output (Receive-Job): '$($job | Receive-Job -Keep -ErrorAction Continue | Out-String)'"
-    Get-Job -Id $job.Id -IncludeChildJob | Receive-Job -ErrorAction SilentlyContinue | ForEach-Object {
-        If ($_.Exception -or $_.state -eq 'Failed') {
-            log "Azure Arc initialization failed on node '$($job.Location)' with error: $($_.Exception.Message)"
-            Exit 1
-        } Else {
-            log "[$($job.ComputerName)] Job output: '$($_ | ConvertTo-Json -Compress)'"
-        }
-    }
+Wait-HciArcInitializationJob -Job $arcInitializationJobs
+foreach ($node in (Get-VM)) {
+    $machineResourceId = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.HybridCompute/machines/{2}' -f $subscriptionId, $resourceGroupName, $node.Name.ToLowerInvariant()
+    Wait-HciArcNodeIdentity -MachineResourceId $machineResourceId
 }
+log 'Azure Arc initialization completed successfully on all HCI nodes.'

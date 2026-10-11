@@ -7,6 +7,10 @@ param deploymentUserPassword string
 #disable-next-line secure-parameter-default
 param hciHostImageReferenceId string = ''
 
+@description('Optional. The HCI resource-provider principal ID for resource-group-scoped Arc permissions before host setup. Omit when these permissions are preconfigured.')
+@secure()
+param hciResourceProviderObjectId string?
+
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param localAdminPassword string
@@ -68,6 +72,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
   params: {
     domainOUPath: domainOUPath
     imageReferenceId: hciHostImageReferenceId
+    hciResourceProviderObjectId: hciResourceProviderObjectId
     hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E48bds_v5'
     localAdminPassword: localAdminPassword

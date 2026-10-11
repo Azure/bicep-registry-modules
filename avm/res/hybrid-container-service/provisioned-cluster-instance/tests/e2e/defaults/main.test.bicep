@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 extension microsoftGraphV1
@@ -15,35 +17,20 @@ param serviceShort string = 'hcpcimin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
-param builtInServicePrincipalObjectId string?
-
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param arbLocalAdminAndDeploymentUserPass string = ''
 
-@description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
-@secure()
-#disable-next-line secure-parameter-default
-param arbDeploymentAppId string = ''
-
-@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
-@secure()
-#disable-next-line secure-parameter-default
-param arbDeploymentSPObjectId string = ''
-
-@description('Required. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
-@secure()
-#disable-next-line secure-parameter-default
-param arbDeploymentServicePrincipalSecret string = ''
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
 
 @description('Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM. Injected via CI-hciHostImageReferenceId secret.')
 @secure()
 #disable-next-line secure-parameter-default
 param hciHostImageReferenceId string = ''
 
-#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'southeastasia'
+#disable-next-line no-hardcoded-location // Requires HCI service support and the configured nested-virtualization host VM size.
+var enforcedLocation = 'australiaeast'
 
 resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'
@@ -59,9 +46,9 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   scope: resourceGroup
   params: {
     clusterName: '${namePrefix}${serviceShort}01'
-    clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
-    keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    clusterWitnessStorageAccountName: uniqueResourceName('dep${namePrefix}wst${serviceShort}', resourceGroup.id, 24)
+    keyVaultDiagnosticStorageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
     userAssignedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     maintenanceConfigurationAssignmentName: 'dep-${namePrefix}-mca-${serviceShort}'
@@ -72,12 +59,17 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
     deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
+    diskNamePrefix: 'dep-${namePrefix}-dsk-${serviceShort}'
+    waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
     hciHostImageReferenceId: hciHostImageReferenceId
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : hciResourceProvider!.id
     location: enforcedLocation
   }
 }
 
-module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
+module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.6.0' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
   scope: resourceGroup
   params: {
@@ -86,20 +78,20 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
     deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
     localAdminUser: 'Administrator'
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
-    servicePrincipalId: arbDeploymentAppId
-    servicePrincipalSecret: arbDeploymentServicePrincipalSecret
-    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : hciResourceProvider!.id
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
       clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
-      defaultGateway: '192.168.1.1'
+      defaultGateway: '172.20.0.1'
       deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
-      dnsServers: ['192.168.1.254']
+      dnsServers: ['172.20.0.1']
       domainFqdn: 'hci.local'
       domainOUPath: nestedDependencies.outputs.domainOUPath
-      startingIPAddress: '192.168.1.55'
-      endingIPAddress: '192.168.1.65'
+      startingIPAddress: '172.20.0.55'
+      endingIPAddress: '172.20.0.65'
       enableStorageAutoIp: true
       keyVaultName: nestedDependencies.outputs.keyVaultName
       networkIntents: [
@@ -199,11 +191,11 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
     customLocationResourceId: customLocation.id
     vmSwitchName: azlocal.outputs.vSwitchName
     ipAllocationMethod: 'Static'
-    addressPrefix: '192.168.1.0/24'
-    startingAddress: '192.168.1.171'
-    endingAddress: '192.168.1.190'
-    defaultGateway: '192.168.1.1'
-    dnsServers: ['192.168.1.254']
+    addressPrefix: '172.20.0.0/24'
+    startingAddress: '172.20.0.171'
+    endingAddress: '172.20.0.190'
+    defaultGateway: '172.20.0.1'
+    dnsServers: ['172.20.0.1']
     routeName: 'default'
     vlanId: null
   }
@@ -216,7 +208,7 @@ module testDeployment '../../../main.bicep' = {
     azLocalInit
   ]
   params: {
-    name: '${namePrefix}${serviceShort}001'
+    name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 63)
     customLocationResourceId: customLocation.id
     keyVaultName: nestedDependencies.outputs.keyVaultName
     cloudProviderProfile: {
