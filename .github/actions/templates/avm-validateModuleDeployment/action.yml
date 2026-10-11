@@ -39,8 +39,9 @@ description: >-
   do not relocate. Retained resources disable intermediate cleanup and relocation.
   Metadata location and other inputs remain fixed. Cleanup retains attempt tracking and only
   skips missing records after confirmed preflight rejection and DeploymentNotFound.
-  After a submission request timeout, observe the same deployment for up to 60 minutes
-  without resubmitting; only confirmed failure permits a bounded retry. Unknown
+  After a recoverable submission request error, observe the same deployment until one
+  UTC deadline four hours after coordinator entry, shared by all attempts and recovery
+  paths without resubmitting; only confirmed failure permits a bounded retry. Unknown
   outcomes preserve attempted deployment names for cleanup. A preselected subscription is
   verified before login and reused through cleanup without reshuffling the pool.
 
@@ -409,7 +410,7 @@ runs:
     # Default: use OIDC
     # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
-      if: env.skip_deployment_ci == 'false'
+      if: ${{ (success() || (failure() && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '')) && env.skip_deployment_ci == 'false' }}
       uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
         client-id: ${{ env.VALIDATE_CLIENT_ID }}

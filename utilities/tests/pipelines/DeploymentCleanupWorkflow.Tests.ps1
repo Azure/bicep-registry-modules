@@ -1171,6 +1171,147 @@ Describe 'Deployment submission and cleanup runtime integration' {
             $script:statusReads.Count | Should -Be 1
         }
 
+        Context 'Shared status-recovery deadline' -Tag 'RecoveryDeadline' {
+            BeforeEach {
+                $script:deadlineUtc = $script:recoveryClock.AddHours(4)
+            }
+
+            It 'Keeps the one-hour default for direct Wait-TemplateDeployment callers' {
+                Mock Start-Sleep { $script:recoveryClock = $script:recoveryClock.AddHours(1) }
+                { Wait-TemplateDeployment -DeploymentScope subscription -DeploymentName 'direct-wait' } |
+                    Should -Throw '*3600-second recovery window*'
+                $script:statusReads.Count | Should -Be 1
+                $script:recoveryClock | Should -Be $script:deadlineUtc.AddHours(-3)
+                Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+            }
+
+            It 'Rejects a <kind> deadline at the <command> boundary' -ForEach @(
+                foreach ($command in @('Wait-TemplateDeployment', 'New-TemplateDeployment', 'New-TemplateDeploymentInner')) {
+                    foreach ($kind in @('local', 'unspecified', 'null', 'malformed')) {
+                        @{ command = $command; kind = $kind }
+                    }
+                }
+            ) {
+                $callInput = $command -eq 'Wait-TemplateDeployment' ?
+                @{ DeploymentScope = 'subscription'; DeploymentName = 'direct-wait' } : $deploymentInput.Clone()
+                $callInput.RecoveryDeadlineUtc = switch ($kind) {
+                    'local' { [datetime]::SpecifyKind($script:deadlineUtc, [DateTimeKind]::Local) }
+                    'unspecified' { [datetime]::SpecifyKind($script:deadlineUtc, [DateTimeKind]::Unspecified) }
+                    'null' { $null }
+                    'malformed' { 'not-a-deadline' }
+                }
+                { . $command @callInput -ErrorAction Stop } | Should -Throw '*RecoveryDeadlineUtc*'
+                $script:attemptNames.Count | Should -Be 0
+                $script:statusReads.Count | Should -Be 0
+                Should -Invoke Get-AzContext -Times 0 -Exactly
+            }
+
+            It 'Does not read status <seconds> seconds after the deadline' -ForEach @(
+                @{ seconds = 0 }, @{ seconds = 1 }
+            ) {
+                $script:recoveryClock = $script:deadlineUtc.AddSeconds($seconds)
+                $script:statusStates = @('Succeeded')
+                { Wait-TemplateDeployment -DeploymentScope subscription -DeploymentName 'direct-wait' -RecoveryDeadlineUtc $script:deadlineUtc } |
+                    Should -Throw '*recovery deadline*'
+                $script:statusReads.Count | Should -Be 0
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Accepts <state> one tick before the deadline' -ForEach @(
+                @{ state = 'Succeeded' }, @{ state = 'Failed' }
+            ) {
+                $script:recoveryClock = $script:deadlineUtc.AddTicks(-1)
+                $script:statusStates = @($state)
+                $result = Wait-TemplateDeployment -DeploymentScope subscription -DeploymentName 'direct-wait' -RecoveryDeadlineUtc $script:deadlineUtc
+                $result.ProvisioningState | Should -BeExactly $state
+                $script:statusReads.Count | Should -Be 1
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Rejects <state> returned <seconds> seconds after the deadline' -ForEach @(
+                @{ state = 'Succeeded'; seconds = 0 }, @{ state = 'Succeeded'; seconds = 1 }
+                @{ state = 'Failed'; seconds = 0 }, @{ state = 'Failed'; seconds = 1 }
+            ) {
+                $script:recoveryClock = $script:deadlineUtc.AddSeconds(-1)
+                $script:statusStates = @($state)
+                Mock Get-AzDeployment {
+                    $script:recoveryClock = $script:deadlineUtc.AddSeconds($seconds)
+                    Get-TestDeploymentStatus -Name $Name -Scope subscription -Profile $DefaultProfile
+                }
+                { Wait-TemplateDeployment -DeploymentScope subscription -DeploymentName 'direct-wait' -RecoveryDeadlineUtc $script:deadlineUtc } |
+                    Should -Throw '*recovery deadline*'
+                $script:statusReads.Count | Should -Be 1
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Clamps the final polling delay to the fractional time remaining' {
+                $script:deadlineUtc = $script:recoveryClock.AddMilliseconds(250)
+                { Wait-TemplateDeployment -DeploymentScope subscription -DeploymentName 'direct-wait' -RecoveryDeadlineUtc $script:deadlineUtc } |
+                    Should -Throw '*recovery deadline*'
+                $script:recoveryClock | Should -Be $script:deadlineUtc
+                $script:statusReads.Count | Should -Be 1
+                Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 0.25 }
+            }
+
+            It 'Keeps the existing <parameter> upper bound' -ForEach @(
+                @{ parameter = 'TimeoutSeconds'; value = 3601 }
+                @{ parameter = 'PollIntervalSeconds'; value = 61 }
+            ) {
+                $waitInput = @{ DeploymentScope = 'subscription'; DeploymentName = 'direct-wait'; RecoveryDeadlineUtc = $script:deadlineUtc }
+                $waitInput[$parameter] = $value
+                { Wait-TemplateDeployment @waitInput } | Should -Throw "*$parameter*"
+                $script:statusReads.Count | Should -Be 0
+            }
+
+            It 'Uses the coordinator deadline from the actual deployment action after an hour' {
+                Mock Start-Sleep { $script:recoveryClock = $script:recoveryClock.AddMinutes(90) }
+                Invoke-TestActionStep -Name 'Deploy template file'
+                $outputs = Get-TestStepOutput
+                ($outputs.deploymentOutput | ConvertFrom-Json).recovered.value | Should -BeExactly 'ready'
+                @($outputs.remainingDeploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+                $script:attemptNames.Count | Should -Be 1
+                $script:statusReads.Count | Should -Be 2
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
+
+            It 'Preserves errors and ownership when <outcome> recovery reaches the supplied deadline' -ForEach @(
+                @{ outcome = 'RequestTimeout'; scope = 'subscription'; original = 'HttpClient.Timeout' }
+                @{ outcome = 'NestedReadNotFound'; scope = 'subscription'; original = 'fixture-dependencies' }
+                @{ outcome = 'Forbidden'; scope = 'managementgroup'; original = 'Original submission diagnostic' }
+            ) {
+                Set-TestTemplateScope -Scope $scope
+                $script:outcomes = @($outcome)
+                $script:readErrorFormat = 'SdkWrapper'
+                $script:readErrorCategory = [System.Management.Automation.ErrorCategory]::ObjectNotFound
+                $script:readErrorMutation = $null
+                $script:selectedContext | Add-Member -NotePropertyName Environment -NotePropertyValue @{
+                    ResourceManagerUrl = 'https://management.azure.com/'
+                }
+                $deploymentInput.RecoveryDeadlineUtc = $script:deadlineUtc
+                Mock Start-Sleep { $script:recoveryClock = $script:deadlineUtc }
+                $result = New-TemplateDeployment @deploymentInput
+                $result.Exception | Should -Match 'recovery deadline'
+                $result.Exception | Should -Match $original
+                $result.ErrorRecord.Exception | Should -BeOfType [System.AggregateException]
+                $result.ErrorRecord.Exception.InnerExceptions[0].Message | Should -Match $original
+                $result.ErrorRecord.Exception.InnerExceptions[1] | Should -BeOfType [System.TimeoutException]
+                if ($outcome -ne 'RequestTimeout') {
+                    $result.ErrorRecord.Exception.Data['OriginalErrorRecord'].ErrorDetails.Message | Should -Match 'fixture-operation'
+                    $result.ErrorRecord.Exception.Data['RecoveryErrorRecord'].Exception | Should -BeOfType [System.TimeoutException]
+                }
+                $result.RetryAllowed | Should -BeFalse
+                $result.FailureQueryAllowed | Should -BeFalse
+                $result.RecoveredFailure | Should -BeFalse
+                $result.DeploymentNames | Should -Be @($script:attemptNames)
+                $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+                $result.ContainsKey('DeploymentOutput') | Should -BeFalse
+                $script:attemptNames.Count | Should -Be 1
+                $script:statusReads.Count | Should -Be 1
+                Should -Invoke Get-ErrorMessageForScope -Times 0 -Exactly
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
+        }
+
         It 'Fails explicitly on <state> without interpreting it as a failed deployment' -ForEach @(
             @{ state = 'Missing'; message = 'exactly the original deployment' }
             @{ state = 'MissingState'; message = 'unsupported recovery state' }

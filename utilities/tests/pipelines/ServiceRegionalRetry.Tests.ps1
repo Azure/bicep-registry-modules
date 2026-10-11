@@ -85,11 +85,19 @@ Describe 'Selected-region service error: <name>' -ForEach $serviceCases {
     It 'Requires the complete provider message: <change>' -ForEach @(
         @{ change = 'generic text' }, @{ change = 'wrong code' }, @{ change = 'wrong code casing' }
         @{ change = 'trailing error' }, @{ change = 'redacted region' }, @{ change = 'global region' }
+        @{ change = 'empty code' }, @{ change = 'missing code' }, @{ change = 'nonstring code' }
+        @{ change = 'leading text' }, @{ change = 'wrong message casing' }, @{ change = 'trailing newline' }
     ) {
         switch ($change) {
             'generic text' { $leaf.message = "Capacity is not available in region $region." }
             'wrong code' { $leaf.code = 'AuthorizationFailed' }
             'wrong code casing' { $leaf.code = $leaf.code.ToLowerInvariant() }
+            'empty code' { $leaf.code = '' }
+            'missing code' { $leaf.Remove('code') }
+            'nonstring code' { $leaf.code = @($leaf.code) }
+            'leading text' { $leaf.message = 'Capacity: ' + $leaf.message }
+            'wrong message casing' { $leaf.message = $leaf.message.ToLowerInvariant() }
+            'trailing newline' { $leaf.message += "`n" }
             'trailing error' { $leaf.message += ' AuthorizationFailed.' }
             'redacted region' { $leaf.message = $leaf.message.Replace($region, '[REDACTED]') }
             'global region' {
@@ -187,6 +195,40 @@ Describe 'Provider-specific service error boundaries' {
     BeforeEach {
         $cases = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'fixtures' 'service-regional-errors.json') -Raw |
             ConvertFrom-Json -AsHashtable
+    }
+
+    It 'Accepts Search service capacity with a display-name region' {
+        $case = $cases | Where-Object name -EQ 'Search service capacity'
+        $sample = $case.response
+        $leaf = Get-ServiceErrorLeaf $sample
+        $leaf.message = $leaf.message.Replace($case.region, 'Sweden Central')
+
+        Test-RegionalValidationError -ErrorRecord (New-ServiceErrorRecord $sample) -ResourceLocation $case.region |
+            Should -BeTrue
+    }
+
+    It 'Requires the exact Search service-capacity message and request GUID: <change>' -ForEach @(
+        @{ change = 'invalid GUID' }, @{ change = 'short GUID' }, @{ change = 'braced GUID' }
+        @{ change = 'missing request ID' }, @{ change = 'wrong request label casing' }
+        @{ change = 'missing full stop' }, @{ change = 'changed retry advice' }, @{ change = 'SKU-capacity message' }
+    ) {
+        $case = $cases | Where-Object name -EQ 'Search service capacity'
+        $sample = $case.response
+        $leaf = Get-ServiceErrorLeaf $sample
+        $requestId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
+        switch ($change) {
+            'invalid GUID' { $leaf.message = $leaf.message.Replace($requestId, 'gggggggg-gggg-gggg-gggg-gggggggggggg') }
+            'short GUID' { $leaf.message = $leaf.message.Replace($requestId, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa') }
+            'braced GUID' { $leaf.message = $leaf.message.Replace($requestId, "{$requestId}") }
+            'missing request ID' { $leaf.message = $leaf.message.Replace(" RequestId: $requestId", '') }
+            'wrong request label casing' { $leaf.message = $leaf.message.Replace('RequestId:', 'RequestID:') }
+            'missing full stop' { $leaf.message = $leaf.message.Replace('new services.', 'new services') }
+            'changed retry advice' { $leaf.message = $leaf.message.Replace('another region.', 'the same region.') }
+            'SKU-capacity message' { $leaf.message = $cases[0].response.error.message }
+        }
+
+        Test-RegionalValidationError -ErrorRecord (New-ServiceErrorRecord $sample) -ResourceLocation $case.region |
+            Should -BeFalse
     }
 
     It 'Does not generalize semantic-search BadRequest to other errors or unofficial availability URLs' -ForEach @(
