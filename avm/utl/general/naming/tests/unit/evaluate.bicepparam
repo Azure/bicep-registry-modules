@@ -19,12 +19,19 @@ var simpleTemplate = {
   namingTemplates: { name: '\${slug}\${separator}\${environment}\${separator}\${location}\${separator}\${instance}' }
 }
 var custom = loadJsonContent('./overrides.json')
+var misCasedOverrides = {
+  schema_version: 2
+  resources: {
+    RESOURCE_GROUP: { slug: 'wrong', resource_type: 'Example.Provider/otherResources' }
+  }
+}
 
 param baseline = getNames(map(items(namingCatalog), entry => entry.key), seed)
 param cases = {
   noSeed: getName('storage_account', {})
   seedZero: getName('storage_account', { uniqueLength: 0 })
   seedUnchanged: getName('resource_group', { uniqueSeed: 'AB12z', uniqueLength: 4, uniqueIncludeNumbers: false })
+  seedDigit: getName('resource_group', { uniqueSeed: '2ABCz', uniqueLength: 4, uniqueIncludeNumbers: false })
   shortSeed: getName('storage_account', { uniqueSeed: 'z', uniqueLength: 8 })
   compact: getName('resource_group', { prefix: ['', 'Team', null, ''], suffix: ['', null, 'Dev', ''], uniqueLength: 0 })
   repeated: [getName('storage_account', identity), getName('storage_account', identity)]
@@ -49,6 +56,7 @@ param cases = {
   instanceLarge: getName('resource_group', shallowMerge([instance, { instance: 1000 }]))
   instanceWidth: getName('resource_group', shallowMerge([instance, { instance: 20, instanceFormat: '%02d' }]))
   instanceUnpadded: getName('resource_group', shallowMerge([instance, { instance: 20, instanceFormat: '%d' }]))
+  instanceCaseLiteral: getName('resource_group', shallowMerge([instance, { instanceFormat: 'D%03dD' }]))
   instanceLong: getName('storage_account', shallowMerge([instance, { prefix: longPrefix }]))
   instanceLongOther: getName('storage_account', shallowMerge([instance, { prefix: longPrefix, instance: 20 }]))
   instanceOversized: getName('storage_account', shallowMerge([instance, { instanceFormat: '%030d' }]))
@@ -223,4 +231,96 @@ param merged = {
   storage: getCatalog(custom).storage_account
   site: getCatalog(custom).site_web_app
   untouched: getCatalog(custom).resource_group
+}
+param derivedTokens = map(range(0, 64), index => {
+  group: getName('resource_group', { uniqueIdentity: 'review-${index}', uniqueLength: 13 })
+  vault: getName('key_vault_vault', {
+    uniqueIdentity: 'review-${index}'
+    namingTemplates: { nameUnique: '\${unique}\${separator}\${name}' }
+    requireValidNames: true
+  })
+  emptyBase: getName('key_vault_vault', {
+    uniqueIdentity: 'review-${index}'
+    slugOverrides: { key_vault_vault: '' }
+    requireValidNames: true
+  })
+})
+param identityCatalogChanges = {
+  baseline: getName('resource_group', identity)
+  descriptive: getName(
+    'resource_group',
+    shallowMerge([
+      identity
+      {
+        customOverrides: {
+          schema_version: 2
+          resources: {
+            resource_group: {
+              scope: 'documentation-only'
+              source: { description: 'Updated provenance.' }
+              override_reason: 'Clarified documentation.'
+              validation_notes: ['Updated validation documentation.']
+              legacy_outputs: ['documented_alias']
+            }
+          }
+        }
+      }
+    ])
+  )
+  context: getName(
+    'resource_group',
+    shallowMerge([
+      identity
+      {
+        customOverrides: {
+          schema_version: 2
+          resources: {
+            resource_group: {
+              resource_type: 'Example.Provider/resources'
+              variant: 'documented-variant'
+              min_length: 0
+              max_length: 128
+            }
+          }
+        }
+      }
+    ])
+  )
+  truncated: getName(
+    'resource_group',
+    shallowMerge([
+      identity
+      { customOverrides: { schema_version: 2, resources: { resource_group: { max_length: 24 } } } }
+    ])
+  )
+  slug: getName(
+    'resource_group',
+    shallowMerge([
+      identity
+      { customOverrides: { schema_version: 2, resources: { resource_group: { slug: 'changed' } } } }
+    ])
+  )
+}
+param instanceFormats = {
+  invalid: map(['%Dd', '%0D3d', '%D', '%03D', '%3d', '%00D3d', '%d%d', '%03f', 'plain d'], pattern => {
+    pattern: pattern
+    result: getName('resource_group', { uniqueLength: 0, instance: 7, instanceFormat: pattern })
+  })
+  valid: map(['%d', '%0d', '%03d', 'D%03dD', '%03dd', '%03d-Dd'], pattern => {
+    pattern: pattern
+    result: getName('resource_group', { uniqueLength: 0, instance: 7, instanceFormat: pattern })
+  })
+}
+param keyCollisions = {
+  requested: getNames(['resource_group', 'RESOURCE_GROUP', 'storage_account', 'resource_group'], seed)
+  reversed: getNames(['RESOURCE_GROUP', 'resource_group', 'storage_account'], seed)
+  misCasedOnly: getNames(['RESOURCE_GROUP'], seed)
+  catalog: getCatalog(misCasedOverrides).resource_group
+  invalidCatalog: getCatalog({ schema_version: 2, resources: { Other_Key: { slug: 'other' } } }).Other_Key
+  canonical: getName('resource_group', { uniqueLength: 0, customOverrides: misCasedOverrides })
+  variants: getNamesByResourceType('Microsoft.Resources/resourceGroups', {
+    uniqueLength: 0
+    customOverrides: misCasedOverrides
+  })
+  slug: getName('resource_group', { uniqueLength: 0, slugOverrides: { RESOURCE_GROUP: 'wrong' } })
 }

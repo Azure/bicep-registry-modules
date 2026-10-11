@@ -46,6 +46,7 @@ function Test-TerraformParity {
         baseline = @{ query = 'local.names'; variables = @{ unique_seed = 'a1b2c3d4' } }
         seedZero = @{ key = 'storage_account'; variables = @{ unique_length = 0 } }
         seedUnchanged = @{ key = 'resource_group'; variables = @{ unique_seed = 'AB12z'; unique_length = 4; unique_include_numbers = $false } }
+        seedDigit = @{ key = 'resource_group'; variables = @{ unique_seed = '2ABCz'; unique_length = 4; unique_include_numbers = $false } }
         shortSeed = @{ key = 'storage_account'; variables = @{ unique_seed = 'z'; unique_length = 8 } }
         compact = @{ key = 'resource_group'; variables = @{ prefix = @('', 'Team', $null, ''); suffix = @('', $null, 'Dev', ''); unique_length = 0 } }
         instance = @{ key = 'storage_account'; variables = $instance }
@@ -53,6 +54,7 @@ function Test-TerraformParity {
         instanceLarge = @{ key = 'resource_group'; variables = $instance + @{} }
         instanceWidth = @{ key = 'resource_group'; variables = $instance + @{ instance_format = '%02d' } }
         instanceUnpadded = @{ key = 'resource_group'; variables = $instance + @{ instance_format = '%d' } }
+        instanceCaseLiteral = @{ key = 'resource_group'; variables = $instance + @{ instance_format = 'D%03dD' } }
         instanceLong = @{ key = 'storage_account'; variables = $instance + @{ prefix = @('a' * 100) } }
         instanceLongOther = @{ key = 'storage_account'; variables = $instance + @{ prefix = @('a' * 100) } }
         instanceOversized = @{ key = 'storage_account'; variables = $instance + @{ instance_format = '%030d' } }

@@ -85,10 +85,144 @@ Describe 'Terraform naming catalog synchronization' {
         }
     }
 
+    It 'Decodes the compact index to every merged property without losing nulls or missing fields' {
+        $fields = Get-Content -LiteralPath (Join-Path $modulePath 'generated' 'fields.json') -Raw | ConvertFrom-Json
+        $values = [Collections.Generic.List[object]]::new()
+        foreach ($file in Get-ChildItem -LiteralPath (Join-Path $modulePath 'generated') -Filter 'values-*.json' | Sort-Object Name) {
+            $file.Length | Should -BeLessOrEqual $manifest.chunkSize
+            $chunk = Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Json -AsHashtable -Depth 100 -NoEnumerate
+            foreach ($value in $chunk) { $values.Add($value) }
+        }
+        $rows = [ordered]@{}
+        foreach ($file in Get-ChildItem -LiteralPath (Join-Path $modulePath 'generated') -Filter 'entries-*.json' | Sort-Object Name) {
+            $file.Length | Should -BeLessOrEqual $manifest.chunkSize
+            $chunk = Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Json -AsHashtable -Depth 100
+            foreach ($key in $chunk.Keys) {
+                $rows.Contains($key) | Should -BeFalse
+                $rows[$key] = $chunk[$key]
+            }
+        }
+        $expected = Merge-NamingCatalogResources -Catalogs @(
+            ($utf8.GetString($sources['data/resource-name-rules.json']) | ConvertFrom-Json -AsHashtable -Depth 100).resources
+            ($utf8.GetString($sources['data/resource-name-rules.manual.json']) | ConvertFrom-Json -AsHashtable -Depth 100).resources
+        )
+        @($rows.Keys | Sort-Object) -join ',' | Should -BeExactly (@($expected.Keys | Sort-Object) -join ',')
+        foreach ($key in $rows.Keys) {
+            $row = $rows[$key]
+            $row.Count | Should -Be $fields.Count
+            $decoded = [ordered]@{}
+            for ($index = 0; $index -lt $fields.Count; $index++) {
+                $row[$index] | Should -BeGreaterOrEqual -1
+                if ($row[$index] -lt 0) { continue }
+                $row[$index] | Should -BeLessThan $values.Count
+                $decoded[$fields[$index]] = $values[$row[$index]]
+            }
+            @($decoded.Keys | Sort-Object) -join ',' | Should -BeExactly (@($expected[$key].Keys | Sort-Object) -join ',') -Because $key
+            foreach ($field in $decoded.Keys) {
+                Get-NamingSha256 (Get-NamingJsonBytes $decoded[$field]) |
+                    Should -BeExactly (Get-NamingSha256 (Get-NamingJsonBytes $expected[$key][$field])) -Because "$key.$field"
+            }
+        }
+        $loader = Get-Content -LiteralPath (Join-Path $modulePath 'generated' 'catalog.bicep') -Raw
+        $loader | Should -Not -Match 'loadJsonContent\(''\./(?:generated|manual)-'
+    }
+
+    It 'Chunks indexed arrays without flattening null, empty or singleton values' {
+        $artifacts = [ordered]@{}
+        $items = @($null, @(), @('one'), 'Case', 'case', @{ note = 'a longer value requiring another chunk' })
+        $paths = Add-NamingJsonChunks -Artifacts $artifacts -Stem 'values' -Items $items -ChunkSize 64
+        $paths.Count | Should -BeGreaterThan 1
+        $restored = [Collections.Generic.List[object]]::new()
+        foreach ($path in $paths) {
+            $artifacts[$path].Length | Should -BeLessOrEqual 64
+            $chunk = $utf8.GetString($artifacts[$path]) | ConvertFrom-Json -AsHashtable -Depth 100 -NoEnumerate
+            foreach ($value in $chunk) { $restored.Add($value) }
+        }
+        $utf8.GetString((Get-NamingJsonBytes $restored.ToArray())) | Should -BeExactly $utf8.GetString((Get-NamingJsonBytes $items))
+        $emptyPaths = Add-NamingJsonChunks -Artifacts $artifacts -Stem 'empty' -Items @() -ChunkSize 64
+        $emptyPaths.Count | Should -Be 1
+        $utf8.GetString($artifacts[$emptyPaths[0]]).Trim() | Should -BeExactly '[]'
+    }
+
+    It 'Preserves compact catalog nulls and nested array shapes in the compliance JSON comparer' {
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'ConvertTo-OrderedHashtable.ps1')
+        $normalized = ConvertTo-OrderedHashtable -JSONInputObject '{"values":[null,[],["one"],[2,1,null],{"b":2,"a":1},false,0,"",null]}'
+        $normalized.values.Count | Should -Be 9
+        @($normalized.values | Where-Object { $null -eq $_ }).Count | Should -Be 2
+        $arrays = @($normalized.values | Where-Object { $_ -is [array] })
+        $arrays.Count | Should -Be 3
+        @($arrays | Where-Object Count -EQ 0).Count | Should -Be 1
+        $singleton = @($arrays | Where-Object Count -EQ 1)
+        ConvertTo-Json -InputObject $singleton[0] -Compress | Should -BeExactly '["one"]'
+        $nested = @($arrays | Where-Object Count -EQ 3)
+        ConvertTo-Json -InputObject $nested[0] -Compress | Should -BeExactly '[null,1,2]'
+        $objects = @($normalized.values | Where-Object { $_ -is [Collections.IDictionary] })
+        $objects.Count | Should -Be 1
+        @($objects[0].Keys) -join ',' | Should -BeExactly 'a,b'
+        @($normalized.values | Where-Object { $_ -is [bool] -and -not $_ }).Count | Should -Be 1
+        @($normalized.values | Where-Object { $_ -is [long] -and $_ -eq 0 }).Count | Should -Be 1
+        @($normalized.values | Where-Object { $_ -is [string] -and $_ -ceq '' }).Count | Should -Be 1
+        $json = ConvertTo-Json -InputObject $normalized -Depth 20 -Compress
+        ConvertTo-Json -InputObject (ConvertTo-OrderedHashtable -JSONInputObject $json) -Depth 20 -Compress |
+            Should -BeExactly $json
+        foreach ($json in @('null', '[]', '["one"]', '{"values":[null]}', '{"values":[]}')) {
+            ConvertTo-Json -InputObject (ConvertTo-OrderedHashtable -JSONInputObject $json) -Compress |
+                Should -BeExactly $json
+        }
+        $primitives = ConvertTo-OrderedHashtable -JSONInputObject '{"values":[12,1,2]}'
+        ConvertTo-Json -InputObject $primitives.values -Compress | Should -BeExactly '[1,2,12]'
+        $mixed = ConvertTo-Json -InputObject @{ values = (@($false, 0, '', $true, 1, 'a', '0', -1) * 20) } -Compress
+        $normalized = ConvertTo-OrderedHashtable -JSONInputObject $mixed
+        $normalized.values.Count | Should -Be 160
+        $json = ConvertTo-Json -InputObject $normalized -Depth 20 -Compress
+        ConvertTo-Json -InputObject (ConvertTo-OrderedHashtable -JSONInputObject $json) -Depth 20 -Compress |
+            Should -BeExactly $json
+    }
+
+    It 'Reports potential naming changes separately from validation and descriptive metadata' {
+        $previous = [ordered]@{
+            slug = @{ slug = 'old'; max_length = 24 }
+            bounds = @{ slug = 'same'; max_length = 24 }
+            validation = @{ slug = 'same'; validation_complete = $false }
+            metadata = @{ slug = 'same'; source = @{ description = 'old' }; validation_notes = @('old') }
+            unchanged = @{ slug = 'same'; fixed_name = $null }
+            removed = @{ slug = 'gone' }
+        }
+        $current = $utf8.GetString((Get-NamingJsonBytes $previous)) | ConvertFrom-Json -AsHashtable -Depth 100
+        $current.slug.slug = 'new'
+        $current.bounds.max_length = 12
+        $current.validation.validation_complete = $true
+        $current.metadata.source = @{ description = 'new' }
+        $current.metadata.validation_notes = @()
+        $current.Remove('removed')
+        $current['added'] = @{ slug = 'new' }
+        $report = Get-NamingCatalogChanges -Previous $previous -Current $current
+        $report.addedCount | Should -Be 1
+        $report.removedCount | Should -Be 1
+        $report.namingCount | Should -Be 4
+        $report.validationCount | Should -Be 4
+        $report.metadataOnlyCount | Should -Be 1
+        @($report.entries | Where-Object key -CEQ 'unchanged').Count | Should -Be 0
+        ($report.entries | Where-Object key -CEQ 'bounds').properties | Should -Be @('max_length')
+        ($report.entries | Where-Object key -CEQ 'validation').affectsNames | Should -BeFalse
+        ($report.entries | Where-Object key -CEQ 'metadata').affectsValidation | Should -BeFalse
+    }
+
+    It 'Records the previous revision and an empty report for unchanged source rules' {
+        $fixture = Copy-NamingFixture 'change-report'
+        $reportPath = Join-Path $TestDrive 'changes.json'
+        $null = Sync-NamingCatalog -ModuleFolderPath $fixture -ChangeReportPath $reportPath
+        $report = Get-Content -LiteralPath $reportPath -Raw | ConvertFrom-Json -AsHashtable -Depth 100
+        $report.previousRevision | Should -BeExactly $manifest.revision
+        $report.revision | Should -BeExactly $manifest.revision
+        $report.changes.entries.Count | Should -Be 0
+        { Sync-NamingCatalog -ModuleFolderPath $fixture -Check -ChangeReportPath $reportPath } | Should -Throw '*does not write*'
+    }
+
     It 'Grows and shrinks chunks without dropping entries or exceeding the configured bound' {
         $small = New-NamingCatalogArtifacts -SourceFiles $sources -Revision $manifest.revision -ChunkSize 131072
         $small.Artifacts.Count | Should -BeGreaterThan $manifest.generated.Count
-        foreach ($path in $small.Artifacts.Keys | Where-Object { $_ -match '^(generated|manual)-' }) {
+        foreach ($path in $small.Artifacts.Keys | Where-Object { $_ -match '^(generated|manual|entries|values|slugs)-' }) {
             $small.Artifacts[$path].Length | Should -BeLessOrEqual 131072
         }
         $copy = Copy-NamingSources
@@ -163,11 +297,11 @@ Describe 'Terraform naming catalog synchronization' {
 
     It 'Removes only recognized stale chunks and leaves unexpected files untouched' {
         $fixture = Copy-NamingFixture 'stale'
-        $stalePath = Join-Path $fixture 'generated' 'generated-9999.json'
-        [IO.File]::WriteAllText($stalePath, '{}')
+        $stalePaths = @('generated', 'entries', 'values', 'slugs') | ForEach-Object { Join-Path $fixture 'generated' "$_-9999.json" }
+        foreach ($stalePath in $stalePaths) { [IO.File]::WriteAllText($stalePath, '{}') }
         { Sync-NamingCatalog -ModuleFolderPath $fixture -Check } | Should -Throw '*Stale or missing*'
         $null = Sync-NamingCatalog -ModuleFolderPath $fixture
-        Test-Path -LiteralPath $stalePath | Should -BeFalse
+        foreach ($stalePath in $stalePaths) { Test-Path -LiteralPath $stalePath | Should -BeFalse }
         (Sync-NamingCatalog -ModuleFolderPath $fixture -Check).Check | Should -BeTrue
         $unexpectedPath = Join-Path $fixture 'generated' 'notes.txt'
         [IO.File]::WriteAllText($unexpectedPath, 'leave this alone')
@@ -272,6 +406,23 @@ param results = map(probes, probe => map(probe.values, value => matchesDescripto
         $workflow | Should -Match 'Initialize-AvmPester'
         $workflow | Should -Match 'Invoke-Pester'
         $workflow | Should -Match '\$results.Result -cne ''Passed'''
+        $qualify = $parsed.jobs.sync.steps | Where-Object id -EQ 'qualify'
+        $qualify.run | Should -Match 'Naming.Tests.ps1'
+        $qualify.run | Should -Match 'NamingCatalog.Tests.ps1'
+        $qualify.run | Should -Match 'Set-ModuleReadme.Tests.ps1'
+        $qualify.run | Should -Match "'compliance' 'module.tests.ps1'"
+        $qualify.run.IndexOf('Initialize-AvmPester -RepoRootPath') | Should -BeLessThan $qualify.run.IndexOf('New-PesterContainer')
+        $qualify.run.IndexOf('git add --') | Should -BeLessThan $qualify.run.IndexOf('Invoke-Pester')
+        $qualify.run.IndexOf("`$results.Result -cne 'Passed'") | Should -BeLessThan $qualify.run.IndexOf("'qualified=true'")
+        $qualify.run | Should -Match "function global:git"
+        $qualify.run | Should -Match 'qualification.xml'
+        $qualify.run | Should -Match 'consumer-sizes.json'
+        $propose = $parsed.jobs.sync.steps | Where-Object { $_.run -match 'gh pr create' }
+        $propose.if | Should -Match "steps.qualify.outputs.qualified == 'true'"
+        $propose.run | Should -Match 'catalog-changes.json'
+        $propose.run | Should -Match 'metadataOnlyCount'
+        $propose.run.IndexOf('$candidateTree -cne $qualification.tree') | Should -BeLessThan $propose.run.IndexOf('git commit')
+        $workflow | Should -Match 'actions/upload-artifact@'
         $workflow | Should -Match 'gh pr create.*--draft'
         $workflow | Should -Not -Match 'gh pr merge|--force|terraform apply|az deployment|Publish-ResourceNameRules|workflow_run|pull_request_target'
         foreach ($step in $parsed.jobs.sync.steps | Where-Object { $_.Contains('run') }) {
@@ -322,5 +473,25 @@ param results = map(probes, probe => map(probe.values, value => matchesDescripto
         $template.functions[0].members.Remove('getName')
         $template.functions[0].members.Remove('getCatalog')
         (Set-FunctionsSection -TemplateFileContent $template -ReadMeFileContent $readme) -join "`n" | Should -BeExactly ($readme -join "`n")
+    }
+
+    It 'Runs the qualification Git guard with the first native executable and rejects destructive arguments' {
+        Import-Module powershell-yaml -ErrorAction Stop
+        $workflow = Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' 'platform.sync-naming-catalog.yml') -Raw | ConvertFrom-Yaml
+        $qualify = $workflow.jobs.sync.steps | Where-Object id -EQ 'qualify'
+        $tokens = $null
+        $errors = $null
+        $ast = [Management.Automation.Language.Parser]::ParseInput($qualify.run, [ref] $tokens, [ref] $errors)
+        $guard = $ast.Find({
+                param($node)
+                $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -ceq 'global:git'
+            }, $true)
+        $guard | Should -Not -BeNullOrEmpty
+        . ([scriptblock]::Create($guard.Extent.Text.Replace('global:git', 'Test-NamingGitGuard')))
+        Test-NamingGitGuard --version | Should -Match '^git version '
+        $LASTEXITCODE | Should -Be 0
+        foreach ($verb in @('checkout', 'reset', 'restore', 'clean')) {
+            { Test-NamingGitGuard --version $verb } | Should -Throw '*must not discard*'
+        }
     }
 }

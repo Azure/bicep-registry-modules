@@ -1,7 +1,8 @@
 param(
     [string] $repoRootPath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..' '..' '..' '..' '..' '..')),
     [string[]] $moduleFolderPaths,
-    [string] $nativeResultsPath
+    [string] $nativeResultsPath,
+    [string] $consumerResultsPath
 )
 
 Describe 'Native Bicep naming functions' {
@@ -115,6 +116,8 @@ Describe 'Native Bicep naming functions' {
         $cases.seedZero.nameUnique | Should -BeExactly $cases.seedZero.name
         $cases.seedUnchanged.uniqueSeed | Should -BeExactly 'AB12z'
         $cases.seedUnchanged.nameUnique | Should -BeExactly 'rg-AB12'
+        $cases.seedDigit.uniqueSeed | Should -BeExactly '2ABCz'
+        $cases.seedDigit.nameUnique | Should -BeExactly 'rg-2ABC'
         $cases.shortSeed.nameUnique | Should -BeExactly 'stz'
         $cases.compact.name | Should -BeExactly 'Team-rg-Dev'
     }
@@ -130,6 +133,54 @@ Describe 'Native Bicep naming functions' {
         $cases.orderedVariables[0].uniqueSeed | Should -BeExactly $cases.orderedVariables[1].uniqueSeed
         $cases.letters.uniqueSeed | Should -Match '^[a-z]{13}$'
         $cases.letters.nameUnique.Length | Should -Be 24
+    }
+
+    It 'Starts every derived token with a letter even for unique-first or empty-base names' {
+        $results = $evaluated.derivedTokens.value
+        $results.Count | Should -Be 64
+        foreach ($entry in $results) {
+            $entry.group.uniqueSeed | Should -Match '^[a-z][a-z0-9]{12}$'
+            foreach ($name in @('vault', 'emptyBase')) {
+                $entry[$name].uniqueSeed | Should -Match '^[a-z][a-z0-9]{12}$'
+                $entry[$name].nameUnique | Should -Match '^[a-z]'
+                $entry[$name].nameUniqueAvailable | Should -BeTrue
+                $entry[$name].validation.validNameUnique | Should -BeTrue
+                $entry[$name].uniqueSuffixRetained | Should -BeTrue
+            }
+        }
+        @($results | Where-Object { $_.group.uniqueSeed.Substring(1) -match '[0-9]' }).Count | Should -BeGreaterThan 0
+    }
+
+    It 'Excludes catalog metadata and bounds from identity hashing without hiding rendering changes' {
+        $results = $evaluated.identityCatalogChanges.value
+        foreach ($name in @('descriptive', 'context')) {
+            $results[$name].uniqueSeed | Should -BeExactly $results.baseline.uniqueSeed -Because $name
+            $results[$name].name | Should -BeExactly $results.baseline.name -Because $name
+            $results[$name].nameUnique | Should -BeExactly $results.baseline.nameUnique -Because $name
+        }
+        $results.truncated.uniqueSeed | Should -BeExactly $results.baseline.uniqueSeed
+        $results.truncated.nameUnique.Length | Should -Be 24
+        $results.truncated.nameUnique | Should -Not -BeExactly $results.baseline.nameUnique
+        $results.slug.uniqueSeed | Should -Not -BeExactly $results.baseline.uniqueSeed
+        $results.slug.name | Should -Not -BeExactly $results.baseline.name
+    }
+
+    It 'Rejects mixed-case conversion verbs while preserving literal text around valid instance formats' {
+        foreach ($entry in $evaluated.instanceFormats.value.invalid) {
+            $entry.result.name | Should -BeNullOrEmpty -Because $entry.pattern
+            $entry.result.nameUnique | Should -BeNullOrEmpty -Because $entry.pattern
+            $entry.result.nameAvailable | Should -BeFalse -Because $entry.pattern
+            $entry.result.nameUniqueAvailable | Should -BeFalse -Because $entry.pattern
+            $entry.result.nameErrors -join ';' | Should -Match 'instanceFormat supports' -Because $entry.pattern
+            @($entry.result.Keys | Sort-Object) -join ',' | Should -BeExactly (@($baseline.resource_group.Keys | Sort-Object) -join ',')
+        }
+        $expected = @{ '%d' = '7'; '%0d' = '7'; '%03d' = '007'; 'D%03dD' = 'D007D'; '%03dd' = '007d'; '%03d-Dd' = '007-Dd' }
+        foreach ($entry in $evaluated.instanceFormats.value.valid) {
+            $entry.result.nameAvailable | Should -BeTrue -Because $entry.pattern
+            $entry.result.name | Should -BeExactly "rg-$($expected[$entry.pattern])"
+            $entry.result.nameErrors.Count | Should -Be 0
+        }
+        $cases.instanceCaseLiteral.nameUnique | Should -BeExactly 'rg-workload-dev-D001D-abcd'
     }
 
     It 'Retains whole numbered instances and uniqueness tokens when truncating' {
@@ -213,6 +264,34 @@ Describe 'Native Bicep naming functions' {
         $evaluated.selected.value.unknown_key.nameAvailable | Should -BeFalse
     }
 
+    It 'Reports case collisions without crashing batches or applying a mis-cased override' {
+        $results = $evaluated.keyCollisions.value
+        foreach ($name in @('requested', 'reversed')) {
+            $results[$name].Count | Should -Be 2
+            @($results[$name].Keys) -ccontains 'resource_group' | Should -BeTrue
+            @($results[$name].Keys) -ccontains 'RESOURCE_GROUP' | Should -BeFalse
+            $results[$name].resource_group.nameAvailable | Should -BeFalse
+            $results[$name].resource_group.nameUniqueAvailable | Should -BeFalse
+            $results[$name].resource_group.nameErrors -join ';' | Should -Match 'differ only by case'
+            $results[$name].storage_account.nameUnique | Should -BeExactly $baseline.storage_account.nameUnique
+        }
+        @($results.misCasedOnly.Keys) -ccontains 'RESOURCE_GROUP' | Should -BeTrue
+        $results.misCasedOnly.RESOURCE_GROUP.nameAvailable | Should -BeFalse
+        $results.catalog.slug | Should -BeExactly $baseline.resource_group.slug
+        $results.catalog.resource_type | Should -BeExactly $baseline.resource_group.resourceType
+        $results.catalog.catalogErrors -join ';' | Should -Match 'differ only by case'
+        $results.invalidCatalog.catalogErrors -join ';' | Should -Match 'lower snake case'
+        $results.variants.Count | Should -Be 1
+        @($results.variants.Keys) -ccontains 'resource_group' | Should -BeTrue
+        foreach ($entry in @($results.canonical, $results.variants.resource_group, $results.slug)) {
+            $entry.nameAvailable | Should -BeFalse
+            $entry.nameUniqueAvailable | Should -BeFalse
+            $entry.nameErrors.Count | Should -BeGreaterThan 0
+            $entry.slug | Should -BeExactly $baseline.resource_group.slug
+            $entry.rule.slug | Should -BeExactly $baseline.resource_group.rule.slug
+        }
+    }
+
     It 'Preserves nullable overrides and reserves the formatted instance only when supplied' {
         $nullable = $evaluated.nullableCases.value
         $nullable.inheritedSlug.nameUnique | Should -BeExactly 'stabcd'
@@ -273,5 +352,56 @@ param result = getName('storage_account', { uniqueSeed: 'abcd' })
         if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
         $consumer = (Get-Content -LiteralPath $consumerOutput -Raw | ConvertFrom-Json -AsHashtable -Depth 100).parameters.result.value
         $consumer.nameUnique | Should -BeExactly 'stabcd'
+    }
+
+    It 'Budgets the actual importing consumer and three nested copies without dropping metadata' {
+        $libraryPath = Join-Path $TestDrive 'sized-library.json'
+        $diagnostics = bicep build (Join-Path $modulePath 'main.bicep') --outfile $libraryPath 2>&1
+        if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
+        $consumerPath = Join-Path $TestDrive 'runtime-consumer.bicep'
+        @'
+import { getName } from './sized-library.json'
+param identity string
+output result object = getName('storage_account', { uniqueIdentity: identity })
+'@ | Set-Content -LiteralPath $consumerPath -Encoding utf8NoBOM
+        $consumerOutput = Join-Path $TestDrive 'runtime-consumer.json'
+        $diagnostics = bicep build $consumerPath --outfile $consumerOutput 2>&1
+        if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
+        $nestedPath = Join-Path $TestDrive 'nested-consumers.bicep'
+        @'
+param identity string
+module first './runtime-consumer.bicep' = {
+  name: 'first'
+  params: { identity: '${identity}-first' }
+}
+module second './runtime-consumer.bicep' = {
+  name: 'second'
+  params: { identity: '${identity}-second' }
+}
+module third './runtime-consumer.bicep' = {
+  name: 'third'
+  params: { identity: '${identity}-third' }
+}
+output results array = [first.outputs.result, second.outputs.result, third.outputs.result]
+'@ | Set-Content -LiteralPath $nestedPath -Encoding utf8NoBOM
+        $nestedOutput = Join-Path $TestDrive 'nested-consumers.json'
+        $diagnostics = bicep build $nestedPath --outfile $nestedOutput 2>&1
+        if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
+        $consumerBytes = (Get-Item -LiteralPath $consumerOutput).Length
+        $consumerBytes | Should -BeLessThan 1048576
+        $nestedBytes = (Get-Item -LiteralPath $nestedOutput).Length
+        $nestedBytes | Should -BeLessThan 4194304
+        $nested = Get-Content -LiteralPath $nestedOutput -Raw | ConvertFrom-Json -AsHashtable -Depth 100
+        $nested.resources.Count | Should -Be 3
+        $nestedTemplates = $nested.resources -is [Collections.IDictionary] ? @($nested.resources.Values) : @($nested.resources)
+        foreach ($resource in $nestedTemplates) {
+            $resource.properties.template.functions.Count | Should -BeGreaterThan 0
+        }
+        $consumer = Get-Content -LiteralPath $consumerOutput -Raw | ConvertFrom-Json -AsHashtable -Depth 100
+        $consumer.outputs.result.value | Should -Match "getName.*parameters\('identity'\)"
+        if ($consumerResultsPath) {
+            [ordered]@{ consumerBytes = $consumerBytes; consumerBudgetBytes = 1048576; nestedBytes = $nestedBytes; templateLimitBytes = 4194304 } |
+                ConvertTo-Json | Set-Content -LiteralPath $consumerResultsPath -Encoding utf8NoBOM
+        }
     }
 }

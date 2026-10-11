@@ -2,9 +2,11 @@
 
 Pure naming functions using the modern [Terraform naming utility](https://github.com/Azure/terraform-azure-avm-utl-naming) catalog. No resources, telemetry, randomness or name-availability checks are performed.
 
-Import `getName`, `getNames` or `getNamesByResourceType` and pass an options object. Use a nonempty `uniqueSeed` for Terraform-compatible exact tokens, `uniqueLength: 0` for no token, or `uniqueIdentity` with optional `uniqueScope` and `uniqueAttempt` for Bicep-derived tokens. Reuse every input and pin the module version for in-place redeployment; change caller-owned identity for a fresh name. Derived tokens use the full, untruncated logical name and are limited to 13 characters. They are not Terraform random seeds. Hashes can collide; length and name availability remain the caller's responsibility.
+Import `getName`, `getNames` or `getNamesByResourceType` and pass an options object. Use a nonempty `uniqueSeed` for Terraform-compatible exact tokens, `uniqueLength: 0` for no token, or `uniqueIdentity` with optional `uniqueScope` and `uniqueAttempt` for Bicep-derived tokens. Reuse every input and pin the module version for in-place redeployment; change caller-owned identity for a fresh name. Derived tokens start with a letter, use the full, untruncated logical name and are limited to 13 characters. Catalog descriptions, provenance, resource-type metadata and length limits are not hashed; changes to rendering rules can still change names. Derived tokens are not Terraform random seeds. Hashes can collide; length and name availability remain the caller's responsibility.
 
 Default rendering, prefixes/suffixes, casing, slugs, numbered instances, fixed names and property-level catalog overrides follow Terraform for ASCII inputs. Character counting and Unicode casing use native ARM semantics, which differ from Terraform's Unicode handling. Customer files are loaded by the caller with `loadJsonContent` and passed as `customOverrides`; schema_version and snake-case catalog properties stay unchanged. Omitted properties inherit; explicit values replace, including arrays and whole metadata objects.
+
+Catalog keys are case-sensitive. Batch requests with case-colliding keys return an error for that group, under its lowercase key when supplied. Mis-cased overrides never replace canonical entries. `getCatalog` retains inspectable rules and adds `catalogErrors` to invalid or colliding entries.
 
 Templates support `${token}`, `${lower(token)}`, `${upper(token)}`, joining prefix/suffix lists, and `join(separator, [token, ...])` with optional `compact`. Custom token names must be distinct ignoring case; names that collide with built-in tokens are rejected. Arbitrary HCL expressions, directives, indexing, nested function expressions and the frozen Terraform legacy renderer are not supported. Unsupported syntax returns errors and null names. Instance formats support a single `%d` or `%0Nd` with optional literal text, not arbitrary Terraform format expressions.
 
@@ -12,7 +14,9 @@ UUID entries use native Bicep `guid`, whose namespace differs from Terraform `uu
 
 `nameAvailable` means rendering succeeded, not that Azure accepts or has the name available. Validation returns null, never true, when catalog constraints or native regex support are incomplete. Supported anchored ASCII character-class patterns and literals are compiled into validation descriptors without editing the upstream rules; other RE2 patterns (including Unicode classes and new customer patterns) remain explicitly unvalidated. `requireValidNames` rejects both invalid and incompletely validated candidates.
 
-Upstream snapshots under `upstream` are byte-identical at the revision in `catalog-source.json`. Run `. .\utilities\tools\Sync-NamingCatalog.ps1; Sync-NamingCatalog -Check` from the repository root to verify hashes and lossless chunk recomposition. The downstream synchronization workflow proposes changes for review and never scrapes Azure rules or merges updates.
+Upstream snapshots under `upstream` are byte-identical at the revision in `catalog-source.json`. Run `. .\utilities\tools\Sync-NamingCatalog.ps1; Sync-NamingCatalog -Check` from the repository root to verify hashes and lossless chunk recomposition. A generated field/value index reduces repeated data in consumers without removing rule metadata. Each importing template still embeds the catalog and functions; calculate names once and pass strings to child modules when possible. Consumer-size checks reserve a 1 MiB budget per importing template and cover three nested consumers against ARM's 4 MiB template limit.
+
+The downstream synchronization workflow reports potential rendering, validation and metadata-only changes and runs native, catalog, documentation and scoped compliance checks before proposing a draft. It does not rely on token-created events starting other checks automatically. Maintainers still review naming changes and choose release versions; the workflow never scrapes Azure rules or merges updates.
 
 This module is under development at the proposed path in [Azure/Azure-Verified-Modules#3059](https://github.com/Azure/Azure-Verified-Modules/issues/3059); proposal filing does not establish program approval.
 
@@ -138,9 +142,9 @@ _None_
 
 | Function | Description |
 | :-- | :-- |
-| `getCatalog` | Inspect the raw catalog after a version-2 customer overlay, including invalid or incomplete entries. Uses whole-property replacement; getName performs rendering validation. |
+| `getCatalog` | Inspect the catalog after a version-2 customer overlay. Invalid or case-colliding entries include catalogErrors; mis-cased overrides never replace canonical entries. Uses whole-property replacement. |
 | `getName` | Render one catalog key. Inspect nameErrors/nameUniqueErrors, validation and token-retention flags; no Azure availability check is made. |
-| `getNames` | Render a selected list of catalog keys independently. Prefer a small selection to avoid copying unnecessary results into consumer templates. |
+| `getNames` | Render selected keys independently. Exact duplicates are deduplicated; case-colliding groups return structured errors rather than silently selecting a spelling. |
 | `getNamesByResourceType` | Render every matching catalog variant for an exact Azure resource type. Variants remain keyed separately; no arbitrary first-match selection is made. |
 
 ## Outputs

@@ -2,9 +2,11 @@ metadata name = 'Resource naming'
 metadata description = '''
 Pure naming functions using the modern [Terraform naming utility](https://github.com/Azure/terraform-azure-avm-utl-naming) catalog. No resources, telemetry, randomness or name-availability checks are performed.
 
-Import `getName`, `getNames` or `getNamesByResourceType` and pass an options object. Use a nonempty `uniqueSeed` for Terraform-compatible exact tokens, `uniqueLength: 0` for no token, or `uniqueIdentity` with optional `uniqueScope` and `uniqueAttempt` for Bicep-derived tokens. Reuse every input and pin the module version for in-place redeployment; change caller-owned identity for a fresh name. Derived tokens use the full, untruncated logical name and are limited to 13 characters. They are not Terraform random seeds. Hashes can collide; length and name availability remain the caller's responsibility.
+Import `getName`, `getNames` or `getNamesByResourceType` and pass an options object. Use a nonempty `uniqueSeed` for Terraform-compatible exact tokens, `uniqueLength: 0` for no token, or `uniqueIdentity` with optional `uniqueScope` and `uniqueAttempt` for Bicep-derived tokens. Reuse every input and pin the module version for in-place redeployment; change caller-owned identity for a fresh name. Derived tokens start with a letter, use the full, untruncated logical name and are limited to 13 characters. Catalog descriptions, provenance, resource-type metadata and length limits are not hashed; changes to rendering rules can still change names. Derived tokens are not Terraform random seeds. Hashes can collide; length and name availability remain the caller's responsibility.
 
 Default rendering, prefixes/suffixes, casing, slugs, numbered instances, fixed names and property-level catalog overrides follow Terraform for ASCII inputs. Character counting and Unicode casing use native ARM semantics, which differ from Terraform's Unicode handling. Customer files are loaded by the caller with `loadJsonContent` and passed as `customOverrides`; schema_version and snake-case catalog properties stay unchanged. Omitted properties inherit; explicit values replace, including arrays and whole metadata objects.
+
+Catalog keys are case-sensitive. Batch requests with case-colliding keys return an error for that group, under its lowercase key when supplied. Mis-cased overrides never replace canonical entries. `getCatalog` retains inspectable rules and adds `catalogErrors` to invalid or colliding entries.
 
 Templates support `${token}`, `${lower(token)}`, `${upper(token)}`, joining prefix/suffix lists, and `join(separator, [token, ...])` with optional `compact`. Custom token names must be distinct ignoring case; names that collide with built-in tokens are rejected. Arbitrary HCL expressions, directives, indexing, nested function expressions and the frozen Terraform legacy renderer are not supported. Unsupported syntax returns errors and null names. Instance formats support a single `%d` or `%0Nd` with optional literal text, not arbitrary Terraform format expressions.
 
@@ -12,12 +14,14 @@ UUID entries use native Bicep `guid`, whose namespace differs from Terraform `uu
 
 `nameAvailable` means rendering succeeded, not that Azure accepts or has the name available. Validation returns null, never true, when catalog constraints or native regex support are incomplete. Supported anchored ASCII character-class patterns and literals are compiled into validation descriptors without editing the upstream rules; other RE2 patterns (including Unicode classes and new customer patterns) remain explicitly unvalidated. `requireValidNames` rejects both invalid and incompletely validated candidates.
 
-Upstream snapshots under `upstream` are byte-identical at the revision in `catalog-source.json`. Run `. .\utilities\tools\Sync-NamingCatalog.ps1; Sync-NamingCatalog -Check` from the repository root to verify hashes and lossless chunk recomposition. The downstream synchronization workflow proposes changes for review and never scrapes Azure rules or merges updates.
+Upstream snapshots under `upstream` are byte-identical at the revision in `catalog-source.json`. Run `. .\utilities\tools\Sync-NamingCatalog.ps1; Sync-NamingCatalog -Check` from the repository root to verify hashes and lossless chunk recomposition. A generated field/value index reduces repeated data in consumers without removing rule metadata. Each importing template still embeds the catalog and functions; calculate names once and pass strings to child modules when possible. Consumer-size checks reserve a 1 MiB budget per importing template and cover three nested consumers against ARM's 4 MiB template limit.
+
+The downstream synchronization workflow reports potential rendering, validation and metadata-only changes and runs native, catalog, documentation and scoped compliance checks before proposing a draft. It does not rely on token-created events starting other checks automatically. Maintainers still review naming changes and choose release versions; the workflow never scrapes Azure rules or merges updates.
 
 This module is under development at the proposed path in [Azure/Azure-Verified-Modules#3059](https://github.com/Azure/Azure-Verified-Modules/issues/3059); proposal filing does not establish program approval.
 '''
 
-import { generatedCatalog, manualCatalog, regexDescriptors } from './generated/catalog.bicep'
+import { catalogEntries, catalogFields, catalogValues, manualSlugKeys, regexDescriptors } from './generated/catalog.bicep'
 
 @export()
 @description('A partial upstream version-2 resource rule. Supplied properties replace earlier properties, rather than recursively merging.')
@@ -75,7 +79,7 @@ type namingOptionsType = {
   uniqueScope: string?
   @description('Optional. Caller-owned fresh-attempt identity. Omit or reuse for in-place retries.')
   uniqueAttempt: string?
-  @description('Optional. Allow digits in derived tokens. Default true. Does not alter an explicit uniqueSeed.')
+  @description('Optional. Allow digits after the first letter of derived tokens. Default true. Does not alter an explicit uniqueSeed.')
   uniqueIncludeNumbers: bool?
   @description('Optional. Nonnegative numeric instance. Zero is an explicit instance.')
   instance: int?
@@ -145,37 +149,42 @@ var builtInTokens = [
 @export()
 @description('Merged generated and manual catalog, retaining all upstream metadata and null constraints. This is not a validation guarantee.')
 var namingCatalog = toObject(
-  union(map(items(generatedCatalog), entry => entry.key), map(items(manualCatalog), entry => entry.key)),
-  key => key,
-  key => shallowMerge([ruleDefaults, generatedCatalog[?key] ?? {}, manualCatalog[?key] ?? {}])
+  items(catalogEntries),
+  entry => entry.key,
+  entry => shallowMerge([ruleDefaults, decodeRule(entry.value)])
 )
 
 @export()
-@description('Inspect the raw catalog after a version-2 customer overlay, including invalid or incomplete entries. Uses whole-property replacement; getName performs rendering validation.')
+@description('Inspect the catalog after a version-2 customer overlay. Invalid or case-colliding entries include catalogErrors; mis-cased overrides never replace canonical entries. Uses whole-property replacement.')
 func getCatalog(overrides namingOverridesType) object =>
   toObject(
-    union(map(items(namingCatalog), entry => entry.key), map(items(overrides.resources), entry => entry.key)),
-    key => key,
-    key => shallowMerge([ruleDefaults, namingCatalog[?key] ?? {}, overrides.resources[?key] ?? {}])
+    keyGroups(concat(
+      map(items(catalogEntries), entry => entry.key),
+      map(items(overrides.resources), entry => entry.key)
+    )),
+    group => group.key,
+    group => inspectCatalogRule(group.key, mergedRule(group.key, overrides.resources), group.variants)
   )
 
 @export()
 @description('Render one catalog key. Inspect nameErrors/nameUniqueErrors, validation and token-retention flags; no Azure availability check is made.')
 func getName(resourceKey string, options namingOptionsType) object =>
-  prepareName(
-    resourceKey,
-    options,
-    shallowMerge([
-      ruleDefaults
-      generatedCatalog[?resourceKey] ?? {}
-      manualCatalog[?resourceKey] ?? {}
-      options.?customOverrides.?resources[?resourceKey] ?? {}
-    ])
-  )
+  prepareName(resourceKey, options, mergedRule(resourceKey, options.?customOverrides.?resources ?? {}), [])
 
 @export()
-@description('Render a selected list of catalog keys independently. Prefer a small selection to avoid copying unnecessary results into consumer templates.')
-func getNames(resourceKeys string[], options namingOptionsType) object => toObject(union(resourceKeys, []), key => key, key => getName(key, options))
+@description('Render selected keys independently. Exact duplicates are deduplicated; case-colliding groups return structured errors rather than silently selecting a spelling.')
+func getNames(resourceKeys string[], options namingOptionsType) object =>
+  toObject(
+    keyGroups(resourceKeys),
+    group => group.key,
+    group =>
+      prepareName(
+        group.key,
+        options,
+        mergedRule(group.key, options.?customOverrides.?resources ?? {}),
+        collisionErrors(group.variants)
+      )
+  )
 
 @export()
 @description('Render every matching catalog variant for an exact Azure resource type. Variants remain keyed separately; no arbitrary first-match selection is made.')
@@ -192,8 +201,32 @@ func getNamesByResourceType(resourceType string, options namingOptionsType) obje
   )
 
 func hasKey(value object, key string) bool => contains(map(items(value), entry => entry.key), key)
-func isBundledKey(key string) bool =>
-  key == toLower(key) && (contains(generatedCatalog, key) || contains(manualCatalog, key))
+func isBundledKey(key string) bool => key == toLower(key) && contains(catalogEntries, key)
+func decodeRule(row array) object =>
+  toObject(
+    filter(range(0, length(catalogFields)), index => row[index] >= 0),
+    index => catalogFields[index],
+    index => catalogValues[row[index]]
+  )
+func mergedRule(key string, resources object) object =>
+  shallowMerge([
+    ruleDefaults
+    isBundledKey(key) ? decodeRule(catalogEntries[key]) : {}
+    hasKey(resources, key) ? resources[key] : {}
+  ])
+func keyGroups(keys array) array =>
+  map(union(map(keys, key => toLower(key)), []), lowerKey => {
+    key: contains(keys, lowerKey) ? lowerKey : first(filter(keys, key => toLower(key) == lowerKey))
+    variants: union(filter(keys, key => toLower(key) == lowerKey), [])
+  })
+func collisionErrors(variants array) array =>
+  length(variants) > 1
+    ? ['Catalog keys differ only by case: ${join(variants, ', ')}. Use one lower snake-case key.']
+    : []
+func inspectCatalogRule(key string, rule object, variants array) object =>
+  catalogRuleResult(rule, concat(ruleErrors(key, rule), collisionErrors(variants)))
+func catalogRuleResult(rule object, errors array) object =>
+  empty(errors) ? rule : shallowMerge([rule, { catalogErrors: errors }])
 func compactStrings(values array) array => filter(values, value => value != null && value != '')
 func startsExactly(value string, prefix string) bool =>
   length(value) >= length(prefix) && take(value, length(prefix)) == prefix
@@ -295,15 +328,7 @@ func optionErrors(key string, options namingOptionsType) array =>
       items(options.?customOverrides.?resources ?? {}),
       entry =>
         map(
-          ruleErrors(
-            entry.key,
-            shallowMerge([
-              ruleDefaults
-              generatedCatalog[?entry.key] ?? {}
-              manualCatalog[?entry.key] ?? {}
-              entry.value
-            ])
-          ),
+          ruleErrors(entry.key, mergedRule(entry.key, options.?customOverrides.?resources ?? {})),
           error => 'Invalid customer entry ${entry.key}: ${error}'
         )
     ))
@@ -312,7 +337,7 @@ func optionErrors(key string, options namingOptionsType) array =>
 func formatInstance(instance int?, pattern string) object =>
   instance == null ? { value: null, errors: [] } : instanceFormatParts(instance!, split(pattern, '%'))
 func instanceFormatParts(instance int, parts array) object =>
-  length(parts) != 2 || !contains(parts[1], 'd')
+  length(parts) != 2 || !contains(parts[1], 'd') || substring(parts[1], indexOf(parts[1], 'd'), 1) != 'd'
     ? {
         value: ''
         errors: ['instanceFormat supports one %d or %0Nd conversion.']
@@ -337,12 +362,12 @@ func instanceFormatWidth(instance int, prefix string, width string, suffix strin
         errors: []
       }
 
-func prepareName(key string, options namingOptionsType, rule object) object =>
+func prepareName(key string, options namingOptionsType, rule object, errors array) object =>
   checkedName(
     key,
     options,
     rule,
-    concat(optionErrors(key, options), ruleErrors(key, rule)),
+    concat(errors, optionErrors(key, options), ruleErrors(key, rule)),
     formatInstance(options.?instance, options.?instanceFormat ?? '%03d')
   )
 func checkedName(key string, options namingOptionsType, rule object, errors array, instance object) object =>
@@ -361,7 +386,7 @@ func checkedName(key string, options namingOptionsType, rule object, errors arra
         resourceType: rule.resource_type
         variant: rule.variant
         nameKind: rule.name_kind
-        slug: options.?slugOverrides[?key] ?? rule.slug
+        slug: selectedSlug(key, options, rule)
         slugSource: selectedSlugSource(key, options, rule)
         separator: rule.dashes == null ? null : rule.dashes ? '-' : ''
         dashes: rule.dashes
@@ -383,7 +408,7 @@ func checkedName(key string, options namingOptionsType, rule object, errors arra
         {
           prefix: compactStrings(options.?prefix ?? [])
           suffix: compactStrings(options.?suffix ?? [])
-          slug: options.?slugOverrides[?key] ?? rule.slug
+          slug: selectedSlug(key, options, rule)
           separator: rule.dashes ? '-' : ''
           instance: instance.value ?? options.?namingTemplateVariables.?instance
           terraform_key: key
@@ -436,10 +461,6 @@ func seedContext(
                 context.slug
                 context.separator
                 context.instance
-                context.resource_type
-                context.variant
-                context.min_length
-                context.max_length
                 map(items(options.?namingTemplateVariables ?? {}), entry => [entry.key, entry.value])
                 options.?namingTemplates.?name
                 options.?namingTemplates.?nameUnique
@@ -448,9 +469,7 @@ func seedContext(
             )
   )
 func identitySeed(value string, includeNumbers bool) string =>
-  includeNumbers
-    ? value
-    : reduce(range(0, 10), value, (seed, digit) => replace(seed, string(digit), substring('abcdefghij', digit, 1)))
+  '${reduce(range(0, 10), includeNumbers ? take(value, 1) : value, (seed, digit) => replace(seed, string(digit), substring('abcdefghij', digit, 1)))}${includeNumbers ? skip(value, 1) : ''}'
 
 func renderNameStage(
   key string,
@@ -951,12 +970,14 @@ func finalResult(
   rule: rule
 }
 
+func selectedSlug(key string, options namingOptionsType, rule object) string? =>
+  hasKey(options.?slugOverrides ?? {}, key) ? options.slugOverrides![?key] ?? rule.slug : rule.slug
 func selectedSlugSource(key string, options namingOptionsType, rule object) string? =>
-  options.?slugOverrides[?key] != null
+  hasKey(options.?slugOverrides ?? {}, key) && options.?slugOverrides[?key] != null
     ? 'override'
-    : options.?customOverrides.?resources[?key].?slug != null
+    : hasKey(options.?customOverrides.?resources ?? {}, key) && options.?customOverrides.?resources[?key].?slug != null
         ? 'customer'
-        : manualCatalog[?key].?slug != null ? 'manual' : rule.slug_source
+        : contains(manualSlugKeys, key) ? 'manual' : rule.slug_source
 
 func resolvedRegex(rule object) string? =>
   rule.regex == null

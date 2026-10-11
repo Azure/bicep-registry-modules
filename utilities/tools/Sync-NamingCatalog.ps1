@@ -1,7 +1,7 @@
 #requires -Version 7.3
 
 function Get-NamingJsonBytes {
-    param([Parameter(Mandatory)] $Value)
+    param([Parameter(Mandatory)][AllowNull()][AllowEmptyCollection()] $Value)
 
     return ,([Text.UTF8Encoding]::new($false).GetBytes((ConvertTo-Json -InputObject $Value -Depth 100 -Compress) + "`n"))
 }
@@ -72,6 +72,100 @@ function Get-NamingRegexDescriptor {
     }
     $descriptor['kind'] = 'characters'
     return $descriptor
+}
+
+function Merge-NamingCatalogResources {
+    param([Parameter(Mandatory)][Collections.IDictionary[]] $Catalogs)
+
+    $merged = [ordered]@{}
+    foreach ($catalog in $Catalogs) {
+        foreach ($entry in $catalog.GetEnumerator()) {
+            if (-not $merged.Contains($entry.Key)) {
+                $merged[$entry.Key] = [ordered]@{}
+            } elseif ($entry.Key -cnotin @($merged.Keys)) {
+                throw "Case-colliding catalog key [$($entry.Key)] cannot be merged losslessly."
+            }
+            foreach ($property in $entry.Value.GetEnumerator()) { $merged[$entry.Key][$property.Key] = $property.Value }
+        }
+    }
+    return $merged
+}
+
+function Add-NamingJsonChunks {
+    param(
+        [Parameter(Mandatory)][Collections.IDictionary] $Artifacts,
+        [Parameter(Mandatory)][string] $Stem,
+        [Parameter(Mandatory)][AllowEmptyCollection()] $Items,
+        [Parameter(Mandatory)][int] $ChunkSize
+    )
+
+    $isObject = $Items -is [Collections.IDictionary]
+    $entries = $isObject ? @($Items.GetEnumerator()) : @(foreach ($item in $Items) { @{ Value = $item } })
+    $chunk = $isObject ? [ordered]@{} : [Collections.Generic.List[object]]::new()
+    $paths = [Collections.Generic.List[string]]::new()
+    $chunkBytes = 3
+    foreach ($entry in $entries) {
+        $entryBytes = (Get-NamingJsonBytes $entry.Value).Length - 1
+        if ($isObject) { $entryBytes += (Get-NamingJsonBytes ([string] $entry.Key)).Length }
+        if ($entryBytes + 3 -gt $ChunkSize) { throw "Catalog index item in [$Stem] exceeds the chunk limit of $ChunkSize bytes." }
+        if ($chunkBytes + ($chunk.Count -gt 0 ? 1 : 0) + $entryBytes -gt $ChunkSize) {
+            $path = '{0}-{1:d4}.json' -f $Stem, $paths.Count
+            $Artifacts[$path] = Get-NamingJsonBytes ($isObject ? $chunk : $chunk.ToArray())
+            $paths.Add($path)
+            $chunk = $isObject ? [ordered]@{} : [Collections.Generic.List[object]]::new()
+            $chunkBytes = 3
+        }
+        $chunkBytes += ($chunk.Count -gt 0 ? 1 : 0) + $entryBytes
+        if ($isObject) { $chunk[$entry.Key] = $entry.Value } else { $chunk.Add($entry.Value) }
+    }
+    $path = '{0}-{1:d4}.json' -f $Stem, $paths.Count
+    $Artifacts[$path] = Get-NamingJsonBytes ($isObject ? $chunk : $chunk.ToArray())
+    $paths.Add($path)
+    return ,$paths.ToArray()
+}
+
+function Get-NamingCatalogChanges {
+    param(
+        [Parameter(Mandatory)][Collections.IDictionary] $Previous,
+        [Parameter(Mandatory)][Collections.IDictionary] $Current
+    )
+
+    $nameProperties = @('resource_type', 'variant', 'slug', 'min_length', 'max_length', 'dashes', 'lowercase', 'name_kind', 'fixed_name', 'forbidden_suffixes')
+    $validationProperties = @('min_length', 'max_length', 'regex', 'validation_complete', 'forbidden_prefixes', 'forbidden_suffixes', 'forbidden_sequences', 'reserved_names')
+    $keys = [Collections.Generic.SortedSet[string]]::new([StringComparer]::Ordinal)
+    foreach ($key in @($Previous.Keys) + @($Current.Keys)) { $null = $keys.Add($key) }
+    $changes = [Collections.Generic.List[object]]::new()
+    foreach ($key in $keys) {
+        $before = $Previous.Contains($key) ? $Previous[$key] : [ordered]@{}
+        $after = $Current.Contains($key) ? $Current[$key] : [ordered]@{}
+        $properties = [Collections.Generic.SortedSet[string]]::new([StringComparer]::Ordinal)
+        foreach ($property in @($before.Keys) + @($after.Keys)) { $null = $properties.Add($property) }
+        $changed = @(
+            foreach ($property in $properties) {
+                if ($before.Contains($property) -ne $after.Contains($property) -or
+                    (Get-NamingSha256 (Get-NamingJsonBytes $before[$property])) -cne (Get-NamingSha256 (Get-NamingJsonBytes $after[$property]))) {
+                    $property
+                }
+            }
+        )
+        $kind = -not $Previous.Contains($key) ? 'added' : -not $Current.Contains($key) ? 'removed' : 'updated'
+        if ($kind -ceq 'updated' -and $changed.Count -eq 0) { continue }
+        $changes.Add([ordered]@{
+                key = $key
+                kind = $kind
+                affectsNames = $kind -cne 'updated' -or @($changed | Where-Object { $_ -cin $nameProperties }).Count -gt 0
+                affectsValidation = $kind -cne 'updated' -or @($changed | Where-Object { $_ -cin $validationProperties }).Count -gt 0
+                properties = $changed
+            })
+    }
+    return [ordered]@{
+        addedCount = @($changes | Where-Object kind -CEQ 'added').Count
+        removedCount = @($changes | Where-Object kind -CEQ 'removed').Count
+        namingCount = @($changes | Where-Object affectsNames).Count
+        validationCount = @($changes | Where-Object affectsValidation).Count
+        metadataOnlyCount = @($changes | Where-Object { -not $_.affectsNames -and -not $_.affectsValidation }).Count
+        entries = $changes.ToArray()
+    }
 }
 
 function New-NamingCatalogArtifacts {
@@ -158,6 +252,27 @@ function New-NamingCatalogArtifacts {
         $sources[$path]['recomposedSha256'] = Get-NamingSha256 (Get-NamingJsonBytes $recomposed)
     }
 
+    $merged = Merge-NamingCatalogResources -Catalogs @($catalogs['data/resource-name-rules.json'].resources, $catalogs['data/resource-name-rules.manual.json'].resources)
+    $values = [Collections.Generic.List[object]]::new()
+    $indexes = [Collections.Generic.Dictionary[string, int]]::new([StringComparer]::Ordinal)
+    $rows = [ordered]@{}
+    foreach ($entry in $merged.GetEnumerator()) {
+        $rows[$entry.Key] = @(
+            foreach ($field in $supportedProperties) {
+                if (-not $entry.Value.Contains($field)) { -1; continue }
+                $value = $entry.Value[$field]
+                $json = $utf8.GetString((Get-NamingJsonBytes $value))
+                if (-not $indexes.ContainsKey($json)) { $indexes[$json] = $values.Count; $values.Add($value) }
+                $indexes[$json]
+            }
+        )
+    }
+    $entryPaths = Add-NamingJsonChunks -Artifacts $artifacts -Stem 'entries' -Items $rows -ChunkSize $ChunkSize
+    $valuePaths = Add-NamingJsonChunks -Artifacts $artifacts -Stem 'values' -Items $values.ToArray() -ChunkSize $ChunkSize
+    $manualSlugKeys = @($catalogs['data/resource-name-rules.manual.json'].resources.GetEnumerator() | Where-Object { $null -ne $_.Value.slug } | ForEach-Object Key)
+    $slugPaths = Add-NamingJsonChunks -Artifacts $artifacts -Stem 'slugs' -Items $manualSlugKeys -ChunkSize $ChunkSize
+    $artifacts['fields.json'] = Get-NamingJsonBytes $supportedProperties
+
     $patterns = [Collections.Generic.SortedSet[string]]::new([StringComparer]::Ordinal)
     foreach ($catalog in $catalogs.Values) {
         foreach ($entry in $catalog.resources.Values) {
@@ -173,13 +288,24 @@ function New-NamingCatalogArtifacts {
     if ($artifacts['regex.json'].Length -gt 524288) { throw 'Regex descriptors exceed the safe Bicep file-loading limit; split the descriptor artifact before updating.' }
     $loader = [Collections.Generic.List[string]]::new()
     $loader.Add('// Generated by Sync-NamingCatalog. Do not edit.')
-    foreach ($stem in $chunkLists.Keys) {
-        $loader.Add('')
-        $loader.Add('@export()')
-        $loader.Add("var ${stem}Catalog = shallowMerge([")
-        foreach ($chunkPath in $chunkLists[$stem]) { $loader.Add("  loadJsonContent('./$chunkPath', 'resources')") }
-        $loader.Add('])')
-    }
+    $loader.Add('')
+    $loader.Add('@export()')
+    $loader.Add('var catalogEntries = shallowMerge([')
+    foreach ($path in $entryPaths) { $loader.Add("  loadJsonContent('./$path')") }
+    $loader.Add('])')
+    $loader.Add('')
+    $loader.Add('@export()')
+    $loader.Add('var catalogValues = flatten([')
+    foreach ($path in $valuePaths) { $loader.Add("  loadJsonContent('./$path')") }
+    $loader.Add('])')
+    $loader.Add('')
+    $loader.Add('@export()')
+    $loader.Add("var catalogFields = loadJsonContent('./fields.json')")
+    $loader.Add('')
+    $loader.Add('@export()')
+    $loader.Add('var manualSlugKeys = flatten([')
+    foreach ($path in $slugPaths) { $loader.Add("  loadJsonContent('./$path')") }
+    $loader.Add('])')
     $loader.Add('')
     $loader.Add('@export()')
     $loader.Add("var regexDescriptors = loadJsonContent('./regex.json')")
@@ -190,6 +316,7 @@ function New-NamingCatalogArtifacts {
     }
     return @{
         Artifacts = $artifacts
+        Catalog = $merged
         Manifest  = [ordered]@{
             repository = 'Azure/terraform-azure-avm-utl-naming'
             revision = $Revision
@@ -209,6 +336,8 @@ An immutable commit in Azure/terraform-azure-avm-utl-naming. Omitting it never c
 Verify hashes, complete JSON recomposition, chunk limits and generated-file parity without writing files.
 .PARAMETER ModuleFolderPath
 The naming utility directory. Defaults to this repository's avm/utl/general/naming.
+.PARAMETER ChangeReportPath
+Optional JSON report of potential naming, validation and metadata-only changes compared with the current pinned snapshots.
 .EXAMPLE
 Sync-NamingCatalog -Check
 .EXAMPLE
@@ -219,13 +348,30 @@ function Sync-NamingCatalog {
     param(
         [ValidatePattern('^[0-9a-f]{40}$')][string] $Revision,
         [switch] $Check,
-        [string] $ModuleFolderPath = (Join-Path $PSScriptRoot '..' '..' 'avm' 'utl' 'general' 'naming')
+        [string] $ModuleFolderPath = (Join-Path $PSScriptRoot '..' '..' 'avm' 'utl' 'general' 'naming'),
+        [string] $ChangeReportPath
     )
 
     $ErrorActionPreference = 'Stop'
     if ($Check -and $Revision) { throw 'Check is offline and cannot be combined with Revision.' }
+    if ($Check -and $ChangeReportPath) { throw 'Check does not write a change report.' }
     $modulePath = [IO.Path]::GetFullPath($ModuleFolderPath)
     $manifestPath = Join-Path $modulePath 'catalog-source.json'
+    $previousRevision = $null
+    $previousCatalog = [ordered]@{}
+    if ($ChangeReportPath -and (Test-Path -LiteralPath $manifestPath)) {
+        $previousManifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json -AsHashtable -Depth 100
+        if ($previousManifest.repository -cne 'Azure/terraform-azure-avm-utl-naming') { throw 'Unexpected previous upstream repository.' }
+        $previousRevision = $previousManifest.revision
+        $previousResources = @(
+            foreach ($path in @('data/resource-name-rules.json', 'data/resource-name-rules.manual.json')) {
+                $bytes = [IO.File]::ReadAllBytes((Join-Path $modulePath 'upstream' $path))
+                if ((Get-NamingSha256 $bytes) -cne $previousManifest.sources[$path].sha256) { throw "Previous upstream snapshot hash mismatch: $path" }
+                ([Text.Encoding]::UTF8.GetString($bytes) | ConvertFrom-Json -AsHashtable -Depth 100).resources
+            }
+        )
+        $previousCatalog = Merge-NamingCatalogResources -Catalogs $previousResources
+    }
     $paths = @('data/resource-name-rules.json', 'data/resource-name-rules.manual.json', 'schemas/naming-catalog.schema.json', 'schemas/naming-overrides.schema.json', 'LICENSE')
     $files = [ordered]@{}
     if ($Revision) {
@@ -252,7 +398,7 @@ function Sync-NamingCatalog {
     $generatedPath = Join-Path $modulePath 'generated'
     $existing = @(if (Test-Path -LiteralPath $generatedPath) { Get-ChildItem -LiteralPath $generatedPath -Force })
     foreach ($file in $existing) {
-        if ($file.PSIsContainer -or (-not $result.Artifacts.Contains($file.Name) -and $file.Name -cnotmatch '^(?:generated|manual)-[0-9]{4}\.json$')) {
+        if ($file.PSIsContainer -or (-not $result.Artifacts.Contains($file.Name) -and $file.Name -cnotmatch '^(?:generated|manual|entries|values|slugs)-[0-9]{4}\.json$')) {
             throw "Unexpected generated file; refusing to modify [$($file.FullName)]."
         }
     }
@@ -284,12 +430,20 @@ function Sync-NamingCatalog {
             }
         }
         [IO.File]::WriteAllBytes($manifestPath, $manifestBytes)
+        if ($ChangeReportPath) {
+            $report = [ordered]@{
+                previousRevision = $previousRevision
+                revision = $Revision
+                changes = Get-NamingCatalogChanges -Previous $previousCatalog -Current $result.Catalog
+            }
+            [IO.File]::WriteAllBytes([IO.Path]::GetFullPath($ChangeReportPath), (Get-NamingJsonBytes $report))
+        }
     }
     [pscustomobject]@{
         Revision = $Revision
         SourceFiles = $files.Count
         GeneratedFiles = $result.Artifacts.Count
-        MaximumChunkBytes = ($result.Artifacts.GetEnumerator() | Where-Object Key -Match '^(generated|manual)-' | ForEach-Object { $_.Value.Length } | Measure-Object -Maximum).Maximum
+        MaximumChunkBytes = ($result.Artifacts.GetEnumerator() | Where-Object Key -Match '^(generated|manual|entries|values|slugs)-' | ForEach-Object { $_.Value.Length } | Measure-Object -Maximum).Maximum
         Check = $Check.IsPresent
     }
 }
