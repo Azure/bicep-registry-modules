@@ -1406,7 +1406,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     }
     roleAssignments: [
       {
-        name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
@@ -1758,7 +1758,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "roleAssignments": {
       "value": [
         {
-          "name": "c3d53092-840c-4025-9c02-9bcb7895789c",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
@@ -2086,7 +2086,7 @@ param replication = {
 }
 param roleAssignments = [
   {
-    name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Reader'

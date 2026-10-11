@@ -358,13 +358,21 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
+          name: guid(
+            '${resourceGroup.id}/providers/Microsoft.OperationalInsights/workspaces/${namePrefix}${serviceShort}001',
+            nestedDependencies.outputs.managedIdentityPrincipalId,
+            'c3d53092-840c-4025-9c02-9bcb7895789c'
+          )
           roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(
+            '${resourceGroup.id}/providers/Microsoft.OperationalInsights/workspaces/${namePrefix}${serviceShort}001',
+            nestedDependencies.outputs.managedIdentityPrincipalId,
+            'Custom seed ${namePrefix}${serviceShort}'
+          )
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
