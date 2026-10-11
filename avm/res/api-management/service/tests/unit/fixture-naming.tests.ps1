@@ -287,3 +287,232 @@ Describe 'API Management fixture identities' {
         }
     }
 }
+
+Describe 'API Management maximum fixture role names' {
+    BeforeAll {
+        $fixturePath = Join-Path $PSScriptRoot '..' 'e2e' 'max' 'main.test.bicep'
+        $script:apimRoleSource = Get-Content -LiteralPath $fixturePath -Raw
+        $serviceBlock = [regex]::Match($script:apimRoleSource, '(?ms)^      roleAssignments:\s*\[(?<assignments>.*?)^      \]')
+        $workspaceBlock = [regex]::Match($script:apimRoleSource, '(?ms)^          roleAssignments:\s*\[(?<assignments>.*?)^          \]')
+        $namePattern = '(?s)\{\s*name:\s*(?<expression>.*?)\s+roleDefinitionIdOrName:'
+        $serviceMatches = [regex]::Matches($serviceBlock.Groups['assignments'].Value, $namePattern)
+        $workspaceMatches = [regex]::Matches($workspaceBlock.Groups['assignments'].Value, $namePattern)
+        $serviceMatch = [regex]::Match($script:apimRoleSource, "(?m)^param serviceShort string = '(?<value>[^']+)'")
+        $workspaceMatch = [regex]::Match($script:apimRoleSource, "(?m)^var workspace1Name = '(?<value>[^']+)'")
+        if (-not $serviceBlock.Success -or -not $workspaceBlock.Success -or
+            $serviceMatches.Count -ne 2 -or $workspaceMatches.Count -ne 2 -or
+            -not $serviceMatch.Success -or -not $workspaceMatch.Success) {
+            throw 'Expected two explicit service names, two workspace names and their fixture identifiers.'
+        }
+        $script:apimRoleExpressions = @((@($serviceMatches) + @($workspaceMatches)) |
+                ForEach-Object { $_.Groups['expression'].Value.Trim() })
+        $defaults = @{
+            subscription = '00000000-0000-4000-8000-000000000001'
+            group = 'fixture-one'
+            principal = '00000000-0000-4000-8000-000000000003'
+            serviceName = 'fixture-apim-one'
+            workspace = $workspaceMatch.Groups['value'].Value
+            prefix = 'gci'
+            service = $serviceMatch.Groups['value'].Value
+        }
+        $script:apimRoleScenarios = @(
+            @{}
+            @{ subscription = '00000000-0000-4000-8000-000000000002' }
+            @{ group = 'fixture-two' }
+            @{ serviceName = 'fixture-apim-two' }
+            @{ workspace = 'workspace-two' }
+            @{ principal = '00000000-0000-4000-8000-000000000004' }
+        )
+        $parameterSource = @('using none')
+        for ($scopeIndex = 0; $scopeIndex -lt $script:apimRoleScenarios.Count; $scopeIndex++) {
+            $values = $defaults.Clone()
+            foreach ($key in $script:apimRoleScenarios[$scopeIndex].Keys) {
+                $values[$key] = $script:apimRoleScenarios[$scopeIndex][$key]
+            }
+            $groupId = "/subscriptions/$($values.subscription)/resourceGroups/$($values.group)"
+            $identityId = "$groupId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/fixture-identity"
+            foreach ($attempt in 1..3) {
+                $location = @('germanywestcentral', 'norwayeast', 'swedencentral')[$attempt - 1]
+                foreach ($iteration in @('init', 'idem')) {
+                    for ($roleIndex = 0; $roleIndex -lt $script:apimRoleExpressions.Count; $roleIndex++) {
+                        $expression = $script:apimRoleExpressions[$roleIndex].
+                        Replace('resourceGroup.id', "'$groupId'").
+                        Replace('subscription().subscriptionId', "'$($values.subscription)'").
+                        Replace('resourceGroupName', "'$($values.group)'").
+                        Replace('nestedDependencies.outputs.managedIdentityPrincipalId', "'$($values.principal)'").
+                        Replace('nestedDependencies.outputs.managedIdentityResourceId', "'$identityId'").
+                        Replace('apimName', "'$($values.serviceName)'").
+                        Replace('workspace1Name', "'$($values.workspace)'").
+                        Replace('namePrefix', "'$($values.prefix)'").
+                        Replace('serviceShort', "'$($values.service)'").
+                        Replace('deployment().name', "'attempt-$attempt'").
+                        Replace('deployment().location', "'$location'").
+                        Replace('enforcedLocation', "'$location'").
+                        Replace('locationRegion2', "'$location'").
+                        Replace('resourceLocation', "'$location'").
+                        Replace('iteration', "'$iteration'")
+                        $parameterSource += "param role${roleIndex}scope${scopeIndex}t${attempt}${iteration} = $expression"
+                    }
+                }
+            }
+        }
+        $parameterPath = Join-Path $TestDrive 'max-role-names.bicepparam'
+        $parameterOutput = Join-Path $TestDrive 'max-role-names.json'
+        $parameterSource -join "`n" | Set-Content -LiteralPath $parameterPath
+        $diagnostics = bicep build-params $parameterPath --no-restore --outfile $parameterOutput 2>&1
+        if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+        $script:apimRoleNames = (Get-Content -LiteralPath $parameterOutput -Raw | ConvertFrom-Json -AsHashtable).parameters
+
+        $fixtureOutput = Join-Path $TestDrive 'max-roles.json'
+        $diagnostics = bicep build $fixturePath --no-restore --outfile $fixtureOutput 2>&1
+        if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+        $script:apimRoleTemplate = Get-Content -LiteralPath $fixtureOutput -Raw | ConvertFrom-Json -AsHashtable -Depth 100
+        $resources = $script:apimRoleTemplate.resources
+        $resources = $resources -is [System.Collections.IDictionary] ? @($resources.Values) : @($resources)
+        $testModules = @($resources | Where-Object { $_.name -match '-test-' })
+        if ($testModules.Count -ne 1) { throw 'Expected one tested API Management service module.' }
+        $script:apimRoleTestModule = $testModules[0]
+        $script:apimRoleParameters = $script:apimRoleTestModule.properties.parameters
+        $script:apimServiceRoles = @($script:apimRoleParameters.roleAssignments.value)
+        $script:apimWorkspaceRoles = @($script:apimRoleParameters.workspaces.value[0].roleAssignments)
+        $script:apimExplicitRoles = @($script:apimServiceRoles[0..1]) + @($script:apimWorkspaceRoles[0..1])
+    }
+
+    It 'Separates <role> assignment names across <dimension>' -ForEach @(
+        @{ role = 'service Owner'; roleIndex = 0; dimension = 'subscriptions'; scopeIndex = 1 }
+        @{ role = 'service Contributor'; roleIndex = 1; dimension = 'subscriptions'; scopeIndex = 1 }
+        @{ role = 'workspace Owner'; roleIndex = 2; dimension = 'subscriptions'; scopeIndex = 1 }
+        @{ role = 'workspace Contributor'; roleIndex = 3; dimension = 'subscriptions'; scopeIndex = 1 }
+        @{ role = 'service Owner'; roleIndex = 0; dimension = 'resource groups'; scopeIndex = 2 }
+        @{ role = 'service Contributor'; roleIndex = 1; dimension = 'resource groups'; scopeIndex = 2 }
+        @{ role = 'workspace Owner'; roleIndex = 2; dimension = 'resource groups'; scopeIndex = 2 }
+        @{ role = 'workspace Contributor'; roleIndex = 3; dimension = 'resource groups'; scopeIndex = 2 }
+        @{ role = 'service Owner'; roleIndex = 0; dimension = 'actual service names'; scopeIndex = 3 }
+        @{ role = 'service Contributor'; roleIndex = 1; dimension = 'actual service names'; scopeIndex = 3 }
+        @{ role = 'workspace Owner'; roleIndex = 2; dimension = 'actual service names'; scopeIndex = 3 }
+        @{ role = 'workspace Contributor'; roleIndex = 3; dimension = 'actual service names'; scopeIndex = 3 }
+        @{ role = 'service Owner'; roleIndex = 0; dimension = 'recreated principals'; scopeIndex = 5 }
+        @{ role = 'service Contributor'; roleIndex = 1; dimension = 'recreated principals'; scopeIndex = 5 }
+        @{ role = 'workspace Owner'; roleIndex = 2; dimension = 'recreated principals'; scopeIndex = 5 }
+        @{ role = 'workspace Contributor'; roleIndex = 3; dimension = 'recreated principals'; scopeIndex = 5 }
+    ) {
+        $script:apimRoleNames["role${roleIndex}scope${scopeIndex}t1init"].value |
+            Should -Not -Be $script:apimRoleNames["role${roleIndex}scope0t1init"].value
+    }
+
+    It 'Separates workspace <role> assignments when only the workspace name changes' -ForEach @(
+        @{ role = 'Owner'; roleIndex = 2 }
+        @{ role = 'Contributor'; roleIndex = 3 }
+    ) {
+        $script:apimRoleNames["role${roleIndex}scope4t1init"].value |
+            Should -Not -Be $script:apimRoleNames["role${roleIndex}scope0t1init"].value
+    }
+
+    It 'Keeps service <role> assignments unchanged when only the workspace name changes' -ForEach @(
+        @{ role = 'Owner'; roleIndex = 0 }
+        @{ role = 'Contributor'; roleIndex = 1 }
+    ) {
+        $script:apimRoleNames["role${roleIndex}scope4t1init"].value |
+            Should -BeExactly $script:apimRoleNames["role${roleIndex}scope0t1init"].value
+    }
+
+    It 'Keeps <role> names stable for retained principals across root, location and init/idem changes' -ForEach @(
+        @{ role = 'service Owner'; roleIndex = 0 }
+        @{ role = 'service Contributor'; roleIndex = 1 }
+        @{ role = 'workspace Owner'; roleIndex = 2 }
+        @{ role = 'workspace Contributor'; roleIndex = 3 }
+    ) {
+        for ($scopeIndex = 0; $scopeIndex -lt $script:apimRoleScenarios.Count; $scopeIndex++) {
+            $names = @(
+                foreach ($attempt in 1..3) {
+                    foreach ($iteration in @('init', 'idem')) {
+                        $script:apimRoleNames["role${roleIndex}scope${scopeIndex}t${attempt}${iteration}"].value
+                    }
+                }
+            )
+            @($names | Select-Object -Unique).Count | Should -Be 1
+        }
+    }
+
+    It 'Produces four distinct valid GUIDs in every scenario' {
+        foreach ($entry in $script:apimRoleNames.Values) {
+            $entry.value | Should -Match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+        }
+        for ($scopeIndex = 0; $scopeIndex -lt $script:apimRoleScenarios.Count; $scopeIndex++) {
+            $names = @(foreach ($roleIndex in 0..3) { $script:apimRoleNames["role${roleIndex}scope${scopeIndex}t1init"].value })
+            @($names | Select-Object -Unique).Count | Should -Be 4
+        }
+    }
+
+    It 'Keeps four custom names and all three automatic-name cases' {
+        $script:apimServiceRoles.Count | Should -Be 3
+        $script:apimWorkspaceRoles.Count | Should -Be 4
+        foreach ($assignment in $script:apimExplicitRoles) { $assignment.Contains('name') | Should -BeTrue }
+        $script:apimServiceRoles[2].Contains('name') | Should -BeFalse
+        $script:apimWorkspaceRoles[2].Contains('name') | Should -BeFalse
+        $script:apimWorkspaceRoles[3].Contains('name') | Should -BeFalse
+    }
+
+    It 'Preserves Owner coverage, other roles and the actual ServicePrincipal identity' {
+        foreach ($assignments in @($script:apimServiceRoles, $script:apimWorkspaceRoles)) {
+            $assignments[0].roleDefinitionIdOrName | Should -BeExactly 'Owner'
+            $assignments[1].roleDefinitionIdOrName | Should -BeExactly 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            $assignments[2].roleDefinitionIdOrName |
+                Should -BeExactly "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]"
+            foreach ($assignment in $assignments) {
+                $assignment.principalType | Should -BeExactly 'ServicePrincipal'
+                $assignment.principalId | Should -BeExactly $script:apimServiceRoles[0].principalId
+                $assignment.principalId | Should -Match '\.outputs\.managedIdentityPrincipalId\.value'
+            }
+        }
+        $script:apimWorkspaceRoles[3].roleDefinitionIdOrName | Should -BeExactly 'API Management Workspace Contributor'
+        $script:apimRoleParameters.managedIdentities.value.systemAssigned | Should -BeTrue
+        $script:apimRoleParameters.managedIdentities.value.userAssignedResourceIds | Should -HaveCount 1
+        $script:apimRoleParameters.managedIdentities.value.userAssignedResourceIds[0] | Should -Match '\.outputs\.managedIdentityResourceId\.value'
+    }
+
+    It 'Forwards the complete actual target scope and principal into the <role> name' -ForEach @(
+        @{ role = 'service Owner'; roleIndex = 0; workspace = $false }
+        @{ role = 'service Contributor'; roleIndex = 1; workspace = $false }
+        @{ role = 'workspace Owner'; roleIndex = 2; workspace = $true }
+        @{ role = 'workspace Contributor'; roleIndex = 3; workspace = $true }
+    ) {
+        $assignment = $script:apimExplicitRoles[$roleIndex]
+        $assignment.name | Should -Match 'Microsoft.ApiManagement/service/'
+        $assignment.name | Should -Match "subscriptionResourceId\('Microsoft.Resources/resourceGroups', parameters\('resourceGroupName'\)\)"
+        $assignment.name | Should -Match "variables\('apimName'\)"
+        $principalExpression = $assignment.principalId.Substring(1, $assignment.principalId.Length - 2)
+        $assignment.name | Should -Match ([regex]::Escape($principalExpression))
+        if ($workspace) {
+            $assignment.name | Should -Match '/workspaces/'
+            $assignment.name | Should -Match "variables\('workspace1Name'\)"
+        } else {
+            $assignment.name | Should -Not -Match '/workspaces/'
+        }
+    }
+
+    It 'Preserves the two literal Owner seeds and both Custom seed expressions' {
+        $seeds = @(
+            '6352c3e3-ac6b-43d5-ac43-1077ff373721'
+            'Custom seed ${namePrefix}${serviceShort}'
+            '832142e9-a3da-4881-9838-c2b8c73ad1e7'
+            'Custom seed ${namePrefix}${serviceShort}${workspace1Name}'
+        )
+        foreach ($index in 0..3) {
+            $script:apimRoleExpressions[$index] | Should -Match ([regex]::Escape($seeds[$index]))
+        }
+    }
+
+    It 'Preserves actual service/workspace forwarding, region choices and serial init/idem' {
+        $script:apimRoleParameters.name.value | Should -BeExactly "[variables('apimName')]"
+        $script:apimRoleParameters.workspaces.value[0].name | Should -BeExactly "[variables('workspace1Name')]"
+        $script:apimRoleTestModule.resourceGroup | Should -BeExactly "[parameters('resourceGroupName')]"
+        $script:apimRoleTemplate.variables.enforcedLocation | Should -BeExactly 'germanywestcentral'
+        $script:apimRoleParameters.location.value | Should -BeExactly "[variables('enforcedLocation')]"
+        $script:apimRoleTemplate.parameters.locationRegion2.defaultValue | Should -BeExactly 'westus'
+        $script:apimRoleSource | Should -Match "(?m)^#disable-next-line no-hardcoded-location\r?\nvar enforcedLocation = 'germanywestcentral'"
+        $script:apimRoleTestModule.copy.mode | Should -BeExactly 'serial'
+        $script:apimRoleTestModule.copy.batchSize | Should -Be 1
+        $script:apimRoleTestModule.copy.count | Should -BeExactly "[length(createArray('init', 'idem'))]"
+    }
+}

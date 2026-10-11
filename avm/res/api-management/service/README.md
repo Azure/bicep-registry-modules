@@ -567,7 +567,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
-        name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -826,7 +826,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         ]
         roleAssignments: [
           {
-            name: '832142e9-a3da-4881-9838-c2b8c73ad1e7'
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -1174,7 +1174,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "6352c3e3-ac6b-43d5-ac43-1077ff373721",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1445,7 +1445,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           ],
           "roleAssignments": [
             {
-              "name": "832142e9-a3da-4881-9838-c2b8c73ad1e7",
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -1749,7 +1749,7 @@ param products = [
 param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
-    name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -2008,7 +2008,7 @@ param workspaces = [
     ]
     roleAssignments: [
       {
-        name: '832142e9-a3da-4881-9838-c2b8c73ad1e7'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
