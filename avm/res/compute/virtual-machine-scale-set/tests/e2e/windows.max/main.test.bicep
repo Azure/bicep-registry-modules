@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     storageAccountName: take('dep${namePrefix}sa${serviceShort}01', 24)
-    storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
+    storageUploadDeploymentScriptName: '${take('dep-${namePrefix}-sads-${serviceShort}', 76)}-${uniqueString(resourceGroup.id, deployment().name, resourceLocation, namePrefix, serviceShort, 'sads')}'
   }
 }
 
