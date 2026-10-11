@@ -15,7 +15,7 @@ Describe 'HCI host Arc initialization' {
             )
             if ($parseErrors.Count -gt 0) { throw ($parseErrors.Message -join '; ') }
         }
-        foreach ($name in @('Wait-HciArcInitializationJob', 'Get-HciEdgeDevice', 'Initialize-HciEdgeDevice')) {
+        foreach ($name in @('Wait-HciArcInitializationJob', 'Wait-HciArcNodeIdentity', 'Get-HciEdgeDevice', 'Initialize-HciEdgeDevice')) {
             $functionAst = @($scripts.Values | ForEach-Object {
                 $_.FindAll({
                     param($node)
@@ -27,6 +27,7 @@ Describe 'HCI host Arc initialization' {
         }
 
         function log { param([string] $message) }
+        function Get-VM { throw 'Unexpected Hyper-V request.' }
         function Invoke-AzRestMethod {
             [CmdletBinding()]
             param([string] $Method, [string] $Path, [string] $Payload)
@@ -188,6 +189,85 @@ Describe 'HCI host Arc initialization' {
         $source = $scripts['hciHostStage6.ps1'].Extent.Text
         $source | Should -Not -Match 'Import-Module\s+AzsHCI\.ARCinstaller'
         $source | Should -Match 'Get-Command Invoke-AzStackHciArcInitialization -ErrorAction Stop'
+    }
+
+    It 'Waits for both the Arc resource and a valid identity before returning' {
+        $script:nodeReads = 0
+        Mock Start-Sleep {}
+        Mock Invoke-AzRestMethod {
+            $script:nodeReads++
+            if ($script:nodeReads -eq 1) { return @{ StatusCode = 404; Content = '' } }
+            $identity = if ($script:nodeReads -eq 2) { @{} } else { @{ principalId = '22222222-2222-2222-2222-222222222222' } }
+            @{
+                StatusCode = 200
+                Content = @{ id = $machineId; identity = $identity } | ConvertTo-Json -Depth 5
+            }
+        }
+
+        Wait-HciArcNodeIdentity -MachineResourceId $machineId -MaximumAttempts 3 -RetryDelaySeconds 0
+
+        Should -Invoke Invoke-AzRestMethod -Times 3 -Exactly -ParameterFilter {
+            $Method -eq 'GET' -and $Path -eq "$machineId`?api-version=2026-07-15"
+        }
+        Should -Invoke Start-Sleep -Times 2 -Exactly
+    }
+
+    It 'Does not accept an absent Arc resource or an empty identity after bounded readback' -ForEach @(
+        @{ Status = 404; ContentKind = 'missing' }
+        @{ Status = 200; ContentKind = 'empty' }
+        @{ Status = 200; ContentKind = 'zero-guid' }
+    ) {
+        Mock Start-Sleep {}
+        Mock Invoke-AzRestMethod {
+            @{
+                StatusCode = $Status
+                Content = @{
+                    id = $machineId
+                    identity = @{ principalId = $(if ($ContentKind -eq 'zero-guid') { [guid]::Empty.ToString() } else { '' }) }
+                } | ConvertTo-Json -Depth 5
+            }
+        }
+
+        { Wait-HciArcNodeIdentity -MachineResourceId $machineId -MaximumAttempts 3 -RetryDelaySeconds 0 } |
+            Should -Throw '*not available with a valid managed identity after 3 checks*'
+        Should -Invoke Invoke-AzRestMethod -Times 3 -Exactly
+        Should -Invoke Start-Sleep -Times 2 -Exactly
+    }
+
+    It 'Fails promptly when Arc identity readback is unauthorized or mismatched' -ForEach @(
+        @{ Status = 403; ResourceId = 'irrelevant'; Expected = '*HTTP 403*' }
+        @{ Status = 200; ResourceId = '/subscriptions/other/resourceGroups/other/providers/Microsoft.HybridCompute/machines/other'; Expected = '*unexpected resource*' }
+    ) {
+        Mock Invoke-AzRestMethod {
+            @{ StatusCode = $Status; Content = (@{ id = $ResourceId } | ConvertTo-Json) }
+        }
+        Mock Start-Sleep {}
+        { Wait-HciArcNodeIdentity -MachineResourceId $machineId -MaximumAttempts 3 -RetryDelaySeconds 0 } |
+            Should -Throw $Expected
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
+    It 'Confirms each lowercase Arc reference identity after the actual initialization jobs complete' {
+        $script:verifiedNodes = @()
+        Mock Get-VM { @([pscustomobject] @{ Name = 'hciNode1' }, [pscustomobject] @{ Name = 'hciNode2' }) }
+        Mock Wait-HciArcNodeIdentity { $script:verifiedNodes += $MachineResourceId }
+        $subscriptionId = '11111111-1111-1111-1111-111111111111'
+        $resourceGroupName = 'test-rg'
+        $loop = $scripts['hciHostStage6.ps1'].Find({
+            param($node)
+            $node -is [System.Management.Automation.Language.ForEachStatementAst] -and
+                $node.Body.Extent.Text -match 'Wait-HciArcNodeIdentity'
+        }, $true)
+        $loop | Should -Not -BeNullOrEmpty
+        $jobWait = $scripts['hciHostStage6.ps1'].Find({
+            param($node)
+            $node -is [System.Management.Automation.Language.CommandAst] -and
+                $node.GetCommandName() -eq 'Wait-HciArcInitializationJob'
+        }, $true)
+        $jobWait.Extent.StartOffset | Should -BeLessThan $loop.Extent.StartOffset
+        . ([scriptblock]::Create($loop.Extent.Text))
+        $script:verifiedNodes | Should -Be @($machineId, $machineId.Replace('hcinode1', 'hcinode2'))
     }
 
     Context 'Real PowerShell job completion' {

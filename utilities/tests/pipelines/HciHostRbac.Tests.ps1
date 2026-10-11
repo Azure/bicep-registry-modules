@@ -24,6 +24,8 @@ Describe 'HCI host RBAC prerequisites' {
 
         $hostTemplate = $fixtures.defaults.hostTemplate
         $clusterTemplate = $fixtures.defaults.clusterTemplate
+        $nodeRoleDeployment = $hostTemplate.resources.hciNodeRoleAssignments
+        $nodeRoleTemplate = $nodeRoleDeployment.properties.template
         $roleNames = @(
             'spConnectedMachineResourceManagerRolePermissions'
             'nodeAzureConnectedMachineResourceManagerRolePermissions'
@@ -52,7 +54,11 @@ Describe 'HCI host RBAC prerequisites' {
         @{ RoleName = 'nodeazureStackHCIDeviceManagementRole' }
         @{ RoleName = 'nodereaderRoleIDPermissions' }
     ) {
-        $actual = $hostTemplate.resources[$RoleName]
+        $actual = if ($RoleName -eq 'spConnectedMachineResourceManagerRolePermissions') {
+            $hostTemplate.resources[$RoleName]
+        } else {
+            $nodeRoleTemplate.resources[$RoleName]
+        }
         $expected = $clusterTemplate.resources[$RoleName]
         $actual | Should -Not -BeNullOrEmpty
         $expected | Should -Not -BeNullOrEmpty
@@ -66,11 +72,11 @@ Describe 'HCI host RBAC prerequisites' {
 
     It 'Retains the documented resource-manager, device-management and Reader role definitions' {
         foreach ($variable in @('azureConnectedMachineResourceManagerRoleID', 'azureStackHCIDeviceManagementRole', 'readerRoleID')) {
-            $hostTemplate.variables[$variable] | Should -Be $clusterTemplate.variables[$variable]
+            $nodeRoleTemplate.variables[$variable] | Should -Be $clusterTemplate.variables[$variable]
         }
         $hostTemplate.variables.azureConnectedMachineResourceManagerRoleID | Should -Match 'f5819b54-e033-4d82-ac66-4fec3cbf3f4c'
-        $hostTemplate.variables.azureStackHCIDeviceManagementRole | Should -Match '865ae368-6a45-4bd1-8fbf-0d5151f56fc1'
-        $hostTemplate.variables.readerRoleID | Should -Match 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+        $nodeRoleTemplate.variables.azureStackHCIDeviceManagementRole | Should -Match '865ae368-6a45-4bd1-8fbf-0d5151f56fc1'
+        $nodeRoleTemplate.variables.readerRoleID | Should -Match 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
     }
 
     It 'Creates the provider grant before Arc initialization without depending on the host' {
@@ -79,20 +85,25 @@ Describe 'HCI host RBAC prerequisites' {
         $hostTemplate.resources.runCommand6.dependsOn | Should -Contain 'spConnectedMachineResourceManagerRolePermissions'
     }
 
-    It 'Waits for Arc identities before assigning their roles, then waits for every role before edge setup' {
+    It 'Defers external identity references into an inner deployment after Arc initialization' {
+        $nodeRoleDeployment.dependsOn | Should -Contain 'runCommand6'
+        $nodeRoleDeployment.properties.expressionEvaluationOptions.scope | Should -Be 'inner'
+        ($nodeRoleDeployment.properties.parameters | ConvertTo-Json -Depth 10) | Should -Not -Match 'reference\('
+        $hostTemplate.variables.ContainsKey('arcNodeResourceIds') | Should -BeFalse
         foreach ($name in $roleNames | Where-Object { $_ -ne 'spConnectedMachineResourceManagerRolePermissions' }) {
-            $hostTemplate.resources[$name].dependsOn | Should -Contain 'runCommand6'
-            $hostTemplate.resources[$name].properties.principalId |
+            $hostTemplate.resources.ContainsKey($name) | Should -BeFalse
+            $nodeRoleTemplate.resources[$name].properties.principalId |
                 Should -Be "[reference(variables('arcNodeResourceIds')[copyIndex()], '2026-07-15', 'Full').identity.principalId]"
         }
-        foreach ($name in $roleNames) {
-            $hostTemplate.resources.runCommand7.dependsOn | Should -Contain $name
-        }
+        $hostTemplate.resources.runCommand7.dependsOn | Should -Contain 'hciNodeRoleAssignments'
+        $hostTemplate.resources.runCommand7.dependsOn | Should -Contain 'spConnectedMachineResourceManagerRolePermissions'
+        $nodeRoleDeployment.properties.parameters.hciNodeNames.value | Should -Be "[variables('hciNodeNames')]"
+        $nodeRoleDeployment.properties.parameters.hciResourceProviderObjectId.value | Should -Be "[parameters('hciResourceProviderObjectId')]"
     }
 
     It 'Preserves the no-extra-grants default for existing callers with preconfigured RBAC' {
         $hostTemplate.parameters.hciResourceProviderObjectId.nullable | Should -BeTrue
-        foreach ($name in $roleNames) {
+        foreach ($name in @('spConnectedMachineResourceManagerRolePermissions', 'hciNodeRoleAssignments')) {
             $hostTemplate.resources[$name].condition |
                 Should -Be "[not(equals(parameters('hciResourceProviderObjectId'), null()))]"
         }

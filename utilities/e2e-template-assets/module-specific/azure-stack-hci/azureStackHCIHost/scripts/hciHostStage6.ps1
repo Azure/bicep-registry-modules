@@ -94,6 +94,50 @@ function Wait-HciArcInitializationJob {
     }
 }
 
+function Wait-HciArcNodeIdentity {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [ValidatePattern('(?i)^/subscriptions/[0-9a-f-]{36}/resourceGroups/[^/]+/providers/Microsoft\.HybridCompute/machines/[^/]+$')]
+        [string] $MachineResourceId,
+
+        [ValidateRange(1, 60)]
+        [int] $MaximumAttempts = 30,
+
+        [ValidateRange(0, 60)]
+        [int] $RetryDelaySeconds = 10
+    )
+
+    $path = '{0}?api-version=2026-07-15' -f $MachineResourceId
+    for ($attempt = 1; $attempt -le $MaximumAttempts; $attempt++) {
+        $response = Invoke-AzRestMethod -Method GET -Path $path -ErrorAction Stop
+        $statusCode = [int] $response.StatusCode
+        if ($statusCode -eq 200) {
+            $machine = $response.Content | ConvertFrom-Json -ErrorAction Stop
+            if ($machine.id -ine $MachineResourceId) {
+                throw "Arc identity readback returned an unexpected resource for '$MachineResourceId'."
+            }
+            $identity = $machine.PSObject.Properties['identity']
+            if ($identity -and $identity.Value) {
+                $principal = $identity.Value.PSObject.Properties['principalId']
+                $principalId = [guid]::Empty
+                if ($principal -and [guid]::TryParse([string] $principal.Value, [ref] $principalId) -and
+                    $principalId -ne [guid]::Empty) {
+                    log "Arc machine '$MachineResourceId' is available with its managed identity."
+                    return
+                }
+            }
+        } elseif ($statusCode -notin @(404, 408, 429, 500, 502, 503, 504)) {
+            throw "Failed to read Arc machine '$MachineResourceId' (HTTP $statusCode). $($response.Content)"
+        }
+        if ($attempt -lt $MaximumAttempts) {
+            log "Waiting for Arc machine '$MachineResourceId' and its managed identity ($attempt/$MaximumAttempts, HTTP $statusCode)..."
+            Start-Sleep -Seconds $RetryDelaySeconds
+        }
+    }
+    throw "Arc machine '$MachineResourceId' was not available with a valid managed identity after $MaximumAttempts checks (last HTTP $statusCode)."
+}
+
 $ErrorActionPreference = 'Stop'
 
 # export or re-import local administrator credential
@@ -378,4 +422,8 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
 log 'Waiting up to 30 minutes for Azure Arc initialization to complete on nodes...'
 
 Wait-HciArcInitializationJob -Job $arcInitializationJobs
+foreach ($node in (Get-VM)) {
+    $machineResourceId = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.HybridCompute/machines/{2}' -f $subscriptionId, $resourceGroupName, $node.Name.ToLowerInvariant()
+    Wait-HciArcNodeIdentity -MachineResourceId $machineResourceId
+}
 log 'Azure Arc initialization completed successfully on all HCI nodes.'

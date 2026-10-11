@@ -67,18 +67,9 @@ param imageReferenceId string = ''
 param hciResourceProviderObjectId string?
 
 var hciNodeNames = [for index in range(0, hciNodeCount): 'hcinode${index + 1}']
-var arcNodeResourceIds = [for nodeName in hciNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)]
 var azureConnectedMachineResourceManagerRoleID = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
   'f5819b54-e033-4d82-ac66-4fec3cbf3f4c'
-)
-var azureStackHCIDeviceManagementRole = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '865ae368-6a45-4bd1-8fbf-0d5151f56fc1'
-)
-var readerRoleID = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 )
 
 // Match the cluster module's assignment IDs so its later deployment reuses these grants.
@@ -98,56 +89,15 @@ resource spConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorizati
   }
 }
 
-resource nodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: if (hciResourceProviderObjectId != null) {
-    name: guid(
-      subscription().subscriptionId,
-      hciResourceProviderObjectId!,
-      'azureConnectedMachineResourceManager',
-      hciNode,
-      resourceGroup().id
-    )
-    properties: {
-      roleDefinitionId: azureConnectedMachineResourceManagerRoleID
-      principalId: reference(hciNode, '2026-07-15', 'Full').identity.principalId
-      principalType: 'ServicePrincipal'
-      description: 'Created by Azure Stack HCI deployment template'
-    }
-    dependsOn: [runCommand6]
+// Keep out-of-band Arc identity lookups in a deployment started after registration.
+module hciNodeRoleAssignments './modules/hciNodeRoleAssignments.bicep' = if (hciResourceProviderObjectId != null) {
+  name: '${uniqueString(deployment().name, location)}-hci-node-permissions'
+  params: {
+    hciNodeNames: hciNodeNames
+    hciResourceProviderObjectId: hciResourceProviderObjectId!
   }
-]
-
-resource nodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: if (hciResourceProviderObjectId != null) {
-    name: guid(
-      subscription().subscriptionId,
-      hciResourceProviderObjectId!,
-      'azureStackHCIDeviceManagementRole',
-      hciNode,
-      resourceGroup().id
-    )
-    properties: {
-      roleDefinitionId: azureStackHCIDeviceManagementRole
-      principalId: reference(hciNode, '2026-07-15', 'Full').identity.principalId
-      principalType: 'ServicePrincipal'
-      description: 'Created by Azure Stack HCI deployment template'
-    }
-    dependsOn: [runCommand6]
-  }
-]
-
-resource nodereaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: if (hciResourceProviderObjectId != null) {
-    name: guid(subscription().subscriptionId, hciResourceProviderObjectId!, 'reader', hciNode, resourceGroup().id)
-    properties: {
-      roleDefinitionId: readerRoleID
-      principalId: reference(hciNode, '2026-07-15', 'Full').identity.principalId
-      principalType: 'ServicePrincipal'
-      description: 'Created by Azure Stack HCI deployment template'
-    }
-    dependsOn: [runCommand6]
-  }
-]
+  dependsOn: [runCommand6]
+}
 
 // =================================//
 // Deploy Host VM Infrastructure    //
@@ -700,9 +650,7 @@ resource runCommand7 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
   dependsOn: [
     runCommand6
     spConnectedMachineResourceManagerRolePermissions
-    nodeAzureConnectedMachineResourceManagerRolePermissions
-    nodeazureStackHCIDeviceManagementRole
-    nodereaderRoleIDPermissions
+    hciNodeRoleAssignments
   ]
 }
 
