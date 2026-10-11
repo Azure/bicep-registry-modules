@@ -49,10 +49,12 @@ inputs:
   modulePath:
     description: >-
       Exact module directory path used to determine the resource location and look up
-      optional subscription features. Root .required-features.json maps module paths
-      to arrays of "Namespace/FeatureName" strings. Registration runs after login,
-      before validation, and persists after testing. Missing or empty requirements
-      are skipped; the test identity needs feature and provider registration permissions.
+      optional subscription features and resource providers. Root .required-features.json
+      maps module paths to arrays of "Namespace/FeatureName" strings; root
+      .required-resource-providers.json uses the same format with provider namespaces.
+      Feature registration runs after login, followed by provider registration before
+      validation, and persists after testing. Missing or empty requirements are skipped;
+      the test identity needs feature and provider registration permissions.
     required: true
   templateFilePath:
     description: "The path to the template file to use for deployment"
@@ -211,6 +213,26 @@ runs:
           TenantId       = $env:SELECTED_TENANT_ID
         }
         $null = Register-RequiredSubscriptionFeature @functionInput -Verbose
+
+    - name: "Register required subscription resource providers"
+      id: register-required-resource-providers
+      if: env.skip_deployment_ci == 'false'
+      shell: pwsh
+      env:
+        MODULE_PATH: ${{ inputs.modulePath }}
+        SELECTED_SUBSCRIPTION_ID: ${{ steps.get-test-subscription.outputs.subscriptionId }}
+        SELECTED_TENANT_ID: ${{ env.VALIDATE_TENANT_ID }}
+      run: |
+        $ErrorActionPreference = 'Stop'
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Register-RequiredSubscriptionResourceProvider.ps1')
+
+        $functionInput = @{
+          RepoRootPath   = $env:GITHUB_WORKSPACE
+          ModulePath     = $env:MODULE_PATH
+          SubscriptionId = $env:SELECTED_SUBSCRIPTION_ID
+          TenantId       = $env:SELECTED_TENANT_ID
+        }
+        $null = Register-RequiredSubscriptionResourceProvider @functionInput -Verbose
 
     # [Token replacement] task(s)
     # ---------------------------
