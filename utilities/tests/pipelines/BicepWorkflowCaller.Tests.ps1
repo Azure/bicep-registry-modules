@@ -35,15 +35,20 @@ Describe 'Pinned tools workflow callers' {
         $toolsRef = $reference.Groups['ref'].Value
         $authoringVersion = '${{ vars.AVM_AUTHORING_VERSION }}'
 
-        function Assert-GenericCheckout {
+        function Assert-GenericSelectionInputs {
             param([hashtable] $Workflow)
 
             $steps = $Workflow.jobs.job_initialize_pipeline.steps
             $checkout = @($steps | Where-Object { $_.uses -like 'actions/checkout@*' })
-            $matrix = $steps | Where-Object { $_.id -eq 'get-module-matrix' }
+            $matrix = @($steps | Where-Object { $_.id -eq 'get-module-matrix' })
+            $steps.Count | Should -Be 2
             $checkout.Count | Should -Be 1
+            $matrix.Count | Should -Be 1
             $checkout[0].with.ref | Should -Be '${{ github.sha }}'
-            $checkout[0].with.ref | Should -Be $matrix.with.targetCommit
+            $checkout[0].with.ref | Should -Be $matrix[0].with.targetCommit
+            $matrix[0].with.baseCommit | Should -Be '${{ github.event.before }}'
+            $matrix[0].with.pullRequestHeadCommit | Should -Be '${{ github.event.pull_request.head.sha }}'
+            $matrix[0].ContainsKey('run') | Should -BeFalse
         }
 
         function Assert-ModuleCaller {
@@ -156,7 +161,7 @@ Describe 'Pinned tools workflow callers' {
         $workflow = ConvertFrom-Yaml -Yaml (
             Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' 'avm.module.yml') -Raw
         )
-        Assert-GenericCheckout -Workflow $workflow
+        Assert-GenericSelectionInputs -Workflow $workflow
         $initialize = $workflow.jobs.job_initialize_pipeline
         $matrix = $initialize.steps | Where-Object { $_.id -eq 'get-module-matrix' }
         $matrix.uses | Should -Be "$toolsRepository/.github/actions/bicep-workflow-matrix@$toolsRef"
@@ -164,8 +169,9 @@ Describe 'Pinned tools workflow callers' {
         $matrix.ContainsKey('run') | Should -BeFalse
         $inputs = @{
             'avm-authoring-version' = $authoringVersion
-            baseCommit             = '${{ case(github.event_name == ''pull_request'', github.event.pull_request.base.sha, github.event.before) }}'
+            baseCommit             = '${{ github.event.before }}'
             targetCommit           = '${{ github.sha }}'
+            pullRequestHeadCommit  = '${{ github.event.pull_request.head.sha }}'
             eventName              = '${{ github.event_name }}'
             modulePaths            = '${{ inputs.modulePaths }}'
             createReleaseTag       = '${{ inputs.createReleaseTag }}'
@@ -184,13 +190,61 @@ Describe 'Pinned tools workflow callers' {
         }
     }
 
-    It 'rejects a pull request head checkout instead of the matrix merge commit' {
+    It 'rejects <Name> in generic selection' -ForEach @(
+        @{
+            Name   = 'a pull request head checkout instead of the tested merge'
+            Mutate = {
+                param($workflow)
+                $checkout = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.uses -like 'actions/checkout@*' }
+                $checkout.with.ref = '${{ github.event.pull_request.head.sha }}'
+            }
+        }
+        @{
+            Name   = 'a target commit different from the checked-out merge'
+            Mutate = {
+                param($workflow)
+                $matrix = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.id -eq 'get-module-matrix' }
+                $matrix.with.targetCommit = '${{ github.event.pull_request.head.sha }}'
+            }
+        }
+        @{
+            Name   = 'the mutable pull request event base instead of the push base'
+            Mutate = {
+                param($workflow)
+                $matrix = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.id -eq 'get-module-matrix' }
+                $matrix.with.baseCommit = '${{ github.event.pull_request.base.sha }}'
+            }
+        }
+        @{
+            Name   = 'a missing pull request head binding'
+            Mutate = {
+                param($workflow)
+                $matrix = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.id -eq 'get-module-matrix' }
+                $matrix.with.Remove('pullRequestHeadCommit')
+            }
+        }
+        @{
+            Name   = 'the tested merge supplied as its own pull request head'
+            Mutate = {
+                param($workflow)
+                $matrix = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.id -eq 'get-module-matrix' }
+                $matrix.with.pullRequestHeadCommit = '${{ github.sha }}'
+            }
+        }
+        @{
+            Name   = 'caller-local matrix implementation'
+            Mutate = {
+                param($workflow)
+                $matrix = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.id -eq 'get-module-matrix' }
+                $matrix.run = 'Get-ModuleWorkflowMatrix'
+            }
+        }
+    ) {
         $workflow = ConvertFrom-Yaml -Yaml (
             Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' 'avm.module.yml') -Raw
         )
-        $checkout = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.uses -like 'actions/checkout@*' }
-        $checkout.with.ref = '${{ github.event.pull_request.head.sha }}'
+        . $Mutate $workflow
 
-        { Assert-GenericCheckout -Workflow $workflow } | Should -Throw
+        { Assert-GenericSelectionInputs -Workflow $workflow } | Should -Throw
     }
 }

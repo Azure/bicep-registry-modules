@@ -32,7 +32,7 @@ Describe 'CI parameter workflow integration' {
                 [string] $TemplateFilePath, [string] $DeploymentMetadataLocation,
                 [string] $SubscriptionId, [string] $ManagementGroupId,
                 [string] $RepoRoot, [hashtable] $AdditionalParameters, [bool] $DoNotThrow,
-                [int] $RetryLimit, [int] $AttemptNumber
+                [int] $RetryLimit, [int] $AttemptNumber, [datetime] $RecoveryDeadlineUtc
             )
             throw 'Unexpected deployment.'
         }
@@ -180,6 +180,12 @@ output configuredParameters object = {
             $AdditionalParameters.resourceLocation -eq 'eastus' -and
             $AdditionalParameters.resource_name -eq 'literal-name' -and
             -not [string]::IsNullOrEmpty($AdditionalParameters.baseTime)
+        }
+        if ($commandName -eq 'New-TemplateDeployment') {
+            Should -Invoke New-TemplateDeployment -Times 1 -Exactly -ParameterFilter {
+                $RecoveryDeadlineUtc.Kind -eq [DateTimeKind]::Utc -and
+                $RecoveryDeadlineUtc -gt [datetime]::UtcNow
+            }
         }
         ($messages | Out-String) | Should -Not -Match 'secret-value|nested-secret-value|variable-value'
         Get-Content -Path $path -Raw | Should -BeExactly $before

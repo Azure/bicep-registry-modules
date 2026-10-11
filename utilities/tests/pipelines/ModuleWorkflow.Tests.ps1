@@ -204,8 +204,9 @@ Describe 'Generic module workflow' {
 
         $initialize.if | Should -Match ([regex]::Escape("contains(github.event.pull_request.labels.*.name, 'PR: Run Checks')"))
         $initialize.if | Should -Match ([regex]::Escape("github.event.label.name == 'PR: Run Checks'"))
-        $matrixStep.with.baseCommit | Should -Be '${{ case(github.event_name == ''pull_request'', github.event.pull_request.base.sha, github.event.before) }}'
+        $matrixStep.with.baseCommit | Should -Be '${{ github.event.before }}'
         $matrixStep.with.targetCommit | Should -Be '${{ github.sha }}'
+        $matrixStep.with.pullRequestHeadCommit | Should -Be '${{ github.event.pull_request.head.sha }}'
         $matrixStep.with.eventName | Should -Be '${{ github.event_name }}'
         $matrixStep.ContainsKey('run') | Should -BeFalse
     }

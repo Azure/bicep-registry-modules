@@ -15,7 +15,7 @@ The registry retains module files, tests and configuration. The shared workflow 
 
 ## Cutover prerequisites
 
-1. Publish a qualified `Avm.Authoring` release containing the complete packaged Bicep static validation route and canonical README template, approved native deployment retries and final post-hook/cleanup behavior, existing end-to-end handling of the root required-feature manifest, required policy selectors, and unit/policy version-check forwarding. Its manifest must advertise `PrivateData.AvmCapabilities.BicepPackagedCompliance = 1`; intermediate packages without that capability are rejected.
+1. Publish a qualified `Avm.Authoring` release containing the complete packaged Bicep static validation route and canonical README template, approved native deployment retries and final post-hook/cleanup behavior, end-to-end handling of the root required-feature and resource-provider manifests, required policy selectors, package-download recovery, and unit/policy version-check forwarding. Its manifest must advertise `PrivateData.AvmCapabilities.BicepPackagedCompliance = 1`; intermediate packages without that capability are rejected.
 1. Make the reviewed tools workflows and actions available at one immutable commit. Every tools `uses` reference and `tools-ref` input must identify that same commit. A candidate branch commit is for draft qualification only; select a merged tools commit before registry cutover.
 1. Verify the module identity mapping, tenant and subscription pool. Separately approve any required live application of stable module credentials matching the existing owner/repository/environment subject. This preparation does not change the repository subject template or remove existing credentials.
 1. Configure the registry's `AVM_AUTHORING_VERSION` variable to that exact qualified release before merging the caller migration. It has no fallback; unset or invalid versions must fail rather than select `latest`.
@@ -25,6 +25,8 @@ Each module workflow includes its own file in its main-branch push filter. Mergi
 Tools revision updates must change all `uses` pins and `tools-ref` inputs together and use a compatible qualified `Avm.Authoring` release. Rerun the caller regression tests and obtain separate approval for the rollout. Dependabot updates `uses` declarations but not the matching inputs, so these tools dependencies use coordinated manual upgrades. Other action updates remain enabled.
 
 The tools commit supplies orchestration and support code; it does not select or install its own native source as the runtime package. All callers forward `vars.AVM_AUTHORING_VERSION`, which must identify the separately qualified PowerShell Gallery release. A published tools revision or an open runtime change does not establish package readiness.
+
+The release must also provide `BicepRequiredResourceProviders = 1` for deployment and `PowerShellModuleArchiveRecovery = 1` for policy validation. These package-capability checks are additional requirements, not evidence that a release has been selected or qualified.
 
 ## Module identities
 
@@ -38,7 +40,9 @@ Neither `workflow_ref` nor `job_workflow_ref` is included in the current subject
 
 Generic deployment remains supported. Module/client selection is a workflow-code convention, **not a per-module federated security boundary**: approved generic code can select any identity in the mapping. No dispatcher or secret-auth exception list is introduced. The old shared Bicep identity is a deferred cleanup item; this change does not delete it, alter deployed permissions or apply federation.
 
-The root [`.required-features.json`](../../.required-features.json) remains caller-owned configuration, read by native end-to-end execution without a separate workflow registration stage or manifest parser. Do not move module-specific decisions into shared implementation.
+The root [`.required-features.json`](../../.required-features.json) and optional [`.required-resource-providers.json`](../../.required-resource-providers.json) remain caller-owned configuration. Native end-to-end execution reads them without a caller registration stage or manifest parser. Required features run before required providers, using the selected subscription and login tenant; either failure prevents deployment validation. Static checks, policy checks and discovery do not register providers.
+
+Provider requirements use exact module paths and do not inherit a parent's entry for a child. Preserve the declared namespaces without inferring extra providers or expanding permissions. Registration persists beyond test cleanup; any live run that can register providers requires separate approval. The retained local deployment action keeps the same feature-before-provider order and its regression tests.
 
 Packaged validation reads child-module publishing approvals from [`.avm/child-module-publish-allowed-list.json`](../../.avm/child-module-publish-allowed-list.json). Keep it identical to the legacy `utilities/pipelines/staticValidation/compliance/helper/child-module-publish-allowed-list.json` while local tools and current releases still consume that file. The caller tests enforce parity; this migration does not add or remove approvals.
 
@@ -58,7 +62,7 @@ The following consumers prevent wholesale removal of registry utilities:
 
 Retire these only after their consumers use qualified packaged APIs and equivalent regression coverage is available. Moving the module workflow callers does not by itself complete that retirement.
 
-Recheck the retirement map after merging newer registry changes. Current deployment cleanup, regional retry, preflight and response-contract tests stay with their supported local entry points until published replacements are qualified. Host and image-builder helpers and their tests are outside this workflow migration; no image build is required for caller qualification.
+Recheck the retirement map after merging newer registry changes. Current deployment cleanup, regional retry, preflight, provider registration, package recovery and response-contract tests stay with their supported local entry points until published replacements are qualified. Host and image-builder helpers and their tests are outside this workflow migration; no image build is required for caller qualification.
 
 The existing `documentation.template.file` and `includeRoot` continue to select the legacy Scriban copy; a packaged default does not override explicit configuration. Once the compatible release and remaining documentation consumers are qualified, remove only `documentation.template` to select the packaged canonical template. Preserve `documentation.examples.reassignments`, the Microsoft Graph extension and analyzer/compiler settings. Keep the existing asset until its consumers are retired; do not add another shared template copy for the workflow migration.
 
@@ -83,6 +87,10 @@ Automatic runs cannot create tags. The preview path has read-only repository per
 The generic workflow runs alongside module-specific workflows during its initial validation period. Generic deployments retain the `gci` name prefix. Deployment locks are shared with module-specific workflows for the same module and selected subscription, with an additional module-wide lock for shared scopes.
 
 Pull-request checks require `PR: Run Checks`. Deployment validation additionally requires `PR: Run E2E Tests` and an internal branch. Fork contributions use only the secret-free static workflow.
+
+Generic selection checks out `github.sha` and passes it as `targetCommit`, with `pullRequestHeadCommit` from the event's head SHA. For a pull request, tools must require an exact two-parent tested merge whose second parent matches that head, then compare against its first parent. The event's mutable base SHA is not used. Missing or invalid history must fail before matrix outputs, without falling back to all modules.
+
+Pushes pass `github.event.before` as `baseCommit`; an unavailable push base retains the all-module preview fallback with deployment disabled. Manual selection does not inspect pull-request history. Caller tests enforce these input bindings; tools owns the real-Git selection and whole-action failure tests that previously executed the inline matrix script. This does not change labels, internal-fork handling or branch gates.
 
 ## Manual runs
 

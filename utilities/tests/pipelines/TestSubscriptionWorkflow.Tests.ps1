@@ -528,8 +528,9 @@ Describe 'Test subscription workflow integration' {
             $login.with.'subscription-id' | Should -Be '${{ steps.get-test-subscription.outputs.subscriptionId }}'
             $login.with.'client-id' | Should -Be '${{ env.VALIDATE_CLIENT_ID }}'
             $login.with.'tenant-id' | Should -Be '${{ env.VALIDATE_TENANT_ID }}'
-            $login.if | Should -Be "env.skip_deployment_ci == 'false'"
         }
+        $defaultLogins[0].if | Should -Be "env.skip_deployment_ci == 'false'"
+        $defaultLogins[1].if | Should -Be '${{ (success() || (failure() && inputs.removeDeployment == ''true'' && steps.deploy_step.outputs.deploymentNames != '''')) && env.skip_deployment_ci == ''false'' }}'
         foreach ($stepName in @('Replace tokens in template file', 'Deploy template file', 'Remove deployed resources')) {
             $step = $action.runs.steps | Where-Object { $_.name -eq $stepName }
             $step.with.inlineScript | Should -Match ([regex]::Escape('${{ steps.get-test-subscription.outputs.subscriptionId }}'))

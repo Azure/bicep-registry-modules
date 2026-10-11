@@ -76,8 +76,9 @@ jobs:
         uses: Azure/azure-verified-modules-tools/.github/actions/bicep-workflow-matrix@e49bc66db69da344c0a102798139f9f3a9615cc9
         with:
           avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
-          baseCommit: "${{ case(github.event_name == 'pull_request', github.event.pull_request.base.sha, github.event.before) }}"
+          baseCommit: "${{ github.event.before }}"
           targetCommit: "${{ github.sha }}"
+          pullRequestHeadCommit: "${{ github.event.pull_request.head.sha }}"
           eventName: "${{ github.event_name }}"
           modulePaths: "${{ inputs.modulePaths }}"
           createReleaseTag: "${{ inputs.createReleaseTag }}"

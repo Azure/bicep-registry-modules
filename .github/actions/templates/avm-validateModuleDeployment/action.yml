@@ -39,8 +39,9 @@ description: >-
   do not relocate. Retained resources disable intermediate cleanup and relocation.
   Metadata location and other inputs remain fixed. Cleanup retains attempt tracking and only
   skips missing records after confirmed preflight rejection and DeploymentNotFound.
-  After a submission request timeout, observe the same deployment for up to 60 minutes
-  without resubmitting; only confirmed failure permits a bounded retry. Unknown
+  After a recoverable submission request error, observe the same deployment until one
+  UTC deadline four hours after coordinator entry, shared by all attempts and recovery
+  paths without resubmitting; only confirmed failure permits a bounded retry. Unknown
   outcomes preserve attempted deployment names for cleanup. A preselected subscription is
   verified before login and reused through cleanup without reshuffling the pool.
 
@@ -48,10 +49,12 @@ inputs:
   modulePath:
     description: >-
       Exact module directory path used to determine the resource location and look up
-      optional subscription features. Root .required-features.json maps module paths
-      to arrays of "Namespace/FeatureName" strings. Registration runs after login,
-      before validation, and persists after testing. Missing or empty requirements
-      are skipped; the test identity needs feature and provider registration permissions.
+      optional subscription features and resource providers. Root .required-features.json
+      maps module paths to arrays of "Namespace/FeatureName" strings; root
+      .required-resource-providers.json uses the same format with provider namespaces.
+      Feature registration runs after login, followed by provider registration before
+      validation, and persists after testing. Missing or empty requirements are skipped;
+      the test identity needs feature and provider registration permissions.
     required: true
   templateFilePath:
     description: "The path to the template file to use for deployment"
@@ -210,6 +213,26 @@ runs:
           TenantId       = $env:SELECTED_TENANT_ID
         }
         $null = Register-RequiredSubscriptionFeature @functionInput -Verbose
+
+    - name: "Register required subscription resource providers"
+      id: register-required-resource-providers
+      if: env.skip_deployment_ci == 'false'
+      shell: pwsh
+      env:
+        MODULE_PATH: ${{ inputs.modulePath }}
+        SELECTED_SUBSCRIPTION_ID: ${{ steps.get-test-subscription.outputs.subscriptionId }}
+        SELECTED_TENANT_ID: ${{ env.VALIDATE_TENANT_ID }}
+      run: |
+        $ErrorActionPreference = 'Stop'
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Register-RequiredSubscriptionResourceProvider.ps1')
+
+        $functionInput = @{
+          RepoRootPath   = $env:GITHUB_WORKSPACE
+          ModulePath     = $env:MODULE_PATH
+          SubscriptionId = $env:SELECTED_SUBSCRIPTION_ID
+          TenantId       = $env:SELECTED_TENANT_ID
+        }
+        $null = Register-RequiredSubscriptionResourceProvider @functionInput -Verbose
 
     # [Token replacement] task(s)
     # ---------------------------
@@ -409,7 +432,7 @@ runs:
     # Default: use OIDC
     # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
-      if: env.skip_deployment_ci == 'false'
+      if: ${{ (success() || (failure() && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '')) && env.skip_deployment_ci == 'false' }}
       uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
         client-id: ${{ env.VALIDATE_CLIENT_ID }}
@@ -432,6 +455,9 @@ runs:
 
         # Set repo root path
         $repoRootPath = $env:GITHUB_WORKSPACE
+
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Initialize-AvmPester.ps1')
+        Initialize-AvmPester -RepoRootPath $repoRootPath
 
         $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
         $moduleTestFolderPath = Split-Path $moduleTestFilePath
