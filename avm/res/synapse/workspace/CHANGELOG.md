@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated `Microsoft.KeyVault/vaults`, `Microsoft.KeyVault/vaults/accessPolicies`, and `Microsoft.KeyVault/vaults/keys` API versions from `2024-11-01` to `2026-02-01`.
+- Added bounded customer-managed-key activation and verification when `encryptionActivateWorkspace` is enabled, using a dedicated deployment-script identity with Contributor access only to the workspace key.
 
 ### Breaking Changes
 

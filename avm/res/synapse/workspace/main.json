@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3701236490275432562"
+      "templateHash": "16626546639851277279"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace."
@@ -1344,7 +1344,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Activate workspace by adding the system managed identity in the KeyVault containing the customer managed key and activating the workspace."
+        "description": "Optional. Grant the workspace system identity access to the customer-managed key and activate the workspace. Creates a deployment script and a dedicated identity with Contributor access only to the workspace key. Activation is verified for up to 10 minutes. Requires permission to deploy the helper identity, deployment script and its supporting resources, and assign the key-scoped role."
       }
     },
     "managedResourceGroupName": {
@@ -1626,7 +1626,8 @@
         "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
-        "workspace"
+        "workspace",
+        "workspace_key"
       ]
     },
     "workspace_roleAssignments": {
@@ -1821,7 +1822,8 @@
         }
       },
       "dependsOn": [
-        "workspace"
+        "workspace",
+        "workspace_key"
       ]
     },
     "workspace_cmk_rbac": {
@@ -1918,128 +1920,155 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
+          "keyName": {
             "value": "[parameters('customerManagedKey').keyName]"
           },
-          "isActiveCMK": {
-            "value": true
-          },
-          "keyVaultResourceId": {
-            "value": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')))]"
+          "keyVaultUrl": {
+            "value": "[reference('cMKKeyVault::cMKKey').keyUri]"
           },
           "workspaceName": {
             "value": "[parameters('name')]"
           },
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3451511216603080919"
-            },
-            "name": "Synapse Workspaces Keys",
-            "description": "This module deploys a Synapse Workspaces Key."
+              "templateHash": "9093439168170403416"
+            }
           },
           "parameters": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the Synapse Workspaces Key."
-              }
-            },
             "workspaceName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
+                "description": "Required. The name of the Synapse workspace."
               }
             },
-            "isActiveCMK": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Used to activate the workspace after a customer managed key is provided."
-              }
-            },
-            "keyVaultResourceId": {
+            "keyName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+                "description": "Required. The name of the existing workspace key."
               }
             },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
+            "keyVaultUrl": {
+              "type": "string",
               "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
+                "description": "Required. The expected Key Vault key URL."
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the activation helper resources."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30#properties/tags"
+                },
+                "description": "Optional. Tags for the activation helper resources."
+              },
+              "nullable": true
+            },
+            "forceUpdateTag": {
+              "type": "string",
+              "defaultValue": "[utcNow()]",
+              "metadata": {
+                "description": "Optional. Recheck activation on each deployment without changing helper resource names."
               }
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.1254be8",
-            "telemetryIdPrefix": "[variables('$fxv#0')]"
+            "$fxv#0": "function Get-SynapseCmkClock {\n    [System.Diagnostics.Stopwatch]::GetTimestamp() / [double] [System.Diagnostics.Stopwatch]::Frequency\n}\n\nfunction Get-SynapseCmkTimeRemaining {\n    param([double] $Deadline)\n\n    $remaining = $Deadline - (Get-SynapseCmkClock)\n    if ($remaining -le 0) {\n        throw [System.TimeoutException]::new('The Synapse workspace key activation deadline expired.')\n    }\n    return $remaining\n}\n\nfunction Invoke-SynapseCmkRequest {\n    [CmdletBinding()]\n    param (\n        [Parameter(Mandatory)]\n        [ValidateSet('GET', 'PUT')]\n        [string] $Method,\n\n        [Parameter(Mandatory)]\n        [string] $Path,\n\n        [string] $Payload,\n\n        [Parameter(Mandatory)]\n        [double] $Deadline\n    )\n\n    $null = Get-SynapseCmkTimeRemaining -Deadline $Deadline\n    $request = @{\n        Method      = $Method\n        Path        = $Path\n        AsJob       = $true\n        ErrorAction = 'Stop'\n        Confirm     = $false\n    }\n    if ($Method -eq 'PUT') { $request.Payload = $Payload }\n\n    $job = $null\n    try {\n        $job = Invoke-AzRestMethod @request\n        $remaining = Get-SynapseCmkTimeRemaining -Deadline $Deadline\n        $completed = Wait-Job -Id $job.Id -Timeout ([int] [Math]::Ceiling($remaining)) -ErrorAction Stop\n        $null = Get-SynapseCmkTimeRemaining -Deadline $Deadline\n        if (-not $completed) {\n            throw [System.TimeoutException]::new('The Synapse workspace key request did not complete before the activation deadline.')\n        }\n        $responses = @(Receive-Job -Id $job.Id -ErrorAction Stop)\n        $null = Get-SynapseCmkTimeRemaining -Deadline $Deadline\n        if ($responses.Count -ne 1 -or $null -eq $responses[0]) {\n            throw 'Expected exactly one response from the Synapse workspace key request.'\n        }\n        return $responses[0]\n    } finally {\n        if ($null -ne $job) {\n            if ($job.State -notin @('Completed', 'Failed', 'Stopped')) {\n                Stop-Job -Id $job.Id -ErrorAction Stop\n            }\n            Remove-Job -Id $job.Id -ErrorAction Stop\n        }\n    }\n}\n\nfunction Test-SynapseCmkPermissionError {\n    param (\n        [object] $ErrorDetail,\n        [int] $Depth = 0\n    )\n\n    if ($Depth -gt 16 -or $ErrorDetail -isnot [System.Collections.IDictionary] -or\n        $ErrorDetail.code -isnot [string]) { return $false }\n    foreach ($key in $ErrorDetail.psbase.Keys) {\n        if (@('code', 'message', 'target', 'details', 'additionalInfo') -cnotcontains $key) { return $false }\n    }\n    if ($ErrorDetail.additionalInfo) { return $false }\n    $details = @()\n    if ($null -ne $ErrorDetail.details) {\n        if ($ErrorDetail.details -isnot [System.Collections.IList]) { return $false }\n        $details = @($ErrorDetail.details)\n    }\n    if ($ErrorDetail.code -ceq 'CustomerManagedKeyPermissionMissing') {\n        return $details.Count -eq 0\n    }\n    if ($ErrorDetail.code -cne 'ValidationFailed' -or $details.Count -eq 0) { return $false }\n    foreach ($detail in $details) {\n        if (-not (Test-SynapseCmkPermissionError -ErrorDetail $detail -Depth ($Depth + 1))) { return $false }\n    }\n    return $true\n}\n\nfunction Write-SynapseCmkHttpFailure {\n    [CmdletBinding()]\n    param (\n        [string] $Method,\n        [object] $Response\n    )\n\n    $exception = [System.InvalidOperationException]::new(\n        \"Synapse workspace key $Method returned HTTP $($Response.StatusCode): $($Response.Content)\"\n    )\n    $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new(\n            $exception,\n            'SynapseCmkRequestFailed',\n            [System.Management.Automation.ErrorCategory]::InvalidResult,\n            $Response\n        ))\n}\n\nfunction Test-SynapseCmkKeyActive {\n    param (\n        [object] $Response,\n        [string] $KeyResourceId,\n        [string] $KeyVaultUrl\n    )\n\n    if ($Response.StatusCode -ne 200) { Write-SynapseCmkHttpFailure -Method GET -Response $Response }\n    $key = $Response.Content | ConvertFrom-Json -AsHashtable -Depth 32 -ErrorAction Stop\n    if ($key -isnot [System.Collections.IDictionary] -or\n        -not [string]::Equals($key.id, $KeyResourceId, [System.StringComparison]::OrdinalIgnoreCase) -or\n        $key.properties -isnot [System.Collections.IDictionary] -or\n        -not [string]::Equals($key.properties.keyVaultUrl, $KeyVaultUrl, [System.StringComparison]::Ordinal) -or\n        $key.properties.isActiveCMK -isnot [bool]) {\n        throw 'The Synapse workspace key response does not match the expected resource ID, key URL and activation boolean.'\n    }\n    return $key.properties.isActiveCMK\n}\n\nfunction Invoke-SynapseCmkActivation {\n    [CmdletBinding()]\n    param (\n        [Parameter(Mandatory)]\n        [ValidatePattern('(?i)^/subscriptions/[0-9a-f-]{36}/resourceGroups/[^/?#]+/providers/Microsoft\\.Synapse/workspaces/[^/?#]+/keys/[^/?#]+$')]\n        [string] $KeyResourceId,\n\n        [Parameter(Mandatory)]\n        [ValidatePattern('^https://[^/?#@]+/keys/[^/?#]+(/[^/?#]+)?$')]\n        [string] $KeyVaultUrl,\n\n        [ValidateRange(1, 600)]\n        [int] $TimeoutSeconds = 600\n    )\n\n    $deadline = (Get-SynapseCmkClock) + $TimeoutSeconds\n    $path = \"${KeyResourceId}?api-version=2021-06-01\"\n    $payload = @{ properties = @{ isActiveCMK = $true; keyVaultUrl = $KeyVaultUrl } } |\n        ConvertTo-Json -Compress\n    $activationAccepted = $false\n    $delaySeconds = 5\n\n    while ($true) {\n        $response = Invoke-SynapseCmkRequest -Method GET -Path $path -Deadline $deadline\n        $active = Test-SynapseCmkKeyActive -Response $response -KeyResourceId $KeyResourceId -KeyVaultUrl $KeyVaultUrl\n        $null = Get-SynapseCmkTimeRemaining -Deadline $deadline\n        if ($active) {\n            return @{ keyResourceId = $KeyResourceId; isActiveCMK = $true }\n        }\n\n        if (-not $activationAccepted) {\n            $response = Invoke-SynapseCmkRequest -Method PUT -Path $path -Payload $payload -Deadline $deadline\n            if ($response.StatusCode -eq 200) {\n                $null = Test-SynapseCmkKeyActive -Response $response -KeyResourceId $KeyResourceId -KeyVaultUrl $KeyVaultUrl\n                $activationAccepted = $true\n                continue\n            }\n\n            $retryable = $false\n            if ($response.StatusCode -eq 400) {\n                try {\n                    $body = $response.Content | ConvertFrom-Json -AsHashtable -Depth 32 -ErrorAction Stop\n                    $retryable = $body -is [System.Collections.IDictionary] -and $body.psbase.Count -eq 1 -and\n                    $body.Contains('error') -and\n                    (Test-SynapseCmkPermissionError -ErrorDetail $body.error)\n                } catch [System.ArgumentException] {\n                    $retryable = $false\n                }\n            }\n            if (-not $retryable) { Write-SynapseCmkHttpFailure -Method PUT -Response $response }\n            Write-Warning 'Synapse CMK activation reported CustomerManagedKeyPermissionMissing after the vault grant; retrying within the activation deadline.'\n        }\n\n        $remaining = Get-SynapseCmkTimeRemaining -Deadline $deadline\n        Start-Sleep -Milliseconds ([int] [Math]::Ceiling([Math]::Min($delaySeconds, $remaining) * 1000))\n        $delaySeconds = [Math]::Min($delaySeconds * 2, 30)\n    }\n}\n",
+            "activationCommand": "  $ErrorActionPreference = 'Stop'\n  $DeploymentScriptOutputs = Invoke-SynapseCmkActivation -KeyResourceId $env:WORKSPACE_KEY_RESOURCE_ID -KeyVaultUrl $env:KEY_VAULT_URL\n  "
           },
-          "resources": [
-            {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": [],
-                  "outputs": {
-                    "telemetry": {
-                      "type": "String",
-                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                    }
-                  }
-                }
-              }
+          "resources": {
+            "workspace": {
+              "existing": true,
+              "type": "Microsoft.Synapse/workspaces",
+              "apiVersion": "2021-06-01",
+              "name": "[parameters('workspaceName')]"
             },
-            {
+            "workspaceKey": {
+              "existing": true,
               "type": "Microsoft.Synapse/workspaces/keys",
               "apiVersion": "2021-06-01",
-              "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
+              "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('keyName'))]"
+            },
+            "activationIdentity": {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2024-11-30",
+              "name": "[format('cmk-activation-{0}', uniqueString(resourceId('Microsoft.Synapse/workspaces', parameters('workspaceName')), parameters('keyName')))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]"
+            },
+            "activationRoleAssignment": {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.Synapse/workspaces/keys', parameters('workspaceName'), parameters('keyName'))]",
+              "name": "[guid(resourceId('Microsoft.Synapse/workspaces/keys', parameters('workspaceName'), parameters('keyName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('cmk-activation-{0}', uniqueString(resourceId('Microsoft.Synapse/workspaces', parameters('workspaceName')), parameters('keyName')))), 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "properties": {
-                "isActiveCMK": "[parameters('isActiveCMK')]",
-                "keyVaultUrl": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('name')), '2026-02-01').keyUri]"
-              }
-            }
-          ],
-          "outputs": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the deployed key."
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                "principalId": "[reference('activationIdentity').principalId]",
+                "principalType": "ServicePrincipal"
               },
-              "value": "[parameters('name')]"
+              "dependsOn": [
+                "activationIdentity"
+              ]
             },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the deployed key."
+            "activationScript": {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2023-08-01",
+              "name": "[format('cmk-activation-{0}', uniqueString(resourceId('Microsoft.Synapse/workspaces', parameters('workspaceName')), parameters('keyName')))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "kind": "AzurePowerShell",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('cmk-activation-{0}', uniqueString(resourceId('Microsoft.Synapse/workspaces', parameters('workspaceName')), parameters('keyName')))))]": {}
+                }
               },
-              "value": "[resourceId('Microsoft.Synapse/workspaces/keys', parameters('workspaceName'), parameters('name'))]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource group of the deployed key."
+              "properties": {
+                "azPowerShellVersion": "12.0",
+                "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                "timeout": "PT15M",
+                "retentionInterval": "P1D",
+                "cleanupPreference": "Always",
+                "environmentVariables": [
+                  {
+                    "name": "WORKSPACE_KEY_RESOURCE_ID",
+                    "value": "[resourceId('Microsoft.Synapse/workspaces/keys', parameters('workspaceName'), parameters('keyName'))]"
+                  },
+                  {
+                    "name": "KEY_VAULT_URL",
+                    "value": "[parameters('keyVaultUrl')]"
+                  }
+                ],
+                "scriptContent": "[format('{0}\n{1}', variables('$fxv#0'), variables('activationCommand'))]"
               },
-              "value": "[resourceGroup().name]"
+              "dependsOn": [
+                "activationIdentity",
+                "activationRoleAssignment"
+              ]
             }
           }
         }
       },
       "dependsOn": [
+        "cMKKeyVault::cMKKey",
         "workspace",
         "workspace_cmk_rbac"
       ]
@@ -2189,7 +2218,8 @@
         }
       },
       "dependsOn": [
-        "workspace"
+        "workspace",
+        "workspace_key"
       ]
     },
     "workspace_firewallRules": {
@@ -2328,7 +2358,8 @@
         }
       },
       "dependsOn": [
-        "workspace"
+        "workspace",
+        "workspace_key"
       ]
     },
     "workspace_bigDataPools": {
@@ -4682,7 +4713,8 @@
         }
       },
       "dependsOn": [
-        "workspace"
+        "workspace",
+        "workspace_key"
       ]
     },
     "workspace_sqlPools": {
@@ -5310,7 +5342,8 @@
         }
       },
       "dependsOn": [
-        "workspace"
+        "workspace",
+        "workspace_key"
       ]
     },
     "workspace_privateEndpoints": {
