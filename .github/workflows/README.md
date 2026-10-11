@@ -90,7 +90,7 @@ Pull-request checks require `PR: Run Checks`. Deployment validation additionally
 
 Generic selection checks out `github.sha` and passes it as `targetCommit`, with `pullRequestHeadCommit` from the event's head SHA. For a pull request, tools must require an exact two-parent tested merge whose second parent matches that head, then compare against its first parent. The event's mutable base SHA is not used. Missing or invalid history must fail before matrix outputs, without falling back to all modules.
 
-Pushes pass `github.event.before` as `baseCommit`; an unavailable push base retains the all-module preview fallback with deployment disabled. Manual selection does not inspect pull-request history. Caller tests enforce these input bindings; tools owns the real-Git selection and whole-action failure tests that previously executed the inline matrix script. This does not change labels, internal-fork handling or branch gates.
+Pushes pass `github.event.before` as `baseCommit`; an unavailable push base retains the all-module preview fallback with deployment disabled. Manual selection does not inspect pull-request history. Caller tests enforce these input bindings; the tools repository's `tests/Pester/Component/BicepWorkflowMatrix.Component.Tests.ps1` covers real-Git selection and whole-action failures in place of the former inline matrix tests. Local module-selection helpers and their tests remain supported. This does not change labels, internal-fork handling or branch gates.
 
 ## Manual runs
 
