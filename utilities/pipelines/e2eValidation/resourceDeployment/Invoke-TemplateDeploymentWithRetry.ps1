@@ -129,6 +129,10 @@ function Test-DeploymentRetryError {
                 $pattern = "\AThe region '$regionPattern' currently does not have enough resources available to provision services with the SKU '[A-Za-z][A-Za-z0-9_]*'\. " +
                 "Try creating the service in another region or selecting a different SKU\. RequestId: $guidPattern\z"
             }
+            'InsufficientResourcesAvailable' {
+                $pattern = "\AThe region '$regionPattern' is currently out of the resources required to provision new services\. " +
+                "Try creating the service in another region\. RequestId: $guidPattern\z"
+            }
             'BadRequest' {
                 $pattern = "\ASemantic Search is not available in '$regionPattern' region\. " +
                 'Please refer to https://aka\.ms/semanticsearchavailability for list of available regions\.\z'
@@ -359,7 +363,7 @@ function Test-DeploymentRetryError {
             -not [string]::IsNullOrWhiteSpace($Node.message) -and -not [string]::IsNullOrWhiteSpace($ResourceTarget) -and
             ($null -eq $Node.target -or ($Node.target -is [string] -and $Node.target -ieq $ResourceTarget))
         }
-        if ($Node.code -cin @('ResourcesForSkuUnavailable', 'BadRequest', 'ManagedEnvironmentCapacityHeavyUsageError') -and
+        if ($Node.code -cin @('ResourcesForSkuUnavailable', 'InsufficientResourcesAvailable', 'BadRequest', 'ManagedEnvironmentCapacityHeavyUsageError') -and
             (Test-RegionalServiceError -Node $Node -Targets $Targets)) {
             $classification.HasRegionalServiceError = $true
             return $true
