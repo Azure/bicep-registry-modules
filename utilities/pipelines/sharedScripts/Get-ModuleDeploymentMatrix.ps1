@@ -46,7 +46,14 @@ function Get-ModuleDeploymentMatrix {
         if (-not [string]::IsNullOrEmpty($TestSubscriptionIds) -and [string]::IsNullOrWhiteSpace($TestSubscriptionIds)) {
             throw 'The configured test subscription pool must not contain only whitespace.'
         }
-        $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $TestSubscriptionIds -FallbackSubscriptionId $FallbackSubscriptionId -RandomSeed $RandomSeed)
+        $subscriptionInput = @{
+            TestSubscriptionIds    = $TestSubscriptionIds
+            FallbackSubscriptionId = $FallbackSubscriptionId
+            RandomSeed             = $RandomSeed
+            ModulePath             = $ModulePath
+            RepoRootPath           = $RepoRoot
+        }
+        $subscriptions = @(Get-TestSubscriptionList @subscriptionInput)
 
         foreach ($test in $activeTests) {
             $templateFilePath = Join-Path $RepoRoot $ModulePath $test.path

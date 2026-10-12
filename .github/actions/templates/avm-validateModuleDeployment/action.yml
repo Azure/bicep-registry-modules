@@ -147,6 +147,7 @@ runs:
         PRESELECTED_SUBSCRIPTION_INDEX: ${{ inputs.subscriptionIndex }}
         PRESELECTED_SUBSCRIPTION_KEY: ${{ inputs.subscriptionKey }}
         MANAGEMENT_GROUP_ID: ${{ inputs.managementGroupId }}
+        MODULE_PATH: ${{ inputs.modulePath }}
       run: |
         . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
 
@@ -157,16 +158,22 @@ runs:
         $functionInput = @{
           TestSubscriptionIds    = $env:TEST_SUBSCRIPTION_IDS
           FallbackSubscriptionId = $env:VALIDATE_SUBSCRIPTION_ID
+          ModulePath             = $env:MODULE_PATH
+          RepoRootPath           = $env:GITHUB_WORKSPACE
         }
         if (-not [string]::IsNullOrEmpty($env:PRESELECTED_SUBSCRIPTION_INDEX) -or
             -not [string]::IsNullOrEmpty($env:PRESELECTED_SUBSCRIPTION_KEY)) {
           $subscriptions = @(Get-TestSubscriptionList @functionInput -Verbose)
           $subscriptionIndex = -1
           if (-not [int]::TryParse($env:PRESELECTED_SUBSCRIPTION_INDEX, [ref] $subscriptionIndex) -or
-              $subscriptionIndex -lt 0 -or $subscriptionIndex -ge $subscriptions.Count) {
+              $subscriptionIndex -lt 0) {
             throw 'The preselected subscription index is invalid for the configured pool.'
           }
-          $subscription = $subscriptions[$subscriptionIndex]
+          $matches = @($subscriptions | Where-Object { $_.index -eq $subscriptionIndex })
+          if ($matches.Count -ne 1) {
+            throw 'The preselected subscription index is invalid for the required subscription pool.'
+          }
+          $subscription = $matches[0]
           if ($subscription.key -cne $env:PRESELECTED_SUBSCRIPTION_KEY) {
             throw 'The configured subscription pool no longer matches the preselected subscription identity.'
           }

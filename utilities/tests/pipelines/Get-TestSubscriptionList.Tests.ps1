@@ -80,7 +80,7 @@ Describe 'Get-TestSubscriptionList' {
     }
 
     It 'Uses the legacy subscription as a singleton only when the variable is unset' {
-        foreach ($unsetValue in @($null, '', '  ')) {
+        foreach ($unsetValue in @($null, '')) {
             $result = @(Get-TestSubscriptionList -TestSubscriptionIds $unsetValue -FallbackSubscriptionId $subscriptions[0].id -RandomSeed 12345)
 
             $result.Count | Should -Be 1
@@ -109,6 +109,7 @@ Describe 'Get-TestSubscriptionList' {
 
     It 'Rejects <name> instead of silently using the fallback' -ForEach @(
         @{ name = 'malformed JSON'; json = '[invalid' }
+        @{ name = 'whitespace'; json = ' ' }
         @{ name = 'an empty array'; json = '[]' }
         @{ name = 'null'; json = 'null' }
         @{ name = 'a scalar'; json = '"11111111-1111-1111-1111-111111111111"' }
@@ -121,9 +122,57 @@ Describe 'Get-TestSubscriptionList' {
         @{ name = 'a blank name'; json = '[{"id":"11111111-1111-1111-1111-111111111111","name":" "}]' }
         @{ name = 'a multiline name'; json = '[{"id":"11111111-1111-1111-1111-111111111111","name":"test\none"}]' }
         @{ name = 'an invalid later entry'; json = '[{"id":"11111111-1111-1111-1111-111111111111","name":"test-one"},{"id":"bad","name":"test-two"}]' }
+        @{ name = 'an empty GUID'; json = '[{"id":"00000000-0000-0000-0000-000000000000","name":"test"}]' }
+        @{ name = 'a blank tag'; json = '[{"id":"11111111-1111-1111-1111-111111111111","name":"test","tag":""}]' }
+        @{ name = 'a null tag'; json = '[{"id":"11111111-1111-1111-1111-111111111111","name":"test","tag":null}]' }
+        @{ name = 'a nonstring tag'; json = '[{"id":"11111111-1111-1111-1111-111111111111","name":"test","tag":["General"]}]' }
+        @{ name = 'a multiline tag'; json = '[{"id":"11111111-1111-1111-1111-111111111111","name":"test","tag":"Azure\nLocal"}]' }
+        @{ name = 'tag leading whitespace'; json = '[{"id":"11111111-1111-1111-1111-111111111111","name":"test","tag":" General"}]' }
+        @{ name = 'a miscapitalized tag property'; json = '[{"id":"11111111-1111-1111-1111-111111111111","name":"test","Tag":"Azure Local"}]' }
+        @{ name = 'duplicate tag properties'; json = '[{"id":"11111111-1111-1111-1111-111111111111","name":"test","tag":"Azure Local","tag":"General"}]' }
+        @{ name = 'duplicate ID properties'; json = '[{"id":"11111111-1111-1111-1111-111111111111","id":"22222222-2222-2222-2222-222222222222","name":"test"}]' }
+        @{ name = 'the same subscription in two pools'; json = '[{"id":"11111111-1111-1111-1111-111111111111","name":"reserved","tag":"Azure Local"},{"id":"11111111-1111-1111-1111-111111111111","name":"general","tag":"General"}]' }
     ) {
         {
             Get-TestSubscriptionList -TestSubscriptionIds $json -FallbackSubscriptionId $subscriptions[0].id -RandomSeed 12345
         } | Should -Throw
+    }
+
+    It 'Partitions mixed tags and untagged records while preserving source indices and canonical hashes' {
+        $pool = @(
+            @{ id = $subscriptions[0].id; name = 'untagged' }
+            @{ id = $subscriptions[1].id; name = 'reserved'; tag = 'Azure Local' }
+            @{ id = $subscriptions[2].id; name = 'general'; tag = 'General' }
+        )
+        $poolJson = ConvertTo-Json -InputObject $pool -Compress
+        $all = @(Get-TestSubscriptionList -TestSubscriptionIds $poolJson)
+        $general = @(Get-TestSubscriptionList -TestSubscriptionIds $poolJson -ModulePath 'avm/res/storage/storage-account')
+        $reserved = @(Get-TestSubscriptionList -TestSubscriptionIds $poolJson -ModulePath 'avm/res/azure-stack-hci/cluster' -RandomSeed 42)
+
+        $all.tag | Should -Be @('General', 'Azure Local', 'General')
+        $all.index | Should -Be @(0, 1, 2)
+        $general.index | Should -Be @(0, 2)
+        $general.id | Should -Be @($subscriptions[0].id, $subscriptions[2].id)
+        $reserved.Count | Should -Be 1
+        $reserved[0].index | Should -Be 1
+        $reserved[0].key | Should -BeExactly $all[1].key
+    }
+
+    It 'Rejects case variants of the same subscription ID even when tags differ' {
+        $json = '[{"id":"ABCDEF12-3456-7890-ABCD-EF1234567890","name":"reserved","tag":"Azure Local"},{"id":"abcdef12-3456-7890-abcd-ef1234567890","name":"general"}]'
+        { Get-TestSubscriptionList -TestSubscriptionIds $json } | Should -Throw '*duplicate subscription IDs*'
+    }
+
+    It 'Never uses a General or legacy fallback for a reserved module' {
+        { Get-TestSubscriptionList -TestSubscriptionIds $subscriptionJson -ModulePath 'avm/res/azure-stack-hci/cluster' } |
+            Should -Throw '*No test subscriptions match required tag*'
+        { Get-TestSubscriptionList -FallbackSubscriptionId $subscriptions[0].id -ModulePath 'avm/res/azure-stack-hci/cluster' } |
+            Should -Throw '*legacy subscription cannot be used*'
+    }
+
+    It 'Does not reinterpret an unknown tag as General' {
+        $json = '[{"id":"11111111-1111-1111-1111-111111111111","name":"reserved","tag":"general"}]'
+        { Get-TestSubscriptionList -TestSubscriptionIds $json -ModulePath 'avm/res/storage/storage-account' } |
+            Should -Throw '*No test subscriptions match required tag*'
     }
 }

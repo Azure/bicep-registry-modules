@@ -216,6 +216,7 @@ Describe 'Test subscription workflow integration' {
         $deploymentWorkflow.env.ARM_MGMTGROUP_ID | Should -Be $managementGroupExpression
         $deploymentStep.with.managementGroupId | Should -Be $managementGroupExpression
         $selectionStep.env.MANAGEMENT_GROUP_ID | Should -Be '${{ inputs.managementGroupId }}'
+        $selectionStep.env.MODULE_PATH | Should -Be '${{ inputs.modulePath }}'
         $deploymentStep.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
         $deploymentStep.env.VALIDATE_CLIENT_ID | Should -Be '${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}'
         $deploymentStep.env.VALIDATE_TENANT_ID | Should -Be '${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}'
@@ -226,6 +227,7 @@ Describe 'Test subscription workflow integration' {
         foreach ($jobName in @('job_psrule_must', 'job_psrule_opt')) {
             $step = $workflow.jobs[$jobName].steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModulePSRule' }
             $step.with.managementGroupId | Should -Be $managementGroupExpression
+            $step.with.modulePath | Should -Be '${{ inputs.modulePath }}'
             $step.env.VALIDATE_TENANT_ID | Should -Be $deploymentStep.env.VALIDATE_TENANT_ID
             $step.env.VALIDATE_SUBSCRIPTION_ID | Should -Be $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID
             $step.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
@@ -237,6 +239,84 @@ Describe 'Test subscription workflow integration' {
         $deploymentStep.with.ContainsKey('subscriptionJobIndex') | Should -BeFalse
         $selectionStep.env.PRESELECTED_SUBSCRIPTION_INDEX | Should -Be '${{ inputs.subscriptionIndex }}'
         $selectionStep.env.PRESELECTED_SUBSCRIPTION_KEY | Should -Be '${{ inputs.subscriptionKey }}'
+    }
+
+    It 'Keeps reserved and General selection consistent through matrix, login and PSRule in <workflowName>' -ForEach @(
+        @{ workflowName = 'avm.template.module' }
+        @{ workflowName = 'avm.template.module.preview' }
+        @{ workflowName = 'avm.template.module.publish' }
+    ) {
+        $pool = @(
+            @{ id = $subscriptions[0].id; name = 'general'; tag = 'General' }
+            @{ id = $subscriptions[1].id; name = 'azure-local'; tag = 'Azure Local' }
+            @{ id = $subscriptions[2].id; name = 'untagged' }
+        )
+        $routingContext['vars.VALIDATE_SUBSCRIPTION_IDS'] = ConvertTo-Json -InputObject $pool -Compress
+        foreach ($module in @(
+                @{ path = 'avm/res/azure-stack-hci/cluster'; indices = @(1) }
+                @{ path = 'avm/res/hybrid-container-service/provisioned-cluster-instance'; indices = @(1) }
+                @{ path = 'avm/res/hybrid-compute/machine'; indices = @(0, 2) }
+            )) {
+            $env:MODULE_PATH = $module.path
+            Set-TestInitializationEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
+            Clear-Content -LiteralPath $env:GITHUB_OUTPUT
+            . ([scriptblock]::Create($matrixStep.run))
+            $matrix = (Get-StepOutput).deploymentMatrix | ConvertFrom-Json -AsHashtable
+            @($matrix.subscriptionIndex | Sort-Object -Unique) | Should -Be $module.indices
+
+            Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
+            foreach ($entry in $matrix) {
+                $env:PRESELECTED_SUBSCRIPTION_INDEX = [string] $entry.subscriptionIndex
+                $env:PRESELECTED_SUBSCRIPTION_KEY = $entry.subscriptionKey
+                Clear-Content -LiteralPath $env:GITHUB_OUTPUT
+                . ([scriptblock]::Create($selectionStep.run))
+                (Get-StepOutput).subscriptionId | Should -BeExactly $pool[$entry.subscriptionIndex].id
+            }
+            $ConvertTokensInputs = @{ Tokens = @{ subscriptionId = 'static-token' } }
+            . ([scriptblock]::Create($psruleSelection))
+            $ConvertTokensInputs.Tokens.subscriptionId | Should -Be $pool[$module.indices[0]].id
+
+            $env:PRESELECTED_SUBSCRIPTION_INDEX = ''
+            $env:PRESELECTED_SUBSCRIPTION_KEY = ''
+            Clear-Content -LiteralPath $env:GITHUB_OUTPUT
+            . ([scriptblock]::Create($selectionStep.run))
+            (Get-StepOutput).subscriptionId | Should -BeIn @($module.indices | ForEach-Object { $pool[$_].id })
+        }
+    }
+
+    It 'Rejects a preselected subscription retagged out of its required pool without login output' -ForEach @(
+        @{ modulePath = 'avm/res/azure-stack-hci/cluster'; oldTag = 'Azure Local'; newTag = 'General' }
+        @{ modulePath = 'avm/res/example/module'; oldTag = 'General'; newTag = 'Azure Local' }
+    ) {
+        $env:MODULE_PATH = $modulePath
+        $pool = @(
+            @{ id = $subscriptions[0].id; name = 'stable'; tag = $oldTag }
+            @{ id = $subscriptions[1].id; name = 'changed'; tag = $newTag }
+        )
+        $record = @(Get-TestSubscriptionList -TestSubscriptionIds $subscriptionJson)[1]
+        $env:PRESELECTED_SUBSCRIPTION_INDEX = [string] $record.index
+        $env:PRESELECTED_SUBSCRIPTION_KEY = $record.key
+        $env:TEST_SUBSCRIPTION_IDS = ConvertTo-Json -InputObject $pool -Compress
+
+        { . ([scriptblock]::Create($selectionStep.run)) } | Should -Throw '*invalid for the required subscription pool*'
+        (Get-StepOutput).Count | Should -Be 0
+    }
+
+    It 'Fails reserved deployment and PSRule selection when the pool is absent or has no matching tag' -ForEach @(
+        @{ pool = '' }
+        @{ pool = '[]' }
+        @{ pool = '[{"id":"11111111-1111-1111-1111-111111111111","name":"general"}]' }
+    ) {
+        $env:MODULE_PATH = 'avm/res/azure-stack-hci/cluster'
+        $env:TEST_SUBSCRIPTION_IDS = $pool
+        $ConvertTokensInputs = @{ Tokens = @{ subscriptionId = 'static-token' } }
+
+        { . ([scriptblock]::Create($matrixStep.run)) } | Should -Throw
+        { . ([scriptblock]::Create($selectionStep.run)) } | Should -Throw
+        { . ([scriptblock]::Create($psruleSelection)) } | Should -Throw
+        (Get-StepOutput).Count | Should -Be 0
+        $ConvertTokensInputs.Tokens.subscriptionId | Should -Be 'static-token'
+        Should -Invoke bicep -Times 0 -Exactly
     }
 
     It 'Keeps selection identical through initialization and execution for each configuration source in <workflowName>' -ForEach @(
@@ -528,8 +608,9 @@ Describe 'Test subscription workflow integration' {
             $login.with.'subscription-id' | Should -Be '${{ steps.get-test-subscription.outputs.subscriptionId }}'
             $login.with.'client-id' | Should -Be '${{ env.VALIDATE_CLIENT_ID }}'
             $login.with.'tenant-id' | Should -Be '${{ env.VALIDATE_TENANT_ID }}'
-            $login.if | Should -Be "env.skip_deployment_ci == 'false'"
+            $login.if | Should -Match "env.skip_deployment_ci == 'false'"
         }
+        $defaultLogins[1].if | Should -Match "failure\(\) && inputs.removeDeployment == 'true'"
         foreach ($stepName in @('Replace tokens in template file', 'Deploy template file', 'Remove deployed resources')) {
             $step = $action.runs.steps | Where-Object { $_.name -eq $stepName }
             $step.with.inlineScript | Should -Match ([regex]::Escape('${{ steps.get-test-subscription.outputs.subscriptionId }}'))
