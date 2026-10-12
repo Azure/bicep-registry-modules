@@ -69,7 +69,7 @@ jobs:
         id: get-test-subscriptions
         shell: pwsh
         env:
-          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
           VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
@@ -134,7 +134,7 @@ jobs:
         id: get-test-subscriptions
         shell: pwsh
         env:
-          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
           VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
@@ -163,7 +163,7 @@ jobs:
 
             $mgmtGroupIdInput = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).customManagementGroupId }}'
 
-            foreach($mgmtGroupId in @('${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.ARM_MGMTGROUP_ID }}', 'bicep-lz-vending-automation-child')) {
+            foreach($mgmtGroupId in @('${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}', 'bicep-lz-vending-automation-child')) {
               Write-Verbose "Processing mgmtGroupId [$mgmtGroupId]" -Verbose
               $functionInput = @{
                 ManagementGroupId            = $mgmtGroupId

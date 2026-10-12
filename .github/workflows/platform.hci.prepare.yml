@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       subscriptionIndex:
-        description: "Original zero-based index of the Azure Local subscription in VALIDATE_SUBSCRIPTION_IDS"
+        description: "Original zero-based index of the Azure Local subscription in the configured test pool"
         type: number
         required: true
         default: 0
@@ -33,7 +33,7 @@ jobs:
         shell: pwsh
         env:
           SUBSCRIPTION_INDEX: ${{ inputs.subscriptionIndex }}
-          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
         run: |
           $ErrorActionPreference = 'Stop'
           $index = 0

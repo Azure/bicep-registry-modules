@@ -3,8 +3,9 @@
 Resolve the test subscription pool and optionally shuffle it.
 
 .DESCRIPTION
-Callers prefer VALIDATE_SUBSCRIPTION_IDS over the legacy TEST_SUBSCRIPTION_IDS
-alias and pass the selected JSON array of { id, name, tag? } objects.
+Callers prefer variables over secrets, selecting VALIDATE_SUBSCRIPTION_IDS
+before its TEST_SUBSCRIPTION_IDS alias within each source. The selected value
+is a JSON array of { id, name, tag? } objects.
 An omitted tag means General. Supplying ModulePath selects only its configured
 tag; omitting ModulePath returns the complete inventory for maintenance.
 Only General can use the legacy validation subscription when the pool is unset.

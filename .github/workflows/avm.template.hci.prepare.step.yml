@@ -43,7 +43,7 @@ jobs:
         env:
           MODULE_PATH: ${{ inputs.modulePath }}
           TEST_CASE: ${{ inputs.testCase }}
-          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
         run: |
           $ErrorActionPreference = 'Stop'
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
@@ -67,7 +67,7 @@ jobs:
           HCI_RECREATE: ${{ inputs.recreate }}
           HCI_MAINTENANCE: ${{ inputs.maintenance }}
           HCI_RUN_IDENTITY: ${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}
-          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
           VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
           CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
           AVM_CI_VARIABLES: ${{ toJSON(vars) }}

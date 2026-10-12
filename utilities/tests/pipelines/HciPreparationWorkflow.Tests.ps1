@@ -85,9 +85,9 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         }
     }
 
-    It 'Uses the canonical VALIDATE pool before the alias, without transporting resource identities as cross-job outputs' {
+    It 'Uses variable overrides before secrets, without transporting resource identities as cross-job outputs' {
         $selector = $step.jobs.job_hci_prepare_step.steps | Where-Object id -EQ subscription
-        $selector.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
+        $selector.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
         $selector.run | Should -Match 'Get-HciTestSubscription'
         $step.jobs.job_hci_prepare_step.Contains('outputs') | Should -BeFalse
         $invoke = $step.jobs.job_hci_prepare_step.steps | Where-Object { $_.name -eq 'Advance the recorded preparation operation' }
@@ -100,7 +100,7 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $history = Get-Content (Join-Path $workflowRoot 'platform.deployment.history.cleanup.yml') -Raw | ConvertFrom-Yaml
         foreach ($name in @('job_cleanup_subscription_deployments', 'job_cleanup_managementGroup_deployments')) {
             $select = $history.jobs[$name].steps | Where-Object id -EQ 'get-test-subscriptions'
-            $select.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
+            $select.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
             $select.run | Should -Not -Match '-ModulePath'
             $login = $history.jobs[$name].steps | Where-Object { $_.uses -like 'azure/login@*' }
             $login.with.'client-id' | Should -Be '${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}'

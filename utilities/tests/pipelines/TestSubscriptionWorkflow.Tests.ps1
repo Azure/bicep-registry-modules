@@ -7,6 +7,11 @@ param(
 Describe 'Test subscription workflow integration' {
 
     BeforeDiscovery {
+        $forkRoutingCases = foreach ($workflowName in @('avm.template.module', 'avm.template.module.preview', 'avm.template.module.publish')) {
+            foreach ($settingFamily in @('canonical', 'legacy variable alias')) {
+                @{ workflowName = $workflowName; settingFamily = $settingFamily }
+            }
+        }
         $routingCases = foreach ($workflowName in @('avm.template.module', 'avm.template.module.preview', 'avm.template.module.publish')) {
             foreach ($repository in @('Azure/bicep-registry-modules', 'contributor/bicep-registry-modules')) {
                 foreach ($modulePath in @('avm/res/dev-test-lab/lab', 'avm/res/example/unlisted', 'avm/res/example/new-module')) {
@@ -68,8 +73,8 @@ Describe 'Test subscription workflow integration' {
             'VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID', 'MANAGEMENT_GROUP_ID', 'CI_KEY_VAULT_NAME'
         )
 
-        $poolExpression = '${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
-        $managementGroupExpression = '${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.ARM_MGMTGROUP_ID }}'
+        $poolExpression = '${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
+        $managementGroupExpression = '${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}'
 
         function Resolve-TestSettingExpression {
             param([string] $Expression, [hashtable] $Context)
@@ -105,8 +110,7 @@ Describe 'Test subscription workflow integration' {
             }
             $env:DISPLAY_SUBSCRIPTION_NAMES = [string] (
                 -not [string]::IsNullOrEmpty($Context['vars.VALIDATE_SUBSCRIPTION_IDS']) -or
-                ([string]::IsNullOrEmpty($Context['secrets.VALIDATE_SUBSCRIPTION_IDS']) -and
-                    -not [string]::IsNullOrEmpty($Context['vars.TEST_SUBSCRIPTION_IDS']))
+                -not [string]::IsNullOrEmpty($Context['vars.TEST_SUBSCRIPTION_IDS'])
             )
         }
 
@@ -203,7 +207,7 @@ Describe 'Test subscription workflow integration' {
         $initializationStep.uses | Should -Be './.github/actions/templates/avm-getModuleDeploymentMatrix'
         $initializationStep.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
         $initializationStep.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}'
-        $initializationStep.with.displaySubscriptionNames | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS != '''' || (secrets.VALIDATE_SUBSCRIPTION_IDS == '''' && vars.TEST_SUBSCRIPTION_IDS != '''') }}'
+        $initializationStep.with.displaySubscriptionNames | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS != '''' || vars.TEST_SUBSCRIPTION_IDS != '''' }}'
         $initializer.steps[0].uses | Should -Match '^actions/checkout@'
         $initializer.steps[1].uses | Should -Be './.github/actions/templates/avm-setEnvironment'
         $initializer.if | Should -Match "deploymentValidation == 'true'"
@@ -327,8 +331,8 @@ Describe 'Test subscription workflow integration' {
         @{ workflowName = 'avm.template.module.publish' }
     ) {
         foreach ($source in @(
-                'vars.VALIDATE_SUBSCRIPTION_IDS', 'secrets.VALIDATE_SUBSCRIPTION_IDS',
-                'vars.TEST_SUBSCRIPTION_IDS', 'secrets.TEST_SUBSCRIPTION_IDS',
+                'vars.VALIDATE_SUBSCRIPTION_IDS', 'vars.TEST_SUBSCRIPTION_IDS',
+                'secrets.VALIDATE_SUBSCRIPTION_IDS', 'secrets.TEST_SUBSCRIPTION_IDS',
                 'vars.VALIDATE_SUBSCRIPTION_ID', 'secrets.VALIDATE_SUBSCRIPTION_ID'
             )) {
             Clear-Content -Path $env:GITHUB_OUTPUT
@@ -458,6 +462,68 @@ Describe 'Test subscription workflow integration' {
         $env:CI_KEY_VAULT_NAME | Should -Be 'contributor-vault'
     }
 
+    It 'Uses complete <settingFamily> fork settings in <workflowName> without upstream identity constraints' -ForEach $forkRoutingCases {
+        $forkPool = @(
+            @{ id = '99999999-9999-9999-9999-999999999999'; name = 'fork-one'; tag = 'General' }
+            @{ id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'; name = 'fork-two' }
+        )
+        $forkJson = ConvertTo-Json -InputObject $forkPool -Compress
+        $routingContext['github.repository'] = 'customer/own-module-fork'
+        $routingContext['vars.VALIDATE_SUBSCRIPTION_IDS'] = $forkJson
+        $routingContext['vars.VALIDATE_SUBSCRIPTION_ID'] = $forkPool[0].id
+        $routingContext['vars.VALIDATE_CLIENT_ID'] = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
+        $routingContext['vars.VALIDATE_TENANT_ID'] = 'cccccccc-cccc-cccc-cccc-cccccccccccc'
+        $routingContext['vars.VALIDATE_MANAGEMENT_GROUP_ID'] = 'fork-management-group'
+        if ($settingFamily -eq 'legacy variable alias') {
+            $routingContext.Remove('vars.VALIDATE_SUBSCRIPTION_IDS')
+            $routingContext.Remove('vars.VALIDATE_MANAGEMENT_GROUP_ID')
+            $routingContext['vars.TEST_SUBSCRIPTION_IDS'] = $forkJson
+            $routingContext['vars.ARM_MGMTGROUP_ID'] = 'fork-management-group'
+        }
+
+        Set-TestInitializationEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
+        . ([scriptblock]::Create($matrixStep.run))
+        $matrix = @((Get-StepOutput).deploymentMatrix | ConvertFrom-Json -AsHashtable)
+        $matrix.Count | Should -Be 2
+        foreach ($entry in $matrix) {
+            $entry.subscriptionName | Should -Be $forkPool[$entry.subscriptionIndex].name
+            Clear-Content -Path $env:GITHUB_OUTPUT
+            Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
+            $env:PRESELECTED_SUBSCRIPTION_INDEX = [string] $entry.subscriptionIndex
+            $env:PRESELECTED_SUBSCRIPTION_KEY = $entry.subscriptionKey
+            . ([scriptblock]::Create($selectionStep.run))
+            (Get-StepOutput).subscriptionId | Should -Be $forkPool[$entry.subscriptionIndex].id
+            $env:VALIDATE_CLIENT_ID | Should -Be 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
+            $env:VALIDATE_TENANT_ID | Should -Be 'cccccccc-cccc-cccc-cccc-cccccccccccc'
+            $env:MANAGEMENT_GROUP_ID | Should -Be 'fork-management-group'
+        }
+        Should -Invoke Invoke-WebRequest -Times 0 -Exactly
+        Should -Invoke Invoke-RestMethod -Times 0 -Exactly
+    }
+
+    It 'Keeps all deployment, preparation, PSRule and history settings on the agreed precedence' {
+        $poolBindings = 0
+        $groupBindings = 0
+        foreach ($file in @(
+                'avm.template.module.yml', 'avm.template.module.preview.yml',
+                'avm.template.module.publish.yml', 'avm.template.module.deployment.yml',
+                'avm.template.hci.consumer.yml', 'avm.template.hci.prepare.step.yml',
+                'platform.hci.prepare.yml', 'platform.deployment.history.cleanup.yml'
+            )) {
+            $source = Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' $file) -Raw
+            foreach ($binding in [regex]::Matches($source, '\$\{\{ vars\.VALIDATE_SUBSCRIPTION_IDS \|\|[^}]+\}\}')) {
+                $binding.Value | Should -Be $poolExpression
+                $poolBindings++
+            }
+            foreach ($binding in [regex]::Matches($source, '\$\{\{ vars\.VALIDATE_MANAGEMENT_GROUP_ID \|\|[^}]+\}\}')) {
+                $binding.Value | Should -Be $managementGroupExpression
+                $groupBindings++
+            }
+        }
+        $poolBindings | Should -Be 16
+        $groupBindings | Should -Be 14
+    }
+
     It 'Supports identifiers supplied only as secrets in <workflowName>' -ForEach @(
         @{ workflowName = 'avm.template.module' }
         @{ workflowName = 'avm.template.module.preview' }
@@ -494,15 +560,15 @@ Describe 'Test subscription workflow integration' {
         $env:VALIDATE_TENANT_ID | Should -Be 'variable-tenant'
     }
 
-    It 'Prefers canonical variables and secrets before either legacy alias in <workflowName>' -ForEach @(
+    It 'Prefers variables across aliases, then canonical secrets, then legacy secrets in <workflowName>' -ForEach @(
         @{ workflowName = 'avm.template.module' }
         @{ workflowName = 'avm.template.module.preview' }
         @{ workflowName = 'avm.template.module.publish' }
     ) {
         foreach ($expected in @(
-                @{ removePool = 'vars.VALIDATE_SUBSCRIPTION_IDS'; removeGroup = 'vars.VALIDATE_MANAGEMENT_GROUP_ID'; id = '66666666-6666-6666-6666-666666666666'; group = 'secret-management-group' }
-                @{ removePool = 'secrets.VALIDATE_SUBSCRIPTION_IDS'; removeGroup = 'secrets.VALIDATE_MANAGEMENT_GROUP_ID'; id = '55555555-5555-5555-5555-555555555555'; group = 'variable-alias-group' }
-                @{ removePool = 'vars.TEST_SUBSCRIPTION_IDS'; removeGroup = 'vars.ARM_MGMTGROUP_ID'; id = '77777777-7777-7777-7777-777777777777'; group = 'secret-alias-group' }
+                @{ removePool = 'vars.VALIDATE_SUBSCRIPTION_IDS'; removeGroup = 'vars.VALIDATE_MANAGEMENT_GROUP_ID'; id = '55555555-5555-5555-5555-555555555555'; group = 'variable-alias-group' }
+                @{ removePool = 'vars.TEST_SUBSCRIPTION_IDS'; removeGroup = 'vars.ARM_MGMTGROUP_ID'; id = '66666666-6666-6666-6666-666666666666'; group = 'secret-management-group' }
+                @{ removePool = 'secrets.VALIDATE_SUBSCRIPTION_IDS'; removeGroup = 'secrets.VALIDATE_MANAGEMENT_GROUP_ID'; id = '77777777-7777-7777-7777-777777777777'; group = 'secret-alias-group' }
                 @{ removePool = 'secrets.TEST_SUBSCRIPTION_IDS'; removeGroup = 'secrets.ARM_MGMTGROUP_ID'; id = '88888888-8888-8888-8888-888888888888'; group = '' }
             )) {
             $routingContext.Remove($expected.removePool)
@@ -530,6 +596,7 @@ Describe 'Test subscription workflow integration' {
                 $invalidContext = $routingContext.Clone()
                 if ($source -eq 'secrets') {
                     $invalidContext.Remove('vars.VALIDATE_SUBSCRIPTION_IDS')
+                    $invalidContext.Remove('vars.TEST_SUBSCRIPTION_IDS')
                 }
                 $invalidContext["$source.VALIDATE_SUBSCRIPTION_IDS"] = $invalidPool
                 Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $invalidContext
@@ -538,6 +605,21 @@ Describe 'Test subscription workflow integration' {
                 { . ([scriptblock]::Create($selectionStep.run)) } | Should -Throw
                 (Get-StepOutput).Count | Should -Be 0
             }
+        }
+    }
+
+    It 'Rejects a malformed preferred fork variable alias despite a valid canonical secret in <workflowName>' -ForEach @(
+        @{ workflowName = 'avm.template.module' }
+        @{ workflowName = 'avm.template.module.preview' }
+        @{ workflowName = 'avm.template.module.publish' }
+    ) {
+        $routingContext.Remove('vars.VALIDATE_SUBSCRIPTION_IDS')
+        foreach ($invalidPool in @('[invalid', ' ', '[]')) {
+            $routingContext['vars.TEST_SUBSCRIPTION_IDS'] = $invalidPool
+            Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
+            $env:TEST_SUBSCRIPTION_IDS | Should -BeExactly $invalidPool
+            { . ([scriptblock]::Create($selectionStep.run)) } | Should -Throw
+            (Get-StepOutput).Count | Should -Be 0
         }
     }
 

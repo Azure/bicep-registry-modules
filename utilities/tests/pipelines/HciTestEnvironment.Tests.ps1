@@ -147,6 +147,19 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         $context.GroupIds.Values | Sort-Object -Unique | Should -HaveCount 4
     }
 
+    It 'Accepts a fork-owned tenant and subscription without an upstream publisher identity' {
+        $script:current.Subscription.Id = '99999999-9999-9999-9999-999999999999'
+        $script:current.Tenant.Id = 'cccccccc-cccc-cccc-cccc-cccccccccccc'
+        $inputObject.SubscriptionId = $script:current.Subscription.Id
+        $inputObject.TenantId = $script:current.Tenant.Id
+        $forkContext = Get-HciEnvironmentContext @inputObject
+        $forkContext.Tags['avm-tenant'] | Should -Be $script:current.Tenant.Id
+        $forkContext.Tags['avm-subscription'] | Should -Be $script:current.Subscription.Id
+        foreach ($id in $forkContext.GroupIds.Values) {
+            $id | Should -BeLike "/subscriptions/$($script:current.Subscription.Id)/resourceGroups/*"
+        }
+    }
+
     It 'Treats a supplied image as external and excludes gallery groups from ownership' {
         $external = '/subscriptions/33333333-3333-3333-3333-333333333333/resourceGroups/external/providers/Microsoft.Compute/galleries/external/images/host/versions/1.2.3'
         $context = Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId $external

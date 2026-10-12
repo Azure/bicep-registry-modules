@@ -57,7 +57,7 @@ jobs:
       queue: max
     env:
       TOKEN_NAMEPREFIX: ${{ inputs.tokenNamePrefix || secrets.TOKEN_NAMEPREFIX }}
-      ARM_MGMTGROUP_ID: ${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.ARM_MGMTGROUP_ID }}
+      ARM_MGMTGROUP_ID: ${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}
       CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
     steps:
       - name: "Checkout"
@@ -76,13 +76,13 @@ jobs:
           deploymentMetadataLocation: "WestEurope"
           subscriptionIndex: ${{ fromJson(inputs.testCase).subscriptionIndex }}
           subscriptionKey: ${{ fromJson(inputs.testCase).subscriptionKey }}
-          managementGroupId: ${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.ARM_MGMTGROUP_ID }}
+          managementGroupId: ${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}
           removeDeployment: "true"
           customLocation: ${{ fromJson(inputs.workflowInput).customLocation }}
           githubVariables: ${{ toJSON(vars) }}
           githubSecrets: ${{ toJSON(secrets) }}
         env:
-          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
           VALIDATE_CLIENT_ID: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
           VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
           VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
