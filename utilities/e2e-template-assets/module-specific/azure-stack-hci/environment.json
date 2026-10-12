@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "location": "southeastasia",
+  "location": "australiaeast",
   "controlResourceGroupName": "rg-avm-ci-azure-local-control",
   "foundationResourceGroupName": "rg-avm-ci-azure-local-foundation",
   "imageResourceGroupName": "rg-avm-ci-azure-local-image",

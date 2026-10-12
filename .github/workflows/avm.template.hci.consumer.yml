@@ -32,21 +32,9 @@ jobs:
             throw 'Reserved Azure Local consumers require cleanup. Retained or uncertain test resources block reuse.'
           }
 
-  job_prepare_environment:
-    name: "Prepare shared dependencies"
-    needs: job_check_cleanup
-    permissions:
-      contents: read
-      id-token: write
-    uses: ./.github/workflows/avm.template.hci.prepare.yml
-    with:
-      modulePath: ${{ inputs.modulePath }}
-      testCase: ${{ inputs.testCase }}
-    secrets: inherit
-
   job_module_deploy_validation:
     name: "Deploy [${{ fromJson(inputs.testCase).name }}] on [${{ fromJson(inputs.testCase).subscriptionName }}]"
-    needs: job_prepare_environment
+    needs: job_check_cleanup
     environment: avm-validation
     runs-on: ubuntu-latest
     permissions:

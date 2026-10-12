@@ -3,6 +3,7 @@ param ([string] $RepoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Par
 Describe 'Reserved Azure Local environment ownership and readiness' {
     BeforeAll {
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
+        . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciPreparationStep.ps1')
         function Get-AzContext {}
         function Set-AzContext { param ($SubscriptionId) }
         function Invoke-AzRestMethod { param ($Method, $Path, $Payload) }
@@ -14,7 +15,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         function Add-Group($Id, $Tags) {
             $script:resources[$Id] = @{
                 id = $Id
-                location = 'southeastasia'
+                location = $context.Config.location
                 tags = $Tags.Clone()
                 properties = @{ provisioningState = 'Succeeded' }
             }
@@ -38,8 +39,8 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
                 id = $context.ImageVersionResourceId
                 properties = @{
                     provisioningState = 'Succeeded'
-                    publishingProfile = @{ excludeFromLatest = $false; targetRegions = @(@{ name = 'southeastasia' }) }
-                    replicationStatus = @{ summary = @(@{ region = 'southeastasia'; state = 'Completed' }) }
+                    publishingProfile = @{ excludeFromLatest = $false; targetRegions = @(@{ name = $context.Config.location }) }
+                    replicationStatus = @{ summary = @(@{ region = $context.Config.location; state = 'Completed' }) }
                 }
             }
         }
@@ -97,6 +98,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         }
         Mock Start-Sleep {}
         Mock Get-AzResourceGroupDeployment { @() }
+        Mock New-AzSubscriptionDeployment { throw 'Unexpected image deployment in offline test.' }
         Mock Invoke-AzRestMethod {
             $id = ($Path -split '\?')[0]
             if ($Method -eq 'GET') {
@@ -123,6 +125,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             throw "Unexpected ARM write [$Method] in offline test."
         }
         Mock New-AzResourceGroup {
+            $Location | Should -BeExactly $context.Config.location
             Add-Group "/subscriptions/$($script:current.Subscription.Id)/resourceGroups/$Name" $Tag
         }
         Mock Update-AzTag {
@@ -140,11 +143,28 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
     }
 
     It 'Uses explicit reserved-subscription identities and distinct CI-owned groups' {
+        $context.Config.location | Should -BeExactly 'australiaeast'
         $context.OwnedGroupIds.Count | Should -Be 3
         $context.ImageVersionResourceId | Should -Match '^/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-avm-ci-azure-local-image/'
         $context.ImageVersionResourceId | Should -Not -Match 'persistent'
         $context.Tags.lifecycle | Should -Be 'tenant-persistent'
         $context.GroupIds.Values | Sort-Object -Unique | Should -HaveCount 4
+    }
+
+    It 'Rejects an unsupported shared environment region before resource access' -ForEach @(
+        @{ unsupportedLocation = 'southeastasia' }
+        @{ unsupportedLocation = 'Australia East' }
+        @{ unsupportedLocation = 'AUSTRALIAEAST' }
+        @{ unsupportedLocation = '' }
+    ) {
+        $script:unsupportedConfig = $context.Config.Clone()
+        $script:unsupportedConfig.location = $unsupportedLocation
+        Mock Get-Content { $script:unsupportedConfig | ConvertTo-Json } -ParameterFilter { $LiteralPath -like '*environment.json' }
+
+        { Get-HciEnvironmentContext @inputObject } | Should -Throw '*Unsupported Azure Local environment contract*'
+
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
     }
 
     It 'Accepts a fork-owned tenant and subscription without an upstream publisher identity' {
@@ -220,8 +240,20 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
     ) {
         Add-Registry -State Idle
         $script:resources[$context.GroupIds.foundation].tags[$tag] = 'unexpected'
-        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) } | Should -Throw '*will not be adopted*'
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true } | Should -Throw '*will not be adopted*'
         Should -Invoke Update-AzTag -Times 0 -Exactly
+        $script:deleted.Count | Should -Be 0
+    }
+
+    It 'Rejects an owned group outside the shared region without adopting or moving it' {
+        Add-Registry -State Idle
+        $script:resources[$context.GroupIds.foundation].location = 'southeastasia'
+
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true } |
+            Should -Throw '*registered location*'
+
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
         $script:deleted.Count | Should -Be 0
     }
 
@@ -237,10 +269,31 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         $script:deleted.Count | Should -Be 0
     }
 
-    It 'Never permits a consumer to opt into recreation' {
-        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Recreate:$true } |
-            Should -Throw '*explicit manual maintenance*'
+    It 'Never permits provisioning outside dedicated setup, including recreation' -ForEach @(
+        @{ recreate = $false }
+        @{ recreate = $true }
+    ) {
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Recreate:$recreate } |
+            Should -Throw '*platform.hci.prepare.yml*'
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+    }
+
+    It 'Rejects the <stage> preparation entry point without explicit maintenance before resolving resources' -ForEach @(
+        @{ stage = 'Begin' }
+        @{ stage = 'ImageObserve' }
+        @{ stage = 'FoundationStart' }
+        @{ stage = 'FoundationObserve' }
+        @{ stage = 'Ready' }
+    ) {
+        { Invoke-HciPreparationStep -Stage $stage -RepoRootPath $RepoRootPath `
+                -ModulePath 'avm/res/azure-stack-hci/logical-network' -TestCase @{} -TestSubscriptionIds '[]' `
+                -TenantId $context.TenantId -RunIdentity 'offline' -SourceCommit ('b' * 40) } |
+            Should -Throw '*platform.hci.prepare.yml*'
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke Update-AzTag -Times 0 -Exactly
     }
 
     It 'Creates only absent registered groups for a read-only external image' {
@@ -248,7 +301,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         $context = Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId $external
         Add-ReadyImage
 
-        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40)
+        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true
 
         Should -Invoke New-AzResourceGroup -Times 2 -Exactly
         $script:resources[$context.GroupIds.control].tags['avm-image-state'] | Should -Be 'Ready'
@@ -258,8 +311,24 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
 
     It 'Refuses to adopt a pre-existing group when no registry exists' {
         Add-Group $context.GroupIds.foundation $context.Tags
-        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) } | Should -Throw '*Unregistered resource group*'
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true } | Should -Throw '*Unregistered resource group*'
         Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+    }
+
+    It 'Rejects a read-only external image without an Australia East replica before acquiring ownership' {
+        $external = '/subscriptions/33333333-3333-3333-3333-333333333333/resourceGroups/external/providers/Microsoft.Compute/galleries/external/images/host/versions/1.2.3'
+        $context = Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId $external
+        Add-Registry -State Idle -FoundationState Ready
+        Add-ReadyImage
+        $image = $script:resources[$external].properties
+        $image.publishingProfile.targetRegions[0].name = 'southeastasia'
+        $image.replicationStatus.summary[0].region = 'southeastasia'
+
+        { Enter-HciEnvironmentTest -Context $context } | Should -Throw '*platform.hci.prepare.yml*not usable*'
+
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
     }
 
     It 'Validates an external image before any opted-in recreation or ownership change' {
@@ -303,7 +372,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
     It 'Reuses ready images without deploying, building or destroying anything' {
         Add-Registry -State Idle
         Add-ReadyImage
-        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40)
+        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true
 
         $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Preparing'
         Should -Invoke New-AzResourceGroup -Times 0 -Exactly
@@ -338,7 +407,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         Add-Registry -State Idle
         Add-ReadyImage
         $script:resources[$context.ImageVersionResourceId].properties.replicationStatus.summary[0].state = 'Failed'
-        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) } | Should -Throw '*not usable*'
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true } | Should -Throw '*not usable*'
         $script:deleted.Count | Should -Be 0
         $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Preparing'
     }
@@ -381,12 +450,61 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
     }
 
     It 'Keeps cluster-under-test consumers image-only and does not require or return a persistent cluster' {
-        Add-Registry
+        Add-Registry -State Idle
         Add-ReadyImage
         $result = Enter-HciEnvironmentTest -Context $context -ImageOnly:$true
         $result.Foundation | Should -BeNullOrEmpty
         $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'InUse'
+        $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -Be $context.Owner
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Path -like '*Microsoft.AzureStackHCI/clusters*' }
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
+    }
+
+    It 'Rejects a missing or <state> environment with setup guidance and no provisioning or ownership changes' -ForEach @(
+        @{ state = 'missing' }
+        @{ state = 'Preparing' }
+        @{ state = 'Recreating' }
+        @{ state = 'InUse' }
+        @{ state = 'Failed' }
+        @{ state = 'image not ready' }
+        @{ state = 'foundation not ready' }
+        @{ state = 'stale ownership' }
+        @{ state = 'incompatible contract' }
+        @{ state = 'missing Kubernetes readiness' }
+    ) {
+        if ($state -ne 'missing') {
+            Add-Registry -State Idle -FoundationState Ready
+            Add-ReadyImage
+            Add-ReadyFoundation
+            $tags = $script:resources[$context.GroupIds.control].tags
+            switch ($state) {
+                'image not ready' { $tags['avm-image-state'] = 'Failed' }
+                'foundation not ready' { $tags['avm-foundation-state'] = 'Provisioned' }
+                'stale ownership' { $tags['avm-active-owner'] = 'c' * 64 }
+                'incompatible contract' { $tags['avm-contract'] = 'unexpected' }
+                'missing Kubernetes readiness' { $tags['avm-kubernetes-version'] = '' }
+                default { $tags['avm-state'] = $state }
+            }
+        }
+
+        { Enter-HciEnvironmentTest -Context $context } | Should -Throw '*platform.hci.prepare.yml*'
+
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
+    }
+
+    It 'Does not refresh Kubernetes readiness while the environment is <state>' -ForEach @(
+        @{ state = 'Idle' }
+        @{ state = 'InUse' }
+    ) {
+        Add-Registry -State $state -FoundationState Ready
+        { Get-HciEnvironmentReadiness -Context $context -RefreshKubernetes } |
+            Should -Throw '*setup ownership*'
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
     }
 
     It 'Refuses to release test ownership without confirmed cleanup' {
@@ -396,14 +514,40 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
     }
 
     It 'Retains ownership through test cleanup and releases only afterward' {
-        Add-Registry -FoundationState Ready
+        Add-Registry -State Idle -FoundationState Ready
         Add-ReadyImage
         Add-ReadyFoundation
-        $null = Enter-HciEnvironmentTest -Context $context
+        $result = Enter-HciEnvironmentTest -Context $context
+        $result.ImageVersionResourceId | Should -Be $context.ImageVersionResourceId
+        $result.Foundation.customLocationResourceId | Should -Match '/Microsoft.ExtendedLocation/customLocations/'
+        $result.Foundation.kubernetesVersion | Should -Be '1.32.6'
         $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'InUse'
+        $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -Be $context.Owner
+        Should -Invoke Update-AzTag -Times 1 -Exactly
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
         Exit-HciEnvironment -Context $context -CleanupConfirmed:$true
         $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Idle'
         $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -BeNullOrEmpty
+    }
+
+    It 'Releases completed manual setup for an independently owned test without preparing again' {
+        Add-Registry -FoundationState Ready
+        Add-ReadyImage
+        Add-ReadyFoundation
+        Exit-HciEnvironment -Context $context -Maintenance:$true
+        $inputObject.Owner = 'd' * 64
+        $consumerContext = Get-HciEnvironmentContext @inputObject
+
+        $result = Enter-HciEnvironmentTest -Context $consumerContext
+
+        $result.ImageVersionResourceId | Should -Be $context.ImageVersionResourceId
+        $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'InUse'
+        $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -Be $consumerContext.Owner
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
     }
 
     It 'Does not submit a foundation for a pending image or missing existing credentials' {
@@ -417,12 +561,16 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
 
     It 'Records a new owned image operation durably and observes it from a fresh context without resubmitting' {
         Mock New-AzSubscriptionDeployment {
+            $Location | Should -BeExactly $context.Config.location
+            $TemplateParameterObject.location | Should -BeExactly $context.Config.location
+            $TemplateParameterObject.buildLocation | Should -BeExactly $context.Config.location
+            $TemplateParameterObject.replicationRegions | Should -Be @($context.Config.location)
             $TemplateParameterObject.useScopedContributorRole | Should -BeTrue
             $TemplateParameterObject.createResourceGroup | Should -BeFalse
             $TemplateParameterObject.tags.lifecycle | Should -Be 'tenant-persistent'
             $script:resources[$context.ImageTemplateResourceId] = @{
                 id = $context.ImageTemplateResourceId
-                location = 'southeastasia'
+                location = $context.Config.location
                 properties = @{ lastRunStatus = @{ startTime = '2025-01-01T00:00:00Z'; runState = 'Succeeded' } }
             }
             [pscustomobject] @{ ProvisioningState = 'Succeeded' }
@@ -435,11 +583,11 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             [pscustomobject] @{
                 StatusCode = 202
                 Content = '{}'
-                Headers = @{ 'Azure-AsyncOperation' = "https://management.azure.com/subscriptions/$($context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/southeastasia/operations/55555555-5555-5555-5555-555555555555?api-version=2025-10-01" }
+                Headers = @{ 'Azure-AsyncOperation' = "https://management.azure.com/subscriptions/$($context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/$($context.Config.location)/operations/55555555-5555-5555-5555-555555555555?api-version=2025-10-01" }
             }
         } -ParameterFilter { $Method -eq 'POST' }
 
-        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40)
+        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true
 
         $tags = $script:resources[$context.GroupIds.control].tags
         $tags['avm-image-state'] | Should -Be 'Running'
@@ -458,6 +606,10 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         $tags['avm-image-deadline'] | Should -Be $deadline
         Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
         Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter {
+            $Method -eq 'GET' -and
+            $Path -eq "/subscriptions/$($context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/$($context.Config.location)/operations/55555555-5555-5555-5555-555555555555?api-version=2025-10-01"
+        }
     }
 
     It 'Submits one foundation with a recorded correlation ID and reuses it after readiness' {
@@ -476,6 +628,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         }
         Mock Invoke-AzRestMethod {
             $payloadObject = $Payload | ConvertFrom-Json -AsHashtable
+            $payloadObject.properties.parameters.location.value | Should -BeExactly $context.Config.location
             $payloadObject.properties.parameters.hciHostImageReferenceId.value | Should -Be $context.ImageVersionResourceId
             $payloadObject.properties.parameters.generation.value | Should -Be 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
             Add-ReadyFoundation

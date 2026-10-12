@@ -16,6 +16,10 @@ function Invoke-HciPreparationStep {
         [bool] $Maintenance = $false
     )
 
+    if (-not $Maintenance) {
+        throw 'Shared Azure Local preparation is available only through the dedicated setup workflow [platform.hci.prepare.yml].'
+    }
+
     . (Join-Path $PSScriptRoot 'HciTestEnvironment.ps1')
     $subscription = Get-HciTestSubscription -ModulePath $ModulePath -TestSubscriptionIds $TestSubscriptionIds `
         -SubscriptionIndex $TestCase.subscriptionIndex -SubscriptionKey $TestCase.subscriptionKey -RepoRootPath $RepoRootPath
@@ -30,7 +34,6 @@ function Invoke-HciPreparationStep {
     }
     $context = Get-HciEnvironmentContext -RepoRootPath $RepoRootPath -SubscriptionId $subscription.id -TenantId $TenantId `
         -Owner (Get-HciEnvironmentKey -Value "$RunIdentity|$ModulePath|$($TestCase.path)") -HciHostImageReferenceId $externalImageId
-    $imageOnly = $ModulePath -ceq 'avm/res/azure-stack-hci/cluster' -and -not $Maintenance
     if ($Stage -eq 'Begin') {
         foreach ($name in @('arbLocalAdminAndDeploymentUserPass', 'arbDeploymentAppId', 'arbDeploymentSPObjectId', 'arbDeploymentServicePrincipalSecret')) {
             if (-not $parameters.ContainsKey($name) -or $parameters[$name].Length -eq 0) {
@@ -59,21 +62,21 @@ function Invoke-HciPreparationStep {
             Wait-HciEnvironmentImage -Context $context -SourceCommit $SourceCommit
         }
         'FoundationStart' {
-            if (-not $imageOnly -and -not $parameters.builtInServicePrincipalObjectId) {
+            if (-not $parameters.builtInServicePrincipalObjectId) {
                 $servicePrincipals = @(Get-AzADServicePrincipal -ApplicationId '1412d89f-b8a8-4111-b4fd-e82905cbd85d' -ErrorAction Stop)
                 if ($servicePrincipals.Count -ne 1 -or -not $servicePrincipals[0].Id) {
                     throw 'The existing Azure Stack HCI resource-provider service principal could not be resolved.'
                 }
                 $parameters.builtInServicePrincipalObjectId = $servicePrincipals[0].Id
             }
-            Start-HciEnvironmentFoundation -Context $context -Parameters $parameters -ImageOnly:$imageOnly
+            Start-HciEnvironmentFoundation -Context $context -Parameters $parameters
         }
         'FoundationObserve' {
-            Wait-HciEnvironmentFoundation -Context $context -ImageOnly:$imageOnly
+            Wait-HciEnvironmentFoundation -Context $context
         }
         'Ready' {
-            $result = Get-HciEnvironmentReadiness -Context $context -ImageOnly:$imageOnly -RefreshKubernetes
-            if ($Maintenance) { Exit-HciEnvironment -Context $context -Maintenance:$true }
+            $result = Get-HciEnvironmentReadiness -Context $context -RefreshKubernetes
+            Exit-HciEnvironment -Context $context -Maintenance:$true
             return $result
         }
     }

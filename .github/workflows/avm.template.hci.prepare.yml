@@ -38,6 +38,7 @@ jobs:
       stage: ImageObserve
       modulePath: ${{ inputs.modulePath }}
       testCase: ${{ inputs.testCase }}
+      maintenance: ${{ inputs.maintenance }}
     secrets: inherit
 
   job_image_wait_2:
@@ -48,6 +49,7 @@ jobs:
       stage: ImageObserve
       modulePath: ${{ inputs.modulePath }}
       testCase: ${{ inputs.testCase }}
+      maintenance: ${{ inputs.maintenance }}
     secrets: inherit
 
   job_image_wait_3:
@@ -58,6 +60,7 @@ jobs:
       stage: ImageObserve
       modulePath: ${{ inputs.modulePath }}
       testCase: ${{ inputs.testCase }}
+      maintenance: ${{ inputs.maintenance }}
     secrets: inherit
 
   job_foundation_start:

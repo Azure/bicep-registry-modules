@@ -67,7 +67,7 @@ function Get-HciEnvironmentContext {
     $assetRoot = Join-Path $RepoRootPath 'utilities' 'e2e-template-assets' 'module-specific' 'azure-stack-hci'
     $configText = Get-Content -LiteralPath (Join-Path $assetRoot 'environment.json') -Raw -ErrorAction Stop
     $config = ConvertFrom-Json -InputObject $configText -AsHashtable -ErrorAction Stop
-    if ($config.version -cne '1' -or $config.location -cne 'southeastasia' -or
+    if ($config.version -cne '1' -or $config.location -cne 'australiaeast' -or
         $config.imageVersion -cnotmatch '^\d+\.\d+\.\d+$' -or
         $config.imageTimeoutMinutes -ne 570 -or $config.foundationTimeoutMinutes -ne 660) {
         throw 'Unsupported Azure Local environment contract.'
@@ -312,8 +312,8 @@ function Start-HciEnvironmentPreparation {
         [bool] $Maintenance = $false
     )
 
-    if ($Recreate -and -not $Maintenance) {
-        throw 'Recreation is available only through explicit manual maintenance, never an on-demand test consumer.'
+    if (-not $Maintenance) {
+        throw 'Shared Azure Local provisioning is available only through the dedicated setup workflow [platform.hci.prepare.yml].'
     }
     if (-not $PSCmdlet.ShouldProcess($Context.GroupIds.control, ($Recreate ? 'Acquire and recreate the registered environment' : 'Acquire and prepare the registered environment'))) {
         throw 'Environment preparation was not performed.'
@@ -583,7 +583,14 @@ function Get-HciEnvironmentReadiness {
         [switch] $RefreshKubernetes
     )
 
-    $registry = Get-HciEnvironmentRegistry -Context $Context -RequireOwner
+    $registry = Get-HciEnvironmentRegistry -Context $Context
+    if ($RefreshKubernetes -and
+        ($registry.tags['avm-state'] -cne 'Preparing' -or $registry.tags['avm-active-owner'] -cne $Context.Owner)) {
+        throw 'Kubernetes readiness refresh requires active setup ownership.'
+    }
+    if ($registry.tags['avm-state'] -cne 'Idle' -or $registry.tags['avm-active-owner']) {
+        $registry = Get-HciEnvironmentRegistry -Context $Context -RequireOwner
+    }
     if ($registry.tags['avm-image-state'] -cne 'Ready') { throw 'The image is not ready.' }
     Assert-HciImageReady -Context $Context
     foreach ($id in $Context.OwnedGroupIds) { $null = Get-HciOwnedGroup -Context $Context -ResourceId $id }
@@ -669,11 +676,28 @@ function Enter-HciEnvironmentTest {
         [bool] $ImageOnly = $false
     )
 
-    $registry = Get-HciEnvironmentRegistry -Context $Context -RequireOwner
-    if ($registry.tags['avm-state'] -cne 'Preparing') { throw 'Only a prepared environment can begin a test.' }
-    $result = Get-HciEnvironmentReadiness -Context $Context -ImageOnly:$ImageOnly
-    Set-HciEnvironmentState -Context $Context -Values @{ 'avm-state' = 'InUse' }
-    return $result
+    try {
+        $registry = Get-HciEnvironmentRegistry -Context $Context -AllowNotFound
+        if ($null -eq $registry) { throw 'The reserved environment has not been set up.' }
+        if ($registry.tags['avm-state'] -cne 'Idle' -or $registry.tags['avm-active-owner']) {
+            throw 'The reserved environment is not idle; unfinished setup, tests or cleanup must be resolved first.'
+        }
+        if ($registry.tags['avm-image-state'] -cne 'Ready' -or
+            (-not $ImageOnly -and $registry.tags['avm-foundation-state'] -cne 'Ready')) {
+            throw 'The required shared image or foundation is not ready.'
+        }
+        $result = Get-HciEnvironmentReadiness -Context $Context -ImageOnly:$ImageOnly
+        Set-HciEnvironmentState -Context $Context -Acquire -Values @{
+            'avm-state'        = 'InUse'
+            'avm-active-owner' = $Context.Owner
+        }
+        return $result
+    } catch [System.Management.Automation.RuntimeException] {
+        throw [System.InvalidOperationException]::new(
+            "The shared Azure Local environment cannot be used. Run the dedicated setup workflow [platform.hci.prepare.yml] after resolving this state: $($_.Exception.Message)",
+            $_.Exception
+        )
+    }
 }
 
 function Exit-HciEnvironment {

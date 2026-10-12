@@ -26,6 +26,7 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
             }
         }
         $assetRoot = Join-Path $RepoRootPath 'utilities' 'e2e-template-assets' 'module-specific' 'azure-stack-hci'
+        $environment = Get-Content (Join-Path $assetRoot 'environment.json') -Raw | ConvertFrom-Json -AsHashtable
         foreach ($file in @('foundation.bicep', 'hciHostGalleryBuilder.bicep', 'test-key-vault.bicep')) {
             $output = Join-Path $TestDrive "$file.json"
             $diagnostics = bicep build (Join-Path $assetRoot $file) --no-restore --outfile $output 2>&1
@@ -34,13 +35,13 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         }
     }
 
-    It 'Holds one cross-module environment lock around preparation, tests and cleanup while preserving existing locks' {
+    It 'Serializes setup and consumers on the same cross-module environment lock while preserving existing locks' {
         $wrapper = $deployment.jobs.job_hci_environment
         $wrapper.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).environmentConcurrencyGroup }}'
         $wrapper.concurrency.queue | Should -Be 'max'
         $wrapper.concurrency.Contains('cancel-in-progress') | Should -BeFalse
         $wrapper.uses | Should -Be './.github/workflows/avm.template.hci.consumer.yml'
-        $consumer.jobs.job_module_deploy_validation.needs | Should -Be 'job_prepare_environment'
+        $consumer.jobs.job_module_deploy_validation.needs | Should -Be 'job_check_cleanup'
         $consumer.jobs.job_module_deploy_validation.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
         $deployment.jobs.job_module_deploy_validation.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
         $manual.jobs.job_prepare_environment.concurrency.group | Should -Be '${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}'
@@ -63,10 +64,31 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
     It 'Defaults recreation off and exposes it only through manual preparation' {
         $manual.on.workflow_dispatch.inputs.recreate.default | Should -BeFalse
         $prepare.on.workflow_call.inputs.recreate.default | Should -BeFalse
-        $consumer.jobs.job_prepare_environment.with.Contains('recreate') | Should -BeFalse
+        $consumer.jobs.Contains('job_prepare_environment') | Should -BeFalse
         $manual.jobs.job_prepare_environment.with.maintenance | Should -BeTrue
-        $consumer.jobs.job_prepare_environment.needs | Should -Be 'job_check_cleanup'
         $consumer.jobs.job_check_cleanup.steps[0].run | Should -Match 'require cleanup'
+    }
+
+    It 'Allows shared provisioning only from dedicated manual setup, never from ordinary consumers' {
+        @($manual.on.Keys) | Should -Be @('workflow_dispatch')
+        $manual.jobs.job_prepare_environment.uses | Should -Be './.github/workflows/avm.template.hci.prepare.yml'
+        $manual.jobs.job_prepare_environment.with.maintenance | Should -BeTrue
+        foreach ($job in $prepare.jobs.Values) {
+            $job.with.maintenance | Should -Be '${{ inputs.maintenance }}'
+        }
+        foreach ($file in Get-ChildItem $workflowRoot -Filter '*.yml') {
+            $workflow = Get-Content $file.FullName -Raw | ConvertFrom-Yaml
+            foreach ($job in $workflow.jobs.Values) {
+                if ($job.uses -eq './.github/workflows/avm.template.hci.prepare.yml') {
+                    $file.Name | Should -Be 'platform.hci.prepare.yml'
+                }
+            }
+        }
+        $consumerText = $consumer | ConvertTo-Json -Depth 30
+        $consumerText | Should -Not -Match 'avm\.template\.hci\.prepare|Invoke-HciPreparationStep|Start-HciEnvironment|RefreshKubernetes'
+        $deployScript = ($action.runs.steps | Where-Object id -EQ deploy_step).with.inlineScript
+        $deployScript | Should -Not -Match 'Invoke-HciPreparationStep|Start-HciEnvironment|RefreshKubernetes|Initialize-KubernetesVersionReadiness'
+        $deployScript | Should -Match 'Enter-HciEnvironmentTest'
     }
 
     It 'Splits long operations into dedicated hosted-runner jobs with explicit ordered handoffs' {
@@ -149,6 +171,74 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
                     Should -Match "parameters\('preparedHciEnvironment'\)"
             }
         }
+    }
+
+    It 'Compiles every reserved fixture from the Australia East shared configuration' {
+        $environment.location | Should -BeExactly 'australiaeast'
+        foreach ($path in @($compiled.Keys | Where-Object { $_ -like '*/main.test.bicep' })) {
+            $source = Get-Content (Join-Path $RepoRootPath $path) -Raw
+            $source | Should -Match ([regex]::Escape("loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')"))
+            $template = $compiled[$path]
+            if ($template.parameters.Contains('enforcedLocation')) {
+                $location = $template.parameters.enforcedLocation.defaultValue
+                $template.resources.resourceGroup.location | Should -Be "[parameters('enforcedLocation')]"
+            } else {
+                $location = $template.variables.enforcedLocation
+                $template.resources.resourceGroup.location | Should -Be "[variables('enforcedLocation')]"
+            }
+            if ($location -match "^\[variables\('(?<variable>[^']+)'\)\]$") {
+                $location = $template.variables[$Matches.variable]
+            }
+            $location | Should -BeExactly $environment.location
+            Get-ParameterExpression $template.resources.nestedDependencies.properties.parameters.location |
+                Should -Be $template.resources.resourceGroup.location
+        }
+        foreach ($name in @('dependencies', 'cluster', 'network')) {
+            Get-ParameterExpression $compiled['foundation.bicep'].resources[$name].properties.parameters.location |
+                Should -Be "[parameters('location')]"
+        }
+        Get-ParameterExpression $compiled['foundation.bicep'].resources.dependencies.properties.template.resources.hciHostDeployment.properties.parameters.hostVMSize |
+            Should -Be 'Standard_E48bds_v5'
+    }
+
+    It 'Keeps the compiled shared-region fixtures routed to reserved001 without changing generic pools' {
+        . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleDeploymentMatrix.ps1')
+        . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+        Mock bicep {
+            $key = [IO.Path]::GetRelativePath($RepoRootPath, $args[1]).Replace('\', '/')
+            if (-not $compiled.ContainsKey($key)) { throw "Unexpected matrix compilation [$key]." }
+            $global:LASTEXITCODE = 0
+            $compiled[$key] | ConvertTo-Json -Depth 100 -Compress
+        }
+        $pool = @(
+            @{ id = '11111111-1111-1111-1111-111111111111'; name = 'sub-avm-test-001'; tag = 'Azure Local' }
+            @{ id = '22222222-2222-2222-2222-222222222222'; name = 'sub-avm-test-002' }
+        ) | ConvertTo-Json -Compress
+        $reservedKey = (Get-TestSubscriptionList -FallbackSubscriptionId '11111111-1111-1111-1111-111111111111').key
+        foreach ($root in $roots) {
+            $files = @($compiled.Keys | Where-Object { $_ -like "$root/*/main.test.bicep" } | ForEach-Object {
+                    @{
+                        path = $_.Substring($root.Length + 1)
+                        name = Split-Path (Split-Path $_) -Leaf
+                        e2eIgnore = $false
+                    }
+                })
+            $matrix = Get-ModuleDeploymentMatrix -ModulePath $root -TestFilePaths $files -TestSubscriptionIds $pool `
+                -RandomSeed 42 -DisplaySubscriptionNames -RepoRoot $RepoRootPath
+            $matrix.testCases.Count | Should -Be $files.Count
+            foreach ($test in $matrix.testCases) {
+                $test.subscriptionIndex | Should -Be 0
+                $test.subscriptionName | Should -Be 'sub-avm-test-001'
+                $test.subscriptionKey | Should -Be $reservedKey
+                $test.environmentConcurrencyGroup | Should -Be "avm-hci-$reservedKey"
+                $test.concurrencyGroup | Should -Be "avm-deploy-$root-$reservedKey"
+                $test.e2eIgnore | Should -BeFalse
+            }
+        }
+        $general = @(Get-TestSubscriptionList -TestSubscriptionIds $pool -ModulePath 'avm/res/storage/storage-account' -RepoRootPath $RepoRootPath)
+        $general.Count | Should -Be 1
+        $general[0].index | Should -Be 1
+        $general[0].name | Should -Be 'sub-avm-test-002'
     }
 
     It 'Keeps AKS SSH-key resources and allocations in the disposable test group' {

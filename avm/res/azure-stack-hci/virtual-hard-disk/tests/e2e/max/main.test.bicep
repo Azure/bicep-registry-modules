@@ -42,8 +42,7 @@ param arbDeploymentSPObjectId string = ''
 #disable-next-line secure-parameter-default
 param arbDeploymentServicePrincipalSecret string = ''
 
-#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'southeastasia'
+var enforcedLocation = loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')
 
 var customLocationName = '${namePrefix}${serviceShort}-location'
 
