@@ -525,6 +525,213 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
     }
 
+    Context 'Captured Application Gateway capacity relocation' -Tag 'ApplicationGatewayRegional' {
+        BeforeEach {
+            $script:regionalError = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'fixtures' 'application-gateway-regional-error.json') -Raw |
+                ConvertFrom-Json -AsHashtable
+            $script:regions = @('swedencentral', 'westeurope', 'northeurope')
+            $script:vnetId = $script:regionalError.error.details[0].target
+            $script:incidentMessage = "The deployment '{0}' failed with error(s). " +
+            '(Code: ApplicationGatewayAllocationFailureDueToCapacityInZone)'
+            Mock Get-AzResourceGroupDeployment {
+                if ($Name -eq 'dependencies') {
+                    $script:records[$script:nestedId].State = 'Failed'
+                    $script:records[$script:nestedId].Operations[0].properties.provisioningState = 'Failed'
+                    $script:records[$script:nestedId].Operations[0].properties.statusMessage = $script:regionalError
+                }
+                Get-FixtureStatus $Name resourcegroup $ResourceGroupName '' $DefaultProfile
+            }
+        }
+
+        It 'Removes the gateway, group and nested/root history before validating or submitting another region' {
+            Mock Test-AzSubscriptionDeployment {
+                if ($resourceLocation -eq 'westeurope') {
+                    $script:alive.Count | Should -Be 0
+                    $script:records.ContainsKey($script:nestedId) | Should -BeFalse
+                    $script:records.ContainsKey($script:roots[0]) | Should -BeFalse
+                }
+                Invoke-FixtureValidation $TemplateFile $resourceLocation $baseTime $adminSecret
+            }
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            @($script:validations) | Should -Be @('swedencentral', 'westeurope')
+            @($script:submissions) | Should -Be @('swedencentral', 'westeurope')
+            $result.DeploymentAttempts | Should -Be 2
+            $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+            $root = $script:roots[0]
+            foreach ($traceEntry in @("state:$root", "GET:$script:nestedId/operations", "remove:$script:groupId", "GET:$script:groupId", "DELETE:$root", "GET:$root")) {
+                $script:trace | Should -Contain $traceEntry
+            }
+            $script:trace.IndexOf("state:$root") | Should -BeLessThan $script:trace.IndexOf("remove:$script:groupId")
+            $script:trace.IndexOf("GET:$script:nestedId/operations") | Should -BeLessThan $script:trace.IndexOf("remove:$script:groupId")
+            $script:trace.IndexOf("remove:$script:groupId") | Should -BeLessThan $script:trace.LastIndexOf("GET:$script:groupId")
+            $script:trace.LastIndexOf("GET:$script:groupId") | Should -BeLessThan $script:trace.IndexOf("DELETE:$root")
+            $script:trace.IndexOf("DELETE:$root") | Should -BeLessThan $script:trace.LastIndexOf("GET:$root")
+            $script:trace.LastIndexOf("GET:$root") | Should -BeLessThan $script:trace.IndexOf('validate:westeurope')
+            $script:trace.IndexOf('validate:westeurope') | Should -BeLessThan $script:trace.IndexOf('submit:westeurope')
+            $templateInput.AdditionalParameters.resourceLocation | Should -BeExactly ''
+            Should -Invoke New-AzSubscriptionDeployment -Times 2 -Exactly -ParameterFilter { $Location -eq 'WestEurope' }
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Preserves independent limits of <regionLimit> regions and <deploymentLimit> submissions without same-region replay' -ForEach @(
+            @{ regionLimit = 3; deploymentLimit = 3 }, @{ regionLimit = 1; deploymentLimit = 3 }
+            @{ regionLimit = 2; deploymentLimit = 3 }, @{ regionLimit = 3; deploymentLimit = 2 }
+            @{ regionLimit = 3; deploymentLimit = 1 }
+        ) {
+            $script:outcomes = @('Regional', 'Regional', 'Regional')
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput -RegionLimit $regionLimit -DeploymentLimit $deploymentLimit
+            $attempts = [Math]::Min($regionLimit, $deploymentLimit)
+
+            $result.Exception | Should -Match 'ApplicationGatewayAllocationFailureDueToCapacityInZone'
+            $result.DeploymentAttempts | Should -Be $attempts
+            $result.AttemptedLocations | Should -Be @($script:regions | Select-Object -First $attempts)
+            @($script:submissions) | Should -Be $result.AttemptedLocations
+            @($script:validations) | Should -Be $result.AttemptedLocations
+            $result.RemainingDeploymentNames | Should -Be @($script:names[-1])
+            Should -Invoke Remove-AzResource -Times ($attempts - 1) -Exactly -ParameterFilter { $ResourceId -eq $script:groupId }
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Never relocates capacity failures with <restriction>' -ForEach @(
+            @{ restriction = 'custom location' }, @{ restriction = 'CI location' }, @{ restriction = 'token location' }
+            @{ restriction = 'retained resources' }, @{ restriction = 'global resources' }
+            @{ restriction = 'resource-group scope' }, @{ restriction = 'no movable input' }
+        ) {
+            switch ($restriction) {
+                'custom location' { $retryInput.CustomLocation = 'swedencentral' }
+                'CI location' { $templateInput.AdditionalParameters.resourceLocation = 'swedencentral' }
+                'token location' { $retryInput.TokenResourceLocation = 'Sweden Central' }
+                'retained resources' { $retryInput.RemoveDeployment = $false }
+                'global resources' { Mock Get-AvailableResourceLocation { @{ Location = 'swedencentral'; IsGlobal = $true } } }
+                'resource-group scope' {
+                    $template.'$schema' = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+                    $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+                }
+                'no movable input' {
+                    $template.variables.Remove('regionToken')
+                    $templateInput.AdditionalParameters.Remove('resourceLocation')
+                    $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'ApplicationGatewayAllocationFailureDueToCapacityInZone'
+            $script:submissions.Count | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Requires an authoritative Failed root rather than <state>' -ForEach @(
+            @{ state = 'Running' }, @{ state = 'Accepted' }, @{ state = 'Canceled' }
+            @{ state = 'Succeeded' }, @{ state = 'Unknown' }, @{ state = '' }
+        ) {
+            Mock Get-AzDeployment { @{ DeploymentName = $Name; ProvisioningState = $state } }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'no retry is safe'
+            $script:submissions.Count | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        }
+
+        It 'Retains cleanup ownership and blocks relocation when <failure>' -ForEach @(
+            @{ failure = 'group removal fails'; expected = 'removal failed' }
+            @{ failure = 'gateway and group remain'; expected = 'still exists after cleanup' }
+            @{ failure = 'history deletion fails'; expected = 'record removal failed' }
+            @{ failure = 'history remains'; expected = 'record .* still exists after cleanup' }
+        ) {
+            switch ($failure) {
+                'group removal fails' { Mock Remove-AzResource { throw 'Removal failed.' } }
+                'gateway and group remain' { Mock Remove-AzResource {} }
+                'history deletion fails' {
+                    Mock Invoke-AzRestMethod {
+                        if ($Method -eq 'DELETE') { return New-FixtureResponse -StatusCode 403 -Content @{ error = @{ code = 'AuthorizationFailed' } } }
+                        Invoke-FixtureRest $Method $Path
+                    }
+                }
+                'history remains' {
+                    Mock Invoke-AzRestMethod {
+                        if ($Method -eq 'DELETE') { return New-FixtureResponse -StatusCode 202 }
+                        Invoke-FixtureRest $Method $Path
+                    }
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'ApplicationGatewayAllocationFailureDueToCapacityInZone'
+            $result.Exception | Should -Match $expected
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $script:submissions.Count | Should -Be 1
+            $script:validations.Count | Should -Be 1
+            $script:records.ContainsKey($script:roots[0]) | Should -BeTrue
+        }
+
+        It 'Rejects <proof> cleanup confirmation before relocation' -ForEach @(
+            @{ proof = 'null' }, @{ proof = 'empty' }, @{ proof = 'wrong name' }
+        ) {
+            Mock Initialize-DeploymentRemoval {
+                $RequireCompleteRemoval | Should -BeTrue
+                $RequireNoDeploymentScripts | Should -BeFalse
+                switch ($proof) {
+                    'null' { return }
+                    'empty' { @{ RemovedDeploymentNames = @() } }
+                    'wrong name' { @{ RemovedDeploymentNames = @('another-deployment') } }
+                }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'Cleanup did not confirm removal'
+            $script:submissions.Count | Should -Be 1
+            $script:validations.Count | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+        }
+
+        It 'Rejects a later operation-page authorization failure before cleanup or replay' {
+            Mock Invoke-AzRestMethod {
+                $result = Invoke-FixtureRest $Method $Path
+                if ($Method -eq 'GET' -and $Path -like "$($script:roots[0])/operations?*") {
+                    $body = $result.Content | ConvertFrom-Json -AsHashtable
+                    if ($Path -like '*skiptoken*') {
+                        $body = @{ value = @(
+                                (New-FixtureOperation -Id $script:vnetId -State Failed -StatusMessage @{
+                                    error = @{ code = 'AuthorizationFailed'; message = 'Forbidden.' }
+                                })
+                            )
+                        }
+                    } else {
+                        $body.nextLink = "https://management.azure.com$Path&`$skiptoken=next"
+                    }
+                    $result.Content = $body | ConvertTo-Json -Depth 20 -Compress
+                }
+                return $result
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'ApplicationGatewayAllocationFailureDueToCapacityInZone'
+            $script:submissions.Count | Should -Be 1
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Path -like '*skiptoken*' }
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Propagates cancellation without querying, cleaning or replaying the capacity failure' {
+            $script:outcomes = @('Cancel', 'Succeeded')
+            { Invoke-TemplateDeploymentWithRetry @retryInput } | Should -Throw '*cancelled*'
+            $script:submissions.Count | Should -Be 1
+            Should -Invoke Get-AzDeployment -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+    }
+
     Context 'Regional service failure: <name>' -Tag 'ServiceRegional' -ForEach $serviceRegionalCases {
         BeforeEach {
             $script:regionalError = $response | ConvertTo-Json -Depth 20 | ConvertFrom-Json -AsHashtable

@@ -101,13 +101,16 @@ function Test-DeploymentRetryError {
     function Test-RegionalServiceError {
         param ([System.Collections.IDictionary] $Node, [string[]] $Targets)
 
+        $isApplicationGateway = $Node.code -ceq 'ApplicationGatewayAllocationFailureDueToCapacityInZone'
         if ($classification.HasUnclassifiedInformation -or [string]::IsNullOrWhiteSpace($ResourceLocation) -or
             ($ResourceLocation -replace '\s', '') -ieq 'global' -or
-            $Node.Contains('details') -or $Node.Contains('innererror')) {
+            ($Node.Contains('details') -and -not ($isApplicationGateway -and $Node.details -is [array] -and $Node.details.Count -eq 0)) -or
+            $Node.Contains('innererror')) {
             return $false
         }
         $isManagedEnvironment = $Node.code -ceq 'ManagedEnvironmentCapacityHeavyUsageError'
-        $provider = $isManagedEnvironment ? 'Microsoft\.App/managedEnvironments' : 'Microsoft\.Search/searchServices'
+        $provider = $isManagedEnvironment ? 'Microsoft\.App/managedEnvironments' :
+        ($isApplicationGateway ? 'Microsoft\.Network/applicationGateways' : 'Microsoft\.Search/searchServices')
         $prefix = '\A/subscriptions/' + [regex]::Escape([string] $SubscriptionId)
         $deploymentTarget = $prefix + '(?:/resourceGroups/[^/?#\s]+)?/providers/Microsoft\.Resources/deployments/[^/?#\s]+\z'
         $serviceTarget = $prefix + "/resourceGroups/[^/?#\s]+/providers/$provider/[^/?#\s]+\z"
@@ -121,7 +124,14 @@ function Test-DeploymentRetryError {
                 return $false
             }
         }
-        if ($isManagedEnvironment -and -not $serviceResourceId) { return $false }
+        if (($isManagedEnvironment -or $isApplicationGateway) -and -not $serviceResourceId) { return $false }
+        if ($isApplicationGateway) {
+            return $Node.message -ceq (
+                'We have a temporary capacity issue with Application Gateways in this region/zone. ' +
+                'Please retry after a few days or please try the operation in another region or zone. ' +
+                'For a list of Azure regions, refer to: https://azure.microsoft.com/en-us/global-infrastructure/regions/.'
+            )
+        }
 
         $regionPattern = '(?<region>[A-Za-z0-9]+(?: [A-Za-z0-9]+)*)'
         switch -CaseSensitive ($Node.code) {
@@ -363,7 +373,8 @@ function Test-DeploymentRetryError {
             -not [string]::IsNullOrWhiteSpace($Node.message) -and -not [string]::IsNullOrWhiteSpace($ResourceTarget) -and
             ($null -eq $Node.target -or ($Node.target -is [string] -and $Node.target -ieq $ResourceTarget))
         }
-        if ($Node.code -cin @('ResourcesForSkuUnavailable', 'InsufficientResourcesAvailable', 'BadRequest', 'ManagedEnvironmentCapacityHeavyUsageError') -and
+        if ($Node.code -cin @('ResourcesForSkuUnavailable', 'InsufficientResourcesAvailable', 'BadRequest', 'ManagedEnvironmentCapacityHeavyUsageError',
+                'ApplicationGatewayAllocationFailureDueToCapacityInZone') -and
             (Test-RegionalServiceError -Node $Node -Targets $Targets)) {
             $classification.HasRegionalServiceError = $true
             return $true
@@ -438,6 +449,7 @@ Classify wholly regional structured errors without overriding permission or canc
 .PARAMETER ResourceLocation
 Optional. Selected resource location. Provider availability, ML Cosmos, AKS preflight, Search and
 Container Apps capacity failures must name this region rather than a fixed secondary region.
+Application Gateway capacity requires a non-global location and a same-subscription gateway target.
 #>
 function Test-RegionalValidationError {
     [CmdletBinding()]
