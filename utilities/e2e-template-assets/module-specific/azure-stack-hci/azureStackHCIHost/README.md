@@ -47,10 +47,10 @@ To use this Bicep module, you'll need to download a copy then supply values for 
 
 ## Using this template for an end-to-end HCI cluster deployment in Azure
 
-To use this Bicep module, you'll need to download a copy then supply values for the required parameters. Follow these steps:
+This walkthrough deploys a standalone cluster. Shared CI infrastructure is prepared separately by `platform.hci.prepare.yml`; ordinary CI tests validate and use the prepared environment.
 
 1. Clone the repository with Git: `git clone https://github.com/Azure/bicep-registry-modules.git`
-1. Pick one of the E2E test templates in `avm\res\azure-stack-hci\cluster\tests\e2e`. NOTE: these templates all deploy to 'southeastasia' - to use another location, modify the `enforcedLocation` variable.
+1. Pick one of the E2E test templates in `avm\res\azure-stack-hci\cluster\tests\e2e`. Their `enforcedLocation` parameter defaults to the shared CI region in `utilities\e2e-template-assets\module-specific\azure-stack-hci\environment.json` (currently `australiaeast`). To choose another region for a standalone deployment, pass this parameter without changing the shared CI configuration.
 1. Create a parameter object in PowerShell to pass to the deployment. For example:
 
     ```powershell
@@ -60,8 +60,8 @@ To use this Bicep module, you'll need to download a copy then supply values for 
         'arbDeploymentSPObjectId'             = '4aceef22-f89f-42e8-8d8b-5aa3fb8fb57b'
         'arbDeploymentAppId'                  = '6e9515aa-715d-4a18-bdfe-463e8a004ffe'
         'hciResourceProviderObjectId'         = 'e44d5f5e-21c6-4b3a-b697-e1236d00b006'
-        'location'                            = 'southeastasia'
+        'enforcedLocation'                    = 'australiaeast'
         'deploymentPrefix'                    = -join ((97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
     }
     ```
-1. Execute the deployment. Example: `new-AzSubscriptionDeployment -TemplateFile C:\Users\mbratschun\repos\bicep-registry-modules\avm\res\azure-stack-hci\cluster\tests\e2e\2nodeswitched.defaults\main.test.bicep -TemplateParameterObject $templateParameterObjectBAMI24H2 -Location southeastasia`
+1. Execute the deployment. The command's `-Location` selects the subscription deployment metadata location, not the HCI resource region controlled by `enforcedLocation`. Example: `new-AzSubscriptionDeployment -TemplateFile C:\Users\mbratschun\repos\bicep-registry-modules\avm\res\azure-stack-hci\cluster\tests\e2e\2nodeswitched.defaults\main.test.bicep -TemplateParameterObject $templateParameterObjectBAMI24H2 -Location australiaeast`
