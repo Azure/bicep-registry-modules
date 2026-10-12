@@ -211,7 +211,7 @@ var formattedRoleAssignments = [
   })
 ]
 
-var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] =~ 'managedHSMs'
+var isHSMManagedCMK = (split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] ?? '') =~ 'managedHSMs'
 
 // Managed HSM key URIs follow the pattern 'https://<hsmName>.managedhsm.<cloudSuffix>/keys/<keyName>'
 var hsmKeyUri = 'https://${last(split(customerManagedKey.?keyVaultResourceId ?? '', '/'))}${replace(environment().suffixes.keyvaultDns, '.vault.', '.managedhsm.')}/keys/${customerManagedKey.?keyName ?? ''}'

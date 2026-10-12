@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13254121450477310057"
+      "templateHash": "9363350999420381505"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -2382,7 +2382,7 @@
       "SQL Server Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437')]",
       "SqlDb Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '189207d4-bb67-4208-a635-b06afe8b2c57')]"
     },
-    "isHSMManagedCMK": "[equals(toLower(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7)), toLower('managedHSMs'))]",
+    "isHSMManagedCMK": "[equals(toLower(coalesce(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), '')), toLower('managedHSMs'))]",
     "hsmKeyUri": "[format('https://{0}{1}/keys/{2}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/')), replace(environment().suffixes.keyvaultDns, '.vault.', '.managedhsm.'), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), ''))]",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -2726,7 +2726,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "18199753866016294793"
+              "templateHash": "17437556163071419284"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -3549,7 +3549,7 @@
             },
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-            "isHSMManagedCMK": "[equals(toLower(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7)), toLower('managedHSMs'))]",
+            "isHSMManagedCMK": "[equals(toLower(coalesce(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), '')), toLower('managedHSMs'))]",
             "hsmKeyUri": "[format('https://{0}{1}/keys/{2}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/')), replace(environment().suffixes.keyvaultDns, '.vault.', '.managedhsm.'), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), ''))]",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"

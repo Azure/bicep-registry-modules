@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "18199753866016294793"
+      "templateHash": "17437556163071419284"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database."
@@ -829,7 +829,7 @@
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "isHSMManagedCMK": "[equals(toLower(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7)), toLower('managedHSMs'))]",
+    "isHSMManagedCMK": "[equals(toLower(coalesce(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), '')), toLower('managedHSMs'))]",
     "hsmKeyUri": "[format('https://{0}{1}/keys/{2}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/')), replace(environment().suffixes.keyvaultDns, '.vault.', '.managedhsm.'), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), ''))]",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
