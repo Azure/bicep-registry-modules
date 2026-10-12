@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "6028455955455632749"
+      "templateHash": "14425966736350920421"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -3467,7 +3467,8 @@
         }
       },
       "dependsOn": [
-        "automationAccount"
+        "automationAccount",
+        "automationAccount_runbooks"
       ]
     },
     "automationAccount_sourceControlConfigurations": {

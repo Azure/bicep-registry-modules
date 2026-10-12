@@ -413,6 +413,9 @@ module automationAccount_webhook 'webhook/main.bicep' = [
       parameters: webhook.?parameters
       enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      automationAccount_runbooks
+    ]
   }
 ]
 

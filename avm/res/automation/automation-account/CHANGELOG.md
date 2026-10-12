@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added support for creating runtime environments and associating runbooks with them.
+- Fixed webhook deployment ordering to wait for runbook creation.
 
 ### Breaking Changes
 
