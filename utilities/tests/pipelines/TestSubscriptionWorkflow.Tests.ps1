@@ -48,6 +48,7 @@ Describe 'Test subscription workflow integration' {
         $matrixStep = $matrixAction.runs.steps | Where-Object { $_.id -eq 'deployment-matrix' }
         $cleanupPath = Join-Path $repoRootPath '.github' 'workflows' 'platform.deployment.history.cleanup.yml'
         $cleanupWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $cleanupPath -Raw)
+        $hciPreparationWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' 'platform.hci.prepare.yml') -Raw)
         $psrulePath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModulePSRule' 'action.yml'
         $psrule = ConvertFrom-Yaml -Yaml (Get-Content -Path $psrulePath -Raw)
         $ast = [System.Management.Automation.Language.Parser]::ParseInput($psrule.runs.steps[0].with.inlineScript, [ref] $null, [ref] $null)
@@ -63,12 +64,12 @@ Describe 'Test subscription workflow integration' {
             'SUBSCRIPTION_SELECTION_SEED', 'SUBSCRIPTION_JOB_INDEX', 'SELECTED_SUBSCRIPTION_ID',
             'PRESELECTED_SUBSCRIPTION_INDEX', 'PRESELECTED_SUBSCRIPTION_KEY',
             'MODULE_PATH', 'MODULE_TEST_FILE_PATHS', 'DISPLAY_SUBSCRIPTION_NAMES',
-            'TEST_SUBSCRIPTIONS', 'AVM_TEST_TENANT',
+            'TEST_SUBSCRIPTIONS', 'AVM_TEST_TENANT', 'SUBSCRIPTION_INDEX',
             'VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID', 'MANAGEMENT_GROUP_ID', 'CI_KEY_VAULT_NAME'
         )
 
-        $poolExpression = '${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
-        $managementGroupExpression = '${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}'
+        $poolExpression = '${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
+        $managementGroupExpression = '${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.ARM_MGMTGROUP_ID }}'
 
         function Resolve-TestSettingExpression {
             param([string] $Expression, [hashtable] $Context)
@@ -104,7 +105,8 @@ Describe 'Test subscription workflow integration' {
             }
             $env:DISPLAY_SUBSCRIPTION_NAMES = [string] (
                 -not [string]::IsNullOrEmpty($Context['vars.VALIDATE_SUBSCRIPTION_IDS']) -or
-                -not [string]::IsNullOrEmpty($Context['vars.TEST_SUBSCRIPTION_IDS'])
+                ([string]::IsNullOrEmpty($Context['secrets.VALIDATE_SUBSCRIPTION_IDS']) -and
+                    -not [string]::IsNullOrEmpty($Context['vars.TEST_SUBSCRIPTION_IDS']))
             )
         }
 
@@ -201,7 +203,7 @@ Describe 'Test subscription workflow integration' {
         $initializationStep.uses | Should -Be './.github/actions/templates/avm-getModuleDeploymentMatrix'
         $initializationStep.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
         $initializationStep.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}'
-        $initializationStep.with.displaySubscriptionNames | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS != '''' || vars.TEST_SUBSCRIPTION_IDS != '''' }}'
+        $initializationStep.with.displaySubscriptionNames | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS != '''' || (secrets.VALIDATE_SUBSCRIPTION_IDS == '''' && vars.TEST_SUBSCRIPTION_IDS != '''') }}'
         $initializer.steps[0].uses | Should -Match '^actions/checkout@'
         $initializer.steps[1].uses | Should -Be './.github/actions/templates/avm-setEnvironment'
         $initializer.if | Should -Match "deploymentValidation == 'true'"
@@ -325,8 +327,8 @@ Describe 'Test subscription workflow integration' {
         @{ workflowName = 'avm.template.module.publish' }
     ) {
         foreach ($source in @(
-                'vars.VALIDATE_SUBSCRIPTION_IDS', 'vars.TEST_SUBSCRIPTION_IDS',
-                'secrets.VALIDATE_SUBSCRIPTION_IDS', 'secrets.TEST_SUBSCRIPTION_IDS',
+                'vars.VALIDATE_SUBSCRIPTION_IDS', 'secrets.VALIDATE_SUBSCRIPTION_IDS',
+                'vars.TEST_SUBSCRIPTION_IDS', 'secrets.TEST_SUBSCRIPTION_IDS',
                 'vars.VALIDATE_SUBSCRIPTION_ID', 'secrets.VALIDATE_SUBSCRIPTION_ID'
             )) {
             Clear-Content -Path $env:GITHUB_OUTPUT
@@ -492,15 +494,15 @@ Describe 'Test subscription workflow integration' {
         $env:VALIDATE_TENANT_ID | Should -Be 'variable-tenant'
     }
 
-    It 'Prefers variables across aliases, then canonical secrets, then legacy secrets in <workflowName>' -ForEach @(
+    It 'Prefers canonical variables and secrets before either legacy alias in <workflowName>' -ForEach @(
         @{ workflowName = 'avm.template.module' }
         @{ workflowName = 'avm.template.module.preview' }
         @{ workflowName = 'avm.template.module.publish' }
     ) {
         foreach ($expected in @(
-                @{ removePool = 'vars.VALIDATE_SUBSCRIPTION_IDS'; removeGroup = 'vars.VALIDATE_MANAGEMENT_GROUP_ID'; id = '55555555-5555-5555-5555-555555555555'; group = 'variable-alias-group' }
-                @{ removePool = 'vars.TEST_SUBSCRIPTION_IDS'; removeGroup = 'vars.ARM_MGMTGROUP_ID'; id = '66666666-6666-6666-6666-666666666666'; group = 'secret-management-group' }
-                @{ removePool = 'secrets.VALIDATE_SUBSCRIPTION_IDS'; removeGroup = 'secrets.VALIDATE_MANAGEMENT_GROUP_ID'; id = '77777777-7777-7777-7777-777777777777'; group = 'secret-alias-group' }
+                @{ removePool = 'vars.VALIDATE_SUBSCRIPTION_IDS'; removeGroup = 'vars.VALIDATE_MANAGEMENT_GROUP_ID'; id = '66666666-6666-6666-6666-666666666666'; group = 'secret-management-group' }
+                @{ removePool = 'secrets.VALIDATE_SUBSCRIPTION_IDS'; removeGroup = 'secrets.VALIDATE_MANAGEMENT_GROUP_ID'; id = '55555555-5555-5555-5555-555555555555'; group = 'variable-alias-group' }
+                @{ removePool = 'vars.TEST_SUBSCRIPTION_IDS'; removeGroup = 'vars.ARM_MGMTGROUP_ID'; id = '77777777-7777-7777-7777-777777777777'; group = 'secret-alias-group' }
                 @{ removePool = 'secrets.TEST_SUBSCRIPTION_IDS'; removeGroup = 'secrets.ARM_MGMTGROUP_ID'; id = '88888888-8888-8888-8888-888888888888'; group = '' }
             )) {
             $routingContext.Remove($expected.removePool)
@@ -528,7 +530,6 @@ Describe 'Test subscription workflow integration' {
                 $invalidContext = $routingContext.Clone()
                 if ($source -eq 'secrets') {
                     $invalidContext.Remove('vars.VALIDATE_SUBSCRIPTION_IDS')
-                    $invalidContext.Remove('vars.TEST_SUBSCRIPTION_IDS')
                 }
                 $invalidContext["$source.VALIDATE_SUBSCRIPTION_IDS"] = $invalidPool
                 Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $invalidContext
@@ -648,6 +649,32 @@ Describe 'Test subscription workflow integration' {
         Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name -eq 'CI-adminSecret' -or $Name -eq 'CI-region' }
     }
 
+    It 'Rejects invalid or nonreserved manual original index [<index>] before acquiring an environment lock' -ForEach @(
+        @{ index = '-1' }
+        @{ index = '0.5' }
+        @{ index = '2147483648' }
+        @{ index = '' }
+        @{ index = '0' }
+    ) {
+        $env:TEST_SUBSCRIPTION_IDS = '[{"id":"11111111-1111-1111-1111-111111111111","name":"general"},{"id":"22222222-2222-2222-2222-222222222222","name":"reserved","tag":"Azure Local"}]'
+        $env:SUBSCRIPTION_INDEX = $index
+        $select = $hciPreparationWorkflow.jobs.job_select_subscription.steps | Where-Object id -EQ select
+        { . ([scriptblock]::Create($select.run)) } | Should -Throw
+        (Get-StepOutput).Count | Should -Be 0
+    }
+
+    It 'Uses the original index rather than the filtered position for manual preparation' {
+        $env:TEST_SUBSCRIPTION_IDS = '[{"id":"11111111-1111-1111-1111-111111111111","name":"general"},{"id":"22222222-2222-2222-2222-222222222222","name":"reserved","tag":"Azure Local"}]'
+        $env:SUBSCRIPTION_INDEX = '1'
+        $select = $hciPreparationWorkflow.jobs.job_select_subscription.steps | Where-Object id -EQ select
+        . ([scriptblock]::Create($select.run))
+        $testCase = (Get-StepOutput).testCase | ConvertFrom-Json
+        $testCase.subscriptionIndex | Should -Be 1
+        $expected = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS)[1]
+        $testCase.subscriptionKey | Should -Be $expected.key
+        $testCase.environmentConcurrencyGroup | Should -Be "avm-hci-$($expected.key)"
+    }
+
     It 'Uses the configured pool for both history cleanup logins' {
         foreach ($jobName in @('job_cleanup_subscription_deployments', 'job_cleanup_managementGroup_deployments')) {
             Clear-Content -Path $env:GITHUB_OUTPUT
@@ -657,7 +684,7 @@ Describe 'Test subscription workflow integration' {
 
             . ([scriptblock]::Create($poolStep.run))
 
-            $poolStep.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ vars.TEST_SUBSCRIPTION_IDS }}'
+            $poolStep.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
             $login.with.'subscription-id' | Should -Be '${{ steps.get-test-subscriptions.outputs.subscriptionId }}'
             (Get-StepOutput).subscriptionId | Should -Be $subscriptions[0].id
         }

@@ -1,0 +1,116 @@
+name: "avm.template.hci.prepare"
+
+on:
+  workflow_call:
+    inputs:
+      modulePath:
+        type: string
+        required: true
+      testCase:
+        type: string
+        required: true
+      maintenance:
+        type: boolean
+        default: false
+      recreate:
+        type: boolean
+        default: false
+
+permissions: {}
+
+jobs:
+  job_begin:
+    permissions: { contents: read, id-token: write }
+    uses: ./.github/workflows/avm.template.hci.prepare.step.yml
+    with:
+      stage: Begin
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ inputs.testCase }}
+      maintenance: ${{ inputs.maintenance }}
+      recreate: ${{ inputs.recreate }}
+    secrets: inherit
+
+  job_image_wait_1:
+    needs: job_begin
+    permissions: { contents: read, id-token: write }
+    uses: ./.github/workflows/avm.template.hci.prepare.step.yml
+    with:
+      stage: ImageObserve
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ inputs.testCase }}
+    secrets: inherit
+
+  job_image_wait_2:
+    needs: job_image_wait_1
+    permissions: { contents: read, id-token: write }
+    uses: ./.github/workflows/avm.template.hci.prepare.step.yml
+    with:
+      stage: ImageObserve
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ inputs.testCase }}
+    secrets: inherit
+
+  job_image_wait_3:
+    needs: job_image_wait_2
+    permissions: { contents: read, id-token: write }
+    uses: ./.github/workflows/avm.template.hci.prepare.step.yml
+    with:
+      stage: ImageObserve
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ inputs.testCase }}
+    secrets: inherit
+
+  job_foundation_start:
+    needs: job_image_wait_3
+    permissions: { contents: read, id-token: write }
+    uses: ./.github/workflows/avm.template.hci.prepare.step.yml
+    with:
+      stage: FoundationStart
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ inputs.testCase }}
+      maintenance: ${{ inputs.maintenance }}
+    secrets: inherit
+
+  job_foundation_wait_1:
+    needs: job_foundation_start
+    permissions: { contents: read, id-token: write }
+    uses: ./.github/workflows/avm.template.hci.prepare.step.yml
+    with:
+      stage: FoundationObserve
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ inputs.testCase }}
+      maintenance: ${{ inputs.maintenance }}
+    secrets: inherit
+
+  job_foundation_wait_2:
+    needs: job_foundation_wait_1
+    permissions: { contents: read, id-token: write }
+    uses: ./.github/workflows/avm.template.hci.prepare.step.yml
+    with:
+      stage: FoundationObserve
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ inputs.testCase }}
+      maintenance: ${{ inputs.maintenance }}
+    secrets: inherit
+
+  job_foundation_wait_3:
+    needs: job_foundation_wait_2
+    permissions: { contents: read, id-token: write }
+    uses: ./.github/workflows/avm.template.hci.prepare.step.yml
+    with:
+      stage: FoundationObserve
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ inputs.testCase }}
+      maintenance: ${{ inputs.maintenance }}
+    secrets: inherit
+
+  job_ready:
+    needs: job_foundation_wait_3
+    permissions: { contents: read, id-token: write }
+    uses: ./.github/workflows/avm.template.hci.prepare.step.yml
+    with:
+      stage: Ready
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ inputs.testCase }}
+      maintenance: ${{ inputs.maintenance }}
+    secrets: inherit

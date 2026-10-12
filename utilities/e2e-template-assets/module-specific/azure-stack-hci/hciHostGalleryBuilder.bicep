@@ -30,6 +30,12 @@ param imageVersion string = '26.1.0'
 @description('Optional. Name of the user-assigned managed identity used by Azure VM Image Builder.')
 param imageBuilderIdentityName string = 'id-avm-persistent-hci-image-builder'
 
+@description('Optional. Explicit, separately owned empty resource group for image-build staging. The caller creates and tags this group.')
+param stagingResourceGroupName string = ''
+
+@description('Optional. Use the built-in Contributor role at the owned gallery resource group instead of creating a subscription-level custom role.')
+param useScopedContributorRole bool = false
+
 @description('Optional. Name of the Azure VM Image Builder template. Use a new name when changing its build location.')
 param imageTemplateName string = 'hci-host-image-builder'
 
@@ -83,7 +89,7 @@ module imageAssets 'hciHostGalleryBuilder.assets.bicep' = {
   ]
 }
 
-resource imageBuilderRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
+resource imageBuilderRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = if (!useScopedContributorRole) {
   name: roleDefinitionName
   properties: {
     roleName: 'AVM HCI Image Builder Publisher (${uniqueString(resourceGroupResourceId, galleryName)})'
@@ -113,7 +119,21 @@ module imageBuilderRoleAssignment 'hciHostGalleryBuilder.rbac.bicep' = {
   scope: resourceGroupScope
   params: {
     principalId: imageAssets.outputs.imageBuilderPrincipalId
-    roleDefinitionResourceId: imageBuilderRoleDefinition.id
+    roleDefinitionResourceId: useScopedContributorRole
+      ? subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+      : imageBuilderRoleDefinition!.id
+  }
+}
+
+module stagingRoleAssignment 'hciHostGalleryBuilder.rbac.bicep' = if (!empty(stagingResourceGroupName)) {
+  name: 'hci-host-image-staging-rbac'
+  scope: resourceGroup(stagingResourceGroupName)
+  params: {
+    principalId: imageAssets.outputs.imageBuilderPrincipalId
+    roleDefinitionResourceId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    )
   }
 }
 
@@ -134,9 +154,13 @@ module imageTemplate 'hciHostGalleryBuilder.template.bicep' = {
     replicationRegions: replicationRegions
     sourceImage: sourceImage
     tags: tags
+    stagingResourceGroupResourceId: !empty(stagingResourceGroupName)
+      ? subscriptionResourceId('Microsoft.Resources/resourceGroups', stagingResourceGroupName)
+      : null
   }
   dependsOn: [
     imageBuilderRoleAssignment
+    stagingRoleAssignment
   ]
 }
 

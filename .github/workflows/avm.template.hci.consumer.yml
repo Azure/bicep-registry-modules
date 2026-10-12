@@ -1,0 +1,88 @@
+name: "avm.template.hci.consumer"
+
+on:
+  workflow_call:
+    inputs:
+      workflowInput:
+        type: string
+        required: true
+      modulePath:
+        type: string
+        required: true
+      testCase:
+        type: string
+        required: true
+      tokenNamePrefix:
+        type: string
+        required: false
+
+permissions: {}
+
+jobs:
+  job_check_cleanup:
+    name: "Require disposable test cleanup"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Check cleanup policy"
+        shell: pwsh
+        env:
+          REMOVE_DEPLOYMENT: ${{ fromJson(inputs.workflowInput).removeDeployment }}
+        run: |
+          if ($env:REMOVE_DEPLOYMENT -cne 'true') {
+            throw 'Reserved Azure Local consumers require cleanup. Retained or uncertain test resources block reuse.'
+          }
+
+  job_prepare_environment:
+    name: "Prepare shared dependencies"
+    needs: job_check_cleanup
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/avm.template.hci.prepare.yml
+    with:
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ inputs.testCase }}
+    secrets: inherit
+
+  job_module_deploy_validation:
+    name: "Deploy [${{ fromJson(inputs.testCase).name }}] on [${{ fromJson(inputs.testCase).subscriptionName }}]"
+    needs: job_prepare_environment
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ fromJson(inputs.testCase).concurrencyGroup }}
+      queue: max
+    env:
+      TOKEN_NAMEPREFIX: ${{ inputs.tokenNamePrefix || secrets.TOKEN_NAMEPREFIX }}
+      ARM_MGMTGROUP_ID: ${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.ARM_MGMTGROUP_ID }}
+      CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+        with:
+          removeDeployment: "true"
+      - name: "Run deployment validation"
+        uses: ./.github/actions/templates/avm-validateModuleDeployment
+        with:
+          modulePath: ${{ inputs.modulePath }}
+          templateFilePath: ${{ inputs.modulePath }}/${{ fromJson(inputs.testCase).path }}
+          deploymentMetadataLocation: "WestEurope"
+          subscriptionIndex: ${{ fromJson(inputs.testCase).subscriptionIndex }}
+          subscriptionKey: ${{ fromJson(inputs.testCase).subscriptionKey }}
+          managementGroupId: ${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.ARM_MGMTGROUP_ID }}
+          removeDeployment: "true"
+          customLocation: ${{ fromJson(inputs.workflowInput).customLocation }}
+          githubVariables: ${{ toJSON(vars) }}
+          githubSecrets: ${{ toJSON(secrets) }}
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_CLIENT_ID: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}

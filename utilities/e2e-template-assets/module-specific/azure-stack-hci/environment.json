@@ -1,0 +1,19 @@
+{
+  "version": "1",
+  "location": "southeastasia",
+  "controlResourceGroupName": "rg-avm-ci-azure-local-control",
+  "foundationResourceGroupName": "rg-avm-ci-azure-local-foundation",
+  "imageResourceGroupName": "rg-avm-ci-azure-local-image",
+  "stagingResourceGroupName": "rg-avm-ci-azure-local-image-build",
+  "galleryName": "galavmciazurelocal",
+  "imageDefinitionName": "hci-host-image",
+  "imageVersion": "26.1.0",
+  "imageTemplateName": "hci-host-image-builder",
+  "imageBuilderIdentityName": "id-avm-ci-azure-local-image-builder",
+  "clusterName": "avm-ci-azure-local",
+  "customLocationName": "avm-ci-azure-local-location",
+  "logicalNetworkName": "avm-ci-azure-local-network",
+  "deploymentName": "avm-ci-azure-local-foundation-v1",
+  "imageTimeoutMinutes": 570,
+  "foundationTimeoutMinutes": 660
+}

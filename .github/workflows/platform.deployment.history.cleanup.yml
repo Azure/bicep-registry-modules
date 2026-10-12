@@ -69,8 +69,8 @@ jobs:
         id: get-test-subscriptions
         shell: pwsh
         env:
-          TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
-          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
 
@@ -85,8 +85,8 @@ jobs:
       - name: Azure Login
         uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
         with:
-          client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
-          tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
+          client-id: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
           subscription-id: ${{ steps.get-test-subscriptions.outputs.subscriptionId }}
           enable-AzPSSession: true
 
@@ -134,8 +134,8 @@ jobs:
         id: get-test-subscriptions
         shell: pwsh
         env:
-          TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
-          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
 
@@ -149,8 +149,8 @@ jobs:
       - name: Azure Login
         uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
         with:
-          client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
-          tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
+          client-id: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
           subscription-id: ${{ steps.get-test-subscriptions.outputs.subscriptionId }}
           enable-AzPSSession: true
 
@@ -163,7 +163,7 @@ jobs:
 
             $mgmtGroupIdInput = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).customManagementGroupId }}'
 
-            foreach($mgmtGroupId in @('${{ secrets.ARM_MGMTGROUP_ID }}', 'bicep-lz-vending-automation-child')) {
+            foreach($mgmtGroupId in @('${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.ARM_MGMTGROUP_ID }}', 'bicep-lz-vending-automation-child')) {
               Write-Verbose "Processing mgmtGroupId [$mgmtGroupId]" -Verbose
               $functionInput = @{
                 ManagementGroupId            = $mgmtGroupId

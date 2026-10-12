@@ -246,7 +246,10 @@ function Remove-Deployment {
         [switch] $RequireCompleteRemoval,
 
         [Parameter()]
-        [switch] $RequireNoDeploymentScripts
+        [switch] $RequireNoDeploymentScripts,
+
+        [Parameter()]
+        [string[]] $ProtectedResourceIds = @()
     )
 
     begin {
@@ -326,6 +329,20 @@ function Remove-Deployment {
         }
 
         [array] $deployedTargetResources = $deployedTargetResources | Select-Object -Unique
+
+        foreach ($protectedId in $ProtectedResourceIds) {
+            if ([string]::IsNullOrWhiteSpace($protectedId) -or -not $protectedId.StartsWith('/subscriptions/', [StringComparison]::OrdinalIgnoreCase)) {
+                throw 'Cleanup protection requires explicit subscription-scoped resource IDs.'
+            }
+            foreach ($targetId in @($deployedTargetResources) + @($resolveResult.deploymentIds)) {
+                if ([string]::IsNullOrWhiteSpace($targetId)) { continue }
+                if ($targetId -ieq $protectedId -or
+                    $targetId.StartsWith("$protectedId/", [StringComparison]::OrdinalIgnoreCase) -or
+                    $protectedId.StartsWith("$targetId/", [StringComparison]::OrdinalIgnoreCase)) {
+                    throw "Cleanup includes protected persistent resource [$protectedId]; nothing will be removed."
+                }
+            }
+        }
 
         if ($RequireCompleteRemoval -and $resolveResult.resolveError) {
             throw "Complete cleanup discovery failed: $($resolveResult.resolveError)"

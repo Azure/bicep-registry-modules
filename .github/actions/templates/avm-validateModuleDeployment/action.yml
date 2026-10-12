@@ -384,6 +384,46 @@ runs:
             KeyVaultName        = $env:CI_KEY_VAULT_NAME
           }
           $ciParameters = Get-CIParameterMap @ciParameterInput
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionTag.ps1')
+          $hciContext = $null
+          if ((Get-TestSubscriptionTag -ModulePath '${{ inputs.modulePath }}' -RepoRootPath $env:GITHUB_WORKSPACE) -ceq 'Azure Local') {
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
+            $imageOnly = '${{ inputs.modulePath }}' -ceq 'avm/res/azure-stack-hci/cluster'
+            if (-not $imageOnly -and $moduleTemplatePossibleParameters -notcontains 'preparedHciEnvironment') {
+              throw 'This reserved test is not wired to consume the prepared foundation.'
+            }
+            $hciParameters = Get-HciEnvironmentParameterMap -GitHubVariables $env:AVM_CI_VARIABLES `
+              -GitHubSecrets $env:AVM_CI_SECRETS -KeyVaultName $env:CI_KEY_VAULT_NAME
+            $externalImageId = $hciParameters.hciHostImageReferenceId
+            if ($externalImageId -is [securestring]) {
+              $externalImageId = ([pscredential]::new('ci', $externalImageId)).GetNetworkCredential().Password
+            }
+            $relativeTestPath = '${{ inputs.templateFilePath }}'.Substring('${{ inputs.modulePath }}'.Length + 1)
+            $runIdentity = "$env:GITHUB_REPOSITORY|$env:GITHUB_RUN_ID|$env:GITHUB_RUN_ATTEMPT"
+            $owner = Get-HciEnvironmentKey -Value "$runIdentity|${{ inputs.modulePath }}|$relativeTestPath"
+            $hciContext = Get-HciEnvironmentContext -RepoRootPath $env:GITHUB_WORKSPACE -SubscriptionId $subscriptionId `
+              -TenantId $env:VALIDATE_TENANT_ID -Owner $owner -HciHostImageReferenceId $externalImageId
+            $testGroupName = "dep-avm-hci-$($owner.Substring(0, 20))"
+            if ($ciParameters.resourceGroupName -and $ciParameters.resourceGroupName -cne $testGroupName) {
+              throw 'Reserved Azure Local tests cannot override their per-run disposable resource group.'
+            }
+            $ciParameters.resourceGroupName = $testGroupName
+            $hciContext.TestResourceGroupId = "/subscriptions/$subscriptionId/resourceGroups/$testGroupName"
+            $hciResult = Enter-HciEnvironmentTest -Context $hciContext -ImageOnly:$imageOnly
+            $contextPath = Join-Path $env:RUNNER_TEMP "avm-hci-$owner.json"
+            $hciContext | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $contextPath -Encoding utf8
+            "hciContextFile=$contextPath" >> $env:GITHUB_OUTPUT
+            if ($moduleTemplatePossibleParameters -contains 'hciHostImageReferenceId') {
+              $ciParameters.hciHostImageReferenceId = ConvertTo-SecureString $hciResult.ImageVersionResourceId -AsPlainText -Force
+            }
+            if (-not $imageOnly) {
+              $ciParameters.preparedHciEnvironment = @{
+                customLocationResourceId = $hciResult.Foundation.customLocationResourceId
+                vSwitchName = $hciResult.Foundation.vSwitchName
+                kubernetesVersion = $hciResult.Foundation.kubernetesVersion
+              }
+            }
+          }
           $ciParameterFallbackInput = @{
             TemplateParameters = $moduleTemplateParameters
             ResolvedParameters = $ciParameters
@@ -409,6 +449,9 @@ runs:
             TokenResourceLocation = '${{ steps.replace-tokens.outputs.resourceLocation }}'
             RemoveDeployment      = '${{ inputs.removeDeployment }}' -eq 'true'
             DoNotThrow            = $true
+          }
+          if ($hciContext) {
+            $retryInput.ProtectedResourceIds = @($hciContext.GroupIds.control) + $hciContext.OwnedGroupIds + @($hciContext.ImageVersionResourceId)
           }
           $res = Invoke-TemplateDeploymentWithRetry @retryInput -Verbose
 
@@ -544,6 +587,7 @@ runs:
     # [Deployment removal] task(s)
     # ----------------------------
     - name: "Remove deployed resources"
+      id: remove-deployed-resources
       if: ${{ (success() || failure()) && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '' && env.skip_deployment_ci == 'false' }}
       uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
       with:
@@ -554,6 +598,13 @@ runs:
 
           # Load used function
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
+          $hciContext = $null
+          $contextPath = '${{ steps.deploy_step.outputs.hciContextFile }}'
+          if ($contextPath) {
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
+            $hciContext = Get-Content -LiteralPath $contextPath -Raw | ConvertFrom-Json -AsHashtable
+            $null = Get-HciEnvironmentRegistry -Context $hciContext -RequireOwner
+          }
 
           $functionInput = @{
             TemplateFilePath  = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
@@ -578,6 +629,13 @@ runs:
                 throw 'Pending deployment deletion metadata has no remaining deployment owner.'
               }
               Write-Verbose 'All submitted deployments were already completely removed.' -Verbose
+              if ($hciContext) {
+                . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'helper' 'Remove-Deployment.ps1')
+                if (-not (Test-CleanupResourceAbsent -ResourceId $hciContext.TestResourceGroupId)) {
+                  throw 'The disposable HCI test group still exists; the environment remains in use.'
+                }
+                Exit-HciEnvironment -Context $hciContext -CleanupConfirmed:$true
+              }
               Write-Output '::endgroup::'
               return
             }
@@ -594,6 +652,36 @@ runs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Initialize-DeploymentRemoval @functionInput
+          if ($hciContext) {
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'helper' 'Remove-Deployment.ps1')
+            $pendingNames = @()
+            foreach ($id in @($functionInput.PendingDeletionDeploymentIds)) {
+              $name = ($id -split '/')[-1]
+              if ($name -notin $functionInput.DeploymentNames -or
+                  $id -ine "/subscriptions/$($hciContext.SubscriptionId)/providers/Microsoft.Resources/deployments/$name") {
+                throw 'Pending HCI cleanup does not identify an original subscription-scoped test deployment.'
+              }
+              Wait-DeploymentRecordRemoval -DeploymentId $id
+              $pendingNames += $name
+            }
+            $functionInput.Remove('PendingDeletionDeploymentIds')
+            $functionInput.DeploymentNames = @($functionInput.DeploymentNames | Where-Object { $_ -notin $pendingNames })
+            $functionInput.PreflightRejectedDeploymentNames = @($functionInput.PreflightRejectedDeploymentNames | Where-Object { $_ -in $functionInput.DeploymentNames })
+            if ($functionInput.DeploymentNames.Count -gt 0) {
+              $functionInput.RequireCompleteRemoval = $true
+              $functionInput.ProtectedResourceIds = @($hciContext.GroupIds.control) + $hciContext.OwnedGroupIds + @($hciContext.ImageVersionResourceId)
+              $result = Initialize-DeploymentRemoval @functionInput
+              if ($null -eq $result -or @($result.RemovedDeploymentNames).Count -ne $functionInput.DeploymentNames.Count -or
+                  @(Compare-Object $result.RemovedDeploymentNames $functionInput.DeploymentNames).Count -gt 0) {
+                throw 'Test cleanup did not confirm every original deployment; the environment remains in use.'
+              }
+            }
+            if (-not (Test-CleanupResourceAbsent -ResourceId $hciContext.TestResourceGroupId)) {
+              throw 'The disposable HCI test group still exists; the environment remains in use.'
+            }
+            Exit-HciEnvironment -Context $hciContext -CleanupConfirmed:$true
+          } else {
+            Initialize-DeploymentRemoval @functionInput
+          }
 
           Write-Output '::endgroup::'

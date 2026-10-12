@@ -90,6 +90,7 @@ function Get-ModuleDeploymentMatrix {
             subscriptionKey   = ''
             subscriptionName  = 'Deployment disabled'
             concurrencyGroup  = "avm-deploy-$moduleKey-ignored-$([guid]::NewGuid().ToString('N'))"
+            environmentConcurrencyGroup = ''
         }
         if (-not $ignored) {
             $subscription = $subscriptions[$jobIndex % $subscriptions.Count]
@@ -97,6 +98,9 @@ function Get-ModuleDeploymentMatrix {
             $entry.subscriptionKey = $subscription.key
             $entry.subscriptionName = $DisplaySubscriptionNames ? $subscription.name : "Configured subscription $($subscription.index + 1)"
             $entry.concurrencyGroup = "avm-deploy-$moduleKey-$($subscription.key)"
+            if ($subscription.tag -ceq 'Azure Local') {
+                $entry.environmentConcurrencyGroup = "avm-hci-$($subscription.key)"
+            }
         }
         $entry
     })

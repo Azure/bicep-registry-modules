@@ -1,0 +1,539 @@
+param ([string] $RepoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.FullName)
+
+Describe 'Reserved Azure Local environment ownership and readiness' {
+    BeforeAll {
+        . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
+        function Get-AzContext {}
+        function Set-AzContext { param ($SubscriptionId) }
+        function Invoke-AzRestMethod { param ($Method, $Path, $Payload) }
+        function New-AzResourceGroup { param ($Name, $Location, $Tag) }
+        function New-AzSubscriptionDeployment { param ($Name, $Location, $TemplateFile, $TemplateParameterObject) }
+        function Update-AzTag { param ($ResourceId, $Operation, $Tag) }
+        function Get-AzResourceGroupDeployment { param ($ResourceGroupName, $Name, $DefaultProfile) }
+        function Get-AzAccessToken { param ([switch] $AsSecureString) }
+        function Add-Group($Id, $Tags) {
+            $script:resources[$Id] = @{
+                id = $Id
+                location = 'southeastasia'
+                tags = $Tags.Clone()
+                properties = @{ provisioningState = 'Succeeded' }
+            }
+        }
+        function Add-Registry([string] $State = 'Preparing', [string] $ImageState = 'Ready', [string] $FoundationState = 'None') {
+            $tags = $context.Tags.Clone()
+            $tags += @{
+                'avm-state' = $State
+                'avm-active-owner' = $State -eq 'Idle' ? '' : $context.Owner
+                'avm-image-state' = $ImageState
+                'avm-foundation-state' = $FoundationState
+                'avm-generation' = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+                'avm-foundation-operation' = '44444444-4444-4444-4444-444444444444'
+                'avm-kubernetes-version' = '1.32.6'
+            }
+            Add-Group $context.GroupIds.control $tags
+            foreach ($id in $context.OwnedGroupIds) { Add-Group $id $context.Tags }
+        }
+        function Add-ReadyImage {
+            $script:resources[$context.ImageVersionResourceId] = @{
+                id = $context.ImageVersionResourceId
+                properties = @{
+                    provisioningState = 'Succeeded'
+                    publishingProfile = @{ excludeFromLatest = $false; targetRegions = @(@{ name = 'southeastasia' }) }
+                    replicationStatus = @{ summary = @(@{ region = 'southeastasia'; state = 'Completed' }) }
+                }
+            }
+        }
+        function Add-ReadyFoundation {
+            $prefix = $context.GroupIds.foundation
+            $clusterId = "$prefix/providers/Microsoft.AzureStackHCI/clusters/$($context.Config.clusterName)"
+            $customLocationId = "$prefix/providers/Microsoft.ExtendedLocation/customLocations/$($context.Config.customLocationName)"
+            $networkId = "$prefix/providers/Microsoft.AzureStackHCI/logicalNetworks/$($context.Config.logicalNetworkName)"
+            $bridgeId = "$prefix/providers/Microsoft.ResourceConnector/appliances/test-bridge"
+            $extensionId = "$bridgeId/providers/Microsoft.KubernetesConfiguration/extensions/test-extension"
+            $script:resources[$context.DeploymentResourceId] = @{
+                id = $context.DeploymentResourceId
+                properties = @{
+                    provisioningState = 'Succeeded'
+                    correlationId = '44444444-4444-4444-4444-444444444444'
+                    outputs = @{ environment = @{ value = @{
+                                clusterResourceId = $clusterId
+                                customLocationResourceId = $customLocationId
+                                logicalNetworkResourceId = $networkId
+                                clusterNodeNames = @('hcinode1')
+                                vSwitchName = 'ConvergedSwitch(ManagementCompute)'
+                                keyVaultName = 'avm-hci-test'
+                            } } }
+                }
+            }
+            $script:resources[$clusterId] = @{ id = $clusterId; properties = @{ provisioningState = 'Succeeded'; status = 'ConnectedRecently'; connectivityStatus = 'Connected' } }
+            $nodeId = "$prefix/providers/Microsoft.HybridCompute/machines/hcinode1"
+            $script:resources[$nodeId] = @{ id = $nodeId; properties = @{ provisioningState = 'Succeeded'; status = 'Connected' } }
+            $script:resources[$customLocationId] = @{ id = $customLocationId; properties = @{ provisioningState = 'Succeeded'; hostResourceId = $bridgeId; namespace = 'default'; clusterExtensionIds = @($extensionId) } }
+            $script:resources[$bridgeId] = @{ id = $bridgeId; properties = @{ provisioningState = 'Succeeded'; status = 'Running' } }
+            $script:resources[$extensionId] = @{ id = $extensionId; properties = @{ provisioningState = 'Succeeded' } }
+            $script:resources[$networkId] = @{
+                id = $networkId
+                extendedLocation = @{ name = $customLocationId }
+                properties = @{
+                    provisioningState = 'Succeeded'
+                    vmSwitchName = 'ConvergedSwitch(ManagementCompute)'
+                    subnets = @(@{ properties = @{ addressPrefix = '172.20.0.0/24'; ipAllocationMethod = 'Static' } })
+                }
+            }
+        }
+    }
+
+    BeforeEach {
+        $script:resources = @{}
+        $script:deleted = [System.Collections.Generic.List[string]]::new()
+        $script:current = @{
+            Subscription = @{ Id = '11111111-1111-1111-1111-111111111111' }
+            Tenant = @{ Id = '22222222-2222-2222-2222-222222222222' }
+            Environment = @{ Name = 'AzureCloud' }
+        }
+        Mock Get-AzContext { $script:current }
+        Mock Set-AzContext {
+            $SubscriptionId | Should -Be $script:current.Subscription.Id
+        }
+        Mock Start-Sleep {}
+        Mock Get-AzResourceGroupDeployment { @() }
+        Mock Invoke-AzRestMethod {
+            $id = ($Path -split '\?')[0]
+            if ($Method -eq 'GET') {
+                $body = $script:resources[$id]
+                if ($null -eq $body) {
+                    $code = if ($id -match '/resourceGroups/[^/]+$') {
+                        'ResourceGroupNotFound'
+                    } elseif ($id -match '/providers/Microsoft\.Resources/deployments/[^/]+$') {
+                        'DeploymentNotFound'
+                    } else {
+                        'ResourceNotFound'
+                    }
+                    return [pscustomobject] @{ StatusCode = 404; Content = @{ error = @{ code = $code; target = $id } } | ConvertTo-Json }
+                }
+                return [pscustomobject] @{ StatusCode = 200; Content = $body | ConvertTo-Json -Depth 40 }
+            }
+            if ($Method -eq 'DELETE') {
+                $script:deleted.Add($id)
+                foreach ($key in @($script:resources.Keys)) {
+                    if ($key -ieq $id -or $key.StartsWith("$id/", [StringComparison]::OrdinalIgnoreCase)) { $script:resources.Remove($key) }
+                }
+                return [pscustomobject] @{ StatusCode = 202; Content = '{}' }
+            }
+            throw "Unexpected ARM write [$Method] in offline test."
+        }
+        Mock New-AzResourceGroup {
+            Add-Group "/subscriptions/$($script:current.Subscription.Id)/resourceGroups/$Name" $Tag
+        }
+        Mock Update-AzTag {
+            $Operation | Should -Be 'Merge'
+            foreach ($entry in $Tag.GetEnumerator()) { $script:resources[$ResourceId].tags[$entry.Key] = $entry.Value }
+        }
+        $inputObject = @{
+            RepoRootPath = $RepoRootPath
+            SubscriptionId = $script:current.Subscription.Id
+            TenantId = $script:current.Tenant.Id
+            Owner = 'a' * 64
+        }
+        $context = Get-HciEnvironmentContext @inputObject
+        $script:hciContext = $context
+    }
+
+    It 'Uses explicit reserved-subscription identities and distinct CI-owned groups' {
+        $context.OwnedGroupIds.Count | Should -Be 3
+        $context.ImageVersionResourceId | Should -Match '^/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-avm-ci-azure-local-image/'
+        $context.ImageVersionResourceId | Should -Not -Match 'persistent'
+        $context.Tags.lifecycle | Should -Be 'tenant-persistent'
+        $context.GroupIds.Values | Sort-Object -Unique | Should -HaveCount 4
+    }
+
+    It 'Treats a supplied image as external and excludes gallery groups from ownership' {
+        $external = '/subscriptions/33333333-3333-3333-3333-333333333333/resourceGroups/external/providers/Microsoft.Compute/galleries/external/images/host/versions/1.2.3'
+        $context = Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId $external
+        $context.ExternalImage | Should -BeTrue
+        $context.ImageVersionResourceId | Should -Be $external
+        $context.OwnedGroupIds | Should -Be @($context.GroupIds.foundation)
+    }
+
+    It 'Rejects an external image inside the recreatable foundation group' {
+        $external = $context.ImageVersionResourceId.Replace($context.GroupIds.image, $context.GroupIds.foundation)
+        { Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId $external } |
+            Should -Throw '*external read-only image cannot be inside*'
+    }
+
+    It 'Treats an explicitly supplied image in the CI gallery group as read-only rather than adopting that group' {
+        $context = Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId $context.ImageVersionResourceId
+        $context.ExternalImage | Should -BeTrue
+        $context.OwnedGroupIds | Should -Be @($context.GroupIds.foundation)
+    }
+
+    It 'Rejects mutable image aliases before any resource access' {
+        { Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId ($context.ImageVersionResourceId -replace '26\.1\.0$', 'latest') } |
+            Should -Throw '*immutable*'
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+    }
+
+    It 'Rejects invalid external image subscription identities before resource access' -ForEach @(
+        @{ imageSubscriptionId = '00000000-0000-0000-0000-000000000000' }
+        @{ imageSubscriptionId = '------------------------------------' }
+    ) {
+        $external = $context.ImageVersionResourceId.Replace($context.SubscriptionId, $imageSubscriptionId)
+        { Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId $external } |
+            Should -Throw '*valid, nonempty subscription identity*'
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+    }
+
+    It 'Rejects a changed Azure <field> before using the ownership record' -ForEach @(
+        @{ field = 'tenant' }
+        @{ field = 'subscription' }
+        @{ field = 'cloud' }
+    ) {
+        Add-Registry
+        switch ($field) {
+            tenant { $script:current.Tenant.Id = '33333333-3333-3333-3333-333333333333' }
+            subscription { $script:current.Subscription.Id = '33333333-3333-3333-3333-333333333333' }
+            cloud { $script:current.Environment.Name = 'AzureUSGovernment' }
+        }
+        { Get-HciEnvironmentRegistry -Context $context -RequireOwner } | Should -Throw '*Azure context changed*'
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+    }
+
+    It 'Rejects existing groups with incorrect <tag> rather than adopting them' -ForEach @(
+        @{ tag = 'lifecycle' }
+        @{ tag = 'avm-owner' }
+        @{ tag = 'avm-version' }
+        @{ tag = 'avm-owned-groups' }
+        @{ tag = 'avm-image-key' }
+    ) {
+        Add-Registry -State Idle
+        $script:resources[$context.GroupIds.foundation].tags[$tag] = 'unexpected'
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) } | Should -Throw '*will not be adopted*'
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+        $script:deleted.Count | Should -Be 0
+    }
+
+    It 'Blocks a second operation during <state> including explicit recreation' -ForEach @(
+        @{ state = 'Preparing' }
+        @{ state = 'InUse' }
+        @{ state = 'Recreating' }
+    ) {
+        Add-Registry -State $state
+        $script:resources[$context.GroupIds.control].tags['avm-active-owner'] = 'c' * 64
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Recreate:$true -Maintenance:$true } |
+            Should -Throw '*not idle*'
+        $script:deleted.Count | Should -Be 0
+    }
+
+    It 'Never permits a consumer to opt into recreation' {
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Recreate:$true } |
+            Should -Throw '*explicit manual maintenance*'
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+    }
+
+    It 'Creates only absent registered groups for a read-only external image' {
+        $external = '/subscriptions/33333333-3333-3333-3333-333333333333/resourceGroups/external/providers/Microsoft.Compute/galleries/external/images/host/versions/1.2.3'
+        $context = Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId $external
+        Add-ReadyImage
+
+        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40)
+
+        Should -Invoke New-AzResourceGroup -Times 2 -Exactly
+        $script:resources[$context.GroupIds.control].tags['avm-image-state'] | Should -Be 'Ready'
+        $script:deleted.Count | Should -Be 0
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -in @('POST', 'PUT', 'DELETE') }
+    }
+
+    It 'Refuses to adopt a pre-existing group when no registry exists' {
+        Add-Group $context.GroupIds.foundation $context.Tags
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) } | Should -Throw '*Unregistered resource group*'
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+    }
+
+    It 'Validates an external image before any opted-in recreation or ownership change' {
+        $external = '/subscriptions/33333333-3333-3333-3333-333333333333/resourceGroups/external/providers/Microsoft.Compute/galleries/external/images/host/versions/1.2.3'
+        $context = Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId $external
+        Add-Registry -State Idle
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Recreate:$true -Maintenance:$true } | Should -Throw '*Cannot verify*'
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        $script:deleted.Count | Should -Be 0
+        $script:resources.ContainsKey($context.GroupIds.foundation) | Should -BeTrue
+    }
+
+    It 'Does not interpret an unrelated 404 as proof of resource-group absence' {
+        Mock Invoke-AzRestMethod { [pscustomobject] @{ StatusCode = 404; Content = '{"error":{"code":"ResourceNotFound"}}' } }
+        { Get-HciArmResource -ResourceId $context.GroupIds.foundation -ApiVersion '2024-03-01' -AllowNotFound } |
+            Should -Throw '*Cannot verify*'
+    }
+
+    It 'Rejects ambiguous ARM <field> instead of confirming absence' -ForEach @(
+        @{ field = 'status' }
+        @{ field = 'target' }
+        @{ field = 'body' }
+        @{ field = 'single-item body' }
+    ) {
+        $script:response = [pscustomobject] @{
+            StatusCode = 404
+            Content = @{ error = @{ code = 'ResourceGroupNotFound'; target = $context.GroupIds.foundation } } | ConvertTo-Json
+        }
+        switch ($field) {
+            status { $script:response.StatusCode = @(404, 200) }
+            target { $script:response.Content = @{ error = @{ code = 'ResourceGroupNotFound'; target = @($context.GroupIds.foundation, '/unexpected') } } | ConvertTo-Json }
+            body { $script:response.Content = '[]' }
+            'single-item body' { $script:response.Content = "[$($script:response.Content)]" }
+        }
+        Mock Invoke-AzRestMethod { $script:response }
+        { Get-HciArmResource -ResourceId $context.GroupIds.foundation -ApiVersion '2024-03-01' -AllowNotFound } |
+            Should -Throw '*Cannot verify*'
+    }
+
+    It 'Reuses ready images without deploying, building or destroying anything' {
+        Add-Registry -State Idle
+        Add-ReadyImage
+        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40)
+
+        $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Preparing'
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
+    }
+
+    It 'Deletes only registered owned groups on explicit maintenance and leaves external images untouched' {
+        $external = '/subscriptions/33333333-3333-3333-3333-333333333333/resourceGroups/external/providers/Microsoft.Compute/galleries/external/images/host/versions/1.2.3'
+        $context = Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId $external
+        Add-Registry -State Idle
+        Add-ReadyImage
+        $unregistered = "/subscriptions/$($context.SubscriptionId)/resourceGroups/rg-avm-persistent-hci-image"
+        Add-Group $unregistered @{ lifecycle = 'tenant-persistent' }
+
+        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Recreate:$true -Maintenance:$true
+
+        @($script:deleted) | Should -Be @($context.GroupIds.foundation)
+        $script:resources.ContainsKey($external) | Should -BeTrue
+        $script:resources.ContainsKey($unregistered) | Should -BeTrue
+        $script:resources[$context.GroupIds.control].tags['avm-generation'] | Should -Not -Be 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+    }
+
+    It 'Blocks recreation while an owned deployment is running' {
+        Add-Registry -State Idle
+        Mock Get-AzResourceGroupDeployment { [pscustomobject] @{ ProvisioningState = 'Running' } }
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Recreate:$true -Maintenance:$true } |
+            Should -Throw '*unfinished deployment*'
+        $script:deleted.Count | Should -Be 0
+    }
+
+    It 'Blocks reuse for failed replicas without falling back or automatically deleting resources' {
+        Add-Registry -State Idle
+        Add-ReadyImage
+        $script:resources[$context.ImageVersionResourceId].properties.replicationStatus.summary[0].state = 'Failed'
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) } | Should -Throw '*not usable*'
+        $script:deleted.Count | Should -Be 0
+        $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Preparing'
+    }
+
+    It 'Checks cluster, Arc node, bridge, custom location, extensions and network rather than existence alone' {
+        Add-Registry -FoundationState Ready
+        Add-ReadyImage
+        Add-ReadyFoundation
+        $result = Get-HciEnvironmentReadiness -Context $context
+        $result.Foundation.customLocationResourceId | Should -Match '/Microsoft.ExtendedLocation/customLocations/'
+        $result.Foundation.kubernetesVersion | Should -Be '1.32.6'
+        $result.OwnedResourceIds | Should -HaveCount 4
+    }
+
+    It 'Rejects unhealthy or replaced <component>' -ForEach @(
+        @{ component = 'cluster' }
+        @{ component = 'node' }
+        @{ component = 'bridge' }
+        @{ component = 'extension' }
+        @{ component = 'network' }
+        @{ component = 'custom location' }
+        @{ component = 'deployment operation' }
+    ) {
+        Add-Registry -FoundationState Ready
+        Add-ReadyImage
+        Add-ReadyFoundation
+        $foundation = $script:resources[$context.DeploymentResourceId].properties.outputs.environment.value
+        $customLocation = $script:resources[$foundation.customLocationResourceId]
+        switch ($component) {
+            cluster { $script:resources[$foundation.clusterResourceId].properties.connectivityStatus = 'NotConnected' }
+            node { $script:resources["$($context.GroupIds.foundation)/providers/Microsoft.HybridCompute/machines/hcinode1"].properties.status = 'Disconnected' }
+            bridge { $script:resources[$customLocation.properties.hostResourceId].properties.status = 'Connecting' }
+            extension { $script:resources[$customLocation.properties.clusterExtensionIds[0]].properties.provisioningState = 'Failed' }
+            network { $script:resources[$foundation.logicalNetworkResourceId].properties.vmSwitchName = 'wrong-switch' }
+            'custom location' { $customLocation.properties.hostResourceId = '/subscriptions/other/resourceGroups/unowned/providers/Microsoft.ResourceConnector/appliances/unowned' }
+            'deployment operation' { $script:resources[$context.DeploymentResourceId].properties.correlationId = '55555555-5555-5555-5555-555555555555' }
+        }
+        { Get-HciEnvironmentReadiness -Context $context } | Should -Throw
+        $script:deleted.Count | Should -Be 0
+    }
+
+    It 'Keeps cluster-under-test consumers image-only and does not require or return a persistent cluster' {
+        Add-Registry
+        Add-ReadyImage
+        $result = Enter-HciEnvironmentTest -Context $context -ImageOnly:$true
+        $result.Foundation | Should -BeNullOrEmpty
+        $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'InUse'
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Path -like '*Microsoft.AzureStackHCI/clusters*' }
+    }
+
+    It 'Refuses to release test ownership without confirmed cleanup' {
+        Add-Registry -State InUse
+        { Exit-HciEnvironment -Context $context } | Should -Throw '*confirmed test cleanup*'
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+    }
+
+    It 'Retains ownership through test cleanup and releases only afterward' {
+        Add-Registry -FoundationState Ready
+        Add-ReadyImage
+        Add-ReadyFoundation
+        $null = Enter-HciEnvironmentTest -Context $context
+        $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'InUse'
+        Exit-HciEnvironment -Context $context -CleanupConfirmed:$true
+        $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Idle'
+        $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -BeNullOrEmpty
+    }
+
+    It 'Does not submit a foundation for a pending image or missing existing credentials' {
+        Add-Registry -ImageState Running
+        { Start-HciEnvironmentFoundation -Context $context -Parameters @{} } | Should -Throw '*completed, recorded image*'
+        $script:resources[$context.GroupIds.control].tags['avm-image-state'] = 'Ready'
+        Add-ReadyImage
+        { Start-HciEnvironmentFoundation -Context $context -Parameters @{} } | Should -Throw '*existing CI identity/credential*'
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'PUT' }
+    }
+
+    It 'Records a new owned image operation durably and observes it from a fresh context without resubmitting' {
+        Mock New-AzSubscriptionDeployment {
+            $TemplateParameterObject.useScopedContributorRole | Should -BeTrue
+            $TemplateParameterObject.createResourceGroup | Should -BeFalse
+            $TemplateParameterObject.tags.lifecycle | Should -Be 'tenant-persistent'
+            $script:resources[$context.ImageTemplateResourceId] = @{
+                id = $context.ImageTemplateResourceId
+                location = 'southeastasia'
+                properties = @{ lastRunStatus = @{ startTime = '2025-01-01T00:00:00Z'; runState = 'Succeeded' } }
+            }
+            [pscustomobject] @{ ProvisioningState = 'Succeeded' }
+        }
+        Mock Invoke-AzRestMethod {
+            $script:resources[$context.ImageTemplateResourceId].properties.lastRunStatus = @{
+                startTime = [datetimeoffset]::UtcNow.ToString('o')
+                runState = 'Running'
+            }
+            [pscustomobject] @{
+                StatusCode = 202
+                Content = '{}'
+                Headers = @{ 'Azure-AsyncOperation' = "https://management.azure.com/subscriptions/$($context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/southeastasia/operations/55555555-5555-5555-5555-555555555555?api-version=2025-10-01" }
+            }
+        } -ParameterFilter { $Method -eq 'POST' }
+
+        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40)
+
+        $tags = $script:resources[$context.GroupIds.control].tags
+        $tags['avm-image-state'] | Should -Be 'Running'
+        $tags['avm-image-operation'] | Should -Be '55555555-5555-5555-5555-555555555555?api-version=2025-10-01'
+        $deadline = $tags['avm-image-deadline']
+        $freshContext = Get-HciEnvironmentContext @inputObject
+        Add-ReadyImage
+        $script:resources[$context.ImageTemplateResourceId].properties.lastRunStatus.runState = 'Succeeded'
+        Mock Invoke-AzRestMethod {
+            [pscustomobject] @{ StatusCode = 200; Content = '{"status":"Succeeded"}' }
+        } -ParameterFilter { $Method -eq 'GET' -and $Path -like '*/Microsoft.VirtualMachineImages/locations/*/operations/*' }
+
+        Wait-HciEnvironmentImage -Context $freshContext -SourceCommit ('b' * 40)
+
+        $tags['avm-image-state'] | Should -Be 'Ready'
+        $tags['avm-image-deadline'] | Should -Be $deadline
+        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+    }
+
+    It 'Submits one foundation with a recorded correlation ID and reuses it after readiness' {
+        Add-Registry
+        Add-ReadyImage
+        Mock bicep {
+            $global:LASTEXITCODE = 0
+            '{"$schema":"https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#","contentVersion":"1.0.0.0","resources":[]}'
+        }
+        $parameters = @{
+            arbLocalAdminAndDeploymentUserPass = ConvertTo-SecureString 'offline-password-placeholder' -AsPlainText -Force
+            arbDeploymentAppId = '66666666-6666-6666-6666-666666666666'
+            arbDeploymentSPObjectId = '77777777-7777-7777-7777-777777777777'
+            arbDeploymentServicePrincipalSecret = ConvertTo-SecureString 'offline-secret-placeholder' -AsPlainText -Force
+            builtInServicePrincipalObjectId = '88888888-8888-8888-8888-888888888888'
+        }
+        Mock Invoke-AzRestMethod {
+            $payloadObject = $Payload | ConvertFrom-Json -AsHashtable
+            $payloadObject.properties.parameters.hciHostImageReferenceId.value | Should -Be $context.ImageVersionResourceId
+            $payloadObject.properties.parameters.generation.value | Should -Be 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+            Add-ReadyFoundation
+            $script:resources[$context.DeploymentResourceId].properties.provisioningState = 'Running'
+            [pscustomobject] @{ StatusCode = 201; Content = $script:resources[$context.DeploymentResourceId] | ConvertTo-Json -Depth 20 }
+        } -ParameterFilter { $Method -eq 'PUT' }
+
+        Start-HciEnvironmentFoundation -Context $context -Parameters $parameters
+
+        $tags = $script:resources[$context.GroupIds.control].tags
+        $tags['avm-foundation-state'] | Should -Be 'Running'
+        $tags['avm-foundation-operation'] | Should -Be '44444444-4444-4444-4444-444444444444'
+        $deadline = $tags['avm-foundation-deadline']
+        Mock Get-AzResourceGroupDeployment {
+            [pscustomobject] @{
+                Id = $script:hciContext.DeploymentResourceId
+                DeploymentName = $script:hciContext.Config.deploymentName
+                ProvisioningState = 'Succeeded'
+                CorrelationId = '44444444-4444-4444-4444-444444444444'
+                Error = $null
+                Outputs = @{}
+            }
+        }
+        Wait-HciEnvironmentFoundation -Context $context
+        $tags['avm-foundation-state'] | Should -Be 'Provisioned'
+        $tags['avm-foundation-deadline'] | Should -Be $deadline
+        Start-HciEnvironmentFoundation -Context $context -Parameters @{}
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'PUT' }
+    }
+}
+
+Describe 'Persistent resource cleanup guard and exact operation observation' {
+    BeforeAll {
+        . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
+        . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
+        function Get-AzContext {}
+    }
+    BeforeEach {
+        Mock Get-AzContext { @{ Subscription = @{ Id = '11111111-1111-1111-1111-111111111111' }; Tenant = @{ Id = '22222222-2222-2222-2222-222222222222' } } }
+    }
+    It 'Rejects a cleanup target that is a protected <relationship> before any removal' -ForEach @(
+        @{ relationship = 'resource group'; suffix = '/resourceGroups/foundation' }
+        @{ relationship = 'descendant'; suffix = '/resourceGroups/foundation/providers/Microsoft.Compute/virtualMachines/host' }
+        @{ relationship = 'ancestor'; suffix = '' }
+    ) {
+        $subscriptionRoot = '/subscriptions/11111111-1111-1111-1111-111111111111'
+        { Initialize-DeploymentRemoval -ResourceIds "$subscriptionRoot$suffix" -ProtectedResourceIds "$subscriptionRoot/resourceGroups/foundation" } |
+            Should -Throw '*protected persistent resource*nothing will be removed*'
+    }
+
+    It 'Protects externally supplied resource IDs regardless of ARM path casing' {
+        $groupId = '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/external'
+        { Initialize-DeploymentRemoval -ResourceIds $groupId -ProtectedResourceIds $groupId.ToUpperInvariant() } |
+            Should -Throw '*protected persistent resource*nothing will be removed*'
+    }
+
+    It 'Rejects a replaced operation even when deployment name and resource ID match' {
+        $id = '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/foundation/providers/Microsoft.Resources/deployments/foundation'
+        Mock Get-TemplateDeployment {
+            [pscustomobject] @{
+                Id = $id
+                DeploymentName = 'foundation'
+                ProvisioningState = 'Running'
+                CorrelationId = '44444444-4444-4444-4444-444444444444'
+                Error = $null
+                Outputs = @{}
+            }
+        }
+        { Wait-TemplateDeployment -DeploymentScope resourcegroup -DeploymentName foundation -ExpectedDeploymentId $id `
+                -ExpectedCorrelationId '33333333-3333-3333-3333-333333333333' } |
+            Should -Throw '*replaced deployment operation*'
+        Should -Invoke Get-TemplateDeployment -Times 1 -Exactly
+    }
+}
