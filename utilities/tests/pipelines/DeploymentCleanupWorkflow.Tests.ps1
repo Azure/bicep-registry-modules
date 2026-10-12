@@ -11,7 +11,12 @@ Describe 'Deployment submission and cleanup runtime integration' {
         . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
         $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $actionPath -Raw)
-        $environmentNames = @('GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME')
+        $environmentNames = @(
+            'GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME',
+            'AVM_GITHUB_API_URL', 'AVM_GITHUB_REPOSITORY', 'AVM_GITHUB_RUN_ID', 'AVM_GITHUB_RUN_ATTEMPT',
+            'AVM_GITHUB_CHECK_RUN_ID', 'AVM_GITHUB_RUNNER_NAME', 'AVM_GITHUB_RUNNER_ENVIRONMENT',
+            'AVM_GITHUB_EVENT_NAME', 'AVM_GITHUB_HEAD_SHA', 'AVM_GITHUB_PR_HEAD_SHA'
+        )
         $subscriptionId = '11111111-1111-1111-1111-111111111111'
         $resourceGroupId = "/subscriptions/$subscriptionId/resourceGroups/dep-fixture-rg"
         $resourceIds = @(
@@ -197,7 +202,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
         }
 
         function Get-TestActionScript {
-            param([string] $Name, [hashtable] $Outputs = @{})
+            param([string] $Name, [hashtable] $Outputs = @{}, [string] $ModulePath = 'avm/res/retry-test/widget')
             $stepScript = ($action.runs.steps | Where-Object { $_.name -eq $Name }).with.inlineScript
             $stepScript = $stepScript.Replace(
                 'Join-Path $env:GITHUB_WORKSPACE ''${{ inputs.templateFilePath }}''',
@@ -206,7 +211,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
             $values = @{
                 '${{ inputs.deploymentMetadataLocation }}'                          = 'WestEurope'
                 '${{ inputs.managementGroupId }}'                                   = 'test-management-group'
-                '${{ inputs.modulePath }}'                                          = 'avm/res/retry-test/widget'
+                '${{ inputs.modulePath }}'                                          = $ModulePath
                 '${{ inputs.customLocation }}'                                      = 'swedencentral'
                 '${{ inputs.removeDeployment }}'                                    = 'true'
                 '${{ steps.replace-tokens.outputs.resourceLocation }}'              = ''
@@ -226,7 +231,8 @@ Describe 'Deployment submission and cleanup runtime integration' {
         function Invoke-TestActionStep {
             param(
                 [string] $Name, [hashtable] $Outputs = @{}, [string] $JobStatus = 'failure',
-                [string] $RemoveDeployment = 'true', [string] $SkipDeployment = 'false'
+                [string] $RemoveDeployment = 'true', [string] $SkipDeployment = 'false',
+                [string] $ModulePath = 'avm/res/retry-test/widget'
             )
             if ($Name -eq 'Remove deployed resources') {
                 $condition = ($action.runs.steps | Where-Object { $_.name -eq $Name }).if
@@ -238,7 +244,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 $conditionScript = [scriptblock]::Create("param(`$JobStatus, `$RemoveDeployment, `$SkipDeployment, `$deploymentNames) $condition")
                 if (-not (. $conditionScript $JobStatus $RemoveDeployment $SkipDeployment ($Outputs.deploymentNames ?? ''))) { return }
             }
-            $stepScript = Get-TestActionScript -Name $Name -Outputs $Outputs
+            $stepScript = Get-TestActionScript -Name $Name -Outputs $Outputs -ModulePath $ModulePath
             Clear-Content -LiteralPath $env:GITHUB_OUTPUT
             . ([scriptblock]::Create($stepScript))
         }
@@ -311,6 +317,11 @@ Describe 'Deployment submission and cleanup runtime integration' {
             [CmdletBinding()]
             param([string] $Name)
             throw 'Unexpected Azure resource group lookup.'
+        }
+        function New-AzResourceGroup {
+            [CmdletBinding()]
+            param([string] $Name, [string] $Location)
+            throw 'Unexpected Azure resource group creation.'
         }
         function Get-AzDeploymentOperation {
             [CmdletBinding()]
@@ -435,6 +446,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
         Mock Get-AzManagementGroupDeployment {}
         Mock Get-AzTenantDeployment {}
         Mock Get-AzResourceGroup { @{ ResourceId = $resourceGroupId } }
+        Mock New-AzResourceGroup { throw 'Unexpected Azure resource group creation.' }
         Mock New-AzSubscriptionDeployment { Invoke-TestSubmission $DeploymentName $resourceLocation $baseTime $adminSecret }
         Mock Test-AzSubscriptionDeployment {}
         Mock New-AzResourceGroupDeployment { Invoke-TestSubmission $DeploymentName $resourceLocation $baseTime $adminSecret }
@@ -1169,6 +1181,259 @@ Describe 'Deployment submission and cleanup runtime integration' {
             @($result.DeploymentNames) | Should -Be @($script:attemptNames)
             $script:attemptNames.Count | Should -Be 1
             $script:statusReads.Count | Should -Be 1
+        }
+
+        Context 'Bounded HCI action recovery' -Tag 'BoundedHciRecovery' {
+            BeforeEach {
+                $hciModulePath = 'avm/res/hybrid-container-service/provisioned-cluster-instance'
+                $script:hciEntryUtc = $script:recoveryClock
+                $script:hciJobStartUtc = $script:recoveryClock.AddMinutes(-10)
+                $script:hciDeadlineUtc = $script:hciJobStartUtc.AddMinutes(320)
+                $env:AVM_GITHUB_API_URL = 'https://api.github.com'
+                $env:AVM_GITHUB_REPOSITORY = 'Azure/bicep-registry-modules'
+                $env:AVM_GITHUB_RUN_ID = '101'
+                $env:AVM_GITHUB_RUN_ATTEMPT = '2'
+                $env:AVM_GITHUB_CHECK_RUN_ID = '303'
+                $env:AVM_GITHUB_RUNNER_NAME = 'GitHub Actions 404'
+                $env:AVM_GITHUB_RUNNER_ENVIRONMENT = 'github-hosted'
+                $env:AVM_GITHUB_EVENT_NAME = 'workflow_dispatch'
+                $env:AVM_GITHUB_HEAD_SHA = 'a' * 40
+                $env:AVM_GITHUB_PR_HEAD_SHA = ''
+                $script:githubJob = @{
+                    id            = 303
+                    check_run_url = 'https://api.github.com/repos/Azure/bicep-registry-modules/check-runs/303'
+                    run_id        = 101
+                    run_attempt   = 2
+                    head_sha      = 'a' * 40
+                    runner_id     = 404
+                    runner_name   = 'GitHub Actions 404'
+                    status        = 'in_progress'
+                    conclusion    = $null
+                    completed_at  = $null
+                    started_at    = $script:hciJobStartUtc.ToString('o')
+                }
+                Mock Invoke-WebRequest {
+                    @{
+                        StatusCode = 200
+                        Content    = ConvertTo-Json -InputObject @{ total_count = 1; jobs = @($script:githubJob) } -Depth 5 -Compress
+                    }
+                }
+            }
+
+            It 'Recovers HCI after five hours with one POST and persists cleanup ownership through the actual action' {
+                Mock Start-Sleep { $script:recoveryClock = $script:recoveryClock.AddHours(5) }
+                Invoke-TestActionStep -Name 'Deploy template file' -ModulePath $hciModulePath
+                $outputs = Get-TestStepOutput
+                ($outputs.deploymentOutput | ConvertFrom-Json).recovered.value | Should -BeExactly 'ready'
+                @($outputs.deploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+                @($outputs.remainingDeploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+                $script:attemptNames.Count | Should -Be 1
+                $script:statusReads.Count | Should -Be 2
+                Should -Invoke Invoke-WebRequest -Times 1 -Exactly
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
+
+            It 'Makes no new metadata request and keeps four hours for <module>' -ForEach @(
+                @{ module = 'avm/res/retry-test/widget' }
+                @{ module = 'avm/res/azure-stack-hci/cluster' }
+                @{ module = 'avm/res/hybrid-container-service/provisioned-cluster-instance/child' }
+            ) {
+                Mock Start-Sleep { $script:recoveryClock = $script:recoveryClock.AddHours(4) }
+                { Invoke-TestActionStep -Name 'Deploy template file' -ModulePath $module } | Should -Throw '*recovery deadline*'
+                $script:recoveryClock | Should -Be $script:hciEntryUtc.AddHours(4)
+                $script:attemptNames.Count | Should -Be 1
+                Should -Invoke Invoke-WebRequest -Times 0 -Exactly
+            }
+
+            It 'Fails before Azure validation or deployment on <kind> metadata' -ForEach @(
+                @{ kind = 'future' }, @{ kind = 'exhausted' }, @{ kind = 'invalid timestamp' }, @{ kind = 'mismatched attempt' }
+                @{ kind = 'missing check' }, @{ kind = 'private repository' }, @{ kind = 'API failure' }
+            ) {
+                switch ($kind) {
+                    'future' { $script:githubJob.started_at = $script:recoveryClock.AddSeconds(1).ToString('o') }
+                    'exhausted' { $script:githubJob.started_at = $script:recoveryClock.AddMinutes(-320).ToString('o') }
+                    'invalid timestamp' { $script:githubJob.started_at = 'not-a-date' }
+                    'mismatched attempt' { $script:githubJob.run_attempt = 1 }
+                    'missing check' { $env:AVM_GITHUB_CHECK_RUN_ID = '' }
+                    'private repository' { Mock Invoke-WebRequest { @{ StatusCode = 404; Content = '{}' } } }
+                    'API failure' { Mock Invoke-WebRequest { throw 'GitHub request failed.' } }
+                }
+                { Invoke-TestActionStep -Name 'Deploy template file' -ModulePath $hciModulePath } | Should -Throw
+                $script:attemptNames.Count | Should -Be 0
+                (Get-TestStepOutput).Count | Should -Be 0
+                Should -Invoke Test-AzSubscriptionDeployment -Times 0 -Exactly
+                Should -Invoke Set-AzContext -Times 0 -Exactly
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
+
+            It 'Does not renew the job budget when validation exhausts the allowance' {
+                Mock Test-AzSubscriptionDeployment { $script:recoveryClock = $script:hciDeadlineUtc }
+                { Invoke-TestActionStep -Name 'Deploy template file' -ModulePath $hciModulePath } | Should -Throw '*bounded HCI recovery deadline*'
+                (Get-TestStepOutput).deploymentNames | Should -BeNullOrEmpty
+                $script:attemptNames.Count | Should -Be 0
+                Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+            }
+
+            It 'Retains the same deployment when a 100-second in-flight read crosses the cap, leaving request headroom' {
+                Mock New-AzSubscriptionDeployment {
+                    $script:recoveryClock = $script:hciDeadlineUtc.AddSeconds(-1)
+                    Invoke-TestSubmission $DeploymentName $resourceLocation $baseTime $adminSecret
+                }
+                Mock Get-AzDeployment {
+                    $script:recoveryClock = $script:recoveryClock.AddSeconds(100)
+                    Get-TestDeploymentStatus -Name $Name -Scope subscription -Profile $DefaultProfile
+                }
+                $script:statusStates = @('Succeeded')
+                { Invoke-TestActionStep -Name 'Deploy template file' -ModulePath $hciModulePath } | Should -Throw '*recovery deadline*'
+                $outputs = Get-TestStepOutput
+                @($outputs.deploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+                @($outputs.remainingDeploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+                $script:attemptNames.Count | Should -Be 1
+                $script:statusReads.Count | Should -Be 1
+                ($script:hciJobStartUtc.AddHours(6) - $script:recoveryClock).TotalMinutes | Should -BeGreaterThan 30
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
+
+            It 'Does not claim to interrupt a normally blocking native deployment at the recovery cutoff' {
+                $script:outcomes = @('Succeeded')
+                Mock New-AzSubscriptionDeployment {
+                    $script:recoveryClock = $script:hciDeadlineUtc.AddMinutes(15)
+                    Invoke-TestSubmission $DeploymentName $resourceLocation $baseTime $adminSecret
+                }
+                Invoke-TestActionStep -Name 'Deploy template file' -ModulePath $hciModulePath
+                @((Get-TestStepOutput).remainingDeploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+                $script:attemptNames.Count | Should -Be 1
+                $script:statusReads.Count | Should -Be 0
+            }
+
+            It 'Uses the longer deadline in the <outcome> path at its <boundary> boundary' -ForEach @(
+                foreach ($outcome in @('RequestTimeout', 'NestedReadNotFound', 'Forbidden')) {
+                    foreach ($boundary in @('success', 'expiration')) {
+                        @{ outcome = $outcome; boundary = $boundary }
+                    }
+                }
+            ) {
+                $scope = $outcome -eq 'Forbidden' ? 'managementgroup' : 'subscription'
+                $command = $scope -eq 'managementgroup' ? 'Get-AzManagementGroupDeployment' : 'Get-AzDeployment'
+                Set-TestTemplateScope -Scope $scope
+                $script:outcomes = @($outcome)
+                $script:statusStates = @('Running', 'Succeeded')
+                $script:readErrorFormat = 'SdkWrapper'
+                $script:readErrorCategory = [System.Management.Automation.ErrorCategory]::ObjectNotFound
+                $script:readErrorMutation = $null
+                $script:selectedContext | Add-Member -NotePropertyName Environment -NotePropertyValue @{
+                    ResourceManagerUrl = 'https://management.azure.com/'
+                }
+                $deploymentInput.RecoveryDeadlineUtc = $script:hciDeadlineUtc
+                $deploymentInput.SubmissionDeadlineUtc = $script:hciDeadlineUtc
+                Mock Start-Sleep {
+                    $script:recoveryClock = $boundary -eq 'success' ? $script:hciDeadlineUtc.AddTicks(-1) : $script:hciDeadlineUtc
+                }
+                $result = New-TemplateDeployment @deploymentInput
+                if ($boundary -eq 'success') {
+                    $result.ContainsKey('Exception') | Should -BeFalse
+                    $result.DeploymentOutput.recovered.value | Should -BeExactly 'ready'
+                } else {
+                    $result.Exception | Should -Match 'recovery deadline'
+                    $result.RetryAllowed | Should -BeFalse
+                    $result.FailureQueryAllowed | Should -BeFalse
+                    $result.RecoveredFailure | Should -BeFalse
+                }
+                $result.DeploymentNames | Should -Be @($script:attemptNames)
+                $script:attemptNames.Count | Should -Be 1
+                Should -Invoke $command -Times ($boundary -eq 'success' ? 2 : 1) -Exactly
+                Should -Invoke Get-ErrorMessageForScope -Times 0 -Exactly
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
+
+            It 'Rejects expired submission timing at <scope> scope without a POST or fabricated owner' -ForEach @(
+                @{ scope = 'subscription'; command = 'New-AzSubscriptionDeployment' }
+                @{ scope = 'resourcegroup'; command = 'New-AzResourceGroupDeployment' }
+                @{ scope = 'managementgroup'; command = 'New-AzManagementGroupDeployment' }
+                @{ scope = 'tenant'; command = 'New-AzTenantDeployment' }
+            ) {
+                Set-TestTemplateScope -Scope $scope
+                $deploymentInput.SubmissionDeadlineUtc = $script:recoveryClock
+                $result = New-TemplateDeployment @deploymentInput
+                $result.Exception | Should -Match 'bounded HCI recovery deadline'
+                $result.DeploymentNames.Count | Should -Be 0
+                $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+                $result.RetryAllowed | Should -BeFalse
+                $result.FailureQueryAllowed | Should -BeFalse
+                Should -Invoke $command -Times 0 -Exactly
+                Should -Invoke Set-AzContext -Times 0 -Exactly
+            }
+
+            It 'Rechecks the submission cap after slow <scope> preparation' -ForEach @(
+                @{ scope = 'subscription'; prepare = 'Set-AzContext'; command = 'New-AzSubscriptionDeployment' }
+                @{ scope = 'resourcegroup'; prepare = 'Get-AzResourceGroup'; command = 'New-AzResourceGroupDeployment' }
+                @{ scope = 'managementgroup'; prepare = 'Get-AzContext'; command = 'New-AzManagementGroupDeployment' }
+            ) {
+                Set-TestTemplateScope -Scope $scope
+                $deploymentInput.SubmissionDeadlineUtc = $script:recoveryClock.AddSeconds(1)
+                Mock $prepare {
+                    $script:recoveryClock = $script:recoveryClock.AddSeconds(1)
+                    $script:selectedContext
+                }
+                $result = New-TemplateDeployment @deploymentInput
+                $result.Exception | Should -Match 'bounded HCI recovery deadline'
+                $result.DeploymentNames.Count | Should -Be 0
+                Should -Invoke $command -Times 0 -Exactly
+                Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+            }
+
+            It 'Does not create an untracked resource group before a bounded resource-group submission' {
+                Set-TestTemplateScope -Scope resourcegroup
+                $deploymentInput.SubmissionDeadlineUtc = $script:hciDeadlineUtc
+                $deploymentInput.RetryLimit = 1
+                Mock Get-AzResourceGroup {}
+                $result = New-TemplateDeployment @deploymentInput
+                $result.Exception | Should -Match 'requires an existing resource group'
+                $result.DeploymentNames.Count | Should -Be 0
+                Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+                Should -Invoke New-AzResourceGroupDeployment -Times 0 -Exactly
+            }
+
+            It 'Leaves standalone resource-group creation unchanged without a submission deadline' {
+                Set-TestTemplateScope -Scope resourcegroup
+                $script:outcomes = @('Succeeded')
+                Mock Get-AzResourceGroup {}
+                Mock New-AzResourceGroup {}
+                $result = New-TemplateDeployment @deploymentInput
+                $result.ContainsKey('Exception') | Should -BeFalse
+                $result.DeploymentNames | Should -Be @($script:attemptNames)
+                Should -Invoke New-AzResourceGroup -Times 1 -Exactly
+                Should -Invoke New-AzResourceGroupDeployment -Times 1 -Exactly
+            }
+
+            It 'Wires documented context through the existing hosted workflow without extra permissions or cancellation' {
+                $workflowPath = Join-Path $repoRootPath '.github' 'workflows' 'avm.template.module.deployment.yml'
+                $workflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $workflowPath -Raw)
+                $job = $workflow.jobs.job_module_deploy_validation
+                $job.'runs-on' | Should -Be 'ubuntu-latest'
+                $job.ContainsKey('timeout-minutes') | Should -BeFalse
+                @($job.permissions.Keys | Sort-Object) | Should -Be @('contents', 'id-token')
+                @($job.steps | Where-Object uses -EQ './.github/actions/templates/avm-validateModuleDeployment').Count | Should -Be 1
+                $step = $action.runs.steps | Where-Object id -EQ 'deploy_step'
+                $step.ContainsKey('timeout-minutes') | Should -BeFalse
+                $step.env.AVM_GITHUB_API_URL | Should -Be '${{ github.api_url }}'
+                $step.env.AVM_GITHUB_REPOSITORY | Should -Be '${{ github.repository }}'
+                $step.env.AVM_GITHUB_RUN_ID | Should -Be '${{ github.run_id }}'
+                $step.env.AVM_GITHUB_RUN_ATTEMPT | Should -Be '${{ github.run_attempt }}'
+                $step.env.AVM_GITHUB_CHECK_RUN_ID | Should -Be '${{ job.check_run_id }}'
+                $step.env.AVM_GITHUB_RUNNER_NAME | Should -Be '${{ runner.name }}'
+                $step.env.AVM_GITHUB_RUNNER_ENVIRONMENT | Should -Be '${{ runner.environment }}'
+                $step.env.AVM_GITHUB_EVENT_NAME | Should -Be '${{ github.event_name }}'
+                $step.env.AVM_GITHUB_HEAD_SHA | Should -Be '${{ github.sha }}'
+                $step.env.AVM_GITHUB_PR_HEAD_SHA | Should -Be '${{ github.event.pull_request.head.sha }}'
+                $step.with.inlineScript | Should -Not -Match 'job\.started_at|github\.job|github\.token|GH_TOKEN|GITHUB_TOKEN'
+                $cleanupLogin = @($action.runs.steps | Where-Object { $_.name -eq 'Azure Login - Default' })[-1]
+                $cleanupLogin.if | Should -Match "failure\(\).*steps\.deploy_step\.outputs\.deploymentNames != ''"
+                $removal = $action.runs.steps | Where-Object name -EQ 'Remove deployed resources'
+                $removal.if | Should -Match "success\(\) \|\| failure\(\)"
+                $removal.if | Should -Not -Match 'cancelled'
+            }
         }
 
         Context 'Shared status-recovery deadline' -Tag 'RecoveryDeadline' {
