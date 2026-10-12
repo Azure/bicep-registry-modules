@@ -139,6 +139,21 @@ param cases = {
   uuidZero: getName('role_assignment', { uniqueLength: 0, suffix: ['one'] })
   uuidOther: getName('role_assignment', { uniqueLength: 0, suffix: ['two'] })
   custom: getName('storage_account', { prefix: ['Contoso'], uniqueSeed: 'abcd', customOverrides: custom })
+  customerMetadata: getName('resource_group', {
+    uniqueSeed: 'a1b2c3d4'
+    customOverrides: {
+      schema_version: 2
+      resources: {
+        resource_group: {
+          source: { organization: 'Contoso' }
+          override_reason: 'Organization metadata'
+          override_source: 'https://example.com/naming'
+          legacy_slug: 'old'
+          legacy_outputs: ['old_name']
+        }
+      }
+    }
+  })
   customStrict: getName(
     'storage_account',
     { prefix: ['Contoso'], uniqueSeed: 'abcd', customOverrides: custom, requireValidNames: true }
@@ -159,6 +174,10 @@ param cases = {
   nullList: getName('storage_account', {
     uniqueLength: 0
     customOverrides: { schema_version: 2, resources: { storage_account: { forbidden_suffixes: null } } }
+  })
+  nullLegacyOutputs: getName('storage_account', {
+    uniqueLength: 0
+    customOverrides: { schema_version: 2, resources: { storage_account: { legacy_outputs: null } } }
   })
   invalidInterpolatedRegex: getName('storage_account', {
     uniqueLength: 0

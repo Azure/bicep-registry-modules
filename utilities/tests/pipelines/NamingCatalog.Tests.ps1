@@ -85,8 +85,12 @@ Describe 'Terraform naming catalog synchronization' {
         }
     }
 
-    It 'Decodes the compact index to every merged property without losing nulls or missing fields' {
+    It 'Decodes every retained runtime property and excludes only approved bundled metadata' {
         $fields = Get-Content -LiteralPath (Join-Path $modulePath 'generated' 'fields.json') -Raw | ConvertFrom-Json
+        $excluded = @('source', 'override_reason', 'override_source', 'legacy_slug', 'legacy_outputs')
+        @($manifest.runtime.excludedProperties) -join ',' | Should -BeExactly ($excluded -join ',')
+        $manifest.runtime.rowEncoding | Should -BeExactly 'delimited-indexes-v1'
+        @($fields | Where-Object { $_ -cin $excluded }).Count | Should -Be 0
         $values = [Collections.Generic.List[object]]::new()
         foreach ($file in Get-ChildItem -LiteralPath (Join-Path $modulePath 'generated') -Filter 'values-*.json' | Sort-Object Name) {
             $file.Length | Should -BeLessOrEqual $manifest.chunkSize
@@ -108,7 +112,9 @@ Describe 'Terraform naming catalog synchronization' {
         )
         @($rows.Keys | Sort-Object) -join ',' | Should -BeExactly (@($expected.Keys | Sort-Object) -join ',')
         foreach ($key in $rows.Keys) {
-            $row = $rows[$key]
+            $rows[$key] | Should -BeOfType [string]
+            $rows[$key] | Should -Match '^(?:-1|0|[1-9][0-9]*)(?:,(?:-1|0|[1-9][0-9]*))*$'
+            $row = @($rows[$key].Split(',') | ForEach-Object { [int] $_ })
             $row.Count | Should -Be $fields.Count
             $decoded = [ordered]@{}
             for ($index = 0; $index -lt $fields.Count; $index++) {
@@ -117,7 +123,7 @@ Describe 'Terraform naming catalog synchronization' {
                 $row[$index] | Should -BeLessThan $values.Count
                 $decoded[$fields[$index]] = $values[$row[$index]]
             }
-            @($decoded.Keys | Sort-Object) -join ',' | Should -BeExactly (@($expected[$key].Keys | Sort-Object) -join ',') -Because $key
+            @($decoded.Keys | Sort-Object) -join ',' | Should -BeExactly (@($expected[$key].Keys | Where-Object { $_ -cnotin $excluded } | Sort-Object) -join ',') -Because $key
             foreach ($field in $decoded.Keys) {
                 Get-NamingSha256 (Get-NamingJsonBytes $decoded[$field]) |
                     Should -BeExactly (Get-NamingSha256 (Get-NamingJsonBytes $expected[$key][$field])) -Because "$key.$field"
@@ -125,6 +131,26 @@ Describe 'Terraform naming catalog synchronization' {
         }
         $loader = Get-Content -LiteralPath (Join-Path $modulePath 'generated' 'catalog.bicep') -Raw
         $loader | Should -Not -Match 'loadJsonContent\(''\./(?:generated|manual)-'
+    }
+
+    It 'Omits bundled metadata from runtime artifacts while retaining it in lossless snapshots' {
+        $copy = Copy-NamingSources
+        $catalog = $utf8.GetString($copy['data/resource-name-rules.manual.json']) | ConvertFrom-Json -AsHashtable -Depth 100
+        $marker = 'omitted-provenance-marker-' + ('x' * 1024)
+        $catalog.resources['storage_account'] = @{
+            source = @{ note = $marker }
+            override_reason = $marker
+            override_source = $marker
+            legacy_slug = $marker
+            legacy_outputs = @($marker)
+        }
+        $copy['data/resource-name-rules.manual.json'] = Get-NamingJsonBytes $catalog
+        $generated = New-NamingCatalogArtifacts -SourceFiles $copy -Revision $manifest.revision
+        foreach ($path in $generated.Artifacts.Keys | Where-Object { $_ -cnotmatch '^(?:generated|manual)-' }) {
+            $utf8.GetString($generated.Artifacts[$path]) | Should -Not -Match ([regex]::Escape($marker)) -Because $path
+        }
+        $generated.Catalog.storage_account.source.note | Should -BeExactly $marker
+        $utf8.GetString($generated.Artifacts['manual-0000.json']) | Should -Match ([regex]::Escape($marker))
     }
 
     It 'Chunks indexed arrays without flattening null, empty or singleton values' {

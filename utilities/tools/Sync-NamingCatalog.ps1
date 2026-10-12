@@ -253,25 +253,27 @@ function New-NamingCatalogArtifacts {
     }
 
     $merged = Merge-NamingCatalogResources -Catalogs @($catalogs['data/resource-name-rules.json'].resources, $catalogs['data/resource-name-rules.manual.json'].resources)
+    $excludedProperties = @('source', 'override_reason', 'override_source', 'legacy_slug', 'legacy_outputs')
+    $runtimeProperties = @($supportedProperties | Where-Object { $_ -cnotin $excludedProperties })
     $values = [Collections.Generic.List[object]]::new()
     $indexes = [Collections.Generic.Dictionary[string, int]]::new([StringComparer]::Ordinal)
     $rows = [ordered]@{}
     foreach ($entry in $merged.GetEnumerator()) {
         $rows[$entry.Key] = @(
-            foreach ($field in $supportedProperties) {
+            foreach ($field in $runtimeProperties) {
                 if (-not $entry.Value.Contains($field)) { -1; continue }
                 $value = $entry.Value[$field]
                 $json = $utf8.GetString((Get-NamingJsonBytes $value))
                 if (-not $indexes.ContainsKey($json)) { $indexes[$json] = $values.Count; $values.Add($value) }
                 $indexes[$json]
             }
-        )
+        ) -join ','
     }
     $entryPaths = Add-NamingJsonChunks -Artifacts $artifacts -Stem 'entries' -Items $rows -ChunkSize $ChunkSize
     $valuePaths = Add-NamingJsonChunks -Artifacts $artifacts -Stem 'values' -Items $values.ToArray() -ChunkSize $ChunkSize
     $manualSlugKeys = @($catalogs['data/resource-name-rules.manual.json'].resources.GetEnumerator() | Where-Object { $null -ne $_.Value.slug } | ForEach-Object Key)
     $slugPaths = Add-NamingJsonChunks -Artifacts $artifacts -Stem 'slugs' -Items $manualSlugKeys -ChunkSize $ChunkSize
-    $artifacts['fields.json'] = Get-NamingJsonBytes $supportedProperties
+    $artifacts['fields.json'] = Get-NamingJsonBytes $runtimeProperties
 
     $patterns = [Collections.Generic.SortedSet[string]]::new([StringComparer]::Ordinal)
     foreach ($catalog in $catalogs.Values) {
@@ -321,6 +323,10 @@ function New-NamingCatalogArtifacts {
             repository = 'Azure/terraform-azure-avm-utl-naming'
             revision = $Revision
             chunkSize = $ChunkSize
+            runtime = [ordered]@{
+                excludedProperties = $excludedProperties
+                rowEncoding = 'delimited-indexes-v1'
+            }
             sources = $sources
             generated = $generated
         }

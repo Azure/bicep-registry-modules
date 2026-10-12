@@ -8,7 +8,6 @@ var catalogEntries = shallowMerge([
 @export()
 var catalogValues = flatten([
   loadJsonContent('./values-0000.json')
-  loadJsonContent('./values-0001.json')
 ])
 
 @export()

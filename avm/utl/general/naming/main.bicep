@@ -14,7 +14,9 @@ UUID entries use native Bicep `guid`, whose namespace differs from Terraform `uu
 
 `nameAvailable` means rendering succeeded, not that Azure accepts or has the name available. Validation returns null, never true, when catalog constraints or native regex support are incomplete. Supported anchored ASCII character-class patterns and literals are compiled into validation descriptors without editing the upstream rules; other RE2 patterns (including Unicode classes and new customer patterns) remain explicitly unvalidated. `requireValidNames` rejects both invalid and incompletely validated candidates.
 
-Upstream snapshots under `upstream` are byte-identical at the revision in `catalog-source.json`. Run `. .\utilities\tools\Sync-NamingCatalog.ps1; Sync-NamingCatalog -Check` from the repository root to verify hashes and lossless chunk recomposition. A generated field/value index reduces repeated data in consumers without removing rule metadata. Each importing template still embeds the catalog and functions; calculate names once and pass strings to child modules when possible. Consumer-size checks reserve a 1 MiB budget per importing template and cover three nested consumers against ARM's 4 MiB template limit.
+Upstream snapshots under `upstream` are byte-identical at the revision in `catalog-source.json`. Run `. .\utilities\tools\Sync-NamingCatalog.ps1; Sync-NamingCatalog -Check` from the repository root to verify hashes and lossless chunk recomposition. The compact runtime catalog omits bundled `source`, `override_reason`, `override_source`, `legacy_slug` and `legacy_outputs`; inspect the Terraform snapshots for that provenance and legacy-only metadata. All naming rules and validation diagnostics remain. Explicit customer properties are still retained and replace whole properties.
+
+Generated JSON is minified, shares repeated values and packs positional indexes into strings so consumer compilation does not expand them into indented arrays. Each importing template still embeds the catalog and functions; calculate names once and pass strings to child modules when possible. Consumer-size checks enforce a 256 KiB budget for one importer and cover three and ten independent nested consumers against ARM's 4 MiB template limit.
 
 The downstream synchronization workflow reports potential rendering, validation and metadata-only changes and runs native, catalog, documentation and scoped compliance checks before proposing a draft. It does not rely on token-created events starting other checks automatically. Maintainers still review naming changes and choose release versions; the workflow never scrapes Azure rules or merges updates.
 
@@ -109,8 +111,6 @@ var ruleDefaults = {
   variant: null
   slug: null
   slug_source: 'manual'
-  legacy_slug: null
-  legacy_outputs: []
   min_length: null
   max_length: null
   scope: null
@@ -147,7 +147,7 @@ var builtInTokens = [
 ]
 
 @export()
-@description('Merged generated and manual catalog, retaining all upstream metadata and null constraints. This is not a validation guarantee.')
+@description('Merged runtime catalog, retaining naming rules, diagnostics and null constraints, but excluding bundled provenance and legacy-only metadata. This is not a validation guarantee.')
 var namingCatalog = toObject(
   items(catalogEntries),
   entry => entry.key,
@@ -155,7 +155,7 @@ var namingCatalog = toObject(
 )
 
 @export()
-@description('Inspect the catalog after a version-2 customer overlay. Invalid or case-colliding entries include catalogErrors; mis-cased overrides never replace canonical entries. Uses whole-property replacement.')
+@description('Inspect runtime rules after a version-2 customer overlay. Explicit customer properties are retained; invalid or case-colliding entries include catalogErrors. Uses whole-property replacement.')
 func getCatalog(overrides namingOverridesType) object =>
   toObject(
     keyGroups(concat(
@@ -202,7 +202,8 @@ func getNamesByResourceType(resourceType string, options namingOptionsType) obje
 
 func hasKey(value object, key string) bool => contains(map(items(value), entry => entry.key), key)
 func isBundledKey(key string) bool => key == toLower(key) && contains(catalogEntries, key)
-func decodeRule(row array) object =>
+func decodeRule(row string) object => decodeRuleIndexes(map(split(row, ','), value => int(value)))
+func decodeRuleIndexes(row array) object =>
   toObject(
     filter(range(0, length(catalogFields)), index => row[index] >= 0),
     index => catalogFields[index],
@@ -252,7 +253,6 @@ func ruleErrors(key string, rule object) array =>
       : ''
     !empty(filter(
         [
-          'legacy_outputs'
           'validation_notes'
           'forbidden_prefixes'
           'forbidden_suffixes'
@@ -260,7 +260,7 @@ func ruleErrors(key string, rule object) array =>
           'reserved_names'
         ],
         field => rule[field] == null
-      ))
+      )) || contains(rule, 'legacy_outputs') && rule.legacy_outputs == null
       ? 'Rule lists cannot be null.'
       : ''
     rule.min_length != null && rule.min_length < 0 || rule.max_length != null && rule.max_length < 0

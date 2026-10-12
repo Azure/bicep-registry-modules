@@ -41,7 +41,8 @@ Describe 'Native Bicep naming functions' {
         foreach ($variable in $savedEnvironment.Keys) { [Environment]::SetEnvironmentVariable($variable, $savedEnvironment[$variable]) }
     }
 
-    It 'Renders every merged upstream entry and preserves its supplied properties' {
+    It 'Renders every merged entry and preserves naming rules without bundled provenance or legacy metadata' {
+        $excluded = @('source', 'override_reason', 'override_source', 'legacy_slug', 'legacy_outputs')
         @($baseline.Keys | Sort-Object) -join ',' | Should -BeExactly (@(@($generated.resources.Keys) + @($manual.resources.Keys) | Sort-Object -Unique) -join ',')
         foreach ($key in $baseline.Keys) {
             $result = $baseline[$key]
@@ -51,7 +52,10 @@ Describe 'Native Bicep naming functions' {
             foreach ($entry in @($generated.resources[$key], $manual.resources[$key])) {
                 if ($null -ne $entry) { foreach ($property in $entry.Keys) { $expected[$property] = $entry[$property] } }
             }
-            foreach ($property in $expected.Keys) {
+            foreach ($property in $excluded) {
+                $result.rule.Contains($property) | Should -BeFalse -Because "$key.$property"
+            }
+            foreach ($property in $expected.Keys | Where-Object { $_ -cnotin $excluded }) {
                 ConvertTo-Json -InputObject $result.rule[$property] -Depth 100 -Compress |
                     Should -BeExactly (ConvertTo-Json -InputObject $expected[$property] -Depth 100 -Compress) -Because "$key.$property"
             }
@@ -214,7 +218,7 @@ Describe 'Native Bicep naming functions' {
     }
 
     It 'Rejects invalid inputs and unsupported syntax without success-shaped results' {
-        foreach ($case in @('instanceInvalid', 'formatInvalid', 'unsupportedTemplate', 'malformedLiteral', 'escapedTemplate', 'unknownToken', 'unclosedTemplate', 'invalidReservedToken', 'invalidReservedTokenCase', 'invalidInstanceTokenCase', 'exactAndIdentity', 'identityMissing', 'identityTooLong', 'unknownKey', 'invalidSlugKey', 'invalidBounds', 'nullBoolean', 'nullList', 'invalidInterpolatedRegex', 'unrelatedInvalidEntry', 'invalidNewEntry')) {
+        foreach ($case in @('instanceInvalid', 'formatInvalid', 'unsupportedTemplate', 'malformedLiteral', 'escapedTemplate', 'unknownToken', 'unclosedTemplate', 'invalidReservedToken', 'invalidReservedTokenCase', 'invalidInstanceTokenCase', 'exactAndIdentity', 'identityMissing', 'identityTooLong', 'unknownKey', 'invalidSlugKey', 'invalidBounds', 'nullBoolean', 'nullList', 'nullLegacyOutputs', 'invalidInterpolatedRegex', 'unrelatedInvalidEntry', 'invalidNewEntry')) {
             $cases[$case].name | Should -BeNullOrEmpty -Because $case
             $cases[$case].nameUnique | Should -BeNullOrEmpty -Because $case
             $cases[$case].nameAvailable | Should -BeFalse -Because $case
@@ -242,6 +246,12 @@ Describe 'Native Bicep naming functions' {
         $cases.custom.rule.max_length | Should -BeNullOrEmpty
         $cases.custom.rule.source.Count | Should -Be 1
         $cases.custom.rule.source.organization | Should -BeExactly 'Contoso'
+        $cases.customerMetadata.nameUnique | Should -BeExactly $baseline.resource_group.nameUnique
+        $cases.customerMetadata.rule.source.organization | Should -BeExactly 'Contoso'
+        $cases.customerMetadata.rule.override_reason | Should -BeExactly 'Organization metadata'
+        $cases.customerMetadata.rule.override_source | Should -BeExactly 'https://example.com/naming'
+        $cases.customerMetadata.rule.legacy_slug | Should -BeExactly 'old'
+        $cases.customerMetadata.rule.legacy_outputs | Should -Be @('old_name')
         $evaluated.merged.value.site.forbidden_suffixes.Count | Should -Be 0
         $evaluated.merged.value.site.reserved_names | Should -Be @('admin')
         $cases.customNew.name | Should -BeExactly 'contosoteam'
@@ -354,7 +364,7 @@ param result = getName('storage_account', { uniqueSeed: 'abcd' })
         $consumer.nameUnique | Should -BeExactly 'stabcd'
     }
 
-    It 'Budgets the actual importing consumer and three nested copies without dropping metadata' {
+    It 'Budgets the actual importing consumer and three or ten separate nested copies' {
         $libraryPath = Join-Path $TestDrive 'sized-library.json'
         $diagnostics = bicep build (Join-Path $modulePath 'main.bicep') --outfile $libraryPath 2>&1
         if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
@@ -367,40 +377,39 @@ output result object = getName('storage_account', { uniqueIdentity: identity })
         $consumerOutput = Join-Path $TestDrive 'runtime-consumer.json'
         $diagnostics = bicep build $consumerPath --outfile $consumerOutput 2>&1
         if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
-        $nestedPath = Join-Path $TestDrive 'nested-consumers.bicep'
-        @'
-param identity string
-module first './runtime-consumer.bicep' = {
-  name: 'first'
-  params: { identity: '${identity}-first' }
-}
-module second './runtime-consumer.bicep' = {
-  name: 'second'
-  params: { identity: '${identity}-second' }
-}
-module third './runtime-consumer.bicep' = {
-  name: 'third'
-  params: { identity: '${identity}-third' }
-}
-output results array = [first.outputs.result, second.outputs.result, third.outputs.result]
-'@ | Set-Content -LiteralPath $nestedPath -Encoding utf8NoBOM
-        $nestedOutput = Join-Path $TestDrive 'nested-consumers.json'
-        $diagnostics = bicep build $nestedPath --outfile $nestedOutput 2>&1
-        if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
         $consumerBytes = (Get-Item -LiteralPath $consumerOutput).Length
-        $consumerBytes | Should -BeLessThan 1048576
-        $nestedBytes = (Get-Item -LiteralPath $nestedOutput).Length
-        $nestedBytes | Should -BeLessThan 4194304
-        $nested = Get-Content -LiteralPath $nestedOutput -Raw | ConvertFrom-Json -AsHashtable -Depth 100
-        $nested.resources.Count | Should -Be 3
-        $nestedTemplates = $nested.resources -is [Collections.IDictionary] ? @($nested.resources.Values) : @($nested.resources)
-        foreach ($resource in $nestedTemplates) {
-            $resource.properties.template.functions.Count | Should -BeGreaterThan 0
+        $consumerBytes | Should -BeLessThan 262144
+        $nestedSizes = [ordered]@{}
+        foreach ($count in @(3, 10)) {
+            $nestedPath = Join-Path $TestDrive "nested-$count.bicep"
+            $modules = foreach ($index in 0..($count - 1)) {
+                @"
+module consumer$index './runtime-consumer.bicep' = {
+  name: 'consumer$index'
+  params: { identity: identity }
+}
+"@
+            }
+            $references = (0..($count - 1) | ForEach-Object { "consumer$($_).outputs.result" }) -join ', '
+            $moduleText = $modules -join "`n"
+            "param identity string`n$moduleText`noutput results array = [$references]" |
+                Set-Content -LiteralPath $nestedPath -Encoding utf8NoBOM
+            $nestedOutput = Join-Path $TestDrive "nested-$count.json"
+            $diagnostics = bicep build $nestedPath --outfile $nestedOutput 2>&1
+            if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
+            $nestedSizes["$count"] = (Get-Item -LiteralPath $nestedOutput).Length
+            $nestedSizes["$count"] | Should -BeLessThan 4194304
+            $nested = Get-Content -LiteralPath $nestedOutput -Raw | ConvertFrom-Json -AsHashtable -Depth 100
+            $nested.resources.Count | Should -Be $count
+            $nestedTemplates = $nested.resources -is [Collections.IDictionary] ? @($nested.resources.Values) : @($nested.resources)
+            foreach ($resource in $nestedTemplates) {
+                $resource.properties.template.functions.Count | Should -BeGreaterThan 0
+            }
         }
         $consumer = Get-Content -LiteralPath $consumerOutput -Raw | ConvertFrom-Json -AsHashtable -Depth 100
         $consumer.outputs.result.value | Should -Match "getName.*parameters\('identity'\)"
         if ($consumerResultsPath) {
-            [ordered]@{ consumerBytes = $consumerBytes; consumerBudgetBytes = 1048576; nestedBytes = $nestedBytes; templateLimitBytes = 4194304 } |
+            [ordered]@{ consumerBytes = $consumerBytes; consumerBudgetBytes = 262144; nestedBytes = $nestedSizes['3']; tenNestedBytes = $nestedSizes['10']; templateLimitBytes = 4194304 } |
                 ConvertTo-Json | Set-Content -LiteralPath $consumerResultsPath -Encoding utf8NoBOM
         }
     }

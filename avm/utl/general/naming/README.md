@@ -14,7 +14,9 @@ UUID entries use native Bicep `guid`, whose namespace differs from Terraform `uu
 
 `nameAvailable` means rendering succeeded, not that Azure accepts or has the name available. Validation returns null, never true, when catalog constraints or native regex support are incomplete. Supported anchored ASCII character-class patterns and literals are compiled into validation descriptors without editing the upstream rules; other RE2 patterns (including Unicode classes and new customer patterns) remain explicitly unvalidated. `requireValidNames` rejects both invalid and incompletely validated candidates.
 
-Upstream snapshots under `upstream` are byte-identical at the revision in `catalog-source.json`. Run `. .\utilities\tools\Sync-NamingCatalog.ps1; Sync-NamingCatalog -Check` from the repository root to verify hashes and lossless chunk recomposition. A generated field/value index reduces repeated data in consumers without removing rule metadata. Each importing template still embeds the catalog and functions; calculate names once and pass strings to child modules when possible. Consumer-size checks reserve a 1 MiB budget per importing template and cover three nested consumers against ARM's 4 MiB template limit.
+Upstream snapshots under `upstream` are byte-identical at the revision in `catalog-source.json`. Run `. .\utilities\tools\Sync-NamingCatalog.ps1; Sync-NamingCatalog -Check` from the repository root to verify hashes and lossless chunk recomposition. The compact runtime catalog omits bundled `source`, `override_reason`, `override_source`, `legacy_slug` and `legacy_outputs`; inspect the Terraform snapshots for that provenance and legacy-only metadata. All naming rules and validation diagnostics remain. Explicit customer properties are still retained and replace whole properties.
+
+Generated JSON is minified, shares repeated values and packs positional indexes into strings so consumer compilation does not expand them into indented arrays. Each importing template still embeds the catalog and functions; calculate names once and pass strings to child modules when possible. Consumer-size checks enforce a 256 KiB budget for one importer and cover three and ten independent nested consumers against ARM's 4 MiB template limit.
 
 The downstream synchronization workflow reports potential rendering, validation and metadata-only changes and runs native, catalog, documentation and scoped compliance checks before proposing a draft. It does not rely on token-created events starting other checks automatically. Maintainers still review naming changes and choose release versions; the workflow never scrapes Azure rules or merges updates.
 
@@ -142,7 +144,7 @@ _None_
 
 | Function | Description |
 | :-- | :-- |
-| `getCatalog` | Inspect the catalog after a version-2 customer overlay. Invalid or case-colliding entries include catalogErrors; mis-cased overrides never replace canonical entries. Uses whole-property replacement. |
+| `getCatalog` | Inspect runtime rules after a version-2 customer overlay. Explicit customer properties are retained; invalid or case-colliding entries include catalogErrors. Uses whole-property replacement. |
 | `getName` | Render one catalog key. Inspect nameErrors/nameUniqueErrors, validation and token-retention flags; no Azure availability check is made. |
 | `getNames` | Render selected keys independently. Exact duplicates are deduplicated; case-colliding groups return structured errors rather than silently selecting a spelling. |
 | `getNamesByResourceType` | Render every matching catalog variant for an exact Azure resource type. Variants remain keyed separately; no arbitrary first-match selection is made. |
