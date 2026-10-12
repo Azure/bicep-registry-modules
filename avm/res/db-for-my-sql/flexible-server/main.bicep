@@ -473,7 +473,7 @@ module flexibleServer_configurations 'configuration/main.bicep' = [
   }
 ]
 
-module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = {
+module flexibleServer_advancedThreatProtection 'advanced-threat-protection-setting/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-MySQL-AdvancedThreatProtection'
   params: {
     flexibleServerName: flexibleServer.name

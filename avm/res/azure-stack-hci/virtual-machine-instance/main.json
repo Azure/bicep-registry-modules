@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "15293486229011844917"
+      "templateHash": "452290217841845548"
     },
     "name": "Azure Stack HCI Virtual Machine Instance",
     "description": "This module deploys an Azure Stack HCI Virtual Machine Instance."
@@ -229,7 +229,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -249,7 +249,7 @@
     "existingMachine": {
       "existing": true,
       "type": "Microsoft.HybridCompute/machines",
-      "apiVersion": "2023-10-03-preview",
+      "apiVersion": "2026-07-15",
       "name": "[parameters('name')]",
       "dependsOn": [
         "hybridCompute"
@@ -333,8 +333,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "2332904181907667266"
+              "version": "0.47.16.16243",
+              "templateHash": "1193791963940659651"
             },
             "name": "Hybrid Compute Machines",
             "description": "This module deploys an Arc Machine for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource. This module should not be used for other Arc-enabled server scenarios, where the Arc Machine resource is created automatically by the onboarding process."
@@ -361,12 +361,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -441,7 +448,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             }
@@ -555,10 +562,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.HybridCompute/machines@2026-07-15#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",
@@ -576,6 +586,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
+            "$fxv#0": "46d3xbcp.res.d384932",
             "linuxConfiguration": {
               "patchSettings": "[if(or(equals(parameters('patchMode'), 'AutomaticByPlatform'), equals(parameters('patchMode'), 'ImageDefault')), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode')), null())]"
             },
@@ -592,14 +603,15 @@
               "Arc machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
               "Arc machine User Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')]",
               "Windows Admin Center Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a6333a3e-0164-44c3-b281-7a577aff287f')]"
-            }
+            },
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.hybridcompute-machine.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('0.6.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -617,7 +629,7 @@
             },
             "machine": {
               "type": "Microsoft.HybridCompute/machines",
-              "apiVersion": "2024-07-10",
+              "apiVersion": "2026-07-15",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "identity": {
@@ -639,8 +651,8 @@
             "AzureWindowsBaseline": {
               "condition": "[not(empty(parameters('guestConfiguration')))]",
               "type": "Microsoft.GuestConfiguration/guestConfigurationAssignments",
-              "apiVersion": "2020-06-25",
-              "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('name'))]",
+              "apiVersion": "2024-04-05",
+              "scope": "[resourceId('Microsoft.HybridCompute/machines', parameters('name'))]",
               "name": "[format('gca-{0}', parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
@@ -654,11 +666,11 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.HybridCompute/machines', parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "machine"
@@ -671,7 +683,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.HybridCompute/machines', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.HybridCompute/machines', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -715,14 +727,14 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('machine', '2024-07-10', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('machine', '2026-07-15', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('machine', '2024-07-10', 'full').location]"
+              "value": "[reference('machine', '2026-07-15', 'full').location]"
             }
           }
         }

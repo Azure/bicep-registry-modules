@@ -61,9 +61,8 @@ jobs:
           }
 
           Write-Output '::group::Install dependencies'
-          if (-not (Get-Module -ListAvailable -Name 'Avm.Authoring')) {
-            Install-Module -Name 'Avm.Authoring' -Repository 'PSGallery' -Scope 'CurrentUser' -Force -SkipPublisherCheck -AllowClobber
-          }
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Initialize-AvmPester.ps1')
+          Initialize-AvmPester -RepoRootPath $env:GITHUB_WORKSPACE
           Write-Output '::endgroup::'
 
           Write-Output '::group::Collect module folder paths'

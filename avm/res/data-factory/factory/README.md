@@ -45,8 +45,9 @@ The following section provides usage examples for the module, which were used to
 
 - [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-1-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
 - [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using a Git repository configuration](#example-3-using-a-git-repository-configuration)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
@@ -186,7 +187,77 @@ param name = 'dffmin001'
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Using a Git repository configuration_
+
+This instance deploys the module with a Git (Azure DevOps) repository configuration and validates that the configuration is actually persisted on the Data Factory - both after the initial and after a repeated deployment.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/git-config]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module factory 'br/public:avm/res/data-factory/factory:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dffgit001'
+    // Non-required parameters
+    gitConfiguration: '<gitConfiguration>'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dffgit001"
+    },
+    // Non-required parameters
+    "gitConfiguration": {
+      "value": "<gitConfiguration>"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-factory/factory:<version>'
+
+// Required parameters
+param name = 'dffgit001'
+// Non-required parameters
+param gitConfiguration = '<gitConfiguration>'
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -222,7 +293,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    gitConfigureLater: true
     globalParameters: {
       testParameter1: {
         type: 'String'
@@ -388,9 +458,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "gitConfigureLater": {
-      "value": true
     },
     "globalParameters": {
       "value": {
@@ -570,7 +637,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param gitConfigureLater = true
 param globalParameters = {
   testParameter1: {
     type: 'String'
@@ -698,7 +764,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -739,7 +805,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    gitConfigureLater: true
     integrationRuntimes: [
       {
         integrationRuntimeCustomDescription: 'WAF-aligned self-hosted integration runtime with enhanced security'
@@ -828,9 +893,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "gitConfigureLater": {
-      "value": true
     },
     "integrationRuntimes": {
       "value": [
@@ -923,7 +985,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param gitConfigureLater = true
 param integrationRuntimes = [
   {
     integrationRuntimeCustomDescription: 'WAF-aligned self-hosted integration runtime with enhanced security'
@@ -984,17 +1045,7 @@ param tags = {
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`gitAccountName`](#parameter-gitaccountname) | string | The account name. |
-| [`gitCollaborationBranch`](#parameter-gitcollaborationbranch) | string | The collaboration branch name. Default is 'main'. |
-| [`gitConfigureLater`](#parameter-gitconfigurelater) | bool | Boolean to define whether or not to configure git during template deployment. |
-| [`gitDisablePublish`](#parameter-gitdisablepublish) | bool | Disable manual publish operation in ADF studio to favor automated publish. |
-| [`gitHostName`](#parameter-githostname) | string | The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'. |
-| [`gitLastCommitId`](#parameter-gitlastcommitid) | string | Add the last commit id from your git repo. |
-| [`gitProjectName`](#parameter-gitprojectname) | string | The project name. Only relevant for 'FactoryVSTSConfiguration'. |
-| [`gitRepositoryName`](#parameter-gitrepositoryname) | string | The repository name. |
-| [`gitRepoType`](#parameter-gitrepotype) | string | Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'. |
-| [`gitRootFolder`](#parameter-gitrootfolder) | string | The root folder path name. Default is '/'. |
-| [`gitTenantId`](#parameter-gittenantid) | string | Add the tenantId of your Azure subscription. |
+| [`gitConfiguration`](#parameter-gitconfiguration) | object | The Git repository configuration of the Data Factory. If omitted, the Data Factory is deployed without a Git repository configuration. |
 | [`globalParameters`](#parameter-globalparameters) | object | List of Global Parameters for the factory. |
 | [`integrationRuntimes`](#parameter-integrationruntimes) | array | An array of objects for the configuration of an Integration Runtime. |
 | [`linkedServices`](#parameter-linkedservices) | array | An array of objects for the configuration of Linked Services. |
@@ -1226,93 +1277,12 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `gitAccountName`
+### Parameter: `gitConfiguration`
 
-The account name.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitCollaborationBranch`
-
-The collaboration branch name. Default is 'main'.
+The Git repository configuration of the Data Factory. If omitted, the Data Factory is deployed without a Git repository configuration.
 
 - Required: No
-- Type: string
-- Default: `'main'`
-
-### Parameter: `gitConfigureLater`
-
-Boolean to define whether or not to configure git during template deployment.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `gitDisablePublish`
-
-Disable manual publish operation in ADF studio to favor automated publish.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `gitHostName`
-
-The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitLastCommitId`
-
-Add the last commit id from your git repo.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitProjectName`
-
-The project name. Only relevant for 'FactoryVSTSConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitRepositoryName`
-
-The repository name.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitRepoType`
-
-Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `'FactoryVSTSConfiguration'`
-
-### Parameter: `gitRootFolder`
-
-The root folder path name. Default is '/'.
-
-- Required: No
-- Type: string
-- Default: `'/'`
-
-### Parameter: `gitTenantId`
-
-Add the tenantId of your Azure subscription.
-
-- Required: No
-- Type: string
-- Default: `''`
+- Type: object
 
 ### Parameter: `globalParameters`
 
@@ -2179,7 +2149,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
-| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Notes

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10057085331125204597"
+      "templateHash": "5071117241890279124"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory."
@@ -851,82 +851,15 @@
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set."
       }
     },
-    "gitConfigureLater": {
-      "type": "bool",
-      "defaultValue": true,
+    "gitConfiguration": {
+      "type": "object",
       "metadata": {
-        "description": "Optional. Boolean to define whether or not to configure git during template deployment."
-      }
-    },
-    "gitRepoType": {
-      "type": "string",
-      "defaultValue": "FactoryVSTSConfiguration",
-      "metadata": {
-        "description": "Optional. Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'."
-      }
-    },
-    "gitAccountName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The account name."
-      }
-    },
-    "gitProjectName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The project name. Only relevant for 'FactoryVSTSConfiguration'."
-      }
-    },
-    "gitRepositoryName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The repository name."
-      }
-    },
-    "gitCollaborationBranch": {
-      "type": "string",
-      "defaultValue": "main",
-      "metadata": {
-        "description": "Optional. The collaboration branch name. Default is 'main'."
-      }
-    },
-    "gitDisablePublish": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Disable manual publish operation in ADF studio to favor automated publish."
-      }
-    },
-    "gitRootFolder": {
-      "type": "string",
-      "defaultValue": "/",
-      "metadata": {
-        "description": "Optional. The root folder path name. Default is '/'."
-      }
-    },
-    "gitHostName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'."
-      }
-    },
-    "gitLastCommitId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Add the last commit id from your git repo."
-      }
-    },
-    "gitTenantId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Add the tenantId of your Azure subscription."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DataFactory/factories@2018-06-01#properties/properties/properties/repoConfiguration"
+        },
+        "description": "Optional. The Git repository configuration of the Data Factory. If omitted, the Data Factory is deployed without a Git repository configuration."
+      },
+      "nullable": true
     },
     "globalParameters": {
       "type": "object",
@@ -1095,7 +1028,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "repoConfiguration": "[if(bool(parameters('gitConfigureLater')), null(), union(createObject('type', parameters('gitRepoType'), 'hostName', parameters('gitHostName'), 'accountName', parameters('gitAccountName'), 'repositoryName', parameters('gitRepositoryName'), 'collaborationBranch', parameters('gitCollaborationBranch'), 'rootFolder', parameters('gitRootFolder'), 'disablePublish', parameters('gitDisablePublish'), 'lastCommitId', parameters('gitLastCommitId'), 'tenantId', parameters('gitTenantId')), if(equals(parameters('gitRepoType'), 'FactoryVSTSConfiguration'), createObject('projectName', parameters('gitProjectName')), createObject()), createObject()))]",
+        "repoConfiguration": "[parameters('gitConfiguration')]",
         "globalParameters": "[parameters('globalParameters')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null()))]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), if(not(variables('isHSMManagedCMK')), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')), fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))), 'vaultBaseUrl', if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault').vaultUri, format('https://{0}.managedhsm.azure.net/', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))))), null())]",
@@ -2186,8 +2119,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "18436885663402767850"
+              "version": "0.43.8.12551",
+              "templateHash": "4295240387232557710"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -2503,14 +2436,15 @@
               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
-            }
+            },
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2608,6 +2542,9 @@
                   },
                   "privateDnsZoneConfigs": {
                     "value": "[parameters('privateDnsZoneGroup').privateDnsZoneGroupConfigs]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2617,8 +2554,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "9935179114830442414"
+                      "version": "0.43.8.12551",
+                      "templateHash": "15830984844857508530"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -2671,6 +2608,13 @@
                       "metadata": {
                         "description": "Optional. The name of the private DNS zone group."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -2679,6 +2623,26 @@
                       "type": "Microsoft.Network/privateEndpoints",
                       "apiVersion": "2025-05-01",
                       "name": "[parameters('privateEndpointName')]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.network-privendpoint-privdnszonegrp.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",

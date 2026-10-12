@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6672960706974331016"
+      "templateHash": "15954118995483076627"
     },
     "name": "Azure Iot hubs",
     "description": "This module deploys a Iot Hub."
@@ -1175,7 +1175,9 @@
     "iothub_privateEndpoints": {
       "copy": {
         "name": "iothub_privateEndpoints",
-        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",

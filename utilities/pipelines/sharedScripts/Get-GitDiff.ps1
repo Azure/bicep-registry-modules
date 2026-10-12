@@ -134,7 +134,7 @@ function Get-GitDiff {
 
     if (-not $SkipStats) {
         $statsInput = @(
-            '--diff-filter=AM',
+            '--diff-filter=AMR', # Added, modified, renamed/moved
             $compareFromCommit,
             $compareWithCommit,
             ((-not [String]::IsNullOrEmpty($PathFilter)) ? '--' : $null),
@@ -145,7 +145,7 @@ function Get-GitDiff {
     }
 
     $diffInput = @(
-        '--diff-filter=AM',
+        '--diff-filter=AMR', # Added, modified, renamed/moved
         $compareFromCommit,
         $compareWithCommit,
         ($PathOnly ? '--name-only' : $null),

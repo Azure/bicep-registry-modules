@@ -45,9 +45,11 @@ runs:
 
         # Load used functions
         . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Initialize-AvmPester.ps1')
 
         # Set repo root path
         $repoRootPath = $env:GITHUB_WORKSPACE
+        Initialize-AvmPester -RepoRootPath $repoRootPath
 
         # Set test input module path
         $moduleFolderPaths = @(Join-Path $repoRootPath "${{ inputs.modulePath }}")

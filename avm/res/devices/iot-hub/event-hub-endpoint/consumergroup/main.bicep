@@ -31,7 +31,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource iotHub 'Microsoft.Devices/IotHubs@2025-08-01-preview' existing = {
+resource iotHub 'Microsoft.Devices/IotHubs@2023-06-30' existing = {
   name: iotHubName
 }
 
