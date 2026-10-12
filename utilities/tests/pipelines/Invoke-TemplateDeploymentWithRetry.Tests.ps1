@@ -3205,6 +3205,154 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         Should -Invoke Get-AzDeployment -Times 3 -Exactly -ParameterFilter { $Name -eq $script:names[0] }
     }
 
+    Context 'Bounded HCI coordinator recovery' -Tag 'BoundedHciRecovery' {
+        BeforeEach {
+            $script:coordinatorStartUtc = $script:clock
+            $script:jobStartUtc = $script:clock.AddMinutes(-30)
+            $script:hciDeadlineUtc = $script:jobStartUtc.AddMinutes(320)
+            $retryInput.ModuleRoot = 'avm/res/hybrid-container-service/provisioned-cluster-instance'
+            $retryInput.GitHubJobStartedAtUtc = $script:jobStartUtc
+        }
+
+        It 'Caps recovery after <age> minutes of setup with at least forty minutes before the job cutoff' -ForEach @(
+            @{ age = 0; allowance = 315 }
+            @{ age = 5; allowance = 315 }
+            @{ age = 6; allowance = 314 }
+            @{ age = 30; allowance = 290 }
+            @{ age = 315; allowance = 5 }
+        ) {
+            $retryInput.GitHubJobStartedAtUtc = $script:coordinatorStartUtc.AddMinutes(-$age)
+            $script:expectedDeadline = $script:coordinatorStartUtc.AddMinutes($allowance)
+            Mock New-TemplateDeployment {
+                $RecoveryDeadlineUtc | Should -Be $script:expectedDeadline
+                $RecoveryDeadlineUtc.Kind | Should -Be ([DateTimeKind]::Utc)
+                $SubmissionDeadlineUtc | Should -Be $RecoveryDeadlineUtc
+                @{ DeploymentNames = @(); DeploymentOutput = @{ ready = $true } }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.DeploymentOutput.ready | Should -BeTrue
+            ($retryInput.GitHubJobStartedAtUtc.AddHours(6) - $script:expectedDeadline).TotalMinutes |
+                Should -BeGreaterOrEqual 40
+            Should -Invoke New-TemplateDeployment -Times 1 -Exactly
+        }
+
+        It 'Keeps four hours for a standalone HCI caller without verified job timing' {
+            $retryInput.Remove('GitHubJobStartedAtUtc')
+            Mock New-TemplateDeployment {
+                $RecoveryDeadlineUtc | Should -Be $script:coordinatorStartUtc.AddHours(4)
+                $PesterBoundParameters.ContainsKey('SubmissionDeadlineUtc') | Should -BeFalse
+                @{ DeploymentNames = @(); DeploymentOutput = @{ ready = $true } }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.DeploymentOutput.ready | Should -BeTrue
+            Should -Invoke New-TemplateDeployment -Times 1 -Exactly
+        }
+
+        It 'Rejects the longer policy for a different module before validation' -ForEach @(
+            @{ module = 'avm/res/retry-test/widget' }
+            @{ module = 'avm/res/hybrid-container-service/provisioned-cluster-instance/child' }
+            @{ module = 'AVM/res/hybrid-container-service/provisioned-cluster-instance' }
+        ) {
+            $retryInput.ModuleRoot = $module
+            { Invoke-TemplateDeploymentWithRetry @retryInput } | Should -Throw '*exact HCI module*'
+            Should -Invoke Test-AzSubscriptionDeployment -Times 0 -Exactly
+            Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+        }
+
+        It 'Rejects <kind> job timing before validation or submission' -ForEach @(
+            @{ kind = 'local' }, @{ kind = 'unspecified' }, @{ kind = 'null' }, @{ kind = 'malformed' }
+            @{ kind = 'future' }, @{ kind = 'exhausted' }, @{ kind = 'past' }
+        ) {
+            $retryInput.GitHubJobStartedAtUtc = switch ($kind) {
+                'local' { [datetime]::SpecifyKind($script:jobStartUtc, [DateTimeKind]::Local) }
+                'unspecified' { [datetime]::SpecifyKind($script:jobStartUtc, [DateTimeKind]::Unspecified) }
+                'null' { $null }
+                'malformed' { 'not-a-date' }
+                'future' { $script:clock.AddTicks(1) }
+                'exhausted' { $script:clock.AddMinutes(-320) }
+                'past' { $script:clock.AddDays(-1) }
+            }
+            { Invoke-TemplateDeploymentWithRetry @retryInput } | Should -Throw
+            Should -Invoke Test-AzSubscriptionDeployment -Times 0 -Exactly
+            Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+        }
+
+        It 'Reuses the actual job-start cap for a later idempotency coordinator call' {
+            $script:deadlines = [System.Collections.Generic.List[datetime]]::new()
+            Mock New-TemplateDeployment {
+                $script:deadlines.Add($RecoveryDeadlineUtc)
+                @{ DeploymentNames = @(); DeploymentOutput = @{ ready = $true } }
+            }
+            (Invoke-TemplateDeploymentWithRetry @retryInput).DeploymentOutput.ready | Should -BeTrue
+            $script:clock = $script:clock.AddHours(4)
+            (Invoke-TemplateDeploymentWithRetry @retryInput).DeploymentOutput.ready | Should -BeTrue
+            @($script:deadlines) | Should -Be @($script:hciDeadlineUtc, $script:hciDeadlineUtc)
+            $script:clock = $script:hciDeadlineUtc
+            { Invoke-TemplateDeploymentWithRetry @retryInput } | Should -Throw '*exhausted*'
+            Should -Invoke New-TemplateDeployment -Times 2 -Exactly
+        }
+
+        It 'Rejects a deadline exhausted during validation without creating a deployment owner' {
+            Mock Test-AzSubscriptionDeployment { $script:clock = $script:hciDeadlineUtc }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.Exception | Should -Match 'bounded HCI recovery deadline'
+            $result.DeploymentAttempts | Should -Be 0
+            $result.DeploymentNames.Count | Should -Be 0
+            $result.RemainingDeploymentNames.Count | Should -Be 0
+            Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+        }
+
+        It 'Does not submit again when the same-region retry delay exhausts the deadline' {
+            $script:outcomes = @('Legacy', 'Succeeded')
+            Mock New-AzSubscriptionDeployment {
+                $script:clock = $script:hciDeadlineUtc.AddSeconds(-5)
+                Invoke-FixtureSubmission $DeploymentName $TemplateFile $resourceLocation $baseTime $adminSecret
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput -RemoveDeployment $false
+            $result.Exception | Should -Match 'bounded HCI recovery deadline'
+            $result.DeploymentAttempts | Should -Be 1
+            $result.DeploymentNames | Should -Be @($script:names)
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $script:clock | Should -Be $script:hciDeadlineUtc
+            Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+        }
+
+        It 'Shares the immutable longer deadline across <first> and <second> regional recovery paths' -ForEach @(
+            @{ first = 'Timeout'; second = 'NestedReadNotFound' }
+            @{ first = 'NestedReadNotFound'; second = 'Timeout' }
+        ) {
+            $script:outcomes = @($first, $second, 'Succeeded')
+            $templateInput.RecoveryDeadlineUtc = $script:hciDeadlineUtc.AddHours(8)
+            $script:deadlines = [System.Collections.Generic.List[datetime]]::new()
+            $script:waitImplementation = (Get-Command Wait-TemplateDeployment).ScriptBlock
+            Mock Wait-TemplateDeployment {
+                $script:deadlines.Add($RecoveryDeadlineUtc)
+                . $script:waitImplementation @PesterBoundParameters
+            }
+            Mock Get-AzDeployment {
+                $script:records[$script:roots[-1]].State =
+                $script:names.Count -eq 1 -and $script:clock -gt $script:coordinatorStartUtc ? 'Failed' : 'Running'
+                Get-FixtureStatus $Name subscription '' '' $DefaultProfile
+            }
+            Mock Start-Sleep {
+                $script:clock = $script:clock.AddSeconds([Math]::Min(7200, ($script:hciDeadlineUtc - $script:clock).TotalSeconds))
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.Exception | Should -Match 'recovery deadline'
+            @($script:deadlines) | Should -Be @($script:hciDeadlineUtc, $script:hciDeadlineUtc)
+            $result.DeploymentAttempts | Should -Be 2
+            $result.AttemptedLocations | Should -Be @('italynorth', 'swedencentral')
+            $result.DeploymentNames | Should -Be @($script:names)
+            $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+            $script:records.ContainsKey($script:roots[0]) | Should -BeFalse
+            $script:records.ContainsKey($script:roots[1]) | Should -BeTrue
+            $script:clock | Should -Be $script:hciDeadlineUtc
+            Should -Invoke New-AzSubscriptionDeployment -Times 2 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+        }
+    }
+
     Context 'Shared status-recovery deadline' -Tag 'RecoveryDeadline' {
         BeforeEach {
             $script:coordinatorStartUtc = $script:clock

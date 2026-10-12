@@ -3,6 +3,15 @@
 
 #region helper
 
+function Assert-TemplateSubmissionDeadline {
+    param([hashtable] $BoundParameters)
+
+    if ($BoundParameters.ContainsKey('SubmissionDeadlineUtc') -and
+        (Get-Date).ToUniversalTime() -ge $BoundParameters.SubmissionDeadlineUtc) {
+        throw [System.TimeoutException]::new('The bounded HCI recovery deadline is exhausted; no further deployment will be submitted.')
+    }
+}
+
 function Get-TemplateDeployment {
     [CmdletBinding()]
     param (
@@ -565,7 +574,11 @@ Optional. Starting attempt ordinal for deployment names. Coordinated retries sup
 
 .PARAMETER RecoveryDeadlineUtc
 Optional. Absolute UTC status-recovery deadline, shared across attempts and recovery paths without resetting.
-Coordinated callers supply four hours from coordinator entry. Omission preserves the one-hour recovery default.
+Coordinated callers supply their shared deadline. Omission preserves the one-hour recovery default.
+
+.PARAMETER SubmissionDeadlineUtc
+Optional. Reject new submissions at or after this UTC deadline. Does not interrupt a native call already in flight.
+Resource-group scope requires an existing group so rejection cannot leave an untracked group.
 
 .PARAMETER DoNotThrow
 Optional. Do not throw an exception if it failed. Still returns the error message though
@@ -638,7 +651,11 @@ function New-TemplateDeploymentInner {
 
         [Parameter()]
         [ValidateScript({ $_.Kind -eq [DateTimeKind]::Utc }, ErrorMessage = 'RecoveryDeadlineUtc must be an absolute UTC datetime.')]
-        [datetime] $RecoveryDeadlineUtc
+        [datetime] $RecoveryDeadlineUtc,
+
+        [Parameter()]
+        [ValidateScript({ $_.Kind -eq [DateTimeKind]::Utc }, ErrorMessage = 'SubmissionDeadlineUtc must be an absolute UTC datetime.')]
+        [datetime] $SubmissionDeadlineUtc
     )
 
     begin {
@@ -730,6 +747,7 @@ function New-TemplateDeploymentInner {
             $returnedFailureDetailsRead = $false
 
             try {
+                Assert-TemplateSubmissionDeadline -BoundParameters $PSBoundParameters
                 switch ($deploymentScope) {
                     'resourcegroup' {
                         if (-not [String]::IsNullOrEmpty($SubscriptionId)) {
@@ -737,12 +755,16 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $SubscriptionId -ErrorAction Stop
                         }
                         if (-not (Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction 'SilentlyContinue')) {
+                            if ($PSBoundParameters.ContainsKey('SubmissionDeadlineUtc')) {
+                                throw 'A bounded submission requires an existing resource group; no untracked group will be created.'
+                            }
                             $resourceGroupLocation = $AdditionalParameters.resourceLocation ?? $DeploymentMetadataLocation
                             if ($PSCmdlet.ShouldProcess("Resource group [$ResourceGroupName] in (metadata) location [$resourceGroupLocation]", 'Create')) {
                                 $null = New-AzResourceGroup -Name $ResourceGroupName -Location $resourceGroupLocation
                             }
                         }
                         if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'Create')) {
+                            Assert-TemplateSubmissionDeadline -BoundParameters $PSBoundParameters
                             $submissionStarted = $true
                             $usedDeploymentNames += $deploymentName
                             $res = New-AzResourceGroupDeployment @DeploymentInputs -ResourceGroupName $ResourceGroupName
@@ -755,6 +777,7 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $SubscriptionId -ErrorAction Stop
                         }
                         if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Create')) {
+                            Assert-TemplateSubmissionDeadline -BoundParameters $PSBoundParameters
                             $submissionStarted = $true
                             $usedDeploymentNames += $deploymentName
                             $res = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
@@ -767,6 +790,7 @@ function New-TemplateDeploymentInner {
                             if ($null -eq $submissionContext -or [string]::IsNullOrWhiteSpace($submissionContext.Tenant.Id)) {
                                 throw 'The Azure context must identify the tenant before submitting a management-group deployment.'
                             }
+                            Assert-TemplateSubmissionDeadline -BoundParameters $PSBoundParameters
                             $submissionStarted = $true
                             $usedDeploymentNames += $deploymentName
                             $res = New-AzManagementGroupDeployment @DeploymentInputs -Location $DeploymentMetadataLocation `
@@ -776,6 +800,7 @@ function New-TemplateDeploymentInner {
                     }
                     'tenant' {
                         if ($PSCmdlet.ShouldProcess('Tenant level deployment', 'Create')) {
+                            Assert-TemplateSubmissionDeadline -BoundParameters $PSBoundParameters
                             $submissionStarted = $true
                             $usedDeploymentNames += $deploymentName
                             $res = New-AzTenantDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
@@ -1079,7 +1104,11 @@ Optional. Starting attempt ordinal for deployment names. Coordinated retries sup
 
 .PARAMETER RecoveryDeadlineUtc
 Optional. Absolute UTC status-recovery deadline, shared across attempts and recovery paths without resetting.
-Coordinated callers supply four hours from coordinator entry. Omission preserves the one-hour recovery default.
+Coordinated callers supply their shared deadline. Omission preserves the one-hour recovery default.
+
+.PARAMETER SubmissionDeadlineUtc
+Optional. Reject new submissions at or after this UTC deadline. Does not interrupt a native call already in flight.
+Resource-group scope requires an existing group so rejection cannot leave an untracked group.
 
 .PARAMETER DoNotThrow
 Optional. Do not throw an exception if it failed. Still returns the error message though
@@ -1152,7 +1181,11 @@ function New-TemplateDeployment {
 
         [Parameter()]
         [ValidateScript({ $_.Kind -eq [DateTimeKind]::Utc }, ErrorMessage = 'RecoveryDeadlineUtc must be an absolute UTC datetime.')]
-        [datetime] $RecoveryDeadlineUtc
+        [datetime] $RecoveryDeadlineUtc,
+
+        [Parameter()]
+        [ValidateScript({ $_.Kind -eq [DateTimeKind]::Utc }, ErrorMessage = 'SubmissionDeadlineUtc must be an absolute UTC datetime.')]
+        [datetime] $SubmissionDeadlineUtc
     )
 
     begin {
@@ -1186,6 +1219,9 @@ function New-TemplateDeployment {
         }
         if ($PSBoundParameters.ContainsKey('RecoveryDeadlineUtc')) {
             $deploymentInputObject.RecoveryDeadlineUtc = $RecoveryDeadlineUtc
+        }
+        if ($PSBoundParameters.ContainsKey('SubmissionDeadlineUtc')) {
+            $deploymentInputObject.SubmissionDeadlineUtc = $SubmissionDeadlineUtc
         }
         if ($ParameterFilePath) {
             if ($ParameterFilePath -is [array]) {

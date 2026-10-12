@@ -498,8 +498,11 @@ cleaned between attempts. Metadata location, non-location parameters and tokens 
 Results distinguish all submitted names from names still requiring final cleanup.
 Wholly transient InternalServerError resource failures may retry in the same movable location after the same complete cleanup.
 Structured authorization denials override legacy same-region retry permission.
-Status recovery shares one absolute UTC deadline four hours from coordinator entry across all
-attempts and recovery paths. Native submissions and the existing retry budgets are unchanged.
+Status recovery shares one absolute UTC deadline across all attempts and recovery paths.
+The default remains four hours from coordinator entry. HCI CI callers can supply the verified
+job start to allow up to 315 minutes, capped at 320 minutes from that same job start.
+This leaves 30 minutes for cleanup and 10 minutes of request/return headroom before the hosted
+six-hour limit. Native blocking submissions, status reads and cleanup are not forcibly bounded.
 
 .PARAMETER TemplateInput
 Required. Common template, scope and parameter inputs. Only one parameter file is supported.
@@ -527,6 +530,11 @@ Optional. Validate without deployment and return the selected location.
 
 .PARAMETER DoNotThrow
 Optional. Return failure details and outstanding cleanup names instead of throwing. Cancellation always propagates.
+
+.PARAMETER GitHubJobStartedAtUtc
+Optional. Verified absolute UTC start of the current GitHub-hosted job. Only supported for
+avm/res/hybrid-container-service/provisioned-cluster-instance. Reuse the same start for later
+coordinator calls in that job. Omission preserves all existing standalone defaults.
 
 .OUTPUTS
 ValidationOnly returns the selected location. Otherwise returns DeploymentOutput or Exception and the original
@@ -565,10 +573,28 @@ function Invoke-TemplateDeploymentWithRetry {
         [switch] $ValidationOnly,
 
         [Parameter()]
-        [switch] $DoNotThrow
+        [switch] $DoNotThrow,
+
+        [Parameter()]
+        [ValidateScript({ $_.Kind -eq [DateTimeKind]::Utc }, ErrorMessage = 'GitHubJobStartedAtUtc must be an absolute UTC datetime.')]
+        [datetime] $GitHubJobStartedAtUtc
     )
 
-    $recoveryDeadlineUtc = (Get-Date).ToUniversalTime().AddHours(4)
+    $coordinatorStartUtc = (Get-Date).ToUniversalTime()
+    $recoveryDeadlineUtc = $coordinatorStartUtc.AddHours(4)
+    $boundedHciRecovery = $PSBoundParameters.ContainsKey('GitHubJobStartedAtUtc')
+    if ($boundedHciRecovery) {
+        if ($ModuleRoot -cne 'avm/res/hybrid-container-service/provisioned-cluster-instance' -or
+            $GitHubJobStartedAtUtc -gt $coordinatorStartUtc) {
+            throw 'Job-start-bound recovery requires the exact HCI module and a verified job start that is not in the future.'
+        }
+        $recoveryDeadlineUtc = $coordinatorStartUtc.AddMinutes(315)
+        $jobRecoveryCapUtc = $GitHubJobStartedAtUtc.AddMinutes(320)
+        if ($jobRecoveryCapUtc -lt $recoveryDeadlineUtc) { $recoveryDeadlineUtc = $jobRecoveryCapUtc }
+        if ($recoveryDeadlineUtc -le $coordinatorStartUtc) {
+            throw 'The GitHub job has exhausted its bounded HCI recovery allowance; deployment will not start.'
+        }
+    }
     if (-not $PSCmdlet.ShouldProcess($TemplateInput.TemplateFilePath, ($ValidationOnly ? 'Validate' : 'Validate and deploy'))) {
         return
     }
@@ -577,7 +603,7 @@ function Invoke-TemplateDeploymentWithRetry {
         throw 'Coordinated retries require a single parameter file, not a directory or multiple files.'
     }
     $validationParameters = $TemplateInput.Clone()
-    foreach ($name in @('DoNotThrow', 'RetryLimit', 'AttemptNumber', 'AdditionalTags', 'RecoveryDeadlineUtc')) {
+    foreach ($name in @('DoNotThrow', 'RetryLimit', 'AttemptNumber', 'AdditionalTags', 'RecoveryDeadlineUtc', 'SubmissionDeadlineUtc')) {
         $validationParameters.Remove($name)
     }
     $validationParameters.AdditionalParameters = ($TemplateInput.AdditionalParameters ?? @{}).Clone()
@@ -613,6 +639,9 @@ function Invoke-TemplateDeploymentWithRetry {
 
     try {
         while ($ValidationOnly -or $deploymentAttempts -lt $DeploymentLimit) {
+            if ($boundedHciRecovery -and (Get-Date).ToUniversalTime() -ge $recoveryDeadlineUtc) {
+                throw [System.TimeoutException]::new('The bounded HCI recovery deadline is exhausted; no further deployment will be submitted.')
+            }
             if ($needsValidation) {
                 if ($attemptedLocations.Count -ge $RegionLimit) {
                     throw 'The regional candidate budget is exhausted.'
@@ -662,6 +691,9 @@ function Invoke-TemplateDeploymentWithRetry {
                 }
             }
 
+            if ($boundedHciRecovery -and (Get-Date).ToUniversalTime() -ge $recoveryDeadlineUtc) {
+                throw [System.TimeoutException]::new('The bounded HCI recovery deadline is exhausted; no further deployment will be submitted.')
+            }
             $deploymentAttempts++
             $deploymentInput = $TemplateInput.Clone()
             $deploymentInput.AdditionalParameters = $validationParameters.AdditionalParameters
@@ -669,6 +701,9 @@ function Invoke-TemplateDeploymentWithRetry {
             $deploymentInput.RetryLimit = 1
             $deploymentInput.AttemptNumber = $deploymentAttempts
             $deploymentInput.RecoveryDeadlineUtc = $recoveryDeadlineUtc
+            if ($boundedHciRecovery) {
+                $deploymentInput.SubmissionDeadlineUtc = $recoveryDeadlineUtc
+            }
             $attemptResult = New-TemplateDeployment @deploymentInput -ErrorAction Stop
             foreach ($name in @($attemptResult.DeploymentNames)) {
                 if ($name -in $deploymentNames) {

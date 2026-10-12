@@ -44,6 +44,17 @@ description: >-
   paths without resubmitting; only confirmed failure permits a bounded retry. Unknown
   outcomes preserve attempted deployment names for cleanup. A preselected subscription is
   verified before login and reused through cleanup without reshuffling the pool.
+  Only avm/res/hybrid-container-service/provisioned-cluster-instance uses a longer recovery
+  allowance: min(coordinator entry + 315 minutes, exact GitHub job start + 320 minutes).
+  The job-start cap includes setup and prerequisites, leaving 30 minutes for cleanup plus
+  10 minutes of request/return headroom before the GitHub-hosted six-hour cutoff. It is
+  reused across later coordinator calls, not renewed for idempotency. Native blocking Azure
+  calls and cleanup are not hard-bounded by this recovery policy; no job or step timeout is
+  used to cancel them. HCI requires documented job.check_run_id and consistent public
+  GitHub.com run-attempt metadata, including the event-specific head SHA. Anonymous API
+  failures, throttling, private/unsupported hosts, ambiguity or an exhausted allowance fail
+  before deployment without a fresh-window fallback. No GitHub or Azure permissions are added.
+  Metadata reads are limited to 20 pages of 100 jobs and never send tokens or follow redirects.
 
 inputs:
   modulePath:
@@ -313,6 +324,16 @@ runs:
       env:
         AVM_CI_VARIABLES: ${{ inputs.githubVariables }}
         AVM_CI_SECRETS: ${{ inputs.githubSecrets }}
+        AVM_GITHUB_API_URL: ${{ github.api_url }}
+        AVM_GITHUB_REPOSITORY: ${{ github.repository }}
+        AVM_GITHUB_RUN_ID: ${{ github.run_id }}
+        AVM_GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        AVM_GITHUB_CHECK_RUN_ID: ${{ job.check_run_id }}
+        AVM_GITHUB_RUNNER_NAME: ${{ runner.name }}
+        AVM_GITHUB_RUNNER_ENVIRONMENT: ${{ runner.environment }}
+        AVM_GITHUB_EVENT_NAME: ${{ github.event_name }}
+        AVM_GITHUB_HEAD_SHA: ${{ github.sha }}
+        AVM_GITHUB_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -323,6 +344,24 @@ runs:
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Invoke-TemplateDeploymentWithRetry.ps1')
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Resolve-CIParameterFallback.ps1')
+
+          $jobTimingInput = @{}
+          if ('${{ inputs.modulePath }}' -ceq 'avm/res/hybrid-container-service/provisioned-cluster-instance') {
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-GitHubJobStartTime.ps1')
+            $jobMetadataInput = @{
+              ApiUrl             = $env:AVM_GITHUB_API_URL
+              Repository         = $env:AVM_GITHUB_REPOSITORY
+              RunId              = $env:AVM_GITHUB_RUN_ID
+              RunAttempt         = $env:AVM_GITHUB_RUN_ATTEMPT
+              CheckRunId         = $env:AVM_GITHUB_CHECK_RUN_ID
+              RunnerName         = $env:AVM_GITHUB_RUNNER_NAME
+              RunnerEnvironment  = $env:AVM_GITHUB_RUNNER_ENVIRONMENT
+              EventName          = $env:AVM_GITHUB_EVENT_NAME
+              HeadSha            = $env:AVM_GITHUB_HEAD_SHA
+              PullRequestHeadSha = $env:AVM_GITHUB_PR_HEAD_SHA
+            }
+            $jobTimingInput.GitHubJobStartedAtUtc = Get-GitHubJobStartTime @jobMetadataInput
+          }
 
           # Prepare general parameters
           # --------------------------
@@ -403,6 +442,7 @@ runs:
             RemoveDeployment      = '${{ inputs.removeDeployment }}' -eq 'true'
             DoNotThrow            = $true
           }
+          $retryInput += $jobTimingInput
           $res = Invoke-TemplateDeploymentWithRetry @retryInput -Verbose
 
           # Get deployment name
