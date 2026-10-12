@@ -34,7 +34,10 @@ param python3Packages python23PackageType[]?
 param python2Packages python23PackageType[]?
 
 @description('Optional. List of runbooks to be created in the automation account.')
-param runbooks array = []
+param runbooks runbookType[] = []
+
+@description('Optional. List of runtime environments to be created in the automation account.')
+param runtimeEnvironments runtimeEnvironmentType[] = []
 
 @description('Optional. List of schedules to be created in the automation account.')
 param schedules array = []
@@ -328,6 +331,21 @@ module automationAccount_schedules 'schedule/main.bicep' = [
   }
 ]
 
+module automationAccount_runtimeEnvironments 'modules/runtime-environment.bicep' = [
+  for (runtimeEnvironment, index) in runtimeEnvironments: {
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-RuntimeEnvironment-${index}'
+    params: {
+      name: runtimeEnvironment.name
+      automationAccountName: automationAccount.name
+      runtime: runtimeEnvironment.runtime
+      description: runtimeEnvironment.?description
+      defaultPackages: runtimeEnvironment.?defaultPackages
+      location: runtimeEnvironment.?location ?? location
+      tags: runtimeEnvironment.?tags ?? tags
+    }
+  }
+]
+
 module automationAccount_runbooks 'runbook/main.bicep' = [
   for (runbook, index) in runbooks: {
     name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-Runbook-${index}'
@@ -338,12 +356,16 @@ module automationAccount_runbooks 'runbook/main.bicep' = [
       description: runbook.?description
       uri: runbook.?uri
       version: runbook.?version
+      runtimeEnvironment: runbook.?runtimeEnvironment
       sasTokenValidityLength: runbook.?sasTokenValidityLength
       scriptStorageAccountResourceId: runbook.?scriptStorageAccountResourceId
       location: location
       tags: runbook.?tags ?? tags
       enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      automationAccount_runtimeEnvironments
+    ]
   }
 ]
 
@@ -661,6 +683,77 @@ type credentialType = {
 
   @description('Optional. Description of the credential.')
   description: string?
+}
+
+@export()
+@description('The type for an Automation Account runbook configuration.')
+type runbookType = {
+  @description('Required. Name of the Automation Account runbook.')
+  name: string
+
+  @description('Required. The type of the runbook.')
+  type: (
+    | 'Graph'
+    | 'GraphPowerShell'
+    | 'GraphPowerShellWorkflow'
+    | 'PowerShell'
+    | 'PowerShell72'
+    | 'PowerShellWorkflow'
+    | 'Python2'
+    | 'Python3'
+    | 'Script')
+
+  @description('Optional. The description of the runbook.')
+  description: string?
+
+  @description('Optional. The URI of the runbook content.')
+  uri: string?
+
+  @description('Optional. The version of the runbook content.')
+  version: string?
+
+  @description('Optional. Name of the runtime environment used by the runbook.')
+  runtimeEnvironment: string?
+
+  @description('Optional. Resource ID of the runbook storage account.')
+  scriptStorageAccountResourceId: string?
+
+  @description('Optional. SAS token validity length. Usage: `PT8H` for 8 hours, `P5D` for 5 days, or `P1Y` for 1 year.')
+  sasTokenValidityLength: string?
+
+  @description('Optional. Tags of the runbook resource.')
+  tags: resourceInput<'Microsoft.Automation/automationAccounts/runbooks@2024-10-23'>.tags?
+}
+
+@export()
+@description('The type for an Automation Account runtime environment configuration.')
+type runtimeEnvironmentType = {
+  @description('Required. Name of the runtime environment.')
+  name: string
+
+  @description('Required. Runtime configuration.')
+  runtime: {
+    @description('Required. Runtime language, for example PowerShell or Python.')
+    language: string
+
+    @description('Required. Runtime language version.')
+    version: string
+  }
+
+  @description('Optional. Description of the runtime environment.')
+  description: string?
+
+  @description('Optional. Default packages available in the runtime environment.')
+  defaultPackages: {
+    @description('Required. A default package name and version pair.')
+    *: string
+  }?
+
+  @description('Optional. Location for the runtime environment.')
+  location: string?
+
+  @description('Optional. Tags of the runtime environment resource.')
+  tags: resourceInput<'Microsoft.Automation/automationAccounts/runtimeEnvironments@2024-10-23'>.tags?
 }
 
 import { solutionPlanType } from 'br/public:avm/res/operations-management/solution:0.3.1'

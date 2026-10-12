@@ -30,6 +30,9 @@ param uri string = ''
 @sys.description('Optional. The version of the runbook content.')
 param version string = ''
 
+@sys.description('Optional. Name of the runtime environment used by the runbook.')
+param runtimeEnvironment string?
+
 @sys.description('Optional. Resource Id of the runbook storage account.')
 param scriptStorageAccountResourceId string?
 
@@ -106,6 +109,7 @@ resource runbook 'Microsoft.Automation/automationAccounts/runbooks@2024-10-23' =
     runbookType: type
     description: description
     publishContentLink: !empty(uri) ? publishContentLink : null
+    runtimeEnvironment: runtimeEnvironment
   }
 }
 
