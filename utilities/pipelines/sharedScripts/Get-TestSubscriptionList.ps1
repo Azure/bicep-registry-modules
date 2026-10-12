@@ -5,7 +5,7 @@ Resolve the test subscription pool and optionally shuffle it.
 .DESCRIPTION
 Callers prefer variables over secrets, selecting VALIDATE_SUBSCRIPTION_IDS
 before its TEST_SUBSCRIPTION_IDS alias within each source. The selected value
-is a JSON array of { id, name, tag? } objects.
+is a JSON array of { id, name, tag? } objects; no other properties are allowed.
 An omitted tag means General. Supplying ModulePath selects only its configured
 tag; omitting ModulePath returns the complete inventory for maintenance.
 Only General can use the legacy validation subscription when the pool is unset.
@@ -67,6 +67,9 @@ function Get-TestSubscriptionList {
                     }
                     $properties = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
                     foreach ($property in $entry.EnumerateObject()) {
+                        if ($property.Name -cnotin @('id', 'name', 'tag')) {
+                            throw 'Test subscription entries may contain only id, name, and optional tag properties, with those exact names.'
+                        }
                         if (-not $properties.Add($property.Name)) {
                             throw 'Test subscription entries must not contain duplicate properties.'
                         }
@@ -104,9 +107,6 @@ function Get-TestSubscriptionList {
                 Assert-TestSubscriptionTag -Tag $subscription.tag
                 $subscription.tag
             } else {
-                if ($subscription.PSObject.Properties.Name -icontains 'tag') {
-                    throw 'The optional test subscription tag property must be named exactly tag.'
-                }
                 'General'
             }
 

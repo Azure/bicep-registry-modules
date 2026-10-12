@@ -378,6 +378,8 @@ Describe 'Module deployment matrix' {
         @{ pool = ' ' }
         @{ pool = '[invalid' }
         @{ pool = '[]' }
+        @{ pool = '[{"id":"11111111-1111-4111-8111-111111111111","name":"offline-fixture","tga":"Azure Local"}]' }
+        @{ pool = '[{"id":"11111111-1111-4111-8111-111111111111","name":"offline-fixture","tag":"General","unexpected":true}]' }
     ) {
         $matrixInput.TestSubscriptionIds = $pool
         $matrixInput.FallbackSubscriptionId = $subscriptions[0].id

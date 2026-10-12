@@ -666,6 +666,8 @@ Describe 'Test subscription workflow integration' {
         @{ pool = '[]' }
         @{ pool = '{}' }
         @{ pool = '[{"id":"invalid","name":"test"}]' }
+        @{ pool = '[{"id":"11111111-1111-4111-8111-111111111111","name":"offline-fixture","tga":"Azure Local"}]' }
+        @{ pool = '[{"id":"11111111-1111-4111-8111-111111111111","name":"offline-fixture","tag":"General","unexpected":true}]' }
     ) {
         $env:TEST_SUBSCRIPTION_IDS = $pool
         $ConvertTokensInputs = @{ Tokens = @{ subscriptionId = 'static-token' } }
