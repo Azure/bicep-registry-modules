@@ -1,4 +1,4 @@
-. (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
+﻿. (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
 . (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentOperationAtScope.ps1')
 . (Join-Path $PSScriptRoot '..' '..' 'resourceDeployment' 'New-TemplateDeployment.ps1')
 
@@ -131,7 +131,7 @@ function Get-DeploymentTargetResourceListInner {
                     $content.error -is [System.Management.Automation.PSCustomObject] -and
                     $content.error.code -is [string] -and $content.error.code -ceq 'DeploymentNotFound' -and
                     ($null -eq $content.error.target -or
-                        ($content.error.target -is [string] -and $content.error.target -ieq $resourceId))) {
+                    ($content.error.target -is [string] -and $content.error.target -ieq $resourceId))) {
                     Write-Verbose "Confirmed no record for preflight-rejected nested deployment [$resourceId]." -Verbose
                     return
                 }
@@ -140,9 +140,11 @@ function Get-DeploymentTargetResourceListInner {
                     throw "Cannot confirm preflight-rejected deployment [$resourceId]: HTTP [$($response.StatusCode)]."
                 }
             }
-            $state = Get-TemplateDeployment -DeploymentScope $Scope -DeploymentName $Name `
-                -SubscriptionId $baseInputObject.SubscriptionId -ResourceGroupName $ResourceGroupName `
-                -ManagementGroupId $ManagementGroupId -DefaultProfile $currentContext
+            $state = Invoke-DeploymentRead -Read {
+                Get-TemplateDeployment -DeploymentScope $Scope -DeploymentName $Name `
+                    -SubscriptionId $baseInputObject.SubscriptionId -ResourceGroupName $ResourceGroupName `
+                    -ManagementGroupId $ManagementGroupId -DefaultProfile $currentContext -ErrorAction Stop
+            }
             $allowedStates = $DoThrow ? @('Failed') : @('Succeeded', 'Failed')
             if ($state.ProvisioningState -isnot [string] -or $state.ProvisioningState -notin $allowedStates) {
                 throw "Deployment [$Name] is [$($state.ProvisioningState)]; cleanup cannot authorize regional relocation."
@@ -288,8 +290,9 @@ Get all deployments that match a given deployment name in a given scope using a 
 
 .DESCRIPTION
 Get all deployments that match a given deployment name in a given scope using a retry mechanic.
-Only DeploymentNotFound is retried. A preflight-rejected attempt with that response is known not to have been created.
-Other lookup failures, including request timeouts, retain known resources for cleanup before reporting the error.
+Only DeploymentNotFound repeats discovery. A preflight-rejected attempt with that response is known not to have been created.
+Individual status and operation-page reads retry typed request timeouts at most twice.
+Other lookup failures and exhausted read timeouts retain known resources for cleanup before reporting the error.
 Genuine cancellation propagates without further discovery or removal.
 
 .PARAMETER ResourceGroupName
