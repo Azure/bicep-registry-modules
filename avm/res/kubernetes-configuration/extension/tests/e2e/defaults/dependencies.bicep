@@ -20,7 +20,7 @@ resource cluster 'Microsoft.ContainerService/managedClusters@2025-05-01' = {
       {
         name: 'agentpool'
         count: 1
-        vmSize: 'Standard_D2s_v4'
+        vmSize: 'Standard_D2as_v5'
         osType: 'Linux'
         mode: 'System'
       }
