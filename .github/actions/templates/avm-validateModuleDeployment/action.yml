@@ -100,6 +100,23 @@ inputs:
     description: "If set to true, the test case deployment tasks will not be processed"
     default: "false"
     required: false
+  deploymentDataFile:
+    description: >-
+      Optional absolute runner-local JSON file containing parameterOverrides and protectedResourceIds.
+      Overrides map declared parameter names to strings, using the ordinary CI ARM type conversions;
+      arrays and objects are JSON-encoded strings. Overrides take precedence over CI inputs.
+      Protected resource IDs apply to intermediate and final cleanup. File values are not action outputs.
+    default: ""
+    required: false
+  requireCompleteRemoval:
+    description: "Opt into complete final teardown confirmation instead of the existing best-effort cleanup."
+    default: "false"
+    required: false
+
+outputs:
+  cleanupStatus:
+    description: "confirmed only after authoritative complete teardown; otherwise unconfirmed, not-submitted, or unknown."
+    value: ${{ steps.remove-deployed-resources.outputs.cleanupStatus || 'unknown' }}
 
 runs:
   using: "composite"
@@ -320,6 +337,8 @@ runs:
       env:
         AVM_CI_VARIABLES: ${{ inputs.githubVariables }}
         AVM_CI_SECRETS: ${{ inputs.githubSecrets }}
+        AVM_DEPLOYMENT_DATA_FILE: ${{ inputs.deploymentDataFile }}
+        AVM_REQUIRE_COMPLETE_REMOVAL: ${{ inputs.requireCompleteRemoval }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -329,7 +348,13 @@ runs:
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Invoke-TemplateDeploymentWithRetry.ps1')
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Resolve-CIParameterFallback.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleDeploymentData.ps1')
+
+          if ($env:AVM_REQUIRE_COMPLETE_REMOVAL -and $env:AVM_REQUIRE_COMPLETE_REMOVAL -cnotin @('true', 'false')) {
+            throw 'requireCompleteRemoval must be true or false.'
+          }
+          $requireCompleteRemoval = $env:AVM_REQUIRE_COMPLETE_REMOVAL -ceq 'true'
+          $deploymentData = Get-ModuleDeploymentData -FilePath $env:AVM_DEPLOYMENT_DATA_FILE
 
           # Prepare general parameters
           # --------------------------
@@ -384,53 +409,13 @@ runs:
             KeyVaultName        = $env:CI_KEY_VAULT_NAME
           }
           $ciParameters = Get-CIParameterMap @ciParameterInput
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionTag.ps1')
-          $hciContext = $null
-          if ((Get-TestSubscriptionTag -ModulePath '${{ inputs.modulePath }}' -RepoRootPath $env:GITHUB_WORKSPACE) -ceq 'Azure Local') {
-            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
-            $imageOnly = '${{ inputs.modulePath }}' -ceq 'avm/res/azure-stack-hci/cluster'
-            if (-not $imageOnly -and $moduleTemplatePossibleParameters -notcontains 'preparedHciEnvironment') {
-              throw 'This reserved test is not wired to consume the prepared foundation.'
-            }
-            $hciParameters = Get-HciEnvironmentParameterMap -GitHubVariables $env:AVM_CI_VARIABLES `
-              -GitHubSecrets $env:AVM_CI_SECRETS -KeyVaultName $env:CI_KEY_VAULT_NAME
-            $externalImageId = $hciParameters.hciHostImageReferenceId
-            if ($externalImageId -is [securestring]) {
-              $externalImageId = ([pscredential]::new('ci', $externalImageId)).GetNetworkCredential().Password
-            }
-            $relativeTestPath = '${{ inputs.templateFilePath }}'.Substring('${{ inputs.modulePath }}'.Length + 1)
-            $runIdentity = "$env:GITHUB_REPOSITORY|$env:GITHUB_RUN_ID|$env:GITHUB_RUN_ATTEMPT"
-            $owner = Get-HciEnvironmentKey -Value "$runIdentity|${{ inputs.modulePath }}|$relativeTestPath"
-            $hciContext = Get-HciEnvironmentContext -RepoRootPath $env:GITHUB_WORKSPACE -SubscriptionId $subscriptionId `
-              -TenantId $env:VALIDATE_TENANT_ID -Owner $owner -HciHostImageReferenceId $externalImageId
-            $testGroupName = "dep-avm-hci-$($owner.Substring(0, 20))"
-            if ($ciParameters.resourceGroupName -and $ciParameters.resourceGroupName -cne $testGroupName) {
-              throw 'Reserved Azure Local tests cannot override their per-run disposable resource group.'
-            }
-            $ciParameters.resourceGroupName = $testGroupName
-            $hciContext.TestResourceGroupId = "/subscriptions/$subscriptionId/resourceGroups/$testGroupName"
-            $hciResult = Enter-HciEnvironmentTest -Context $hciContext -ImageOnly:$imageOnly
-            $contextPath = Join-Path $env:RUNNER_TEMP "avm-hci-$owner.json"
-            $hciContext | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $contextPath -Encoding utf8
-            "hciContextFile=$contextPath" >> $env:GITHUB_OUTPUT
-            if ($moduleTemplatePossibleParameters -contains 'hciHostImageReferenceId') {
-              $ciParameters.hciHostImageReferenceId = ConvertTo-SecureString $hciResult.ImageVersionResourceId -AsPlainText -Force
-            }
-            if (-not $imageOnly) {
-              $ciParameters.preparedHciEnvironment = @{
-                customLocationResourceId = $hciResult.Foundation.customLocationResourceId
-                vSwitchName = $hciResult.Foundation.vSwitchName
-                kubernetesVersion = $hciResult.Foundation.kubernetesVersion
-              }
-            }
+          $overrideInput = @{
+            ParameterOverrides  = $deploymentData.ParameterOverrides
+            TemplateParameters  = $moduleTemplateParameters
+            TemplateDefinitions = $moduleTemplateContent.definitions ?? @{}
           }
-          $ciParameterFallbackInput = @{
-            TemplateParameters = $moduleTemplateParameters
-            ResolvedParameters = $ciParameters
-            GitHubVariables    = $env:AVM_CI_VARIABLES
-          }
-          $resolvedCIParameterFallbacks = Resolve-CIParameterFallback @ciParameterFallbackInput
-          foreach ($parameter in $resolvedCIParameterFallbacks.GetEnumerator()) {
+          $overrides = Resolve-ModuleDeploymentParameterOverride @overrideInput
+          foreach ($parameter in $overrides.GetEnumerator()) {
             $ciParameters[$parameter.Key] = $parameter.Value
           }
           foreach ($parameter in $ciParameters.GetEnumerator()) {
@@ -450,18 +435,34 @@ runs:
             RemoveDeployment      = '${{ inputs.removeDeployment }}' -eq 'true'
             DoNotThrow            = $true
           }
-          if ($hciContext) {
-            $retryInput.ProtectedResourceIds = @($hciContext.GroupIds.control) + $hciContext.OwnedGroupIds + @($hciContext.ImageVersionResourceId)
+          if ($deploymentData.ProtectedResourceIds.Count -gt 0) {
+            $retryInput.ProtectedResourceIds = $deploymentData.ProtectedResourceIds
           }
           $res = Invoke-TemplateDeploymentWithRetry @retryInput -Verbose
 
+          if ($requireCompleteRemoval) {
+            if ($res -isnot [System.Collections.IDictionary]) {
+              throw 'Deployment did not return authoritative cleanup tracking.'
+            }
+            foreach ($name in @('deploymentNames', 'remainingDeploymentNames', 'preflightRejectedDeploymentNames', 'pendingDeletionDeploymentIds')) {
+              if (-not $res.ContainsKey($name) -or $res[$name] -isnot [array] -or
+                  @($res[$name] | Where-Object { $_ -isnot [string] -or [string]::IsNullOrWhiteSpace($_) }).Count -gt 0) {
+                throw 'Deployment did not return authoritative cleanup tracking.'
+              }
+            }
+            if ($res.DeploymentAttempts -isnot [int] -or $res.DeploymentAttempts -lt 0) {
+              throw 'Deployment did not return an authoritative attempt count.'
+            }
+          }
+
           # Get deployment name
           $deploymentNames = @($res.deploymentNames ?? @())
-          $deploymentNamesJson = $deploymentNames.Count -gt 0 ? (ConvertTo-Json -InputObject $deploymentNames -Compress) : ''
+          $deploymentNamesJson = $deploymentNames.Count -gt 0 ? (ConvertTo-Json -InputObject $deploymentNames -Compress) : ($requireCompleteRemoval ? '[]' : '')
           Write-Output ('{0}={1}' -f 'deploymentNames', $deploymentNamesJson) >> $env:GITHUB_OUTPUT
           Write-Output ('{0}={1}' -f 'remainingDeploymentNames', (ConvertTo-Json -InputObject @($res.remainingDeploymentNames ?? @()) -Compress)) >> $env:GITHUB_OUTPUT
           Write-Output ('{0}={1}' -f 'preflightRejectedDeploymentNames', (ConvertTo-Json -InputObject @($res.preflightRejectedDeploymentNames ?? @()) -Compress)) >> $env:GITHUB_OUTPUT
           Write-Output ('{0}={1}' -f 'pendingDeletionDeploymentIds', (ConvertTo-Json -InputObject @($res.pendingDeletionDeploymentIds ?? @()) -Compress)) >> $env:GITHUB_OUTPUT
+          Write-Output ('{0}={1}' -f 'deploymentAttempts', $res.DeploymentAttempts) >> $env:GITHUB_OUTPUT
 
           # Populate further outputs
           $deploymentOutput = ($res.deploymentOutput | ConvertTo-Json -Depth 99 -Compress) -replace "'", "''" # Escaping single quotes for resilient access in subsequent steps
@@ -590,6 +591,9 @@ runs:
       id: remove-deployed-resources
       if: ${{ (success() || failure()) && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '' && env.skip_deployment_ci == 'false' }}
       uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+      env:
+        AVM_DEPLOYMENT_DATA_FILE: ${{ inputs.deploymentDataFile }}
+        AVM_REQUIRE_COMPLETE_REMOVAL: ${{ inputs.requireCompleteRemoval }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -597,91 +601,45 @@ runs:
           Write-Output '::group::Remove deployed resources'
 
           # Load used function
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
-          $hciContext = $null
-          $contextPath = '${{ steps.deploy_step.outputs.hciContextFile }}'
-          if ($contextPath) {
-            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
-            $hciContext = Get-Content -LiteralPath $contextPath -Raw | ConvertFrom-Json -AsHashtable
-            $null = Get-HciEnvironmentRegistry -Context $hciContext -RequireOwner
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Invoke-ModuleDeploymentCleanup.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleDeploymentData.ps1')
+          if ($env:AVM_REQUIRE_COMPLETE_REMOVAL -and $env:AVM_REQUIRE_COMPLETE_REMOVAL -cnotin @('true', 'false')) {
+            throw 'requireCompleteRemoval must be true or false.'
           }
+          $deploymentData = Get-ModuleDeploymentData -FilePath $env:AVM_DEPLOYMENT_DATA_FILE
 
           $functionInput = @{
-            TemplateFilePath  = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
-            DeploymentNames   = '${{ steps.deploy_step.outputs.deploymentNames }}' | ConvertFrom-Json
-            ManagementGroupId = '${{ inputs.managementGroupId }}'
+            TemplateFilePath       = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
+            DeploymentNames        = ConvertFrom-Json -InputObject '${{ steps.deploy_step.outputs.deploymentNames }}' -NoEnumerate -ErrorAction Stop
+            ManagementGroupId      = '${{ inputs.managementGroupId }}'
+            RequireCompleteRemoval = $env:AVM_REQUIRE_COMPLETE_REMOVAL -ceq 'true'
+            ProtectedResourceIds   = $deploymentData.ProtectedResourceIds
           }
 
-          $preflightRejectedDeploymentNames = '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}'
-          $pendingDeletionDeploymentIds = '${{ steps.deploy_step.outputs.pendingDeletionDeploymentIds }}'
-          if (-not [string]::IsNullOrWhiteSpace($pendingDeletionDeploymentIds)) {
-            $pendingIds = ConvertFrom-Json -InputObject $pendingDeletionDeploymentIds -NoEnumerate -ErrorAction Stop
-            if ($pendingIds -isnot [array] -or @($pendingIds | Where-Object { $_ -isnot [string] -or [string]::IsNullOrWhiteSpace($_) }).Count -gt 0) {
-              throw 'Invalid pending deployment deletion metadata.'
-            }
-            $functionInput['PendingDeletionDeploymentIds'] = $pendingIds
+          $tracking = @{
+            PreflightRejectedDeploymentNames = '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}'
+            PendingDeletionDeploymentIds = '${{ steps.deploy_step.outputs.pendingDeletionDeploymentIds }}'
+            RemainingDeploymentNames = '${{ steps.deploy_step.outputs.remainingDeploymentNames }}'
           }
-          $remainingDeploymentNames = '${{ steps.deploy_step.outputs.remainingDeploymentNames }}'
-          if (-not [string]::IsNullOrWhiteSpace($remainingDeploymentNames)) {
-            $functionInput.DeploymentNames = @($remainingDeploymentNames | ConvertFrom-Json -ErrorAction Stop)
-            if ($functionInput.DeploymentNames.Count -eq 0) {
-              if ($functionInput.PendingDeletionDeploymentIds.Count -gt 0) {
-                throw 'Pending deployment deletion metadata has no remaining deployment owner.'
+          foreach ($name in $tracking.Keys) {
+            if (-not [string]::IsNullOrWhiteSpace($tracking[$name])) {
+              $values = ConvertFrom-Json -InputObject $tracking[$name] -NoEnumerate -ErrorAction Stop
+              if ($values -isnot [array] -or @($values | Where-Object { $_ -isnot [string] -or [string]::IsNullOrWhiteSpace($_) }).Count -gt 0) {
+                throw "Invalid pending or remaining deployment deletion metadata [$name]."
               }
-              Write-Verbose 'All submitted deployments were already completely removed.' -Verbose
-              if ($hciContext) {
-                . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'helper' 'Remove-Deployment.ps1')
-                if (-not (Test-CleanupResourceAbsent -ResourceId $hciContext.TestResourceGroupId)) {
-                  throw 'The disposable HCI test group still exists; the environment remains in use.'
-                }
-                Exit-HciEnvironment -Context $hciContext -CleanupConfirmed:$true
-              }
-              Write-Output '::endgroup::'
-              return
+              $functionInput[$name] = $values
             }
           }
-          if (-not [string]::IsNullOrWhiteSpace($preflightRejectedDeploymentNames)) {
-            $functionInput['PreflightRejectedDeploymentNames'] = @($preflightRejectedDeploymentNames | ConvertFrom-Json -ErrorAction Stop |
-              Where-Object { $_ -in $functionInput.DeploymentNames })
+          $attempts = '${{ steps.deploy_step.outputs.deploymentAttempts }}'
+          if (-not [string]::IsNullOrWhiteSpace($attempts)) {
+            $functionInput.DeploymentAttempts = [int]::Parse($attempts)
           }
 
           if (-not [String]::IsNullOrEmpty('${{ steps.get-test-subscription.outputs.subscriptionId }}')) {
               $functionInput['SubscriptionId'] = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
           }
 
-          Write-Verbose 'Invoke task with' -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-          if ($hciContext) {
-            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'helper' 'Remove-Deployment.ps1')
-            $pendingNames = @()
-            foreach ($id in @($functionInput.PendingDeletionDeploymentIds)) {
-              $name = ($id -split '/')[-1]
-              if ($name -notin $functionInput.DeploymentNames -or
-                  $id -ine "/subscriptions/$($hciContext.SubscriptionId)/providers/Microsoft.Resources/deployments/$name") {
-                throw 'Pending HCI cleanup does not identify an original subscription-scoped test deployment.'
-              }
-              Wait-DeploymentRecordRemoval -DeploymentId $id
-              $pendingNames += $name
-            }
-            $functionInput.Remove('PendingDeletionDeploymentIds')
-            $functionInput.DeploymentNames = @($functionInput.DeploymentNames | Where-Object { $_ -notin $pendingNames })
-            $functionInput.PreflightRejectedDeploymentNames = @($functionInput.PreflightRejectedDeploymentNames | Where-Object { $_ -in $functionInput.DeploymentNames })
-            if ($functionInput.DeploymentNames.Count -gt 0) {
-              $functionInput.RequireCompleteRemoval = $true
-              $functionInput.ProtectedResourceIds = @($hciContext.GroupIds.control) + $hciContext.OwnedGroupIds + @($hciContext.ImageVersionResourceId)
-              $result = Initialize-DeploymentRemoval @functionInput
-              if ($null -eq $result -or @($result.RemovedDeploymentNames).Count -ne $functionInput.DeploymentNames.Count -or
-                  @(Compare-Object $result.RemovedDeploymentNames $functionInput.DeploymentNames).Count -gt 0) {
-                throw 'Test cleanup did not confirm every original deployment; the environment remains in use.'
-              }
-            }
-            if (-not (Test-CleanupResourceAbsent -ResourceId $hciContext.TestResourceGroupId)) {
-              throw 'The disposable HCI test group still exists; the environment remains in use.'
-            }
-            Exit-HciEnvironment -Context $hciContext -CleanupConfirmed:$true
-          } else {
-            Initialize-DeploymentRemoval @functionInput
-          }
+          $result = Invoke-ModuleDeploymentCleanup @functionInput
+          Write-Output ("cleanupStatus={0}" -f $result.Status) >> $env:GITHUB_OUTPUT
 
           Write-Output '::endgroup::'

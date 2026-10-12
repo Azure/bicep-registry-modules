@@ -14,6 +14,7 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $consumer = Get-Content (Join-Path $workflowRoot 'avm.template.hci.consumer.yml') -Raw | ConvertFrom-Yaml
         $deployment = Get-Content (Join-Path $workflowRoot 'avm.template.module.deployment.yml') -Raw | ConvertFrom-Yaml
         $action = Get-Content (Join-Path $RepoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml') -Raw | ConvertFrom-Yaml
+        $consumerScript = Get-Content (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciTestConsumer.ps1') -Raw
         $roots = (Get-Content (Join-Path $RepoRootPath '.reserved-test-subscriptions.json') -Raw | ConvertFrom-Json -AsHashtable).Keys
         $compiled = @{}
         foreach ($root in $roots) {
@@ -88,7 +89,9 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $consumerText | Should -Not -Match 'avm\.template\.hci\.prepare|Invoke-HciPreparationStep|Start-HciEnvironment|RefreshKubernetes'
         $deployScript = ($action.runs.steps | Where-Object id -EQ deploy_step).with.inlineScript
         $deployScript | Should -Not -Match 'Invoke-HciPreparationStep|Start-HciEnvironment|RefreshKubernetes|Initialize-KubernetesVersionReadiness'
-        $deployScript | Should -Match 'Enter-HciEnvironmentTest'
+        $deployScript | Should -Not -Match 'Hci|Azure Local|Resolve-CIParameterFallback'
+        $consumerScript | Should -Match 'Enter-HciEnvironmentTest'
+        $consumerScript | Should -Not -Match 'Start-HciEnvironment|RefreshKubernetes|Initialize-KubernetesVersionReadiness'
     }
 
     It 'Splits long operations into dedicated hosted-runner jobs with explicit ordered handoffs' {
@@ -118,7 +121,7 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $invoke.env.HCI_RUN_IDENTITY | Should -Be '${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}'
     }
 
-    It 'Keeps history maintenance unfiltered while using the same canonical pool and identity bundle' {
+    It 'Keeps the complete history inventory on the same canonical pool and identity bundle' {
         $history = Get-Content (Join-Path $workflowRoot 'platform.deployment.history.cleanup.yml') -Raw | ConvertFrom-Yaml
         foreach ($name in @('job_cleanup_subscription_deployments', 'job_cleanup_managementGroup_deployments')) {
             $select = $history.jobs[$name].steps | Where-Object id -EQ 'get-test-subscriptions'
@@ -128,17 +131,25 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
             $login.with.'client-id' | Should -Be '${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}'
             $login.with.'tenant-id' | Should -Be '${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}'
         }
+        $history.jobs.job_cleanup_reserved_deployments.uses | Should -Be './.github/workflows/avm.template.hci.history.yml'
+        $history.jobs.job_cleanup_reserved_deployments.concurrency.group | Should -Be '${{ matrix.testCase.environmentConcurrencyGroup }}'
     }
 
     It 'Requires prepared inputs before deployment and bypasses the old gallery fallback with an immutable image' {
         $deployScript = ($action.runs.steps | Where-Object id -EQ deploy_step).with.inlineScript
-        $deployScript | Should -Match 'Enter-HciEnvironmentTest'
-        $deployScript | Should -Match 'Get-HciEnvironmentParameterMap'
-        $deployScript | Should -Match 'ciParameters\.hciHostImageReferenceId = ConvertTo-SecureString \$hciResult\.ImageVersionResourceId'
-        $deployScript.IndexOf('Enter-HciEnvironmentTest') | Should -BeLessThan $deployScript.IndexOf('Resolve-CIParameterFallback @')
-        $deployScript | Should -Match 'ciParameters\.preparedHciEnvironment'
+        $consumerScript | Should -Match 'Enter-HciEnvironmentTest'
+        $consumerScript | Should -Match 'Get-HciEnvironmentParameterMap'
+        $consumerScript | Should -Match 'overrides\.hciHostImageReferenceId = \$result\.ImageVersionResourceId'
+        $consumerScript | Should -Match 'overrides\.preparedHciEnvironment'
         $deployScript | Should -Match 'ProtectedResourceIds'
-        $deployScript | Should -Match 'cannot override their per-run disposable resource group'
+        $consumerScript | Should -Match 'cannot override their per-run disposable resource group'
+        $deployScript | Should -Not -Match 'Hci|Azure Local|Resolve-CIParameterFallback'
+        $steps = @($consumer.jobs.job_module_deploy_validation.steps)
+        $acquire = $steps | Where-Object id -EQ hci-consumer
+        $deploy = $steps | Where-Object id -EQ deployment
+        [array]::IndexOf($steps, $acquire) | Should -BeLessThan ([array]::IndexOf($steps, $deploy))
+        $deploy.with.deploymentDataFile | Should -Be '${{ runner.temp }}/avm-module-deployment-data.json'
+        $deploy.with.requireCompleteRemoval | Should -Be 'true'
     }
 
     It 'Releases only after exact pending-history and strict resource removal, never on cancellation' {
@@ -146,12 +157,17 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $cleanup.if | Should -Match '\(success\(\) \|\| failure\(\)\)'
         $cleanup.if | Should -Not -Match 'always\(\)'
         $script = $cleanup.with.inlineScript
-        $script | Should -Match 'Wait-DeploymentRecordRemoval'
-        $script | Should -Match 'RequireCompleteRemoval = \$true'
-        $script | Should -Match 'Test-CleanupResourceAbsent -ResourceId \$hciContext\.TestResourceGroupId'
+        $script | Should -Match 'Invoke-ModuleDeploymentCleanup'
         $script | Should -Match 'ProtectedResourceIds'
-        $script | Should -Match 'Exit-HciEnvironment -Context \$hciContext -CleanupConfirmed:\$true'
-        $script.IndexOf('Test-CleanupResourceAbsent') | Should -BeLessThan $script.IndexOf('Exit-HciEnvironment')
+        $script | Should -Not -Match 'Hci|Azure Local'
+        $consumerScript | Should -Match 'Test-CleanupResourceAbsent -ResourceId \$context\.TestResourceGroupId'
+        $consumerScript | Should -Match 'Exit-HciEnvironment -Context \$context -CleanupConfirmed:\$true'
+        $consumerScript.IndexOf('Test-CleanupResourceAbsent') | Should -BeLessThan $consumerScript.IndexOf('Exit-HciEnvironment')
+        $release = $consumer.jobs.job_module_deploy_validation.steps | Where-Object name -EQ 'Release only a successfully cleaned test environment'
+        $release.if | Should -Match 'success\(\) \|\| failure\(\)'
+        $release.if | Should -Not -Match 'always\(\)'
+        $release.env.CLEANUP_STATUS | Should -Be '${{ steps.deployment.outputs.cleanupStatus }}'
+        $release.env.DEPLOYMENT_OUTCOME | Should -Be '${{ steps.deployment.outcome }}'
     }
 
     It 'Keeps all sixteen target deployments active and makes only non-cluster foundations conditional' {

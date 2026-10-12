@@ -32,6 +32,10 @@ Optional. Specify to fetch and remove all resources in the current context that 
 .PARAMETER RequireCompleteRemoval
 Optional. Confirm complete removal of terminal deployments and their records before regional relocation.
 
+.PARAMETER FinalCleanup
+Optional. With complete removal, allow successful terminal roots and confirm pending history deletion.
+Retry cleanup omits this switch and continues requiring failed roots.
+
 .PARAMETER RequireNoDeploymentScripts
 Optional. Reject attempts containing deployment scripts before cleanup can authorize same-region replay.
 
@@ -78,6 +82,9 @@ function Initialize-DeploymentRemoval {
 
         [Parameter()]
         [switch] $RequireCompleteRemoval,
+
+        [Parameter()]
+        [switch] $FinalCleanup,
 
         [Parameter()]
         [switch] $RequireNoDeploymentScripts,
@@ -203,6 +210,7 @@ function Initialize-DeploymentRemoval {
             RemoveFirstSequence              = $removeFirstSequence
             RemoveLastSequence               = $removeLastSequence
             RequireCompleteRemoval           = $RequireCompleteRemoval
+            FinalCleanup                     = $FinalCleanup
             RequireNoDeploymentScripts       = $RequireNoDeploymentScripts
             ProtectedResourceIds             = $ProtectedResourceIds
         }

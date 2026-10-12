@@ -37,6 +37,11 @@ jobs:
         uses: ./.github/actions/templates/avm-setEnvironment
         with:
           removeDeployment: "false"
+      - name: "Install preparation dependencies"
+        shell: pwsh
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')
+          Install-CustomModule -Module @{ Name = 'Az.KeyVault' } -InstalledModule @(Get-Module -ListAvailable)
       - name: "Resolve the pinned reserved subscription"
         id: subscription
         shell: pwsh

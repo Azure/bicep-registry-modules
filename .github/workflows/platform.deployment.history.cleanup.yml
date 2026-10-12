@@ -31,6 +31,7 @@ jobs:
   job_initialize_pipeline:
     runs-on: ubuntu-latest
     name: "Initialize pipeline"
+    environment: avm-validation
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -41,8 +42,32 @@ jobs:
         uses: ./.github/actions/templates/avm-getWorkflowInput
         with:
           workflowPath: "${{ env.workflowPath}}"
+      - name: "Route subscription history maintenance"
+        id: history-pools
+        if: ${{ fromJson(steps.get-workflow-param.outputs.workflowInput).handleSubscriptionScope == 'true' }}
+        shell: pwsh
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+          $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID)
+          $reserved = @($subscriptions | Where-Object tag -CEQ 'Azure Local' | ForEach-Object {
+            @{
+              subscriptionIndex = $_.index
+              subscriptionKey = $_.key
+              environmentConcurrencyGroup = "avm-hci-$($_.key)"
+            }
+          })
+          "reservedSubscriptions=$(ConvertTo-Json -InputObject $reserved -Compress)" >> $env:GITHUB_OUTPUT
+          "hasReservedSubscriptions=$(($reserved.Count -gt 0).ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+          "hasOrdinarySubscriptions=$((@($subscriptions | Where-Object tag -CNE 'Azure Local').Count -gt 0).ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
     outputs:
       workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+      reservedSubscriptions: ${{ steps.history-pools.outputs.reservedSubscriptions }}
+      hasReservedSubscriptions: ${{ steps.history-pools.outputs.hasReservedSubscriptions }}
+      hasOrdinarySubscriptions: ${{ steps.history-pools.outputs.hasOrdinarySubscriptions }}
 
   ###############
   #   Removal   #
@@ -55,7 +80,7 @@ jobs:
       id-token: write # For OIDC
     needs:
       - job_initialize_pipeline
-    if: ${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).handleSubscriptionScope == 'true' }}
+    if: ${{ fromJson(needs.job_initialize_pipeline.outputs.workflowInput).handleSubscriptionScope == 'true' && needs.job_initialize_pipeline.outputs.hasOrdinarySubscriptions == 'true' }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -74,7 +99,9 @@ jobs:
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
 
-          $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID -Verbose)
+          $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID -Verbose |
+            Where-Object tag -CNE 'Azure Local')
+          if ($subscriptions.Count -eq 0) { throw 'The ordinary maintenance pool changed after selection.' }
           Write-Output ("subscriptionId={0}" -f $subscriptions[0].id) >> $env:GITHUB_OUTPUT
           Write-Output ("subscriptions={0}" -f (ConvertTo-Json -InputObject $subscriptions -Compress)) >> $env:GITHUB_OUTPUT
 
@@ -111,6 +138,26 @@ jobs:
               Clear-SubscriptionDeploymentHistory @functionInput
             }
           azPSVersion: "latest"
+
+  job_cleanup_reserved_deployments:
+    name: "Maintain reserved subscription [${{ matrix.testCase.subscriptionIndex }}]"
+    needs: job_initialize_pipeline
+    if: ${{ fromJson(needs.job_initialize_pipeline.outputs.workflowInput).handleSubscriptionScope == 'true' && needs.job_initialize_pipeline.outputs.hasReservedSubscriptions == 'true' }}
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        testCase: ${{ fromJson(needs.job_initialize_pipeline.outputs.reservedSubscriptions) }}
+    concurrency:
+      group: ${{ matrix.testCase.environmentConcurrencyGroup }}
+      queue: max
+    uses: ./.github/workflows/avm.template.hci.history.yml
+    with:
+      testCase: ${{ toJson(matrix.testCase) }}
+      maxDeploymentRetentionInDays: ${{ fromJson(needs.job_initialize_pipeline.outputs.workflowInput).maxDeploymentRetentionInDays }}
+    secrets: inherit
 
   job_cleanup_managementGroup_deployments:
     runs-on: ubuntu-latest

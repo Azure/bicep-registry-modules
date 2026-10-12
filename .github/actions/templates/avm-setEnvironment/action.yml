@@ -67,10 +67,6 @@ runs:
         }
 
         # Set agent up
-        if ('${{ github.job }}' -eq 'job_hci_prepare_step') {
-          $modules += @{ Name = 'Az.KeyVault' }
-        }
-
         Set-EnvironmentOnAgent -PSModules $modules
 
         Write-Output '::endgroup::'

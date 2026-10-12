@@ -4,6 +4,8 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
     BeforeAll {
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciPreparationStep.ps1')
+        . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciTestConsumer.ps1')
+        . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciDeploymentHistoryCleanup.ps1')
         function Get-AzContext {}
         function Set-AzContext { param ($SubscriptionId) }
         function Invoke-AzRestMethod { param ($Method, $Path, $Payload) }
@@ -609,6 +611,258 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter {
             $Method -eq 'GET' -and
             $Path -eq "/subscriptions/$($context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/$($context.Config.location)/operations/55555555-5555-5555-5555-555555555555?api-version=2025-10-01"
+        }
+    }
+
+    Context 'Dedicated test consumer boundary' {
+        BeforeEach {
+            $runnerTemp = Join-Path $TestDrive ([guid]::NewGuid().ToString('N'))
+            $null = New-Item -ItemType Directory -Path $runnerTemp
+            $pool = @(
+                @{ id = '33333333-3333-3333-3333-333333333333'; name = 'ordinary' }
+                @{ id = $context.SubscriptionId; name = 'reserved'; tag = 'Azure Local' }
+            ) | ConvertTo-Json -Compress
+            $key = Get-HciEnvironmentKey -Value $context.SubscriptionId
+            $consumerInput = @{
+                RepoRootPath = $RepoRootPath
+                ModulePath = 'avm/res/azure-stack-hci/logical-network'
+                TestCase = @{
+                    subscriptionIndex = 1
+                    subscriptionKey = $key
+                    environmentConcurrencyGroup = "avm-hci-$key"
+                    path = 'tests/e2e/defaults/main.test.bicep'
+                    e2eIgnore = $false
+                }
+                TestSubscriptionIds = $pool
+                TenantId = $context.TenantId
+                RunIdentity = 'offline/repository|123|1'
+                RunnerTempPath = $runnerTemp
+                GitHubSecrets = '{"CI_ARBLOCALADMINANDDEPLOYMENTUSERPASS":"credential-not-saved"}'
+            }
+            $script:consumerDefinitions = @{
+                resourceGroupName = @{ type = 'string' }
+                hciHostImageReferenceId = @{ type = 'secureString' }
+                preparedHciEnvironment = @{ type = 'object' }
+                arbLocalAdminAndDeploymentUserPass = @{ type = 'secureString' }
+            }
+            Mock bicep {
+                $global:LASTEXITCODE = 0
+                @{ parameters = $script:consumerDefinitions } | ConvertTo-Json -Depth 5
+            }
+            Mock Start-HciEnvironmentPreparation { throw 'Consumer attempted setup.' }
+            Mock Start-HciEnvironmentFoundation { throw 'Consumer attempted foundation provisioning.' }
+        }
+
+        It 'Constructs ordinary parameter/protection data from a ready environment without saving credentials' {
+            Add-Registry -State Idle -FoundationState Ready
+            Add-ReadyImage
+            Add-ReadyFoundation
+
+            $messages = @(Initialize-HciTestConsumer @consumerInput 4>&1)
+            $dataFile = Join-Path $runnerTemp 'avm-module-deployment-data.json'
+            $contextFile = Join-Path $runnerTemp 'avm-hci-test-context.json'
+            $data = Get-ModuleDeploymentData -FilePath $dataFile
+            $savedContext = Get-Content $contextFile -Raw | ConvertFrom-Json -AsHashtable
+            $prepared = $data.ParameterOverrides.preparedHciEnvironment | ConvertFrom-Json
+            $prepared.customLocationResourceId | Should -Be "$($context.GroupIds.foundation)/providers/Microsoft.ExtendedLocation/customLocations/$($context.Config.customLocationName)"
+            $prepared.kubernetesVersion | Should -Be '1.32.6'
+            $data.ParameterOverrides.hciHostImageReferenceId | Should -Be $context.ImageVersionResourceId
+            $data.ParameterOverrides.resourceGroupName | Should -Be "dep-avm-hci-$($savedContext.Owner.Substring(0, 20))"
+            $data.ProtectedResourceIds | Should -Be (@($context.GroupIds.control) + $context.OwnedGroupIds + @($context.ImageVersionResourceId))
+            $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'InUse'
+            ((Get-Content $dataFile, $contextFile -Raw) -join '') | Should -Not -Match 'credential-not-saved'
+            ($messages | Out-String) | Should -Not -Match 'credential-not-saved'
+            Should -Invoke Start-HciEnvironmentPreparation -Times 0 -Exactly
+            Should -Invoke Start-HciEnvironmentFoundation -Times 0 -Exactly
+            Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
+
+            Complete-HciTestConsumer -ContextFile $contextFile -DeploymentOutcome success -CleanupStatus confirmed
+
+            $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Idle'
+            $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -BeNullOrEmpty
+        }
+
+        It 'Leaves the cluster under test separate from the shared foundation' {
+            $consumerInput.ModulePath = 'avm/res/azure-stack-hci/cluster'
+            $script:consumerDefinitions.Remove('preparedHciEnvironment')
+            Add-Registry -State Idle
+            Add-ReadyImage
+
+            Initialize-HciTestConsumer @consumerInput
+
+            $data = Get-ModuleDeploymentData -FilePath (Join-Path $runnerTemp 'avm-module-deployment-data.json')
+            $data.ParameterOverrides.ContainsKey('preparedHciEnvironment') | Should -BeFalse
+            $data.ParameterOverrides.hciHostImageReferenceId | Should -Be $context.ImageVersionResourceId
+            Should -Invoke Start-HciEnvironmentFoundation -Times 0 -Exactly
+        }
+
+        It 'Fails a <state> environment without provisioning or acquiring ownership' -ForEach @(
+            @{ state = 'Missing' }, @{ state = 'Preparing' }, @{ state = 'InUse' }, @{ state = 'Recreating' }, @{ state = 'Unready' }
+        ) {
+            if ($state -ne 'Missing') {
+                if ($state -eq 'Unready') { Add-Registry -State Idle -ImageState Running -FoundationState Ready }
+                else { Add-Registry -State $state -FoundationState Ready }
+            }
+            { Initialize-HciTestConsumer @consumerInput } | Should -Throw '*dedicated setup workflow*'
+            Should -Invoke Update-AzTag -Times 0 -Exactly
+            Should -Invoke Start-HciEnvironmentPreparation -Times 0 -Exactly
+            Should -Invoke Start-HciEnvironmentFoundation -Times 0 -Exactly
+            Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+            Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+            Test-Path (Join-Path $runnerTemp 'avm-module-deployment-data.json') | Should -BeFalse
+        }
+
+        It 'Retains ownership for <case>' -ForEach @(
+            @{ case = 'failed deployment despite confirmed cleanup'; outcome = 'failure'; cleanup = 'confirmed' }
+            @{ case = 'skipped deployment'; outcome = 'skipped'; cleanup = 'confirmed' }
+            @{ case = 'cancelled deployment'; outcome = 'cancelled'; cleanup = 'confirmed' }
+            @{ case = 'failed cleanup'; outcome = 'failure'; cleanup = 'unknown' }
+            @{ case = 'best-effort cleanup'; outcome = 'success'; cleanup = 'unconfirmed' }
+            @{ case = 'unknown cleanup'; outcome = 'success'; cleanup = 'unknown' }
+            @{ case = 'zero submissions'; outcome = 'failure'; cleanup = 'not-submitted' }
+            @{ case = 'missing cleanup output'; outcome = 'success'; cleanup = '' }
+        ) {
+            Add-Registry -State Idle -FoundationState Ready
+            Add-ReadyImage
+            Add-ReadyFoundation
+            Initialize-HciTestConsumer @consumerInput
+
+            { Complete-HciTestConsumer -ContextFile (Join-Path $runnerTemp 'avm-hci-test-context.json') `
+                    -DeploymentOutcome $outcome -CleanupStatus $cleanup } | Should -Throw '*ownership is retained*'
+
+            $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'InUse'
+            Should -Invoke Update-AzTag -Times 1 -Exactly
+        }
+
+        It 'Retains ownership when the exact disposable group remains after reported cleanup' {
+            Add-Registry -State Idle -FoundationState Ready
+            Add-ReadyImage
+            Add-ReadyFoundation
+            Initialize-HciTestConsumer @consumerInput
+            $contextFile = Join-Path $runnerTemp 'avm-hci-test-context.json'
+            $savedContext = Get-Content $contextFile -Raw | ConvertFrom-Json -AsHashtable
+            Add-Group $savedContext.TestResourceGroupId @{}
+
+            { Complete-HciTestConsumer -ContextFile $contextFile -DeploymentOutcome success -CleanupStatus confirmed } |
+                Should -Throw '*not confirmed absent*'
+
+            $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'InUse'
+            Should -Invoke Update-AzTag -Times 1 -Exactly
+        }
+
+        It 'Rejects per-run group overrides and incorrect shared locks before acquisition' {
+            $consumerInput.GitHubVariables = '{"CI_RESOURCEGROUPNAME":"some-other-group"}'
+            { Initialize-HciTestConsumer @consumerInput } | Should -Throw '*cannot override their per-run disposable resource group*'
+            $consumerInput.GitHubVariables = '{}'
+            $consumerInput.TestCase.environmentConcurrencyGroup = 'not-the-shared-lock'
+            { Initialize-HciTestConsumer @consumerInput } | Should -Throw '*canonical shared-environment lock*'
+            Should -Invoke Update-AzTag -Times 0 -Exactly
+        }
+    }
+
+    Context 'Reserved deployment history ownership' {
+        BeforeEach {
+            $key = Get-HciEnvironmentKey -Value $context.SubscriptionId
+            $historyInput = @{
+                RepoRootPath = $RepoRootPath
+                TestCase = @{ subscriptionIndex = 0; subscriptionKey = $key; environmentConcurrencyGroup = "avm-hci-$key" }
+                TestSubscriptionIds = ConvertTo-Json -InputObject @(@{ id = $context.SubscriptionId; name = 'reserved'; tag = 'Azure Local' }) -Compress
+                TenantId = $context.TenantId
+                RunIdentity = 'offline/repository|history|1'
+            }
+            $script:historyRequested = $false
+            $script:historyRecordId = "/subscriptions/$($context.SubscriptionId)/providers/Microsoft.Resources/deployments/recent-success"
+            Mock Get-AzAccessToken { @{ Token = ConvertTo-SecureString 'offline-history-token' -AsPlainText -Force } }
+            Mock Invoke-RestMethod {
+                if ($Method -eq 'GET') {
+                    return [pscustomobject] @{
+                        value = @([pscustomobject] @{
+                            name = 'recent-success'
+                            properties = @{ provisioningState = 'Succeeded'; timestamp = [datetime]::UtcNow.ToString('o') }
+                        })
+                    }
+                }
+                if ($Method -eq 'POST') {
+                    if ($script:resources.ContainsKey($context.GroupIds.control)) {
+                        $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Preparing'
+                        $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -Not -BeNullOrEmpty
+                    }
+                    $script:historyRequested = $true
+                    return [pscustomobject] @{ responses = @() }
+                }
+                throw 'Unexpected offline history request.'
+            }
+            Mock Invoke-AzRestMethod {
+                $script:historyRequested | Should -BeTrue
+                @{ StatusCode = 404; Content = '{"error":{"code":"DeploymentNotFound"}}' }
+            } -ParameterFilter { $Method -eq 'GET' -and $Path -like "$($script:historyRecordId)?*" }
+        }
+
+        It 'Still cleans recent successful history when the environment is idle and releases only after confirmed deletion' {
+            Add-Registry -State Idle -FoundationState Ready
+
+            Invoke-HciDeploymentHistoryCleanup @historyInput
+
+            $script:historyRequested | Should -BeTrue
+            $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Idle'
+            $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -BeNullOrEmpty
+            Should -Invoke Update-AzTag -Times 2 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Path -like "$($script:historyRecordId)?*" }
+        }
+
+        It 'Keeps a subscription without a registered environment or owned groups eligible without creating a registry' {
+            Invoke-HciDeploymentHistoryCleanup @historyInput
+            $script:historyRequested | Should -BeTrue
+            Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+            Should -Invoke Update-AzTag -Times 0 -Exactly
+        }
+
+        It 'Preserves successful deployment evidence while state is <state>' -ForEach @(
+            @{ state = 'Preparing' }, @{ state = 'InUse' }, @{ state = 'Recreating' }, @{ state = 'Unknown' }
+        ) {
+            Add-Registry -State $state -FoundationState Ready
+            { Invoke-HciDeploymentHistoryCleanup @historyInput } | Should -Throw '*teardown evidence is preserved*'
+            $script:historyRequested | Should -BeFalse
+            Should -Invoke Invoke-RestMethod -Times 0 -Exactly
+            Should -Invoke Update-AzTag -Times 0 -Exactly
+        }
+
+        It 'Preserves evidence for an idle-looking registry with an outstanding owner' {
+            Add-Registry -State Idle -FoundationState Ready
+            $script:resources[$context.GroupIds.control].tags['avm-active-owner'] = 'failed-cleanup-owner'
+            { Invoke-HciDeploymentHistoryCleanup @historyInput } | Should -Throw '*teardown evidence is preserved*'
+            Should -Invoke Invoke-RestMethod -Times 0 -Exactly
+        }
+
+        It 'Preserves unregistered resource evidence instead of treating missing control state as idle' {
+            Add-Group $context.GroupIds.foundation $context.Tags
+            { Invoke-HciDeploymentHistoryCleanup @historyInput } | Should -Throw '*Unregistered shared resources*'
+            Should -Invoke Invoke-RestMethod -Times 0 -Exactly
+        }
+
+        It 'Retains maintenance ownership when accepted history deletion is still unconfirmed' {
+            Add-Registry -State Idle -FoundationState Ready
+            Mock Invoke-AzRestMethod {
+                @{ StatusCode = 200; Content = (@{ id = $script:historyRecordId; properties = @{ provisioningState = 'Deleting' } } | ConvertTo-Json -Compress) }
+            } -ParameterFilter { $Method -eq 'GET' -and $Path -like "$($script:historyRecordId)?*" }
+
+            { Invoke-HciDeploymentHistoryCleanup @historyInput } | Should -Throw '*still exists after cleanup*'
+
+            $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Preparing'
+            $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -Not -BeNullOrEmpty
+            Should -Invoke Update-AzTag -Times 1 -Exactly
+        }
+
+        It 'Retains maintenance ownership when the history response cannot prove its inventory' {
+            Add-Registry -State Idle -FoundationState Ready
+            Mock Invoke-RestMethod { [pscustomobject] @{ value = $null } } -ParameterFilter { $Method -eq 'GET' }
+
+            { Invoke-HciDeploymentHistoryCleanup @historyInput } | Should -Throw '*completion is unconfirmed*'
+
+            $script:historyRequested | Should -BeFalse
+            $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Preparing'
+            Should -Invoke Update-AzTag -Times 1 -Exactly
         }
     }
 
