@@ -19,7 +19,6 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-01' 
   }
   properties: {
     dnsPrefix: clusterName
-    kubernetesVersion: '1.32.6'
     publicNetworkAccess: 'Enabled'
     enableRBAC: true
     addonProfiles: {
@@ -32,7 +31,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-01' 
       {
         name: 'agentpool'
         count: 1
-        vmSize: 'Standard_D2s_v5'
+        vmSize: 'Standard_D2s_v4'
         osType: 'Linux'
         mode: 'System'
         availabilityZones: [
