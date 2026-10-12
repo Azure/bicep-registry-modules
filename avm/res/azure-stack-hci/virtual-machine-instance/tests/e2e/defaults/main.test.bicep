@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'Using default config'
 metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
@@ -18,6 +20,9 @@ param serviceShort string = 'ashvmimin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
 
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
@@ -38,11 +43,6 @@ param arbDeploymentSPObjectId string = ''
 #disable-next-line secure-parameter-default
 param arbDeploymentServicePrincipalSecret string = ''
 
-@description('Optional. The service principal ID of the Azure Stack HCI Resource Provider. If this is not provided, the module attemps to determine this value by querying the Microsoft Graph.')
-@secure()
-#disable-next-line secure-parameter-default
-param hciResourceProviderObjectId string = ''
-
 @description('Optional. The password to use for the local and domain accounts in the test.')
 param localAdminAndDeploymentUserPass string = newGuid()
 
@@ -60,6 +60,10 @@ var enforcedLocation = 'southeastasia'
 
 // General resources
 // =================
+
+resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
+  appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'
+}
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
@@ -103,7 +107,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.4.0' = {
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
     servicePrincipalId: arbDeploymentAppId
     servicePrincipalSecret: arbDeploymentServicePrincipalSecret
-    hciResourceProviderObjectId: hciResourceProviderObjectId
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames

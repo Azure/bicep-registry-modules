@@ -1,5 +1,14 @@
-@description('Required. Location for the image template.')
+@description('Required. Location of the image definition, which Azure VM Image Builder also uses for the image version.')
 param location string
+
+@description('Optional. Location for the image template and build VM. Use a new imageTemplateName when changing an existing template location.')
+param buildLocation string = location
+
+@minLength(1)
+@description('Optional. Regions where the image version must be available. The image definition and build locations are always included.')
+param replicationRegions string[] = [
+  location
+]
 
 @description('Required. Name of the Azure VM Image Builder template.')
 param imageTemplateName string
@@ -31,6 +40,14 @@ param buildTimeoutInMinutes int
 @description('Optional. Tags applied to the image template and output version.')
 param tags object = {}
 
+var requiredReplicationRegions = union(
+  [
+    toLower(replace(location, ' ', ''))
+    toLower(replace(buildLocation, ' ', ''))
+  ],
+  map(replicationRegions, region => toLower(replace(region, ' ', '')))
+)
+
 var stage1ScriptUri = '${assetBaseUri}/azureStackHCIHost/scripts/hciHostStage1.ps1'
 var encodedPayloadUri = base64(hciVhdxDownloadUri)
 var payloadDownload = [
@@ -54,7 +71,7 @@ var payloadDownload = [
 
 resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2025-10-01' = {
   name: imageTemplateName
-  location: location
+  location: buildLocation
   tags: tags
   identity: {
     type: 'UserAssigned'
@@ -99,10 +116,13 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2025-10-01
         runOutputName: 'hci-host-image-${replace(imageVersion, '.', '-')}'
         galleryImageId: '${galleryImageDefinitionResourceId}/versions/${imageVersion}'
         excludeFromLatest: false
-        replicationRegions: [
-          location
+        targetRegions: [
+          for region in requiredReplicationRegions: {
+            name: region
+            replicaCount: 1
+            storageAccountType: 'Standard_LRS'
+          }
         ]
-        storageAccountType: 'Standard_LRS'
         artifactTags: union(tags, {
           imageVersion: imageVersion
           source: 'AVM HCI host image builder'
