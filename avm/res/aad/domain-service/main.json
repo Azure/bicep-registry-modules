@@ -296,7 +296,7 @@
     "domainName": {
       "type": "string",
       "metadata": {
-        "example": "  - 'contoso.onmicrosoft.com'\n  - 'aaddscontoso.com'\n  ",
+        "example": "  - 'contoso.onmicrosoft.com'\n  - 'aad-ds-contoso.com'\n  ",
         "description": "Required. The domain name specific to the Azure AD DS service."
       },
       "minLength": 1

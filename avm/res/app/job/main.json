@@ -1007,7 +1007,7 @@
         "Schedule"
       ],
       "metadata": {
-        "description": "Required. Trigger type of the job."
+        "description": "Required. Trigger with typo errors for testing type of the job."
       }
     }
   },

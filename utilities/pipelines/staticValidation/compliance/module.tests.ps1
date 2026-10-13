@@ -2082,6 +2082,21 @@ Describe 'Governance tests' {
         $ownershipPatterns = @($ownershipRules | ForEach-Object { ($_ -split ' ')[0] })
         @($ownershipPatterns | Sort-Object -Unique).Count | Should -Be $ownershipPatterns.Count -Because 'each ownership pattern must have a single entry.'
     }
+
+    It '[<moduleFolderName>] is in the MAR file' -TestCases $governanceTestCases {
+
+        param(
+            [string] $relativeModulePath,
+            [string] $repoRootPath
+        )
+
+        # Confirm that the module to publish exists in the MAR file and can be published to the MCR
+        try {
+            Confirm-ModuleInMAR -PublishedModuleName $relativeModulePath | Should -Be $true -Because 'the module should be listed in the MAR file to be eligible for publication.'
+        } catch {
+            throw ('An error occurred while confirming that the module [{0}] is listed in the MAR file: {1}' -f $relativeModulePath, $_.Exception.Message)
+        }
+    }
 }
 
 Describe 'Test file tests' -Tag 'TestTemplate' {
