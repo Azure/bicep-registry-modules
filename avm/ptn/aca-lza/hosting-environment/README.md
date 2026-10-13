@@ -1008,7 +1008,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/compute/virtual-machine:0.11.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.9.3` | Remote reference |
 | `br/public:avm/res/insights/component:0.4.2` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.11.1` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.14.2` | Remote reference |
+| `br/public:avm/res/key-vault/vault/secret:0.1.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.5.0` | Remote reference |
 | `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.2.0` | Remote reference |

@@ -63,10 +63,6 @@ module storage 'br/public:avm/res/storage/storage-account:0.15.0' = {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
     }
-    secretsExportConfiguration: {
-      keyVaultResourceId: keyVaultResourceId
-      accessKey1: 'ciStorageAccessKey1'
-    }
     fileServices: {
       shares: shares
     }
@@ -98,6 +94,21 @@ module storage 'br/public:avm/res/storage/storage-account:0.15.0' = {
     tags: tags
   }
 }
+
+module storageAccessKeySecret 'br/public:avm/res/key-vault/vault/secret:0.1.1' = {
+  name: '${take(uniqueString(deployment().name, location), 4)}-ci-storage-key-secret'
+  scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
+  params: {
+    keyVaultName: last(split(keyVaultResourceId, '/'))
+    name: 'ciStorageAccessKey1'
+    value: listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2023-05-01').keys[0].value
+    enableTelemetry: enableTelemetry
+  }
+  dependsOn: [
+    storage
+  ]
+}
+
 module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   name: '${take(uniqueString(deployment().name, location),4)}-storagePrivateDnsZone-deployment'
   params: {
