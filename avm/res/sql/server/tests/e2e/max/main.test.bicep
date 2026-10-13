@@ -58,7 +58,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}azsa${serviceShort}01'
+    storageAccountName: 'dep${namePrefix}azsa${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
@@ -75,7 +75,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}-${serviceShort}'
+      name: '${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -129,7 +129,7 @@ module testDeployment '../../../main.bicep' = [
       }
       elasticPools: [
         {
-          name: '${namePrefix}-${serviceShort}-ep-001'
+          name: '${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}-ep-001'
           sku: {
             name: 'GP_Gen5'
             tier: 'GeneralPurpose'
@@ -157,7 +157,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       databases: [
         {
-          name: '${namePrefix}-${serviceShort}db-001'
+          name: '${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}db-001'
           collation: 'SQL_Latin1_General_CP1_CI_AS'
           sku: {
             name: 'ElasticPool'
