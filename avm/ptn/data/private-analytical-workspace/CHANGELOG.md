@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated Key Vault API references to `2026-02-01`.
+- Updated the Key Vault module dependency to `0.14.2`.
 
 ### Breaking Changes
 

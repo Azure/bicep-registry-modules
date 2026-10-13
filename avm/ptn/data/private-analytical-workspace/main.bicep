@@ -501,7 +501,7 @@ module log 'br/public:avm/res/operational-insights/workspace:0.7.1' = if (create
   }
 }
 
-module kv 'br/public:avm/res/key-vault/vault:0.9.0' = if (createNewKV) {
+module kv 'br/public:avm/res/key-vault/vault:0.14.2' = if (createNewKV) {
   name: '${uniqueString(deployment().name, location)}-vault-${kvName}'
   params: {
     // Required parameters
