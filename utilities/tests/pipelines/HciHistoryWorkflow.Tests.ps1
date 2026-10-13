@@ -5,7 +5,7 @@ Describe 'Coordinated reserved subscription history maintenance' {
         Import-Module powershell-yaml -ErrorAction Stop
         $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
         $history = Get-Content (Join-Path $workflowRoot 'platform.deployment.history.cleanup.yml') -Raw | ConvertFrom-Yaml
-        $reservedWorkflow = Get-Content (Join-Path $workflowRoot 'avm.template.hci.history.yml') -Raw | ConvertFrom-Yaml
+        $reservedJob = $history.jobs.job_cleanup_reserved_deployments
         $route = $history.jobs.job_initialize_pipeline.steps | Where-Object id -EQ history-pools
         $ordinary = $history.jobs.job_cleanup_subscription_deployments.steps | Where-Object id -EQ get-test-subscriptions
         $environmentNames = @('GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'TEST_SUBSCRIPTION_IDS', 'VALIDATE_SUBSCRIPTION_ID')
@@ -89,8 +89,9 @@ Describe 'Coordinated reserved subscription history maintenance' {
         $binding = '${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
         $route.env.TEST_SUBSCRIPTION_IDS | Should -Be $binding
         $ordinary.env.TEST_SUBSCRIPTION_IDS | Should -Be $binding
-        $selector = $reservedWorkflow.jobs.job_hci_history.steps | Where-Object id -EQ subscription
+        $selector = $reservedJob.steps | Where-Object id -EQ subscription
         $selector.env.TEST_SUBSCRIPTION_IDS | Should -Be $binding
+        $selector.env.TEST_CASE | Should -Be '${{ toJson(matrix.testCase) }}'
     }
 
     It 'Uses the existing environment lock without nested locks, cancellation, or optional bypasses' {
@@ -98,15 +99,19 @@ Describe 'Coordinated reserved subscription history maintenance' {
         $job.concurrency.group | Should -Be '${{ matrix.testCase.environmentConcurrencyGroup }}'
         $job.concurrency.queue | Should -Be 'max'
         $job.concurrency.Contains('cancel-in-progress') | Should -BeFalse
-        $job.uses | Should -Be './.github/workflows/avm.template.hci.history.yml'
-        $job.secrets | Should -Be 'inherit'
+        $job.Contains('uses') | Should -BeFalse
+        $job.environment | Should -Be 'avm-validation'
+        $job.'runs-on' | Should -Be 'ubuntu-latest'
+        $job.permissions.contents | Should -Be 'read'
+        $job.permissions.'id-token' | Should -Be 'write'
         $job.if | Should -Match 'hasReservedSubscriptions'
         $history.jobs.job_cleanup_subscription_deployments.if | Should -Match 'hasOrdinarySubscriptions'
         $history.jobs.job_initialize_pipeline.environment | Should -Be 'avm-validation'
-        $reservedWorkflow.jobs.job_hci_history.Contains('concurrency') | Should -BeFalse
-        $invoke = $reservedWorkflow.jobs.job_hci_history.steps | Where-Object name -EQ 'Clean history only with confirmed idle ownership'
+        $invoke = $job.steps | Where-Object name -EQ 'Clean history only with confirmed idle ownership'
         $invoke.with.inlineScript | Should -Match 'Invoke-HciDeploymentHistoryCleanup'
         $invoke.with.inlineScript | Should -Not -Match 'Start-HciEnvironment|RefreshKubernetes'
-        @($reservedWorkflow.on.Keys) | Should -Be @('workflow_call')
+        $invoke.env.TEST_CASE | Should -Be '${{ toJson(matrix.testCase) }}'
+        $invoke.env.RETENTION_DAYS | Should -Be '${{ fromJson(needs.job_initialize_pipeline.outputs.workflowInput).maxDeploymentRetentionInDays }}'
+        Test-Path (Join-Path $workflowRoot 'avm.template.hci.history.yml') | Should -BeFalse
     }
 }

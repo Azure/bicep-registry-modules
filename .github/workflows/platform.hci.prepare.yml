@@ -66,8 +66,6 @@ jobs:
       queue: max
     uses: ./.github/workflows/avm.template.hci.prepare.yml
     with:
-      modulePath: avm/res/azure-stack-hci/logical-network
       testCase: ${{ needs.job_select_subscription.outputs.testCase }}
-      maintenance: true
       recreate: ${{ inputs.recreate }}
     secrets: inherit

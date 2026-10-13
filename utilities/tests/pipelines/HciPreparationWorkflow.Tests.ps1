@@ -10,7 +10,7 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
         $manual = Get-Content (Join-Path $workflowRoot 'platform.hci.prepare.yml') -Raw | ConvertFrom-Yaml
         $prepare = Get-Content (Join-Path $workflowRoot 'avm.template.hci.prepare.yml') -Raw | ConvertFrom-Yaml
-        $step = Get-Content (Join-Path $workflowRoot 'avm.template.hci.prepare.step.yml') -Raw | ConvertFrom-Yaml
+        $prepareSteps = $prepare.jobs.job_begin.steps
         $consumer = Get-Content (Join-Path $workflowRoot 'avm.template.hci.consumer.yml') -Raw | ConvertFrom-Yaml
         $deployment = Get-Content (Join-Path $workflowRoot 'avm.template.module.deployment.yml') -Raw | ConvertFrom-Yaml
         $action = Get-Content (Join-Path $RepoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml') -Raw | ConvertFrom-Yaml
@@ -42,13 +42,12 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $wrapper.concurrency.queue | Should -Be 'max'
         $wrapper.concurrency.Contains('cancel-in-progress') | Should -BeFalse
         $wrapper.uses | Should -Be './.github/workflows/avm.template.hci.consumer.yml'
-        $consumer.jobs.job_module_deploy_validation.needs | Should -Be 'job_check_cleanup'
+        @($consumer.jobs.Keys) | Should -Be @('job_module_deploy_validation')
         $consumer.jobs.job_module_deploy_validation.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
         $deployment.jobs.job_module_deploy_validation.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
         $manual.jobs.job_prepare_environment.concurrency.group | Should -Be '${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}'
         $manual.jobs.job_prepare_environment.concurrency.queue | Should -Be 'max'
         foreach ($job in $prepare.jobs.Values) { $job.Contains('concurrency') | Should -BeFalse }
-        foreach ($job in $step.jobs.Values) { $job.Contains('concurrency') | Should -BeFalse }
     }
 
     It 'Preserves the outer shared-scope locks of all legacy and experimental callers' -ForEach @(
@@ -66,17 +65,42 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $manual.on.workflow_dispatch.inputs.recreate.default | Should -BeFalse
         $prepare.on.workflow_call.inputs.recreate.default | Should -BeFalse
         $consumer.jobs.Contains('job_prepare_environment') | Should -BeFalse
-        $manual.jobs.job_prepare_environment.with.maintenance | Should -BeTrue
-        $consumer.jobs.job_check_cleanup.steps[0].run | Should -Match 'require cleanup'
+        @($prepare.on.workflow_call.inputs.Keys | Sort-Object) | Should -Be @('recreate', 'testCase')
+        @($manual.jobs.job_prepare_environment.with.Keys | Sort-Object) | Should -Be @('recreate', 'testCase')
+        $invoke = $prepareSteps | Where-Object name -EQ 'Advance the recorded preparation operation'
+        $invoke.env.HCI_RECREATE | Should -Be '${{ inputs.recreate && env.HCI_STAGE == ''Begin'' }}'
+        $invoke.with.inlineScript | Should -Match ([regex]::Escape('-Maintenance:$true'))
+    }
+
+    It 'Checks cleanup in the consumer job before checkout, login or acquiring ownership' {
+        $check = $consumer.jobs.job_module_deploy_validation.steps[0]
+        $check.name | Should -Be 'Check cleanup policy'
+        $check.env.REMOVE_DEPLOYMENT | Should -Be '${{ fromJson(inputs.workflowInput).removeDeployment }}'
+        $saved = $env:REMOVE_DEPLOYMENT
+        try {
+            foreach ($value in @('', 'false', 'unknown')) {
+                $env:REMOVE_DEPLOYMENT = $value
+                { . ([scriptblock]::Create($check.run)) } | Should -Throw '*require cleanup*'
+            }
+            $env:REMOVE_DEPLOYMENT = 'true'
+            { . ([scriptblock]::Create($check.run)) } | Should -Not -Throw
+        } finally {
+            $env:REMOVE_DEPLOYMENT = $saved
+        }
+    }
+
+    It 'Keeps only the locked setup workflow and the shared consumer without replacement wrappers' {
+        @(Get-ChildItem $workflowRoot -Filter 'avm.template.hci.*.yml' | Sort-Object Name | ForEach-Object Name) |
+            Should -Be @('avm.template.hci.consumer.yml', 'avm.template.hci.prepare.yml')
+        foreach ($job in $prepare.jobs.Values) {
+            $job.Contains('uses') | Should -BeFalse
+            $job.Contains('outputs') | Should -BeFalse
+        }
     }
 
     It 'Allows shared provisioning only from dedicated manual setup, never from ordinary consumers' {
         @($manual.on.Keys) | Should -Be @('workflow_dispatch')
         $manual.jobs.job_prepare_environment.uses | Should -Be './.github/workflows/avm.template.hci.prepare.yml'
-        $manual.jobs.job_prepare_environment.with.maintenance | Should -BeTrue
-        foreach ($job in $prepare.jobs.Values) {
-            $job.with.maintenance | Should -Be '${{ inputs.maintenance }}'
-        }
         foreach ($file in Get-ChildItem $workflowRoot -Filter '*.yml') {
             $workflow = Get-Content $file.FullName -Raw | ConvertFrom-Yaml
             foreach ($job in $workflow.jobs.Values) {
@@ -95,14 +119,27 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
     }
 
     It 'Splits long operations into dedicated hosted-runner jobs with explicit ordered handoffs' {
-        $step.jobs.job_hci_prepare_step.'timeout-minutes' | Should -Be 330
-        $step.jobs.job_hci_prepare_step.'runs-on' | Should -Be 'ubuntu-latest'
-        $prepare.jobs.job_begin.with.stage | Should -Be 'Begin'
+        $prepare.jobs.Count | Should -Be 9
+        $prepare.permissions.contents | Should -Be 'read'
+        $prepare.permissions.'id-token' | Should -Be 'write'
+        foreach ($job in $prepare.jobs.Values) {
+            $job.'timeout-minutes' | Should -Be 330
+            $job.'runs-on' | Should -Be 'ubuntu-latest'
+            $job.environment | Should -Be 'avm-validation'
+            ($job.steps | ConvertTo-Json -Depth 20 -Compress) |
+                Should -Be ($prepareSteps | ConvertTo-Json -Depth 20 -Compress)
+        }
+        $prepare.jobs.job_begin.env.HCI_STAGE | Should -Be 'Begin'
+        $prepare.jobs.job_begin.Contains('needs') | Should -BeFalse
+        $prepare.jobs.job_image_wait_1.needs | Should -Be 'job_begin'
+        $prepare.jobs.job_foundation_wait_1.needs | Should -Be 'job_foundation_start'
         $prepare.jobs.job_foundation_start.needs | Should -Be 'job_image_wait_3'
+        $prepare.jobs.job_foundation_start.env.HCI_STAGE | Should -Be 'FoundationStart'
         $prepare.jobs.job_ready.needs | Should -Be 'job_foundation_wait_3'
+        $prepare.jobs.job_ready.env.HCI_STAGE | Should -Be 'Ready'
         foreach ($index in 1..3) {
-            $prepare.jobs["job_image_wait_$index"].with.stage | Should -Be 'ImageObserve'
-            $prepare.jobs["job_foundation_wait_$index"].with.stage | Should -Be 'FoundationObserve'
+            $prepare.jobs["job_image_wait_$index"].env.HCI_STAGE | Should -Be 'ImageObserve'
+            $prepare.jobs["job_foundation_wait_$index"].env.HCI_STAGE | Should -Be 'FoundationObserve'
             if ($index -gt 1) {
                 $prepare.jobs["job_image_wait_$index"].needs | Should -Be "job_image_wait_$($index - 1)"
                 $prepare.jobs["job_foundation_wait_$index"].needs | Should -Be "job_foundation_wait_$($index - 1)"
@@ -111,12 +148,12 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
     }
 
     It 'Uses variable overrides before secrets, without transporting resource identities as cross-job outputs' {
-        $selector = $step.jobs.job_hci_prepare_step.steps | Where-Object id -EQ subscription
+        $selector = $prepareSteps | Where-Object id -EQ subscription
         $selector.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
-        $selector.run | Should -Match 'Get-HciTestSubscription'
-        $step.jobs.job_hci_prepare_step.Contains('outputs') | Should -BeFalse
-        $invoke = $step.jobs.job_hci_prepare_step.steps | Where-Object { $_.name -eq 'Advance the recorded preparation operation' }
-        $invoke.with.inlineScript | Should -Match 'Invoke-HciPreparationStep'
+        $selector.run | Should -Match ([regex]::Escape("Get-HciTestSubscription -ModulePath 'avm/res/azure-stack-hci/logical-network'"))
+        $invoke = $prepareSteps | Where-Object { $_.name -eq 'Advance the recorded preparation operation' }
+        $invoke.with.inlineScript | Should -Match ([regex]::Escape('Invoke-HciPreparationStep -Stage $env:HCI_STAGE'))
+        $invoke.with.inlineScript | Should -Match ([regex]::Escape("-ModulePath 'avm/res/azure-stack-hci/logical-network'"))
         $invoke.with.inlineScript | Should -Match 'git rev-parse HEAD'
         $invoke.env.HCI_RUN_IDENTITY | Should -Be '${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}'
     }
@@ -131,7 +168,7 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
             $login.with.'client-id' | Should -Be '${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}'
             $login.with.'tenant-id' | Should -Be '${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}'
         }
-        $history.jobs.job_cleanup_reserved_deployments.uses | Should -Be './.github/workflows/avm.template.hci.history.yml'
+        $history.jobs.job_cleanup_reserved_deployments.Contains('uses') | Should -BeFalse
         $history.jobs.job_cleanup_reserved_deployments.concurrency.group | Should -Be '${{ matrix.testCase.environmentConcurrencyGroup }}'
     }
 

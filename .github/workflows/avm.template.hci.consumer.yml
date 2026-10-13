@@ -19,22 +19,8 @@ on:
 permissions: {}
 
 jobs:
-  job_check_cleanup:
-    name: "Require disposable test cleanup"
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Check cleanup policy"
-        shell: pwsh
-        env:
-          REMOVE_DEPLOYMENT: ${{ fromJson(inputs.workflowInput).removeDeployment }}
-        run: |
-          if ($env:REMOVE_DEPLOYMENT -cne 'true') {
-            throw 'Reserved Azure Local consumers require cleanup. Retained or uncertain test resources block reuse.'
-          }
-
   job_module_deploy_validation:
     name: "Deploy [${{ fromJson(inputs.testCase).name }}] on [${{ fromJson(inputs.testCase).subscriptionName }}]"
-    needs: job_check_cleanup
     environment: avm-validation
     runs-on: ubuntu-latest
     permissions:
@@ -48,6 +34,14 @@ jobs:
       ARM_MGMTGROUP_ID: ${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}
       CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
     steps:
+      - name: "Check cleanup policy"
+        shell: pwsh
+        env:
+          REMOVE_DEPLOYMENT: ${{ fromJson(inputs.workflowInput).removeDeployment }}
+        run: |
+          if ($env:REMOVE_DEPLOYMENT -cne 'true') {
+            throw 'Reserved Azure Local consumers require cleanup. Retained or uncertain test resources block reuse.'
+          }
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:

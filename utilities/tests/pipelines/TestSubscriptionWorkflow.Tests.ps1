@@ -507,7 +507,7 @@ Describe 'Test subscription workflow integration' {
         foreach ($file in @(
                 'avm.template.module.yml', 'avm.template.module.preview.yml',
                 'avm.template.module.publish.yml', 'avm.template.module.deployment.yml',
-                'avm.template.hci.consumer.yml', 'avm.template.hci.prepare.step.yml', 'avm.template.hci.history.yml',
+                'avm.template.hci.consumer.yml', 'avm.template.hci.prepare.yml',
                 'platform.hci.prepare.yml', 'platform.deployment.history.cleanup.yml'
             )) {
             $source = Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' $file) -Raw

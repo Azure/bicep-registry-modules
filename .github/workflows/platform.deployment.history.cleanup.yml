@@ -141,6 +141,8 @@ jobs:
 
   job_cleanup_reserved_deployments:
     name: "Maintain reserved subscription [${{ matrix.testCase.subscriptionIndex }}]"
+    environment: avm-validation
+    runs-on: ubuntu-latest
     needs: job_initialize_pipeline
     if: ${{ fromJson(needs.job_initialize_pipeline.outputs.workflowInput).handleSubscriptionScope == 'true' && needs.job_initialize_pipeline.outputs.hasReservedSubscriptions == 'true' }}
     permissions:
@@ -153,11 +155,60 @@ jobs:
     concurrency:
       group: ${{ matrix.testCase.environmentConcurrencyGroup }}
       queue: max
-    uses: ./.github/workflows/avm.template.hci.history.yml
-    with:
-      testCase: ${{ toJson(matrix.testCase) }}
-      maxDeploymentRetentionInDays: ${{ fromJson(needs.job_initialize_pipeline.outputs.workflowInput).maxDeploymentRetentionInDays }}
-    secrets: inherit
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+        with:
+          removeDeployment: "false"
+      - name: "Install history maintenance dependencies"
+        shell: pwsh
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')
+          Install-CustomModule -Module @{ Name = 'Az.KeyVault' } -InstalledModule @(Get-Module -ListAvailable)
+      - name: "Resolve the pinned reserved subscription"
+        id: subscription
+        shell: pwsh
+        env:
+          TEST_CASE: ${{ toJson(matrix.testCase) }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
+          $testCase = ConvertFrom-Json $env:TEST_CASE -AsHashtable
+          $subscription = Get-HciTestSubscription -ModulePath 'avm/res/azure-stack-hci/cluster' `
+            -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -SubscriptionIndex $testCase.subscriptionIndex `
+            -SubscriptionKey $testCase.subscriptionKey -RepoRootPath $env:GITHUB_WORKSPACE
+          "subscriptionId=$($subscription.id)" >> $env:GITHUB_OUTPUT
+      - name: "Log in to the reserved subscription"
+        uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
+        with:
+          client-id: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          subscription-id: ${{ steps.subscription.outputs.subscriptionId }}
+          enable-AzPSSession: true
+      - name: "Clean history only with confirmed idle ownership"
+        uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+        env:
+          TEST_CASE: ${{ toJson(matrix.testCase) }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          HCI_RUN_IDENTITY: ${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}
+          AVM_CI_VARIABLES: ${{ toJSON(vars) }}
+          AVM_CI_SECRETS: ${{ toJSON(secrets) }}
+          CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
+          RETENTION_DAYS: ${{ fromJson(needs.job_initialize_pipeline.outputs.workflowInput).maxDeploymentRetentionInDays }}
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            $ErrorActionPreference = 'Stop'
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciDeploymentHistoryCleanup.ps1')
+            Invoke-HciDeploymentHistoryCleanup -RepoRootPath $env:GITHUB_WORKSPACE `
+              -TestCase (ConvertFrom-Json $env:TEST_CASE -AsHashtable) -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS `
+              -TenantId $env:VALIDATE_TENANT_ID -RunIdentity $env:HCI_RUN_IDENTITY `
+              -GitHubVariables $env:AVM_CI_VARIABLES -GitHubSecrets $env:AVM_CI_SECRETS `
+              -KeyVaultName $env:CI_KEY_VAULT_NAME -MaxDeploymentRetentionInDays ([int]::Parse($env:RETENTION_DAYS))
 
   job_cleanup_managementGroup_deployments:
     runs-on: ubuntu-latest
