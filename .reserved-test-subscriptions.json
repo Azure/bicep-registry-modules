@@ -1,0 +1,9 @@
+{
+  "avm/res/azure-stack-hci/cluster": "Azure Local",
+  "avm/res/azure-stack-hci/logical-network": "Azure Local",
+  "avm/res/azure-stack-hci/marketplace-gallery-image": "Azure Local",
+  "avm/res/azure-stack-hci/network-interface": "Azure Local",
+  "avm/res/azure-stack-hci/virtual-hard-disk": "Azure Local",
+  "avm/res/azure-stack-hci/virtual-machine-instance": "Azure Local",
+  "avm/res/hybrid-container-service/provisioned-cluster-instance": "Azure Local"
+}

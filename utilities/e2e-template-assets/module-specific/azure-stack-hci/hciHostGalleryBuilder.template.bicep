@@ -40,6 +40,9 @@ param buildTimeoutInMinutes int
 @description('Optional. Tags applied to the image template and output version.')
 param tags object = {}
 
+@description('Optional. Explicit resource group for image-build staging.')
+param stagingResourceGroupResourceId string?
+
 var requiredReplicationRegions = union(
   [
     toLower(replace(location, ' ', ''))
@@ -80,6 +83,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2025-10-01
     }
   }
   properties: {
+    stagingResourceGroup: stagingResourceGroupResourceId
     buildTimeoutInMinutes: buildTimeoutInMinutes
     source: {
       type: 'PlatformImage'
