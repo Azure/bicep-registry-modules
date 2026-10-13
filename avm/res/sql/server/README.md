@@ -168,7 +168,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'ssaud001'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -199,7 +199,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssaud001"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -238,7 +238,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'ssaud001'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
@@ -1320,7 +1320,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlsmax'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -1369,7 +1369,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           ]
         }
         maxSizeBytes: 34359738368
-        name: 'sqlsmaxdb-001'
+        name: '<name>'
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -1406,7 +1406,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           kind: 'CanNotDelete'
           name: 'myCustomLockName'
         }
-        name: 'sqlsmax-ep-001'
+        name: '<name>'
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -1540,7 +1540,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlsmax"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -1597,7 +1597,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             ]
           },
           "maxSizeBytes": 34359738368,
-          "name": "sqlsmaxdb-001",
+          "name": "<name>",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
@@ -1638,7 +1638,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "kind": "CanNotDelete",
             "name": "myCustomLockName"
           },
-          "name": "sqlsmax-ep-001",
+          "name": "<name>",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
@@ -1796,7 +1796,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sqlsmax'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
@@ -1845,7 +1845,7 @@ param databases = [
       ]
     }
     maxSizeBytes: 34359738368
-    name: 'sqlsmaxdb-001'
+    name: '<name>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -1882,7 +1882,7 @@ param elasticPools = [
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    name: 'sqlsmax-ep-001'
+    name: '<name>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -2154,7 +2154,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlsvln'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -2210,7 +2210,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlsvln"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -2280,7 +2280,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sqlsvln'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
