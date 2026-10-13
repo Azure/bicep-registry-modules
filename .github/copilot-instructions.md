@@ -27,7 +27,7 @@ This repository contains **Azure Verified Modules (AVM)** for Bicep - the offici
 }
 ```
 
-> **MANDATORY**: If the agent-mode is set to anything else but `agent` or the model is set to anything else but `Claude Opus 4.6`, you **MUST** warn the user that they are using a configuration the AVM team did not test and validate the custom prompts/skills/agents on. Currently, AVM's custom prompts/skills/agents are only tested with agent-mode `agent` and model `Claude Opus 4.6`. Inform the user that there is a bootstrapping prompt available to set the correct configuration, and provide instructions on how to use it --> `/AVM-Boostrap`
+> **MANDATORY**: If the agent-mode is set to anything else but `agent` or the model is set to anything else but `Claude Opus 4.8` or `Fable`, you **MUST** warn the user that they are using a configuration the AVM team did not test and validate the custom prompts/skills/agents on. Currently, AVM's custom prompts/skills/agents are only tested with agent-mode `agent` and model `Claude Opus 4.8` or `Fable`. Inform the user that there is a bootstrapping prompt available to set the correct configuration, and provide instructions on how to use it --> `/AVM-Boostrap`
 
 ### Compliance with ALL AVM Bicep and Shared specifications
 
@@ -169,10 +169,25 @@ For example:
 | ..  | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
 | n   | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
 
+## Fixing an issue in an existing module (ordered checklist)
+
+When assigned an issue to fix or implement a change in an existing module (`avm/res/`, `avm/ptn/`, `avm/utl/`), follow this order.
+
+Treat this order as mandatory. Do not skip steps, reorder them, or hand-edit generated files to avoid any step. If a step is not possible in the current environment, say so explicitly and stop rather than assuming it was done.
+
+1. **Branch**: start from an up-to-date `main` and create `fix/<issue>-<desc>` or `feat/<issue>-<desc>`. First detect the contribution model with `git remote get-url origin`. Maintainers with write access push feature branches directly to `Azure/bicep-registry-modules`. Fork contributors push to their fork and open the PR from there.
+2. **Implement**: edit `main.bicep` only, and any child `main.bicep` that belongs to the same module. Do not hand-edit `main.json`, `README.md`, `version.json`, or `CHANGELOG.md` unless the checklist below explicitly says to update them.
+3. **Version + changelog**: bump `version.json` and add a `CHANGELOG.md` entry before regeneration. Use MINOR for features and MAJOR for breaking changes.
+4. **Regenerate (MANDATORY)**: run `. ./utilities/tools/Set-AVMModule.ps1` and then `Set-AVMModule -ModuleFolderPath 'avm/<scope>/<provider>/<type>' -Recurse` so `main.json` and `README.md` are regenerated from source. Never skip this step when `main.bicep` changes.
+5. **Tests**: update or add e2e tests under `tests/e2e/*/main.test.bicep` whenever module behavior changes. Do not treat existing tests as optional if the change affects inputs, outputs, naming, or deployment behavior.
+6. **Local static tests green (MANDATORY)**: run `. ./utilities/tools/Test-ModuleLocally.ps1` and then `Test-ModuleLocally -TemplateFilePath 'avm/<scope>/<provider>/<type>/main.bicep' -PesterTest`. Treat this as the required local unit-test gate before any push or PR. Keep fixing until local validation is clean.
+7. **e2e workflow + badge (MANDATORY)**: ensure the module workflow `.github/workflows/avm.<res|ptn|utl>.<provider>.<type>.yml` exists, add its PR-branch status badge to the PR's *Pipeline Reference* table, and make it clear in the PR that the e2e workflow must run and pass green before merge. The agent environment cannot run the Azure deployment itself, so do not imply e2e success unless the workflow was actually executed.
+8. **PR**: follow [.github/pull_request_template.md](.github/pull_request_template.md) with a semantic title (`fix:`/`feat: <module name>`), `Fixes #<issue>`, completed checklist items, and the pipeline badge attached.
+
 ## Skills
 
-When a user asks to perform a task that falls within the domain of a skill below, read and follow the full instructions from the file path before proceeding to acquire the full instructions from the file path before proceeding.
+When a user asks to perform a task that falls within the domain of a skill below, read and follow the full instructions from the file path before proceeding.
 
-| Skill                       | Description                                                                                                                                                                                      | File                                                  |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
-| avm-child-module-publishing | Publish Bicep child modules to the AVM public registry. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list. | `.github/skills/avm-child-module-publishing/SKILL.md` |
+| Skill                          | Description                                                                                                                                                                                                                       | File                                                     |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| avm-child-module-publishing    | Publish Bicep child modules to the AVM public registry. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list.                                 | `.github/skills/avm-child-module-publishing/SKILL.md`    |
