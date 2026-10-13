@@ -11,7 +11,7 @@ metadata description = 'This instance deploys the module in alignment with the b
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-rg'
 
-// Enforce uksouth to avoid restrictions around zone redundancy in certain regions
+// Enforce Sweden Central to avoid restrictions around zone redundancy in certain regions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'swedencentral'
 
@@ -23,6 +23,8 @@ param namePrefix string = '#_namePrefix_#'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
+
+var resourceSuffix = substring(uniqueString(baseTime), 0, 3)
 
 // ============ //
 // Dependencies //
@@ -40,7 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${resourceSuffix}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: enforcedLocation
@@ -53,7 +55,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}azsa${serviceShort}01'
+    storageAccountName: 'dep${namePrefix}azsa${serviceShort}${resourceSuffix}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
@@ -70,7 +72,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}-${serviceShort}'
+      name: '${namePrefix}-${serviceShort}-${resourceSuffix}'
       primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       administrators: {
         azureADOnlyAuthentication: true
@@ -120,7 +122,7 @@ module testDeployment '../../../main.bicep' = [
               workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
             }
           ]
-          elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
+          elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}-${resourceSuffix}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
           backupShortTermRetentionPolicy: {
             retentionDays: 14
           }

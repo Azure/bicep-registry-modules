@@ -2338,7 +2338,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlswaf'
+    name: '<name>'
     // Non-required parameters
     administrators: {
       azureADOnlyAuthentication: true
@@ -2462,7 +2462,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlswaf"
+      "value": "<name>"
     },
     // Non-required parameters
     "administrators": {
@@ -2614,7 +2614,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sqlswaf'
+param name = '<name>'
 // Non-required parameters
 param administrators = {
   azureADOnlyAuthentication: true
