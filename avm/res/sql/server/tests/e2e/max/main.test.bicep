@@ -180,7 +180,7 @@ module testDeployment '../../../main.bicep' = [
               workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
             }
           ]
-          elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
+          elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}/elasticPools/${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}-ep-001'
           backupShortTermRetentionPolicy: {
             retentionDays: 14
           }
