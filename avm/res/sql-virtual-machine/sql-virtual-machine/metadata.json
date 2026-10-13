@@ -3,7 +3,11 @@
   "moduleDisplayName": "Sql Virtual Machine",
   "moduleDescription": "AVM Resource Module for SQL Virtual Machine",
   "telemetryIdPrefix": "46d3xbcp.res.56a27ae",
-  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.sqlvm-sqlvm"],
+  "alternativeTelemetryIdPrefixes": [
+    "46d3xbcp.res.sqlvm-sqlvm"
+  ],
   "canonicalType": "Microsoft.SqlVirtualMachine/sqlVirtualMachines",
-  "owners": ["peterbud"]
+  "owners": [
+    "arjenhuitema"
+  ]
 }
