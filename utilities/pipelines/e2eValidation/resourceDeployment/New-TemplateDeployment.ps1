@@ -90,6 +90,9 @@ function Wait-TemplateDeployment {
         [string] $ExpectedDeploymentId,
 
         [Parameter()]
+        [guid] $ExpectedCorrelationId,
+
+        [Parameter()]
         [ValidateRange(1, 3600)]
         [int] $TimeoutSeconds = 3600,
 
@@ -142,6 +145,10 @@ function Wait-TemplateDeployment {
                     ($null -ne $deployment.Outputs -and $deployment.Outputs -isnot [System.Collections.IDictionary])
                 )) {
                 throw "Status recovery did not return an unambiguous original deployment [$ExpectedDeploymentId]."
+            }
+            if ($PSBoundParameters.ContainsKey('ExpectedCorrelationId') -and
+                [string] $deployment.CorrelationId -ine $ExpectedCorrelationId.ToString('D')) {
+                throw "Status recovery found a replaced deployment operation [$DeploymentName]."
             }
             if ($deployment.ProvisioningState -is [string] -and $deployment.ProvisioningState -in @('Succeeded', 'Failed')) {
                 if ((Get-Date).ToUniversalTime() -ge $deadline) { break }

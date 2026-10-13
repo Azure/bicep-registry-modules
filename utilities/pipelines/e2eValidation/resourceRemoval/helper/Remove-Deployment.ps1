@@ -107,11 +107,13 @@ function Complete-DeploymentRemoval {
     param (
         [string[]] $ResourceIds = @(),
         [string[]] $DeploymentIds = @(),
-        [hashtable] $DeploymentNamesById = @{}
+        [hashtable] $DeploymentNamesById = @{},
+        [string[]] $PendingDeletionDeploymentIds = @()
     )
 
     $removedNames = [System.Collections.Generic.List[string]]::new()
-    $pendingDeletionIds = [System.Collections.Generic.List[string]]::new()
+    $unconfirmedDeletionIds = [System.Collections.Generic.List[string]]::new()
+    foreach ($id in $PendingDeletionDeploymentIds) { $unconfirmedDeletionIds.Add($id) }
     try {
         $absentParents = [System.Collections.Generic.List[string]]::new()
         foreach ($resourceId in ($ResourceIds | Sort-Object -Unique | Sort-Object -Property Length)) {
@@ -122,6 +124,14 @@ function Complete-DeploymentRemoval {
                 throw "Resource [$resourceId] still exists after cleanup; regional relocation is blocked."
             }
             $absentParents.Add($resourceId)
+        }
+        foreach ($id in $PendingDeletionDeploymentIds) {
+            if (-not $DeploymentNamesById.ContainsKey($id)) {
+                throw 'Pending deletion confirmation requires an original deployment identity.'
+            }
+            Wait-DeploymentRecordRemoval -DeploymentId $id
+            $null = $unconfirmedDeletionIds.Remove($id)
+            $removedNames.Add($DeploymentNamesById[$id])
         }
         foreach ($deploymentId in $DeploymentIds) {
             $parentAbsent = @($absentParents | Where-Object { $deploymentId.StartsWith("$_/", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
@@ -134,10 +144,10 @@ function Complete-DeploymentRemoval {
                     throw "Deployment record removal failed for [$deploymentId]: HTTP [$($response.StatusCode)]."
                 }
                 if ($DeploymentNamesById.ContainsKey($deploymentId)) {
-                    $pendingDeletionIds.Add($deploymentId)
+                    $unconfirmedDeletionIds.Add($deploymentId)
                 }
                 Wait-DeploymentRecordRemoval -DeploymentId $deploymentId
-                $null = $pendingDeletionIds.Remove($deploymentId)
+                $null = $unconfirmedDeletionIds.Remove($deploymentId)
             }
             if ($DeploymentNamesById.ContainsKey($deploymentId)) {
                 $removedNames.Add($DeploymentNamesById[$deploymentId])
@@ -147,8 +157,8 @@ function Complete-DeploymentRemoval {
         if ($removedNames.Count -gt 0) {
             $_.Exception.Data['RemovedDeploymentNames'] = @($removedNames)
         }
-        if ($pendingDeletionIds.Count -gt 0) {
-            $_.Exception.Data['PendingDeletionDeploymentIds'] = @($pendingDeletionIds)
+        if ($unconfirmedDeletionIds.Count -gt 0) {
+            $_.Exception.Data['PendingDeletionDeploymentIds'] = @($unconfirmedDeletionIds)
         }
         throw
     }
@@ -196,6 +206,10 @@ Optional. The order of resource types to remove after all others
 .PARAMETER RequireCompleteRemoval
 Optional. Require terminal deployments, complete discovery and confirmed resource/record removal before regional relocation.
 An accepted history deletion may remain Deleting during bounded confirmation; only confirmed absence completes cleanup.
+
+.PARAMETER FinalCleanup
+Optional. Complete final teardown permits successful or failed roots and confirms pending history deletion.
+Without this switch, complete cleanup continues to require failed roots before a retry.
 
 .PARAMETER RequireNoDeploymentScripts
 Optional. Require complete discovery without deployment scripts before cleanup.
@@ -246,7 +260,13 @@ function Remove-Deployment {
         [switch] $RequireCompleteRemoval,
 
         [Parameter()]
-        [switch] $RequireNoDeploymentScripts
+        [switch] $FinalCleanup,
+
+        [Parameter()]
+        [switch] $RequireNoDeploymentScripts,
+
+        [Parameter()]
+        [string[]] $ProtectedResourceIds = @()
     )
 
     begin {
@@ -261,6 +281,9 @@ function Remove-Deployment {
     }
 
     process {
+        if ($FinalCleanup -and -not $RequireCompleteRemoval) {
+            throw 'Final cleanup confirmation requires complete discovery and removal.'
+        }
         if ($RequireCompleteRemoval -and ($WhatIfPreference -or $DeploymentNames.Count -eq 0)) {
             throw 'Complete cleanup requires submitted deployment names and actual removal.'
         }
@@ -275,11 +298,14 @@ function Remove-Deployment {
         $deployedTargetResources = $ResourceIds
         $resolveResult = @{}
 
+        $originalDeploymentNames = @($DeploymentNames)
+        $deploymentScope = $null
         if ($PendingDeletionDeploymentIds.Count -gt 0) {
-            if ($RequireCompleteRemoval -or $DeploymentNames.Count -eq 0) {
+            if (($RequireCompleteRemoval -and -not $FinalCleanup) -or $DeploymentNames.Count -eq 0) {
                 throw 'Pending deletion metadata is only valid for final cleanup of submitted roots.'
             }
             $scope = Get-ScopeOfTemplateFile -TemplateFilePath $TemplateFilePath
+            $deploymentScope = $scope
             $namesById = @{}
             foreach ($name in $DeploymentNames) {
                 $id = Get-DeploymentResourceId -Scope $scope -Name $name -SubscriptionId $azContext.Subscription.Id `
@@ -312,6 +338,7 @@ function Remove-Deployment {
                 PreflightRejectedDeploymentNames = $PreflightRejectedDeploymentNames
                 Scope                            = $deploymentScope
                 RequireCompleteRemoval           = $RequireCompleteRemoval
+                FinalCleanup                     = $FinalCleanup
             }
             if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
                 $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
@@ -327,6 +354,20 @@ function Remove-Deployment {
 
         [array] $deployedTargetResources = $deployedTargetResources | Select-Object -Unique
 
+        foreach ($protectedId in $ProtectedResourceIds) {
+            if ([string]::IsNullOrWhiteSpace($protectedId) -or -not $protectedId.StartsWith('/subscriptions/', [StringComparison]::OrdinalIgnoreCase)) {
+                throw 'Cleanup protection requires explicit subscription-scoped resource IDs.'
+            }
+            foreach ($targetId in @($deployedTargetResources) + @($resolveResult.deploymentIds)) {
+                if ([string]::IsNullOrWhiteSpace($targetId)) { continue }
+                if ($targetId -ieq $protectedId -or
+                    $targetId.StartsWith("$protectedId/", [StringComparison]::OrdinalIgnoreCase) -or
+                    $protectedId.StartsWith("$targetId/", [StringComparison]::OrdinalIgnoreCase)) {
+                    throw "Cleanup includes protected persistent resource [$protectedId]; nothing will be removed."
+                }
+            }
+        }
+
         if ($RequireCompleteRemoval -and $resolveResult.resolveError) {
             throw "Complete cleanup discovery failed: $($resolveResult.resolveError)"
         }
@@ -336,11 +377,12 @@ function Remove-Deployment {
         }
         if ($RequireCompleteRemoval) {
             $completionInput = @{
-                DeploymentIds       = $resolveResult.deploymentIds
-                DeploymentNamesById = @{}
-                ErrorAction         = 'Stop'
+                DeploymentIds                = $resolveResult.deploymentIds
+                DeploymentNamesById          = @{}
+                PendingDeletionDeploymentIds = $PendingDeletionDeploymentIds
+                ErrorAction                  = 'Stop'
             }
-            foreach ($name in $DeploymentNames) {
+            foreach ($name in $originalDeploymentNames) {
                 $id = Get-DeploymentResourceId -Scope $deploymentScope -Name $name -SubscriptionId $azContext.Subscription.Id `
                     -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId
                 $completionInput.DeploymentNamesById[$id] = $name
@@ -354,7 +396,7 @@ function Remove-Deployment {
             }
             if ($RequireCompleteRemoval) {
                 Complete-DeploymentRemoval @completionInput
-                return @{ RemovedDeploymentNames = @($DeploymentNames) }
+                return @{ RemovedDeploymentNames = $originalDeploymentNames }
             }
             foreach ($id in $PendingDeletionDeploymentIds) {
                 Wait-DeploymentRecordRemoval -DeploymentId $id
@@ -429,7 +471,7 @@ function Remove-Deployment {
         }
         if ($RequireCompleteRemoval) {
             Complete-DeploymentRemoval @completionInput -ResourceIds $deployedTargetResources
-            return @{ RemovedDeploymentNames = @($DeploymentNames) }
+            return @{ RemovedDeploymentNames = $originalDeploymentNames }
         }
         foreach ($id in $PendingDeletionDeploymentIds) {
             Wait-DeploymentRecordRemoval -DeploymentId $id
