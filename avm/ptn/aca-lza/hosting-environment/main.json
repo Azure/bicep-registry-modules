@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "18150437698884275798"
+      "templateHash": "9092310618921889704"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework"
@@ -48051,7 +48051,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "18145688522908402895"
+              "templateHash": "8630964408160262786"
             }
           },
           "parameters": {
@@ -48681,7 +48681,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "11041357248289813519"
+                      "templateHash": "2992362113950836377"
                     }
                   },
                   "parameters": {
@@ -48817,7 +48817,7 @@
                     {
                       "condition": "[not(empty(parameters('appGatewayCertificateData')))]",
                       "type": "Microsoft.KeyVault/vaults/secrets",
-                      "apiVersion": "2024-04-01-preview",
+                      "apiVersion": "2026-02-01",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -48846,7 +48846,7 @@
                   "outputs": {
                     "SecretUri": {
                       "type": "string",
-                      "value": "[if(not(variables('useSelfSignedCert')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), '2024-04-01-preview').secretUri, reference(resourceId('Microsoft.Resources/deploymentScripts', format('{0}-certDeploymentScript', take(uniqueString(resourceGroup().name, 'self-signed-cert', parameters('location')), 4))), '2023-08-01').outputs.secretUrl)]"
+                      "value": "[if(not(variables('useSelfSignedCert')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), '2026-02-01').secretUri, reference(resourceId('Microsoft.Resources/deploymentScripts', format('{0}-certDeploymentScript', take(uniqueString(resourceGroup().name, 'self-signed-cert', parameters('location')), 4))), '2023-08-01').outputs.secretUrl)]"
                     }
                   }
                 }

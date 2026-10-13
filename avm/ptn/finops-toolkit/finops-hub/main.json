@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "1895121880269029317"
+      "templateHash": "11369439493342221563"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit."
@@ -5616,7 +5616,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "12915367206900526093"
+              "templateHash": "16095784587130697295"
             }
           },
           "parameters": {
@@ -6147,7 +6147,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2026-02-01",
               "name": "[parameters('keyVaultName')]"
             },
             "linkedService_keyVault": {
