@@ -15,7 +15,7 @@ The registry retains module files, tests and configuration. The shared workflow 
 
 ## Cutover prerequisites
 
-1. Publish a qualified `Avm.Authoring` release containing the complete packaged Bicep static validation route and canonical README template, approved native deployment retries and final post-hook/cleanup behavior, end-to-end handling of the root required-feature and resource-provider manifests, required policy selectors, package-download recovery, and unit/policy version-check forwarding. Its manifest must advertise `PrivateData.AvmCapabilities.BicepPackagedCompliance = 1`; intermediate packages without that capability are rejected.
+1. Publish a qualified `Avm.Authoring` release containing the complete packaged Bicep static validation route and canonical README template, approved native deployment retries and final post-hook/cleanup behavior, end-to-end handling of the root required-feature and resource-provider manifests, reservation-aware subscription selection and policy tokens, required policy selectors, package-download recovery, and unit/policy version-check forwarding. Its manifest must advertise `PrivateData.AvmCapabilities.BicepPackagedCompliance = 1`; intermediate packages without that capability are rejected.
 1. Make the reviewed tools workflows and actions available at one immutable commit. Every tools `uses` reference and `tools-ref` input must identify that same commit. A candidate branch commit is for draft qualification only; select a merged tools commit before registry cutover.
 1. Verify the module identity mapping, tenant and subscription pool. Separately approve any required live application of stable module credentials matching the existing owner/repository/environment subject. This preparation does not change the repository subject template or remove existing credentials.
 1. Configure the registry's `AVM_AUTHORING_VERSION` variable to that exact qualified release before merging the caller migration. It has no fallback; unset or invalid versions must fail rather than select `latest`.
@@ -46,6 +46,18 @@ Provider requirements use exact module paths and do not inherit a parent's entry
 
 Packaged validation reads child-module publishing approvals from [`.avm/child-module-publish-allowed-list.json`](../../.avm/child-module-publish-allowed-list.json). Keep it identical to the legacy `utilities/pipelines/staticValidation/compliance/helper/child-module-publish-allowed-list.json` while local tools and current releases still consume that file. The caller tests enforce parity; this migration does not add or remove approvals.
 
+## Reserved subscription compatibility
+
+The caller-owned [`.reserved-test-subscriptions.json`](../../.reserved-test-subscriptions.json) maps exact module paths to case-sensitive subscription tags. Unmapped paths use `General`; reservations do not inherit from a parent path. This differs from identity selection, where descendants use their canonical module root's identity. Generic module selection must resolve its canonical root before consulting the reservation map.
+
+Subscription pool records contain only `id`, `name` and optional `tag`. An omitted tag means `General`. Selection rejects invalid or duplicate IDs and malformed tags, filters by the module's required tag, and preserves the original pool index and subscription digest. Reserved modules cannot fall back to a legacy singleton or borrow a `General` subscription. Ordinary modules must not consume a reserved subscription. Policy token selection must apply the same reservation rules without authenticating or registering providers.
+
+Azure Local consumers retain a separate environment lock, `avm-hci-<subscription digest>`, outside the module/subscription deployment lock; neither lock permits cancellation of an active deployment. Dedicated manual preparation, ordinary test consumption and reserved history maintenance share that environment lock. A consumer requires cleanup and an already prepared environment; it must not start preparation as a fallback.
+
+The shared lifecycle supplies runner-local `parameterOverrides` and `protectedResourceIds` through the neutral deployment-data contract. Overrides use the existing ARM parameter conversions and take precedence over CI inputs. Protected IDs apply to intermediate retry cleanup and final teardown. Opt-in complete final cleanup requires authoritative attempt, remaining-deployment, preflight-rejection and pending-deletion tracking; only confirmed teardown can release the prepared environment. Successful terminal roots are eligible for final teardown, not failed-attempt retry relocation. Ordinary best-effort cleanup must not claim complete confirmation.
+
+Retaining these local workflows is not evidence that the pinned tools route supports reserved execution. Reserved module-specific and generic selections need an explicitly qualified compatibility route before cutover. That route must also use the authoritative module-identity resolver before authentication and keep its selected client and tenant through login, renewal, recovery and fixture release. The legacy `VALIDATE_CLIENT_ID` configuration in the retained implementation is not an allowed migration fallback. A source merge or passing caller tests does not establish this authentication adaptation, identity permissions, a compatible package release or live environment readiness.
+
 ## Retained compatibility entry points
 
 The following consumers prevent wholesale removal of registry utilities:
@@ -53,6 +65,7 @@ The following consumers prevent wholesale removal of registry utilities:
 | Entry point                                                | Remaining consumers                                                                                                                     |
 | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | `avm.template.module*.yml` local workflows                 | Retained deployment/publication regression coverage; their removal remains gated on qualified replacements and rollout approval.        |
+| `avm.template.hci*.yml` and Azure Local lifecycle helpers   | Reserved test consumers, dedicated manual preparation and coordinated history maintenance; preserve lifecycle and lock semantics.       |
 | `avm-getWorkflowInput` local action                        | `platform.check.psrule.yml`, `platform.ci-tests.yml`, `platform.deployment.history.cleanup.yml`, `platform.rerun-failed-workflows.yml`. |
 | `avm-setEnvironment` local action                          | `platform.check.psrule.yml`, `platform.ci-tests.yml`, `platform.deployment.history.cleanup.yml`, `copilot-setup-steps.yml`.             |
 | `utilities/pipelines/staticValidation`                     | Local module validation, the standalone metadata gate, platform PSRule checks and their regression tests.                               |
@@ -62,7 +75,7 @@ The following consumers prevent wholesale removal of registry utilities:
 
 Retire these only after their consumers use qualified packaged APIs and equivalent regression coverage is available. Moving the module workflow callers does not by itself complete that retirement.
 
-Recheck the retirement map after merging newer registry changes. Current deployment cleanup, regional retry, preflight, provider registration, package recovery and response-contract tests stay with their supported local entry points until published replacements are qualified. Host and image-builder helpers and their tests are outside this workflow migration; no image build is required for caller qualification.
+Recheck the retirement map after merging newer registry changes. Current deployment cleanup, regional retry, preflight, provider registration, package recovery and response-contract tests stay with their supported local entry points until published replacements are qualified. Reservation selection, policy tokens, neutral deployment data and cleanup confirmation are shared contracts even when their consumers are Azure Local workflows. Host provisioning and image-builder implementation remain outside this workflow migration; no image build or live preparation is required for caller qualification.
 
 The existing `documentation.template.file` and `includeRoot` continue to select the legacy Scriban copy; a packaged default does not override explicit configuration. Once the compatible release and remaining documentation consumers are qualified, remove only `documentation.template` to select the packaged canonical template. Preserve `documentation.examples.reassignments`, the Microsoft Graph extension and analyzer/compiler settings. Keep the existing asset until its consumers are retired; do not add another shared template copy for the workflow migration.
 

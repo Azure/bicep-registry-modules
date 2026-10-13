@@ -46,7 +46,14 @@ function Get-ModuleDeploymentMatrix {
         if (-not [string]::IsNullOrEmpty($TestSubscriptionIds) -and [string]::IsNullOrWhiteSpace($TestSubscriptionIds)) {
             throw 'The configured test subscription pool must not contain only whitespace.'
         }
-        $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $TestSubscriptionIds -FallbackSubscriptionId $FallbackSubscriptionId -RandomSeed $RandomSeed)
+        $subscriptionInput = @{
+            TestSubscriptionIds    = $TestSubscriptionIds
+            FallbackSubscriptionId = $FallbackSubscriptionId
+            RandomSeed             = $RandomSeed
+            ModulePath             = $ModulePath
+            RepoRootPath           = $RepoRoot
+        }
+        $subscriptions = @(Get-TestSubscriptionList @subscriptionInput)
 
         foreach ($test in $activeTests) {
             $templateFilePath = Join-Path $RepoRoot $ModulePath $test.path
@@ -83,6 +90,7 @@ function Get-ModuleDeploymentMatrix {
             subscriptionKey   = ''
             subscriptionName  = 'Deployment disabled'
             concurrencyGroup  = "avm-deploy-$moduleKey-ignored-$([guid]::NewGuid().ToString('N'))"
+            environmentConcurrencyGroup = ''
         }
         if (-not $ignored) {
             $subscription = $subscriptions[$jobIndex % $subscriptions.Count]
@@ -90,6 +98,9 @@ function Get-ModuleDeploymentMatrix {
             $entry.subscriptionKey = $subscription.key
             $entry.subscriptionName = $DisplaySubscriptionNames ? $subscription.name : "Configured subscription $($subscription.index + 1)"
             $entry.concurrencyGroup = "avm-deploy-$moduleKey-$($subscription.key)"
+            if ($subscription.tag -ceq 'Azure Local') {
+                $entry.environmentConcurrencyGroup = "avm-hci-$($subscription.key)"
+            }
         }
         $entry
     })

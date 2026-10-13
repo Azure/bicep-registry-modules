@@ -11,7 +11,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
         . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
         $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $actionPath -Raw)
-        $environmentNames = @('GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME')
+        $environmentNames = @('GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME', 'AVM_DEPLOYMENT_DATA_FILE', 'AVM_REQUIRE_COMPLETE_REMOVAL')
         $subscriptionId = '11111111-1111-1111-1111-111111111111'
         $resourceGroupId = "/subscriptions/$subscriptionId/resourceGroups/dep-fixture-rg"
         $resourceIds = @(
@@ -215,6 +215,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 '${{ steps.deploy_step.outputs.deploymentNames }}'                  = $Outputs.deploymentNames ?? ''
                 '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}' = $Outputs.preflightRejectedDeploymentNames ?? ''
                 '${{ steps.deploy_step.outputs.pendingDeletionDeploymentIds }}'     = $Outputs.pendingDeletionDeploymentIds ?? ''
+                '${{ steps.deploy_step.outputs.deploymentAttempts }}'               = $Outputs.deploymentAttempts ?? ''
             }
             foreach ($key in $values.Keys) {
                 $stepScript = $stepScript.Replace($key, $values[$key])

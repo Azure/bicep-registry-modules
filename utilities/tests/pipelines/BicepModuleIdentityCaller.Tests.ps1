@@ -22,11 +22,15 @@ BeforeDiscovery {
 Describe 'Module identity caller context' {
     BeforeAll {
         function Assert-ModuleIdentityCaller {
-            param([hashtable] $Workflow, [string] $WorkflowFileName)
+            param(
+                [hashtable] $Workflow,
+                [string] $WorkflowFileName,
+                [string] $RepositoryRoot = $RepoRootPath
+            )
 
             $modulePath = $Workflow.env.modulePath
-            $modulePath | Should -MatchExactly '^avm/(res|ptn|utl)/[a-z0-9-]+/[a-z0-9-]+$'
-            Test-Path -LiteralPath (Join-Path $RepoRootPath $modulePath 'main.bicep') -PathType Leaf |
+            $modulePath | Should -MatchExactly '\Aavm/(res|ptn|utl)/[a-z0-9]+(?:-[a-z0-9]+)*(?:/[a-z0-9]+(?:-[a-z0-9]+)*)+\z'
+            Test-Path -LiteralPath (Join-Path $RepositoryRoot $modulePath 'main.bicep') -PathType Leaf |
                 Should -BeTrue
             $expectedFileName = $modulePath.Replace('/', '.') + '.yml'
             $WorkflowFileName | Should -BeExactly $expectedFileName
@@ -53,6 +57,18 @@ Describe 'Module identity caller context' {
 
     It 'preserves canonical module and original caller context in <WorkflowFileName>' -ForEach $moduleCallers {
         Assert-ModuleIdentityCaller -Workflow $Workflow -WorkflowFileName $WorkflowFileName
+    }
+
+    It 'accepts an existing canonical caller root without assuming a fixed path depth' {
+        $fixture = $reference | ConvertTo-Json -Depth 30 | ConvertFrom-Json -AsHashtable
+        $fixture.env.modulePath = 'avm/ptn/platform/deep/solution'
+        $fileName = $fixture.env.modulePath.Replace('/', '.') + '.yml'
+        $fixture.env.workflowPath = ".github/workflows/$fileName"
+        $moduleFolder = Join-Path $TestDrive $fixture.env.modulePath
+        $null = New-Item -Path $moduleFolder -ItemType Directory -Force
+        $null = New-Item -Path (Join-Path $moduleFolder 'main.bicep') -ItemType File
+
+        Assert-ModuleIdentityCaller -Workflow $fixture -WorkflowFileName $fileName -RepositoryRoot $TestDrive
     }
 
     It 'rejects <Name>' -ForEach @(

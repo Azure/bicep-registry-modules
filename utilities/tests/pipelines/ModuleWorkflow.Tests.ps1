@@ -102,7 +102,12 @@ Describe 'Generic module workflow' {
             $caller.concurrency.ContainsKey('cancel-in-progress') | Should -BeFalse
             $caller.strategy.'fail-fast' | Should -BeFalse
         }
-        @($deploymentWorkflow.jobs.Keys) | Should -Be @('job_module_deploy_validation')
+        @($deploymentWorkflow.jobs.Keys | Sort-Object) | Should -Be @('job_hci_environment', 'job_module_deploy_validation')
+        $reserved = $deploymentWorkflow.jobs.job_hci_environment
+        $reserved.uses | Should -Be './.github/workflows/avm.template.hci.consumer.yml'
+        $reserved.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).environmentConcurrencyGroup }}'
+        $reserved.concurrency.queue | Should -Be 'max'
+        $reserved.concurrency.ContainsKey('cancel-in-progress') | Should -BeFalse
         $deployment = $deploymentWorkflow.jobs.job_module_deploy_validation
         $deployment.name | Should -Be 'Deploy [${{ fromJson(inputs.testCase).name }}] on [${{ fromJson(inputs.testCase).subscriptionName }}]'
         $deployment.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
@@ -166,13 +171,13 @@ Describe 'Generic module workflow' {
     }
 
     It 'pins every direct deployment composite caller before the deployment job acquires its lock' {
-        $callerCount = 0
+        $callerNames = @()
         foreach ($file in (Get-ChildItem -Path (Join-Path $repoRootPath '.github' 'workflows') -Filter '*.yml' -File)) {
             $caller = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $file.FullName -Raw)
             foreach ($job in $caller.jobs.Values) {
                 foreach ($step in @($job.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' })) {
-                    $callerCount++
-                    $file.Name | Should -Be 'avm.template.module.deployment.yml'
+                    $callerNames += $file.Name
+                    $file.Name | Should -BeIn @('avm.template.module.deployment.yml', 'avm.template.hci.consumer.yml')
                     $job.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
                     $step.with.subscriptionIndex | Should -Be '${{ fromJson(inputs.testCase).subscriptionIndex }}'
                     $step.with.subscriptionKey | Should -Be '${{ fromJson(inputs.testCase).subscriptionKey }}'
@@ -180,7 +185,7 @@ Describe 'Generic module workflow' {
                 }
             }
         }
-        $callerCount | Should -Be 1
+        @($callerNames | Sort-Object) | Should -Be @('avm.template.hci.consumer.yml', 'avm.template.module.deployment.yml')
         foreach ($validationWorkflow in @($legacyWorkflow, $previewWorkflow, $publishWorkflow)) {
             $caller = $validationWorkflow.jobs.job_module_deploy_validation
             $caller.needs | Should -Contain 'job_initialize_subscription_selection'

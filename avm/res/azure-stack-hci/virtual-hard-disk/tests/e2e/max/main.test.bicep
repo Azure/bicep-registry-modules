@@ -1,5 +1,9 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
+import { preparedHciEnvironmentType } from '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/consumer.types.bicep'
+
 metadata name = 'Using large parameter set'
 metadata description = 'This instance deploys the module with most of its features enabled.'
 
@@ -12,6 +16,12 @@ param serviceShort string = 'ashvdmax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
+@description('Optional. Validated persistent dependencies supplied by reserved Azure Local CI. Omit for a cold build.')
+param preparedHciEnvironment preparedHciEnvironmentType?
 
 @description('Optional. The password of the LCM deployment user and local administrator accounts.')
 @secure()
@@ -32,22 +42,20 @@ param arbDeploymentSPObjectId string = ''
 #disable-next-line secure-parameter-default
 param arbDeploymentServicePrincipalSecret string = ''
 
-@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
-@secure()
-#disable-next-line secure-parameter-default
-param hciResourceProviderObjectId string = ''
-
-#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'southeastasia'
+var enforcedLocation = loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')
 
 var customLocationName = '${namePrefix}${serviceShort}-location'
+
+resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null && preparedHciEnvironment == null) {
+  appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'
+}
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
 
-module nestedDependencies '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/dependencies/waf-dependencies.bicep' = {
+module nestedDependencies '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/dependencies/waf-dependencies.bicep' = if (preparedHciEnvironment == null) {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
@@ -74,11 +82,11 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   }
 }
 
-module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
+module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = if (preparedHciEnvironment == null) {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
   scope: resourceGroup
   params: {
-    name: nestedDependencies.outputs.clusterName
+    name: nestedDependencies!.outputs.clusterName
     deploymentUser: 'deployUser'
     deploymentUserPassword: localAdminAndDeploymentUserPass
     localAdminUser: 'admin-hci'
@@ -87,17 +95,17 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
     servicePrincipalSecret: arbDeploymentServicePrincipalSecret
     deploymentSettings: {
       customLocationName: customLocationName
-      clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
-      clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
+      clusterNodeNames: nestedDependencies!.outputs.clusterNodeNames
+      clusterWitnessStorageAccountName: nestedDependencies!.outputs.clusterWitnessStorageAccountName
       defaultGateway: '172.20.0.1'
       deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
       dnsServers: ['172.20.0.1']
       domainFqdn: 'hci.local'
-      domainOUPath: nestedDependencies.outputs.domainOUPath
+      domainOUPath: nestedDependencies!.outputs.domainOUPath
       startingIPAddress: '172.20.0.2'
       endingIPAddress: '172.20.0.7'
       enableStorageAutoIp: true
-      keyVaultName: nestedDependencies.outputs.keyVaultName
+      keyVaultName: nestedDependencies!.outputs.keyVaultName
       networkIntents: [
         {
           adapter: ['mgmt']
@@ -192,11 +200,11 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    hciResourceProviderObjectId: hciResourceProviderObjectId
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
   }
 }
 
-resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-preview' existing = {
+resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-preview' existing = if (preparedHciEnvironment == null) {
   scope: resourceGroup
   name: customLocationName
   dependsOn: [
@@ -219,7 +227,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}1'
     location: enforcedLocation
-    customLocationResourceId: customLocation.id
+    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment.customLocationResourceId : customLocation!.id
     diskSizeGB: 4
     dynamic: true
     enableTelemetry: true

@@ -35,6 +35,7 @@ Describe 'Module deployment matrix' {
 
     BeforeEach {
         $savedExitCode = $global:LASTEXITCODE
+        '{}' | Set-Content -LiteralPath (Join-Path $TestDrive '.reserved-test-subscriptions.json')
         $testFiles = @(0..7 | ForEach-Object {
                 @{ path = "tests/e2e/case-$_/main.test.bicep"; name = "case-$_"; e2eIgnore = $false }
             })
@@ -82,6 +83,59 @@ Describe 'Module deployment matrix' {
         @($matrix[0..2].concurrencyGroup | Sort-Object -Unique).Count | Should -Be 3
         $matrix[0].concurrencyGroup | Should -Be $matrix[3].concurrencyGroup
         Should -Invoke bicep -Times 8 -Exactly
+    }
+
+    It 'Assigns only the exact module pool without changing source indices or subscription locks' {
+        $pool = @(
+            @{ id = $subscriptions[0].id; name = 'general'; tag = 'General' }
+            @{ id = $subscriptions[1].id; name = 'reserved'; tag = 'Azure Local' }
+            @{ id = $subscriptions[2].id; name = 'legacy-general' }
+        )
+        $matrixInput.TestSubscriptionIds = ConvertTo-Json -InputObject $pool -Compress
+        '{"avm/res/example/module":"Azure Local"}' | Set-Content -LiteralPath (Join-Path $TestDrive '.reserved-test-subscriptions.json')
+
+        $reserved = (Get-ModuleDeploymentMatrix @matrixInput).testCases
+
+        @($reserved.subscriptionIndex | Sort-Object -Unique) | Should -Be @(1)
+        @($reserved.subscriptionName | Sort-Object -Unique) | Should -Be @('reserved')
+        $reserved[0].subscriptionKey | Should -Be (Get-TestSubscriptionList -FallbackSubscriptionId $subscriptions[1].id).key
+        $reserved[0].concurrencyGroup | Should -Be "avm-deploy-avm/res/example/module-$($reserved[0].subscriptionKey)"
+        $reserved[0].environmentConcurrencyGroup | Should -Be "avm-hci-$($reserved[0].subscriptionKey)"
+        @($reserved.environmentConcurrencyGroup | Sort-Object -Unique).Count | Should -Be 1
+
+        '{}' | Set-Content -LiteralPath (Join-Path $TestDrive '.reserved-test-subscriptions.json')
+        $general = (Get-ModuleDeploymentMatrix @matrixInput).testCases
+        @($general.subscriptionIndex | Sort-Object -Unique) | Should -Be @(0, 2)
+        $general.subscriptionKey | Should -Not -Contain $reserved[0].subscriptionKey
+        @($general | Where-Object environmentConcurrencyGroup).Count | Should -Be 0
+    }
+
+    It 'Keeps the same environment lock across different reserved module roots without changing module locks' {
+        $matrixInput.TestSubscriptionIds = @(@{ id = $subscriptions[0].id; name = 'reserved'; tag = 'Azure Local' }) | ConvertTo-Json -AsArray -Compress
+        '{"avm/res/example/module":"Azure Local","avm/res/example/other":"Azure Local"}' |
+            Set-Content -LiteralPath (Join-Path $TestDrive '.reserved-test-subscriptions.json')
+        $first = (Get-ModuleDeploymentMatrix @matrixInput).testCases
+        $matrixInput.ModulePath = 'avm/res/example/other'
+        foreach ($test in $testFiles) {
+            $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $test.path)] = New-ScopeTemplate
+        }
+        $second = (Get-ModuleDeploymentMatrix @matrixInput).testCases
+        $first[0].environmentConcurrencyGroup | Should -BeExactly $second[0].environmentConcurrencyGroup
+        $first[0].concurrencyGroup | Should -Not -Be $second[0].concurrencyGroup
+        $first[0].environmentConcurrencyGroup | Should -Not -Be $first[0].concurrencyGroup
+    }
+
+    It 'Fails before compilation when a reservation has no eligible subscriptions or only a legacy fallback' -ForEach @(
+        @{ pool = '[]' }
+        @{ pool = '[{"id":"11111111-1111-1111-1111-111111111111","name":"general"}]' }
+        @{ pool = '' }
+    ) {
+        '{"avm/res/example/module":"Azure Local"}' | Set-Content -LiteralPath (Join-Path $TestDrive '.reserved-test-subscriptions.json')
+        $matrixInput.TestSubscriptionIds = $pool
+        $matrixInput.FallbackSubscriptionId = $subscriptions[0].id
+
+        { Get-ModuleDeploymentMatrix @matrixInput } | Should -Throw
+        Should -Invoke bicep -Times 0 -Exactly
     }
 
     It 'Produces secret-safe cross-job records for <configuration>' -ForEach @(
@@ -324,6 +378,8 @@ Describe 'Module deployment matrix' {
         @{ pool = ' ' }
         @{ pool = '[invalid' }
         @{ pool = '[]' }
+        @{ pool = '[{"id":"11111111-1111-4111-8111-111111111111","name":"offline-fixture","tga":"Azure Local"}]' }
+        @{ pool = '[{"id":"11111111-1111-4111-8111-111111111111","name":"offline-fixture","tag":"General","unexpected":true}]' }
     ) {
         $matrixInput.TestSubscriptionIds = $pool
         $matrixInput.FallbackSubscriptionId = $subscriptions[0].id
