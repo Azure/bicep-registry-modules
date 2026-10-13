@@ -7,6 +7,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciTestConsumer.ps1')
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciDeploymentHistoryCleanup.ps1')
         function Get-AzContext {}
+        function Get-AzResourceProvider { param ($ProviderNamespace) }
         function Set-AzContext { param ($SubscriptionId) }
         function Invoke-AzRestMethod { param ($Method, $Path, $Payload) }
         function New-AzResourceGroup { param ($Name, $Location, $Tag) }
@@ -296,6 +297,102 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
         Should -Invoke New-AzResourceGroup -Times 0 -Exactly
         Should -Invoke Update-AzTag -Times 0 -Exactly
+    }
+
+    Context 'Begin provider registration' {
+        BeforeEach {
+            $key = Get-HciEnvironmentKey -Value $context.SubscriptionId
+            $beginInput = @{
+                Stage               = 'Begin'
+                RepoRootPath        = $RepoRootPath
+                ModulePath          = 'avm/res/azure-stack-hci/logical-network'
+                TestCase            = @{
+                    path                        = 'tests/e2e/defaults'
+                    subscriptionIndex           = 0
+                    subscriptionKey             = $key
+                    environmentConcurrencyGroup = "avm-hci-$key"
+                }
+                TestSubscriptionIds = ConvertTo-Json -InputObject @(@{
+                        id   = $context.SubscriptionId
+                        name = 'offline-reserved'
+                        tag  = 'Azure Local'
+                    }) -Compress
+                TenantId            = $context.TenantId
+                RunIdentity         = 'offline'
+                SourceCommit        = 'b' * 40
+                GitHubSecrets       = @{
+                    CI_ARB_LOCAL_ADMIN_AND_DEPLOYMENT_USER_PASS = 'offline'
+                    CI_ARB_DEPLOYMENT_APP_ID                    = 'offline'
+                    CI_ARB_DEPLOYMENT_SP_OBJECT_ID              = 'offline'
+                    CI_ARB_DEPLOYMENT_SERVICE_PRINCIPAL_SECRET  = 'offline'
+                } | ConvertTo-Json -Compress
+                Recreate            = $false
+                Maintenance         = $true
+            }
+        }
+
+        It 'Begins preparation with <recordCount> Registered resource-type rows per namespace' -ForEach @(
+            @{ recordCount = 1 }
+            @{ recordCount = 2 }
+        ) {
+            $script:providerRecordCount = $recordCount
+            Mock Get-AzResourceProvider {
+                for ($index = 0; $index -lt $script:providerRecordCount; $index++) {
+                    [pscustomobject]@{
+                        ProviderNamespace = $ProviderNamespace
+                        RegistrationState = 'Registered'
+                        ResourceTypes     = @([pscustomobject]@{ ResourceTypeName = "offline-type-$index" })
+                    }
+                }
+            }
+            Add-Registry -State Idle
+            Add-ReadyImage
+
+            Invoke-HciPreparationStep @beginInput
+
+            Should -Invoke Get-AzResourceProvider -Times 16 -Exactly
+            Should -Invoke Update-AzTag -Times 1 -Exactly -ParameterFilter { $Tag['avm-state'] -ceq 'Preparing' }
+            $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -BeExactly 'Preparing'
+            Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+            Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
+        }
+
+        It 'Rejects <case> provider output before preparation' -ForEach @(
+            @{ case = 'empty'; records = @() }
+            @{ case = 'null'; records = @($null) }
+            @{ case = 'missing namespace'; records = @([pscustomobject]@{ RegistrationState = 'Registered' }) }
+            @{ case = 'missing state'; records = @([pscustomobject]@{ ProviderNamespace = 'Microsoft.Compute' }) }
+            @{ case = 'wrong namespace'; records = @([pscustomobject]@{ ProviderNamespace = 'Microsoft.Network'; RegistrationState = 'Registered' }) }
+            @{ case = 'wrong namespace case'; records = @([pscustomobject]@{ ProviderNamespace = 'microsoft.compute'; RegistrationState = 'Registered' }) }
+            @{ case = 'NotRegistered'; records = @([pscustomobject]@{ ProviderNamespace = 'Microsoft.Compute'; RegistrationState = 'NotRegistered' }) }
+            @{ case = 'wrong state case'; records = @([pscustomobject]@{ ProviderNamespace = 'Microsoft.Compute'; RegistrationState = 'registered' }) }
+            @{
+                case    = 'mixed states'
+                records = @(
+                    [pscustomobject]@{ ProviderNamespace = 'Microsoft.Compute'; RegistrationState = 'Registered' }
+                    [pscustomobject]@{ ProviderNamespace = 'Microsoft.Compute'; RegistrationState = 'NotRegistered' }
+                )
+            }
+            @{
+                case    = 'mixed namespaces'
+                records = @(
+                    [pscustomobject]@{ ProviderNamespace = 'Microsoft.Compute'; RegistrationState = 'Registered' }
+                    [pscustomobject]@{ ProviderNamespace = 'Microsoft.Network'; RegistrationState = 'Registered' }
+                )
+            }
+        ) {
+            $script:providerRecords = $records
+            Mock Get-AzResourceProvider { $script:providerRecords }
+
+            { Invoke-HciPreparationStep @beginInput } | Should -Throw '*Required provider*Microsoft.Compute*not registered*'
+
+            Should -Invoke Get-AzResourceProvider -Times 1 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+            Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+            Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+            Should -Invoke Update-AzTag -Times 0 -Exactly
+        }
     }
 
     It 'Creates only absent registered groups for a read-only external image' {
