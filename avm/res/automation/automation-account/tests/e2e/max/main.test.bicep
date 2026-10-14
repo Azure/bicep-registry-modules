@@ -241,6 +241,12 @@ module testDeployment '../../../main.bicep' = [
           uri: 'https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1'
           version: '1.0.0.0'
         }
+        {
+          description: 'Test Python runbook'
+          name: 'TestPythonRunbook'
+          type: 'Python'
+          runtimeEnvironment: 'TestPythonRuntime'
+        }
       ]
       schedules: [
         {

@@ -368,6 +368,12 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         uri: 'https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1'
         version: '1.0.0.0'
       }
+      {
+        description: 'Test Python runbook'
+        name: 'TestPythonRunbook'
+        runtimeEnvironment: 'TestPythonRuntime'
+        type: 'Python'
+      }
     ]
     runtimeEnvironments: [
       {
@@ -659,6 +665,12 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
           "type": "PowerShell",
           "uri": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1",
           "version": "1.0.0.0"
+        },
+        {
+          "description": "Test Python runbook",
+          "name": "TestPythonRunbook",
+          "runtimeEnvironment": "TestPythonRuntime",
+          "type": "Python"
         }
       ]
     },
@@ -925,6 +937,12 @@ param runbooks = [
     type: 'PowerShell'
     uri: 'https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1'
     version: '1.0.0.0'
+  }
+  {
+    description: 'Test Python runbook'
+    name: 'TestPythonRunbook'
+    runtimeEnvironment: 'TestPythonRuntime'
+    type: 'Python'
   }
 ]
 param runtimeEnvironments = [
@@ -2739,6 +2757,7 @@ The type of the runbook.
     'PowerShell'
     'PowerShell72'
     'PowerShellWorkflow'
+    'Python'
     'Python2'
     'Python3'
     'Script'

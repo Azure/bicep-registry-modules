@@ -702,6 +702,7 @@ type runbookType = {
     | 'PowerShell'
     | 'PowerShell72'
     | 'PowerShellWorkflow'
+    | 'Python'
     | 'Python2'
     | 'Python3'
     | 'Script')

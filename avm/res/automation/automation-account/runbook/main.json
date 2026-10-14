@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "9889971098709585713"
+      "templateHash": "15242446932787382881"
     },
     "name": "Automation Account Runbooks",
     "description": "This module deploys an Azure Automation Account Runbook."
@@ -33,6 +33,7 @@
         "PowerShell",
         "PowerShell72",
         "PowerShellWorkflow",
+        "Python",
         "Python2",
         "Python3",
         "Script"
