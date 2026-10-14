@@ -18,6 +18,10 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: ${{ fromJson(inputs.testCase).environmentConcurrencyGroup }}
+  queue: max
+
 jobs:
   job_module_deploy_validation:
     name: "Deploy [${{ fromJson(inputs.testCase).name }}] on [${{ fromJson(inputs.testCase).subscriptionName }}]"
@@ -35,6 +39,7 @@ jobs:
       CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
     steps:
       - name: "Check cleanup policy"
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
         shell: pwsh
         env:
           REMOVE_DEPLOYMENT: ${{ fromJson(inputs.workflowInput).removeDeployment }}
@@ -42,16 +47,25 @@ jobs:
           if ($env:REMOVE_DEPLOYMENT -cne 'true') {
             throw 'Reserved Azure Local consumers require cleanup. Retained or uncertain test resources block reuse.'
           }
+      - name: "Report skipped deployment"
+        if: ${{ fromJson(inputs.testCase).e2eIgnore }}
+        shell: pwsh
+        env:
+          TEMPLATE_FILE_PATH: ${{ inputs.modulePath }}/${{ fromJson(inputs.testCase).path }}
+        run: Write-Output "Skipping deployment for [$env:TEMPLATE_FILE_PATH] because .e2eignore is set."
       - name: "Checkout"
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
       - name: "Set environment"
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
         uses: ./.github/actions/templates/avm-setEnvironment
         with:
           removeDeployment: "true"
       - name: "Resolve the pinned reserved subscription"
         id: subscription
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
         shell: pwsh
         env:
           MODULE_PATH: ${{ inputs.modulePath }}
@@ -65,6 +79,7 @@ jobs:
             -SubscriptionIndex $testCase.subscriptionIndex -SubscriptionKey $testCase.subscriptionKey -RepoRootPath $env:GITHUB_WORKSPACE
           "subscriptionId=$($subscription.id)" >> $env:GITHUB_OUTPUT
       - name: "Log in to the reserved subscription"
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
         uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
         with:
           client-id: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}

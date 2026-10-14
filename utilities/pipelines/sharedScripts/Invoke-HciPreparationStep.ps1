@@ -49,7 +49,9 @@ function Invoke-HciPreparationStep {
         )
         foreach ($provider in $providers) {
             $record = @(Get-AzResourceProvider -ProviderNamespace $provider -ErrorAction Stop)
-            if ($record.Count -ne 1 -or $record[0].RegistrationState -cne 'Registered') {
+            if ($record.Count -eq 0 -or @($record | Where-Object {
+                        $_.ProviderNamespace -cne $provider -or $_.RegistrationState -cne 'Registered'
+                    }).Count -gt 0) {
                 throw "Required provider [$provider] is not registered in the reserved subscription. Complete approved subscription preparation first."
             }
         }

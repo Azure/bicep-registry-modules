@@ -102,12 +102,7 @@ Describe 'Generic module workflow' {
             $caller.concurrency.ContainsKey('cancel-in-progress') | Should -BeFalse
             $caller.strategy.'fail-fast' | Should -BeFalse
         }
-        @($deploymentWorkflow.jobs.Keys | Sort-Object) | Should -Be @('job_hci_environment', 'job_module_deploy_validation')
-        $reserved = $deploymentWorkflow.jobs.job_hci_environment
-        $reserved.uses | Should -Be './.github/workflows/avm.template.hci.consumer.yml'
-        $reserved.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).environmentConcurrencyGroup }}'
-        $reserved.concurrency.queue | Should -Be 'max'
-        $reserved.concurrency.ContainsKey('cancel-in-progress') | Should -BeFalse
+        @($deploymentWorkflow.jobs.Keys) | Should -Be @('job_module_deploy_validation')
         $deployment = $deploymentWorkflow.jobs.job_module_deploy_validation
         $deployment.name | Should -Be 'Deploy [${{ fromJson(inputs.testCase).name }}] on [${{ fromJson(inputs.testCase).subscriptionName }}]'
         $deployment.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
@@ -701,7 +696,11 @@ Describe 'Module workflow path filters' {
             Get-ChildItem -Path (Join-Path $repoRootPath '.github' 'workflows') -File -Filter '*.yml' |
             ForEach-Object {
                 $workflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $_.FullName -Raw)
-                if ($workflow.jobs.Values.uses -contains './.github/workflows/avm.template.module.yml') {
+                if ($workflow.on.ContainsKey('push') -and
+                    @($workflow.jobs.Values.uses | Where-Object { $_ -in @(
+                            './.github/workflows/avm.template.module.yml',
+                            './.github/workflows/avm.template.hci.module.yml'
+                        ) }).Count -gt 0) {
                     @{
                         WorkflowFileName = $_.Name
                         Workflow         = $workflow

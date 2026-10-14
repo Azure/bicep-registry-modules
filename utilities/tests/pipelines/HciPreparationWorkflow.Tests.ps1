@@ -12,6 +12,7 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $prepare = Get-Content (Join-Path $workflowRoot 'avm.template.hci.prepare.yml') -Raw | ConvertFrom-Yaml
         $prepareSteps = $prepare.jobs.job_begin.steps
         $consumer = Get-Content (Join-Path $workflowRoot 'avm.template.hci.consumer.yml') -Raw | ConvertFrom-Yaml
+        $hciModule = Get-Content (Join-Path $workflowRoot 'avm.template.hci.module.yml') -Raw | ConvertFrom-Yaml
         $deployment = Get-Content (Join-Path $workflowRoot 'avm.template.module.deployment.yml') -Raw | ConvertFrom-Yaml
         $action = Get-Content (Join-Path $RepoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml') -Raw | ConvertFrom-Yaml
         $consumerScript = Get-Content (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciTestConsumer.ps1') -Raw
@@ -37,10 +38,10 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
     }
 
     It 'Serializes setup and consumers on the same cross-module environment lock while preserving existing locks' {
-        $wrapper = $deployment.jobs.job_hci_environment
-        $wrapper.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).environmentConcurrencyGroup }}'
-        $wrapper.concurrency.queue | Should -Be 'max'
-        $wrapper.concurrency.Contains('cancel-in-progress') | Should -BeFalse
+        $wrapper = $hciModule.jobs.job_module_deploy_validation
+        $consumer.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).environmentConcurrencyGroup }}'
+        $consumer.concurrency.queue | Should -Be 'max'
+        $consumer.concurrency.Contains('cancel-in-progress') | Should -BeFalse
         $wrapper.uses | Should -Be './.github/workflows/avm.template.hci.consumer.yml'
         @($consumer.jobs.Keys) | Should -Be @('job_module_deploy_validation')
         $consumer.jobs.job_module_deploy_validation.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
@@ -89,9 +90,9 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         }
     }
 
-    It 'Keeps only the locked setup workflow and the shared consumer without replacement wrappers' {
+    It 'Keeps setup, consumption and reserved module routing in explicit workflows' {
         @(Get-ChildItem $workflowRoot -Filter 'avm.template.hci.*.yml' | Sort-Object Name | ForEach-Object Name) |
-            Should -Be @('avm.template.hci.consumer.yml', 'avm.template.hci.prepare.yml')
+            Should -Be @('avm.template.hci.consumer.yml', 'avm.template.hci.module.yml', 'avm.template.hci.prepare.yml')
         foreach ($job in $prepare.jobs.Values) {
             $job.Contains('uses') | Should -BeFalse
             $job.Contains('outputs') | Should -BeFalse
@@ -277,13 +278,13 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
                     }
                 })
             $matrix = Get-ModuleDeploymentMatrix -ModulePath $root -TestFilePaths $files -TestSubscriptionIds $pool `
-                -RandomSeed 42 -DisplaySubscriptionNames -RepoRoot $RepoRootPath
+                -ExpectedSubscriptionTag 'Azure Local' -RandomSeed 42 -DisplaySubscriptionNames -RepoRoot $RepoRootPath
             $matrix.testCases.Count | Should -Be $files.Count
             foreach ($test in $matrix.testCases) {
                 $test.subscriptionIndex | Should -Be 0
                 $test.subscriptionName | Should -Be 'sub-avm-test-001'
                 $test.subscriptionKey | Should -Be $reservedKey
-                $test.environmentConcurrencyGroup | Should -Be "avm-hci-$reservedKey"
+                $test.ContainsKey('environmentConcurrencyGroup') | Should -BeFalse
                 $test.concurrencyGroup | Should -Be "avm-deploy-$root-$reservedKey"
                 $test.e2eIgnore | Should -BeFalse
             }

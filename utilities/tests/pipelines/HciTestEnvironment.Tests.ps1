@@ -7,6 +7,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciTestConsumer.ps1')
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciDeploymentHistoryCleanup.ps1')
         function Get-AzContext {}
+        function Get-AzResourceProvider { param ($ProviderNamespace) }
         function Set-AzContext { param ($SubscriptionId) }
         function Invoke-AzRestMethod { param ($Method, $Path, $Payload) }
         function New-AzResourceGroup { param ($Name, $Location, $Tag) }
@@ -151,6 +152,67 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         $context.ImageVersionResourceId | Should -Not -Match 'persistent'
         $context.Tags.lifecycle | Should -Be 'tenant-persistent'
         $context.GroupIds.Values | Sort-Object -Unique | Should -HaveCount 4
+        $context.Config.hciVhdxDownloadUri | Should -BeExactly 'https://jumpstartprodsg.blob.core.windows.net/jslocal/localbox/prod/AzLocal2601.vhdx'
+        $context.Config.hciVhdxSha256 | Should -BeExactly '3a797826d7e7ae7abc55d1071322ddecc80575c2356fea9e74818ab9f6720a1f'
+    }
+
+    It 'Rejects an invalid payload <field> before resource access' -ForEach @(
+        @{ field = 'hciVhdxDownloadUri'; value = '' }
+        @{ field = 'hciVhdxDownloadUri'; value = 'http://example.test/AzLocal2601.vhdx' }
+        @{ field = 'hciVhdxDownloadUri'; value = 'https://user@example.test/AzLocal2601.vhdx' }
+        @{ field = 'hciVhdxDownloadUri'; value = 'https://example.test/AzLocal2601.vhdx?query=1' }
+        @{ field = 'hciVhdxDownloadUri'; value = 'https://example.test/AzLocal2601.vhdx#fragment' }
+        @{ field = 'hciVhdxSha256'; value = $null }
+        @{ field = 'hciVhdxSha256'; value = '' }
+        @{ field = 'hciVhdxSha256'; value = 'a' * 63 }
+        @{ field = 'hciVhdxSha256'; value = 'a' * 65 }
+        @{ field = 'hciVhdxSha256'; value = 'g' * 64 }
+        @{ field = 'hciVhdxSha256'; value = ('a' * 64) + "`n" }
+    ) {
+        $script:unsupportedConfig = $context.Config.Clone()
+        $script:unsupportedConfig[$field] = $value
+        Mock Get-Content { $script:unsupportedConfig | ConvertTo-Json } -ParameterFilter { $LiteralPath -like '*environment.json' }
+
+        { Get-HciEnvironmentContext @inputObject } | Should -Throw '*payload contract requires*'
+
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+    }
+
+    It 'Binds the payload <field> into the ownership contract' -ForEach @(
+        @{ field = 'hciVhdxDownloadUri'; value = 'https://example.test/AzLocal2601.vhdx' }
+        @{ field = 'hciVhdxSha256'; value = 'b' * 64 }
+    ) {
+        $script:changedConfig = $context.Config.Clone()
+        $script:changedConfig[$field] = $value
+        Mock Get-Content { $script:changedConfig | ConvertTo-Json } -ParameterFilter { $LiteralPath -like '*environment.json' }
+
+        $changedContext = Get-HciEnvironmentContext @inputObject
+
+        $changedContext.Tags['avm-contract'] | Should -Not -Be $context.Tags['avm-contract']
+    }
+
+    It 'Blocks an old payload contract on the <kind> group without migrating it automatically' -ForEach @(
+        @{ kind = 'control' }
+        @{ kind = 'foundation' }
+        @{ kind = 'image' }
+        @{ kind = 'staging' }
+    ) {
+        Add-Registry -State Idle -ImageState None
+        $oldConfig = $context.Config.Clone()
+        $oldConfig.Remove('hciVhdxDownloadUri')
+        $oldConfig.Remove('hciVhdxSha256')
+        $oldContract = Get-HciEnvironmentKey -Value ($oldConfig | ConvertTo-Json -Depth 5 -Compress)
+        $oldContract | Should -Not -Be $context.Tags['avm-contract']
+        $script:resources[$context.GroupIds[$kind]].tags['avm-contract'] = $oldContract
+
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true } |
+            Should -Throw '*mismatched ownership/version tag*avm-contract*'
+
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+        $script:deleted.Count | Should -Be 0
     }
 
     It 'Rejects an unsupported shared environment region before resource access' -ForEach @(
@@ -296,6 +358,102 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
         Should -Invoke New-AzResourceGroup -Times 0 -Exactly
         Should -Invoke Update-AzTag -Times 0 -Exactly
+    }
+
+    Context 'Begin provider registration' {
+        BeforeEach {
+            $key = Get-HciEnvironmentKey -Value $context.SubscriptionId
+            $beginInput = @{
+                Stage               = 'Begin'
+                RepoRootPath        = $RepoRootPath
+                ModulePath          = 'avm/res/azure-stack-hci/logical-network'
+                TestCase            = @{
+                    path                        = 'tests/e2e/defaults'
+                    subscriptionIndex           = 0
+                    subscriptionKey             = $key
+                    environmentConcurrencyGroup = "avm-hci-$key"
+                }
+                TestSubscriptionIds = ConvertTo-Json -InputObject @(@{
+                        id   = $context.SubscriptionId
+                        name = 'offline-reserved'
+                        tag  = 'Azure Local'
+                    }) -Compress
+                TenantId            = $context.TenantId
+                RunIdentity         = 'offline'
+                SourceCommit        = 'b' * 40
+                GitHubSecrets       = @{
+                    CI_ARB_LOCAL_ADMIN_AND_DEPLOYMENT_USER_PASS = 'offline'
+                    CI_ARB_DEPLOYMENT_APP_ID                    = 'offline'
+                    CI_ARB_DEPLOYMENT_SP_OBJECT_ID              = 'offline'
+                    CI_ARB_DEPLOYMENT_SERVICE_PRINCIPAL_SECRET  = 'offline'
+                } | ConvertTo-Json -Compress
+                Recreate            = $false
+                Maintenance         = $true
+            }
+        }
+
+        It 'Begins preparation with <recordCount> Registered resource-type rows per namespace' -ForEach @(
+            @{ recordCount = 1 }
+            @{ recordCount = 2 }
+        ) {
+            $script:providerRecordCount = $recordCount
+            Mock Get-AzResourceProvider {
+                for ($index = 0; $index -lt $script:providerRecordCount; $index++) {
+                    [pscustomobject]@{
+                        ProviderNamespace = $ProviderNamespace
+                        RegistrationState = 'Registered'
+                        ResourceTypes     = @([pscustomobject]@{ ResourceTypeName = "offline-type-$index" })
+                    }
+                }
+            }
+            Add-Registry -State Idle
+            Add-ReadyImage
+
+            Invoke-HciPreparationStep @beginInput
+
+            Should -Invoke Get-AzResourceProvider -Times 16 -Exactly
+            Should -Invoke Update-AzTag -Times 1 -Exactly -ParameterFilter { $Tag['avm-state'] -ceq 'Preparing' }
+            $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -BeExactly 'Preparing'
+            Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+            Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
+        }
+
+        It 'Rejects <case> provider output before preparation' -ForEach @(
+            @{ case = 'empty'; records = @() }
+            @{ case = 'null'; records = @($null) }
+            @{ case = 'missing namespace'; records = @([pscustomobject]@{ RegistrationState = 'Registered' }) }
+            @{ case = 'missing state'; records = @([pscustomobject]@{ ProviderNamespace = 'Microsoft.Compute' }) }
+            @{ case = 'wrong namespace'; records = @([pscustomobject]@{ ProviderNamespace = 'Microsoft.Network'; RegistrationState = 'Registered' }) }
+            @{ case = 'wrong namespace case'; records = @([pscustomobject]@{ ProviderNamespace = 'microsoft.compute'; RegistrationState = 'Registered' }) }
+            @{ case = 'NotRegistered'; records = @([pscustomobject]@{ ProviderNamespace = 'Microsoft.Compute'; RegistrationState = 'NotRegistered' }) }
+            @{ case = 'wrong state case'; records = @([pscustomobject]@{ ProviderNamespace = 'Microsoft.Compute'; RegistrationState = 'registered' }) }
+            @{
+                case    = 'mixed states'
+                records = @(
+                    [pscustomobject]@{ ProviderNamespace = 'Microsoft.Compute'; RegistrationState = 'Registered' }
+                    [pscustomobject]@{ ProviderNamespace = 'Microsoft.Compute'; RegistrationState = 'NotRegistered' }
+                )
+            }
+            @{
+                case    = 'mixed namespaces'
+                records = @(
+                    [pscustomobject]@{ ProviderNamespace = 'Microsoft.Compute'; RegistrationState = 'Registered' }
+                    [pscustomobject]@{ ProviderNamespace = 'Microsoft.Network'; RegistrationState = 'Registered' }
+                )
+            }
+        ) {
+            $script:providerRecords = $records
+            Mock Get-AzResourceProvider { $script:providerRecords }
+
+            { Invoke-HciPreparationStep @beginInput } | Should -Throw '*Required provider*Microsoft.Compute*not registered*'
+
+            Should -Invoke Get-AzResourceProvider -Times 1 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+            Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+            Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+            Should -Invoke Update-AzTag -Times 0 -Exactly
+        }
     }
 
     It 'Creates only absent registered groups for a read-only external image' {
@@ -567,6 +725,8 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             $TemplateParameterObject.location | Should -BeExactly $context.Config.location
             $TemplateParameterObject.buildLocation | Should -BeExactly $context.Config.location
             $TemplateParameterObject.replicationRegions | Should -Be @($context.Config.location)
+            $TemplateParameterObject.hciVhdxDownloadUri | Should -BeExactly $context.Config.hciVhdxDownloadUri
+            $TemplateParameterObject.hciVhdxSha256 | Should -BeExactly $context.Config.hciVhdxSha256
             $TemplateParameterObject.useScopedContributorRole | Should -BeTrue
             $TemplateParameterObject.createResourceGroup | Should -BeFalse
             $TemplateParameterObject.tags.lifecycle | Should -Be 'tenant-persistent'
@@ -582,10 +742,16 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
                 startTime = [datetimeoffset]::UtcNow.ToString('o')
                 runState = 'Running'
             }
-            [pscustomobject] @{
-                StatusCode = 202
-                Content = '{}'
-                Headers = @{ 'Azure-AsyncOperation' = "https://management.azure.com/subscriptions/$($context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/$($context.Config.location)/operations/55555555-5555-5555-5555-555555555555?api-version=2025-10-01" }
+            $response = [System.Net.Http.HttpResponseMessage]::new()
+            try {
+                $response.Headers.Add('Azure-AsyncOperation', "https://management.azure.com/subscriptions/$($context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/$($context.Config.location)/operations/55555555-5555-5555-5555-555555555555?api-version=2025-10-01")
+                [pscustomobject] @{
+                    StatusCode = 202
+                    Content = '{}'
+                    Headers = $response.Headers
+                }
+            } finally {
+                $response.Dispose()
             }
         } -ParameterFilter { $Method -eq 'POST' }
 
