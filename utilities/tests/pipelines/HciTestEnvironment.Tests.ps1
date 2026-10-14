@@ -152,6 +152,67 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         $context.ImageVersionResourceId | Should -Not -Match 'persistent'
         $context.Tags.lifecycle | Should -Be 'tenant-persistent'
         $context.GroupIds.Values | Sort-Object -Unique | Should -HaveCount 4
+        $context.Config.hciVhdxDownloadUri | Should -BeExactly 'https://jumpstartprodsg.blob.core.windows.net/jslocal/localbox/prod/AzLocal2601.vhdx'
+        $context.Config.hciVhdxSha256 | Should -BeExactly '3a797826d7e7ae7abc55d1071322ddecc80575c2356fea9e74818ab9f6720a1f'
+    }
+
+    It 'Rejects an invalid payload <field> before resource access' -ForEach @(
+        @{ field = 'hciVhdxDownloadUri'; value = '' }
+        @{ field = 'hciVhdxDownloadUri'; value = 'http://example.test/AzLocal2601.vhdx' }
+        @{ field = 'hciVhdxDownloadUri'; value = 'https://user@example.test/AzLocal2601.vhdx' }
+        @{ field = 'hciVhdxDownloadUri'; value = 'https://example.test/AzLocal2601.vhdx?query=1' }
+        @{ field = 'hciVhdxDownloadUri'; value = 'https://example.test/AzLocal2601.vhdx#fragment' }
+        @{ field = 'hciVhdxSha256'; value = $null }
+        @{ field = 'hciVhdxSha256'; value = '' }
+        @{ field = 'hciVhdxSha256'; value = 'a' * 63 }
+        @{ field = 'hciVhdxSha256'; value = 'a' * 65 }
+        @{ field = 'hciVhdxSha256'; value = 'g' * 64 }
+        @{ field = 'hciVhdxSha256'; value = ('a' * 64) + "`n" }
+    ) {
+        $script:unsupportedConfig = $context.Config.Clone()
+        $script:unsupportedConfig[$field] = $value
+        Mock Get-Content { $script:unsupportedConfig | ConvertTo-Json } -ParameterFilter { $LiteralPath -like '*environment.json' }
+
+        { Get-HciEnvironmentContext @inputObject } | Should -Throw '*payload contract requires*'
+
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+    }
+
+    It 'Binds the payload <field> into the ownership contract' -ForEach @(
+        @{ field = 'hciVhdxDownloadUri'; value = 'https://example.test/AzLocal2601.vhdx' }
+        @{ field = 'hciVhdxSha256'; value = 'b' * 64 }
+    ) {
+        $script:changedConfig = $context.Config.Clone()
+        $script:changedConfig[$field] = $value
+        Mock Get-Content { $script:changedConfig | ConvertTo-Json } -ParameterFilter { $LiteralPath -like '*environment.json' }
+
+        $changedContext = Get-HciEnvironmentContext @inputObject
+
+        $changedContext.Tags['avm-contract'] | Should -Not -Be $context.Tags['avm-contract']
+    }
+
+    It 'Blocks an old payload contract on the <kind> group without migrating it automatically' -ForEach @(
+        @{ kind = 'control' }
+        @{ kind = 'foundation' }
+        @{ kind = 'image' }
+        @{ kind = 'staging' }
+    ) {
+        Add-Registry -State Idle -ImageState None
+        $oldConfig = $context.Config.Clone()
+        $oldConfig.Remove('hciVhdxDownloadUri')
+        $oldConfig.Remove('hciVhdxSha256')
+        $oldContract = Get-HciEnvironmentKey -Value ($oldConfig | ConvertTo-Json -Depth 5 -Compress)
+        $oldContract | Should -Not -Be $context.Tags['avm-contract']
+        $script:resources[$context.GroupIds[$kind]].tags['avm-contract'] = $oldContract
+
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true } |
+            Should -Throw '*mismatched ownership/version tag*avm-contract*'
+
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+        $script:deleted.Count | Should -Be 0
     }
 
     It 'Rejects an unsupported shared environment region before resource access' -ForEach @(
@@ -664,6 +725,8 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             $TemplateParameterObject.location | Should -BeExactly $context.Config.location
             $TemplateParameterObject.buildLocation | Should -BeExactly $context.Config.location
             $TemplateParameterObject.replicationRegions | Should -Be @($context.Config.location)
+            $TemplateParameterObject.hciVhdxDownloadUri | Should -BeExactly $context.Config.hciVhdxDownloadUri
+            $TemplateParameterObject.hciVhdxSha256 | Should -BeExactly $context.Config.hciVhdxSha256
             $TemplateParameterObject.useScopedContributorRole | Should -BeTrue
             $TemplateParameterObject.createResourceGroup | Should -BeFalse
             $TemplateParameterObject.tags.lifecycle | Should -Be 'tenant-persistent'
