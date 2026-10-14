@@ -438,6 +438,11 @@ runs:
           if ($deploymentData.ProtectedResourceIds.Count -gt 0) {
             $retryInput.ProtectedResourceIds = $deploymentData.ProtectedResourceIds
           }
+          if ($env:GITHUB_EVENT_NAME -eq 'workflow_dispatch' -and
+              '${{ inputs.modulePath }}' -eq 'avm/res/compute/virtual-machine' -and
+              '${{ inputs.templateFilePath }}' -eq 'avm/res/compute/virtual-machine/tests/e2e/windows.max/main.test.bicep') {
+            $retryInput.NicDiagnosticStorageEvidencePath = Join-Path $env:RUNNER_TEMP 'nic-diagnostic-storage-evidence'
+          }
           $res = Invoke-TemplateDeploymentWithRetry @retryInput -Verbose
 
           if ($requireCompleteRemoval) {
@@ -643,3 +648,13 @@ runs:
           Write-Output ("cleanupStatus={0}" -f $result.Status) >> $env:GITHUB_OUTPUT
 
           Write-Output '::endgroup::'
+
+    - name: "Upload NIC diagnostic-storage evidence"
+      if: ${{ (success() || failure()) && github.event_name == 'workflow_dispatch' && env.skip_deployment_ci == 'false' && inputs.modulePath == 'avm/res/compute/virtual-machine' && inputs.templateFilePath == 'avm/res/compute/virtual-machine/tests/e2e/windows.max/main.test.bicep' }}
+      continue-on-error: true
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      with:
+        name: nic-diagnostic-storage-${{ github.run_id }}-${{ github.run_attempt }}-windows-max
+        path: ${{ runner.temp }}/nic-diagnostic-storage-evidence/*.json
+        if-no-files-found: warn
+        retention-days: 7

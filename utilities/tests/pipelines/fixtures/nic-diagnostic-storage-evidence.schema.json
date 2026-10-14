@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Attempt-bound NIC diagnostic-storage evidence",
+  "description": "Review-only schema. This is capture coverage, not a deployment verdict. Null means unknown or unavailable, never absence or a service default. Only the recorded attempt's diagnostic dependency and VM/NIC branches may supply IDs. No raw parameters, configuration, response bodies, exception messages, credentials, tags, network rule values, IP addresses, endpoint URLs or list-key results are permitted.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "fixture", "deploymentId", "sourceCommit", "workflowRunId",
+    "workflowRunAttempt", "capturedAtUtc", "recoveryDeadlineUtc", "completedAtUtc",
+    "status", "root", "requests", "operations", "links", "resources", "gaps"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "fixture": { "const": "avm/res/compute/virtual-machine/tests/e2e/windows.max/main.test.bicep" },
+    "deploymentId": { "$ref": "#/$defs/resourceId" },
+    "sourceCommit": { "type": ["string", "null"], "pattern": "^[0-9a-fA-F]{40}$" },
+    "workflowRunId": { "type": ["string", "null"], "pattern": "^[0-9]{1,20}$" },
+    "workflowRunAttempt": { "type": ["string", "null"], "pattern": "^[0-9]{1,10}$" },
+    "capturedAtUtc": { "type": "string", "format": "date-time" },
+    "recoveryDeadlineUtc": { "type": "string", "format": "date-time" },
+    "completedAtUtc": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["complete", "partial"] },
+    "root": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["correlationId", "templateHash", "provisioningState", "timestamp", "submittedLocation"],
+      "properties": {
+        "correlationId": { "$ref": "#/$defs/nullableMetadata" },
+        "templateHash": { "type": ["string", "null"], "pattern": "^[0-9]{1,32}$" },
+        "provisioningState": { "$ref": "#/$defs/nullableMetadata" },
+        "timestamp": { "$ref": "#/$defs/nullableTimestamp" },
+        "submittedLocation": { "$ref": "#/$defs/nullableMetadata" }
+      }
+    },
+    "requests": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["resourceId", "apiVersion", "capturedAtUtc", "httpStatus", "requestId"],
+        "properties": {
+          "resourceId": { "$ref": "#/$defs/resourceId" },
+          "apiVersion": { "enum": ["2025-04-01", "2026-04-01", "2024-05-01", "2021-05-01-preview"] },
+          "capturedAtUtc": { "type": "string", "format": "date-time" },
+          "httpStatus": { "type": ["integer", "null"], "minimum": 100, "maximum": 599 },
+          "requestId": { "$ref": "#/$defs/nullableMetadata" }
+        }
+      }
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "deploymentId", "operationId", "targetId", "targetType", "provisioningOperation",
+          "provisioningState", "statusCode", "timestamp", "trackingId", "serviceRequestId", "errorCode"
+        ],
+        "properties": {
+          "deploymentId": { "$ref": "#/$defs/resourceId" },
+          "operationId": { "$ref": "#/$defs/nullableMetadata" },
+          "targetId": { "$ref": "#/$defs/resourceId" },
+          "targetType": {
+            "enum": [
+              "Microsoft.Resources/deployments", "Microsoft.Network/networkInterfaces",
+              "Microsoft.Insights/diagnosticSettings", "Microsoft.Storage/storageAccounts"
+            ]
+          },
+          "provisioningOperation": { "$ref": "#/$defs/nullableMetadata" },
+          "provisioningState": { "$ref": "#/$defs/nullableMetadata" },
+          "statusCode": { "$ref": "#/$defs/nullableMetadata" },
+          "timestamp": { "$ref": "#/$defs/nullableTimestamp" },
+          "trackingId": { "$ref": "#/$defs/nullableMetadata" },
+          "serviceRequestId": { "$ref": "#/$defs/nullableMetadata" },
+          "errorCode": { "$ref": "#/$defs/nullableMetadata" }
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["deploymentChain", "nicId", "diagnosticSettingId", "submittedStorageId", "materializedReferenceMatches"],
+        "properties": {
+          "deploymentChain": {
+            "type": "array", "minItems": 4, "maxItems": 4,
+            "items": { "$ref": "#/$defs/resourceId" }
+          },
+          "nicId": { "$ref": "#/$defs/resourceId" },
+          "diagnosticSettingId": { "$ref": "#/$defs/resourceId" },
+          "submittedStorageId": { "$ref": "#/$defs/resourceId" },
+          "materializedReferenceMatches": { "type": ["boolean", "null"] }
+        }
+      }
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "type", "location", "provisioningState"],
+            "properties": {
+              "id": { "$ref": "#/$defs/resourceId" },
+              "type": { "const": "Microsoft.Network/networkInterfaces" },
+              "location": { "$ref": "#/$defs/nullableMetadata" },
+              "provisioningState": { "$ref": "#/$defs/nullableMetadata" }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "type", "location", "provisioningState", "kind", "skuName", "dnsEndpointType", "publicNetworkAccess", "networkAcls"],
+            "properties": {
+              "id": { "$ref": "#/$defs/resourceId" },
+              "type": { "const": "Microsoft.Storage/storageAccounts" },
+              "location": { "$ref": "#/$defs/nullableMetadata" },
+              "provisioningState": { "$ref": "#/$defs/nullableMetadata" },
+              "kind": { "$ref": "#/$defs/nullableMetadata" },
+              "skuName": { "$ref": "#/$defs/nullableMetadata" },
+              "dnsEndpointType": { "$ref": "#/$defs/nullableMetadata" },
+              "publicNetworkAccess": { "$ref": "#/$defs/nullableMetadata" },
+              "networkAcls": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["defaultAction", "bypass", "ipRuleCount", "virtualNetworkRuleCount"],
+                "properties": {
+                  "defaultAction": { "$ref": "#/$defs/nullableMetadata" },
+                  "bypass": { "type": ["string", "null"], "pattern": "^(None|AzureServices|Logging|Metrics)(, ?(AzureServices|Logging|Metrics))*$" },
+                  "ipRuleCount": { "type": ["integer", "null"], "minimum": 0 },
+                  "virtualNetworkRuleCount": { "type": ["integer", "null"], "minimum": 0 }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["resourceId", "reason"],
+        "properties": {
+          "resourceId": { "$ref": "#/$defs/resourceId" },
+          "reason": {
+            "enum": [
+              "read-budget-exhausted", "read-denied", "http-not-successful",
+              "invalid-or-excessive-response", "read-failed", "operation-page-limit",
+              "invalid-operation-page", "invalid-operation", "invalid-operation-target",
+              "operation-page-outside-scope", "operation-identity-unavailable",
+              "response-identity-mismatch", "deployment-branch-limit", "deployment-branch-unavailable", "nic-operation-not-unique",
+              "diagnostic-setting-limit", "diagnostic-storage-reference-not-bound",
+              "diagnostic-operation-unavailable", "materialized-reference-unavailable",
+              "materialized-reference-mismatch", "resource-properties-incomplete",
+              "storage-properties-incomplete", "no-bound-nic-storage-pair",
+              "fixture-parameters-not-recognized", "capture-failed"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "resourceId": {
+      "type": "string",
+      "pattern": "^/[sS][uU][bB][sS][cC][rR][iI][pP][tT][iI][oO][nN][sS]/[0-9a-fA-F-]{36}/",
+      "description": "Further constrained by the collector to the recorded root or a validated descendant in its exact subscription and resource group."
+    },
+    "nullableMetadata": { "type": ["string", "null"], "maxLength": 128, "pattern": "^[a-zA-Z0-9_.:-]{1,128}$" },
+    "nullableTimestamp": { "type": ["string", "null"], "format": "date-time" }
+  }
+}

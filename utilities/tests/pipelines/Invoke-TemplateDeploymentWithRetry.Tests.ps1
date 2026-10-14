@@ -4151,6 +4151,59 @@ module dependency './dependency.bicep' = {
         $result.ErrorRecord.Exception.Message | Should -Match 'secret-not-for-logs'
     }
 
+    It 'Captures each recorded attempt before relocation cleanup without changing the recovery deadline' {
+        $script:outcomes = @('Regional', 'Succeeded')
+        $script:evidenceDeadlines = [System.Collections.Generic.List[datetime]]::new()
+        $retryInput.NicDiagnosticStorageEvidencePath = Join-Path $TestDrive 'evidence'
+        Mock Export-NicDiagnosticStorageEvidence {
+            $script:trace.Add("capture:$DeploymentName")
+            $script:evidenceDeadlines.Add($RecoveryDeadlineUtc)
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+        $result.ContainsKey('Exception') | Should -BeFalse
+        $script:trace.IndexOf("capture:$($script:names[0])") | Should -BeLessThan $script:trace.IndexOf("DELETE:$($script:roots[0])")
+        $script:trace | Should -Contain "capture:$($script:names[1])"
+        $script:evidenceDeadlines.Count | Should -Be 2
+        @($script:evidenceDeadlines | Sort-Object -Unique).Count | Should -Be 1
+        $script:submissions | Should -Be $script:regions[0..1]
+    }
+
+    It 'Keeps capture failure out of the original failure and leaves final cleanup tracking intact' {
+        $script:outcomes = @('Regional')
+        $retryInput.NicDiagnosticStorageEvidencePath = Join-Path $TestDrive 'evidence'
+        Mock Export-NicDiagnosticStorageEvidence { throw [System.IO.IOException]::new('private-capture-failure') }
+        $output = @(Invoke-TemplateDeploymentWithRetry @retryInput -DeploymentLimit 1 3>&1)
+        $result = $output | Where-Object { $_ -is [hashtable] }
+        $result.ErrorRecord | Should -Not -BeNullOrEmpty
+        $result.Exception | Should -Not -Match 'private-capture-failure'
+        $result.ErrorRecord.Exception.Message | Should -Not -Match 'private-capture-failure'
+        $result.RemainingDeploymentNames | Should -Be @($script:names)
+        $result.DeploymentAttempts | Should -Be 1
+        ($output | Where-Object { $_ -is [System.Management.Automation.WarningRecord] } | Out-String) |
+            Should -Match 'evidence could not be saved'
+        Initialize-DeploymentRemoval -TemplateFilePath $templatePath -DeploymentNames $result.RemainingDeploymentNames `
+            -SubscriptionId $script:subscriptionId -RequireCompleteRemoval -ErrorAction Stop | Out-Null
+        $script:trace | Should -Contain "DELETE:$($script:roots[0])"
+    }
+
+    It 'Keeps relocation cleanup and subsequent success when optional capture cannot be saved' {
+        $script:outcomes = @('Regional', 'Succeeded')
+        $retryInput.NicDiagnosticStorageEvidencePath = Join-Path $TestDrive 'evidence'
+        Mock Export-NicDiagnosticStorageEvidence { throw [System.IO.IOException]::new('private-capture-failure') }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+        $result.ContainsKey('Exception') | Should -BeFalse
+        $script:trace | Should -Contain "DELETE:$($script:roots[0])"
+        $script:submissions.Count | Should -Be 2
+    }
+
+    It 'Performs no evidence reads unless the optional capture path is supplied' {
+        $script:outcomes = @('Succeeded')
+        Mock Export-NicDiagnosticStorageEvidence { throw 'Unexpected capture.' }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+        $result.ContainsKey('Exception') | Should -BeFalse
+        Should -Invoke Export-NicDiagnosticStorageEvidence -Times 0 -Exactly
+    }
+
     It 'Does not deploy, select regions or clean up under WhatIf' {
         Invoke-TemplateDeploymentWithRetry @retryInput -WhatIf
         Should -Invoke Get-AvailableResourceLocation -Times 0 -Exactly

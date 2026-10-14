@@ -6,6 +6,7 @@
 . (Join-Path $PSScriptRoot '..' '..' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
 . (Join-Path $PSScriptRoot 'New-TemplateDeployment.ps1')
 . (Join-Path $PSScriptRoot '..' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
+. (Join-Path $PSScriptRoot 'Export-NicDiagnosticStorageEvidence.ps1')
 
 function Test-DeploymentRetryError {
     [CmdletBinding()]
@@ -528,6 +529,9 @@ Optional. Validate without deployment and return the selected location.
 .PARAMETER DoNotThrow
 Optional. Return failure details and outstanding cleanup names instead of throwing. Cancellation always propagates.
 
+.PARAMETER NicDiagnosticStorageEvidencePath
+Optional. Output folder for allowlisted windows.max evidence captured before cleanup. Disabled by default.
+
 .OUTPUTS
 ValidationOnly returns the selected location. Otherwise returns DeploymentOutput or Exception and the original
 ErrorRecord, ResourceLocation, AttemptedLocations, DeploymentAttempts, all DeploymentNames, outstanding
@@ -563,6 +567,9 @@ function Invoke-TemplateDeploymentWithRetry {
 
         [Parameter()]
         [string[]] $ProtectedResourceIds = @(),
+
+        [Parameter()]
+        [string] $NicDiagnosticStorageEvidencePath,
 
         [Parameter()]
         [switch] $ValidationOnly,
@@ -682,6 +689,18 @@ function Invoke-TemplateDeploymentWithRetry {
             }
             foreach ($name in @($attemptResult.PreflightRejectedDeploymentNames)) {
                 $preflightNames.Add($name)
+            }
+            if ($NicDiagnosticStorageEvidencePath) {
+                foreach ($name in @($attemptResult.DeploymentNames)) {
+                    try {
+                        Export-NicDiagnosticStorageEvidence -DeploymentName $name -SubscriptionId $validationParameters.SubscriptionId `
+                            -OutputFolderPath $NicDiagnosticStorageEvidencePath -RecoveryDeadlineUtc $recoveryDeadlineUtc
+                    } catch [System.Management.Automation.PipelineStoppedException] {
+                        throw
+                    } catch {
+                        Write-Warning 'NIC diagnostic-storage evidence could not be saved; deployment and cleanup outcomes are unchanged.' -WarningAction Continue
+                    }
+                }
             }
             if (-not $attemptResult.ContainsKey('Exception')) {
                 $result.DeploymentOutput = $attemptResult.DeploymentOutput
