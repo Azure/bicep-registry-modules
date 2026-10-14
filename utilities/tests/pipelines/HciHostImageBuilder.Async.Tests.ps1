@@ -8,7 +8,15 @@ Describe 'HCI image build job handoffs' {
         function New-AzSubscriptionDeployment { param ($Name, $Location, $TemplateFile, $TemplateParameterObject) }
         function Invoke-AzRestMethod { param ($Method, $Path) }
         function New-Response($Content, $StatusCode = 200, $Headers = @{}) {
-            [pscustomobject] @{ StatusCode = $StatusCode; Content = $Content | ConvertTo-Json -Depth 20; Headers = $Headers }
+            $response = [System.Net.Http.HttpResponseMessage]::new()
+            try {
+                foreach ($entry in $Headers.GetEnumerator()) {
+                    $response.Headers.Add($entry.Key, [string[]] $entry.Value)
+                }
+                [pscustomobject] @{ StatusCode = $StatusCode; Content = $Content | ConvertTo-Json -Depth 20; Headers = $response.Headers }
+            } finally {
+                $response.Dispose()
+            }
         }
     }
 
@@ -20,6 +28,7 @@ Describe 'HCI image build job handoffs' {
         $script:runState = 'Succeeded'
         $script:operationState = 'InProgress'
         $script:omitOperationHeader = $false
+        $script:operationHeaderName = 'Azure-AsyncOperation'
         $script:replicaState = 'Completed'
         $script:inputs = @{
             AssetBaseUri = 'https://example.test/pinned-assets'
@@ -33,6 +42,7 @@ Describe 'HCI image build job handoffs' {
             Tags = @{ lifecycle = 'tenant-persistent'; 'avm-owner' = 'Azure/bicep-registry-modules' }
         }
         $script:operationPath = "/subscriptions/$($inputs.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/southeastasia/operations/22222222-2222-2222-2222-222222222222?api-version=2025-10-01"
+        $script:operationHeaderValues = @("https://management.azure.com$script:operationPath")
         Mock Get-Date { $script:now }
         Mock Start-Sleep { param ($Seconds) $script:now = $script:now.AddSeconds($Seconds) }
         Mock Set-AzContext {}
@@ -44,7 +54,7 @@ Describe 'HCI image build job handoffs' {
             if ($Method -eq 'POST') {
                 $script:runStart = $script:now
                 $script:runState = 'Running'
-                $headers = $script:omitOperationHeader ? @{} : @{ 'Azure-AsyncOperation' = "https://management.azure.com$script:operationPath" }
+                $headers = $script:omitOperationHeader ? @{} : @{ $script:operationHeaderName = $script:operationHeaderValues }
                 return New-Response @{} 202 $headers
             }
             if ($Method -ne 'GET') { throw 'Unexpected write during image observation.' }
@@ -67,7 +77,11 @@ Describe 'HCI image build job handoffs' {
         }
     }
 
-    It 'Starts once with explicit owned targets, scoped permissions, tags and an immutable operation receipt' {
+    It 'Starts once with explicit owned targets, scoped permissions, tags and an immutable operation receipt from <headerName>' -ForEach @(
+        @{ headerName = 'Azure-AsyncOperation' }
+        @{ headerName = 'azure-asyncoperation' }
+    ) {
+        $script:operationHeaderName = $headerName
         $deadline = $script:now.AddMinutes(570)
         $result = . $buildScript @inputs -Operation Start -BuildDeadlineUtc $deadline
         $receipt = $result.OperationReceipt | ConvertFrom-Json
@@ -162,6 +176,35 @@ Describe 'HCI image build job handoffs' {
 
     It 'Reports an uncertain submission when the operation header is missing' {
         $script:omitOperationHeader = $true
+        { . $buildScript @inputs -Operation Start } | Should -Throw '*outcome is uncertain*'
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+    }
+
+    It 'Reports an uncertain submission for <change> without accepting another operation' -ForEach @(
+        @{ change = 'an empty operation header'; kind = 'empty' }
+        @{ change = 'multiple operation header values'; kind = 'multiple' }
+        @{ change = 'an HTTP operation URI'; kind = 'scheme' }
+        @{ change = 'an untrusted operation host'; kind = 'host' }
+        @{ change = 'another subscription'; kind = 'subscription' }
+        @{ change = 'another build region'; kind = 'region' }
+        @{ change = 'another operation route'; kind = 'route' }
+        @{ change = 'another API version'; kind = 'version' }
+        @{ change = 'URI credentials'; kind = 'userinfo' }
+        @{ change = 'a URI fragment'; kind = 'fragment' }
+    ) {
+        $validHeader = $script:operationHeaderValues[0]
+        $script:operationHeaderValues = switch ($kind) {
+            empty { '' }
+            multiple { @($validHeader, $validHeader) }
+            scheme { $validHeader.Replace('https:', 'http:') }
+            host { $validHeader.Replace('management.azure.com', 'example.test') }
+            subscription { $validHeader.Replace('11111111', '33333333') }
+            region { $validHeader.Replace('/southeastasia/', '/australiaeast/') }
+            route { $validHeader.Replace('/operations/', '/operationResults/') }
+            version { $validHeader.Replace('2025-10-01', '2022-07-01') }
+            userinfo { $validHeader.Replace('https://', 'https://unexpected@') }
+            fragment { "$validHeader#unexpected" }
+        }
         { . $buildScript @inputs -Operation Start } | Should -Throw '*outcome is uncertain*'
         Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
     }
