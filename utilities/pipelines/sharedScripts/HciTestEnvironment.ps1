@@ -72,6 +72,13 @@ function Get-HciEnvironmentContext {
         $config.imageTimeoutMinutes -ne 570 -or $config.foundationTimeoutMinutes -ne 660) {
         throw 'Unsupported Azure Local environment contract.'
     }
+    $payloadUri = $null
+    if ($config.hciVhdxDownloadUri -isnot [string] -or
+        -not [uri]::TryCreate($config.hciVhdxDownloadUri, [UriKind]::Absolute, [ref] $payloadUri) -or
+        $payloadUri.Scheme -cne 'https' -or $payloadUri.UserInfo -or $payloadUri.Query -or $payloadUri.Fragment -or
+        $config.hciVhdxSha256 -isnot [string] -or $config.hciVhdxSha256 -cnotmatch '\A[0-9a-fA-F]{64}\z') {
+        throw 'The Azure Local payload contract requires a public HTTPS URI and a pinned SHA256 digest.'
+    }
     $groupNames = @($config.controlResourceGroupName, $config.foundationResourceGroupName, $config.imageResourceGroupName, $config.stagingResourceGroupName)
     if (($groupNames | Sort-Object -Unique).Count -ne 4 -or
         @($groupNames | Where-Object { $_ -isnot [string] -or $_ -cnotmatch '^rg-avm-ci-azure-local-[a-z-]+$' }).Count -gt 0) {
@@ -387,6 +394,8 @@ function Start-HciEnvironmentPreparation {
         GalleryName               = $Context.Config.galleryName
         ImageDefinitionName       = $Context.Config.imageDefinitionName
         ImageVersion              = $Context.Config.imageVersion
+        HciVhdxDownloadUri         = $Context.Config.hciVhdxDownloadUri
+        HciVhdxSha256              = $Context.Config.hciVhdxSha256
         ImageTemplateName         = $Context.Config.imageTemplateName
         ImageBuilderIdentityName  = $Context.Config.imageBuilderIdentityName
         Tags                      = $Context.Tags

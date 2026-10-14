@@ -22,6 +22,15 @@ BuildLocation are always included, with case-insensitive region deduplication.
 An existing version must already have completed replication in these regions;
 otherwise the caller must wait for or repair replication before retrying.
 
+.PARAMETER HciVhdxDownloadUri
+HTTPS source of the VHDX payload. New builds verify its downloaded bytes against
+HciVhdxSha256 before publishing the image.
+
+.PARAMETER HciVhdxSha256
+Expected SHA256 from the payload publisher. The default is pinned from
+https://jumpstartprodsg.blob.core.windows.net/jslocal/localbox/prod/AzLocal2601.sha256.
+Supply the matching digest when overriding HciVhdxDownloadUri.
+
 .PARAMETER Operation
 Complete preserves synchronous behavior. Start returns a receipt after submission.
 Observe only reads that receipt's build and replicas, returning Running when its
@@ -76,7 +85,11 @@ param (
 
     [Parameter()]
     [ValidatePattern('^https://')]
-    [string] $HciVhdxDownloadUri = 'https://azlocalvhds.blob.core.windows.net/images/AzLocal2601.vhdx',
+    [string] $HciVhdxDownloadUri = 'https://jumpstartprodsg.blob.core.windows.net/jslocal/localbox/prod/AzLocal2601.vhdx',
+
+    [Parameter()]
+    [ValidatePattern('\A[0-9a-fA-F]{64}\z')]
+    [string] $HciVhdxSha256 = '3a797826d7e7ae7abc55d1071322ddecc80575c2356fea9e74818ab9f6720a1f',
 
     [Parameter()]
     [ValidateRange(1, 960)]
@@ -299,6 +312,7 @@ if ($Operation -eq 'Observe') {
         createResourceGroup   = $CreateResourceGroup
         galleryName           = $GalleryName
         hciVhdxDownloadUri    = $HciVhdxDownloadUri
+        hciVhdxSha256          = $HciVhdxSha256
         imageDefinitionName   = $ImageDefinitionName
         imageTemplateName     = $ImageTemplateName
         imageVersion          = $ImageVersion
