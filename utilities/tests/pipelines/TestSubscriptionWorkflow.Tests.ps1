@@ -54,6 +54,7 @@ Describe 'Test subscription workflow integration' {
         $cleanupPath = Join-Path $repoRootPath '.github' 'workflows' 'platform.deployment.history.cleanup.yml'
         $cleanupWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $cleanupPath -Raw)
         $hciPreparationWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' 'platform.hci.prepare.yml') -Raw)
+        $hciModuleWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' 'avm.template.hci.module.yml') -Raw)
         $psrulePath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModulePSRule' 'action.yml'
         $psrule = ConvertFrom-Yaml -Yaml (Get-Content -Path $psrulePath -Raw)
         $ast = [System.Management.Automation.Language.Parser]::ParseInput($psrule.runs.steps[0].with.inlineScript, [ref] $null, [ref] $null)
@@ -69,6 +70,7 @@ Describe 'Test subscription workflow integration' {
             'SUBSCRIPTION_SELECTION_SEED', 'SUBSCRIPTION_JOB_INDEX', 'SELECTED_SUBSCRIPTION_ID',
             'PRESELECTED_SUBSCRIPTION_INDEX', 'PRESELECTED_SUBSCRIPTION_KEY',
             'MODULE_PATH', 'MODULE_TEST_FILE_PATHS', 'DISPLAY_SUBSCRIPTION_NAMES',
+            'EXPECTED_SUBSCRIPTION_TAG',
             'TEST_SUBSCRIPTIONS', 'AVM_TEST_TENANT', 'SUBSCRIPTION_INDEX',
             'VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID', 'MANAGEMENT_GROUP_ID', 'CI_KEY_VAULT_NAME'
         )
@@ -112,6 +114,7 @@ Describe 'Test subscription workflow integration' {
                 -not [string]::IsNullOrEmpty($Context['vars.VALIDATE_SUBSCRIPTION_IDS']) -or
                 -not [string]::IsNullOrEmpty($Context['vars.TEST_SUBSCRIPTION_IDS'])
             )
+            $env:EXPECTED_SUBSCRIPTION_TAG = $step.with.expectedSubscriptionTag ?? $matrixAction.inputs.expectedSubscriptionTag.default
         }
 
         function Get-AzKeyVaultSecret {
@@ -151,6 +154,7 @@ Describe 'Test subscription workflow integration' {
         $env:MANAGEMENT_GROUP_ID = 'test-management-group'
         $env:SELECTED_SUBSCRIPTION_ID = $subscriptions[0].id
         $env:MODULE_PATH = 'avm/res/example/module'
+        $env:EXPECTED_SUBSCRIPTION_TAG = 'General'
         $env:MODULE_TEST_FILE_PATHS = '[{"path":"tests/e2e/defaults/main.test.bicep","name":"defaults","e2eIgnore":false},{"path":"tests/e2e/max/main.test.bicep","name":"max","e2eIgnore":false}]'
         $routingContext = @{
             'vars.VALIDATE_SUBSCRIPTION_IDS'       = $subscriptionJson
@@ -205,6 +209,8 @@ Describe 'Test subscription workflow integration' {
         $initializer.outputs.sharedScope | Should -Be '${{ steps.deployment-matrix.outputs.sharedScope }}'
         $initializer.ContainsKey('concurrency') | Should -BeFalse
         $initializationStep.uses | Should -Be './.github/actions/templates/avm-getModuleDeploymentMatrix'
+        $initializationStep.with.ContainsKey('expectedSubscriptionTag') | Should -BeFalse
+        $matrixAction.inputs.expectedSubscriptionTag.default | Should -Be 'General'
         $initializationStep.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
         $initializationStep.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}'
         $initializationStep.with.displaySubscriptionNames | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS != '''' || vars.TEST_SUBSCRIPTION_IDS != '''' }}'
@@ -247,7 +253,7 @@ Describe 'Test subscription workflow integration' {
         $selectionStep.env.PRESELECTED_SUBSCRIPTION_KEY | Should -Be '${{ inputs.subscriptionKey }}'
     }
 
-    It 'Keeps reserved and General selection consistent through matrix, login and PSRule in <workflowName>' -ForEach @(
+    It 'Rejects reserved deployment through <workflowName> while preserving dedicated selection and generic PSRule' -ForEach @(
         @{ workflowName = 'avm.template.module' }
         @{ workflowName = 'avm.template.module.preview' }
         @{ workflowName = 'avm.template.module.publish' }
@@ -266,6 +272,15 @@ Describe 'Test subscription workflow integration' {
             $env:MODULE_PATH = $module.path
             Set-TestInitializationEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
             Clear-Content -LiteralPath $env:GITHUB_OUTPUT
+            if ($module.indices -contains 1) {
+                { . ([scriptblock]::Create($matrixStep.run)) } |
+                    Should -Throw "*Use the module's dedicated workflow for deployment validation*"
+                (Get-StepOutput).Count | Should -Be 0
+                Set-TestInitializationEnvironment -Workflow $hciModuleWorkflow -Context $routingContext
+                $env:EXPECTED_SUBSCRIPTION_TAG | Should -Be 'Azure Local'
+            } else {
+                $env:EXPECTED_SUBSCRIPTION_TAG | Should -Be 'General'
+            }
             . ([scriptblock]::Create($matrixStep.run))
             $matrix = (Get-StepOutput).deploymentMatrix | ConvertFrom-Json -AsHashtable
             @($matrix.subscriptionIndex | Sort-Object -Unique) | Should -Be $module.indices
@@ -507,7 +522,7 @@ Describe 'Test subscription workflow integration' {
         foreach ($file in @(
                 'avm.template.module.yml', 'avm.template.module.preview.yml',
                 'avm.template.module.publish.yml', 'avm.template.module.deployment.yml',
-                'avm.template.hci.consumer.yml', 'avm.template.hci.prepare.yml',
+                'avm.template.hci.consumer.yml', 'avm.template.hci.prepare.yml', 'avm.template.hci.module.yml',
                 'platform.hci.prepare.yml', 'platform.deployment.history.cleanup.yml'
             )) {
             $source = Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' $file) -Raw
@@ -520,8 +535,8 @@ Describe 'Test subscription workflow integration' {
                 $groupBindings++
             }
         }
-        $poolBindings | Should -Be 21
-        $groupBindings | Should -Be 14
+        $poolBindings | Should -Be 24
+        $groupBindings | Should -Be 17
     }
 
     It 'Supports identifiers supplied only as secrets in <workflowName>' -ForEach @(
