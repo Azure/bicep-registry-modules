@@ -679,10 +679,16 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
                 startTime = [datetimeoffset]::UtcNow.ToString('o')
                 runState = 'Running'
             }
-            [pscustomobject] @{
-                StatusCode = 202
-                Content = '{}'
-                Headers = @{ 'Azure-AsyncOperation' = "https://management.azure.com/subscriptions/$($context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/$($context.Config.location)/operations/55555555-5555-5555-5555-555555555555?api-version=2025-10-01" }
+            $response = [System.Net.Http.HttpResponseMessage]::new()
+            try {
+                $response.Headers.Add('Azure-AsyncOperation', "https://management.azure.com/subscriptions/$($context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/$($context.Config.location)/operations/55555555-5555-5555-5555-555555555555?api-version=2025-10-01")
+                [pscustomobject] @{
+                    StatusCode = 202
+                    Content = '{}'
+                    Headers = $response.Headers
+                }
+            } finally {
+                $response.Dispose()
             }
         } -ParameterFilter { $Method -eq 'POST' }
 

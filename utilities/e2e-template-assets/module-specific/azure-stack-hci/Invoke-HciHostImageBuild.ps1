@@ -331,7 +331,11 @@ if ($Operation -eq 'Observe') {
     }
     if ($Operation -eq 'Start') {
         $operationUri = $null
-        $header = @($runResponse.Headers['Azure-AsyncOperation'])[0]
+        $headerValues = $null
+        $header = if ($runResponse.Headers -is [System.Net.Http.Headers.HttpResponseHeaders] -and
+            $runResponse.Headers.TryGetValues('Azure-AsyncOperation', [ref] $headerValues) -and @($headerValues).Count -eq 1) {
+            @($headerValues)[0]
+        }
         $expectedOperationPrefix = "/subscriptions/$SubscriptionId/providers/Microsoft.VirtualMachineImages/locations/$BuildLocation/operations/"
         if (-not [uri]::TryCreate([string] $header, [UriKind]::Absolute, [ref] $operationUri) -or
             $operationUri.Scheme -cne 'https' -or $operationUri.Authority -cne 'management.azure.com' -or
