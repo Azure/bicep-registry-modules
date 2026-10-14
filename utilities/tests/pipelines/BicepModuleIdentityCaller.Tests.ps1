@@ -141,12 +141,12 @@ Describe 'Generic module identity caller context' {
     It 'preserves pull-request selection without adding workflow-ref or base-branch gates' {
         @($workflow.on.pull_request.Keys) | Should -Be @('types')
         $workflow.on.pull_request.types | Should -Be @('labeled', 'synchronize')
-        foreach ($job in @('job_initialize_pipeline', 'call_module_preview', 'call_module_fork_static')) {
+        foreach ($job in @('job_initialize_pipeline', 'call_module_preview', 'call_module_preview_local', 'call_module_fork_static')) {
             $workflow.jobs[$job].if |
                 Should -Not -Match 'github\.(base_ref|event\.pull_request\.base\.ref|workflow_ref|job_workflow_ref)'
         }
         $workflow.jobs.call_module_preview.if |
-            Should -Be '${{ (github.event_name == ''push'' || (github.event_name == ''pull_request'' && github.event.pull_request.head.repo.full_name == github.repository)) && needs.job_initialize_pipeline.outputs.hasModules == ''true'' }}'
+            Should -Be '${{ (github.event_name == ''push'' || (github.event_name == ''pull_request'' && github.event.pull_request.head.repo.full_name == github.repository)) && needs.job_initialize_pipeline.outputs.hasSharedModules == ''true'' }}'
     }
 
     It 'checks out the event commit before resolving generic module roots' {
@@ -158,7 +158,9 @@ Describe 'Generic module identity caller context' {
 
     It 'forwards each matrix root to <Job> without choosing another client' -ForEach @(
         @{ Job = 'call_module_preview' }
+        @{ Job = 'call_module_preview_local' }
         @{ Job = 'call_module_publish' }
+        @{ Job = 'call_module_publish_local' }
     ) {
         $call = $workflow.jobs[$Job]
         $call.with.modulePath | Should -Be '${{ matrix.modulePath }}'

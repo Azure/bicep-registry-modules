@@ -30,7 +30,7 @@ Describe 'Generic module workflow' {
     }
 
     It 'does not hold deployment or publishing locks around reusable workflows and static checks' {
-        foreach ($jobName in @('call_module_preview', 'call_module_fork_static', 'call_module_publish', 'call_module_publish_only')) {
+        foreach ($jobName in @('call_module_preview', 'call_module_preview_local', 'call_module_fork_static', 'call_module_publish', 'call_module_publish_local', 'call_module_publish_only')) {
             $workflow.jobs[$jobName].ContainsKey('concurrency') | Should -BeFalse
             $workflow.jobs[$jobName].strategy.ContainsKey('max-parallel') | Should -BeFalse
             $workflow.jobs[$jobName].strategy.'fail-fast' | Should -BeFalse
@@ -50,11 +50,11 @@ Describe 'Generic module workflow' {
         @{ ignored = $false }
     ) {
         $steps = $deploymentWorkflow.jobs.job_module_deploy_validation.steps
-        $steps.Count | Should -Be 4
+        $steps.Count | Should -Be 5
         $steps[0].name | Should -Be 'Report skipped deployment'
         $steps[0].if | Should -Be '${{ fromJson(inputs.testCase).e2eIgnore }}'
         $steps[0].env.TEMPLATE_FILE_PATH | Should -Be '${{ inputs.modulePath }}/${{ fromJson(inputs.testCase).path }}'
-        foreach ($step in $steps[1..3]) {
+        foreach ($step in $steps[1..4]) {
             $step.if | Should -Be '${{ !fromJson(inputs.testCase).e2eIgnore }}'
         }
 
@@ -72,10 +72,11 @@ Describe 'Generic module workflow' {
             $selectedSteps[0].shell | Should -Be 'pwsh'
             $selectedSteps[0].ContainsKey('uses') | Should -BeFalse
         } else {
-            $selectedSteps.Count | Should -Be 3
+            $selectedSteps.Count | Should -Be 4
             $selectedSteps[0].uses | Should -Match '^actions/checkout@'
             $selectedSteps[1].uses | Should -Be './.github/actions/templates/avm-setEnvironment'
-            $selectedSteps[2].uses | Should -Be './.github/actions/templates/avm-validateModuleDeployment'
+            $selectedSteps[2].uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/actions/bicep-module-identity@[0-9a-f]{40}$'
+            $selectedSteps[3].uses | Should -Be './.github/actions/templates/avm-validateModuleDeployment'
         }
     }
 
@@ -196,6 +197,7 @@ Describe 'Generic module workflow' {
 
     It 'keeps automatic preview permissions read-only' {
         $workflow.jobs.call_module_preview.permissions.contents | Should -Be 'read'
+        $workflow.jobs.call_module_preview_local.permissions.contents | Should -Be 'read'
         $workflow.jobs.call_module_fork_static.permissions.contents | Should -Be 'read'
         $previewWorkflow.jobs.Values.permissions.contents | Should -Not -Contain 'write'
         $staticWorkflow.jobs.Values.permissions.contents | Should -Not -Contain 'write'
@@ -249,7 +251,7 @@ Describe 'Generic module workflow' {
         $matrixStep.with.eventName | Should -Be '${{ github.event_name }}'
         $matrixStep.with.modulePaths | Should -Be '${{ inputs.modulePaths }}'
         $workflow.jobs.call_module_preview.if | Should -Match "github.event_name == 'push'"
-        foreach ($jobName in @('call_module_publish', 'call_module_publish_only')) {
+        foreach ($jobName in @('call_module_publish', 'call_module_publish_local', 'call_module_publish_only')) {
             $workflow.jobs[$jobName].if | Should -Match "github.event_name == 'workflow_dispatch'"
         }
     }

@@ -22,6 +22,7 @@ BeforeDiscovery {
 Describe 'Pinned tools workflow callers' {
     BeforeAll {
         $toolsRepository = 'Azure/azure-verified-modules-tools'
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionTag.ps1')
         $referenceWorkflow = ConvertFrom-Yaml -Yaml (
             Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' 'avm.res.network.route-table.yml') -Raw
         )
@@ -41,9 +42,15 @@ Describe 'Pinned tools workflow callers' {
             $steps = $Workflow.jobs.job_initialize_pipeline.steps
             $checkout = @($steps | Where-Object { $_.uses -like 'actions/checkout@*' })
             $matrix = @($steps | Where-Object { $_.id -eq 'get-module-matrix' })
-            $steps.Count | Should -Be 2
+            $partition = @($steps | Where-Object { $_.id -eq 'partition-module-matrix' })
+            $steps.Count | Should -Be 3
             $checkout.Count | Should -Be 1
             $matrix.Count | Should -Be 1
+            $partition.Count | Should -Be 1
+            $steps[2].id | Should -Be 'partition-module-matrix'
+            $partition[0].shell | Should -Be 'pwsh'
+            $partition[0].env.MODULE_MATRIX | Should -Be '${{ steps.get-module-matrix.outputs.moduleMatrix }}'
+            $partition[0].ContainsKey('uses') | Should -BeFalse
             $checkout[0].with.ref | Should -Be '${{ github.sha }}'
             $checkout[0].with.ref | Should -Be $matrix[0].with.targetCommit
             $matrix[0].with.baseCommit | Should -Be '${{ github.event.before }}'
@@ -54,6 +61,7 @@ Describe 'Pinned tools workflow callers' {
         function Assert-ModuleCaller {
             param([hashtable] $Workflow)
 
+            $local = (Get-TestSubscriptionTag -ModulePath $Workflow.env.modulePath -RepoRootPath $repoRootPath) -cne 'General'
             @($Workflow.jobs.Keys | Sort-Object) | Should -Be @('call-workflow-passing-data', 'job_initialize_pipeline')
             $initialize = $Workflow.jobs.job_initialize_pipeline
             $initialize.if | Should -Be '${{ !cancelled() && !(github.repository != ''Azure/bicep-registry-modules'' && github.event_name != ''workflow_dispatch'') }}'
@@ -61,11 +69,11 @@ Describe 'Pinned tools workflow callers' {
             @($initialize.steps | Where-Object { $_.ContainsKey('run') }).Count | Should -Be 0
 
             $inputStep = $initialize.steps | Where-Object { $_.id -eq 'get-workflow-param' }
-            $inputStep.uses | Should -Be "$toolsRepository/.github/actions/bicep-workflow-input@$toolsRef"
+            $inputStep.uses | Should -Be ($local ? './.github/actions/templates/avm-getWorkflowInput' : "$toolsRepository/.github/actions/bicep-workflow-input@$toolsRef")
             ($inputStep.with.workflowPath -replace '\s', '') | Should -Be '${{env.workflowPath}}'
 
             $testStep = $initialize.steps | Where-Object { $_.id -eq 'get-module-test-file-paths' }
-            $testStep.uses | Should -Be "$toolsRepository/.github/actions/bicep-module-test-files@$toolsRef"
+            $testStep.uses | Should -Be ($local ? './.github/actions/templates/avm-getModuleTestFiles' : "$toolsRepository/.github/actions/bicep-module-test-files@$toolsRef")
             ($testStep.with.modulePath -replace '\s', '') | Should -Be '${{env.modulePath}}'
 
             $outputs = @{
@@ -82,24 +90,28 @@ Describe 'Pinned tools workflow callers' {
             $caller = $Workflow.jobs.'call-workflow-passing-data'
             $caller.name | Should -Be 'Run'
             @($caller.needs) | Should -Be @('job_initialize_pipeline')
-            $caller.uses | Should -Be "$toolsRepository/.github/workflows/bicep-module.yml@$toolsRef"
-            $caller.with.'tools-ref' | Should -Be $toolsRef
-            $caller.with.'avm-authoring-version' | Should -Be $authoringVersion
+            $caller.uses | Should -Be ($local ? './.github/workflows/avm.template.module.yml' : "$toolsRepository/.github/workflows/bicep-module.yml@$toolsRef")
+            $expectedInputs = @('modulePath', 'moduleTestFilePaths', 'psRuleModuleTestFilePaths', 'workflowInput')
+            if ($local) {
+                $caller.with.ContainsKey('tools-ref') | Should -BeFalse
+                $caller.with.ContainsKey('avm-authoring-version') | Should -BeFalse
+            } else {
+                $caller.with.'tools-ref' | Should -Be $toolsRef
+                $caller.with.'avm-authoring-version' | Should -Be $authoringVersion
+                $expectedInputs += @('avm-authoring-version', 'tools-ref')
+            }
             $caller.permissions.Count | Should -Be 2
             $caller.permissions.contents | Should -Be 'write'
             $caller.permissions.'id-token' | Should -Be 'write'
             $caller.secrets | Should -Be 'inherit'
-            @($caller.with.Keys | Sort-Object) | Should -Be @(
-                'avm-authoring-version', 'modulePath', 'moduleTestFilePaths',
-                'psRuleModuleTestFilePaths', 'tools-ref', 'workflowInput'
-            )
+            @($caller.with.Keys | Sort-Object) | Should -Be @($expectedInputs | Sort-Object)
             foreach ($name in @('workflowInput', 'moduleTestFilePaths', 'psRuleModuleTestFilePaths', 'modulePath')) {
                 ($caller.with[$name] -replace '\s', '') | Should -Be ('${{needs.job_initialize_pipeline.outputs.' + $name + '}}')
             }
         }
     }
 
-    It 'preserves the initializer boundary and pins all remote uses in <WorkflowFileName>' -ForEach $moduleWorkflows {
+    It 'preserves the initializer boundary and required local or pinned route in <WorkflowFileName>' -ForEach $moduleWorkflows {
         Assert-ModuleCaller -Workflow $Workflow
     }
 
@@ -188,6 +200,9 @@ Describe 'Pinned tools workflow callers' {
         foreach ($name in @('baseCommit', 'hasModules', 'includeAllVersionedModules', 'moduleMatrix', 'targetCommit', 'workflowInput')) {
             $initialize.outputs[$name] | Should -Be ('${{ steps.get-module-matrix.outputs.' + $name + ' }}')
         }
+        foreach ($name in @('sharedModuleMatrix', 'localModuleMatrix', 'hasSharedModules', 'hasLocalModules')) {
+            $initialize.outputs[$name] | Should -Be ('${{ steps.partition-module-matrix.outputs.' + $name + ' }}')
+        }
     }
 
     It 'rejects <Name> in generic selection' -ForEach @(
@@ -237,6 +252,14 @@ Describe 'Pinned tools workflow callers' {
                 param($workflow)
                 $matrix = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.id -eq 'get-module-matrix' }
                 $matrix.run = 'Get-ModuleWorkflowMatrix'
+            }
+        }
+        @{
+            Name   = 'partitioning a matrix that bypasses tools selection'
+            Mutate = {
+                param($workflow)
+                $partition = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.id -eq 'partition-module-matrix' }
+                $partition.env.MODULE_MATRIX = '${{ inputs.modulePaths }}'
             }
         }
     ) {

@@ -4,6 +4,33 @@
 )
 
 Describe 'Coordinated tools dependency updates' {
+    It 'keeps every tools workflow, action and support ref on one immutable commit without a package fallback' {
+        $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
+        $reference = Get-Content -LiteralPath (Join-Path $workflowRoot 'avm.res.network.route-table.yml') -Raw | ConvertFrom-Yaml
+        $toolsRef = $reference.jobs.'call-workflow-passing-data'.with.'tools-ref'
+        $toolsRef | Should -MatchExactly '^[0-9a-f]{40}$'
+        $remoteCount = 0
+        foreach ($file in Get-ChildItem -LiteralPath $workflowRoot -File -Filter '*.yml') {
+            $workflow = Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Yaml
+            foreach ($job in $workflow.jobs.Values) {
+                foreach ($node in @($job) + @($job.steps | Where-Object { $null -ne $_ })) {
+                    if ($node.uses -like 'Azure/azure-verified-modules-tools/*') {
+                        $node.uses | Should -MatchExactly '^Azure/azure-verified-modules-tools/[^@]+@[0-9a-f]{40}$'
+                        ($node.uses -split '@')[-1] | Should -BeExactly $toolsRef
+                        $remoteCount++
+                    }
+                    if ($node.with -and $node.with.ContainsKey('tools-ref')) {
+                        $node.with.'tools-ref' | Should -BeExactly $toolsRef
+                    }
+                    if ($node.with -and $node.with.ContainsKey('avm-authoring-version')) {
+                        $node.with.'avm-authoring-version' | Should -Be '${{ vars.AVM_AUTHORING_VERSION }}'
+                    }
+                }
+            }
+        }
+        $remoteCount | Should -BeGreaterThan 0
+    }
+
     It 'prevents automatic uses-only changes from diverging from tools-ref inputs' {
         $configuration = ConvertFrom-Yaml -Yaml (
             Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'dependabot.yml') -Raw

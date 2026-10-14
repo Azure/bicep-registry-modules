@@ -73,7 +73,7 @@ jobs:
           ref: "${{ github.sha }}"
       - name: "Get module matrix"
         id: get-module-matrix
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-workflow-matrix@2f5fa861a543179f4b310a36b7bca7b99d7297a2
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-workflow-matrix@15751a03bf8a63d4cbb3533f07bceb03047f7ea8
         with:
           avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
           baseCommit: "${{ github.event.before }}"
@@ -87,6 +87,43 @@ jobs:
           staticValidation: "${{ case(github.event_name == 'workflow_dispatch', inputs.staticValidation, true) }}"
           deploymentValidation: "${{ case(github.event_name == 'workflow_dispatch', inputs.deploymentValidation, github.event_name != 'pull_request' || (contains(github.event.pull_request.labels.*.name, 'PR: Run Checks') && contains(github.event.pull_request.labels.*.name, 'PR: Run E2E Tests'))) }}"
           removeDeployment: "${{ case(github.event_name == 'workflow_dispatch', inputs.removeDeployment, true) }}"
+      - name: "Partition selected module routes"
+        id: partition-module-matrix
+        shell: pwsh
+        env:
+          MODULE_MATRIX: ${{ steps.get-module-matrix.outputs.moduleMatrix }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionTag.ps1')
+
+          $matrix = ConvertFrom-Json -InputObject $env:MODULE_MATRIX -AsHashtable -NoEnumerate -Depth 100
+          if ($matrix -isnot [System.Collections.IDictionary] -or $matrix.psbase.Count -ne 1 -or
+              $matrix.psbase.Keys -cnotcontains 'include' -or $matrix['include'] -isnot [array]) {
+            throw 'The selected module matrix must contain exactly one include array.'
+          }
+          $shared = [System.Collections.Generic.List[object]]::new()
+          $local = [System.Collections.Generic.List[object]]::new()
+          foreach ($entry in $matrix['include']) {
+            if ($entry -isnot [System.Collections.IDictionary] -or
+                $entry.psbase.Keys -cnotcontains 'modulePath' -or $entry['modulePath'] -isnot [string]) {
+              throw 'Each selected module matrix entry must contain a modulePath string.'
+            }
+            $tag = Get-TestSubscriptionTag -ModulePath $entry['modulePath'] -RepoRootPath $env:GITHUB_WORKSPACE
+            if ($tag -ceq 'General') {
+              $shared.Add($entry)
+            } else {
+              $local.Add($entry)
+            }
+          }
+          $outputs = [ordered]@{
+            sharedModuleMatrix = ConvertTo-Json -InputObject @{ include = $shared.ToArray() } -Depth 100 -Compress -WarningAction Stop
+            localModuleMatrix = ConvertTo-Json -InputObject @{ include = $local.ToArray() } -Depth 100 -Compress -WarningAction Stop
+            hasSharedModules = ($shared.Count -gt 0).ToString().ToLowerInvariant()
+            hasLocalModules = ($local.Count -gt 0).ToString().ToLowerInvariant()
+          }
+          foreach ($output in $outputs.GetEnumerator()) {
+            "$($output.Key)=$($output.Value)" >> $env:GITHUB_OUTPUT
+          }
     outputs:
       baseCommit: ${{ steps.get-module-matrix.outputs.baseCommit }}
       hasModules: ${{ steps.get-module-matrix.outputs.hasModules }}
@@ -94,22 +131,48 @@ jobs:
       moduleMatrix: ${{ steps.get-module-matrix.outputs.moduleMatrix }}
       targetCommit: ${{ steps.get-module-matrix.outputs.targetCommit }}
       workflowInput: ${{ steps.get-module-matrix.outputs.workflowInput }}
+      sharedModuleMatrix: ${{ steps.partition-module-matrix.outputs.sharedModuleMatrix }}
+      localModuleMatrix: ${{ steps.partition-module-matrix.outputs.localModuleMatrix }}
+      hasSharedModules: ${{ steps.partition-module-matrix.outputs.hasSharedModules }}
+      hasLocalModules: ${{ steps.partition-module-matrix.outputs.hasLocalModules }}
 
   call_module_preview:
     name: "Check [${{ matrix.modulePath }}]"
-    if: ${{ (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)) && needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
+    if: ${{ (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)) && needs.job_initialize_pipeline.outputs.hasSharedModules == 'true' }}
     needs:
       - job_initialize_pipeline
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
+      matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasSharedModules == 'true', needs.job_initialize_pipeline.outputs.sharedModuleMatrix, '{"include":[]}')) }}
     permissions:
       contents: read
       id-token: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-preview.yml@2f5fa861a543179f4b310a36b7bca7b99d7297a2
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-preview.yml@15751a03bf8a63d4cbb3533f07bceb03047f7ea8
     with:
-      tools-ref: 2f5fa861a543179f4b310a36b7bca7b99d7297a2
+      tools-ref: 15751a03bf8a63d4cbb3533f07bceb03047f7ea8
       avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
+      workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
+      modulePath: "${{ matrix.modulePath }}"
+      moduleTestFilePaths: "${{ matrix.moduleTestFilePaths }}"
+      psRuleModuleTestFilePaths: "${{ matrix.psRuleModuleTestFilePaths }}"
+      baseCommit: "${{ needs.job_initialize_pipeline.outputs.baseCommit }}"
+      targetCommit: "${{ needs.job_initialize_pipeline.outputs.targetCommit }}"
+      includeAllVersionedModules: ${{ needs.job_initialize_pipeline.outputs.includeAllVersionedModules == 'true' }}
+    secrets: inherit
+
+  call_module_preview_local:
+    name: "Check [${{ matrix.modulePath }}] (local)"
+    if: ${{ (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)) && needs.job_initialize_pipeline.outputs.hasLocalModules == 'true' }}
+    needs:
+      - job_initialize_pipeline
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasLocalModules == 'true', needs.job_initialize_pipeline.outputs.localModuleMatrix, '{"include":[]}')) }}
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/avm.template.module.preview.yml
+    with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       modulePath: "${{ matrix.modulePath }}"
       moduleTestFilePaths: "${{ matrix.moduleTestFilePaths }}"
@@ -129,27 +192,51 @@ jobs:
       matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
     permissions:
       contents: read
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-static.yml@2f5fa861a543179f4b310a36b7bca7b99d7297a2
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-static.yml@15751a03bf8a63d4cbb3533f07bceb03047f7ea8
     with:
-      tools-ref: 2f5fa861a543179f4b310a36b7bca7b99d7297a2
+      tools-ref: 15751a03bf8a63d4cbb3533f07bceb03047f7ea8
       avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
       modulePath: "${{ matrix.modulePath }}"
 
   call_module_publish:
     name: "Check and publish [${{ matrix.modulePath }}]"
-    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.publishOnly && needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.publishOnly && needs.job_initialize_pipeline.outputs.hasSharedModules == 'true' }}
     needs:
       - job_initialize_pipeline
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
+      matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasSharedModules == 'true', needs.job_initialize_pipeline.outputs.sharedModuleMatrix, '{"include":[]}')) }}
     permissions:
       contents: write
       id-token: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish.yml@2f5fa861a543179f4b310a36b7bca7b99d7297a2
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish.yml@15751a03bf8a63d4cbb3533f07bceb03047f7ea8
     with:
-      tools-ref: 2f5fa861a543179f4b310a36b7bca7b99d7297a2
+      tools-ref: 15751a03bf8a63d4cbb3533f07bceb03047f7ea8
       avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
+      workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
+      modulePath: "${{ matrix.modulePath }}"
+      moduleTestFilePaths: "${{ matrix.moduleTestFilePaths }}"
+      psRuleModuleTestFilePaths: "${{ matrix.psRuleModuleTestFilePaths }}"
+      baseCommit: "${{ needs.job_initialize_pipeline.outputs.baseCommit }}"
+      targetCommit: "${{ needs.job_initialize_pipeline.outputs.targetCommit }}"
+      forcePublish: ${{ inputs.createReleaseTag }}
+      publishReleaseTag: ${{ inputs.createReleaseTag }}
+      requirePublishApproval: ${{ inputs.createReleaseTag }}
+    secrets: inherit
+
+  call_module_publish_local:
+    name: "Check and publish [${{ matrix.modulePath }}] (local)"
+    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.publishOnly && needs.job_initialize_pipeline.outputs.hasLocalModules == 'true' }}
+    needs:
+      - job_initialize_pipeline
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasLocalModules == 'true', needs.job_initialize_pipeline.outputs.localModuleMatrix, '{"include":[]}')) }}
+    permissions:
+      contents: write
+      id-token: write
+    uses: ./.github/workflows/avm.template.module.publish.yml
+    with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       modulePath: "${{ matrix.modulePath }}"
       moduleTestFilePaths: "${{ matrix.moduleTestFilePaths }}"
@@ -171,9 +258,9 @@ jobs:
       matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
     permissions:
       contents: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish-only.yml@2f5fa861a543179f4b310a36b7bca7b99d7297a2
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish-only.yml@15751a03bf8a63d4cbb3533f07bceb03047f7ea8
     with:
-      tools-ref: 2f5fa861a543179f4b310a36b7bca7b99d7297a2
+      tools-ref: 15751a03bf8a63d4cbb3533f07bceb03047f7ea8
       avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
       modulePath: "${{ matrix.modulePath }}"
       baseCommit: "${{ needs.job_initialize_pipeline.outputs.baseCommit }}"

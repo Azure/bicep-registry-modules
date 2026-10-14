@@ -1,6 +1,6 @@
 # Bicep Module Workflows
 
-Module-specific workflows and [`avm.module.yml`](./avm.module.yml) are registry-owned callers that pin shared workflows and actions in [Azure/azure-verified-modules-tools](https://github.com/Azure/azure-verified-modules-tools), with common validation supplied by a qualified `Avm.Authoring` release. Draft caller changes do not authorize execution or retire the retained local implementation. Complete the cutover prerequisites below before merging or enabling the new route.
+Module-specific workflows and [`avm.module.yml`](./avm.module.yml) are registry-owned callers. General module validation pins shared workflows and actions in [Azure/azure-verified-modules-tools](https://github.com/Azure/azure-verified-modules-tools), with common validation supplied by a qualified `Avm.Authoring` release. Reserved module validation retains the local compatibility workflows described below. Draft caller changes do not authorize execution or retire the retained local implementation. Complete the cutover prerequisites before merging or enabling the new route.
 
 | Tools workflow                  | Purpose                                                                                                                  |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -24,13 +24,13 @@ Each module workflow includes its own file in its main-branch push filter. Mergi
 
 Tools revision updates must change all `uses` pins and `tools-ref` inputs together and use a compatible qualified `Avm.Authoring` release. Rerun the caller regression tests and obtain separate approval for the rollout. Dependabot updates `uses` declarations but not the matching inputs, so these tools dependencies use coordinated manual upgrades. Other action updates remain enabled.
 
-The tools commit supplies orchestration and support code; it does not select or install its own native source as the runtime package. All callers forward `vars.AVM_AUTHORING_VERSION`, which must identify the separately qualified PowerShell Gallery release. A published tools revision or an open runtime change does not establish package readiness.
+The tools commit supplies orchestration and support code; it does not select or install its own native source as the runtime package. All shared-workflow callers and the generic selection action forward `vars.AVM_AUTHORING_VERSION`, which must identify the separately qualified PowerShell Gallery release. The retained local workflows keep their existing tooling setup; they do not load native source from the tools checkout. A published tools revision or an open runtime change does not establish package readiness.
 
 The release must also provide `BicepRequiredResourceProviders = 1` for deployment and `PowerShellModuleArchiveRecovery = 1` for policy validation. These package-capability checks are additional requirements, not evidence that a release has been selected or qualified.
 
 ## Module identities
 
-Tools deployment workflows select the client from `vars.VALIDATE_MODULE_CLIENT_IDS`, a flat JSON object mapping canonical root module paths to unique, nonzero client GUIDs. Child paths resolve through the existing canonical-root rules and use their root's entry. Missing, malformed or invalid mappings must fail before login; there is no fallback to `VALIDATE_CLIENT_ID` or `AZURE_CREDENTIALS`. Caller workflows do not need an additional identity input or their own mapping parser.
+Tools deployment workflows and retained module-validation workflows select the client from `vars.VALIDATE_MODULE_CLIENT_IDS`, a flat JSON object mapping canonical root module paths to unique, nonzero client GUIDs. Child paths resolve through the existing canonical-root rules and use their root's entry. Missing, malformed or invalid mappings must fail before login; there is no fallback to `VALIDATE_CLIENT_ID` or `AZURE_CREDENTIALS`. Caller workflows do not need an additional identity input or their own mapping parser.
 
 `VALIDATE_TENANT_ID` and `VALIDATE_SUBSCRIPTION_IDS` remain separate settings. The tools workflow enables both Azure CLI and PowerShell login contexts and explicitly supplies the pool to workflow selection, then passes the selected `SubscriptionId` and `TenantId` to native execution. `UseCiInputs` does not read the plural pool implicitly. The selected client, tenant and subscription remain consistent through deployment, retries and final cleanup.
 
@@ -56,7 +56,13 @@ Azure Local consumers retain a separate environment lock, `avm-hci-<subscription
 
 The shared lifecycle supplies runner-local `parameterOverrides` and `protectedResourceIds` through the neutral deployment-data contract. Overrides use the existing ARM parameter conversions and take precedence over CI inputs. Protected IDs apply to intermediate retry cleanup and final teardown. Opt-in complete final cleanup requires authoritative attempt, remaining-deployment, preflight-rejection and pending-deletion tracking; only confirmed teardown can release the prepared environment. Successful terminal roots are eligible for final teardown, not failed-attempt retry relocation. Ordinary best-effort cleanup must not claim complete confirmation.
 
-Retaining these local workflows is not evidence that the pinned tools route supports reserved execution. Reserved module-specific and generic selections need an explicitly qualified compatibility route before cutover. That route must also use the authoritative module-identity resolver before authentication and keep its selected client and tenant through login, renewal, recovery and fixture release. The legacy `VALIDATE_CLIENT_ID` configuration in the retained implementation is not an allowed migration fallback. A source merge or passing caller tests does not establish this authentication adaptation, identity permissions, a compatible package release or live environment readiness.
+The seven currently reserved module-specific callers retain their main-branch local initializer actions and `avm.template.module.yml` entry point. Generic selection partitions the selected matrix using the existing reservation resolver: exact `General` entries use shared workflows, and every other tag uses local preview or manual-validation workflows. The original full matrix remains available for secret-free fork validation and publish-only operation. Partitioning does not change dispatch defaults, overrides, release approvals or pull-request opt-ins.
+
+Both local deployment branches invoke the pinned `bicep-module-identity` action before authentication. This includes non-General tags other than `Azure Local`, which use the ordinary local deployment job rather than the prepared-environment consumer. Every reachable local route must use validated mapping outputs or fail before login. The legacy-named internal `VALIDATE_CLIENT_ID` environment slot receives only the selected action output; it is not read from legacy configuration. Initial login, renewal, retries, cleanup and fixture release retain the selected client, tenant and locked subscription.
+
+Dedicated Azure Local preparation resolves the existing `avm/res/azure-stack-hci/logical-network` selector; reserved history maintenance resolves the existing `avm/res/azure-stack-hci/cluster` selector. Preparation binds later stages to the initial identity digest and fails before authentication if that binding changes or is unavailable. These are authentication-only adaptations: preparation, ownership, operation recovery, cleanup and release logic remain local and unchanged. Unrelated ordinary and management-group history maintenance remain outside the module-routing migration.
+
+Retaining these workflows is not evidence that the shared native route supports prepared-environment execution. The identity action uses pinned orchestration support without a native package dependency; it does not install a release or apply credentials. Passing source tests does not establish identity permissions, a compatible package release, effective runtime configuration or live environment readiness. Verify these separately before cutover.
 
 ## Retained compatibility entry points
 
@@ -64,9 +70,9 @@ The following consumers prevent wholesale removal of registry utilities:
 
 | Entry point                                                | Remaining consumers                                                                                                                     |
 | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `avm.template.module*.yml` local workflows                 | Retained deployment/publication regression coverage; their removal remains gated on qualified replacements and rollout approval.        |
+| `avm.template.module*.yml` local workflows                 | Reserved module-specific and generic validation, plus deployment/publication regression coverage; retirement still requires qualified replacements. |
 | `avm.template.hci*.yml` and Azure Local lifecycle helpers   | Reserved test consumers, dedicated manual preparation and coordinated history maintenance; preserve lifecycle and lock semantics.       |
-| `avm-getWorkflowInput` local action                        | `platform.check.psrule.yml`, `platform.ci-tests.yml`, `platform.deployment.history.cleanup.yml`, `platform.rerun-failed-workflows.yml`. |
+| `avm-getWorkflowInput` local action                        | Reserved module-specific callers, `platform.check.psrule.yml`, `platform.ci-tests.yml`, `platform.deployment.history.cleanup.yml`, `platform.rerun-failed-workflows.yml`. |
 | `avm-setEnvironment` local action                          | `platform.check.psrule.yml`, `platform.ci-tests.yml`, `platform.deployment.history.cleanup.yml`, `copilot-setup-steps.yml`.             |
 | `utilities/pipelines/staticValidation`                     | Local module validation, the standalone metadata gate, platform PSRule checks and their regression tests.                               |
 | `utilities/pipelines/sharedScripts`                        | Module generation, metadata module selection, platform setup and local tools.                                                           |
@@ -98,6 +104,8 @@ Pushes to `main` that change files under `avm/`, excluding module `README.md` an
 Automatic runs cannot create tags. The preview path has read-only repository permissions and invokes the release logic with `WhatIf`.
 
 The generic workflow runs alongside module-specific workflows during its initial validation period. Generic deployments retain the `gci` name prefix. Deployment locks are shared with module-specific workflows for the same module and selected subscription, with an additional module-wide lock for shared scopes.
+
+The initializer retains its original selection outputs and adds disjoint shared/local matrices with explicit nonempty flags. Separate jobs consume those matrices without referencing a matrix value in a job-level condition. Mixed requests run each selected module once; an empty selection stays empty, and malformed selection or reservation data cannot silently fall back to shared execution.
 
 Pull-request checks require `PR: Run Checks`. Deployment validation additionally requires `PR: Run E2E Tests` and an internal branch. Fork contributions use only the secret-free static workflow.
 
@@ -146,4 +154,4 @@ The entry workflow references these separate tools workflows to preserve the exi
 
 These workflows are intentionally separate because GitHub validates permissions for every job in a reusable workflow, including jobs that would be skipped.
 
-Module-specific callers reference `bicep-module.yml` with their existing dispatch defaults, upstream/manual guards and main-only push filters. The SQL instance-pool cleanup default and the current FinOps hub location input are preserved.
+General module-specific callers reference `bicep-module.yml`; reserved callers retain `avm.template.module.yml`. Both preserve existing dispatch defaults, upstream/manual guards and main-only push filters. The SQL instance-pool cleanup default and the current FinOps hub location input are preserved.

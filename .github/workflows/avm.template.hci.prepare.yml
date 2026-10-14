@@ -21,6 +21,9 @@ jobs:
     timeout-minutes: 330
     env:
       HCI_STAGE: Begin
+      INITIAL_IDENTITY_KEY: ""
+    outputs:
+      identityKey: ${{ steps.module-identity.outputs.identityKey }}
     steps: &preparation-steps
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -47,11 +50,28 @@ jobs:
             -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -SubscriptionIndex $testCase.subscriptionIndex `
             -SubscriptionKey $testCase.subscriptionKey -RepoRootPath $env:GITHUB_WORKSPACE
           "subscriptionId=$($subscription.id)" >> $env:GITHUB_OUTPUT
+      - name: "Resolve mapped module identity"
+        id: module-identity
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-module-identity@15751a03bf8a63d4cbb3533f07bceb03047f7ea8
+        with:
+          modulePath: avm/res/azure-stack-hci/logical-network
+          moduleClientIds: ${{ vars.VALIDATE_MODULE_CLIENT_IDS }}
+          tenantId: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+      - name: "Keep the initial preparation identity"
+        shell: pwsh
+        env:
+          CURRENT_IDENTITY_KEY: ${{ steps.module-identity.outputs.identityKey }}
+        run: |
+          if ($env:HCI_STAGE -cne 'Begin' -and
+              ([string]::IsNullOrEmpty($env:INITIAL_IDENTITY_KEY) -or
+               $env:INITIAL_IDENTITY_KEY -cne $env:CURRENT_IDENTITY_KEY)) {
+            throw 'The mapped preparation identity changed or its original binding is unavailable.'
+          }
       - name: "Log in to the reserved subscription"
         uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
         with:
-          client-id: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
-          tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          client-id: ${{ steps.module-identity.outputs.clientId }}
+          tenant-id: ${{ steps.module-identity.outputs.tenantId }}
           subscription-id: ${{ steps.subscription.outputs.subscriptionId }}
           enable-AzPSSession: true
       - name: "Advance the recorded preparation operation"
@@ -61,7 +81,7 @@ jobs:
           HCI_RECREATE: ${{ inputs.recreate && env.HCI_STAGE == 'Begin' }}
           HCI_RUN_IDENTITY: ${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}
           TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
-          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          VALIDATE_TENANT_ID: ${{ steps.module-identity.outputs.tenantId }}
           CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
           AVM_CI_VARIABLES: ${{ toJSON(vars) }}
           AVM_CI_SECRETS: ${{ toJSON(secrets) }}
@@ -91,67 +111,75 @@ jobs:
     timeout-minutes: 330
     env:
       HCI_STAGE: ImageObserve
+      INITIAL_IDENTITY_KEY: ${{ needs.job_begin.outputs.identityKey }}
     steps: *preparation-steps
 
   job_image_wait_2:
-    needs: job_image_wait_1
+    needs: [job_begin, job_image_wait_1]
     environment: avm-validation
     runs-on: ubuntu-latest
     timeout-minutes: 330
     env:
       HCI_STAGE: ImageObserve
+      INITIAL_IDENTITY_KEY: ${{ needs.job_begin.outputs.identityKey }}
     steps: *preparation-steps
 
   job_image_wait_3:
-    needs: job_image_wait_2
+    needs: [job_begin, job_image_wait_2]
     environment: avm-validation
     runs-on: ubuntu-latest
     timeout-minutes: 330
     env:
       HCI_STAGE: ImageObserve
+      INITIAL_IDENTITY_KEY: ${{ needs.job_begin.outputs.identityKey }}
     steps: *preparation-steps
 
   job_foundation_start:
-    needs: job_image_wait_3
+    needs: [job_begin, job_image_wait_3]
     environment: avm-validation
     runs-on: ubuntu-latest
     timeout-minutes: 330
     env:
       HCI_STAGE: FoundationStart
+      INITIAL_IDENTITY_KEY: ${{ needs.job_begin.outputs.identityKey }}
     steps: *preparation-steps
 
   job_foundation_wait_1:
-    needs: job_foundation_start
+    needs: [job_begin, job_foundation_start]
     environment: avm-validation
     runs-on: ubuntu-latest
     timeout-minutes: 330
     env:
       HCI_STAGE: FoundationObserve
+      INITIAL_IDENTITY_KEY: ${{ needs.job_begin.outputs.identityKey }}
     steps: *preparation-steps
 
   job_foundation_wait_2:
-    needs: job_foundation_wait_1
+    needs: [job_begin, job_foundation_wait_1]
     environment: avm-validation
     runs-on: ubuntu-latest
     timeout-minutes: 330
     env:
       HCI_STAGE: FoundationObserve
+      INITIAL_IDENTITY_KEY: ${{ needs.job_begin.outputs.identityKey }}
     steps: *preparation-steps
 
   job_foundation_wait_3:
-    needs: job_foundation_wait_2
+    needs: [job_begin, job_foundation_wait_2]
     environment: avm-validation
     runs-on: ubuntu-latest
     timeout-minutes: 330
     env:
       HCI_STAGE: FoundationObserve
+      INITIAL_IDENTITY_KEY: ${{ needs.job_begin.outputs.identityKey }}
     steps: *preparation-steps
 
   job_ready:
-    needs: job_foundation_wait_3
+    needs: [job_begin, job_foundation_wait_3]
     environment: avm-validation
     runs-on: ubuntu-latest
     timeout-minutes: 330
     env:
       HCI_STAGE: Ready
+      INITIAL_IDENTITY_KEY: ${{ needs.job_begin.outputs.identityKey }}
     steps: *preparation-steps

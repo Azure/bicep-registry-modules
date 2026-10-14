@@ -95,8 +95,16 @@ Describe 'Test subscription workflow integration' {
 
             $Workflow.jobs.job_module_deploy_validation.uses | Should -Be './.github/workflows/avm.template.module.deployment.yml'
             $step = $deploymentWorkflow.jobs.job_module_deploy_validation.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
+            $identityStep = $deploymentWorkflow.jobs.job_module_deploy_validation.steps | Where-Object id -EQ 'module-identity'
             foreach ($name in $step.env.Keys) {
-                [Environment]::SetEnvironmentVariable($name, (Resolve-TestSettingExpression -Expression $step.env[$name] -Context $Context))
+                $value = switch ($step.env[$name]) {
+                    '${{ steps.module-identity.outputs.clientId }}' { $Context.mappedClientId }
+                    '${{ steps.module-identity.outputs.tenantId }}' {
+                        Resolve-TestSettingExpression -Expression $identityStep.with.tenantId -Context $Context
+                    }
+                    default { Resolve-TestSettingExpression -Expression $step.env[$name] -Context $Context }
+                }
+                [Environment]::SetEnvironmentVariable($name, $value)
             }
             $env:MANAGEMENT_GROUP_ID = Resolve-TestSettingExpression -Expression $step.with.managementGroupId -Context $Context
         }
@@ -153,6 +161,7 @@ Describe 'Test subscription workflow integration' {
         $env:MODULE_PATH = 'avm/res/example/module'
         $env:MODULE_TEST_FILE_PATHS = '[{"path":"tests/e2e/defaults/main.test.bicep","name":"defaults","e2eIgnore":false},{"path":"tests/e2e/max/main.test.bicep","name":"max","e2eIgnore":false}]'
         $routingContext = @{
+            mappedClientId                       = 'mapped-client'
             'vars.VALIDATE_SUBSCRIPTION_IDS'       = $subscriptionJson
             'vars.VALIDATE_CLIENT_ID'              = 'variable-client'
             'vars.VALIDATE_TENANT_ID'              = 'variable-tenant'
@@ -195,6 +204,7 @@ Describe 'Test subscription workflow integration' {
         $caller = $workflow.jobs.job_module_deploy_validation
         $deployment = $deploymentWorkflow.jobs.job_module_deploy_validation
         $deploymentStep = $deployment.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
+        $identityStep = $deployment.steps | Where-Object id -EQ 'module-identity'
         $initializationStep = $initializer.steps | Where-Object { $_.id -eq 'deployment-matrix' }
 
         $initializer.permissions.Count | Should -Be 1
@@ -224,8 +234,10 @@ Describe 'Test subscription workflow integration' {
         $selectionStep.env.MANAGEMENT_GROUP_ID | Should -Be '${{ inputs.managementGroupId }}'
         $selectionStep.env.MODULE_PATH | Should -Be '${{ inputs.modulePath }}'
         $deploymentStep.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
-        $deploymentStep.env.VALIDATE_CLIENT_ID | Should -Be '${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}'
-        $deploymentStep.env.VALIDATE_TENANT_ID | Should -Be '${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}'
+        $deploymentStep.env.VALIDATE_CLIENT_ID | Should -Be '${{ steps.module-identity.outputs.clientId }}'
+        $deploymentStep.env.VALIDATE_TENANT_ID | Should -Be '${{ steps.module-identity.outputs.tenantId }}'
+        $identityStep.with.moduleClientIds | Should -Be '${{ vars.VALIDATE_MODULE_CLIENT_IDS }}'
+        $identityStep.with.tenantId | Should -Be '${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}'
         $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}'
         $deploymentStep.env.CI_KEY_VAULT_NAME | Should -Be '${{ vars.CI_KEY_VAULT_NAME }}'
         $deployment.environment | Should -Be 'avm-validation'
@@ -234,7 +246,7 @@ Describe 'Test subscription workflow integration' {
             $step = $workflow.jobs[$jobName].steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModulePSRule' }
             $step.with.managementGroupId | Should -Be $managementGroupExpression
             $step.with.modulePath | Should -Be '${{ inputs.modulePath }}'
-            $step.env.VALIDATE_TENANT_ID | Should -Be $deploymentStep.env.VALIDATE_TENANT_ID
+            $step.env.VALIDATE_TENANT_ID | Should -Be $identityStep.with.tenantId
             $step.env.VALIDATE_SUBSCRIPTION_ID | Should -Be $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID
             $step.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
         }
@@ -455,7 +467,7 @@ Describe 'Test subscription workflow integration' {
         . ([scriptblock]::Create($selectionStep.run))
 
         (Get-StepOutput).subscriptionId | Should -BeIn $subscriptions.id
-        $env:VALIDATE_CLIENT_ID | Should -Be 'variable-client'
+        $env:VALIDATE_CLIENT_ID | Should -Be 'mapped-client'
         $env:VALIDATE_TENANT_ID | Should -Be 'variable-tenant'
         $env:MANAGEMENT_GROUP_ID | Should -Be 'variable-management-group'
         $env:VALIDATE_SUBSCRIPTION_ID | Should -Be '88888888-8888-8888-8888-888888888888'
@@ -471,7 +483,8 @@ Describe 'Test subscription workflow integration' {
         $routingContext['github.repository'] = 'customer/own-module-fork'
         $routingContext['vars.VALIDATE_SUBSCRIPTION_IDS'] = $forkJson
         $routingContext['vars.VALIDATE_SUBSCRIPTION_ID'] = $forkPool[0].id
-        $routingContext['vars.VALIDATE_CLIENT_ID'] = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
+        $routingContext.mappedClientId = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
+        $routingContext['vars.VALIDATE_CLIENT_ID'] = 'legacy-client-must-not-be-used'
         $routingContext['vars.VALIDATE_TENANT_ID'] = 'cccccccc-cccc-cccc-cccc-cccccccccccc'
         $routingContext['vars.VALIDATE_MANAGEMENT_GROUP_ID'] = 'fork-management-group'
         if ($settingFamily -eq 'legacy variable alias') {
@@ -524,7 +537,7 @@ Describe 'Test subscription workflow integration' {
         $groupBindings | Should -Be 14
     }
 
-    It 'Supports identifiers supplied only as secrets in <workflowName>' -ForEach @(
+    It 'Supports pool and tenant settings supplied only as secrets without a client fallback in <workflowName>' -ForEach @(
         @{ workflowName = 'avm.template.module' }
         @{ workflowName = 'avm.template.module.preview' }
         @{ workflowName = 'avm.template.module.publish' }
@@ -537,7 +550,7 @@ Describe 'Test subscription workflow integration' {
         . ([scriptblock]::Create($selectionStep.run))
 
         (Get-StepOutput).subscriptionId | Should -Be '66666666-6666-6666-6666-666666666666'
-        $env:VALIDATE_CLIENT_ID | Should -Be 'secret-client'
+        $env:VALIDATE_CLIENT_ID | Should -Be 'mapped-client'
         $env:VALIDATE_TENANT_ID | Should -Be 'secret-tenant'
         $env:MANAGEMENT_GROUP_ID | Should -Be 'secret-management-group'
         $env:VALIDATE_SUBSCRIPTION_ID | Should -Be $routingContext['secrets.VALIDATE_SUBSCRIPTION_ID']
@@ -556,7 +569,7 @@ Describe 'Test subscription workflow integration' {
         . ([scriptblock]::Create($selectionStep.run))
 
         (Get-StepOutput).subscriptionId | Should -BeIn $subscriptions.id
-        $env:VALIDATE_CLIENT_ID | Should -Be 'variable-client'
+        $env:VALIDATE_CLIENT_ID | Should -Be 'mapped-client'
         $env:VALIDATE_TENANT_ID | Should -Be 'variable-tenant'
     }
 
