@@ -20,10 +20,11 @@ param enabled bool = true
 @allowed([
   'LogAlert'
   'LogToMetric'
+  'SimpleLogAlert'
 ])
 param kind string = 'LogAlert'
 
-@description('Optional. The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can\'t be used together with AutoMitigate.')
+@description('Optional. The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can\'t be used together with AutoMitigate. For kind SimpleLogAlert, this must be set to false unless the criteria specify a minRecurrenceCount.')
 param autoMitigate bool = true
 
 @description('Optional. If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert.')
@@ -43,13 +44,13 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can\'t be used together with AutoMitigate.')
+@description('Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can\'t be used together with AutoMitigate. For kind SimpleLogAlert, autoResolved must be false unless the criteria specify a minRecurrenceCount.')
 param ruleResolveConfiguration resourceInput<'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview'>.properties.resolveConfiguration?
 
 @description('Required. The list of resource IDs that this scheduled query rule is scoped to.')
 param scopes string[]
 
-@description('Optional. Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert.')
+@description('Optional. Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kinds LogAlert and SimpleLogAlert.')
 @allowed([
   0
   1
@@ -177,6 +178,17 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview' =
             ? {
                 autoMitigate: autoMitigate
                 muteActionsDuration: muteActionsDuration
+              }
+            : {})
+        }
+      : {})
+    ...(kind == 'SimpleLogAlert'
+      ? {
+          severity: severity
+          resolveConfiguration: ruleResolveConfiguration
+          ...(empty(ruleResolveConfiguration)
+            ? {
+                autoMitigate: autoMitigate
               }
             : {})
         }
