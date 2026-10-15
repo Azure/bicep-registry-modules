@@ -21,7 +21,7 @@ param auditActionsAndGroups string[] = [
   'FAILED_DATABASE_AUTHENTICATION_GROUP'
 ]
 
-@description('Optional. Specifies whether audit events are sent to Azure Monitor.')
+@description('Optional. Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, a diagnostic setting with the `SQLSecurityAuditEvents` log category must be configured on the server\'s `master` database.')
 param isAzureMonitorTargetEnabled bool = true
 
 @description('Optional. Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor.')
@@ -40,7 +40,7 @@ param queueDelayMs int = 1000
 param retentionDays int = 90
 
 @description('Optional. A blob storage to hold the auditing storage account.')
-param storageAccountResourceId string = ''
+param storageAccountResourceId string?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -49,11 +49,13 @@ resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   name: serverName
 }
 
-// Assign SQL Server MSI access to storage account
-var primaryUserAssignedIdentityPrincipalId = filter(
-  items(server.identity.userAssignedIdentities),
-  identity => identity.key == server.properties.primaryUserAssignedIdentityId
-)[0].value.principalId
+// Assign SQL Server MSI access to storage account. If the server has a system-assigned identity, it is used. Otherwise, the server's primary user-assigned identity is used.
+var serverIdentityPrincipalId = contains(server.?identity.?type ?? '', 'SystemAssigned')
+  ? server.identity.principalId
+  : filter(
+      items(server.?identity.?userAssignedIdentities ?? {}),
+      identity => identity.key =~ (server.properties.?primaryUserAssignedIdentityId ?? '')
+    )[?0].?value.?principalId
 
 module storageAccount_sbdc_rbac 'modules/nested_storageRoleAssignment.bicep' = if (isManagedIdentityInUse && !empty(storageAccountResourceId)) {
   scope: resourceGroup(
@@ -62,9 +64,9 @@ module storageAccount_sbdc_rbac 'modules/nested_storageRoleAssignment.bicep' = i
   )
   params: {
     storageAccountName: last(split(storageAccountResourceId!, '/'))
-    managedIdentityPrincipalId: server.identity.type == 'UserAssigned'
-      ? primaryUserAssignedIdentityPrincipalId
-      : server.identity.principalId
+    managedIdentityPrincipalId: !empty(serverIdentityPrincipalId)
+      ? serverIdentityPrincipalId!
+      : fail('The SQL server must have a system-assigned or a primary user-assigned identity to use a managed identity for auditing.')
   }
 }
 
@@ -102,12 +104,12 @@ resource auditSettings 'Microsoft.Sql/servers/auditingSettings@2025-01-01' = {
     queueDelayMs: queueDelayMs
     retentionDays: retentionDays
     storageAccountAccessKey: !empty(storageAccountResourceId) && !isManagedIdentityInUse
-      ? listKeys(storageAccountResourceId, '2019-06-01').keys[0].value
+      ? listKeys(storageAccountResourceId!, '2025-08-01').keys[0].value
       : null
-    storageAccountSubscriptionId: !empty(storageAccountResourceId) ? split(storageAccountResourceId, '/')[2] : any(null)
+    storageAccountSubscriptionId: !empty(storageAccountResourceId) ? split(storageAccountResourceId!, '/')[2] : null
     storageEndpoint: !empty(storageAccountResourceId)
-      ? 'https://${last(split(storageAccountResourceId, '/'))}.blob.${environment().suffixes.storage}'
-      : any(null)
+      ? 'https://${last(split(storageAccountResourceId!, '/'))}.blob.${environment().suffixes.storage}'
+      : null
   }
 }
 
