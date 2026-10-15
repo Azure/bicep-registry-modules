@@ -506,6 +506,27 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         retentionDescriptionEnabled: true
         retentionDescriptionTombstoneRetentionTimeInHours: 24
       }
+      {
+        captureDescription: {
+          destination: {
+            identity: {
+              userAssignedResourceId: '<userAssignedResourceId>'
+            }
+            name: 'EventHubArchive.AzureBlockBlob'
+            properties: {
+              archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+              blobContainer: '<blobContainer>'
+              storageAccountResourceId: '<storageAccountResourceId>'
+            }
+          }
+          enabled: false
+          encoding: 'Avro'
+          intervalInSeconds: 300
+          sizeLimitInBytes: 314572800
+          skipEmptyArchives: true
+        }
+        name: 'az-evh-x-004'
+      }
     ]
     isAutoInflateEnabled: true
     kafkaEnabled: true
@@ -716,6 +737,27 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
           "retentionDescriptionCleanupPolicy": "Compact",
           "retentionDescriptionEnabled": true,
           "retentionDescriptionTombstoneRetentionTimeInHours": 24
+        },
+        {
+          "captureDescription": {
+            "destination": {
+              "identity": {
+                "userAssignedResourceId": "<userAssignedResourceId>"
+              },
+              "name": "EventHubArchive.AzureBlockBlob",
+              "properties": {
+                "archiveNameFormat": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
+                "blobContainer": "<blobContainer>",
+                "storageAccountResourceId": "<storageAccountResourceId>"
+              }
+            },
+            "enabled": false,
+            "encoding": "Avro",
+            "intervalInSeconds": 300,
+            "sizeLimitInBytes": 314572800,
+            "skipEmptyArchives": true
+          },
+          "name": "az-evh-x-004"
         }
       ]
     },
@@ -947,6 +989,27 @@ param eventhubs = [
     retentionDescriptionCleanupPolicy: 'Compact'
     retentionDescriptionEnabled: true
     retentionDescriptionTombstoneRetentionTimeInHours: 24
+  }
+  {
+    captureDescription: {
+      destination: {
+        identity: {
+          userAssignedResourceId: '<userAssignedResourceId>'
+        }
+        name: 'EventHubArchive.AzureBlockBlob'
+        properties: {
+          archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+          blobContainer: '<blobContainer>'
+          storageAccountResourceId: '<storageAccountResourceId>'
+        }
+      }
+      enabled: false
+      encoding: 'Avro'
+      intervalInSeconds: 300
+      sizeLimitInBytes: 314572800
+      skipEmptyArchives: true
+    }
+    name: 'az-evh-x-004'
   }
 ]
 param isAutoInflateEnabled = true
