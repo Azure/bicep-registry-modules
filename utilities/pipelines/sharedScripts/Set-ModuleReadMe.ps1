@@ -741,9 +741,9 @@ function Set-FunctionsSection {
             '| Function | Description |',
             '| :-- | :-- |'
         )
-        foreach ($functionName in ($templateFileContent.functions.members.Keys | Sort-Object -Culture 'en-US')) {
+        foreach ($functionName in ($templateFileContent.functions.members.Keys | Where-Object { $TemplateFileContent.functions.members[$_].metadata.'__bicep_export!' -eq $true } | Sort-Object -Culture 'en-US')) {
             $function = $TemplateFileContent.functions.members[$functionName]
-            $description = $function.metadata.description.Replace("`r`n", '<p>').Replace("`n", '<p>')
+            $description = ([string] $function.metadata.description).Replace("`r`n", '<p>').Replace("`n", '<p>')
             $SectionContent += ("| ``{0}`` | {1} |" -f $functionName, $description)
         }
     } else {
@@ -751,7 +751,7 @@ function Set-FunctionsSection {
             '| Function | Description |',
             '| :-- | :-- |'
         )
-        foreach ($functionName in ($templateFileContent.functions.members.Keys | Sort-Object -Culture 'en-US')) {
+        foreach ($functionName in ($templateFileContent.functions.members.Keys | Where-Object { $TemplateFileContent.functions.members[$_].metadata.'__bicep_export!' -eq $true } | Sort-Object -Culture 'en-US')) {
             $SectionContent += ("| ``{0}`` |" -f $functionName)
         }
     }
@@ -1569,10 +1569,11 @@ function Set-UsageExamplesSection {
 
     $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
     $targetVersion = '<version>'
+    $isFunctionLibrary = $TemplateFileContent.resources.Count -eq 0 -and $TemplateFileContent.functions.members.Values.metadata.'__bicep_export!' -contains $true
 
     # Process content
     $SectionContent = [System.Collections.ArrayList]@(
-        "The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.",
+        ($isFunctionLibrary ? "The following examples show how to import and use this resource-free function library. For a full reference, please review the module's test folder in its repository." : "The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository."),
         '',
         '>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.',
         '',
@@ -1871,6 +1872,10 @@ function Set-UsageExamplesSection {
             }
         } else {
             # Non-module deployment (e.g., utility deployment)
+            if ($isFunctionLibrary) {
+                $moduleImportPath = [IO.Path]::GetRelativePath((Split-Path $testFilePath -Parent), (Join-Path $ModuleRoot 'main.bicep')).Replace('\', '/')
+                $rawContentArray = $rawContentArray | ForEach-Object { $_.Replace("from '$moduleImportPath'", "from 'br/public:$($brLink):$($targetVersion)'") }
+            }
 
             # ----------------------------- #
             #   Add non-formatted example   #
@@ -1879,7 +1884,7 @@ function Set-UsageExamplesSection {
                 '',
                 '<details>'
                 ''
-                '<summary>via Bicep module</summary>'
+                ($isFunctionLibrary ? '<summary>via Bicep import</summary>' : '<summary>via Bicep module</summary>')
                 ''
                 '```bicep',
                 $rawContentArray,
@@ -2086,13 +2091,21 @@ function Initialize-ReadMe {
         }
         $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
         $targetVersion = '<version>'
+        $exportedFunctionNames = @($TemplateFileContent.functions | ForEach-Object {
+                if ($_.members) { $_.members.GetEnumerator() }
+            } | Where-Object { $_.Value.metadata.'__bicep_export!' -eq $true } | Sort-Object -Property Key -Culture 'en-US' | ForEach-Object { $_.Key })
+        $isFunctionLibrary = $TemplateFileContent.resources.Count -eq 0 -and $exportedFunctionNames.Count -gt 0
         $referenceBlock = @(
-            'You can reference the module as follows:',
-            '```bicep',
-            "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
-            '  params: { (...) }',
-            '}',
-            '```',
+            'You can reference the module as follows:'
+            '```bicep'
+            if ($isFunctionLibrary) {
+                "import { $($exportedFunctionNames -join ', ') } from 'br/public:$($brLink):$($targetVersion)'"
+            } else {
+                "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {"
+                '  params: { (...) }'
+                '}'
+            }
+            '```'
             'For examples, please refer to the [Usage Examples](#usage-examples) section.'
         )
     }
