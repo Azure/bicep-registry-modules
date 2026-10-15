@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using kind SimpleLogAlert with a resolve configuration'
-metadata description = 'This instance deploys the module as a simple log search alert (kind `SimpleLogAlert`) with a rule resolve configuration instead of `autoMitigate`.'
+metadata description = 'This instance deploys the module as a simple log search alert (kind `SimpleLogAlert`) with a minimum recurrence count and a rule resolve configuration instead of `autoMitigate`.'
 
 // ========== //
 // Parameters //
@@ -55,6 +55,7 @@ module testDeployment '../../../main.bicep' = [
         allOf: [
           {
             query: 'Event | where EventLevelName == "Error"'
+            minRecurrenceCount: 1
           }
         ]
       }

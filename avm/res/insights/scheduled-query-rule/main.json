@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "5255256205684789788"
+      "templateHash": "7966773413949309303"
     },
     "name": "Scheduled Query Rules",
     "description": "This module deploys a Scheduled Query Rule."
@@ -251,7 +251,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate."
+        "description": "Optional. The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate. For kind SimpleLogAlert, this must be set to false unless the criteria specify a minRecurrenceCount."
       }
     },
     "queryTimeRange": {
@@ -301,7 +301,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.Insights/scheduledQueryRules@2025-01-01-preview#properties/properties/properties/resolveConfiguration"
         },
-        "description": "Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate."
+        "description": "Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate. For kind SimpleLogAlert, autoResolved must be false unless the criteria specify a minRecurrenceCount."
       },
       "nullable": true
     },

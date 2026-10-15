@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using kind SimpleLogAlert'
-metadata description = 'This instance deploys the module as a simple log search alert (kind `SimpleLogAlert`).'
+metadata description = 'This instance deploys the module as a simple log search alert (kind `SimpleLogAlert`) without auto-mitigation.'
 
 // ========== //
 // Parameters //
@@ -51,6 +51,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       kind: 'SimpleLogAlert'
+      autoMitigate: false
       criterias: {
         allOf: [
           {
