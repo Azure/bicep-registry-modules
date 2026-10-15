@@ -50,7 +50,7 @@ param ruleResolveConfiguration resourceInput<'Microsoft.Insights/scheduledQueryR
 @description('Required. The list of resource IDs that this scheduled query rule is scoped to.')
 param scopes string[]
 
-@description('Optional. Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert.')
+@description('Optional. Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kinds LogAlert and SimpleLogAlert.')
 @allowed([
   0
   1
@@ -184,6 +184,7 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview' =
       : {})
     ...(kind == 'SimpleLogAlert'
       ? {
+          severity: severity
           resolveConfiguration: ruleResolveConfiguration
           ...(empty(ruleResolveConfiguration)
             ? {

@@ -886,7 +886,7 @@ param windowSize = 'PT5M'
 | [`queryTimeRange`](#parameter-querytimerange) | string | If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`ruleResolveConfiguration`](#parameter-ruleresolveconfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate. |
-| [`severity`](#parameter-severity) | int | Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert. |
+| [`severity`](#parameter-severity) | int | Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kinds LogAlert and SimpleLogAlert. |
 | [`skipQueryValidation`](#parameter-skipqueryvalidation) | bool | The flag which indicates whether the provided query should be validated or not. Relevant only for rules of the kind LogAlert. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetResourceTypes`](#parameter-targetresourcetypes) | array | List of resource type of the target resource(s) on which the alert is created/updated. For example if the scope is a resource group and targetResourceTypes is Microsoft.Compute/virtualMachines, then a different alert will be fired for each virtual machine in the resource group which meet the alert criteria. Relevant only for rules of the kind LogAlert. |
@@ -1249,7 +1249,7 @@ Defines the configuration for resolving fired alerts. Relevant only for rules of
 
 ### Parameter: `severity`
 
-Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert.
+Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kinds LogAlert and SimpleLogAlert.
 
 - Required: No
 - Type: int
