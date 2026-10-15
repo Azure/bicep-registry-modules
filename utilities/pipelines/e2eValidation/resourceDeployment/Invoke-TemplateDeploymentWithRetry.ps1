@@ -562,6 +562,9 @@ function Invoke-TemplateDeploymentWithRetry {
         [bool] $RemoveDeployment = $true,
 
         [Parameter()]
+        [string[]] $ProtectedResourceIds = @(),
+
+        [Parameter()]
         [switch] $ValidationOnly,
 
         [Parameter()]
@@ -747,6 +750,9 @@ function Invoke-TemplateDeploymentWithRetry {
                         ManagementGroupId                = $validationParameters.ManagementGroupId
                         RequireCompleteRemoval           = $true
                         RequireNoDeploymentScripts       = $transientFailure
+                    }
+                    if ($ProtectedResourceIds.Count -gt 0) {
+                        $cleanupInput.ProtectedResourceIds = $ProtectedResourceIds
                     }
                     try {
                         $cleanup = Initialize-DeploymentRemoval @cleanupInput -ErrorAction Stop

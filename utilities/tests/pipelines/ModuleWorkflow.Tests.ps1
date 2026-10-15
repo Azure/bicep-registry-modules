@@ -166,13 +166,13 @@ Describe 'Generic module workflow' {
     }
 
     It 'pins every direct deployment composite caller before the deployment job acquires its lock' {
-        $callerCount = 0
+        $callerNames = @()
         foreach ($file in (Get-ChildItem -Path (Join-Path $repoRootPath '.github' 'workflows') -Filter '*.yml' -File)) {
             $caller = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $file.FullName -Raw)
             foreach ($job in $caller.jobs.Values) {
                 foreach ($step in @($job.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' })) {
-                    $callerCount++
-                    $file.Name | Should -Be 'avm.template.module.deployment.yml'
+                    $callerNames += $file.Name
+                    $file.Name | Should -BeIn @('avm.template.module.deployment.yml', 'avm.template.hci.consumer.yml')
                     $job.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
                     $step.with.subscriptionIndex | Should -Be '${{ fromJson(inputs.testCase).subscriptionIndex }}'
                     $step.with.subscriptionKey | Should -Be '${{ fromJson(inputs.testCase).subscriptionKey }}'
@@ -180,7 +180,7 @@ Describe 'Generic module workflow' {
                 }
             }
         }
-        $callerCount | Should -Be 1
+        @($callerNames | Sort-Object) | Should -Be @('avm.template.hci.consumer.yml', 'avm.template.module.deployment.yml')
         foreach ($validationWorkflow in @($legacyWorkflow, $previewWorkflow, $publishWorkflow)) {
             $caller = $validationWorkflow.jobs.job_module_deploy_validation
             $caller.needs | Should -Contain 'job_initialize_subscription_selection'
@@ -696,7 +696,11 @@ Describe 'Module workflow path filters' {
             Get-ChildItem -Path (Join-Path $repoRootPath '.github' 'workflows') -File -Filter '*.yml' |
             ForEach-Object {
                 $workflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $_.FullName -Raw)
-                if ($workflow.jobs.Values.uses -contains './.github/workflows/avm.template.module.yml') {
+                if ($workflow.on.ContainsKey('push') -and
+                    @($workflow.jobs.Values.uses | Where-Object { $_ -in @(
+                            './.github/workflows/avm.template.module.yml',
+                            './.github/workflows/avm.template.hci.module.yml'
+                        ) }).Count -gt 0) {
                     @{
                         WorkflowFileName = $_.Name
                         Workflow         = $workflow

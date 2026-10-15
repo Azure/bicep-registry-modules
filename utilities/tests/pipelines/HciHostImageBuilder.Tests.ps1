@@ -28,6 +28,17 @@ Describe 'HCI host image builder templates' {
             @{ name = 'duplicates'; location = "'Southeast Asia'"; buildLocation = "'Australia East'"; regions = "['AUSTRALIAEAST', 'australiaeast', 'SOUTHEASTASIA']" }
         )
         $parameters = @('using none')
+        $payloadMatch = [regex]::Match($childText, '(?ms)^var payloadDownload = (?<expression>.*?)(?=\r?\n\r?\n)')
+        if (-not $payloadMatch.Success) { throw 'Missing payloadDownload expression.' }
+        $payloadFixture = Join-Path $TestDrive 'expected.vhdx'
+        [IO.File]::WriteAllText($payloadFixture, 'offline verified payload')
+        $payloadHash = (Get-FileHash -LiteralPath $payloadFixture -Algorithm SHA256).Hash
+        $script:encodedPayloadHash = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($payloadHash))
+        $parameters += @(
+            "var encodedPayloadUri = base64('https://example.test/AzLocal2601.vhdx')"
+            "var encodedPayloadSha256 = base64('$payloadHash')"
+            "param payloadDownload = $($payloadMatch.Groups['expression'].Value)"
+        )
         foreach ($scenario in $scenarios) {
             $expression = $match.Groups['expression'].Value.
                 Replace('buildLocation', $scenario.buildLocation).
@@ -41,6 +52,7 @@ Describe 'HCI host image builder templates' {
         $diagnostics = bicep build-params $parameterPath --no-restore --outfile $parameterOutput 2>&1
         if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
         $regions = (Get-Content -LiteralPath $parameterOutput -Raw | ConvertFrom-Json -AsHashtable).parameters
+        $script:payloadScript = $regions.payloadDownload.value -join "`n"
     }
 
     It 'Preserves the stable external defaults in the subscription template' {
@@ -52,7 +64,30 @@ Describe 'HCI host image builder templates' {
         $builder.parameters.imageTemplateName.defaultValue | Should -Be 'hci-host-image-builder'
         $builder.parameters.imageBuilderIdentityName.defaultValue | Should -Be 'id-avm-persistent-hci-image-builder'
         $builder.parameters.buildTimeoutInMinutes.defaultValue | Should -Be 570
-        $builder.parameters.hciVhdxDownloadUri.defaultValue | Should -Match 'AzLocal2601\.vhdx'
+        $expectedPayloadDefaults = @{
+            hciVhdxDownloadUri = 'https://jumpstartprodsg.blob.core.windows.net/jslocal/localbox/prod/AzLocal2601.vhdx'
+            hciVhdxSha256      = '3a797826d7e7ae7abc55d1071322ddecc80575c2356fea9e74818ab9f6720a1f'
+        }
+        foreach ($entry in $expectedPayloadDefaults.GetEnumerator()) {
+            $variable = [regex]::Match($builder.parameters[$entry.Key].defaultValue, "^\[variables\('([^']+)'\)\]$")
+            $variable.Success | Should -BeTrue
+            $builder.variables[$variable.Groups[1].Value] | Should -BeExactly $entry.Value
+        }
+    }
+
+    It 'Requires a digest in the customizer and forwards both payload parameters' {
+        foreach ($template in @($builder, $child)) {
+            $template.parameters.hciVhdxSha256.minLength | Should -Be 64
+            $template.parameters.hciVhdxSha256.maxLength | Should -Be 64
+        }
+        $child.parameters.hciVhdxSha256.ContainsKey('defaultValue') | Should -BeFalse
+        $builder.resources.imageTemplate.properties.parameters.hciVhdxDownloadUri.value |
+            Should -Be "[parameters('hciVhdxDownloadUri')]"
+        $builder.resources.imageTemplate.properties.parameters.hciVhdxSha256.value |
+            Should -Be "[parameters('hciVhdxSha256')]"
+        $child.variables.encodedPayloadUri | Should -Be "[base64(parameters('hciVhdxDownloadUri'))]"
+        $child.variables.encodedPayloadSha256 | Should -Be "[base64(parameters('hciVhdxSha256'))]"
+        $imageTemplate.properties.customize[2].inline | Should -Be "[variables('payloadDownload')]"
     }
 
     It 'Defaults both entrypoints to the existing single resource region' {
@@ -114,6 +149,115 @@ Describe 'HCI host image builder templates' {
         $builder.resources.imageTemplate.properties.template.resources.imageTemplate | ConvertTo-Json -Depth 30 |
             Should -Be ($imageTemplate | ConvertTo-Json -Depth 30)
         $child.resources.Count | Should -Be 1
+    }
+
+    Context 'VHDX payload integrity' {
+        BeforeEach {
+            $script:downloadAttempts = 0
+            $script:downloadPath = Join-Path $TestDrive "$([guid]::NewGuid()).vhdx"
+            $script:downloadScript = [scriptblock]::Create($script:payloadScript.Replace('C:\ISOs\hci_os.vhdx', $script:downloadPath))
+            Mock Invoke-WebRequest {
+                $Uri | Should -BeExactly 'https://example.test/AzLocal2601.vhdx'
+                $OutFile | Should -Be $script:downloadPath
+                [IO.File]::WriteAllText($OutFile, 'offline verified payload')
+            }
+            Mock Start-Sleep {}
+        }
+
+        It 'Hashes the downloaded bytes and accepts a matching <casing> digest' -ForEach @(
+            @{ casing = 'uppercase' }
+            @{ casing = 'lowercase' }
+        ) {
+            $expected = $casing -eq 'lowercase' ? $payloadHash.ToLowerInvariant() : $payloadHash
+            $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($expected))
+            $downloadScript = [scriptblock]::Create($script:downloadScript.ToString().Replace($script:encodedPayloadHash, $encoded))
+
+            . $downloadScript
+
+            Should -Invoke Invoke-WebRequest -Times 1 -Exactly
+            $actualSha256 | Should -Be $payloadHash
+        }
+
+        It 'Rejects a <case> payload without retrying a successful HTTP download' -ForEach @(
+            @{ case = 'corrupt'; content = 'offline tampered payload' }
+            @{ case = 'partial'; content = 'offline verified' }
+            @{ case = 'empty'; content = '' }
+        ) {
+            $script:downloadContent = $content
+            Mock Invoke-WebRequest { [IO.File]::WriteAllText($OutFile, $script:downloadContent) }
+
+            { . $script:downloadScript } | Should -Throw '*HCI VHDX payload SHA256 mismatch*'
+
+            Should -Invoke Invoke-WebRequest -Times 1 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Rejects a missing downloaded file before hashing' {
+            Mock Invoke-WebRequest {}
+            Mock Get-FileHash { throw 'Unexpected hash attempt' }
+
+            { . $script:downloadScript } | Should -Throw '*HCI VHDX payload was not downloaded*'
+
+            Should -Invoke Get-FileHash -Times 0 -Exactly
+        }
+
+        It 'Preserves the final download error and never accepts a partial file' {
+            Mock Invoke-WebRequest {
+                [IO.File]::WriteAllText($OutFile, 'partial')
+                throw 'Offline download failure'
+            }
+            Mock Get-FileHash { throw 'Unexpected hash attempt' }
+
+            { . $script:downloadScript } | Should -Throw '*Offline download failure*'
+
+            Should -Invoke Invoke-WebRequest -Times 5 -Exactly
+            Should -Invoke Start-Sleep -Times 4 -Exactly
+            Should -Invoke Get-FileHash -Times 0 -Exactly
+        }
+
+        It 'Verifies only the completed download after transient failures' {
+            Mock Invoke-WebRequest {
+                $script:downloadAttempts++
+                if ($script:downloadAttempts -lt 3) {
+                    [IO.File]::WriteAllText($OutFile, 'partial')
+                    throw 'Offline transient failure'
+                }
+                [IO.File]::WriteAllText($OutFile, 'offline verified payload')
+            }
+
+            . $script:downloadScript
+
+            Should -Invoke Invoke-WebRequest -Times 3 -Exactly
+            Should -Invoke Start-Sleep -Times 2 -Exactly
+            $actualSha256 | Should -Be $payloadHash
+        }
+
+        It 'Rejects a <case> digest before downloading or hashing' -ForEach @(
+            @{ case = 'missing'; digest = '' }
+            @{ case = 'short'; digest = 'a' * 63 }
+            @{ case = 'long'; digest = 'a' * 65 }
+            @{ case = 'nonhexadecimal'; digest = 'g' * 64 }
+            @{ case = 'trailing newline'; digest = ('a' * 64) + "`n" }
+            @{ case = 'script-like'; digest = "';throw 'not data';#" }
+        ) {
+            $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($digest))
+            $downloadScript = [scriptblock]::Create($script:downloadScript.ToString().Replace($script:encodedPayloadHash, $encoded))
+            Mock Get-FileHash { throw 'Unexpected hash attempt' }
+
+            { . $downloadScript } | Should -Throw '*A valid HCI VHDX SHA256 digest is required*'
+
+            Should -Invoke Invoke-WebRequest -Times 0 -Exactly
+            Should -Invoke Get-FileHash -Times 0 -Exactly
+        }
+
+        It 'Propagates a hashing failure rather than accepting the file' {
+            Mock Get-FileHash { throw 'Offline hashing failure' }
+
+            { . $script:downloadScript } | Should -Throw '*Offline hashing failure*'
+
+            Should -Invoke Invoke-WebRequest -Times 1 -Exactly
+            Should -Invoke Get-FileHash -Times 1 -Exactly
+        }
     }
 }
 
@@ -343,6 +487,8 @@ Describe 'HCI host image builder' {
                 $TemplateParameterObject.galleryName -eq 'galavmpersistenthci' -and
                 $TemplateParameterObject.imageDefinitionName -eq 'hci-host-image' -and
                 $TemplateParameterObject.imageVersion -eq '26.1.0' -and
+                $TemplateParameterObject.hciVhdxDownloadUri -ceq 'https://jumpstartprodsg.blob.core.windows.net/jslocal/localbox/prod/AzLocal2601.vhdx' -and
+                $TemplateParameterObject.hciVhdxSha256 -ceq '3a797826d7e7ae7abc55d1071322ddecc80575c2356fea9e74818ab9f6720a1f' -and
                 $TemplateParameterObject.buildTimeoutInMinutes -eq 570
             }
             Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
@@ -364,6 +510,18 @@ Describe 'HCI host image builder' {
                 ($TemplateParameterObject.replicationRegions -join ',') -eq 'australiaeast,eastus' -and
                 $TemplateParameterObject.imageTemplateName -eq 'hci-host-image-builder-australiaeast' -and
                 $TemplateParameterObject.createResourceGroup -eq $false
+            }
+        }
+
+        It 'Forwards an explicitly paired payload URI and digest unchanged' {
+            $digest = 'A' * 64
+            $result = . $buildScript -AssetBaseUri 'https://example.test/assets' `
+                -HciVhdxDownloadUri 'https://example.test/custom.vhdx' -HciVhdxSha256 $digest
+
+            Assert-TestResult -Result $result -Status 'Succeeded' -Started $true
+            Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly -ParameterFilter {
+                $TemplateParameterObject.hciVhdxDownloadUri -ceq 'https://example.test/custom.vhdx' -and
+                $TemplateParameterObject.hciVhdxSha256 -ceq ('A' * 64)
             }
         }
 
@@ -490,6 +648,11 @@ Describe 'HCI host image builder' {
             @{ parameter = 'ReplicationRegions'; value = @() }
             @{ parameter = 'ReplicationRegions'; value = @('eastus', '') }
             @{ parameter = 'ReplicationRegions'; value = @('eastus', ' ') }
+            @{ parameter = 'HciVhdxSha256'; value = '' }
+            @{ parameter = 'HciVhdxSha256'; value = 'a' * 63 }
+            @{ parameter = 'HciVhdxSha256'; value = 'a' * 65 }
+            @{ parameter = 'HciVhdxSha256'; value = 'g' * 64 }
+            @{ parameter = 'HciVhdxSha256'; value = ('a' * 64) + "`n" }
         ) {
             $inputParameters = @{ $parameter = $value }
 
