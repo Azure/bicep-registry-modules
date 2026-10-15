@@ -1,5 +1,89 @@
 ﻿param ([string] $RepoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.FullName)
 
+Describe 'HCI confidential JSON parsing' {
+    BeforeAll {
+        . (Join-Path $RepoRootPath 'utilities' 'e2e-template-assets' 'module-specific' 'azure-stack-hci' 'HciImageOperation.ps1')
+    }
+
+    It 'Preserves the exact timestamp string <timestamp> at every depth' -ForEach @(
+        @{ timestamp = '2026-10-15T13:26:36.1234567Z' }
+        @{ timestamp = '2026-10-15T13:26:36.1234567+00:00' }
+        @{ timestamp = '2026-10-15T13:26:36.1234567+05:45' }
+        @{ timestamp = '2026-10-15T13:26:36.1234567-07:30' }
+        @{ timestamp = '2026-10-15T13:26:36' }
+        @{ timestamp = '2026-10-15' }
+    ) {
+        $json = [ordered] @{
+            deadline = $timestamp
+            binding = [ordered] @{ deadline = $timestamp; records = @([ordered] @{ deadline = $timestamp }) }
+            timestamps = @($timestamp)
+        } | ConvertTo-Json -Depth 10 -Compress
+        $private = ConvertTo-HciPrivateValue -Value $json
+        try {
+            $record = ConvertFrom-HciPrivateJson -Value $private
+
+            foreach ($value in @($record.deadline, $record.binding.deadline, $record.binding.records[0].deadline, $record.timestamps[0])) {
+                $value | Should -BeOfType [string]
+                $value | Should -BeExactly $timestamp
+            }
+            ($record | ConvertTo-Json -Depth 10 -Compress) | Should -BeExactly $json
+        } finally {
+            $private.Dispose()
+        }
+    }
+
+    It 'Preserves ordered case-sensitive keys, scalar types, metadata and nested array shapes' {
+        $private = ConvertTo-HciPrivateValue '{"Name":"first","name":"second","":null,"items":[[],[1],null,{"number":2,"enabled":false}],"count":3,"ratio":1.5,"big":9223372036854775808,"enabled":true,"$type":"private-sentinel"}'
+        try {
+            $record = ConvertFrom-HciPrivateJson -Value $private
+
+            $record | Should -BeOfType [System.Management.Automation.OrderedHashtable]
+            @($record.Keys) | Should -Be @('Name', 'name', '', 'items', 'count', 'ratio', 'big', 'enabled', '$type')
+            $record['Name'] | Should -BeExactly 'first'
+            $record['name'] | Should -BeExactly 'second'
+            ($null -eq $record['']) | Should -BeTrue
+            $record.items.GetType().FullName | Should -Be 'System.Object[]'
+            $record.items.Count | Should -Be 4
+            $record.items[0].GetType().FullName | Should -Be 'System.Object[]'
+            $record.items[0].Count | Should -Be 0
+            $record.items[1].GetType().FullName | Should -Be 'System.Object[]'
+            $record.items[1].Count | Should -Be 1
+            $record.items[1][0] | Should -Be 1
+            ($null -eq $record.items[2]) | Should -BeTrue
+            $record.items[3].number | Should -Be 2
+            $record.items[3].enabled | Should -BeFalse
+            $record['count'] | Should -BeOfType [long]
+            $record.ratio | Should -BeOfType [double]
+            $record.big | Should -BeOfType [System.Numerics.BigInteger]
+            $record.enabled | Should -BeOfType [bool]
+            $record['$type'] | Should -BeExactly 'private-sentinel'
+        } finally {
+            $private.Dispose()
+        }
+    }
+
+    It 'Rejects <label> without exposing confidential JSON' -ForEach @(
+        @{ label = 'an empty value'; json = '' }
+        @{ label = 'malformed JSON'; json = '{"value":"private-sentinel"' }
+        @{ label = 'a single-object array'; json = '[{"value":"private-sentinel"}]' }
+        @{ label = 'a string array'; json = '["private-sentinel"]' }
+        @{ label = 'a string scalar'; json = '"private-sentinel"' }
+        @{ label = 'null'; json = 'null' }
+        @{ label = 'trailing JSON'; json = '{"value":"private-sentinel"}{"other":1}' }
+    ) {
+        $private = ConvertTo-HciPrivateValue -Value $json
+        try {
+            $failure = { ConvertFrom-HciPrivateJson -Value $private } |
+                Should -Throw 'The confidential HCI receipt is not a valid JSON object.' -PassThru
+
+            $failure.Exception.Message | Should -BeExactly 'The confidential HCI receipt is not a valid JSON object.'
+            $failure.ToString() | Should -Not -Match 'private-sentinel'
+        } finally {
+            $private.Dispose()
+        }
+    }
+}
+
 Describe 'HCI confidential receipt HTTP transport' {
     BeforeAll {
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
