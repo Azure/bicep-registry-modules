@@ -37,8 +37,9 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using kind SimpleLogAlert](#example-3-using-kind-simplelogalert)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using kind SimpleLogAlert with a resolve configuration](#example-3-using-kind-simplelogalert-with-a-resolve-configuration)
+- [Using kind SimpleLogAlert](#example-4-using-kind-simplelogalert)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -551,7 +552,120 @@ param windowSize = 'PT5M'
 </details>
 <p>
 
-### Example 3: _Using kind SimpleLogAlert_
+### Example 3: _Using kind SimpleLogAlert with a resolve configuration_
+
+This instance deploys the module as a simple log search alert (kind `SimpleLogAlert`) with a rule resolve configuration instead of `autoMitigate`.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/simple-log-alert-resolve]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
+  params: {
+    // Required parameters
+    criterias: {
+      allOf: [
+        {
+          query: 'Event | where EventLevelName == \'Error\''
+        }
+      ]
+    }
+    name: 'isqrslr001'
+    scopes: [
+      '<logAnalyticsWorkspaceResourceId>'
+    ]
+    // Non-required parameters
+    kind: 'SimpleLogAlert'
+    ruleResolveConfiguration: {
+      autoResolved: true
+      timeToResolve: 'PT5M'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "criterias": {
+      "value": {
+        "allOf": [
+          {
+            "query": "Event | where EventLevelName == \"Error\""
+          }
+        ]
+      }
+    },
+    "name": {
+      "value": "isqrslr001"
+    },
+    "scopes": {
+      "value": [
+        "<logAnalyticsWorkspaceResourceId>"
+      ]
+    },
+    // Non-required parameters
+    "kind": {
+      "value": "SimpleLogAlert"
+    },
+    "ruleResolveConfiguration": {
+      "value": {
+        "autoResolved": true,
+        "timeToResolve": "PT5M"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/scheduled-query-rule:<version>'
+
+// Required parameters
+param criterias = {
+  allOf: [
+    {
+      query: 'Event | where EventLevelName == \'Error\''
+    }
+  ]
+}
+param name = 'isqrslr001'
+param scopes = [
+  '<logAnalyticsWorkspaceResourceId>'
+]
+// Non-required parameters
+param kind = 'SimpleLogAlert'
+param ruleResolveConfiguration = {
+  autoResolved: true
+  timeToResolve: 'PT5M'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using kind SimpleLogAlert_
 
 This instance deploys the module as a simple log search alert (kind `SimpleLogAlert`).
 
@@ -650,7 +764,7 @@ param kind = 'SimpleLogAlert'
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

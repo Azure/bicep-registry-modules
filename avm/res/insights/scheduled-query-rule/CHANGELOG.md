@@ -7,7 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added support for kind `SimpleLogAlert`. Only the `SimpleLogAlert`-supported properties (`severity`, `autoMitigate`, `resolveConfiguration`) are applied for this kind.
-- Added a `simple-log-alert` e2e test.
+- Added `simple-log-alert` and `simple-log-alert-resolve` e2e tests.
 
 ### Breaking Changes
 
