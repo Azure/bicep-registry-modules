@@ -1,8 +1,9 @@
-param ([string] $RepoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.FullName)
+﻿param ([string] $RepoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.FullName)
 
 Describe 'HCI image build job handoffs' {
     BeforeAll {
         $buildScript = Join-Path $RepoRootPath 'utilities' 'e2e-template-assets' 'module-specific' 'azure-stack-hci' 'Invoke-HciHostImageBuild.ps1'
+        . (Join-Path (Split-Path $buildScript) 'HciImageOperation.ps1')
         function Get-AzContext { throw 'Unexpected Azure context lookup.' }
         function Set-AzContext { param ($SubscriptionId) }
         function New-AzSubscriptionDeployment { param ($Name, $Location, $TemplateFile, $TemplateParameterObject) }
@@ -30,6 +31,10 @@ Describe 'HCI image build job handoffs' {
         $script:omitOperationHeader = $false
         $script:operationHeaderName = 'Azure-AsyncOperation'
         $script:replicaState = 'Completed'
+        $script:postStatus = 202
+        $script:postRunState = 'Running'
+        $script:retryAfter = 15
+        $script:includeDifferentLocation = $false
         $script:inputs = @{
             AssetBaseUri = 'https://example.test/pinned-assets'
             SubscriptionId = '11111111-1111-1111-1111-111111111111'
@@ -50,15 +55,31 @@ Describe 'HCI image build job handoffs' {
             $script:templateExists = $true
             [pscustomobject] @{ ProvisioningState = 'Succeeded' }
         }
-        Mock Invoke-AzRestMethod {
+        Mock Invoke-HciImageOperationRequest {
             if ($Method -eq 'POST') {
                 $script:runStart = $script:now
-                $script:runState = 'Running'
-                $headers = $script:omitOperationHeader ? @{} : @{ $script:operationHeaderName = $script:operationHeaderValues }
-                return New-Response @{} 202 $headers
+                $script:runState = $script:postRunState
+                $response = @{ StatusCode = $script:postStatus; RetryAfterSeconds = $script:retryAfter }
+                if (-not $script:omitOperationHeader) {
+                    if (@($script:operationHeaderValues).Count -ne 1 -or -not $script:operationHeaderValues[0]) {
+                        throw 'The header is ambiguous; outcome is uncertain.'
+                    }
+                    $response[$script:operationHeaderName] = ConvertTo-SecureString $script:operationHeaderValues[0] -AsPlainText -Force
+                }
+                if ($script:includeDifferentLocation) {
+                    $response.Location = ConvertTo-SecureString "$($script:operationHeaderValues[0])&t=t&c=c&s=other-private-signature&h=h" -AsPlainText -Force
+                }
+                return $response
             }
+            ([pscredential]::new('operation', $Uri).GetNetworkCredential().Password) | Should -BeExactly $script:operationHeaderValues[0]
+            return @{
+                StatusCode = 200
+                RetryAfterSeconds = $script:retryAfter
+                Body = ConvertTo-SecureString (@{ status = $script:operationState } | ConvertTo-Json) -AsPlainText -Force
+            }
+        }
+        Mock Invoke-AzRestMethod {
             if ($Method -ne 'GET') { throw 'Unexpected write during image observation.' }
-            if ($Path -eq $script:operationPath) { return New-Response @{ status = $script:operationState } }
             if ($Path -like '*/versions/*') {
                 if (-not $script:published) { return New-Response @{} 404 }
                 return New-Response @{
@@ -84,14 +105,15 @@ Describe 'HCI image build job handoffs' {
         $script:operationHeaderName = $headerName
         $deadline = $script:now.AddMinutes(570)
         $result = . $buildScript @inputs -Operation Start -BuildDeadlineUtc $deadline
-        $receipt = $result.OperationReceipt | ConvertFrom-Json
+        $receipt = ConvertFrom-HciPrivateJson -Value $result.OperationReceipt
 
         $result.BuildStatus | Should -Be 'Running'
         $result.BuildStarted | Should -BeTrue
         ([datetimeoffset] $receipt.deadline).ToUniversalTime().ToString('o') | Should -Be $deadline.ToString('o')
-        $receipt.operationPath | Should -Be $script:operationPath
+        $result.OperationReceipt | Should -BeOfType [securestring]
+        $receipt.operationUri | Should -BeExactly $script:operationHeaderValues[0]
         ([datetimeoffset] $receipt.observedRunStartTime).ToUniversalTime().ToString('o') | Should -Be $script:runStart.ToString('o')
-        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
         Should -Invoke Start-Sleep -Times 0 -Exactly
         Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly -ParameterFilter {
             $TemplateParameterObject.createResourceGroup -eq $false -and
@@ -111,14 +133,14 @@ Describe 'HCI image build job handoffs' {
         $second.BuildStatus | Should -Be 'Running'
         foreach ($result in @($first, $second)) {
             $result.BuildStarted | Should -BeFalse
-            $actual = $result.OperationReceipt | ConvertFrom-Json
-            $original = $started.OperationReceipt | ConvertFrom-Json
+            $actual = ConvertFrom-HciPrivateJson -Value $result.OperationReceipt
+            $original = ConvertFrom-HciPrivateJson -Value $started.OperationReceipt
             $actual.deadline | Should -Be $original.deadline
-            $actual.operationPath | Should -Be $original.operationPath
+            $actual.operationUri | Should -BeExactly $original.operationUri
             $actual.observedRunStartTime | Should -Be $original.observedRunStartTime
         }
         Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
-        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
     }
 
     It 'Requires the recorded operation, same template run and completed replicas before succeeding' {
@@ -131,8 +153,8 @@ Describe 'HCI image build job handoffs' {
 
         $result.BuildStatus | Should -Be 'Succeeded'
         $result.BuildStarted | Should -BeFalse
-        $result.OperationReceipt | Should -BeNullOrEmpty
-        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        $result.OperationReceipt.Length | Should -Be 0
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
     }
 
     It 'Rejects <change> rather than accepting or replacing a different operation' -ForEach @(
@@ -144,7 +166,7 @@ Describe 'HCI image build job handoffs' {
         @{ change = 'an unobserved run identity'; kind = 'identity' }
     ) {
         $started = . $buildScript @inputs -Operation Start
-        $receipt = $started.OperationReceipt | ConvertFrom-Json -AsHashtable
+        $receipt = ConvertFrom-HciPrivateJson -Value $started.OperationReceipt
         $script:operationState = 'Succeeded'
         $script:runState = 'Succeeded'
         $script:published = $true
@@ -153,11 +175,12 @@ Describe 'HCI image build job handoffs' {
             failed { $script:operationState = 'Failed' }
             replica { $script:replicaState = 'Failed' }
             subscription { $receipt.imageTemplateResourceId = $receipt.imageTemplateResourceId.Replace('11111111', '33333333') }
-            path { $receipt.operationPath = '/providers/Microsoft.Authorization/operations?api-version=2024-02-01' }
+            path { $receipt.operationUri = 'https://management.azure.com/providers/Microsoft.Authorization/operations?api-version=2024-02-01' }
             identity { $receipt.observedRunStartTime = [datetimeoffset]::MinValue.ToString('o') }
         }
-        { . $buildScript @inputs -Operation Observe -OperationReceipt ($receipt | ConvertTo-Json -Depth 5 -Compress) } | Should -Throw
-        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        $changed = ConvertTo-SecureString ($receipt | ConvertTo-Json -Depth 5 -Compress) -AsPlainText -Force
+        { . $buildScript @inputs -Operation Observe -OperationReceipt $changed } | Should -Throw
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
     }
 
     It 'Exhausts the original overall deadline across jobs instead of extending it' {
@@ -165,19 +188,30 @@ Describe 'HCI image build job handoffs' {
         $pending = . $buildScript @inputs -Operation Observe -OperationReceipt $started.OperationReceipt -ObservationTimeoutInMinutes 1
         { . $buildScript @inputs -Operation Observe -OperationReceipt $pending.OperationReceipt -ObservationTimeoutInMinutes 1 } |
             Should -Throw '*Timed out*'
-        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+    }
+
+    It 'Does not submit after resource provisioning exhausts the original deadline' {
+        Mock New-AzSubscriptionDeployment {
+            $script:templateExists = $true
+            $script:now = $script:now.AddMinutes(3)
+            [pscustomobject] @{ ProvisioningState = 'Succeeded' }
+        }
+        { . $buildScript @inputs -Operation Start -BuildDeadlineUtc $script:now.AddMinutes(2) } |
+            Should -Throw '*before image submission*'
+        Should -Invoke Invoke-HciImageOperationRequest -Times 0 -Exactly -ParameterFilter { $Method -eq 'POST' }
     }
 
     It 'Does not adopt an active build without its original receipt' {
         $null = . $buildScript @inputs -Operation Start
         { . $buildScript @inputs -Operation Start } | Should -Throw '*cannot adopt or resubmit*'
-        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
     }
 
     It 'Reports an uncertain submission when the operation header is missing' {
         $script:omitOperationHeader = $true
         { . $buildScript @inputs -Operation Start } | Should -Throw '*outcome is uncertain*'
-        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
     }
 
     It 'Reports an uncertain submission for <change> without accepting another operation' -ForEach @(
@@ -206,6 +240,101 @@ Describe 'HCI image build job handoffs' {
             fragment { "$validHeader#unexpected" }
         }
         { . $buildScript @inputs -Operation Start } | Should -Throw '*outcome is uncertain*'
-        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+    }
+
+    It 'Preserves a signed URI longer than 4096 characters across jobs without public output' {
+        $script:operationHeaderValues = @("$($script:operationHeaderValues[0])&t=opaque-time&c=$('a' * 4300)&s=opaque-signature&h=opaque-hash")
+        $started = . $buildScript @inputs -Operation Start
+        $before = ConvertFrom-HciPrivateJson -Value $started.OperationReceipt
+        $before.operationUri.Length | Should -BeGreaterThan 4096
+        ($started | Out-String) | Should -Not -Match 'opaque-signature'
+        $pending = . $buildScript @inputs -Operation Observe -OperationReceipt $started.OperationReceipt -ObservationTimeoutInMinutes 1
+        $after = ConvertFrom-HciPrivateJson -Value $pending.OperationReceipt
+        $after.operationUri | Should -BeExactly $script:operationHeaderValues[0]
+        $after.operationUriHash | Should -BeExactly $before.operationUriHash
+    }
+
+    It 'Always chooses Azure-AsyncOperation over a differently signed Location' {
+        $script:includeDifferentLocation = $true
+        $started = . $buildScript @inputs -Operation Start
+        $receipt = ConvertFrom-HciPrivateJson -Value $started.OperationReceipt
+        $receipt.operationUri | Should -BeExactly $script:operationHeaderValues[0]
+        $null = . $buildScript @inputs -Operation Observe -OperationReceipt $started.OperationReceipt -ObservationTimeoutInMinutes 1
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+    }
+
+    It 'Carries a later Retry-After boundary across jobs without changing the accepted receipt' {
+        $started = . $buildScript @inputs -Operation Start
+        $originalHash = Get-HciImageOperationHash -OperationUri $started.OperationReceipt
+        $script:retryAfter = 120
+        $first = . $buildScript @inputs -Operation Observe -OperationReceipt $started.OperationReceipt -ObservationTimeoutInMinutes 1
+        $nextPoll = [datetimeoffset] $first.PollNotBeforeUtc
+        $nextPoll | Should -Be $script:now.AddSeconds(120)
+        $second = . $buildScript @inputs -Operation Observe -OperationReceipt $started.OperationReceipt `
+            -PollNotBeforeUtc $first.PollNotBeforeUtc -ObservationTimeoutInMinutes 1
+        $second.BuildStatus | Should -Be 'Running'
+        ([datetimeoffset] $second.PollNotBeforeUtc) | Should -Be $nextPoll
+        Get-HciImageOperationHash -OperationUri $started.OperationReceipt | Should -Be $originalHash
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'GET' }
+        $script:now = $nextPoll
+        $null = . $buildScript @inputs -Operation Observe -OperationReceipt $started.OperationReceipt `
+            -PollNotBeforeUtc $first.PollNotBeforeUtc -ObservationTimeoutInMinutes 1
+        Should -Invoke Invoke-HciImageOperationRequest -Times 2 -Exactly -ParameterFilter { $Method -eq 'GET' }
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+    }
+
+    It 'Rejects a Retry-After handoff earlier than the accepted receipt' {
+        $started = . $buildScript @inputs -Operation Start
+        { . $buildScript @inputs -Operation Observe -OperationReceipt $started.OperationReceipt `
+                -PollNotBeforeUtc $script:now.ToString('o') } | Should -Throw '*boundary moved backwards*'
+        Should -Invoke Invoke-HciImageOperationRequest -Times 0 -Exactly -ParameterFilter { $Method -eq 'GET' }
+    }
+
+    It 'Normalizes Retry-After handoffs to UTC before control-tag readback' {
+        $script:now = [datetimeoffset] '2026-10-01T10:00:00+05:30'
+        $started = . $buildScript @inputs -Operation Start
+        $started.PollNotBeforeUtc | Should -BeExactly $script:now.ToUniversalTime().AddSeconds(15).ToString('o')
+    }
+
+    It 'Rejects changed signed query bytes even when the endpoint remains valid' {
+        $script:operationHeaderValues = @("$($script:operationHeaderValues[0])&t=t&c=c&s=original-signature&h=h")
+        $started = . $buildScript @inputs -Operation Start
+        $receipt = ConvertFrom-HciPrivateJson -Value $started.OperationReceipt
+        $receipt.operationUri = $receipt.operationUri.Replace('original-signature', 'changed-signature')
+        $changed = ConvertTo-SecureString ($receipt | ConvertTo-Json -Depth 5 -Compress) -AsPlainText -Force
+        { . $buildScript @inputs -Operation Observe -OperationReceipt $changed } | Should -Throw '*exact URI changed*'
+        Should -Invoke Invoke-HciImageOperationRequest -Times 0 -Exactly -ParameterFilter { $Method -eq 'GET' }
+    }
+
+    It 'Handles documented synchronous HTTP <code> only with a completed new run and immutable replicas' -ForEach @(
+        @{ code = 200 }, @{ code = 204 }
+    ) {
+        $script:postStatus = $code
+        $script:postRunState = 'Succeeded'
+        $script:omitOperationHeader = $true
+        $started = . $buildScript @inputs -Operation Start
+        $receipt = ConvertFrom-HciPrivateJson -Value $started.OperationReceipt
+        $receipt.completionMode | Should -BeExactly 'Synchronous'
+        $receipt.operationUri | Should -BeNullOrEmpty
+        $started.BuildStatus | Should -BeExactly 'Running'
+        $script:published = $true
+        $result = . $buildScript @inputs -Operation Observe -OperationReceipt $started.OperationReceipt -ObservationTimeoutInMinutes 1
+        $result.BuildStatus | Should -BeExactly 'Succeeded'
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        Should -Invoke Invoke-HciImageOperationRequest -Times 0 -Exactly -ParameterFilter { $Method -eq 'GET' }
+    }
+
+    It 'Does not treat synchronous HTTP success with an unfinished run as ready' {
+        $script:postStatus = 204
+        $script:omitOperationHeader = $true
+        { . $buildScript @inputs -Operation Start } | Should -Throw '*did not identify a completed new run*'
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+    }
+
+    It 'Rejects undocumented HTTP 201 without retrying submission' {
+        $script:postStatus = 201
+        { . $buildScript @inputs -Operation Start } | Should -Throw '*HTTP *201*Do not resubmit*'
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
     }
 }

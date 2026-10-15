@@ -1,3 +1,5 @@
+﻿. (Join-Path $PSScriptRoot 'HciImageReceipt.ps1')
+
 function Get-HciEnvironmentKey {
     [CmdletBinding()]
     param ([Parameter(Mandatory)] [string] $Value)
@@ -315,6 +317,8 @@ function Start-HciEnvironmentPreparation {
     param (
         [Parameter(Mandatory)] [hashtable] $Context,
         [Parameter(Mandatory)] [ValidatePattern('^[a-f0-9]{40}$')] [string] $SourceCommit,
+        [string] $RunIdentity,
+        [string] $ReceiptStorageAccountName,
         [bool] $Recreate = $false,
         [bool] $Maintenance = $false
     )
@@ -377,11 +381,18 @@ function Start-HciEnvironmentPreparation {
     if ($registry.tags['avm-image-state'] -cne 'None') {
         throw 'The image operation is unfinished or uncertain. A new build will not be submitted.'
     }
+    if ($null -ne (Get-HciArmResource -ResourceId $Context.ImageVersionResourceId -ApiVersion '2024-03-03' -AllowNotFound)) {
+        Assert-HciImageReady -Context $Context
+        Set-HciEnvironmentState -Context $Context -Values @{ 'avm-image-state' = 'Ready' }
+        return
+    }
     $deadline = ([datetimeoffset] (Get-Date)).ToUniversalTime().AddMinutes($Context.Config.imageTimeoutMinutes)
     Set-HciEnvironmentState -Context $Context -Values @{
         'avm-image-state'    = 'Submitting'
         'avm-image-deadline' = $deadline.ToString('o')
     }
+    $store = Get-HciImageReceiptContext -Context $Context -SourceCommit $SourceCommit -RunIdentity $RunIdentity -StorageAccountName $ReceiptStorageAccountName
+    $pending = New-HciImageReceipt -Store $store
     $build = @{
         TemplateFile              = Join-Path $Context.AssetRoot 'hciHostGalleryBuilder.bicep'
         AssetBaseUri              = "https://raw.githubusercontent.com/Azure/bicep-registry-modules/$SourceCommit/utilities/e2e-template-assets/module-specific/azure-stack-hci"
@@ -409,13 +420,27 @@ function Start-HciEnvironmentPreparation {
     if ($result.BuildStatus -eq 'Skipped') {
         Assert-HciImageReady -Context $Context
         Set-HciEnvironmentState -Context $Context -Values @{ 'avm-image-state' = 'Ready' }
-    } elseif ($result.BuildStatus -eq 'Running') {
-        $receipt = $result.OperationReceipt | ConvertFrom-Json -AsHashtable -ErrorAction Stop
-        Set-HciEnvironmentState -Context $Context -Values @{
-            'avm-image-state'    = 'Running'
-            'avm-image-start'    = (ConvertTo-HciImageBuildTimestamp -Value $receipt.observedRunStartTime).ToString('o')
-            'avm-image-previous' = (ConvertTo-HciImageBuildTimestamp -Value $receipt.previousRunStartTime).ToString('o')
-            'avm-image-operation' = ($receipt.operationPath -split '/operations/')[1]
+    } elseif ($result.BuildStatus -in @('Running', 'Succeeded')) {
+        try {
+            $accepted = Set-HciImageReceipt -Store $store -PendingETag $pending.ETag -OperationReceipt $result.OperationReceipt
+            $receipt = ConvertFrom-HciPrivateJson -Value $result.OperationReceipt
+            Set-HciEnvironmentState -Context $Context -Values @{
+                'avm-image-state'    = 'Running'
+                'avm-image-start'    = $receipt.observedRunStartTime
+                'avm-image-previous' = $receipt.previousRunStartTime
+                'avm-image-operation' = $receipt.operationId
+                'avm-image-receipt' = $accepted.Key
+                'avm-image-etag' = $accepted.ETag
+                'avm-image-hash' = $accepted.Hash
+                'avm-image-poll-after' = $result.PollNotBeforeUtc
+            }
+            if ($result.BuildStatus -eq 'Succeeded') {
+                Assert-HciImageReady -Context $Context
+                Set-HciEnvironmentState -Context $Context -Values @{ 'avm-image-state' = 'Ready' }
+            }
+        } finally {
+            $receipt = $null
+            if ($result.OperationReceipt -is [securestring]) { $result.OperationReceipt.Dispose() }
         }
     } else {
         throw 'Image submission returned an unexpected result; the environment remains blocked.'
@@ -426,7 +451,9 @@ function Wait-HciEnvironmentImage {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)] [hashtable] $Context,
-        [Parameter(Mandatory)] [ValidatePattern('^[a-f0-9]{40}$')] [string] $SourceCommit
+        [Parameter(Mandatory)] [ValidatePattern('^[a-f0-9]{40}$')] [string] $SourceCommit,
+        [string] $RunIdentity,
+        [string] $ReceiptStorageAccountName
     )
 
     $registry = Get-HciEnvironmentRegistry -Context $Context -RequireOwner
@@ -437,15 +464,8 @@ function Wait-HciEnvironmentImage {
     if ($registry.tags['avm-state'] -cne 'Preparing' -or $registry.tags['avm-image-state'] -cne 'Running' -or $Context.ExternalImage) {
         throw 'There is no recorded owned image operation to observe.'
     }
-    $receipt = @{
-        imageVersionResourceId  = $Context.ImageVersionResourceId
-        imageTemplateResourceId = $Context.ImageTemplateResourceId
-        previousRunStartTime    = $registry.tags['avm-image-previous']
-        observedRunStartTime    = $registry.tags['avm-image-start']
-        deadline                = $registry.tags['avm-image-deadline']
-        requiredRegions         = @($Context.Config.location)
-        operationPath           = "/subscriptions/$($Context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/$($Context.Config.location)/operations/$($registry.tags['avm-image-operation'])"
-    }
+    $store = Get-HciImageReceiptContext -Context $Context -SourceCommit $SourceCommit -RunIdentity $RunIdentity -StorageAccountName $ReceiptStorageAccountName
+    $receipt = Get-HciImageReceipt -Store $store -Tags $registry.tags
     $build = @{
         AssetBaseUri             = "https://raw.githubusercontent.com/Azure/bicep-registry-modules/$SourceCommit/utilities/e2e-template-assets/module-specific/azure-stack-hci"
         SubscriptionId           = $Context.SubscriptionId
@@ -458,15 +478,23 @@ function Wait-HciEnvironmentImage {
         ImageVersion             = $Context.Config.imageVersion
         ImageTemplateName        = $Context.Config.imageTemplateName
         Operation                = 'Observe'
-        OperationReceipt         = $receipt | ConvertTo-Json -Depth 5 -Compress
+        OperationReceipt         = $receipt
+        PollNotBeforeUtc          = $registry.tags['avm-image-poll-after']
         ObservationTimeoutInMinutes = 270
     }
-    $result = . (Join-Path $Context.AssetRoot 'Invoke-HciHostImageBuild.ps1') @build
+    try {
+        $result = . (Join-Path $Context.AssetRoot 'Invoke-HciHostImageBuild.ps1') @build
+    } finally {
+        $build.OperationReceipt.Dispose()
+    }
+    if ($result.OperationReceipt -is [securestring]) { $result.OperationReceipt.Dispose() }
     if ($result.BuildStatus -eq 'Succeeded') {
         Assert-HciImageReady -Context $Context
         Set-HciEnvironmentState -Context $Context -Values @{ 'avm-image-state' = 'Ready' }
     } elseif ($result.BuildStatus -ne 'Running') {
         throw 'Image observation returned an unexpected result; the environment remains blocked.'
+    } else {
+        Set-HciEnvironmentState -Context $Context -Values @{ 'avm-image-poll-after' = $result.PollNotBeforeUtc }
     }
 }
 
