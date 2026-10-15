@@ -1,4 +1,4 @@
-param ([string] $RepoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.FullName)
+﻿param ([string] $RepoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.FullName)
 
 Describe 'Reserved Azure Local workflow and fixture wiring' {
     BeforeAll {
@@ -157,6 +157,18 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $invoke.with.inlineScript | Should -Match ([regex]::Escape("-ModulePath 'avm/res/azure-stack-hci/logical-network'"))
         $invoke.with.inlineScript | Should -Match 'git rev-parse HEAD'
         $invoke.env.HCI_RUN_IDENTITY | Should -Be '${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}'
+        $invoke.env.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT | Should -Be '${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}'
+        $invoke.env.CI_KEY_VAULT_NAME | Should -Be '${{ vars.CI_KEY_VAULT_NAME }}'
+        $invoke.with.inlineScript | Should -Match ([regex]::Escape('-ReceiptStorageAccountName $env:HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT'))
+        $invoke.with.inlineScript | Should -Match ([regex]::Escape('-KeyVaultName $env:CI_KEY_VAULT_NAME'))
+    }
+
+    It 'Keeps private receipt storage out of generic deployments and HCI consumers' {
+        foreach ($workflow in @($consumer, $deployment, $action)) {
+            ($workflow | ConvertTo-Json -Depth 30) | Should -Not -Match 'HCI_IMAGE_RECEIPT|HciImageReceipt|ReceiptStorageAccountName'
+        }
+        @($prepare.on.workflow_call.inputs.Keys | Sort-Object) | Should -Be @('recreate', 'testCase')
+        ($prepare | ConvertTo-Json -Depth 30) | Should -Not -Match 'upload-artifact|storageAccountKey|storageSasToken'
     }
 
     It 'Keeps the complete history inventory on the same canonical pool and identity bundle' {
