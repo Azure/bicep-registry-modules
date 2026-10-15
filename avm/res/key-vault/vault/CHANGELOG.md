@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/CHANGELOG.md).
 
+## 0.14.3
+
+### Changes
+
+- Marked `contentType` as secure in `secretType`, matching the secret child module.
+
+### Breaking Changes
+
+- None
+
 ## 0.14.2
 
 ### Changes
