@@ -1,4 +1,4 @@
-param ([string] $RepoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.FullName)
+﻿param ([string] $RepoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.FullName)
 
 Describe 'Reserved Azure Local environment ownership and readiness' {
     BeforeAll {
@@ -46,6 +46,49 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
                     replicationStatus = @{ summary = @(@{ region = $context.Config.location; state = 'Completed' }) }
                 }
             }
+        }
+        function Add-ReceiptStore {
+            $accountId = "$($context.GroupIds.control)/providers/Microsoft.Storage/storageAccounts/sthcircpabcdefghijklm"
+            $script:resources[$accountId] = @{
+                id = $accountId
+                location = $context.Config.location
+                kind = 'StorageV2'
+                sku = @{ name = 'Standard_LRS' }
+                tags = @{
+                    lifecycle = 'tenant-persistent'
+                    'avm-owner' = 'Azure/bicep-registry-modules'
+                    'avm-environment' = 'azure-local'
+                    'avm-purpose' = 'image-operation-receipts'
+                    'avm-receipt-version' = '1'
+                    'avm-tenant' = $context.TenantId
+                    'avm-subscription' = $context.SubscriptionId
+                    'avm-ci-client' = '66666666-6666-6666-6666-666666666666'
+                    'avm-ci-principal' = '77777777-7777-7777-7777-777777777777'
+                }
+                properties = @{
+                    provisioningState = 'Succeeded'
+                    accessTier = 'Hot'
+                    allowCrossTenantReplication = $false
+                    defaultToOAuthAuthentication = $true
+                    allowBlobPublicAccess = $false
+                    allowSharedKeyAccess = $false
+                    supportsHttpsTrafficOnly = $true
+                    minimumTlsVersion = 'TLS1_2'
+                    publicNetworkAccess = 'Enabled'
+                    primaryEndpoints = @{ blob = 'https://sthcircpabcdefghijklm.blob.core.windows.net/' }
+                }
+            }
+            $id = "$accountId/blobServices/default"
+            $script:resources[$id] = @{
+                id = $id
+                properties = @{
+                    isVersioningEnabled = $false
+                    deleteRetentionPolicy = @{ enabled = $false }
+                    containerDeleteRetentionPolicy = @{ enabled = $false }
+                }
+            }
+            $id = "$accountId/blobServices/default/containers/hci-operation-receipts"
+            $script:resources[$id] = @{ id = $id; properties = @{ publicAccess = 'None' } }
         }
         function Add-ReadyFoundation {
             $prefix = $context.GroupIds.foundation
@@ -102,6 +145,41 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         Mock Start-Sleep {}
         Mock Get-AzResourceGroupDeployment { @() }
         Mock New-AzSubscriptionDeployment { throw 'Unexpected image deployment in offline test.' }
+        $script:receiptBlob = $null
+        $script:receiptETag = $null
+        $script:receiptFailure = ''
+        Mock Invoke-HciImageReceiptRequest {
+            if ($script:receiptFailure -ceq $Operation) { throw "Offline receipt $Operation failure." }
+            if ($Operation -eq 'Create') {
+                if ($script:receiptBlob) { throw 'Offline receipt already exists.' }
+                $script:receiptETag = '"0xABC1"'
+            } elseif ($ETag -cne $script:receiptETag) {
+                throw 'Offline receipt ETag mismatch.'
+            }
+            if ($Operation -eq 'Read') {
+                if ($script:receiptFailure -ceq 'AcceptedRead' -and $script:receiptETag -ceq '"0xABC2"') {
+                    throw 'Offline accepted receipt read failure.'
+                }
+                return @{ ETag = $script:receiptETag; Body = ConvertTo-SecureString $script:receiptBlob -AsPlainText -Force }
+            }
+            if ($Operation -eq 'Replace') { $script:receiptETag = '"0xABC2"' }
+            $script:receiptBlob = [pscredential]::new('receipt', $Body).GetNetworkCredential().Password
+            return @{ ETag = $script:receiptETag }
+        }
+        Mock Invoke-HciImageOperationRequest {
+            $uriValue = [uri] [pscredential]::new('operation', $Uri).GetNetworkCredential().Password
+            $response = Invoke-AzRestMethod -Method $Method -Path $uriValue.PathAndQuery
+            $result = @{ StatusCode = $response.StatusCode; RetryAfterSeconds = 15 }
+            if ($Method -eq 'GET') {
+                $result.Body = ConvertTo-SecureString $response.Content -AsPlainText -Force
+            } elseif ($response.Headers) {
+                $values = $null
+                if ($response.Headers.TryGetValues('Azure-AsyncOperation', [ref] $values)) {
+                    $result['Azure-AsyncOperation'] = ConvertTo-SecureString @($values)[0] -AsPlainText -Force
+                }
+            }
+            return $result
+        }
         Mock Invoke-AzRestMethod {
             $id = ($Path -split '\?')[0]
             if ($Method -eq 'GET') {
@@ -152,6 +230,67 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         $context.ImageVersionResourceId | Should -Not -Match 'persistent'
         $context.Tags.lifecycle | Should -Be 'tenant-persistent'
         $context.GroupIds.Values | Sort-Object -Unique | Should -HaveCount 4
+        $context.Config.hciVhdxDownloadUri | Should -BeExactly 'https://jumpstartprodsg.blob.core.windows.net/jslocal/localbox/prod/AzLocal2601.vhdx'
+        $context.Config.hciVhdxSha256 | Should -BeExactly '3a797826d7e7ae7abc55d1071322ddecc80575c2356fea9e74818ab9f6720a1f'
+    }
+
+    It 'Rejects an invalid payload <field> before resource access' -ForEach @(
+        @{ field = 'hciVhdxDownloadUri'; value = '' }
+        @{ field = 'hciVhdxDownloadUri'; value = 'http://example.test/AzLocal2601.vhdx' }
+        @{ field = 'hciVhdxDownloadUri'; value = 'https://user@example.test/AzLocal2601.vhdx' }
+        @{ field = 'hciVhdxDownloadUri'; value = 'https://example.test/AzLocal2601.vhdx?query=1' }
+        @{ field = 'hciVhdxDownloadUri'; value = 'https://example.test/AzLocal2601.vhdx#fragment' }
+        @{ field = 'hciVhdxSha256'; value = $null }
+        @{ field = 'hciVhdxSha256'; value = '' }
+        @{ field = 'hciVhdxSha256'; value = 'a' * 63 }
+        @{ field = 'hciVhdxSha256'; value = 'a' * 65 }
+        @{ field = 'hciVhdxSha256'; value = 'g' * 64 }
+        @{ field = 'hciVhdxSha256'; value = ('a' * 64) + "`n" }
+    ) {
+        $script:unsupportedConfig = $context.Config.Clone()
+        $script:unsupportedConfig[$field] = $value
+        Mock Get-Content { $script:unsupportedConfig | ConvertTo-Json } -ParameterFilter { $LiteralPath -like '*environment.json' }
+
+        { Get-HciEnvironmentContext @inputObject } | Should -Throw '*payload contract requires*'
+
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+    }
+
+    It 'Binds the payload <field> into the ownership contract' -ForEach @(
+        @{ field = 'hciVhdxDownloadUri'; value = 'https://example.test/AzLocal2601.vhdx' }
+        @{ field = 'hciVhdxSha256'; value = 'b' * 64 }
+    ) {
+        $script:changedConfig = $context.Config.Clone()
+        $script:changedConfig[$field] = $value
+        Mock Get-Content { $script:changedConfig | ConvertTo-Json } -ParameterFilter { $LiteralPath -like '*environment.json' }
+
+        $changedContext = Get-HciEnvironmentContext @inputObject
+
+        $changedContext.Tags['avm-contract'] | Should -Not -Be $context.Tags['avm-contract']
+    }
+
+    It 'Blocks an old payload contract on the <kind> group without migrating it automatically' -ForEach @(
+        @{ kind = 'control' }
+        @{ kind = 'foundation' }
+        @{ kind = 'image' }
+        @{ kind = 'staging' }
+    ) {
+        Add-Registry -State Idle -ImageState None
+        $oldConfig = $context.Config.Clone()
+        $oldConfig.Remove('hciVhdxDownloadUri')
+        $oldConfig.Remove('hciVhdxSha256')
+        $oldContract = Get-HciEnvironmentKey -Value ($oldConfig | ConvertTo-Json -Depth 5 -Compress)
+        $oldContract | Should -Not -Be $context.Tags['avm-contract']
+        $script:resources[$context.GroupIds[$kind]].tags['avm-contract'] = $oldContract
+
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true } |
+            Should -Throw '*mismatched ownership/version tag*avm-contract*'
+
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+        $script:deleted.Count | Should -Be 0
     }
 
     It 'Rejects an unsupported shared environment region before resource access' -ForEach @(
@@ -658,12 +797,22 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'PUT' }
     }
 
-    It 'Records a new owned image operation durably and observes it from a fresh context without resubmitting' {
+    It 'Keeps one accepted build protected through <failure> receipt handling' -ForEach @(
+        @{ failure = 'none' }, @{ failure = 'Replace' }, @{ failure = 'AcceptedRead' }, @{ failure = 'Publish' }
+    ) {
+        Add-ReceiptStore
+        $script:receiptFailure = $failure
+        $script:fullOperationPath = "/subscriptions/$($context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/$($context.Config.location)/operations/55555555-5555-5555-5555-555555555555?api-version=2025-10-01&t=t&c=$('x' * 4300)&s=private-test-signature&h=h"
+        if ($failure -eq 'Publish') {
+            Mock Update-AzTag { throw 'Offline receipt publication failure.' } -ParameterFilter { $Tag.ContainsKey('avm-image-receipt') }
+        }
         Mock New-AzSubscriptionDeployment {
             $Location | Should -BeExactly $context.Config.location
             $TemplateParameterObject.location | Should -BeExactly $context.Config.location
             $TemplateParameterObject.buildLocation | Should -BeExactly $context.Config.location
             $TemplateParameterObject.replicationRegions | Should -Be @($context.Config.location)
+            $TemplateParameterObject.hciVhdxDownloadUri | Should -BeExactly $context.Config.hciVhdxDownloadUri
+            $TemplateParameterObject.hciVhdxSha256 | Should -BeExactly $context.Config.hciVhdxSha256
             $TemplateParameterObject.useScopedContributorRole | Should -BeTrue
             $TemplateParameterObject.createResourceGroup | Should -BeFalse
             $TemplateParameterObject.tags.lifecycle | Should -Be 'tenant-persistent'
@@ -681,7 +830,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             }
             $response = [System.Net.Http.HttpResponseMessage]::new()
             try {
-                $response.Headers.Add('Azure-AsyncOperation', "https://management.azure.com/subscriptions/$($context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/$($context.Config.location)/operations/55555555-5555-5555-5555-555555555555?api-version=2025-10-01")
+                $response.Headers.Add('Azure-AsyncOperation', "https://management.azure.com$script:fullOperationPath")
                 [pscustomobject] @{
                     StatusCode = 202
                     Content = '{}'
@@ -692,11 +841,32 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             }
         } -ParameterFilter { $Method -eq 'POST' }
 
-        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true
+        $startInput = @{
+            Context = $context
+            SourceCommit = 'b' * 40
+            Maintenance = $true
+            RunIdentity = 'offline/repository|123|1'
+            ReceiptStorageAccountName = 'sthcircpabcdefghijklm'
+        }
+        if ($failure -ne 'none') {
+            { Start-HciEnvironmentPreparation @startInput } | Should -Throw '*Offline*receipt*failure*'
+            $tags = $script:resources[$context.GroupIds.control].tags
+            $tags['avm-image-state'] | Should -Be 'Submitting'
+            $deadline = $tags['avm-image-deadline']
+            { Start-HciEnvironmentPreparation @startInput } | Should -Throw '*not idle*'
+            $tags['avm-image-deadline'] | Should -Be $deadline
+            Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+            Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+            return
+        }
+        Start-HciEnvironmentPreparation @startInput
 
         $tags = $script:resources[$context.GroupIds.control].tags
         $tags['avm-image-state'] | Should -Be 'Running'
-        $tags['avm-image-operation'] | Should -Be '55555555-5555-5555-5555-555555555555?api-version=2025-10-01'
+        $tags['avm-image-operation'] | Should -Be '55555555-5555-5555-5555-555555555555'
+        $tags['avm-image-receipt'] | Should -Match '^[a-f0-9]{64}$'
+        $tags['avm-image-etag'] | Should -BeExactly '"0xABC2"'
+        ($tags | ConvertTo-Json) | Should -Not -Match 'api-version|management.azure.com|private-test-signature'
         $deadline = $tags['avm-image-deadline']
         $freshContext = Get-HciEnvironmentContext @inputObject
         Add-ReadyImage
@@ -705,7 +875,8 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             [pscustomobject] @{ StatusCode = 200; Content = '{"status":"Succeeded"}' }
         } -ParameterFilter { $Method -eq 'GET' -and $Path -like '*/Microsoft.VirtualMachineImages/locations/*/operations/*' }
 
-        Wait-HciEnvironmentImage -Context $freshContext -SourceCommit ('b' * 40)
+        Wait-HciEnvironmentImage -Context $freshContext -SourceCommit ('b' * 40) `
+            -RunIdentity 'offline/repository|123|1' -ReceiptStorageAccountName 'sthcircpabcdefghijklm'
 
         $tags['avm-image-state'] | Should -Be 'Ready'
         $tags['avm-image-deadline'] | Should -Be $deadline
@@ -713,8 +884,76 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
         Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter {
             $Method -eq 'GET' -and
-            $Path -eq "/subscriptions/$($context.SubscriptionId)/providers/Microsoft.VirtualMachineImages/locations/$($context.Config.location)/operations/55555555-5555-5555-5555-555555555555?api-version=2025-10-01"
+            $Path -ceq $script:fullOperationPath
         }
+    }
+
+    It 'Stops before image deployment or POST when private receipt <operation> fails' -ForEach @(
+        @{ operation = 'Create' }, @{ operation = 'Read' }, @{ operation = 'Conflict' }
+    ) {
+        Add-Registry -State Idle -ImageState None
+        Add-ReceiptStore
+        $script:receiptFailure = $operation
+        if ($operation -eq 'Conflict') { $script:receiptBlob = '{"state":"existing"}' }
+
+        { Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true `
+                -RunIdentity 'offline/repository|123|1' -ReceiptStorageAccountName 'sthcircpabcdefghijklm' } |
+            Should -Throw '*Offline receipt*'
+
+        Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+        Should -Invoke Invoke-HciImageOperationRequest -Times 0 -Exactly
+        $script:resources[$context.GroupIds.control].tags['avm-image-state'] | Should -Be 'Submitting'
+    }
+
+    It 'Requires a dedicated receipt binding only when a new owned image is needed' {
+        Add-Registry -State Idle -ImageState None
+        Add-ReadyImage
+
+        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) -Maintenance:$true
+
+        $script:resources[$context.GroupIds.control].tags['avm-image-state'] | Should -Be 'Ready'
+        Should -Invoke Invoke-HciImageReceiptRequest -Times 0 -Exactly
+        Should -Invoke Invoke-HciImageOperationRequest -Times 0 -Exactly
+    }
+
+    It 'Rejects <change> receipt storage before any data-plane request' -ForEach @(
+        @{ change = 'a different returned account'; kind = 'identity' }
+        @{ change = 'foreign ownership'; kind = 'owner' }
+        @{ change = 'a wrong tenant'; kind = 'tenant' }
+        @{ change = 'a missing CI principal'; kind = 'principal' }
+        @{ change = 'a different region'; kind = 'region' }
+        @{ change = 'anonymous account access'; kind = 'anonymous' }
+        @{ change = 'Shared Key authorization'; kind = 'key' }
+        @{ change = 'an unexpected blob endpoint'; kind = 'endpoint' }
+        @{ change = 'anonymous container access'; kind = 'container' }
+        @{ change = 'untracked versions'; kind = 'versions' }
+        @{ change = 'untracked soft-delete copies'; kind = 'softDelete' }
+    ) {
+        Add-Registry -ImageState Submitting
+        Add-ReceiptStore
+        $script:resources[$context.GroupIds.control].tags['avm-image-deadline'] = [datetimeoffset]::UtcNow.AddMinutes(30).ToString('o')
+        $accountId = "$($context.GroupIds.control)/providers/Microsoft.Storage/storageAccounts/sthcircpabcdefghijklm"
+        $account = $script:resources[$accountId]
+        switch ($kind) {
+            identity { $account.id = "$accountId-other" }
+            owner { $account.tags['avm-owner'] = 'another/repository' }
+            tenant { $account.tags['avm-tenant'] = '99999999-9999-9999-9999-999999999999' }
+            principal { $account.tags.Remove('avm-ci-principal') }
+            region { $account.location = 'eastus' }
+            anonymous { $account.properties.allowBlobPublicAccess = $true }
+            key { $account.properties.allowSharedKeyAccess = $true }
+            endpoint { $account.properties.primaryEndpoints.blob = 'https://another.blob.core.windows.net/' }
+            container { $script:resources["$accountId/blobServices/default/containers/hci-operation-receipts"].properties.publicAccess = 'Blob' }
+            versions { $script:resources["$accountId/blobServices/default"].properties.isVersioningEnabled = $true }
+            softDelete { $script:resources["$accountId/blobServices/default"].properties.deleteRetentionPolicy.enabled = $true }
+        }
+
+        $expected = $kind -eq 'identity' ? '*Cannot verify Azure Local resource*' : '*HCI receipt*'
+        { Get-HciImageReceiptContext -Context $context -SourceCommit ('b' * 40) `
+                -RunIdentity 'offline/repository|123|1' -StorageAccountName 'sthcircpabcdefghijklm' } | Should -Throw $expected
+
+        Should -Invoke Invoke-HciImageReceiptRequest -Times 0 -Exactly
+        Should -Invoke Invoke-HciImageOperationRequest -Times 0 -Exactly
     }
 
     Context 'Dedicated test consumer boundary' {

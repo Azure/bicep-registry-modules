@@ -94,35 +94,72 @@ Describe 'Module deployment matrix' {
         $matrixInput.TestSubscriptionIds = ConvertTo-Json -InputObject $pool -Compress
         '{"avm/res/example/module":"Azure Local"}' | Set-Content -LiteralPath (Join-Path $TestDrive '.reserved-test-subscriptions.json')
 
-        $reserved = (Get-ModuleDeploymentMatrix @matrixInput).testCases
+        $reserved = (Get-ModuleDeploymentMatrix @matrixInput -ExpectedSubscriptionTag 'Azure Local').testCases
 
         @($reserved.subscriptionIndex | Sort-Object -Unique) | Should -Be @(1)
         @($reserved.subscriptionName | Sort-Object -Unique) | Should -Be @('reserved')
         $reserved[0].subscriptionKey | Should -Be (Get-TestSubscriptionList -FallbackSubscriptionId $subscriptions[1].id).key
         $reserved[0].concurrencyGroup | Should -Be "avm-deploy-avm/res/example/module-$($reserved[0].subscriptionKey)"
-        $reserved[0].environmentConcurrencyGroup | Should -Be "avm-hci-$($reserved[0].subscriptionKey)"
-        @($reserved.environmentConcurrencyGroup | Sort-Object -Unique).Count | Should -Be 1
+        foreach ($entry in $reserved) {
+            $entry.ContainsKey('environmentConcurrencyGroup') | Should -BeFalse
+        }
 
         '{}' | Set-Content -LiteralPath (Join-Path $TestDrive '.reserved-test-subscriptions.json')
         $general = (Get-ModuleDeploymentMatrix @matrixInput).testCases
         @($general.subscriptionIndex | Sort-Object -Unique) | Should -Be @(0, 2)
         $general.subscriptionKey | Should -Not -Contain $reserved[0].subscriptionKey
-        @($general | Where-Object environmentConcurrencyGroup).Count | Should -Be 0
+        foreach ($entry in $general) {
+            $entry.ContainsKey('environmentConcurrencyGroup') | Should -BeFalse
+        }
     }
 
-    It 'Keeps the same environment lock across different reserved module roots without changing module locks' {
+    It 'Keeps subscription identities stable across dedicated module roots without adding environment-specific locks' {
         $matrixInput.TestSubscriptionIds = @(@{ id = $subscriptions[0].id; name = 'reserved'; tag = 'Azure Local' }) | ConvertTo-Json -AsArray -Compress
         '{"avm/res/example/module":"Azure Local","avm/res/example/other":"Azure Local"}' |
             Set-Content -LiteralPath (Join-Path $TestDrive '.reserved-test-subscriptions.json')
-        $first = (Get-ModuleDeploymentMatrix @matrixInput).testCases
+        $first = (Get-ModuleDeploymentMatrix @matrixInput -ExpectedSubscriptionTag 'Azure Local').testCases
         $matrixInput.ModulePath = 'avm/res/example/other'
         foreach ($test in $testFiles) {
             $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $test.path)] = New-ScopeTemplate
         }
-        $second = (Get-ModuleDeploymentMatrix @matrixInput).testCases
-        $first[0].environmentConcurrencyGroup | Should -BeExactly $second[0].environmentConcurrencyGroup
+        $second = (Get-ModuleDeploymentMatrix @matrixInput -ExpectedSubscriptionTag 'Azure Local').testCases
+        $first[0].subscriptionKey | Should -BeExactly $second[0].subscriptionKey
         $first[0].concurrencyGroup | Should -Not -Be $second[0].concurrencyGroup
-        $first[0].environmentConcurrencyGroup | Should -Not -Be $first[0].concurrencyGroup
+        foreach ($entry in @($first) + @($second)) {
+            $entry.ContainsKey('environmentConcurrencyGroup') | Should -BeFalse
+        }
+    }
+
+    It 'Rejects active deployment selection with mismatched tags before compilation' -ForEach @(
+        @{ required = 'Azure Local'; expected = 'General' }
+        @{ required = 'General'; expected = 'Azure Local' }
+        @{ required = 'Dedicated Lab'; expected = 'General' }
+        @{ required = 'Azure Local'; expected = 'azure local' }
+    ) {
+        @{ 'avm/res/example/module' = $required } | ConvertTo-Json |
+            Set-Content -LiteralPath (Join-Path $TestDrive '.reserved-test-subscriptions.json')
+
+        { Get-ModuleDeploymentMatrix @matrixInput -ExpectedSubscriptionTag $expected } |
+            Should -Throw "*Use the module's dedicated workflow for deployment validation*"
+        Should -Invoke bicep -Times 0 -Exactly
+    }
+
+    It 'Keeps deliberately ignored reserved cases independent without a pool or dedicated caller' {
+        '{"avm/res/example/module":"Azure Local"}' |
+            Set-Content -LiteralPath (Join-Path $TestDrive '.reserved-test-subscriptions.json')
+        $testFiles | ForEach-Object { $_.e2eIgnore = $true }
+        $matrixInput.TestSubscriptionIds = ''
+
+        $selection = Get-ModuleDeploymentMatrix @matrixInput
+
+        $selection.testCases.Count | Should -Be $testFiles.Count
+        foreach ($entry in $selection.testCases) {
+            $entry.e2eIgnore | Should -BeTrue
+            $entry.subscriptionKey | Should -BeNullOrEmpty
+            $entry.concurrencyGroup | Should -Not -BeNullOrEmpty
+            $entry.ContainsKey('environmentConcurrencyGroup') | Should -BeFalse
+        }
+        Should -Invoke bicep -Times 0 -Exactly
     }
 
     It 'Fails before compilation when a reservation has no eligible subscriptions or only a legacy fallback' -ForEach @(
@@ -134,7 +171,7 @@ Describe 'Module deployment matrix' {
         $matrixInput.TestSubscriptionIds = $pool
         $matrixInput.FallbackSubscriptionId = $subscriptions[0].id
 
-        { Get-ModuleDeploymentMatrix @matrixInput } | Should -Throw
+        { Get-ModuleDeploymentMatrix @matrixInput -ExpectedSubscriptionTag 'Azure Local' } | Should -Throw
         Should -Invoke bicep -Times 0 -Exactly
     }
 

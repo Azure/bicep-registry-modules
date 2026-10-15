@@ -90,7 +90,7 @@ Describe 'Pinned tools workflow callers' {
             $caller = $Workflow.jobs.'call-workflow-passing-data'
             $caller.name | Should -Be 'Run'
             @($caller.needs) | Should -Be @('job_initialize_pipeline')
-            $caller.uses | Should -Be ($local ? './.github/workflows/avm.template.module.yml' : "$toolsRepository/.github/workflows/bicep-module.yml@$toolsRef")
+            $caller.uses | Should -Be ($local ? './.github/workflows/avm.template.hci.module.yml' : "$toolsRepository/.github/workflows/bicep-module.yml@$toolsRef")
             $expectedInputs = @('modulePath', 'moduleTestFilePaths', 'psRuleModuleTestFilePaths', 'workflowInput')
             if ($local) {
                 $caller.with.ContainsKey('tools-ref') | Should -BeFalse

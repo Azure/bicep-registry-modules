@@ -1,4 +1,4 @@
-function Invoke-HciPreparationStep {
+﻿function Invoke-HciPreparationStep {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)] [ValidateSet('Begin', 'ImageObserve', 'FoundationStart', 'FoundationObserve', 'Ready')] [string] $Stage,
@@ -12,6 +12,7 @@ function Invoke-HciPreparationStep {
         [string] $GitHubVariables = '{}',
         [string] $GitHubSecrets = '{}',
         [string] $KeyVaultName,
+        [string] $ReceiptStorageAccountName,
         [bool] $Recreate = $false,
         [bool] $Maintenance = $false
     )
@@ -58,10 +59,11 @@ function Invoke-HciPreparationStep {
     }
     switch ($Stage) {
         'Begin' {
-            Start-HciEnvironmentPreparation -Context $context -SourceCommit $SourceCommit -Recreate:$Recreate -Maintenance:$Maintenance
+            Start-HciEnvironmentPreparation -Context $context -SourceCommit $SourceCommit -RunIdentity $RunIdentity `
+                -ReceiptStorageAccountName $ReceiptStorageAccountName -Recreate:$Recreate -Maintenance:$Maintenance
         }
         'ImageObserve' {
-            Wait-HciEnvironmentImage -Context $context -SourceCommit $SourceCommit
+            Wait-HciEnvironmentImage -Context $context -SourceCommit $SourceCommit -RunIdentity $RunIdentity -ReceiptStorageAccountName $ReceiptStorageAccountName
         }
         'FoundationStart' {
             if (-not $parameters.builtInServicePrincipalObjectId) {

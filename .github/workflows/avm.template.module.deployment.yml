@@ -28,7 +28,6 @@ jobs:
     name: "Deploy [${{ fromJson(inputs.testCase).name }}] on [${{ fromJson(inputs.testCase).subscriptionName }}]"
     environment: avm-validation
     runs-on: ubuntu-latest
-    if: ${{ !fromJson(inputs.testCase).environmentConcurrencyGroup }}
     permissions:
       contents: read
       id-token: write
@@ -82,20 +81,3 @@ jobs:
           VALIDATE_CLIENT_ID: ${{ steps.module-identity.outputs.clientId }}
           VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
           VALIDATE_TENANT_ID: ${{ steps.module-identity.outputs.tenantId }}
-
-  job_hci_environment:
-    name: "Reserved Azure Local environment"
-    if: ${{ !fromJson(inputs.testCase).e2eIgnore && fromJson(inputs.testCase).environmentConcurrencyGroup != '' }}
-    permissions:
-      contents: read
-      id-token: write
-    concurrency:
-      group: ${{ fromJson(inputs.testCase).environmentConcurrencyGroup }}
-      queue: max
-    uses: ./.github/workflows/avm.template.hci.consumer.yml
-    with:
-      workflowInput: ${{ inputs.workflowInput }}
-      modulePath: ${{ inputs.modulePath }}
-      testCase: ${{ inputs.testCase }}
-      tokenNamePrefix: ${{ inputs.tokenNamePrefix }}
-    secrets: inherit

@@ -43,7 +43,12 @@ param imageTemplateName string = 'hci-host-image-builder'
 param assetBaseUri string = 'https://raw.githubusercontent.com/Azure/bicep-registry-modules/main/utilities/e2e-template-assets/module-specific/azure-stack-hci'
 
 @description('Optional. Download URL for the Azure Stack HCI VHDX payload baked into the host image.')
-param hciVhdxDownloadUri string = 'https://azlocalvhds.blob.${environment().suffixes.storage}/images/AzLocal2601.vhdx'
+param hciVhdxDownloadUri string = loadJsonContent('environment.json', 'hciVhdxDownloadUri')
+
+@minLength(64)
+@maxLength(64)
+@description('Optional. Expected SHA256 of the downloaded VHDX. Supply the matching digest when overriding hciVhdxDownloadUri.')
+param hciVhdxSha256 string = loadJsonContent('environment.json', 'hciVhdxSha256')
 
 @description('Optional. Source marketplace image used by Azure VM Image Builder.')
 param sourceImage object = {
@@ -147,6 +152,7 @@ module imageTemplate 'hciHostGalleryBuilder.template.bicep' = {
     buildVmSize: buildVmSize
     galleryImageDefinitionResourceId: imageAssets.outputs.imageDefinitionResourceId
     hciVhdxDownloadUri: hciVhdxDownloadUri
+    hciVhdxSha256: hciVhdxSha256
     imageBuilderIdentityResourceId: imageAssets.outputs.imageBuilderIdentityResourceId
     imageTemplateName: imageTemplateName
     imageVersion: imageVersion

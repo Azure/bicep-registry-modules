@@ -14,6 +14,7 @@ BeforeDiscovery {
         @{ ModulePath = 'avm/res/network/route-table'; Tag = 'general' }
         @{ ModulePath = 'avm/res/network/route-table'; Tag = 'azure local' }
     )
+    $hciRoutes = @($localRoutes | Where-Object { $_.Tag -ceq 'Azure Local' })
 }
 
 Describe 'Published module identity across local routes' {
@@ -21,11 +22,15 @@ Describe 'Published module identity across local routes' {
         $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
         $entryWorkflow = Get-Content -LiteralPath (Join-Path $workflowRoot 'avm.module.yml') -Raw | ConvertFrom-Yaml
         $deploymentWorkflow = Get-Content -LiteralPath (Join-Path $workflowRoot 'avm.template.module.deployment.yml') -Raw | ConvertFrom-Yaml
+        $hciModule = Get-Content -LiteralPath (Join-Path $workflowRoot 'avm.template.hci.module.yml') -Raw | ConvertFrom-Yaml
         $consumer = Get-Content -LiteralPath (Join-Path $workflowRoot 'avm.template.hci.consumer.yml') -Raw | ConvertFrom-Yaml
         $preparation = Get-Content -LiteralPath (Join-Path $workflowRoot 'avm.template.hci.prepare.yml') -Raw | ConvertFrom-Yaml
         $history = Get-Content -LiteralPath (Join-Path $workflowRoot 'platform.deployment.history.cleanup.yml') -Raw | ConvertFrom-Yaml
         $deploymentAction = Get-Content -LiteralPath (
             Join-Path $RepoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
+        ) -Raw | ConvertFrom-Yaml
+        $matrixAction = Get-Content -LiteralPath (
+            Join-Path $RepoRootPath '.github' 'actions' 'templates' 'avm-getModuleDeploymentMatrix' 'action.yml'
         ) -Raw | ConvertFrom-Yaml
         $reference = Get-Content -LiteralPath (Join-Path $workflowRoot 'avm.res.network.route-table.yml') -Raw | ConvertFrom-Yaml
         $toolsRef = $reference.jobs.'call-workflow-passing-data'.with.'tools-ref'
@@ -58,7 +63,7 @@ Describe 'Published module identity across local routes' {
         $environmentVariables = @(
             'GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_ACTION_PATH', 'MODULE_PATH', 'MODULE_MATRIX',
             'VALIDATE_MODULE_CLIENT_IDS', 'VALIDATE_TENANT_ID', 'VALIDATE_CLIENT_ID', 'AZURE_CREDENTIALS',
-            'HCI_STAGE', 'INITIAL_IDENTITY_KEY', 'CURRENT_IDENTITY_KEY'
+            'HCI_STAGE', 'INITIAL_IDENTITY_KEY', 'CURRENT_IDENTITY_KEY', 'DEPLOYMENT_MATRIX'
         )
         $expectedClientId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
         $expectedTenantId = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
@@ -112,10 +117,13 @@ Describe 'Published module identity across local routes' {
         }
 
         function Invoke-TestAuthentication {
-            param([System.Collections.IDictionary] $Job)
+            param(
+                [System.Collections.IDictionary] $Job,
+                [string] $ModuleExpression = '${{ inputs.modulePath }}'
+            )
 
             $resolved = Invoke-PublishedIdentity
-            Assert-MappedJob -Job $Job -ModuleExpression '${{ inputs.modulePath }}'
+            Assert-MappedJob -Job $Job -ModuleExpression $ModuleExpression
             foreach ($step in $Job.steps) {
                 if ($step.uses -like 'azure/login@*') {
                     Invoke-TestLogin -ClientId $resolved.clientId -TenantId $resolved.tenantId -SubscriptionId $expectedSubscriptionId
@@ -135,6 +143,17 @@ Describe 'Published module identity across local routes' {
         function Invoke-TestLogin {
             param([string] $ClientId, [string] $TenantId, [string] $SubscriptionId)
             throw 'A real authentication operation must never run in these tests.'
+        }
+
+        function Set-TestModule {
+            param([string] $ModulePath, [string] $Tag)
+
+            $testFolder = Join-Path $fixtureRoot $ModulePath 'tests' 'e2e' 'defaults'
+            $null = New-Item -Path $testFolder -ItemType Directory -Force
+            Set-Content -LiteralPath (Join-Path $testFolder 'main.test.bicep') -Value '' -NoNewline
+            @{ $ModulePath = $Tag } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $fixtureRoot '.reserved-test-subscriptions.json')
+            $env:MODULE_PATH = $ModulePath
+            $env:VALIDATE_MODULE_CLIENT_IDS = @{ $ModulePath = $expectedClientId } | ConvertTo-Json -Compress
         }
     }
 
@@ -188,34 +207,54 @@ Describe 'Published module identity across local routes' {
         Should -Invoke Invoke-TestLogin -Times 0 -Exactly
     }
 
-    It 'binds every login and renewal after partitioning <ModulePath> with tag <Tag>' -ForEach $localRoutes {
-        $moduleFolder = Join-Path $fixtureRoot $ModulePath
-        $testFolder = Join-Path $moduleFolder 'tests' 'e2e' 'defaults'
-        $null = New-Item -Path $testFolder -ItemType Directory -Force
-        Set-Content -LiteralPath (Join-Path $testFolder 'main.test.bicep') -Value '' -NoNewline
-        @{ $ModulePath = $Tag } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $fixtureRoot '.reserved-test-subscriptions.json')
+    It 'rejects active generic deployment before authentication for <ModulePath> with tag <Tag>' -ForEach $localRoutes {
+        Set-TestModule -ModulePath $ModulePath -Tag $Tag
         $env:MODULE_MATRIX = @{ include = @(@{ modulePath = $ModulePath }) } | ConvertTo-Json -Depth 5 -Compress
         . $partitionScript
         $partitions = Read-TestOutputs
         $partitions.hasSharedModules | Should -BeExactly 'false'
         $selectedModule = (ConvertFrom-Json $partitions.localModuleMatrix -AsHashtable).include[0].modulePath
         $selectedModule | Should -BeExactly $ModulePath
-        $matrix = Get-ModuleDeploymentMatrix -ModulePath $selectedModule -RepoRoot $fixtureRoot -RandomSeed 0 `
+        $matrixAction.inputs.expectedSubscriptionTag.default | Should -BeExactly 'General'
+        @($deploymentWorkflow.jobs.Keys) | Should -Be @('job_module_deploy_validation')
+        $deploymentWorkflow.jobs.job_module_deploy_validation.ContainsKey('if') | Should -BeFalse
+
+        {
+            Get-ModuleDeploymentMatrix -ModulePath $selectedModule -RepoRoot $fixtureRoot -RandomSeed 0 `
+                -TestSubscriptionIds (ConvertTo-Json -InputObject @(@{ id = $expectedSubscriptionId; name = 'reserved'; tag = $Tag }) -Compress) `
+                -TestFilePaths @(@{ path = 'tests/e2e/defaults/main.test.bicep'; name = 'defaults'; e2eIgnore = $false })
+            Invoke-TestAuthentication -Job $deploymentWorkflow.jobs.job_module_deploy_validation
+        } | Should -Throw '*Use the module''s dedicated workflow*'
+
+        Should -Invoke bicep -Times 0 -Exactly
+        Should -Invoke Invoke-TestLogin -Times 0 -Exactly
+    }
+
+    It 'binds every dedicated login and renewal for <ModulePath>' -ForEach $hciRoutes {
+        Set-TestModule -ModulePath $ModulePath -Tag $Tag
+        $selectionStep = $hciModule.jobs.job_initialize_subscription_selection.steps | Where-Object id -EQ 'deployment-matrix'
+        $selectionStep.with.expectedSubscriptionTag | Should -BeExactly 'Azure Local'
+        $hciModule.jobs.job_module_deploy_validation.uses | Should -Be './.github/workflows/avm.template.hci.consumer.yml'
+        $matrix = Get-ModuleDeploymentMatrix -ModulePath $ModulePath -RepoRoot $fixtureRoot -RandomSeed 0 `
+            -ExpectedSubscriptionTag $selectionStep.with.expectedSubscriptionTag `
             -TestSubscriptionIds (ConvertTo-Json -InputObject @(@{ id = $expectedSubscriptionId; name = 'reserved'; tag = $Tag }) -Compress) `
             -TestFilePaths @(@{ path = 'tests/e2e/defaults/main.test.bicep'; name = 'defaults'; e2eIgnore = $false })
-        $case = $matrix.testCases[0]
+        $matrix.testCases[0].ContainsKey('environmentConcurrencyGroup') | Should -BeFalse
+        $env:DEPLOYMENT_MATRIX = ConvertTo-Json -InputObject $matrix.testCases -Depth 10 -Compress
+        $lockStep = $hciModule.jobs.job_initialize_subscription_selection.steps | Where-Object id -EQ 'hci-matrix'
+        . ([scriptblock]::Create($lockStep.run))
+        $routedCases = ConvertFrom-Json (Read-TestOutputs).deploymentMatrix -AsHashtable -NoEnumerate
+        ($routedCases -is [array]) | Should -BeTrue
+        $routedCases.Count | Should -Be 1
+        $case = $routedCases[0]
         $case.subscriptionIndex | Should -Be 0
-        $case.environmentConcurrencyGroup | Should -Be ($Tag -ceq 'Azure Local' ? "avm-hci-$($case.subscriptionKey)" : '')
-        $deploymentWorkflow.jobs.job_module_deploy_validation.if | Should -Be '${{ !fromJson(inputs.testCase).environmentConcurrencyGroup }}'
-        $deploymentWorkflow.jobs.job_hci_environment.if | Should -Be '${{ !fromJson(inputs.testCase).e2eIgnore && fromJson(inputs.testCase).environmentConcurrencyGroup != '''' }}'
-        $job = $case.environmentConcurrencyGroup ? $consumer.jobs.job_module_deploy_validation : $deploymentWorkflow.jobs.job_module_deploy_validation
-        $env:MODULE_PATH = $selectedModule
-        $env:VALIDATE_MODULE_CLIENT_IDS = @{ $selectedModule = $expectedClientId } | ConvertTo-Json -Compress
+        $case.environmentConcurrencyGroup | Should -Be "avm-hci-$($case.subscriptionKey)"
+        $consumer.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).environmentConcurrencyGroup }}'
 
-        $identity = Invoke-TestAuthentication -Job $job
+        $identity = Invoke-TestAuthentication -Job $consumer.jobs.job_module_deploy_validation
 
-        $identity.moduleRoot | Should -BeExactly $selectedModule
-        Should -Invoke Invoke-TestLogin -Times ($Tag -ceq 'Azure Local' ? 3 : 2) -Exactly -ParameterFilter {
+        $identity.moduleRoot | Should -BeExactly $ModulePath
+        Should -Invoke Invoke-TestLogin -Times 3 -Exactly -ParameterFilter {
             $ClientId -ceq $expectedClientId -and $TenantId -ceq $expectedTenantId -and $SubscriptionId -ceq $expectedSubscriptionId
         }
     }
@@ -259,14 +298,24 @@ Describe 'Published module identity across local routes' {
     }
 
     It 'binds preparation and reserved maintenance to their existing module selectors' {
+        Set-TestModule -ModulePath 'avm/res/azure-stack-hci/logical-network' -Tag 'Azure Local'
         foreach ($job in $preparation.jobs.Values) {
-            Assert-MappedJob -Job $job -ModuleExpression 'avm/res/azure-stack-hci/logical-network'
+            $identity = Invoke-TestAuthentication -Job $job -ModuleExpression 'avm/res/azure-stack-hci/logical-network'
+            $identity.moduleRoot | Should -BeExactly $env:MODULE_PATH
             ($job.steps | Where-Object name -EQ 'Advance the recorded preparation operation').env.VALIDATE_TENANT_ID |
                 Should -Be '${{ steps.module-identity.outputs.tenantId }}'
+            $guard = $job.steps | Where-Object name -EQ 'Keep the initial preparation identity'
+            $login = $job.steps | Where-Object { $_.uses -like 'azure/login@*' }
+            [array]::IndexOf($job.steps, $guard) | Should -BeLessThan ([array]::IndexOf($job.steps, $login))
         }
-        Assert-MappedJob -Job $history.jobs.job_cleanup_reserved_deployments -ModuleExpression 'avm/res/azure-stack-hci/cluster'
+        Set-TestModule -ModulePath 'avm/res/azure-stack-hci/cluster' -Tag 'Azure Local'
+        $identity = Invoke-TestAuthentication -Job $history.jobs.job_cleanup_reserved_deployments -ModuleExpression 'avm/res/azure-stack-hci/cluster'
+        $identity.moduleRoot | Should -BeExactly $env:MODULE_PATH
         ($history.jobs.job_cleanup_reserved_deployments.steps | Where-Object name -EQ 'Clean history only with confirmed idle ownership').env.VALIDATE_TENANT_ID |
             Should -Be '${{ steps.module-identity.outputs.tenantId }}'
+        Should -Invoke Invoke-TestLogin -Times 10 -Exactly -ParameterFilter {
+            $ClientId -ceq $expectedClientId -and $TenantId -ceq $expectedTenantId -and $SubscriptionId -ceq $expectedSubscriptionId
+        }
     }
 
     It 'rejects a changed or missing preparation identity before a continuation login' {
