@@ -708,17 +708,15 @@ Describe 'Bicep CLI installation' {
         function curl { throw 'Unexpected download.' }
         function chmod { throw 'Unexpected permission change.' }
         function sudo { throw 'Unexpected privileged command.' }
+        function Invoke-BicepCandidateFixture { throw 'Unexpected candidate invocation.' }
 
         $candidatePath = Join-Path $TestDrive 'candidate bicep'
         Set-Alias -Name $candidatePath -Value "MissingCandidateMock$([guid]::NewGuid().ToString('N'))"
     }
 
     BeforeEach {
-        if (Test-Path -LiteralPath "Alias:\$candidatePath") {
-            Remove-Item -LiteralPath "Alias:\$candidatePath" -Force
-        }
-        Test-Path -LiteralPath "Alias:\$candidatePath" | Should -BeFalse
-        Set-Item -LiteralPath "Function:\$candidatePath" -Value { throw 'Unexpected candidate invocation.' }
+        Set-Alias -Name $candidatePath -Value Invoke-BicepCandidateFixture -Force
+        (Get-Alias -Name $candidatePath).Definition | Should -Be 'Invoke-BicepCandidateFixture'
         $savedExitCode = $global:LASTEXITCODE
         $script:installedPath = Join-Path $TestDrive 'installed-bicep'
         $script:preinstalledContents = 'Preinstalled compiler fixture'
@@ -777,7 +775,7 @@ Describe 'Bicep CLI installation' {
         Mock New-TemporaryFile {
             New-Item -Path $candidatePath -ItemType File -Force
         }
-        Mock -CommandName $candidatePath -MockWith {
+        Mock Invoke-BicepCandidateFixture {
             $script:commands.Add('candidate-version')
             if ((Get-Content -LiteralPath $candidatePath -Raw) -ne $script:validContents) {
                 throw 'Exec format error (offline fixture).'
@@ -798,12 +796,7 @@ Describe 'Bicep CLI installation' {
     }
 
     AfterAll {
-        if (Test-Path -LiteralPath "Alias:\$candidatePath") {
-            Remove-Item -LiteralPath "Alias:\$candidatePath" -Force
-        }
-        if (Test-Path -LiteralPath "Function:\$candidatePath") {
-            Remove-Item -LiteralPath "Function:\$candidatePath"
-        }
+        Remove-Alias -Name $candidatePath -Force
     }
 
     It 'Preserves the installed compiler when downloaded bytes cannot execute' {
@@ -831,7 +824,7 @@ Describe 'Bicep CLI installation' {
         Should -Invoke chmod -Times 1 -Exactly -ParameterFilter {
             ($args -join '|') -eq "+x|$candidatePath"
         }
-        Should -Invoke -CommandName $candidatePath -Times 1 -Exactly -ParameterFilter {
+        Should -Invoke Invoke-BicepCandidateFixture -Times 1 -Exactly -ParameterFilter {
             ($args -join '|') -eq '--version'
         }
         Should -Invoke Install-CustomModule -Times 1 -Exactly -ParameterFilter { $Module.Name -eq 'Fixture.Module' }
@@ -851,14 +844,14 @@ Describe 'Bicep CLI installation' {
         Get-Content -LiteralPath $script:installedPath -Raw | Should -BeExactly $script:preinstalledContents
         Should -Invoke curl -Times 1 -Exactly
         Should -Invoke chmod -Times 0 -Exactly
-        Should -Invoke -CommandName $candidatePath -Times 0 -Exactly
+        Should -Invoke Invoke-BicepCandidateFixture -Times 0 -Exactly
         Should -Invoke sudo -Times 0 -Exactly
         Should -Invoke Install-CustomModule -Times 0 -Exactly
         Test-Path -LiteralPath $candidatePath | Should -BeFalse
     }
 
     It 'Rejects a candidate with a failing version command even if it prints a Bicep version' {
-        Mock -CommandName $candidatePath -MockWith {
+        Mock Invoke-BicepCandidateFixture {
             $global:LASTEXITCODE = 1
             'Bicep CLI version 1.2.3 (offline fixture)'
             'Candidate runtime failure'
@@ -876,7 +869,7 @@ Describe 'Bicep CLI installation' {
         @{ kind = 'unexpected output'; output = 'Not a Bicep compiler' }
     ) {
         $script:versionOutput = $output
-        Mock -CommandName $candidatePath -MockWith {
+        Mock Invoke-BicepCandidateFixture {
             $global:LASTEXITCODE = 0
             $script:versionOutput
         }
@@ -897,7 +890,7 @@ Describe 'Bicep CLI installation' {
         { Set-EnvironmentOnAgent } | Should -Throw '*permission update failed with exit code 1:*chmod: permission denied*'
 
         Get-Content -LiteralPath $script:installedPath -Raw | Should -BeExactly $script:preinstalledContents
-        Should -Invoke -CommandName $candidatePath -Times 0 -Exactly
+        Should -Invoke Invoke-BicepCandidateFixture -Times 0 -Exactly
         Should -Invoke sudo -Times 0 -Exactly
         Test-Path -LiteralPath $candidatePath | Should -BeFalse
     }
@@ -924,7 +917,7 @@ Describe 'Bicep CLI installation' {
     ) {
         $ErrorActionPreference = $preference
         $PSNativeCommandUseErrorActionPreference = $nativePreference
-        Mock -CommandName $candidatePath -MockWith { Write-Error 'Exec format error (offline fixture).' }
+        Mock Invoke-BicepCandidateFixture { Write-Error 'Exec format error (offline fixture).' }
 
         { Set-EnvironmentOnAgent -ErrorAction $preference } | Should -Throw '*Exec format error*'
 
