@@ -55,7 +55,7 @@ jobs:
       - name: "Resolve mapped module identity"
         id: module-identity
         if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-module-identity@15751a03bf8a63d4cbb3533f07bceb03047f7ea8
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-module-identity@f00779dcbc09d312240f89603f53908283674b82
         with:
           modulePath: ${{ inputs.modulePath }}
           moduleClientIds: ${{ vars.VALIDATE_MODULE_CLIENT_IDS }}
