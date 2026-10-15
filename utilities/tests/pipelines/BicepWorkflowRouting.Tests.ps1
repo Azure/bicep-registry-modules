@@ -299,7 +299,12 @@ Describe 'Generic module matrix partition' {
         @{ Kind = 'duplicate module keys'; Json = '{"avm/res/unrelated/module":"General","avm/res/unrelated/module":"Azure Local"}' }
     ) {
         if ($Kind -eq 'missing') {
-            Remove-Item -LiteralPath $reservationPath
+            $fixture = Get-Item -LiteralPath $reservationPath -Force
+            $fixture.PSIsContainer | Should -BeFalse
+            if ($IsWindows) { $fixture.Attributes = $fixture.Attributes -bor [IO.FileAttributes]::Hidden }
+            (Get-Item -LiteralPath $reservationPath -Force).Attributes.HasFlag([IO.FileAttributes]::Hidden) | Should -BeTrue
+            Remove-Item -LiteralPath $reservationPath -Force
+            Test-Path -LiteralPath $reservationPath | Should -BeFalse
         } else {
             Set-Content -LiteralPath $reservationPath -Value $Json
         }

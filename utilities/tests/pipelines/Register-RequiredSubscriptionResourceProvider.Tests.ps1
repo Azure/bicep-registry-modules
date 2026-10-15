@@ -80,7 +80,12 @@ Describe 'Register-RequiredSubscriptionResourceProvider' {
     }
 
     It 'Logs an absent root map without contacting Azure or creating a file' {
-        Remove-Item -LiteralPath $manifestPath
+        $fixture = Get-Item -LiteralPath $manifestPath -Force
+        $fixture.PSIsContainer | Should -BeFalse
+        if ($IsWindows) { $fixture.Attributes = $fixture.Attributes -bor [IO.FileAttributes]::Hidden }
+        (Get-Item -LiteralPath $manifestPath -Force).Attributes.HasFlag([IO.FileAttributes]::Hidden) | Should -BeTrue
+        Remove-Item -LiteralPath $manifestPath -Force
+        Test-Path -LiteralPath $manifestPath | Should -BeFalse
 
         $messages = @(Register-RequiredSubscriptionResourceProvider @functionInput 4>&1)
 
@@ -116,7 +121,12 @@ Describe 'Register-RequiredSubscriptionResourceProvider' {
     }
 
     It 'Does not read a nested manifest or an underscore filename' {
-        Remove-Item -LiteralPath $manifestPath
+        $fixture = Get-Item -LiteralPath $manifestPath -Force
+        $fixture.PSIsContainer | Should -BeFalse
+        if ($IsWindows) { $fixture.Attributes = $fixture.Attributes -bor [IO.FileAttributes]::Hidden }
+        (Get-Item -LiteralPath $manifestPath -Force).Attributes.HasFlag([IO.FileAttributes]::Hidden) | Should -BeTrue
+        Remove-Item -LiteralPath $manifestPath -Force
+        Test-Path -LiteralPath $manifestPath | Should -BeFalse
         $nestedRoot = Join-Path $testRoot 'avm' 'res' 'example' 'module'
         $null = New-Item -Path $nestedRoot -ItemType Directory -Force
         Set-Content -LiteralPath (Join-Path $nestedRoot '.required-resource-providers.json') -Value '{invalid'
@@ -255,7 +265,12 @@ Describe 'Register-RequiredSubscriptionResourceProvider' {
     }
 
     It 'Rejects a directory with the manifest name' {
-        Remove-Item -LiteralPath $manifestPath
+        $fixture = Get-Item -LiteralPath $manifestPath -Force
+        $fixture.PSIsContainer | Should -BeFalse
+        if ($IsWindows) { $fixture.Attributes = $fixture.Attributes -bor [IO.FileAttributes]::Hidden }
+        (Get-Item -LiteralPath $manifestPath -Force).Attributes.HasFlag([IO.FileAttributes]::Hidden) | Should -BeTrue
+        Remove-Item -LiteralPath $manifestPath -Force
+        Test-Path -LiteralPath $manifestPath | Should -BeFalse
         $null = New-Item -Path $manifestPath -ItemType Directory
 
         { Register-RequiredSubscriptionResourceProvider @functionInput } | Should -Throw '*file named exactly*'
@@ -263,7 +278,12 @@ Describe 'Register-RequiredSubscriptionResourceProvider' {
     }
 
     It 'Rejects incorrectly cased manifest filenames' {
-        Remove-Item -LiteralPath $manifestPath
+        $fixture = Get-Item -LiteralPath $manifestPath -Force
+        $fixture.PSIsContainer | Should -BeFalse
+        if ($IsWindows) { $fixture.Attributes = $fixture.Attributes -bor [IO.FileAttributes]::Hidden }
+        (Get-Item -LiteralPath $manifestPath -Force).Attributes.HasFlag([IO.FileAttributes]::Hidden) | Should -BeTrue
+        Remove-Item -LiteralPath $manifestPath -Force
+        Test-Path -LiteralPath $manifestPath | Should -BeFalse
         Set-Content -LiteralPath (Join-Path $testRoot '.REQUIRED-RESOURCE-PROVIDERS.json') -Value '{}'
 
         { Register-RequiredSubscriptionResourceProvider @functionInput } | Should -Throw '*file named exactly*'
