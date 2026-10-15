@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'Using large parameter set for Linux'
 metadata description = 'This instance deploys the module with most of its features enabled.'
 
@@ -21,9 +23,8 @@ param serviceShort string = 'vmlimax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. The object id of the Backup Management Service Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-BackupManagementServiceEnterpriseApplicationObjectId\'.')
-@secure()
-param backupManagementServiceEnterpriseApplicationObjectId string = ''
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
 
 // ============ //
 // Dependencies //
@@ -31,6 +32,10 @@ param backupManagementServiceEnterpriseApplicationObjectId string = ''
 
 // General resources
 // =================
+resource backupManagementService 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
+  appId: '262044b1-e2ce-469f-a196-69ab7ada62d3'
+}
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
@@ -51,7 +56,7 @@ module nestedDependencies 'dependencies.bicep' = {
     sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
-    backupManagementServiceApplicationObjectId: backupManagementServiceEnterpriseApplicationObjectId
+    backupManagementServiceApplicationObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : backupManagementService!.id
     waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
   }
