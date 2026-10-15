@@ -26,15 +26,46 @@ function ConvertFrom-HciPrivateJson {
     [CmdletBinding()]
     param ([Parameter(Mandatory)] [securestring] $Value)
 
+    function ConvertFrom-HciJsonToken {
+        param ([Newtonsoft.Json.Linq.JToken] $Token)
+
+        if ($Token -is [Newtonsoft.Json.Linq.JObject]) {
+            $object = [System.Management.Automation.OrderedHashtable]::new()
+            foreach ($property in $Token.Properties()) {
+                $object.Add($property.Name, (ConvertFrom-HciJsonToken -Token $property.Value))
+            }
+            return $object
+        }
+        if ($Token -is [Newtonsoft.Json.Linq.JArray]) {
+            $array = [object[]]::new($Token.Count)
+            for ($index = 0; $index -lt $Token.Count; $index++) {
+                $array[$index] = ConvertFrom-HciJsonToken -Token $Token[$index]
+            }
+            return ,$array
+        }
+        if ($Token -is [Newtonsoft.Json.Linq.JValue]) {
+            return $Token.Value
+        }
+        throw 'Unsupported JSON value.'
+    }
+
     try {
         $plain = [pscredential]::new('receipt', $Value).GetNetworkCredential().Password
-        $parsed = ConvertFrom-Json -InputObject $plain -AsHashtable -DateKind String -ErrorAction Stop
-        if ($parsed -isnot [System.Collections.IDictionary]) { throw 'Not an object.' }
-        return $parsed
+        $settings = [Newtonsoft.Json.JsonSerializerSettings] @{
+            DateParseHandling = 'None'
+            TypeNameHandling = 'None'
+            MetadataPropertyHandling = 'Ignore'
+            CheckAdditionalContent = $true
+            MaxDepth = 1024
+        }
+        $parsed = [Newtonsoft.Json.JsonConvert]::DeserializeObject($plain, $settings)
+        if ($parsed -isnot [Newtonsoft.Json.Linq.JObject]) { throw 'Not an object.' }
+        return ConvertFrom-HciJsonToken -Token $parsed
     } catch {
         throw 'The confidential HCI receipt is not a valid JSON object.'
     } finally {
         $plain = $null
+        $parsed = $null
     }
 }
 
