@@ -24,7 +24,7 @@ param enabled bool = true
 ])
 param kind string = 'LogAlert'
 
-@description('Optional. The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can\'t be used together with AutoMitigate.')
+@description('Optional. The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can\'t be used together with AutoMitigate.')
 param autoMitigate bool = true
 
 @description('Optional. If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert.')
@@ -44,7 +44,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can\'t be used together with AutoMitigate.')
+@description('Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can\'t be used together with AutoMitigate.')
 param ruleResolveConfiguration resourceInput<'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview'>.properties.resolveConfiguration?
 
 @description('Required. The list of resource IDs that this scheduled query rule is scoped to.')
@@ -165,7 +165,7 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview' =
     displayName: alertDisplayName ?? name
     enabled: enabled
     scopes: scopes
-    ...(kind != 'LogToMetric'
+    ...(kind == 'LogAlert'
       ? {
           evaluationFrequency: evaluationFrequency
           overrideQueryTimeRange: queryTimeRange
@@ -178,6 +178,16 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview' =
             ? {
                 autoMitigate: autoMitigate
                 muteActionsDuration: muteActionsDuration
+              }
+            : {})
+        }
+      : {})
+    ...(kind == 'SimpleLogAlert'
+      ? {
+          resolveConfiguration: ruleResolveConfiguration
+          ...(empty(ruleResolveConfiguration)
+            ? {
+                autoMitigate: autoMitigate
               }
             : {})
         }

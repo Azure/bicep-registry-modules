@@ -37,7 +37,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using kind SimpleLogAlert](#example-3-using-kind-simplelogalert)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -550,7 +551,106 @@ param windowSize = 'PT5M'
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using kind SimpleLogAlert_
+
+This instance deploys the module as a simple log search alert (kind `SimpleLogAlert`).
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/simple-log-alert]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
+  params: {
+    // Required parameters
+    criterias: {
+      allOf: [
+        {
+          query: 'Event | where EventLevelName == \'Error\''
+        }
+      ]
+    }
+    name: 'isqrsla001'
+    scopes: [
+      '<logAnalyticsWorkspaceResourceId>'
+    ]
+    // Non-required parameters
+    kind: 'SimpleLogAlert'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "criterias": {
+      "value": {
+        "allOf": [
+          {
+            "query": "Event | where EventLevelName == \"Error\""
+          }
+        ]
+      }
+    },
+    "name": {
+      "value": "isqrsla001"
+    },
+    "scopes": {
+      "value": [
+        "<logAnalyticsWorkspaceResourceId>"
+      ]
+    },
+    // Non-required parameters
+    "kind": {
+      "value": "SimpleLogAlert"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/scheduled-query-rule:<version>'
+
+// Required parameters
+param criterias = {
+  allOf: [
+    {
+      query: 'Event | where EventLevelName == \'Error\''
+    }
+  ]
+}
+param name = 'isqrsla001'
+param scopes = [
+  '<logAnalyticsWorkspaceResourceId>'
+]
+// Non-required parameters
+param kind = 'SimpleLogAlert'
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -774,7 +874,7 @@ param windowSize = 'PT5M'
 | [`actions`](#parameter-actions) | object | Actions to invoke when the alert fires. |
 | [`alertDescription`](#parameter-alertdescription) | string | The description of the scheduled query rule. |
 | [`alertDisplayName`](#parameter-alertdisplayname) | string | The display name of the scheduled query rule. |
-| [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate. |
+| [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate. |
 | [`enabled`](#parameter-enabled) | bool | The flag which indicates whether this scheduled query rule is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`evaluationFrequency`](#parameter-evaluationfrequency) | string | How often the scheduled query rule is evaluated represented in ISO 8601 duration format. Relevant and required only for rules of the kind LogAlert. |
@@ -785,7 +885,7 @@ param windowSize = 'PT5M'
 | [`muteActionsDuration`](#parameter-muteactionsduration) | string | Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled. Relevant only for rules of the kind LogAlert. |
 | [`queryTimeRange`](#parameter-querytimerange) | string | If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`ruleResolveConfiguration`](#parameter-ruleresolveconfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate. |
+| [`ruleResolveConfiguration`](#parameter-ruleresolveconfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate. |
 | [`severity`](#parameter-severity) | int | Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert. |
 | [`skipQueryValidation`](#parameter-skipqueryvalidation) | bool | The flag which indicates whether the provided query should be validated or not. Relevant only for rules of the kind LogAlert. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -898,7 +998,7 @@ The display name of the scheduled query rule.
 
 ### Parameter: `autoMitigate`
 
-The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate.
+The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate.
 
 - Required: No
 - Type: bool
@@ -1142,7 +1242,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `ruleResolveConfiguration`
 
-Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate.
+Defines the configuration for resolving fired alerts. Relevant only for rules of the kinds LogAlert and SimpleLogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate.
 
 - Required: No
 - Type: object
