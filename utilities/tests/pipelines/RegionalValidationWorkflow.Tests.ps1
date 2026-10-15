@@ -6,11 +6,12 @@
 Describe 'Regional validation workflow runtime integration' {
     BeforeAll {
         . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Invoke-TemplateDeploymentWithRetry.ps1')
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Invoke-ModuleDeploymentCleanup.ps1')
         $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $actionPath -Raw)
         $environmentNames = @(
             'TEMP', 'TMPDIR', 'GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME',
-            'localToken_resourceLocation'
+            'localToken_resourceLocation', 'AVM_DEPLOYMENT_DATA_FILE', 'AVM_REQUIRE_COMPLETE_REMOVAL'
         )
 
         function Get-AzResourceProvider {
@@ -50,7 +51,8 @@ Describe 'Regional validation workflow runtime integration' {
                 [string] $TemplateFilePath, [string[]] $DeploymentNames, [string[]] $PreflightRejectedDeploymentNames,
                 [string[]] $PendingDeletionDeploymentIds,
                 [string] $ManagementGroupId, [string] $SubscriptionId, [string] $ResourceGroupName,
-                [switch] $RequireCompleteRemoval, [switch] $RequireNoDeploymentScripts
+                [switch] $RequireCompleteRemoval, [switch] $RequireNoDeploymentScripts,
+                [switch] $FinalCleanup, [string[]] $ProtectedResourceIds
             )
             throw 'Unexpected Azure cleanup.'
         }
@@ -115,6 +117,7 @@ Describe 'Regional validation workflow runtime integration' {
                 '${{ steps.deploy_step.outputs.deploymentNames }}'                  = $Outputs.deploymentNames ?? ''
                 '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}' = $Outputs.preflightRejectedDeploymentNames ?? ''
                 '${{ steps.deploy_step.outputs.pendingDeletionDeploymentIds }}'     = $Outputs.pendingDeletionDeploymentIds ?? ''
+                '${{ steps.deploy_step.outputs.deploymentAttempts }}'               = $Outputs.deploymentAttempts ?? ''
             }
             foreach ($key in $values.Keys) {
                 $script = $script.Replace($key, $values[$key])

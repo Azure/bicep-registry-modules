@@ -32,8 +32,15 @@ Optional. Specify to fetch and remove all resources in the current context that 
 .PARAMETER RequireCompleteRemoval
 Optional. Confirm complete removal of terminal deployments and their records before regional relocation.
 
+.PARAMETER FinalCleanup
+Optional. With complete removal, allow successful terminal roots and confirm pending history deletion.
+Retry cleanup omits this switch and continues requiring failed roots.
+
 .PARAMETER RequireNoDeploymentScripts
 Optional. Reject attempts containing deployment scripts before cleanup can authorize same-region replay.
+
+.PARAMETER ProtectedResourceIds
+Optional. Exact persistent resource IDs whose resources, descendants and containing scopes must never be removed.
 
 .EXAMPLE
 Initialize-DeploymentRemoval -DeploymentName 'n-vw-t1-20211204T1812029146Z' -TemplateFilePath "$home/ResourceModules/modules/network/virtual-wan/main.bicep" -resourceGroupName 'test-virtualWan-rg'
@@ -77,7 +84,13 @@ function Initialize-DeploymentRemoval {
         [switch] $RequireCompleteRemoval,
 
         [Parameter()]
-        [switch] $RequireNoDeploymentScripts
+        [switch] $FinalCleanup,
+
+        [Parameter()]
+        [switch] $RequireNoDeploymentScripts,
+
+        [Parameter()]
+        [string[]] $ProtectedResourceIds = @()
     )
 
     begin {
@@ -197,7 +210,9 @@ function Initialize-DeploymentRemoval {
             RemoveFirstSequence              = $removeFirstSequence
             RemoveLastSequence               = $removeLastSequence
             RequireCompleteRemoval           = $RequireCompleteRemoval
+            FinalCleanup                     = $FinalCleanup
             RequireNoDeploymentScripts       = $RequireNoDeploymentScripts
+            ProtectedResourceIds             = $ProtectedResourceIds
         }
         if (-not [String]::IsNullOrEmpty($TemplateFilePath)) {
             $inputObject['TemplateFilePath'] = $TemplateFilePath
