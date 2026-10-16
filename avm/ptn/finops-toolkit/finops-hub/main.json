@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16865418797056025965"
+      "templateHash": "2299298044929473602"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit."
@@ -8376,7 +8376,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "8187990587599020873"
+              "templateHash": "12328813631164629087"
             }
           },
           "parameters": {
@@ -8515,7 +8515,7 @@
                     "value": [
                       {
                         "name": "[parameters('storageAccountName')]",
-                        "value": "[listKeys('storageRef', '2023-01-01').keys[0].value]",
+                        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value]",
                         "attributes": {
                           "exp": 1702648632,
                           "nbf": 10000

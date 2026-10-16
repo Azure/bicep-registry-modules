@@ -71,7 +71,8 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.14.2' = {
     secrets: [
       {
         name: storageRef.name
-        value: storageRef.listKeys().keys[0].value
+        #disable-next-line use-resource-symbol-reference use-recent-api-versions // PSRule expansion requires the existing account's resource ID.
+        value: listKeys(storageRef.id, '2023-01-01').keys[0].value
         attributes: {
           exp: 1702648632
           nbf: 10000

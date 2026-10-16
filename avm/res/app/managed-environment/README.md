@@ -296,6 +296,12 @@ This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded after InternalServerError during the private-endpoint stage; environment, certificate and storage dependencies completed successfully. The underlying provider-operation cause is not established. Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/38540661047/job/115775085298.
+
+Defaults, WAF-aligned and the other scenarios remain enabled. Re-enable this max scenario when its private-endpoint deployment and normal cleanup complete successfully in a separately scoped validation; this exception does not establish private-endpoint coverage.
+```
 
 <details>
 

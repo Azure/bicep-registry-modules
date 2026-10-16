@@ -192,7 +192,7 @@ module project 'br/public:avm/res/dev-center/project:<version>' = {
           {
             objectId: '<objectId>'
             roleDefinitions: [
-              '<roleDefinitionId // Custom role>'
+              '<roleDefinitionId>'
             ]
           }
         ]
@@ -373,7 +373,7 @@ module project 'br/public:avm/res/dev-center/project:<version>' = {
             {
               "objectId": "<objectId>",
               "roleDefinitions": [
-                "<roleDefinitionId // Custom role>"
+                "<roleDefinitionId>"
               ]
             }
           ]
@@ -552,7 +552,7 @@ param environmentTypes = [
       {
         objectId: '<objectId>'
         roleDefinitions: [
-          '<roleDefinitionId // Custom role>'
+          '<roleDefinitionId>'
         ]
       }
     ]

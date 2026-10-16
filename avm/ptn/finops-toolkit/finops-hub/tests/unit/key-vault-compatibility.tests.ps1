@@ -1,5 +1,12 @@
+param (
+    [string] $RepoRootPath = (Resolve-Path (Join-Path $PSScriptRoot '..' '..' '..' '..' '..' '..')).Path
+)
+
 Describe 'FinOps Key Vault module compatibility' {
     BeforeAll {
+        . (Join-Path $RepoRootPath 'utilities' 'tests' 'helper' 'Initialize-PSRuleTest.ps1')
+        Initialize-PSRuleTest -RepoRootPath $RepoRootPath
+
         $modulePath = Join-Path $PSScriptRoot '..' '..' 'main.bicep'
         $compiledPath = Join-Path $TestDrive 'finops-hub.json'
         $diagnostics = bicep build $modulePath --no-restore --outfile $compiledPath 2>&1
@@ -26,7 +33,7 @@ Describe 'FinOps Key Vault module compatibility' {
         ($secrets -is [array]) | Should -BeTrue
         $secrets.Count | Should -Be 1
         $secrets[0].name | Should -BeExactly "[parameters('storageAccountName')]"
-        $secrets[0].value | Should -BeExactly "[listKeys('storageRef', '2023-01-01').keys[0].value]"
+        $secrets[0].value | Should -BeExactly "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value]"
         $secrets[0].attributes.exp | Should -Be 1702648632
         $secrets[0].attributes.nbf | Should -Be 10000
         $secrets[0].Contains('attributesExp') | Should -BeFalse
@@ -42,7 +49,50 @@ Describe 'FinOps Key Vault module compatibility' {
         $secretTypeName = $vaultTemplate.parameters.secrets.items.'$ref'.Split('/')[-1]
         $vaultTemplate.definitions[$secretTypeName].properties.value.type | Should -Be 'securestring'
         $secretTemplate.parameters.value.type | Should -Be 'securestring'
+        $secretTemplate.parameters.value.Contains('defaultValue') | Should -BeFalse
         @($wrapper.outputs.Keys | Sort-Object) | Should -Be @('name', 'resourceId', 'uri')
+    }
+
+    It 'Expands the real storage-key expression into a vault secret without parameter defaults' {
+        $wrapperPath = Join-Path $TestDrive 'key-vault-wrapper.json'
+        $parameterPath = Join-Path $TestDrive 'key-vault-wrapper.parameters.json'
+        $wrapper | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $wrapperPath
+        @{
+            '$schema' = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'
+            contentVersion = '1.0.0.0'
+            parameters = @{
+                hubName = @{ value = 'finops-expansion-test' }
+                uniqueSuffix = @{ value = 'unit' }
+                storageAccountName = @{ value = 'finopsexpansiontest' }
+            }
+        } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $parameterPath
+
+        $expanded = @(Export-AzRuleTemplateData -TemplateFile $wrapperPath -ParameterFile $parameterPath -PassThru -ErrorAction Stop)
+        $expandedVaults = @($expanded | Where-Object type -EQ 'Microsoft.KeyVault/vaults')
+        $expandedVaults | Should -HaveCount 1
+        $expandedSecrets = @($expandedVaults[0].resources | Where-Object type -EQ 'Microsoft.KeyVault/vaults/secrets')
+        $expandedSecrets | Should -HaveCount 1
+        $expandedSecrets[0].name | Should -BeExactly "$($expandedVaults[0].name)/finopsexpansiontest"
+        $expandedSecrets[0].properties.value | Should -BeExactly '{{Secret}}'
+        $expandedSecrets[0].properties.attributes.exp | Should -Be 1702648632
+        $expandedSecrets[0].properties.attributes.nbf | Should -Be 10000
+    }
+
+    It 'Still rejects a genuinely missing required secret value during expansion' {
+        $secretPath = Join-Path $TestDrive 'missing-secret-value.json'
+        $parameterPath = Join-Path $TestDrive 'missing-secret-value.parameters.json'
+        $secretTemplate | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $secretPath
+        @{
+            '$schema' = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'
+            contentVersion = '1.0.0.0'
+            parameters = @{
+                name = @{ value = 'storage-key' }
+                keyVaultName = @{ value = 'finops-expansion-test' }
+            }
+        } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $parameterPath
+
+        { Export-AzRuleTemplateData -TemplateFile $secretPath -ParameterFile $parameterPath -PassThru -ErrorAction Stop } |
+            Should -Throw "*parameter named 'value' was not set*"
     }
 
     It 'Forwards nested secret attributes without changing enabled or content defaults' {

@@ -1243,7 +1243,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 ### Example 11: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+This instance supplies a replicated Log Analytics workspace and deploys the module in alignment with the Azure Well-Architected Framework.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
@@ -1274,11 +1274,8 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     enableDatabricks: true
     enableTelemetry: true
     location: '<location>'
-    tags: {
-      CostCenter: '123-456-789'
-      'hidden-title': 'This is visible in the resource name'
-      Owner: 'Contoso'
-    }
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    tags: '<tags>'
   }
 }
 ```
@@ -1324,12 +1321,11 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     "location": {
       "value": "<location>"
     },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
     "tags": {
-      "value": {
-        "CostCenter": "123-456-789",
-        "hidden-title": "This is visible in the resource name",
-        "Owner": "Contoso"
-      }
+      "value": "<tags>"
     }
   }
 }
@@ -1364,11 +1360,8 @@ param advancedOptions = {
 param enableDatabricks = true
 param enableTelemetry = true
 param location = '<location>'
-param tags = {
-  CostCenter: '123-456-789'
-  'hidden-title': 'This is visible in the resource name'
-  Owner: 'Contoso'
-}
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param tags = '<tags>'
 ```
 
 </details>
@@ -1742,7 +1735,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/databricks/access-connector:0.3.0` | Remote reference |
 | `br/public:avm/res/databricks/workspace:0.8.5` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.14.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
