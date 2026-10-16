@@ -40,6 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}audstore${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -64,8 +65,25 @@ module testDeployment '../../../main.bicep' = [
       auditSettings: {
         state: 'Enabled'
         isManagedIdentityInUse: true
+        isAzureMonitorTargetEnabled: true
+        isDevopsAuditEnabled: true
         storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       }
+      // Required to forward the server-level audit logs to the Log Analytics workspace, as they are emitted by the `master` database
+      masterDatabaseDiagnosticSettings: [
+        {
+          name: 'auditDiagnosticSetting'
+          workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+          logCategoriesAndGroups: [
+            {
+              category: 'SQLSecurityAuditEvents'
+            }
+            {
+              category: 'DevOpsOperationsAudit'
+            }
+          ]
+        }
+      ]
     }
   }
 ]

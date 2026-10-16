@@ -134,6 +134,16 @@ module testDeployment '../../../main.bicep' = [
           availabilityZone: 1
         }
       ]
+      masterDatabaseDiagnosticSettings: [
+        {
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          logCategoriesAndGroups: [
+            {
+              category: 'SQLSecurityAuditEvents'
+            }
+          ]
+        }
+      ]
       customerManagedKey: {
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
         keyName: nestedDependencies.outputs.keyVaultKeyName
