@@ -73,7 +73,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-var apimName = '${take('${namePrefix}${serviceShort}001', 17)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
+var apimName = '${namePrefix}${serviceShort}001'
 var backend1Name = 'backend1'
 var workspace1Name = 'workspace1'
 var workspace1Backend1Name = 'workspace1-backend1'
@@ -343,21 +343,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: guid(
-            '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}',
-            nestedDependencies.outputs.managedIdentityPrincipalId,
-            '6352c3e3-ac6b-43d5-ac43-1077ff373721'
-          )
+          name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid(
-            '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}',
-            nestedDependencies.outputs.managedIdentityPrincipalId,
-            'Custom seed ${namePrefix}${serviceShort}'
-          )
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -593,21 +585,13 @@ module testDeployment '../../../main.bicep' = [
           ]
           roleAssignments: [
             {
-              name: guid(
-                '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}',
-                nestedDependencies.outputs.managedIdentityPrincipalId,
-                '832142e9-a3da-4881-9838-c2b8c73ad1e7'
-              )
+              name: '832142e9-a3da-4881-9838-c2b8c73ad1e7'
               roleDefinitionIdOrName: 'Owner'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
             {
-              name: guid(
-                '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}',
-                nestedDependencies.outputs.managedIdentityPrincipalId,
-                'Custom seed ${namePrefix}${serviceShort}${workspace1Name}'
-              )
+              name: guid('Custom seed ${namePrefix}${serviceShort}${workspace1Name}')
               roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'

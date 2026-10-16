@@ -41,23 +41,18 @@ resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   }
 }
 
-// Replicates the role assignment the Disk Encryption Set module itself creates (nested_keyVaultPermissions.bicep),
-// so a bounded wait can be added below for RBAC propagation before the module re-creates (and reads) the same assignment.
-resource keyVaultKeyRBAC 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Reader-RoleAssignment')
-  scope: keyVault::key
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6') // Key Vault Crypto Service Encryption User
-    principalType: 'ServicePrincipal'
+module keyVaultPermissions '../../../modules/nested_keyVaultPermissions.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-keyVaultPermissions'
+  params: {
+    keyVaultResourceId: keyVault.id
+    keyName: keyVault::key.name
+    userAssignedIdentityResourceId: managedIdentity.id
+    rbacAuthorizationEnabled: true
+    location: location
   }
 }
 
-// Azure RBAC role assignments can take several minutes to propagate to the data plane.
-// Without this bounded probe, the Disk Encryption Set deployment can fail with `KeyVaultAccessForbidden`
-// even though the equivalent role assignment above has just been created. Rather than a fixed sleep,
-// this script actively probes the data plane (authenticated as the same UAMI/role the module itself uses)
-// until a `Get-AzKeyVaultKey` call succeeds, bounded by a maximum number of attempts.
+// Probe as the same UAMI after the real permission helper completes.
 resource waitForKeyPermissionsPropagation 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: waitDeploymentScriptName
   location: location
@@ -106,7 +101,7 @@ resource waitForKeyPermissionsPropagation 'Microsoft.Resources/deploymentScripts
     '''
   }
   dependsOn: [
-    keyVaultKeyRBAC
+    keyVaultPermissions
   ]
 }
 

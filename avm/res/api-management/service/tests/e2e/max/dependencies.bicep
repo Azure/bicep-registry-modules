@@ -252,7 +252,7 @@ resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2025-01-01' = {
         properties: {
           protocol: 'Tcp'
           sourcePortRange: '*'
-          destinationPortRange: '443'
+          destinationPortRange: '433'
           sourceAddressPrefix: 'VirtualNetwork'
           destinationAddressPrefix: 'Storage'
           access: 'Allow'
@@ -299,7 +299,7 @@ resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2025-01-01' = {
           destinationAddressPrefix: 'AzureMonitor'
           access: 'Allow'
           priority: 170
-          direction: 'Outbound'
+          direction: 'Inbound'
         }
       }
     ]
@@ -371,7 +371,7 @@ resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2025-01-01' = {
         properties: {
           protocol: 'Tcp'
           sourcePortRange: '*'
-          destinationPortRange: '443'
+          destinationPortRange: '433'
           sourceAddressPrefix: 'VirtualNetwork'
           destinationAddressPrefix: 'Storage'
           access: 'Allow'
@@ -418,7 +418,7 @@ resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2025-01-01' = {
           destinationAddressPrefix: 'AzureMonitor'
           access: 'Allow'
           priority: 170
-          direction: 'Outbound'
+          direction: 'Inbound'
         }
       }
     ]

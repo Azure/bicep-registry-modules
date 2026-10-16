@@ -377,7 +377,7 @@ param roleAssignments = [
 
 ### Example 4: _Using Key Vault with the Role Based Access Control (RBAC) permission model_
 
-This instance uses a Key Vault with the Role Based Access Control (RBAC) permission model. The option to add the permissions on the key via the module is enabled.
+This instance creates key-scoped RBAC permissions with the module helper and waits for data-plane access before testing the module with key permissions enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/key-rbac]
 

@@ -75,7 +75,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${take('${namePrefix}${serviceShort}002', 36)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
+      name: '${namePrefix}${serviceShort}002'
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
       additionalLocations: [
