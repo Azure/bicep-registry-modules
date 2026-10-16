@@ -329,6 +329,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 'res/azure-stack-hci/logical-network'
                 'res/azure-stack-hci/marketplace-gallery-image'
                 'res/azure-stack-hci/network-interface'
+                'res/azure-stack-hci/storage-container'
                 'res/azure-stack-hci/virtual-hard-disk'
                 'res/azure-stack-hci/virtual-machine-instance'
                 'res/cache/redis' # Azure Cache for Redis has been announced for retirement; new resource creation is restricted, while updates to existing resources are still allowed to run.

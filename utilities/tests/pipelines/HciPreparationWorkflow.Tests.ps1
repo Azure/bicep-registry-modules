@@ -220,9 +220,9 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $release.env.DEPLOYMENT_OUTCOME | Should -Be '${{ steps.deployment.outcome }}'
     }
 
-    It 'Keeps all sixteen target deployments active and makes only non-cluster foundations conditional' {
+    It 'Keeps all nineteen target deployments active and makes only non-cluster foundations conditional' {
         $fixtures = @($compiled.Keys | Where-Object { $_ -like '*/main.test.bicep' })
-        $fixtures.Count | Should -Be 16
+        $fixtures.Count | Should -Be 19
         foreach ($path in $fixtures) {
             $template = $compiled[$path]
             $template.resources.testDeployment.Contains('condition') | Should -BeFalse
