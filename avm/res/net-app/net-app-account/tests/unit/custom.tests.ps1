@@ -6,7 +6,7 @@ Describe 'NetApp weekly snapshot schedules and volume LDAP configuration' {
         $capacityPool = Get-Content -LiteralPath (Join-Path $moduleRoot 'capacity-pool' 'main.json') -Raw | ConvertFrom-Json -AsHashtable
         $volume = Get-Content -LiteralPath (Join-Path $moduleRoot 'capacity-pool' 'volume' 'main.json') -Raw | ConvertFrom-Json -AsHashtable
 
-        $fixture = bicep build (Join-Path $PSScriptRoot 'fixtures' 'main.bicep') --stdout | ConvertFrom-Json -AsHashtable
+        $fixture = bicep build (Join-Path $PSScriptRoot 'fixtures' 'inputs.bicep') --stdout | ConvertFrom-Json -AsHashtable
         if ($LASTEXITCODE -ne 0) {
             throw 'Failed to compile the weekly snapshot and LDAP input regression fixture.'
         }
