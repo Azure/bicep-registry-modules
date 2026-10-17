@@ -56,3 +56,40 @@ Describe 'Registry-owned child module publishing approvals' {
             Should -BeExactly ($legacy | ConvertTo-Json -Depth 5 -Compress)
     }
 }
+
+Describe 'Canonical Bicep documentation template checkout' {
+    It 'preserves the selected template raw bytes with Git autocrlf enabled' {
+        $configuration = Get-Content -LiteralPath (Join-Path $RepoRootPath 'bicepconfig.json') -Raw |
+            ConvertFrom-Json -AsHashtable
+        $relativePath = $configuration.documentation.template.file
+        $templatePath = Join-Path $RepoRootPath $relativePath
+        $expectedHash = (Get-FileHash -LiteralPath $templatePath -Algorithm SHA256).Hash
+        [IO.File]::ReadAllBytes($templatePath) | Should -Not -Contain ([byte] 13)
+
+        $fixture = Join-Path $TestDrive 'template-checkout'
+        $emptyAttributes = Join-Path $TestDrive 'empty-attributes'
+        $null = New-Item -ItemType Directory -Path $fixture
+        $null = New-Item -ItemType File -Path $emptyAttributes
+        $selectedPath = Join-Path $fixture $relativePath
+        $null = New-Item -ItemType Directory -Path (Split-Path $selectedPath -Parent) -Force
+        Copy-Item -LiteralPath $templatePath -Destination $selectedPath
+        Copy-Item -LiteralPath (Join-Path $RepoRootPath '.gitattributes') -Destination (Join-Path $fixture '.gitattributes')
+
+        git init --quiet --template= -- $fixture
+        $LASTEXITCODE | Should -Be 0
+        $gitOptions = @(
+            '-C', $fixture,
+            '-c', 'core.autocrlf=true',
+            '-c', 'core.safecrlf=false',
+            '-c', "core.attributesFile=$emptyAttributes"
+        )
+        git @gitOptions add -- .gitattributes $relativePath
+        $LASTEXITCODE | Should -Be 0
+        Remove-Item -LiteralPath $selectedPath
+        git @gitOptions checkout-index --force -- $relativePath
+        $LASTEXITCODE | Should -Be 0
+
+        (Get-FileHash -LiteralPath $selectedPath -Algorithm SHA256).Hash | Should -BeExactly $expectedHash
+        [IO.File]::ReadAllBytes($selectedPath) | Should -Not -Contain ([byte] 13)
+    }
+}
