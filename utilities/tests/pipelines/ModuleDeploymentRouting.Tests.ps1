@@ -257,6 +257,27 @@ Describe 'Module deployment workflow expansion' {
         }
     }
 
+    It 'matches protected generic selection admission for <caseName>' -ForEach @(
+        @{ caseName = 'an empty test list'; testFiles = '[]'; deploymentValidation = 'true'; select = $false }
+        @{ caseName = 'active tests'; testFiles = '[{"path":"tests/e2e/defaults/main.test.bicep","e2eIgnore":false}]'; deploymentValidation = 'true'; select = $true }
+        @{ caseName = 'wholly ignored tests'; testFiles = '[{"path":"tests/e2e/defaults/main.test.bicep","e2eIgnore":true}]'; deploymentValidation = 'true'; select = $true }
+        @{ caseName = 'disabled deployment'; testFiles = '[{"path":"tests/e2e/defaults/main.test.bicep","e2eIgnore":false}]'; deploymentValidation = 'false'; select = $false }
+    ) {
+        $context = @{
+            testFiles = $testFiles
+            deploymentValidation = $deploymentValidation
+        }
+        foreach ($route in @('preview', 'publish')) {
+            $baseline = Get-Content (Join-Path $workflowRoot "avm.template.module.$route.yml") -Raw | ConvertFrom-Yaml
+            $migrated = $publishedWorkflows["bicep-module-$route.yml"]
+
+            Test-WorkflowCondition -Expression $baseline.jobs.job_initialize_subscription_selection.if -Context $context |
+                Should -Be $select
+            Test-WorkflowCondition -Expression $migrated.jobs.job_initialize_subscription_selection.if -Context $context |
+                Should -Be $select
+        }
+    }
+
     It 'resolves every downstream job output against the post-separation producer contract' {
         $files = @(
             'avm.module.yml'

@@ -40,7 +40,7 @@ Describe 'Published module identity across local routes' {
         $supportFiles = @{
             '.github/actions/bicep-module-identity/action.yml' = 'f399911c2d8d11e3f2f98224a26aef0fa9906f1a'
             'scripts/bicep-workflows/Deployment.ps1' = 'bd1e99ee9d014e27d1f22bfd1c45ac1fad63d2ca'
-            'scripts/bicep-workflows/Common.ps1' = '3039aeb1b0ecedd7010fb72ed4b460605ff2e5b8'
+            'scripts/bicep-workflows/Common.ps1' = 'fe306502f3c398b3b0fae3a122f37f0c3d88c6b0'
             'repository-management/shared/TestTenant.ps1' = 'f4dfdc661effda75e0d9e241fa19dae005c40c1d'
             'repository-management/shared/GroupSettings.ps1' = '26610c2e5ee72e4e7c001d61fdf03b229c95c2ee'
         }

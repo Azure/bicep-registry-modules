@@ -183,7 +183,7 @@ jobs:
           "subscriptionId=$($subscription.id)" >> $env:GITHUB_OUTPUT
       - name: "Resolve mapped module identity"
         id: module-identity
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-module-identity@f00779dcbc09d312240f89603f53908283674b82
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-module-identity@2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
         with:
           modulePath: avm/res/azure-stack-hci/cluster
           moduleClientIds: ${{ vars.VALIDATE_MODULE_CLIENT_IDS }}

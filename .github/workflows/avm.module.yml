@@ -73,7 +73,7 @@ jobs:
           ref: "${{ github.sha }}"
       - name: "Get module matrix"
         id: get-module-matrix
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-workflow-matrix@f00779dcbc09d312240f89603f53908283674b82
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-workflow-matrix@2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
         with:
           avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
           baseCommit: "${{ github.event.before }}"
@@ -147,9 +147,9 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-preview.yml@f00779dcbc09d312240f89603f53908283674b82
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-preview.yml@2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
     with:
-      tools-ref: f00779dcbc09d312240f89603f53908283674b82
+      tools-ref: 2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
       avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       modulePath: "${{ matrix.modulePath }}"
@@ -192,9 +192,9 @@ jobs:
       matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
     permissions:
       contents: read
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-static.yml@f00779dcbc09d312240f89603f53908283674b82
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-static.yml@2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
     with:
-      tools-ref: f00779dcbc09d312240f89603f53908283674b82
+      tools-ref: 2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
       avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
       modulePath: "${{ matrix.modulePath }}"
 
@@ -209,9 +209,9 @@ jobs:
     permissions:
       contents: write
       id-token: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish.yml@f00779dcbc09d312240f89603f53908283674b82
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish.yml@2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
     with:
-      tools-ref: f00779dcbc09d312240f89603f53908283674b82
+      tools-ref: 2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
       avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       modulePath: "${{ matrix.modulePath }}"
@@ -258,9 +258,9 @@ jobs:
       matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
     permissions:
       contents: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish-only.yml@f00779dcbc09d312240f89603f53908283674b82
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish-only.yml@2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
     with:
-      tools-ref: f00779dcbc09d312240f89603f53908283674b82
+      tools-ref: 2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
       avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
       modulePath: "${{ matrix.modulePath }}"
       baseCommit: "${{ needs.job_initialize_pipeline.outputs.baseCommit }}"
