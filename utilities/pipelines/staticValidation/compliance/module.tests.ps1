@@ -332,6 +332,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 'res/azure-stack-hci/virtual-hard-disk'
                 'res/azure-stack-hci/virtual-machine-instance'
                 'res/cache/redis' # Azure Cache for Redis has been announced for retirement; new resource creation is restricted, while updates to existing resources are still allowed to run.
+                'res/operational-insights/cluster'
             )
 
             $incorrectFolders = @()

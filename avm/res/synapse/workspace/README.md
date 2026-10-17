@@ -26,7 +26,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/accessPolicies` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/accessPolicies)</li></ul> |
+| `Microsoft.KeyVault/vaults/accessPolicies` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/accessPolicies)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
@@ -35,7 +36,6 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Synapse/workspaces/bigDataPools` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.synapse_workspaces_bigdatapools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/bigDataPools)</li></ul> |
 | `Microsoft.Synapse/workspaces/firewallRules` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.synapse_workspaces_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/firewallRules)</li></ul> |
 | `Microsoft.Synapse/workspaces/integrationRuntimes` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.synapse_workspaces_integrationruntimes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/integrationRuntimes)</li></ul> |
-| `Microsoft.Synapse/workspaces/keys` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.synapse_workspaces_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/keys)</li></ul> |
 | `Microsoft.Synapse/workspaces/sqlPools` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.synapse_workspaces_sqlpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/sqlPools)</li></ul> |
 | `Microsoft.Synapse/workspaces/sqlPools/transparentDataEncryption` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.synapse_workspaces_sqlpools_transparentdataencryption.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/sqlPools/transparentDataEncryption)</li></ul> |
 
@@ -74,7 +74,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
     defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
-    name: 'swbdp001'
+    name: '<name>'
     sqlAdministratorLogin: 'synwsadmin'
     // Non-required parameters
     bigDataPools: [
@@ -98,11 +98,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         nodeSize: 'Small'
         nodeSizeFamily: 'MemoryOptimized'
         sessionLevelPackagesEnabled: true
+        sparkVersion: '3.5'
       }
       {
         name: 'depbdp02'
         nodeSize: 'Small'
         nodeSizeFamily: 'MemoryOptimized'
+        sparkVersion: '3.5'
       }
     ]
     tags: {
@@ -132,7 +134,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       "value": "<defaultDataLakeStorageFilesystem>"
     },
     "name": {
-      "value": "swbdp001"
+      "value": "<name>"
     },
     "sqlAdministratorLogin": {
       "value": "synwsadmin"
@@ -159,12 +161,14 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           "name": "depbdp01",
           "nodeSize": "Small",
           "nodeSizeFamily": "MemoryOptimized",
-          "sessionLevelPackagesEnabled": true
+          "sessionLevelPackagesEnabled": true,
+          "sparkVersion": "3.5"
         },
         {
           "name": "depbdp02",
           "nodeSize": "Small",
-          "nodeSizeFamily": "MemoryOptimized"
+          "nodeSizeFamily": "MemoryOptimized",
+          "sparkVersion": "3.5"
         }
       ]
     },
@@ -190,7 +194,7 @@ using 'br/public:avm/res/synapse/workspace:<version>'
 // Required parameters
 param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
 param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
-param name = 'swbdp001'
+param name = '<name>'
 param sqlAdministratorLogin = 'synwsadmin'
 // Non-required parameters
 param bigDataPools = [
@@ -214,11 +218,13 @@ param bigDataPools = [
     nodeSize: 'Small'
     nodeSizeFamily: 'MemoryOptimized'
     sessionLevelPackagesEnabled: true
+    sparkVersion: '3.5'
   }
   {
     name: 'depbdp02'
     nodeSize: 'Small'
     nodeSizeFamily: 'MemoryOptimized'
+    sparkVersion: '3.5'
   }
 ]
 param tags = {
@@ -412,7 +418,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
     defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
-    name: 'swenua001'
+    name: '<name>'
     sqlAdministratorLogin: 'synwsadmin'
     // Non-required parameters
     customerManagedKey: {
@@ -444,7 +450,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       "value": "<defaultDataLakeStorageFilesystem>"
     },
     "name": {
-      "value": "swenua001"
+      "value": "<name>"
     },
     "sqlAdministratorLogin": {
       "value": "synwsadmin"
@@ -474,7 +480,7 @@ using 'br/public:avm/res/synapse/workspace:<version>'
 // Required parameters
 param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
 param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
-param name = 'swenua001'
+param name = '<name>'
 param sqlAdministratorLogin = 'synwsadmin'
 // Non-required parameters
 param customerManagedKey = {
@@ -869,7 +875,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         name: '499f9243-2170-4204-807d-ee6d0f94a0d0'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -1120,7 +1126,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           "name": "499f9243-2170-4204-807d-ee6d0f94a0d0",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1345,7 +1351,7 @@ param roleAssignments = [
     name: '499f9243-2170-4204-807d-ee6d0f94a0d0'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -1765,7 +1771,7 @@ param tags = {
 | [`defaultDataLakeStorageCreateManagedPrivateEndpoint`](#parameter-defaultdatalakestoragecreatemanagedprivateendpoint) | bool | Create managed private endpoint to the default storage account or not. If Yes is selected, a managed private endpoint connection request is sent to the workspace's primary Data Lake Storage Gen2 account for Spark pools to access data. This must be approved by an owner of the storage account. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`encryptionActivateWorkspace`](#parameter-encryptionactivateworkspace) | bool | Activate workspace by adding the system managed identity in the KeyVault containing the customer managed key and activating the workspace. |
+| [`encryptionActivateWorkspace`](#parameter-encryptionactivateworkspace) | bool | Grant the workspace system identity access to the customer-managed key and activate the workspace. Creates a deployment script and a dedicated identity with Contributor access only to the workspace key. Activation is verified for up to 10 minutes. Requires permission to deploy the helper identity, deployment script and its supporting resources, and assign the key-scoped role. |
 | [`firewallRules`](#parameter-firewallrules) | array | List of firewall rules to be created in the workspace. |
 | [`initialWorkspaceAdminObjectID`](#parameter-initialworkspaceadminobjectid) | string | AAD object ID of initial workspace admin. |
 | [`integrationRuntimes`](#parameter-integrationruntimes) | array | The Integration Runtimes to create. |
@@ -2522,7 +2528,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `encryptionActivateWorkspace`
 
-Activate workspace by adding the system managed identity in the KeyVault containing the customer managed key and activating the workspace.
+Grant the workspace system identity access to the customer-managed key and activate the workspace. Creates a deployment script and a dedicated identity with Contributor access only to the workspace key. Activation is verified for up to 10 minutes. Requires permission to deploy the helper identity, deployment script and its supporting resources, and assign the key-scoped role.
 
 - Required: No
 - Type: bool

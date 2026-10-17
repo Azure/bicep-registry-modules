@@ -285,12 +285,13 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                 }
                 'Regional' { throw ($script:incidentMessage -f $Name) }
                 'NestedReadNotFound' {
+                    $operationPath = $script:nestedId.Replace('/providers/Microsoft.Resources', $script:readProviderSegment)
                     $message = "Deployment 'dependencies' could not be found."
                     $exception = [System.InvalidOperationException]::new($message)
                     $exception | Add-Member -NotePropertyName Body -NotePropertyValue @{ Code = 'DeploymentNotFound'; Message = $message }
                     $exception | Add-Member -NotePropertyName Request -NotePropertyValue @{
                         Method = [System.Net.Http.HttpMethod]::Get
-                        RequestUri = [uri] "https://management.azure.com$script:nestedId/operations?api-version=2024-11-01"
+                        RequestUri = [uri] "https://management.azure.com$operationPath/operations?api-version=2024-11-01"
                     }
                     $exception | Add-Member -NotePropertyName Response -NotePropertyValue @{
                         StatusCode = [System.Net.HttpStatusCode]::NotFound
@@ -392,6 +393,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         $script:groupId = "/subscriptions/$script:subscriptionId/resourceGroups/retry-fixture"
         $script:vnetId = "$script:groupId/providers/Microsoft.Network/virtualNetworks/dependencies"
         $script:nestedId = "$script:groupId/providers/Microsoft.Resources/deployments/dependencies"
+        $script:readProviderSegment = '/providers/Microsoft.Resources'
         $script:azContext = @{
             Subscription = @{ Id = $script:subscriptionId }
             Tenant       = @{ Id = '22222222-2222-2222-2222-222222222222' }
@@ -3378,9 +3380,13 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         }
     }
 
-    Context 'Nested deployment read reconciliation within shared budgets' -Tag 'DeploymentReadRecovery' {
+    Context 'Nested deployment read reconciliation within shared budgets for <route>' -Tag 'DeploymentReadRecovery' -ForEach @(
+        @{ route = 'provider-qualified route'; providerSegment = '/providers/Microsoft.Resources' }
+        @{ route = 'legacy SDK route'; providerSegment = '' }
+    ) {
         BeforeEach {
             $script:outcomes = @('NestedReadNotFound', 'Succeeded')
+            $script:readProviderSegment = $providerSegment
             $script:readRecoveryStates = [System.Collections.Generic.Queue[string]]::new([string[]] @('Running', 'Failed'))
             Mock Get-AzDeployment {
                 if ($script:readRecoveryStates.Count -gt 0) {

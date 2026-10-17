@@ -217,7 +217,7 @@ function Get-NestedDeploymentReadFailure {
             if (-not [uri]::TryCreate([string] $exception.Request.RequestUri, [UriKind]::Absolute, [ref] $requestUri) -or
                 $requestUri.Scheme -ne 'https' -or $requestUri.UserInfo -or $requestUri.Fragment -or
                 $requestUri.Query -cnotmatch '^\?api-version=[0-9]{4}-[0-9]{2}-[0-9]{2}$' -or
-                $requestUri.AbsolutePath -notmatch '^/subscriptions/(?<subscription>[0-9a-f-]{36})/resourceGroups/[a-z0-9_.()-]+/providers/Microsoft\.Resources/deployments/(?<name>[a-z0-9_.()-]+)/operations$') { return }
+                $requestUri.AbsolutePath -notmatch '^/subscriptions/(?<subscription>[0-9a-f-]{36})/resourceGroups/[a-z0-9_.()-]+(?:/providers/Microsoft\.Resources)?/deployments/(?<name>[a-z0-9_.()-]+)/operations$') { return }
             $nestedName = $Matches.name
             $nestedSubscription = [guid]::Empty
             if (-not [guid]::TryParse($Matches.subscription, [ref] $nestedSubscription) -or

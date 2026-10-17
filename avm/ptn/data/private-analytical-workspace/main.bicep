@@ -342,7 +342,7 @@ resource logExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' exist
   )
 }
 
-resource kvExisting 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!createNewKV) {
+resource kvExisting 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!createNewKV) {
   name: createNewKV ? 'dummyName' : last(split(keyVaultResourceId!, '/'))
   scope: resourceGroup(
     createNewKV ? subscription().id : (split(keyVaultResourceId!, '/')[2]),
@@ -501,7 +501,7 @@ module log 'br/public:avm/res/operational-insights/workspace:0.7.1' = if (create
   }
 }
 
-module kv 'br/public:avm/res/key-vault/vault:0.9.0' = if (createNewKV) {
+module kv 'br/public:avm/res/key-vault/vault:0.14.2' = if (createNewKV) {
   name: '${uniqueString(deployment().name, location)}-vault-${kvName}'
   params: {
     // Required parameters
@@ -607,7 +607,7 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:0.3.0' = i
   }
 }
 
-module dbw 'br/public:avm/res/databricks/workspace:0.8.5' = if (enableDatabricks) {
+module dbw 'br/public:avm/res/databricks/workspace:0.12.0' = if (enableDatabricks) {
   name: '${uniqueString(deployment().name, location)}-workspace-${dbwName}'
   params: {
     // Required parameters

@@ -29,6 +29,13 @@ param subscriptionId string = '#_subscriptionId_#'
 resource additionalMg 'Microsoft.Management/managementGroups@2023-04-01' = {
   scope: tenant()
   name: '${uniqueString(deployment().name)}-additional-mg'
+  properties: {
+    details: {
+      parent: {
+        id: managementGroup().id
+      }
+    }
+  }
 }
 
 module additionalRsg 'br/public:avm/res/resources/resource-group:0.4.0' = {
@@ -47,7 +54,7 @@ module additionalRsg 'br/public:avm/res/resources/resource-group:0.4.0' = {
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    name: '${namePrefix}${serviceShort}001'
+    name: '${take('${namePrefix}${serviceShort}', 11)}${uniqueString(deployment().name)}'
     //Configure Azure Defender for SQL agents on virtual machines
     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
     definitionVersion: '1.*.*-preview'

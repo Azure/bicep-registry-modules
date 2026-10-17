@@ -73,6 +73,12 @@ resource objectReplicationPolicy 'Microsoft.Storage/storageAccounts/objectReplic
   }
 }
 
+@description('The name of the created Object Replication Policy.')
+output name string = objectReplicationPolicy.name
+
+@description('The resource ID of the created Object Replication Policy.')
+output resourceId string = objectReplicationPolicy.id
+
 @description('Resource group name of the provisioned resources.')
 output resourceGroupName string = resourceGroup().name
 
