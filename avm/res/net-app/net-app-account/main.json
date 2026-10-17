@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "5431974650619118186"
+      "version": "0.41.2.15936",
+      "templateHash": "6141004799864029051"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
@@ -1299,6 +1299,13 @@
         "description": "Optional. A server Root certificate is required of ldapOverTLS is enabled."
       }
     },
+    "activeDirectorySite": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Active Directory site (as configured in Active Directory Sites and Services) the service will limit Domain Controller discovery to."
+      }
+    },
     "tags": {
       "type": "object",
       "metadata": {
@@ -1366,6 +1373,7 @@
         "ldapOverTLS": "[if(not(empty(parameters('domainName'))), parameters('ldapOverTLS'), false())]",
         "ldapSigning": "[if(not(empty(parameters('domainName'))), parameters('ldapSigning'), false())]",
         "serverRootCACertificate": "[if(not(empty(parameters('domainName'))), parameters('serverRootCACertificate'), null())]",
+        "site": "[if(and(not(empty(parameters('domainName'))), not(empty(parameters('activeDirectorySite')))), parameters('activeDirectorySite'), null())]",
         "smbServerName": "[if(not(empty(parameters('domainName'))), parameters('smbServerNamePrefix'), null())]",
         "organizationalUnit": "[if(not(empty(parameters('domainJoinOU'))), parameters('domainJoinOU'), null())]",
         "allowLocalNfsUsersWithLdap": "[if(not(empty(parameters('domainName'))), parameters('allowLocalNfsUsersWithLdap'), false())]"
@@ -1528,8 +1536,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "501200787965810111"
+              "version": "0.41.2.15936",
+              "templateHash": "13780964411644944162"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -1713,8 +1721,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "13339641463105256062"
+              "version": "0.41.2.15936",
+              "templateHash": "15150897155907339941"
             },
             "name": "Azure NetApp Files Snapshot Policy",
             "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -2063,8 +2071,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "15432723842338152115"
+              "version": "0.41.2.15936",
+              "templateHash": "15090331139238886312"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -2237,8 +2245,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "1719649230976763293"
+                      "version": "0.41.2.15936",
+                      "templateHash": "1187998753269183489"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
@@ -2481,8 +2489,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "15810480234228243994"
+              "version": "0.41.2.15936",
+              "templateHash": "5339305657106820773"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -3380,8 +3388,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "6505178330035586370"
+                      "version": "0.41.2.15936",
+                      "templateHash": "7572275427031775672"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -4260,8 +4268,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "15432723842338152115"
+              "version": "0.41.2.15936",
+              "templateHash": "15090331139238886312"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -4434,8 +4442,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "1719649230976763293"
+                      "version": "0.41.2.15936",
+                      "templateHash": "1187998753269183489"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."

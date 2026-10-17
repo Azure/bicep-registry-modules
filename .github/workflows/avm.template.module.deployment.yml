@@ -65,6 +65,7 @@ jobs:
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
           e2eIgnore: "${{ fromJson(inputs.testCase).e2eIgnore }}"
+          dependencyPreparationParameter: "${{ inputs.modulePath == 'avm/res/net-app/net-app-account' && fromJson(inputs.testCase).name == 'cmk-uami' && 'dependenciesOnly' || '' }}"
           githubVariables: ${{ toJSON(vars) }}
           githubSecrets: ${{ toJSON(secrets) }}
         env:
