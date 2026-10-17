@@ -1330,8 +1330,8 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`adName`](#parameter-adname) | string | Name of the active directory host as part of Kerberos Realm used for Kerberos authentication. |
 | [`activeDirectorySite`](#parameter-activedirectorysite) | string | The Active Directory site (as configured in Active Directory Sites and Services) the service will limit Domain Controller discovery to. |
+| [`adName`](#parameter-adname) | string | Name of the active directory host as part of Kerberos Realm used for Kerberos authentication. |
 | [`aesEncryption`](#parameter-aesencryption) | bool | Enable AES encryption on the SMB Server. |
 | [`allowLocalNfsUsersWithLdap`](#parameter-allowlocalnfsuserswithldap) | bool | If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | The backup policies to create. |
@@ -1364,17 +1364,16 @@ The name of the NetApp account.
 - Required: Yes
 - Type: string
 
-### Parameter: `adName`
-
-Name of the active directory host as part of Kerberos Realm used for Kerberos authentication.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `activeDirectorySite`
 
 The Active Directory site (as configured in Active Directory Sites and Services) the service will limit Domain Controller discovery to.
+
+- Required: No
+- Type: string
+
+### Parameter: `adName`
+
+Name of the active directory host as part of Kerberos Realm used for Kerberos authentication.
 
 - Required: No
 - Type: string

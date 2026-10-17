@@ -70,7 +70,7 @@ param lock lockType?
 param serverRootCACertificate string = ''
 
 @description('Optional. The Active Directory site (as configured in Active Directory Sites and Services) the service will limit Domain Controller discovery to.')
-param activeDirectorySite string = ''
+param activeDirectorySite string?
 
 @description('Optional. Tags for all resources.')
 param tags resourceInput<'Microsoft.NetApp/netAppAccounts@2025-01-01'>.tags?
