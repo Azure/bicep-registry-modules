@@ -121,8 +121,8 @@ type hourlyScheduleType = {
 @export()
 @description('The type for a weekly schedule for the snapshot policy.')
 type weeklyScheduleType = {
-  @description('Required. The weekly snapshot day.')
-  day: ('Sunday' | 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday')
+  @description('Required. The weekdays on which snapshots are taken, as a comma-separated list of English day names. E.g., \'Monday,Tuesday\'.')
+  day: string
 
   @description('Required. The weekly snapshot hour.')
   @minValue(0)
