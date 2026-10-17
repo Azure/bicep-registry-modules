@@ -607,7 +607,7 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:0.3.0' = i
   }
 }
 
-module dbw 'br/public:avm/res/databricks/workspace:0.8.5' = if (enableDatabricks) {
+module dbw 'br/public:avm/res/databricks/workspace:0.12.0' = if (enableDatabricks) {
   name: '${uniqueString(deployment().name, location)}-workspace-${dbwName}'
   params: {
     // Required parameters
