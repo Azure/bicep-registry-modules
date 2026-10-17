@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17309342363832435386"
+      "templateHash": "9487227892863329879"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2491,7 +2491,9 @@
     "storageAccount_privateEndpoints": {
       "copy": {
         "name": "storageAccount_privateEndpoints",
-        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
