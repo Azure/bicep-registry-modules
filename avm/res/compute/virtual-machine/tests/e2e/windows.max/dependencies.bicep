@@ -131,7 +131,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
   }
 }
 
-resource pip 'Microsoft.Network/publicIPAddresses@2024-01-01' = {
+resource pip 'Microsoft.Network/publicIPAddresses@2025-05-01' = {
   name: publicIPAddressName
   location: location
   sku: {
@@ -440,7 +440,7 @@ resource dcr 'Microsoft.Insights/dataCollectionRules@2024-03-11' = {
   }
 }
 
-resource dataDisk 'Microsoft.Compute/disks@2024-03-02' = {
+resource dataDisk 'Microsoft.Compute/disks@2025-01-02' = {
   location: location
   name: preCreatedDiskName
   sku: {

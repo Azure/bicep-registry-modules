@@ -30,7 +30,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Sql/servers@2023-08-01'>.tags?
+param tags resourceInput<'Microsoft.Sql/servers@2025-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -218,9 +218,11 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empt
   }
 }
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -237,7 +239,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource server 'Microsoft.Sql/servers@2023-08-01' = {
+resource server 'Microsoft.Sql/servers@2025-01-01' = {
   location: location
   name: name
   tags: tags
@@ -346,7 +348,6 @@ module server_databases 'database/main.bicep' = [
       sourceResourceId: database.?sourceResourceId
       useFreeLimit: database.?useFreeLimit
       zoneRedundant: database.?zoneRedundant
-
       diagnosticSettings: database.?diagnosticSettings
       backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy
       backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy
@@ -354,6 +355,7 @@ module server_databases 'database/main.bicep' = [
     }
     dependsOn: [
       server_elasticPools // Enables us to add databases to existing elastic pools
+      server_encryptionProtector // To avoid conflicts with encryption
     ]
   }
 ]
@@ -383,11 +385,12 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
       perDatabaseSettings: elasticPool.?perDatabaseSettings
       preferredEnclaveType: elasticPool.?preferredEnclaveType
       zoneRedundant: elasticPool.?zoneRedundant
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -450,6 +453,7 @@ module server_firewallRules 'firewall-rule/main.bicep' = [
       serverName: server.name
       endIpAddress: firewallRule.?endIpAddress
       startIpAddress: firewallRule.?startIpAddress
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -462,6 +466,7 @@ module server_virtualNetworkRules 'virtual-network-rule/main.bicep' = [
       name: virtualNetworkRule.name
       ignoreMissingVnetServiceEndpoint: virtualNetworkRule.?ignoreMissingVnetServiceEndpoint
       virtualNetworkSubnetResourceId: virtualNetworkRule.virtualNetworkSubnetResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -479,6 +484,7 @@ module server_securityAlertPolicies 'security-alert-policy/main.bicep' = [
       state: securityAlertPolicy.?state
       storageAccountAccessKey: securityAlertPolicy.?storageAccountAccessKey
       storageEndpoint: securityAlertPolicy.?storageEndpoint
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -492,6 +498,7 @@ module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if
     storageAccountResourceId: vulnerabilityAssessmentsObj!.storageAccountResourceId
     useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey
     createStorageRoleAssignment: vulnerabilityAssessmentsObj.?createStorageRoleAssignment
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     server_securityAlertPolicies
@@ -506,6 +513,7 @@ module server_keys 'key/main.bicep' = [
       name: key.?name
       serverKeyType: key.?serverKeyType
       uri: key.?uri
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -514,7 +522,6 @@ module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-Key'
   params: {
     serverName: server.name
-    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${!empty(customerManagedKey.?keyVersion) ? customerManagedKey.?keyVersion : (!isHSMManagedCMK ? last(split(cMKKeyVault::cMKKey.?properties.keyUriWithVersion ?? '', '/')) : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.')) }'
     serverKeyType: 'AzureKeyVault'
     uri: !empty(customerManagedKey.?keyVersion)
       ? (!isHSMManagedCMK
@@ -527,6 +534,7 @@ module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
           : (!isHSMManagedCMK
               ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
               : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -537,6 +545,7 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (custom
     serverKeyName: cmk_key.?outputs.name ?? ''
     serverKeyType: 'AzureKeyVault'
     autoRotationEnabled: customerManagedKey.?autoRotationEnabled
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -554,6 +563,7 @@ module server_audit_settings 'auditing-setting/main.bicep' = if (!empty(auditSet
     queueDelayMs: auditSettings.?queueDelayMs
     retentionDays: auditSettings.?retentionDays
     storageAccountResourceId: auditSettings.?storageAccountResourceId
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -599,6 +609,7 @@ module failover_groups 'failover-group/main.bicep' = [
       readOnlyEndpoint: failoverGroup.?readOnlyEndpoint
       readWriteEndpoint: failoverGroup.readWriteEndpoint
       secondaryType: failoverGroup.secondaryType
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       server_databases
@@ -606,7 +617,7 @@ module failover_groups 'failover-group/main.bicep' = [
   }
 ]
 
-resource server_connection_policy 'Microsoft.Sql/servers/connectionPolicies@2023-08-01' = {
+resource server_connection_policy 'Microsoft.Sql/servers/connectionPolicies@2025-01-01' = {
   name: 'default'
   parent: server
   properties: {
@@ -614,7 +625,7 @@ resource server_connection_policy 'Microsoft.Sql/servers/connectionPolicies@2023
   }
 }
 
-resource server_outbound_firewall_rules 'Microsoft.Sql/servers/outboundFirewallRules@2023-08-01' = [
+resource server_outbound_firewall_rules 'Microsoft.Sql/servers/outboundFirewallRules@2025-01-01' = [
   for domain in (outboundFirewallRules ?? []): if (outboundFirewallRules != null) {
     parent: server
     name: domain
@@ -727,6 +738,9 @@ type auditSettingsType = {
 
   @description('Optional. Specifies the identifier key of the auditing storage account.')
   storageAccountResourceId: string?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }
 
 @export()
@@ -900,6 +914,9 @@ type databaseType = {
 
   @description('Optional. The long term backup retention policy for the database.')
   backupLongTermRetentionPolicy: longTermBackupRetentionPolicyType?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }
 
 @export()
@@ -909,7 +926,7 @@ type elasticPoolType = {
   name: string
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Sql/servers/elasticPools@2023-08-01'>.tags?
 
   @description('Optional. The lock settings of the elastic pool.')
   lock: lockType?
@@ -949,6 +966,9 @@ type elasticPoolType = {
 
   @description('Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.')
   zoneRedundant: bool?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }
 
 @export()
@@ -968,6 +988,9 @@ type vulnerabilityAssessmentType = {
 
   @description('Optional. Specifies whether to create a role assignment for the storage account.')
   createStorageRoleAssignment: bool?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }
 
 @export()
@@ -981,6 +1004,9 @@ type firewallRuleType = {
 
   @description('Optional. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
   endIpAddress: string?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }
 
 @export()
@@ -994,6 +1020,9 @@ type keyType = {
 
   @description('Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: \'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion\'.')
   uri: string?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }
 
 @export()
@@ -1007,6 +1036,9 @@ type virtualNetworkRuleType = {
 
   @description('Optional. Allow creating a firewall rule before the virtual network has vnet service endpoint enabled.')
   ignoreMissingVnetServiceEndpoint: bool?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }
 
 @export()
@@ -1041,6 +1073,9 @@ type securityAlertPolicyType = {
 
   @description('Optional. Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs.')
   storageEndpoint: string?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }
 
 @export()
@@ -1050,7 +1085,7 @@ type failoverGroupType = {
   name: string
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Sql/servers/failoverGroups@2025-01-01'>.tags?
 
   @description('Required. List of databases in the failover group.')
   databases: string[]
@@ -1066,4 +1101,7 @@ type failoverGroupType = {
 
   @description('Required. Databases secondary type on partner server.')
   secondaryType: 'Geo' | 'Standby'
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }

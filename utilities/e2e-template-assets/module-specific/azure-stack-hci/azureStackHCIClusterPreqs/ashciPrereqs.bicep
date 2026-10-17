@@ -132,7 +132,7 @@ resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = 
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -172,7 +172,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     diagnosticStorageAccount
   ]
 
-  resource keyVaultName_domainAdminSecret 'secrets@2023-07-01' = if (!useSharedKeyVault) {
+  resource keyVaultName_domainAdminSecret 'secrets@2026-02-01' = if (!useSharedKeyVault) {
     name: 'AzureStackLCMUserCredential'
     properties: {
       contentType: 'Secret'
@@ -183,7 +183,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
   }
 
-  resource keyVaultName_localAdminSecret 'secrets@2023-07-01' = if (!useSharedKeyVault) {
+  resource keyVaultName_localAdminSecret 'secrets@2026-02-01' = if (!useSharedKeyVault) {
     name: 'LocalAdminCredential'
     properties: {
       contentType: 'Secret'
@@ -194,7 +194,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
   }
 
-  resource keyVaultName_arbDeploymentServicePrincipal 'secrets@2023-07-01' = if (!useSharedKeyVault && !empty(arbDeploymentAppId ?? '') && !empty(arbDeploymentServicePrincipalSecret ?? '')) {
+  resource keyVaultName_arbDeploymentServicePrincipal 'secrets@2026-02-01' = if (!useSharedKeyVault && !empty(arbDeploymentAppId ?? '') && !empty(arbDeploymentServicePrincipalSecret ?? '')) {
     name: 'DefaultARBApplication'
     properties: {
       contentType: 'Secret'
@@ -205,7 +205,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
   }
 
-  resource keyVaultName_storageWitness 'secrets@2023-07-01' = if (!useSharedKeyVault) {
+  resource keyVaultName_storageWitness 'secrets@2026-02-01' = if (!useSharedKeyVault) {
     name: 'WitnessStorageKey'
     properties: {
       contentType: 'Secret'
@@ -216,7 +216,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
   }
 
-  resource keyVaultName_hciImageVersion 'secrets@2023-07-01' = {
+  resource keyVaultName_hciImageVersion 'secrets@2026-02-01' = {
     name: 'hciImageVersionName'
     properties: {
       contentType: 'Secret'

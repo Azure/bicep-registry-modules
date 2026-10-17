@@ -16,13 +16,19 @@ param eventHubName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' = {
   name: storageAccountName
   location: location
   sku: {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
+  properties: {
+    networkAcls: {
+      defaultAction: 'Deny'
+      bypass: 'AzureServices'
+    }
+  }
 }
 
 resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' = {
@@ -35,7 +41,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' 
   }
 }
 
-resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
+resource eventHubNamespace 'Microsoft.EventHub/namespaces@2026-01-01' = {
   name: eventHubNamespaceName
   location: location
   sku: {
@@ -53,7 +59,7 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
     zoneRedundant: true
   }
 
-  resource eventHub 'eventhubs@2024-01-01' = {
+  resource eventHub 'eventhubs@2026-01-01' = {
     name: eventHubName
     properties: {
       messageRetentionInDays: 1

@@ -74,7 +74,7 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
       backupConfig: {
-        enhancedSecurityState: 'AlwaysON'
+        enhancedSecurityState: 'Enabled'
         softDeleteFeatureState: 'AlwaysON'
       }
       backupPolicies: [

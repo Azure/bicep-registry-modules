@@ -216,14 +216,15 @@ function Get-CrossReferencedModuleList {
 
             $moduleFolderPath = Split-Path $moduleTemplatePath -Parent
             ## avm/res/<provider>/<resourceType>
-            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/'
+            $resourceTypeIdentifier = ($moduleFolderPath -replace '\\', '/') -split '\/avm\/(res|ptn|utl)\/'
 
             # since the moduleTemplatePath can contain folders outside of modules, skip those
-            if ($resourceTypeIdentifier -ne '') {
-                $providerNamespace = ($resourceTypeIdentifier -split '[\/|\\]')[0]
-                $resourceType = $resourceTypeIdentifier.Substring($providerNamespace.Length + 1)
+            if ($resourceTypeIdentifier.count -gt 1) {
+                $moduleType = $resourceTypeIdentifier[1]
+                $providerNamespace = ($resourceTypeIdentifier[2] -split '[\/|\\]')[0]
+                $resourceType = $resourceTypeIdentifier[2].Substring($providerNamespace.Length + 1) # rest
 
-                $resultSet["$providerNamespace/$resourceType"] = $referenceObject
+                $resultSet["$moduleType/$providerNamespace/$resourceType"] = $referenceObject
             }
         }
 

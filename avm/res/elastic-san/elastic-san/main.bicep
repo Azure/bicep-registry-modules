@@ -103,6 +103,8 @@ var calculatedPublicNetworkAccess = !empty(publicNetworkAccess)
   ? any(publicNetworkAccess)
   : (totalVirtualNetworkRules > 0 ? 'Enabled' : (totalPrivateEndpoints > 0 ? 'Disabled' : null))
 
+var enableReferencedModulesTelemetry = false
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -153,12 +155,11 @@ var formattedRoleAssignments = [
 // Add your resources here
 //
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: take(
-    '46d3xbcp.res.elasticsan-elasticsan.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
-    64
-  )
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -206,6 +207,7 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
       privateEndpoints: volumeGroup.?privateEndpoints
       tags: tags
       lock: lock
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

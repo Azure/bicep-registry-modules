@@ -7,12 +7,12 @@ param devCenterProjectName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-resource devCenter 'Microsoft.DevCenter/devcenters@2024-02-01' = {
+resource devCenter 'Microsoft.DevCenter/devcenters@2025-02-01' = {
   name: devCenterName
   location: location
 }
 
-resource devCenterProject 'Microsoft.DevCenter/projects@2024-02-01' = {
+resource devCenterProject 'Microsoft.DevCenter/projects@2025-02-01' = {
   name: devCenterProjectName
   location: location
   properties: {

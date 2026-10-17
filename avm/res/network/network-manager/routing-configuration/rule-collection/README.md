@@ -3,11 +3,20 @@
 This module deploys an Network Manager Routing Configuration Rule Collection.
 Routing configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.
 
+You can reference the module as follows:
+```bicep
+module networkManager 'br/public:avm/res/network/network-manager/routing-configuration/rule-collection:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -38,6 +47,7 @@ Routing configurations are the building blocks of UDR management. They're used t
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | A description of the routing rule collection. |
 | [`disableBgpRoutePropagation`](#parameter-disablebgproutepropagation) | bool | Determines whether BGP route propagation is enabled for the routing rule collection. Defaults to true. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`rules`](#parameter-rules) | array | List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager. |
 
 ### Parameter: `appliesTo`
@@ -92,6 +102,14 @@ A description of the routing rule collection.
 ### Parameter: `disableBgpRoutePropagation`
 
 Determines whether BGP route propagation is enabled for the routing rule collection. Defaults to true.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -217,3 +235,7 @@ A description of the rule.
 | `name` | string | The name of the deployed routing rule collection. |
 | `resourceGroupName` | string | The resource group the routing rule collection was deployed into. |
 | `resourceId` | string | The resource ID of the deployed routing rule collection. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

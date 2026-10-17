@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "10381391184570532474"
+      "version": "0.47.16.16243",
+      "templateHash": "11402950168123546449"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2212,6 +2212,17 @@
         "description": "Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use."
       }
     },
+    "diskControllerType": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "NVMe",
+        "SCSI"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the disk controller type."
+      }
+    },
     "osDisk": {
       "$ref": "#/definitions/osDiskType",
       "metadata": {
@@ -2614,7 +2625,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Compute/virtualMachines@2024-11-01#properties/tags"
+          "source": "Microsoft.Compute/virtualMachines@2025-11-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -2801,6 +2812,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.db70358",
     "enableReferencedModulesTelemetry": false,
     "linuxConfiguration": {
       "disablePasswordAuthentication": "[parameters('disablePasswordAuthentication')]",
@@ -2840,6 +2852,7 @@
       "Virtual Machine User Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')]",
       "VM Scanner Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd24ecba3-c1f4-40fa-a7bb-4588a071e8fd')]"
     },
+    "telemetryIdPrefix": "[variables('$fxv#0')]",
     "aadJoinSettings": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'settings'), createObject())]",
     "filteredAadJoinSettings": "[if(and(contains(variables('aadJoinSettings'), 'mdmId'), empty(variables('aadJoinSettings').mdmId)), reduce(items(variables('aadJoinSettings')), createObject(), lambda('cur', 'item', if(equals(lambdaVariables('item').key, 'mdmId'), lambdaVariables('cur'), union(lambdaVariables('cur'), createObject(format('{0}', lambdaVariables('item').key), lambdaVariables('item').value))))), variables('aadJoinSettings'))]"
   },
@@ -2848,7 +2861,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-07-01",
-      "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -2882,6 +2895,7 @@
         "creationData": {
           "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'createOption'), 'Empty')]"
         },
+        "encryption": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'diskEncryptionSetResourceId'))), createObject('diskEncryptionSetId', tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'diskEncryptionSetResourceId')), null())]",
         "diskIOPSReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskIOPSReadWrite')]",
         "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
@@ -2892,7 +2906,7 @@
     },
     "vm": {
       "type": "Microsoft.Compute/virtualMachines",
-      "apiVersion": "2024-07-01",
+      "apiVersion": "2025-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
@@ -2921,6 +2935,7 @@
             }
           ],
           "imageReference": "[parameters('imageReference')]",
+          "diskControllerType": "[parameters('diskControllerType')]",
           "osDisk": {
             "name": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), last(split(parameters('osDisk').managedDisk.resourceId, '/')), coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name'))))]",
             "createOption": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), 'Attach', coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage'))]",
@@ -3165,8 +3180,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "12835032554843093631"
+              "version": "0.47.16.16243",
+              "templateHash": "7992912380250697564"
             }
           },
           "definitions": {
@@ -6046,8 +6061,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17984629609807526275"
+              "version": "0.47.16.16243",
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6168,12 +6183,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -6303,8 +6322,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17984629609807526275"
+              "version": "0.47.16.16243",
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6425,12 +6444,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -6565,8 +6588,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17984629609807526275"
+              "version": "0.47.16.16243",
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6687,12 +6710,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -6825,8 +6852,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17984629609807526275"
+              "version": "0.47.16.16243",
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6947,12 +6974,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -7087,8 +7118,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17984629609807526275"
+              "version": "0.47.16.16243",
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7209,12 +7240,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -7344,8 +7379,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17984629609807526275"
+              "version": "0.47.16.16243",
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7466,12 +7501,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -7609,8 +7648,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17984629609807526275"
+              "version": "0.47.16.16243",
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7731,12 +7770,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -7879,8 +7922,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17984629609807526275"
+              "version": "0.47.16.16243",
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8001,12 +8044,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -8142,8 +8189,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17984629609807526275"
+              "version": "0.47.16.16243",
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8264,12 +8311,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -8401,8 +8452,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17984629609807526275"
+              "version": "0.47.16.16243",
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8523,12 +8574,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -8677,8 +8732,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17984629609807526275"
+              "version": "0.47.16.16243",
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8799,12 +8854,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -8941,8 +9000,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17984629609807526275"
+              "version": "0.47.16.16243",
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -9063,12 +9122,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -9188,8 +9251,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "6872659698526836526"
+              "version": "0.47.16.16243",
+              "templateHash": "33886016222511691"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -9323,14 +9386,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('vm', '2024-07-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('vm', '2025-11-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vm', '2024-07-01', 'full').location]"
+      "value": "[reference('vm', '2025-11-01', 'full').location]"
     },
     "nicConfigurations": {
       "type": "array",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "10955312501590227308"
+      "version": "0.47.16.16243",
+      "templateHash": "5195887245581507665"
     },
     "name": "Container job toolkit",
     "description": "This module deploys a container to run as a job."
@@ -605,12 +605,16 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.ptn.aa30000",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.app-containerjobtoolkit.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -628,7 +632,7 @@
     },
     "services": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-services', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -702,8 +706,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "9534146453255891879"
+              "version": "0.47.16.16243",
+              "templateHash": "977083721688884299"
             }
           },
           "definitions": {
@@ -1321,7 +1325,7 @@
             "nsg": {
               "condition": "[variables('zoneRedundant')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-nsg', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1974,7 +1978,7 @@
             "nsg_workload_plan": {
               "condition": "[and(variables('zoneRedundant'), not(empty(parameters('workloadProfiles'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-nsg-workload', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -2630,7 +2634,7 @@
             "nsg_consumption_plan": {
               "condition": "[and(variables('zoneRedundant'), empty(parameters('workloadProfiles')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-nsg-workload', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3286,7 +3290,7 @@
             "vnet": {
               "condition": "[variables('zoneRedundant')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-vnet', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -4967,7 +4971,7 @@
             "dnsZoneKeyVault_new": {
               "condition": "[and(parameters('deployInVnet'), parameters('deployDnsZoneKeyVault'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-dnsZoneKeyVault', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -8139,7 +8143,7 @@
             "dnsZoneContainerRegistry_new": {
               "condition": "[and(parameters('deployInVnet'), parameters('deployDnsZoneContainerRegistry'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-dnsZoneContainerRegistry', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -11311,7 +11315,7 @@
             "privateEndpoint_KeyVault": {
               "condition": "[parameters('deployInVnet')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-privateEndpoint_KeyVault', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -12071,7 +12075,7 @@
             "privateEndpoint_ContainerRegistry": {
               "condition": "[parameters('deployInVnet')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-privateEndpoint_ContainerRegistry', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -12830,7 +12834,7 @@
             },
             "vault": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-vault', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName'), subscription().subscriptionId))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -16169,7 +16173,7 @@
             },
             "registry": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-registry', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -19237,7 +19241,7 @@
                 "count": "[length(variables('registryRbacRoles'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-registry-rbac-{1}', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')), variables('registryRbacRoles')[copyIndex()])]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -19487,7 +19491,7 @@
             "storage": {
               "condition": "[parameters('deployInVnet')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-storage', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -25324,7 +25328,7 @@
             "law_new": {
               "condition": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-law', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -28409,7 +28413,7 @@
             },
             "managedEnvironment": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-managedEnvironment', uniqueString(deployment().name, parameters('location'), parameters('resourceGroupName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -28428,7 +28432,7 @@
                       "destination": "log-analytics",
                       "logAnalyticsConfiguration": {
                         "customerId": "[if(empty(parameters('logAnalyticsWorkspaceResourceId')), reference('law_new').outputs.logAnalyticsWorkspaceId.value, reference('law_existing').customerId)]",
-                        "sharedKey": "[if(empty(parameters('logAnalyticsWorkspaceResourceId')), listOutputsWithSecureValues('law_new', '2022-09-01').primarySharedKey, listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2025-02-01').primarySharedKey)]"
+                        "sharedKey": "[if(empty(parameters('logAnalyticsWorkspaceResourceId')), tryGet(if(empty(parameters('logAnalyticsWorkspaceResourceId')), listOutputsWithSecureValues('law_new', '2025-04-01'), null()), 'primarySharedKey'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2025-02-01').primarySharedKey)]"
                       }
                     }
                   },
@@ -29455,7 +29459,7 @@
     },
     "import_image": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-import-image', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -30458,7 +30462,7 @@
     },
     "job": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-{1}-appjob', uniqueString(deployment().name, parameters('location')), resourceGroup().name)]",
       "properties": {
         "expressionEvaluationOptions": {

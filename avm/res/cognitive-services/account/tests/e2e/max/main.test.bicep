@@ -67,6 +67,7 @@ module testDeployment '../../../main.bicep' = [
       customSubDomainName: '${namePrefix}x${serviceShort}'
       location: resourceLocation
       allowProjectManagement: false
+      enableDefenderForAI: true
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -94,6 +95,7 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       networkAcls: {
+        bypass: 'AzureServices'
         defaultAction: 'Deny'
         ipRules: [
           {

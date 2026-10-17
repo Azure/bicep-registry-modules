@@ -1,5 +1,11 @@
 # Chat-with-your-data-Solution-Accelerator `[Sa/ChatWithYourData]`
 
+> ⚠️THIS MODULE IS DEPRECATED.⚠️
+> 
+> - It will no longer receive any updates.
+> - If the underlying Azure service is not deprecated/retired, this module may still be used as is (references to any existing versions will keep working), but it is not recommended for new deployments.
+> - It is recommended to migrate to a replacement/alternative version of the module, if available.
+
 This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.
 
 |**Post-Deployment Step** |
@@ -1125,6 +1131,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.3` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.8.1` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.15.0` | Remote reference |
 | `br/public:avm/res/portal/dashboard:0.3.2` | Remote reference |

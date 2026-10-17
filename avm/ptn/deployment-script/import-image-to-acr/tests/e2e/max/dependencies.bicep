@@ -20,7 +20,7 @@ var ipRange = '10.0.0.0'
 // put the password of the source container registry here
 var sourceContainerRegistryPassword = guid(resourceGroup().id, 'sourceContainerRegistryPassword')
 
-module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
+module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.1' = {
   name: managedIdentityName
   params: {
     name: managedIdentityName
@@ -29,7 +29,7 @@ module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1
 }
 
 // networking related resources
-resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
+resource vnet 'Microsoft.Network/virtualNetworks@2025-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -37,13 +37,13 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
       addressPrefixes: [cidrSubnet(ipRange, 16, 0)]
     }
   }
-  resource subnet_privateendpoints 'subnets@2023-11-01' = {
+  resource subnet_privateendpoints 'subnets@2025-07-01' = {
     name: 'privateendpoints-subnet'
     properties: {
       addressPrefix: cidrSubnet(ipRange, 24, 0)
     }
   }
-  resource subnet_deploymentscript 'subnets@2023-11-01' = {
+  resource subnet_deploymentscript 'subnets@2025-07-01' = {
     name: 'deploymentscript-subnet'
     dependsOn: [subnet_privateendpoints] // for the order of creation
     properties: {
@@ -65,7 +65,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   }
 }
 
-module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.8.1' = {
   name: '${uniqueString(deployment().name, location)}-dnsZone-ACR'
   params: {
     name: 'privatelink.azurecr.io'
@@ -79,7 +79,7 @@ module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.7.
   }
 }
 
-module storage 'br/public:avm/res/storage/storage-account:0.20.0' = {
+module storage 'br/public:avm/res/storage/storage-account:0.32.1' = {
   name: '${uniqueString(resourceGroup().name, location)}-storage'
   params: {
     name: storageAccountName
@@ -106,11 +106,14 @@ module storage 'br/public:avm/res/storage/storage-account:0.20.0' = {
         roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
       }
     ]
+    tags: {
+      SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
+    }
   }
 }
 
 // KeyVault stores the password to login to the source container registry
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -128,14 +131,14 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   }
   dependsOn: [identity]
 
-  resource containerRegistrySecret 'secrets@2023-07-01' = {
+  resource containerRegistrySecret 'secrets@2026-02-01' = {
     name: 'ContainerRegistryPassword'
     properties: {
       value: sourceContainerRegistryPassword
     }
   }
 
-  resource rbac 'accessPolicies@2023-07-01' = {
+  resource rbac 'accessPolicies@2026-02-01' = {
     name: 'add'
     properties: {
       accessPolicies: [
@@ -152,7 +155,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
 }
 
 // the container registry to upload the image into
-module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
+module acr 'br/public:avm/res/container-registry/registry:0.12.1' = {
   name: '${uniqueString(resourceGroup().name, location)}-acr'
   params: {
     name: acrName

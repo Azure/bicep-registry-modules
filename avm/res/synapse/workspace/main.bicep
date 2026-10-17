@@ -163,9 +163,11 @@ var formattedRoleAssignments = [
   })
 ]
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.synapse-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -267,6 +269,7 @@ module synapse_integrationRuntimes 'integration-runtime/main.bicep' = [
       name: integrationRuntime.name
       type: integrationRuntime.type
       typeProperties: integrationRuntime.?typeProperties ?? {}
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -296,6 +299,7 @@ module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
     isActiveCMK: true
     keyVaultResourceId: cMKKeyVault.id
     workspaceName: workspace.name
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     workspace_cmk_rbac
@@ -311,6 +315,7 @@ module workspace_administrator 'administrator/main.bicep' = if (!empty(administr
     login: administrator!.login
     sid: administrator!.sid
     tenantId: administrator.?tenantId
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -352,6 +357,7 @@ module workspace_firewallRules 'firewall-rule/main.bicep' = [
       endIpAddress: rule.endIpAddress
       startIpAddress: rule.startIpAddress
       workspaceName: workspace.name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -384,6 +390,7 @@ module workspace_bigDataPools 'big-data-pool/main.bicep' = [
       lock: bigDataPool.?lock ?? lock
       diagnosticSettings: bigDataPool.?diagnosticSettings ?? []
       roleAssignments: bigDataPool.?roleAssignments ?? []
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -407,6 +414,7 @@ module workspace_sqlPools 'sql-pool/main.bicep' = [
       roleAssignments: sqlPool.?roleAssignments ?? []
       lock: sqlPool.?lock ?? lock
       tags: sqlPool.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -580,7 +588,13 @@ type firewallRuleType = {
   endIpAddress: string
 }
 
-import { autoScaleType, dynamicExecutorAllocationType, sparkConfigPropertiesType, libraryRequirementsType, customLibraryType } from 'big-data-pool/main.bicep'
+import {
+  autoScaleType
+  dynamicExecutorAllocationType
+  sparkConfigPropertiesType
+  libraryRequirementsType
+  customLibraryType
+} from 'big-data-pool/main.bicep'
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @export()
 @description('The synapse workspace Big Data Pool definition.')

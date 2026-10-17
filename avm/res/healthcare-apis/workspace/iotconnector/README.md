@@ -50,7 +50,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | [`consumerGroup`](#parameter-consumergroup) | string | Consumer group of the event hub to connected to. |
 | [`deviceMapping`](#parameter-devicemapping) | object | The mapping JSON that determines how incoming device data is normalized. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fhirdestination`](#parameter-fhirdestination) | object | FHIR Destination. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -110,7 +110,7 @@ The mapping JSON that determines how incoming device data is normalized.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

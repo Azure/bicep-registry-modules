@@ -54,7 +54,7 @@ module testDeployment '../../../main.bicep' = [
       sku: 'Standard_LRS'
       availabilityZone: -1
       createOption: 'FromImage'
-      imageReferenceId: '${subscription().id}/Providers/Microsoft.Compute/Locations/westeurope/Publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServer/Skus/2022-datacenter-azure-edition/Versions/20348.2461.240510'
+      imageReferenceId: '${subscription().id}/Providers/Microsoft.Compute/Locations/westeurope/Publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServer/Skus/2025-datacenter-azure-edition/Versions/26100.32230.260111' // Ref to update https://learn.microsoft.com/en-us/azure/virtual-machines/windows/cli-ps-findimage
     }
   }
 ]

@@ -59,6 +59,13 @@ param nonSecretParameterValues resourceInput<'Microsoft.Web/connections@2016-06-
 })
 param parameterValues resourceInput<'Microsoft.Web/connections@2016-06-01'>.properties.parameterValues?
 
+@description('Optional. The kind of the connection. Use `V2` for managed identity authentication.')
+param kind string?
+
+@description('Optional. Alternative parameter values for single-authentication (MSI). When provided, `parameterValueType` is automatically set to `Alternative`.')
+@secure()
+param alternativeParameterValues object?
+
 @description('Optional. Additional parameter value set used for authentication settings.')
 @metadata({
   example: '''
@@ -129,9 +136,11 @@ var formattedRoleAssignments = [
 // Resources      //
 // ============== //
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.web-connection.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -152,6 +161,8 @@ resource connection 'Microsoft.Web/connections@2016-06-01' = {
   name: name
   location: location
   tags: tags
+  #disable-next-line BCP037 BCP187 // The 'kind' property is not yet available in the Bicep type definition but is supported by the API.
+  kind: any(kind)
   properties: {
     displayName: displayName
     customParameterValues: customParameterValues
@@ -160,7 +171,11 @@ resource connection 'Microsoft.Web/connections@2016-06-01' = {
     nonSecretParameterValues: nonSecretParameterValues
     testLinks: testLinks
     statuses: statuses
-    #disable-next-line BCP037 // the parameterValueSet is not yet made available in the resource provider, which generates warnings. Disable the warning for now.
+    #disable-next-line BCP037 // The 'parameterValueType' property is not yet available in the Bicep type definition but is supported by the API.
+    parameterValueType: !empty(alternativeParameterValues) ? 'Alternative' : null
+    #disable-next-line BCP037 // The 'alternativeParameterValues' property is not yet available in the Bicep type definition but is supported by the API.
+    alternativeParameterValues: alternativeParameterValues
+    #disable-next-line BCP037 // The 'parameterValueSet' property is not yet available in the Bicep type definition but is supported by the API.
     parameterValueSet: parameterValueSet
   }
 }

@@ -216,16 +216,24 @@ var supportsBlobService = kind == 'BlockBlobStorage' || kind == 'BlobStorage' ||
 var supportsFileService = kind == 'FileStorage' || kind == 'StorageV2' || kind == 'Storage'
 
 var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  map(
+    union(
+      (managedIdentities.?userAssignedResourceIds ?? []),
+      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
+        ? [customerManagedKey.?userAssignedIdentityResourceId]
+        : [])
+    ),
+    (id) => { '${id}': {} }
+  ),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities)
+var identity = !empty(managedIdentities) || !empty(formattedUserAssignedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -359,9 +367,11 @@ var formattedManagementPolicies = union(
     : []
 )
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.storage-storageaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -380,23 +390,23 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!isHSMManagedCMK && !empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+  name: last(split((customerManagedKey!.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+    split(customerManagedKey!.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey!.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName!
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+    name: customerManagedKey!.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
+  name: last(split(customerManagedKey!.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
+    split(customerManagedKey!.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey!.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -655,6 +665,7 @@ module storageAccount_blobServices 'blob-service/main.bicep' = if (!empty(blobSe
   name: '${uniqueString(deployment().name, location)}-Storage-BlobServices'
   params: {
     storageAccountName: storageAccount.name
+    enableTelemetry: enableReferencedModulesTelemetry
     containers: blobServices.?containers
     automaticSnapshotPolicyEnabled: blobServices.?automaticSnapshotPolicyEnabled
     changeFeedEnabled: blobServices.?changeFeedEnabled
@@ -680,6 +691,7 @@ module storageAccount_fileServices 'file-service/main.bicep' = if (!empty(fileSe
   name: '${uniqueString(deployment().name, location)}-Storage-FileServices'
   params: {
     storageAccountName: storageAccount.name
+    enableTelemetry: enableReferencedModulesTelemetry
     diagnosticSettings: fileServices.?diagnosticSettings
     protocolSettings: fileServices.?protocolSettings
     shareDeleteRetentionPolicy: fileServices.?shareDeleteRetentionPolicy
@@ -693,6 +705,7 @@ module storageAccount_queueServices 'queue-service/main.bicep' = if (!empty(queu
   name: '${uniqueString(deployment().name, location)}-Storage-QueueServices'
   params: {
     storageAccountName: storageAccount.name
+    enableTelemetry: enableReferencedModulesTelemetry
     diagnosticSettings: queueServices.?diagnosticSettings
     queues: queueServices.?queues
     corsRules: queueServices.?corsRules
@@ -704,6 +717,7 @@ module storageAccount_tableServices 'table-service/main.bicep' = if (!empty(tabl
   name: '${uniqueString(deployment().name, location)}-Storage-TableServices'
   params: {
     storageAccountName: storageAccount.name
+    enableTelemetry: enableReferencedModulesTelemetry
     diagnosticSettings: tableServices.?diagnosticSettings
     tables: tableServices.?tables
     corsRules: tableServices.?corsRules
@@ -761,6 +775,7 @@ module storageAccount_objectReplicationPolicies 'object-replication-policy/main.
     name: '${uniqueString(deployment().name, location)}-Storage-ObjRepPolicy-${index}'
     params: {
       storageAccountName: storageAccount.name
+      enableTelemetry: enableReferencedModulesTelemetry
       destinationAccountResourceId: policy.destinationStorageAccountResourceId
       enableMetrics: policy.?enableMetrics ?? false
       rules: policy.?rules

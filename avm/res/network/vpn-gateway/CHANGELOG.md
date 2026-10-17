@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/vpn-gateway/CHANGELOG.md).
 
+## 0.3.1
+
+### Changes
+
+- Publishing child module `avm/res/network/vpn-gateway/nat-rule`
+- Publishing child module `avm/res/network/vpn-gateway/vpn-connection`
+
+### Breaking Changes
+
+- None
+
 ## 0.3.0
 
 ### Changes

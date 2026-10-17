@@ -14,3 +14,5 @@ updates:
       prefix: "fix: "
     reviewers:
       - Azure-Bicep-Registery-Reviewers
+    cooldown:
+      default-days: 7

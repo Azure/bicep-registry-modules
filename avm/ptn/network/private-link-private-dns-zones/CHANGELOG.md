@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/network/private-link-private-dns-zones/CHANGELOG.md).
 
+## 0.7.3
+
+### Changes
+
+- Regenerated geo code mappings to align with the latest Azure region geo codes
+  - Corrected `indiasouthcentral` geo code from `insc` to `isc`
+  - Added new regions: `saudiarabiaeast` (`sae`), `southeastasia3` (`sg3`), and `westcentralusfre` (`wfre`)
+
+### Breaking Changes
+
+- None
+
 ## 0.7.2
 
 ### Changes

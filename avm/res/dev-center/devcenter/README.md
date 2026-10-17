@@ -1161,7 +1161,7 @@ param projectPolicies = [
 | [`catalogs`](#parameter-catalogs) | array | The catalogs to create in the dev center. Catalogs help you provide a set of curated infrastructure-as-code(IaC) templates, known as environment definitions for your development teams to create environments. You can attach your own source control repository from GitHub or Azure Repos as a catalog and specify the folder with your environment definitions. Deployment Environments scans the folder for environment definitions and makes them available for dev teams to create environments. |
 | [`devboxDefinitions`](#parameter-devboxdefinitions) | array | The DevBox definitions to create in the Dev Center. A DevBox definition specifies the source operating system image and compute size, including CPU, memory, and storage. Dev Box definitions are used to create DevBox pools. |
 | [`devBoxProvisioningSettings`](#parameter-devboxprovisioningsettings) | object | Settings to be used in the provisioning of all Dev Boxes that belong to this dev center. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`displayName`](#parameter-displayname) | string | The display name of the Dev Center. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`environmentTypes`](#parameter-environmenttypes) | array | Define the environment types that development teams can deploy. For example, sandbox, dev, test, and production. A dev center environment type is available to a specific project only after you add an associated project environment type. You can't delete a dev center environment type if any existing project environment types or deployed environments reference it. |
@@ -1502,7 +1502,7 @@ Whether project catalogs associated with projects in this dev center can be conf
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

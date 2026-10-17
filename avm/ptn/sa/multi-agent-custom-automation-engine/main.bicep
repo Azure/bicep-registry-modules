@@ -27,15 +27,27 @@ param location string = resourceGroup().location
 var deployerInfo = deployer()
 var deployingUserPrincipalId = deployerInfo.objectId
 
-// Restricting deployment to only supported Azure OpenAI regions validated with GPT-4o model
-@allowed(['australiaeast', 'eastus2', 'francecentral', 'japaneast', 'norwayeast', 'swedencentral', 'uksouth', 'westus'])
+// Restricting deployment to only supported Azure OpenAI regions validated with GPT-5.4 model
+@allowed([
+  'australiaeast'
+  'eastus2'
+  'francecentral'
+  'japaneast'
+  'norwayeast'
+  'swedencentral'
+  'uksouth'
+  'westus'
+  'westus3'
+  'polandcentral'
+  'uaenorth'
+])
 @metadata({
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt4.1, 150'
-      'OpenAI.GlobalStandard.o4-mini, 50'
-      'OpenAI.GlobalStandard.gpt4.1-mini, 50'
+      'OpenAI.GlobalStandard.gpt-5.4, 150'
+      'OpenAI.GlobalStandard.gpt-5.4-mini, 100'
+      'OpenAI.GlobalStandard.gpt-image-1.5, 5'
     ]
   }
 })
@@ -46,39 +58,28 @@ param azureAiServiceLocation string
 param cosmosDbReplicaLocation string = 'canadacentral'
 
 @minLength(1)
-@description('Optional. Name of the GPT model to deploy.')
-param gptModelName string = 'gpt-4.1-mini'
+@description('Optional. Name of the GPT model to deploy. Defaults to gpt-5.4-mini.')
+param gptModelName string = 'gpt-5.4-mini'
 
-@description('Optional. Version of the GPT model to deploy. Defaults to 2025-04-14.')
-param gptModelVersion string = '2025-04-14'
-
-@minLength(1)
-@description('Optional. Name of the GPT model to deploy.')
-param gpt41ModelName string = 'gpt-4.1'
-
-@description('Optional. Version of the GPT model to deploy. Defaults to 2025-04-14.')
-param gpt41ModelVersion string = '2025-04-14'
+@description('Optional. Version of the GPT model to deploy. Defaults to 2026-03-17.')
+param gptModelVersion string = '2026-03-17'
 
 @minLength(1)
-@description('Optional. Name of the GPT Reasoning model to deploy.')
-param gptReasoningModelName string = 'o4-mini'
+@description('Optional. Name of the larger GPT model to deploy. Defaults to gpt-5.4.')
+param gpt54ModelName string = 'gpt-5.4'
 
-@description('Optional. Version of the GPT Reasoning model to deploy. Defaults to 2025-04-16.')
-param gptReasoningModelVersion string = '2025-04-16'
+@description('Optional. Version of the larger GPT model to deploy. Defaults to 2026-03-05.')
+param gpt54ModelVersion string = '2026-03-05'
+
+@minLength(1)
+@description('Optional. Name of the image-generation model to deploy. Defaults to gpt-image-1.5.')
+param gptImageModelName string = 'gpt-image-1.5'
+
+@description('Optional. Version of the image-generation model to deploy. Defaults to 2025-12-16.')
+param gptImageModelVersion string = '2025-12-16'
 
 @description('Optional. Version of the Azure OpenAI service to deploy. Defaults to 2024-12-01-preview.')
 param azureopenaiVersion string = '2024-12-01-preview'
-
-@description('Optional. Version of the Azure AI Agent API version. Defaults to 2025-01-01-preview.')
-param azureAiAgentAPIVersion string = '2025-01-01-preview'
-
-@minLength(1)
-@allowed([
-  'Standard'
-  'GlobalStandard'
-])
-@description('Optional. GPT model deployment type. Defaults to GlobalStandard.')
-param gpt41ModelDeploymentType string = 'GlobalStandard'
 
 @minLength(1)
 @allowed([
@@ -93,17 +94,25 @@ param gptModelDeploymentType string = 'GlobalStandard'
   'Standard'
   'GlobalStandard'
 ])
-@description('Optional. GPT model deployment type. Defaults to GlobalStandard.')
-param gptReasoningModelDeploymentType string = 'GlobalStandard'
+@description('Optional. GPT-5.4 model deployment type. Defaults to GlobalStandard.')
+param gpt54ModelDeploymentType string = 'GlobalStandard'
 
-@description('Optional. AI model deployment token capacity. Defaults to 50 for optimal performance.')
-param gptModelCapacity int = 50
+@minLength(1)
+@allowed([
+  'Standard'
+  'GlobalStandard'
+])
+@description('Optional. GPT image model deployment type. Defaults to GlobalStandard.')
+param gptImageModelDeploymentType string = 'GlobalStandard'
+
+@description('Optional. AI model deployment token capacity. Defaults to 100 for optimal performance.')
+param gptModelCapacity int = 100
 
 @description('Optional. AI model deployment token capacity. Defaults to 150 for optimal performance.')
-param gpt41ModelCapacity int = 150
+param gpt54ModelCapacity int = 150
 
-@description('Optional. AI model deployment token capacity. Defaults to 50 for optimal performance.')
-param gptReasoningModelCapacity int = 50
+@description('Optional. gpt-image-1.5 deployment capacity (RPM). Defaults to 5 to support concurrent marketing-image generation across multiple sessions.')
+param gptImageModelCapacity int = 5
 
 @description('Optional. The tags to apply to all deployed Azure resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
@@ -128,34 +137,37 @@ param virtualMachineAdminUsername string?
 @secure()
 param virtualMachineAdminPassword string?
 
+@description('Optional. The size of the virtual machine. Applies only to AVM flavors.')
+param vmSize string = 'Standard_D2s_v5'
+
 // These parameters are changed for testing - please reset as part of publication
 
 @description('Optional. The Container Registry hostname where the docker images for the backend are located.')
-param backendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
+param backendContainerRegistryHostname string = 'mcr.microsoft.com'
 
 @description('Optional. The Container Image Name to deploy on the backend.')
-param backendContainerImageName string = 'macaebackend'
+param backendContainerImageName string = 'azuredocs/containerapps-helloworld'
 
 @description('Optional. The Container Image Tag to deploy on the backend.')
-param backendContainerImageTag string = 'latest_v4_2026-03-17_1892'
+param backendContainerImageTag string = 'latest'
 
 @description('Optional. The Container Registry hostname where the docker images for the frontend are located.')
-param frontendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
+param frontendContainerRegistryHostname string = 'mcr.microsoft.com'
 
 @description('Optional. The Container Image Name to deploy on the frontend.')
-param frontendContainerImageName string = 'macaefrontend'
+param frontendContainerImageName string = 'azuredocs/containerapps-helloworld'
 
 @description('Optional. The Container Image Tag to deploy on the frontend.')
-param frontendContainerImageTag string = 'latest_v4_2026-03-17_1892'
+param frontendContainerImageTag string = 'latest'
 
 @description('Optional. The Container Registry hostname where the docker images for the MCP are located.')
-param mcpContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
+param mcpContainerRegistryHostname string = 'mcr.microsoft.com'
 
 @description('Optional. The Container Image Name to deploy on the MCP.')
-param mcpContainerImageName string = 'macaemcp'
+param mcpContainerImageName string = 'azuredocs/containerapps-helloworld'
 
 @description('Optional. The Container Image Tag to deploy on the MCP.')
-param mcpContainerImageTag string = 'latest_v4_2026-03-17_1892'
+param mcpContainerImageTag string = 'latest'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -219,9 +231,11 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   }
 }
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.sa-multiagentcustauteng.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -421,7 +435,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 }
 
 var dataCollectionRulesResourceName = 'dcr-${solutionSuffix}'
-module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.10.0' = if (enablePrivateNetworking && enableMonitoring) {
+module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.11.0' = if (enablePrivateNetworking && enableMonitoring) {
   name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
   params: {
     name: dataCollectionRulesResourceName
@@ -542,14 +556,13 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     tags: tags
     enableTelemetry: enableTelemetry
     availabilityZone: virtualMachineAvailabilityZone
-    intent: { vmSizes: [virtualMachineSize] }
+    intent: { vmSizes: [vmSize] }
   }
 }
 
 var virtualMachineResourceName = 'vm-${solutionSuffix}'
 var virtualMachineAvailabilityZone = 1
-var virtualMachineSize = 'Standard_D2s_v4'
-module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enablePrivateNetworking) {
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
     name: virtualMachineResourceName
@@ -558,7 +571,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (e
     enableTelemetry: enableTelemetry
     computerName: take(virtualMachineResourceName, 15)
     osType: 'Windows'
-    vmSize: virtualMachineSize
+    vmSize: vmSize
     adminUsername: empty(virtualMachineAdminUsername) ? 'JumpboxAdminUser' : virtualMachineAdminUsername
     adminPassword: empty(virtualMachineAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : virtualMachineAdminPassword
     patchMode: 'AutomaticByPlatform'
@@ -640,7 +653,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (e
 }
 
 // ========== Private DNS Zones ========== //
-var keyVaultPrivateDNSZone = 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
 var privateDnsZones = [
   'privatelink.cognitiveservices.azure.com'
   'privatelink.openai.azure.com'
@@ -648,7 +660,7 @@ var privateDnsZones = [
   'privatelink.documents.azure.com'
   'privatelink.blob.core.windows.net'
   'privatelink.search.windows.net'
-  keyVaultPrivateDNSZone
+  'privatelink.azurecr.io'
 ]
 
 // DNS Zone Index Constants
@@ -659,7 +671,7 @@ var dnsZoneIndex = {
   cosmosDb: 3
   blob: 4
   search: 5
-  keyVault: 6
+  containerRegistry: 6
 }
 
 @batchSize(5)
@@ -693,28 +705,28 @@ var aiFoundryAiServicesModelDeployment = {
   }
   raiPolicyName: 'Microsoft.Default'
 }
-var aiFoundryAiServices41ModelDeployment = {
+var aiFoundryAiServicesGpt54ModelDeployment = {
   format: 'OpenAI'
-  name: gpt41ModelName
-  version: gpt41ModelVersion
+  name: gpt54ModelName
+  version: gpt54ModelVersion
   sku: {
-    name: gpt41ModelDeploymentType
-    capacity: gpt41ModelCapacity
+    name: gpt54ModelDeploymentType
+    capacity: gpt54ModelCapacity
   }
   raiPolicyName: 'Microsoft.Default'
 }
-var aiFoundryAiServicesReasoningModelDeployment = {
+var aiFoundryAiServicesImageModelDeployment = {
   format: 'OpenAI'
-  name: gptReasoningModelName
-  version: gptReasoningModelVersion
+  name: gptImageModelName
+  version: gptImageModelVersion
   sku: {
-    name: gptReasoningModelDeploymentType
-    capacity: gptReasoningModelCapacity
+    name: gptImageModelDeploymentType
+    capacity: gptImageModelCapacity
   }
   raiPolicyName: 'Microsoft.Default'
 }
 var aiFoundryAiProjectDescription = 'AI Foundry Project'
-module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.14.1' = {
+module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.14.2' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
@@ -744,29 +756,29 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
         }
       }
       {
-        name: aiFoundryAiServices41ModelDeployment.name
+        name: aiFoundryAiServicesGpt54ModelDeployment.name
         model: {
-          format: aiFoundryAiServices41ModelDeployment.format
-          name: aiFoundryAiServices41ModelDeployment.name
-          version: aiFoundryAiServices41ModelDeployment.version
+          format: aiFoundryAiServicesGpt54ModelDeployment.format
+          name: aiFoundryAiServicesGpt54ModelDeployment.name
+          version: aiFoundryAiServicesGpt54ModelDeployment.version
         }
-        raiPolicyName: aiFoundryAiServices41ModelDeployment.raiPolicyName
+        raiPolicyName: aiFoundryAiServicesGpt54ModelDeployment.raiPolicyName
         sku: {
-          name: aiFoundryAiServices41ModelDeployment.sku.name
-          capacity: aiFoundryAiServices41ModelDeployment.sku.capacity
+          name: aiFoundryAiServicesGpt54ModelDeployment.sku.name
+          capacity: aiFoundryAiServicesGpt54ModelDeployment.sku.capacity
         }
       }
       {
-        name: aiFoundryAiServicesReasoningModelDeployment.name
+        name: aiFoundryAiServicesImageModelDeployment.name
         model: {
-          format: aiFoundryAiServicesReasoningModelDeployment.format
-          name: aiFoundryAiServicesReasoningModelDeployment.name
-          version: aiFoundryAiServicesReasoningModelDeployment.version
+          format: aiFoundryAiServicesImageModelDeployment.format
+          name: aiFoundryAiServicesImageModelDeployment.name
+          version: aiFoundryAiServicesImageModelDeployment.version
         }
-        raiPolicyName: aiFoundryAiServicesReasoningModelDeployment.raiPolicyName
+        raiPolicyName: aiFoundryAiServicesImageModelDeployment.raiPolicyName
         sku: {
-          name: aiFoundryAiServicesReasoningModelDeployment.sku.name
-          capacity: aiFoundryAiServicesReasoningModelDeployment.sku.capacity
+          name: aiFoundryAiServicesImageModelDeployment.sku.name
+          capacity: aiFoundryAiServicesImageModelDeployment.sku.capacity
         }
       }
     ]
@@ -793,6 +805,11 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
         principalType: 'ServicePrincipal'
       }
       {
+        roleDefinitionIdOrName: 'a001fd3d-188f-4b5d-821b-7da978bf7442' // Cognitive Services OpenAI Contributor
+        principalId: userAssignedIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+      }
+      {
         roleDefinitionIdOrName: '53ca6127-db72-4b80-b1b0-d745d6d5456d' // Azure AI User
         principalId: deployingUserPrincipalId
         principalType: deployerPrincipalType
@@ -805,37 +822,60 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
     ]
     // WAF aligned configuration for Monitoring
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    privateEndpoints: (enablePrivateNetworking)
-      ? ([
-          {
-            name: 'pep-${aiFoundryAiServicesResourceName}'
-            customNetworkInterfaceName: 'nic-${aiFoundryAiServicesResourceName}'
-            subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  name: 'ai-services-dns-zone-cognitiveservices'
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
-                }
-                {
-                  name: 'ai-services-dns-zone-openai'
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.openAI]!.outputs.resourceId
-                }
-                {
-                  name: 'ai-services-dns-zone-aiservices'
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.aiServices]!.outputs.resourceId
-                }
-              ]
-            }
-          }
-        ])
-      : []
+    publicNetworkAccess: 'Enabled' // Always enabling public network access for AI Foundry — AI Search needs to call back for embeddings during knowledge_base_retrieve at runtime
+    // Private endpoints are created separately below to avoid race condition with model deployment creation.
+    privateEndpoints: []
+  }
+}
+
+// ========== AI Foundry: AI Services Private Endpoint ========== //
+// The private endpoint is deployed as a separate resource (instead of inline via the
+// cognitive-services account module) to decouple its creation from the account
+// provisioning and the inline model deployments. This avoids a race condition where the
+// account remains in the "Accepted" state while model deployments are still being created,
+// which can cause the private endpoint creation to fail with AccountProvisioningStateInvalid.
+module aiFoundryAiServicesPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.0' = if (enablePrivateNetworking) {
+  name: take('pep-${aiFoundryAiServicesResourceName}-deployment', 64)
+  params: {
+    name: 'pep-${aiFoundryAiServicesResourceName}'
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    customNetworkInterfaceName: 'nic-${aiFoundryAiServicesResourceName}'
+    subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
+    privateLinkServiceConnections: [
+      {
+        name: 'pep-${aiFoundryAiServicesResourceName}-connection'
+        properties: {
+          privateLinkServiceId: aiFoundryAiServices.outputs.resourceId
+          groupIds: [
+            'account'
+          ]
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'ai-services-dns-zone-cognitiveservices'
+          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
+        }
+        {
+          name: 'ai-services-dns-zone-openai'
+          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.openAI]!.outputs.resourceId
+        }
+        {
+          name: 'ai-services-dns-zone-aiservices'
+          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.aiServices]!.outputs.resourceId
+        }
+      ]
+    }
   }
 }
 
 module aiFoundryAiServicesProject 'modules/ai-project.bicep' = {
   name: take('module.ai-project.${aiFoundryAiProjectResourceName}', 64)
+  dependsOn: enablePrivateNetworking ? [aiFoundryAiServicesPrivateEndpoint] : []
   params: {
     name: aiFoundryAiProjectResourceName
     location: azureAiServiceLocation
@@ -939,11 +979,68 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.19.0' = {
   }
 }
 
+// ========== Azure Container Registry ========== //
+// Deploys an ACR for user-owned image builds. Uses MCR placeholder images initially.
+var containerRegistryResourceName = take('cr${toLower(replace(solutionSuffix, '-', ''))}', 50)
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.12.0' = {
+  name: take('avm.res.container-registry.registry.${containerRegistryResourceName}', 64)
+  params: {
+    name: containerRegistryResourceName
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    acrSku: enablePrivateNetworking || enableRedundancy ? 'Premium' : 'Basic'
+    acrAdminUserEnabled: false
+    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    networkRuleSetDefaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
+    exportPolicyStatus: 'enabled'
+    softDeletePolicyStatus: 'disabled'
+    softDeletePolicyDays: 7
+    azureADAuthenticationAsArmPolicyStatus: 'enabled'
+    networkRuleBypassOptions: 'AzureServices'
+    zoneRedundancy: enableRedundancy ? 'Enabled' : 'Disabled'
+    // WAF aligned configuration for Redundancy - ACR Geo-Replication
+    replications: enableRedundancy
+      ? [
+          {
+            name: replicaLocation
+            location: replicaLocation
+            zoneRedundancy: 'Enabled'
+          }
+        ]
+      : []
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: '7f951dda-4ed3-4680-a7ca-43fe172d538d' // AcrPull
+        principalId: userAssignedIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    privateEndpoints: enablePrivateNetworking
+      ? [
+          {
+            name: 'pep-${containerRegistryResourceName}'
+            customNetworkInterfaceName: 'nic-${containerRegistryResourceName}'
+            subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  name: 'acr-dns-zone'
+                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.containerRegistry]!.outputs.resourceId
+                }
+              ]
+            }
+          }
+        ]
+      : []
+  }
+}
+
 // ========== Backend Container App Environment ========== //
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 // PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppEnvironmentResourceName = 'cae-${solutionSuffix}'
-module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.13.1' = {
+module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.13.2' = {
   name: take('avm.res.app.managed-environment.${containerAppEnvironmentResourceName}', 64)
   params: {
     name: containerAppEnvironmentResourceName
@@ -987,7 +1084,7 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.13.1
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 // PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppResourceName = 'ca-${solutionSuffix}'
-module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
+module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
   name: take('avm.res.app.container-app.${containerAppResourceName}', 64)
   params: {
     name: containerAppResourceName
@@ -996,6 +1093,12 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
     enableTelemetry: enableTelemetry
     environmentResourceId: containerAppEnvironment.outputs.resourceId
     managedIdentities: { userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId] }
+    registries: [
+      {
+        server: containerRegistry.outputs.loginServer
+        identity: userAssignedIdentity.outputs.resourceId
+      }
+    ]
     ingressTargetPort: 8000
     ingressExternal: true
     activeRevisionsMode: 'Single'
@@ -1062,7 +1165,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
           }
           {
             name: 'AZURE_OPENAI_RAI_DEPLOYMENT_NAME'
-            value: aiFoundryAiServices41ModelDeployment.name
+            value: aiFoundryAiServicesGpt54ModelDeployment.name
           }
           {
             name: 'AZURE_OPENAI_API_VERSION'
@@ -1092,21 +1195,9 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
             name: 'FRONTEND_SITE_NAME'
             value: 'https://${webSiteResourceName}.azurewebsites.net'
           }
-          // {
-          //   name: 'AZURE_AI_AGENT_ENDPOINT'
-          //   value: aiFoundryAiProjectEndpoint
-          // }
-          {
-            name: 'AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME'
-            value: aiFoundryAiServicesModelDeployment.name
-          }
           {
             name: 'APP_ENV'
             value: 'Prod'
-          }
-          {
-            name: 'AZURE_AI_SEARCH_CONNECTION_NAME'
-            value: aiSearchConnectionName
           }
           {
             name: 'AZURE_AI_SEARCH_ENDPOINT'
@@ -1117,16 +1208,12 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
             value: 'https://cognitiveservices.azure.com/.default'
           }
           {
-            name: 'AZURE_BING_CONNECTION_NAME'
-            value: 'binggrnd'
+            name: 'ORCHESTRATOR_MODEL_NAME'
+            value: gptModelName
           }
           {
-            name: 'BING_CONNECTION_NAME'
-            value: 'binggrnd'
-          }
-          {
-            name: 'REASONING_MODEL_NAME'
-            value: aiFoundryAiServicesReasoningModelDeployment.name
+            name: 'AZURE_OPENAI_IMAGE_DEPLOYMENT'
+            value: gptImageModelName
           }
           {
             name: 'MCP_SERVER_ENDPOINT'
@@ -1150,7 +1237,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
           }
           {
             name: 'SUPPORTED_MODELS'
-            value: '["o3","o4-mini","gpt-4.1","gpt-4.1-mini"]'
+            value: '["gpt-5.4","gpt-5.4-mini","gpt-image-1.5"]'
           }
           {
             name: 'AZURE_STORAGE_BLOB_URL'
@@ -1163,14 +1250,6 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
           {
             name: 'AZURE_AI_AGENT_ENDPOINT'
             value: aiFoundryAiServicesProject!.outputs.apiEndpoint
-          }
-          {
-            name: 'AZURE_AI_AGENT_API_VERSION'
-            value: azureAiAgentAPIVersion
-          }
-          {
-            name: 'AZURE_AI_AGENT_PROJECT_CONNECTION_STRING'
-            value: '${aiFoundryAiServicesResourceName}.services.ai.azure.com;${subscription().subscriptionId};${resourceGroup().name};${aiFoundryAiProjectResourceName}'
           }
           {
             name: 'AZURE_BASIC_LOGGING_LEVEL'
@@ -1195,7 +1274,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 // PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppMcpResourceName = 'ca-mcp-${solutionSuffix}'
-module containerAppMcp 'br/public:avm/res/app/container-app:0.21.0' = {
+module containerAppMcp 'br/public:avm/res/app/container-app:0.22.1' = {
   name: take('avm.res.app.container-app.${containerAppMcpResourceName}', 64)
   params: {
     name: containerAppMcpResourceName
@@ -1204,6 +1283,12 @@ module containerAppMcp 'br/public:avm/res/app/container-app:0.21.0' = {
     enableTelemetry: enableTelemetry
     environmentResourceId: containerAppEnvironment.outputs.resourceId
     managedIdentities: { userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId] }
+    registries: [
+      {
+        server: containerRegistry.outputs.loginServer
+        identity: userAssignedIdentity.outputs.resourceId
+      }
+    ]
     ingressTargetPort: 9000
     ingressExternal: true
     activeRevisionsMode: 'Single'
@@ -1281,6 +1366,34 @@ module containerAppMcp 'br/public:avm/res/app/container-app:0.21.0' = {
             name: 'DATASET_PATH'
             value: './datasets'
           }
+          {
+            name: 'AZURE_CLIENT_ID'
+            value: userAssignedIdentity!.outputs.clientId
+          }
+          {
+            name: 'AZURE_OPENAI_ENDPOINT'
+            value: 'https://${aiFoundryAiServicesResourceName}.openai.azure.com/'
+          }
+          {
+            name: 'AZURE_OPENAI_IMAGE_DEPLOYMENT'
+            value: gptImageModelName
+          }
+          {
+            name: 'AZURE_OPENAI_IMAGE_QUALITY'
+            value: 'high'
+          }
+          {
+            name: 'AZURE_STORAGE_BLOB_URL'
+            value: avmStorageAccount.outputs.serviceEndpoints.blob
+          }
+          {
+            name: 'AZURE_STORAGE_IMAGES_CONTAINER'
+            value: 'generated-images'
+          }
+          {
+            name: 'BACKEND_URL'
+            value: 'https://${containerAppResourceName}.${containerAppEnvironment.outputs.defaultDomain}'
+          }
         ]
       }
     ]
@@ -1324,9 +1437,15 @@ module webSite 'modules/web-sites.bicep' = {
     location: location
     kind: 'app,linux,container'
     serverFarmResourceId: webServerFarm.?outputs.resourceId
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId]
+    }
     siteConfig: {
       linuxFxVersion: 'DOCKER|${frontendContainerRegistryHostname}/${frontendContainerImageName}:${frontendContainerImageTag}'
       minTlsVersion: '1.2'
+      acrUseManagedIdentityCreds: true
+      acrUserManagedIdentityID: userAssignedIdentity.outputs.clientId
     }
     configs: [
       {
@@ -1345,8 +1464,14 @@ module webSite 'modules/web-sites.bicep' = {
     ]
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
     // WAF aligned configuration for Private Networking
-    vnetRouteAllEnabled: enablePrivateNetworking ? true : false
-    vnetImagePullEnabled: enablePrivateNetworking ? true : false
+    // vnetRouteAllEnabled: enablePrivateNetworking ? true : false
+    // vnetImagePullEnabled: enablePrivateNetworking ? true : false
+    outboundVnetRouting: enablePrivateNetworking
+      ? {
+          applicationTraffic: true
+          imagePullTraffic: true
+        }
+      : null
     virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webserverfarmSubnetResourceId : null
     publicNetworkAccess: 'Enabled' // Always enabling the public network access for Web App
     e2eEncryptionEnabled: true
@@ -1567,53 +1692,28 @@ module aiSearchFoundryConnection 'modules/aifp-connections.bicep' = {
   }
 }
 
-// ========== KeyVault ========== //
-var keyVaultName = 'kv-${solutionSuffix}'
-module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
-  name: take('avm.res.key-vault.vault.${keyVaultName}', 64)
-  params: {
-    name: keyVaultName
-    location: location
-    tags: tags
-    sku: enableScalability ? 'premium' : 'standard'
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    networkAcls: {
-      defaultAction: 'Allow'
-    }
-    enableVaultForDeployment: true
-    enableVaultForDiskEncryption: true
-    enableVaultForTemplateDeployment: true
-    enableRbacAuthorization: true
-    enableSoftDelete: true
-    softDeleteRetentionInDays: 7
-    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : []
-    // WAF aligned configuration for Private Networking
-    privateEndpoints: enablePrivateNetworking
-      ? [
-          {
-            name: 'pep-${keyVaultName}'
-            customNetworkInterfaceName: 'nic-${keyVaultName}'
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                { privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.keyVault]!.outputs.resourceId }
-              ]
-            }
-            service: 'vault'
-            subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
-          }
-        ]
-      : []
-    // WAF aligned configuration for Role-based Access Control
-    roleAssignments: [
-      {
-        principalId: userAssignedIdentity.outputs.principalId
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Key Vault Administrator'
-      }
-    ]
-    secrets: []
-    enableTelemetry: enableTelemetry
+// ========== AI Search → AI Foundry Role Assignment ========== //
+// AI Search needs Cognitive Services OpenAI User on AI Foundry to call back for embeddings during knowledge_base_retrieve
+resource aiSearchOpenAiUserRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    resourceGroup().id,
+    aiFoundryAiServicesResourceName,
+    searchServiceName,
+    '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+  )
+  scope: aiFoundryAiServicesAccount
+  properties: {
+    principalId: searchServiceUpdate.outputs.systemAssignedMIPrincipalId!
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+    ) // Cognitive Services OpenAI User
+    principalType: 'ServicePrincipal'
   }
+}
+
+resource aiFoundryAiServicesAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
+  name: aiFoundryAiServicesResourceName
 }
 
 // ============ //
@@ -1702,7 +1802,7 @@ output azureAiSearchConnectionName string = aiSearchConnectionName
 output azureCognitiveServices string = 'https://cognitiveservices.azure.com/.default'
 
 @description('The name of the reasoning model.')
-output reasoningModelName string = aiFoundryAiServicesReasoningModelDeployment.name
+output reasoningModelName string = gpt54ModelName
 
 @description('The name of the MCP server.')
 output mcpServerName string = 'MacaeMcpServer'
@@ -1711,7 +1811,7 @@ output mcpServerName string = 'MacaeMcpServer'
 output mcpServerDescription string = 'MCP server with greeting, HR, and planning tools'
 
 @description('The list of supported models.')
-output supportedModels string = '["o3","o4-mini","gpt-4.1","gpt-4.1-mini"]'
+output supportedModels string = '["gpt-5.4","gpt-5.4-mini","gpt-image-1.5"]'
 
 @description('The Azure AI Search API key.')
 output azureAiSearchApiKey string = '<Deployed-Search-ApiKey>'
@@ -1722,11 +1822,32 @@ output backendUrl string = 'https://${containerApp.outputs.fqdn}'
 @description('The Azure AI project endpoint URL.')
 output azureAiProjectEndpoint string = aiFoundryAiServicesProject!.outputs.apiEndpoint
 
-@description('The Azure AI agent API version.')
-output azureAiAgentApiVersion string = azureAiAgentAPIVersion
+@description('Login server (endpoint) of the Azure Container Registry.')
+output azureContainerRegistryEndpoint string = containerRegistry.outputs.loginServer
 
-@description('The Azure AI agent project connection string.')
-output azureAiAgentProjectConnectionString string = '${aiFoundryAiServicesResourceName}.services.ai.azure.com;${subscription().subscriptionId};${resourceGroup().name};${aiFoundryAiProjectResourceName}'
+@description('Name of the Azure Container Registry.')
+output azureContainerRegistryName string = containerRegistryResourceName
+
+@description('Name of the backend Container App.')
+output backendContainerAppName string = containerApp.outputs.name
+
+@description('Name of the MCP Container App.')
+output mcpContainerAppName string = containerAppMcp.outputs.name
+
+@description('Name of the frontend Web App.')
+output frontendWebAppName string = webSite.outputs.name
+
+@description('Backend container image repository name.')
+output backendImageName string = 'macaebackend'
+
+@description('Frontend container image repository name.')
+output frontendImageName string = 'macaefrontend'
+
+@description('MCP container image repository name.')
+output mcpImageName string = 'macaemcp'
+
+@description('Port the frontend Web App container listens on.')
+output frontendWebsitesPort string = '3000'
 
 @description('The name of the Azure Storage container for retail customer data.')
 output azureStorageContainerNameRetailCustomer string = storageContainerNameRetailCustomer

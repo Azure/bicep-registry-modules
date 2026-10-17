@@ -13,6 +13,9 @@ Will return either
 .PARAMETER TemplateFilePath
 Mandatory. The path of the template file
 
+.PARAMETER TemplateFileContent
+Mandatory instead of TemplateFilePath. A parsed ARM template, including a nested deployment template.
+
 .EXAMPLE
 Get-ScopeOfTemplateFile -TemplateFilePath 'C:/main.json'
 
@@ -20,14 +23,17 @@ Get the scope of the given main.json template.
 #>
 function Get-ScopeOfTemplateFile {
 
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'File')]
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ParameterSetName = 'File')]
         [Alias('Path')]
-        [string] $TemplateFilePath
+        [string] $TemplateFilePath,
+
+        [Parameter(Mandatory = $true, ParameterSetName = 'Content')]
+        [hashtable] $TemplateFileContent
     )
 
-    if ((Split-Path $templateFilePath -Extension) -eq '.bicep') {
+    if ($PSCmdlet.ParameterSetName -eq 'File' -and (Split-Path $templateFilePath -Extension) -eq '.bicep') {
         # Bicep
         $bicepContent = Get-Content $templateFilePath -Raw
         $bicepScopeMatch = [regex]::Match($bicepContent, '(?m)^\s*targetScope\s*=\s*''(\S+)''')
@@ -38,7 +44,7 @@ function Get-ScopeOfTemplateFile {
         }
     } else {
         # ARM
-        $armSchema = (ConvertFrom-Json (Get-Content -Raw -Path $templateFilePath)).'$schema'
+        $armSchema = $PSCmdlet.ParameterSetName -eq 'Content' ? $TemplateFileContent.'$schema' : (ConvertFrom-Json (Get-Content -Raw -Path $templateFilePath)).'$schema'
         switch -regex ($armSchema) {
             '\/deploymentTemplate.json#$' { $deploymentScope = 'resourcegroup' }
             '\/subscriptionDeploymentTemplate.json#$' { $deploymentScope = 'subscription' }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "10326278752828678676"
+      "version": "0.47.16.16243",
+      "templateHash": "7658876000950188529"
     },
     "name": "Data Protection Backup Vault Backup Instances",
     "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -105,6 +105,13 @@
         "description": "Required. Gets or sets the data source information."
       }
     },
+    "dataSourceSetInfo": {
+      "$ref": "#/definitions/dataSourceInfoType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Gets or sets the data source set information. Required for some data source types (e.g., AKS)."
+      }
+    },
     "policyInfo": {
       "$ref": "#/definitions/policyInfoType",
       "metadata": {
@@ -119,6 +126,10 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.a38eed2",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "backupVault::backupPolicy": {
       "existing": true,
@@ -130,7 +141,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.dataprot-backupvault-backupinst.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -174,6 +185,7 @@
         "friendlyName": "[parameters('friendlyName')]",
         "objectType": "BackupInstance",
         "dataSourceInfo": "[union(parameters('dataSourceInfo'), createObject('objectType', 'Datasource'))]",
+        "dataSourceSetInfo": "[if(not(equals(parameters('dataSourceSetInfo'), null())), union(parameters('dataSourceSetInfo'), createObject('objectType', 'DatasourceSet')), null())]",
         "policyInfo": {
           "policyId": "[resourceId('Microsoft.DataProtection/backupVaults/backupPolicies', parameters('backupVaultName'), parameters('policyInfo').policyName)]",
           "policyParameters": "[parameters('policyInfo').policyParameters]"
@@ -208,8 +220,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "10346840446937049444"
+              "version": "0.47.16.16243",
+              "templateHash": "13758461221288698628"
             }
           },
           "parameters": {

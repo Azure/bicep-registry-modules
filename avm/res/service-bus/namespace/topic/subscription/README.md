@@ -2,11 +2,20 @@
 
 This module deploys a Service Bus Namespace Topic Subscription.
 
+You can reference the module as follows:
+```bicep
+module namespace 'br/public:avm/res/service-bus/namespace/topic/subscription:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -41,6 +50,7 @@ This module deploys a Service Bus Namespace Topic Subscription.
 | [`defaultMessageTimeToLive`](#parameter-defaultmessagetimetolive) | string | ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself. |
 | [`duplicateDetectionHistoryTimeWindow`](#parameter-duplicatedetectionhistorytimewindow) | string | ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes. |
 | [`enableBatchedOperations`](#parameter-enablebatchedoperations) | bool | A value that indicates whether server-side batched operations are enabled. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`forwardDeadLetteredMessagesTo`](#parameter-forwarddeadletteredmessagesto) | string | Queue/Topic name to forward the Dead Letter messages to. |
 | [`forwardTo`](#parameter-forwardto) | string | Queue/Topic name to forward the messages to. |
 | [`isClientAffine`](#parameter-isclientaffine) | bool | A value that indicates whether the subscription has an affinity to the client id. |
@@ -155,6 +165,14 @@ ISO 8601 timespan that defines the duration of the duplicate detection history. 
 ### Parameter: `enableBatchedOperations`
 
 A value that indicates whether server-side batched operations are enabled.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -449,3 +467,7 @@ Enumerates the possible values for the status of a messaging entity.
 | `name` | string | The name of the topic subscription. |
 | `resourceGroupName` | string | The name of the Resource Group the topic subscription was created in. |
 | `resourceId` | string | The Resource ID of the topic subscription. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

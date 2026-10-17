@@ -45,9 +45,11 @@ runs:
 
         # Load used functions
         . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Initialize-AvmPester.ps1')
 
         # Set repo root path
         $repoRootPath = $env:GITHUB_WORKSPACE
+        Initialize-AvmPester -RepoRootPath $repoRootPath
 
         # Set test input module path
         $moduleFolderPaths = @(Join-Path $repoRootPath "${{ inputs.modulePath }}")
@@ -128,7 +130,7 @@ runs:
 
     - name: Upload artifacts
       if: always()
-      uses: actions/upload-artifact@v4.6.2
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: Upload & store test results
         path: |

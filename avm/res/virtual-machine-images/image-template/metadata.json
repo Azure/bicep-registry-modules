@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Virtual Machine Image Template",
+  "moduleDescription": "AVM Resource Module for Virtual Machine Image Template",
+  "telemetryIdPrefix": "46d3xbcp.res.5e644ad",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.virtualmachineimages-imagetemplate"],
+  "canonicalType": "Microsoft.VirtualMachineImages/imageTemplates",
+  "owners": []
+}

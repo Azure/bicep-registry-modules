@@ -1,0 +1,6 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Hosting Environment Custom DNS Suffix Configuration",
+  "moduleDescription": "This module deploys a Hosting Environment Custom DNS Suffix Configuration.",
+  "canonicalType": "Microsoft.Web/hostingEnvironments/configurations"
+}

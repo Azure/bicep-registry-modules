@@ -116,9 +116,6 @@ param artifactsources artifactsourceType[]?
 @description('Optional. Costs to create for the lab.')
 param costs costType?
 
-@description('Optional. Secrets to create for the lab. With Lab Secrets, you can store sensitive data once at the lab level and make it available wherever it\'s needed.')
-param secrets secretType[]?
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -180,9 +177,11 @@ var formattedRoleAssignments = [
 
 var enableReferencedModulesTelemetry = false
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.devtestlab-lab.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -352,20 +351,6 @@ module lab_costs 'cost/main.bicep' = if (!empty(costs)) {
     enableTelemetry: enableReferencedModulesTelemetry
   }
 }
-
-module lab_secrets 'secret/main.bicep' = [
-  for (secret, index) in (secrets ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Lab-Secrets-${index}'
-    params: {
-      labName: lab.name
-      name: secret.name
-      value: secret.value
-      enabledForArtifacts: secret.?enabledForArtifacts
-      enabledForVmCreation: secret.?enabledForVmCreation
-      enableTelemetry: enableReferencedModulesTelemetry
-    }
-  }
-]
 
 resource lab_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {

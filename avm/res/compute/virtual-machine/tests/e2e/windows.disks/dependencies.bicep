@@ -135,7 +135,7 @@ resource waitForRolePropagation 'Microsoft.Resources/deploymentScripts@2023-08-0
   }
 }
 
-resource sharedDataDisk 'Microsoft.Compute/disks@2024-03-02' = {
+resource sharedDataDisk 'Microsoft.Compute/disks@2025-01-02' = {
   location: location
   name: sharedDiskName
   sku: {
@@ -209,7 +209,7 @@ resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
   }
 }
 
-resource snapshot 'Microsoft.Compute/snapshots@2024-03-02' = {
+resource snapshot 'Microsoft.Compute/snapshots@2025-01-02' = {
   name: '${osDiskName}-snapshot'
   location: location
   properties: {
@@ -220,7 +220,7 @@ resource snapshot 'Microsoft.Compute/snapshots@2024-03-02' = {
   }
 }
 
-resource osDisk 'Microsoft.Compute/disks@2024-03-02' = {
+resource osDisk 'Microsoft.Compute/disks@2025-01-02' = {
   location: location
   name: '${osDiskName}-copy'
   sku: {

@@ -33,8 +33,14 @@ Optional. The number of parallel threads to use for the generation.
 .PARAMETER SkipVersionCheck
 Optional. Do not check for the latest Bicep CLI version.
 
+.PARAMETER SkipModuleVersionCheck
+Optional. Skip the Avm.Authoring version check only when using a trusted source checkout.
+
 .PARAMETER InvokeForDiff
 Optional. Build files only for those modules who's files have changed (based on diff of branch to origin/main)
+
+.PARAMETER IncludeDeprecated
+Optional. Include deprecated modules in the generation process.
 
 .PARAMETER RepoRootPath
 Optional. Path to the root of the repository.
@@ -96,6 +102,12 @@ function Set-AVMModule {
         [switch] $SkipVersionCheck,
 
         [Parameter(Mandatory = $false)]
+        [switch] $SkipModuleVersionCheck,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $IncludeDeprecated,
+
+        [Parameter(Mandatory = $false)]
         [int] $ThrottleLimit = 5,
 
         [Parameter(Mandatory = $false)]
@@ -122,9 +134,7 @@ function Set-AVMModule {
     #   Pre-Build  #
     # ============ #
     if ($InvokeForDiff) {
-        $resolvedPath = (Test-Path $ModuleFolderPath) ? (Resolve-Path $ModuleFolderPath).Path : $ModuleFolderPath
-
-        $relevantTemplatePaths = @() + (Get-GitDiff -PathOnly -SkipStats | Where-Object { $_ -match '[\/|\\]main\.bicep$' })
+        $relevantTemplatePaths = @() + (Get-GitDiff -PathOnly -SkipStats | Where-Object { $_ -match '^(?!.*[\/\\]tests[\/\\]).+\.bicep$' }) # Any Bicep file exluding test files. Includes e.g., templates in the /modules folder
         Write-Verbose ('Found [{0}] files in diff' -f $relevantTemplatePaths.Count) -Verbose
 
         # Handling relevant parent modules that would be affected by a diff in a child
@@ -133,7 +143,13 @@ function Set-AVMModule {
         } | ForEach-Object { Join-Path $_ 'main.bicep' } | Where-Object { Test-Path $_ } | Select-Object -Unique
         Write-Verbose ('Union with [{0}] relevant parent folder template files' -f $parentTemplatePaths.Count) -Verbose
         $relevantTemplatePaths += $parentTemplatePaths
-        $relevantTemplatePaths = $relevantTemplatePaths | Sort-Object -Unique
+        $relevantTemplatePaths = $relevantTemplatePaths | Sort-Object -Unique | Where-Object { $_ -match '[\/|\\]main\.bicep$' } # Now remove all non main.bicep files
+
+        # Filter 'deprecated' & only consider existing files (important if diff shows moved files)
+        $relevantTemplatePaths = $relevantTemplatePaths | Where-Object {
+            (Test-Path $_) -and
+            ($IncludeDeprecated -or -not (Test-Path (Join-Path (Split-Path $_) 'DEPRECATED.md')))
+        }
 
         Write-Verbose ('Running for [{0}] relevant files' -f $relevantTemplatePaths.Count) -Verbose
         $relevantTemplatePaths | ForEach-Object {
@@ -146,7 +162,7 @@ function Set-AVMModule {
         # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
         if (-not $SkipFileAndFolderSetup -and (($resolvedPath -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
             if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", 'Setup')) {
-                Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath
+                Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath -SkipModuleVersionCheck:$SkipModuleVersionCheck
             }
         }
 
@@ -163,6 +179,13 @@ function Set-AVMModule {
             $relevantTemplatePaths = (Get-ChildItem @childInput).FullName
         } else {
             $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
+        }
+
+        # Filter 'deprecated'
+        if (-not $IncludeDeprecated) {
+            $relevantTemplatePaths = $relevantTemplatePaths | Where-Object {
+                -not (Test-Path (Join-Path (Split-Path $_) 'DEPRECATED.md'))
+            }
         }
     }
 
@@ -236,7 +259,7 @@ function Set-AVMModule {
         }
 
         $compilationChunks = $testFilePaths ? (Split-Array -InputArray $testFilePaths -SplitSize $defaultSplitSize) : @()
-        if ($relevantTemplatePaths.Count -le $defaultSplitSize) {
+        if ($testFilePaths.Count -le $defaultSplitSize) {
             $compilationChunks = , $compilationChunks
         } else {
             $compilationChunks = $compilationChunks

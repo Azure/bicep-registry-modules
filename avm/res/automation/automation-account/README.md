@@ -134,11 +134,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
   }
 }
 ```
@@ -166,13 +161,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
     }
   }
 }
@@ -195,11 +183,6 @@ param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 ```
 
@@ -2797,8 +2780,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
-| `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
 | `br/public:avm/res/operations-management/solution:0.3.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 

@@ -6,6 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+NOTE: This is the last published version and the module has since been deprecated.
+
 - Updated all AVM module references to latest available versions
 - Updated API versions for Cognitive Services and telemetry deployment resources
 - Added Virtual Machine, Bastion Host, Data Collection Rules, and Proximity Placement Group modules for private networking

@@ -1,0 +1,121 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.43.8.12551",
+      "templateHash": "3710889989242840994"
+    },
+    "name": "API Center Service Workspace API Version Definitions",
+    "description": "This module deploys an API Center Service Workspace API Version Definition."
+  },
+  "parameters": {
+    "serviceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "apiName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
+      }
+    },
+    "versionName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API version. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 90,
+      "metadata": {
+        "description": "Required. The name of the API definition."
+      }
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Required. The title of the API definition."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The description of the API definition."
+      }
+    }
+  },
+  "resources": {
+    "service::workspace::api::version": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services/workspaces/apis/versions",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('versionName'))]"
+    },
+    "service::workspace::api": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services/workspaces/apis",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'))]"
+    },
+    "service::workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services/workspaces",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}', parameters('serviceName'), parameters('workspaceName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services",
+      "apiVersion": "2024-03-01",
+      "name": "[parameters('serviceName')]"
+    },
+    "definition": {
+      "type": "Microsoft.ApiCenter/services/workspaces/apis/versions/definitions",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}/{2}/{3}/{4}', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('versionName'), parameters('name'))]",
+      "properties": {
+        "title": "[parameters('title')]",
+        "description": "[parameters('description')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API definition."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API definition."
+      },
+      "value": "[resourceId('Microsoft.ApiCenter/services/workspaces/apis/versions/definitions', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('versionName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the API definition was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

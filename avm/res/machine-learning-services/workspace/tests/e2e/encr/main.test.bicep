@@ -74,12 +74,6 @@ module testDeployment '../../../main.bicep' = [
         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
       primaryUserAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
-      managedIdentities: {
-        systemAssigned: false
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
       managedNetworkSettings: {
         isolationMode: 'AllowInternetOutbound'
         outboundRules: {

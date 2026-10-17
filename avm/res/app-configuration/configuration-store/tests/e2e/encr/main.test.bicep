@@ -77,11 +77,6 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       softDeleteRetentionInDays: 1
-      managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
       customerManagedKey: {
         keyName: nestedDependencies.outputs.keyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId

@@ -123,6 +123,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       publicIPResourceID: nestedDependencies.outputs.publicIPResourceId
+      firewallPrivateIpAddress: '10.0.0.4'
       diagnosticSettings: [
         {
           name: 'customSetting'

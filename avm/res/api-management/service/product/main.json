@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "17013452819461108616"
+      "version": "0.47.16.16243",
+      "templateHash": "21965757079745090"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
@@ -129,7 +129,7 @@
     },
     "subscriptionRequired": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as \"protected\" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as \"open\" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true."
       }
@@ -157,7 +157,9 @@
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false
+    "$fxv#0": "46d3xbcp.res.e04b6c5",
+    "enableReferencedModulesTelemetry": false,
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "service": {
@@ -170,7 +172,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.apimgmt-product.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -233,8 +235,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "15050743351256698595"
+              "version": "0.47.16.16243",
+              "templateHash": "16547638608441665033"
             },
             "name": "API Management Service Products APIs",
             "description": "This module deploys an API Management Service Product API."
@@ -266,12 +268,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.d7ff2bd",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.apimgmt-productapi.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -355,8 +361,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "11009716925504928515"
+              "version": "0.47.16.16243",
+              "templateHash": "777421721479539789"
             },
             "name": "API Management Service Products Groups",
             "description": "This module deploys an API Management Service Product Group."
@@ -388,12 +394,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.1bda9da",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.apimgmt-productgroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -472,6 +482,9 @@
           },
           "value": {
             "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -480,8 +493,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "9888088861859735399"
+              "version": "0.47.16.16243",
+              "templateHash": "16104403097070640826"
             },
             "name": "API Management Service Product Policies",
             "description": "This module deploys an API Management Service Product Policy."
@@ -524,9 +537,40 @@
               "metadata": {
                 "description": "Required. Contents of the Policy as defined by the format."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.d791832",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.ApiManagement/service/products/policies",
               "apiVersion": "2024-05-01",

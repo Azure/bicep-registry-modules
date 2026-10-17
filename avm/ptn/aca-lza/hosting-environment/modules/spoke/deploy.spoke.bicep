@@ -99,7 +99,21 @@ param vmAuthenticationType string = 'password'
 // ------------------
 
 //Destination Service Tag for AzureCloud for Central France is centralfrance, but location is francecentral
-var locationVar = location == 'francecentral' ? 'centralfrance' : location
+// Lookup map for Azure locations where the service tag suffix differs from the location name
+var serviceTagLocationMap = {
+  francecentral: 'centralfrance'
+  francesouth: 'southfrance'
+  brazilsoutheast: 'brazilse'
+  germanynorth: 'germanyn'
+  germanywestcentral: 'germanywc'
+  norwayeast: 'norwaye'
+  norwaywest: 'norwayw'
+  switzerlandnorth: 'switzerlandn'
+  switzerlandwest: 'switzerlandw'
+  chilecentral: 'chilec'
+}
+
+var serviceTagLocation = serviceTagLocationMap[?location] ?? location
 
 // Subnet definition taking in consideration feature flags
 var defaultSubnets = [
@@ -207,7 +221,7 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
           protocol: 'Udp'
           sourceAddressPrefix: 'VirtualNetwork'
           sourcePortRange: '*'
-          destinationAddressPrefix: 'AzureCloud.${locationVar}'
+          destinationAddressPrefix: 'AzureCloud.${serviceTagLocation}'
           destinationPortRange: '1194'
           access: 'Allow'
           priority: 100
@@ -221,7 +235,7 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
           protocol: 'Tcp'
           sourceAddressPrefix: 'VirtualNetwork'
           sourcePortRange: '*'
-          destinationAddressPrefix: 'AzureCloud.${locationVar}'
+          destinationAddressPrefix: 'AzureCloud.${serviceTagLocation}'
           destinationPortRange: '9000'
           access: 'Allow'
           priority: 110
@@ -235,7 +249,7 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
           protocol: 'Tcp'
           sourceAddressPrefix: 'VirtualNetwork'
           sourcePortRange: '*'
-          destinationAddressPrefix: 'AzureCloud.${locationVar}'
+          destinationAddressPrefix: 'AzureCloud.${serviceTagLocation}'
           destinationPortRange: '443'
           access: 'Allow'
           priority: 120

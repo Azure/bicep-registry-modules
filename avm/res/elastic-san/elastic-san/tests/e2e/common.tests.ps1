@@ -1,4 +1,4 @@
-function Test-VerifyLock($LockName, $ResourceId) {
+﻿function Test-VerifyLock($LockName, $ResourceId) {
 
     if ( $LockName ) {
 
@@ -101,7 +101,7 @@ function Test-VerifyTagsForResource($ResourceId, $Tags) {
     }
 }
 
-function Test-VerifyDiagSettings($ResourceId, $DiagName, $LogAnalyticsWorkspaceResourceId) {
+function Test-VerifyDiagSettings($ResourceId, $DiagName, $LogAnalyticsWorkspaceResourceId, $MetricCategoryName) {
     $diag = Get-AzDiagnosticSetting -ResourceId $ResourceId -Name $DiagName
     $diag | Should -Not -BeNullOrEmpty
     #$diag.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
@@ -115,7 +115,7 @@ function Test-VerifyDiagSettings($ResourceId, $DiagName, $LogAnalyticsWorkspaceR
 
     $diag.Metric.Count | Should -Be 1
     $diag.Metric[0] | Should -Not -BeNullOrEmpty
-    $diag.Metric[0].Category | Should -Be 'Transaction'
+    $diag.Metric[0].Category | Should -Be $MetricCategoryName
     $diag.Metric[0].Enabled | Should -Be $true
     # $diag.Metric[0].RetentionPolicy.Enabled | Should -Be $false
     # $diag.Metric[0].RetentionPolicy.Days | Should -Be 0
@@ -136,7 +136,7 @@ function Test-VerifyDiagSettings($ResourceId, $DiagName, $LogAnalyticsWorkspaceR
     $diagCat.CategoryGroup | Should -BeNullOrEmpty
     $diagCat.CategoryType | Should -Be 'Metrics'
     $diagCat.Id | Should -Not -BeNullOrEmpty
-    $diagCat.Name | Should -Be 'Transaction'
+    $diagCat.Name | Should -Be $MetricCategoryName
     #Skip $diagCat.SystemData**
     $diagCat.Type | Should -Be 'microsoft.insights/diagnosticSettingsCategories'
 }
@@ -396,7 +396,13 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
     Test-VerifyRoleAssignment -ResourceId $esan.Id -ExpectedRoleAssignments $ExpectedRoleAssignments
 
     if ($LogAnalyticsWorkspaceResourceId) {
-        Test-VerifyDiagSettings -ResourceId $esan.Id -DiagName 'customSetting' -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId
+        $metricCategoryName = $null
+        if ($TestOutput -and $TestOutput.ContainsKey('metricCategoryName')) {
+            $metricCategoryName = $TestOutput.metricCategoryName
+        } else {
+            $metricCategoryName = 'AllMetrics'
+        }
+        Test-VerifyDiagSettings -ResourceId $esan.Id -DiagName 'customSetting' -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -MetricCategoryName $metricCategoryName
     }
 
     return $esan

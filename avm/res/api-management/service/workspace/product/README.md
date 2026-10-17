@@ -2,11 +2,20 @@
 
 This module deploys a Product in an API Management Workspace.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/workspace/product:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -40,6 +49,7 @@ This module deploys a Product in an API Management Workspace.
 | [`apiLinks`](#parameter-apilinks) | array | Names of Product API Links. |
 | [`approvalRequired`](#parameter-approvalrequired) | bool | Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false. |
 | [`description`](#parameter-description) | string | Product description. May include HTML formatting tags. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`groupLinks`](#parameter-grouplinks) | array | Names of Product Group Links. |
 | [`policies`](#parameter-policies) | array | Array of Policies to apply to the Product. |
 | [`state`](#parameter-state) | string | Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. |
@@ -118,6 +128,14 @@ Product description. May include HTML formatting tags.
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `groupLinks`
 
@@ -242,3 +260,7 @@ Product terms of use. Developers trying to subscribe to the product will be pres
 | `name` | string | The name of the workspace product. |
 | `resourceGroupName` | string | The resource group the workspace product was deployed into. |
 | `resourceId` | string | The resource ID of the workspace product. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

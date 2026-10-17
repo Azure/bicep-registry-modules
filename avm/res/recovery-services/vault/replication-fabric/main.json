@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "14545818213015288497"
+      "version": "0.47.16.16243",
+      "templateHash": "2871428758846322053"
     },
     "name": "Recovery Services Vault Replication Fabrics",
     "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario."
@@ -121,9 +121,41 @@
       "metadata": {
         "description": "Optional. Replication containers to create."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.434e615",
+    "enableReferencedModulesTelemetry": false,
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "recoveryServicesVault": {
       "existing": true,
       "type": "Microsoft.RecoveryServices/vaults",
@@ -166,6 +198,9 @@
           },
           "mappings": {
             "value": "[tryGet(coalesce(parameters('replicationContainers'), createArray())[copyIndex()], 'mappings')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -175,8 +210,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "16290686236168812123"
+              "version": "0.47.16.16243",
+              "templateHash": "13144141816853497437"
             },
             "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
             "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -262,7 +297,19 @@
               "metadata": {
                 "description": "Optional. Replication containers mappings to create."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
+          },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.87b1027",
+            "enableReferencedModulesTelemetry": false,
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "recoveryServicesVault::replicationFabric": {
@@ -270,6 +317,26 @@
               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
               "apiVersion": "2025-08-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('replicationFabricName'))]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "recoveryServicesVault": {
               "existing": true,
@@ -329,6 +396,9 @@
                   },
                   "targetContainerName": {
                     "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'targetContainerName')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -338,8 +408,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "13991009632404091244"
+                      "version": "0.47.16.16243",
+                      "templateHash": "6313426968010491323"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                     "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -404,12 +474,21 @@
                       "metadata": {
                         "description": "Optional. The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "variables": {
+                    "$fxv#0": "46d3xbcp.res.0d0f866",
                     "calcPolicyResourceId": "[if(not(empty(parameters('policyResourceId'))), parameters('policyResourceId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', parameters('recoveryVaultName'), parameters('policyName')))]",
                     "calcTargetProtectionContainerResourceId": "[if(not(empty(parameters('targetProtectionContainerResourceId'))), parameters('targetProtectionContainerResourceId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', parameters('recoveryVaultName'), parameters('targetContainerFabricName'), parameters('targetContainerName')))]",
-                    "mappingName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', parameters('sourceProtectionContainerName'), split(variables('calcTargetProtectionContainerResourceId'), '/')[10]))]"
+                    "mappingName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', parameters('sourceProtectionContainerName'), split(variables('calcTargetProtectionContainerResourceId'), '/')[10]))]",
+                    "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
                     "recoveryServicesVault::replicationFabric::replicationContainer": {
@@ -423,6 +502,26 @@
                       "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
                       "apiVersion": "2025-08-01",
                       "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('replicationFabricName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "recoveryServicesVault": {
                       "existing": true,

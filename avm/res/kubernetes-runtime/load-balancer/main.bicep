@@ -37,9 +37,11 @@ param kubernetesRuntimeRPObjectId string
 
 var enableReferencedModulesTelemetry = false
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.kubernetesruntime-loadbalancer.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -73,7 +75,7 @@ module arcnetworking 'br/public:avm/res/kubernetes-configuration/extension:0.3.7
 }
 
 // Reference existing Arc-enabled connected cluster
-resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-01-01' existing = {
+resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2026-05-01' existing = {
   name: clusterName
 }
 

@@ -2,6 +2,29 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/CHANGELOG.md).
 
+## 0.19.3
+
+### Changes
+
+- Added the customer-managed key's user-assigned identity to the resource's managed identities.
+- Updated the Key Vault API version used for customer-managed key references.
+
+### Breaking Changes
+
+- None
+
+## 0.19.2
+
+### Changes
+
+- Fixed child module deployment names creation to prevent conflicts when two Automation Accounts are deployed in the same resource group at the same time.
+- Updated cross-module reference to the `br/public:avm/res/network/private-endpoint` module to use the latest version `0.12.1`
+- Updated cross-module reference to the `br/public:avm/res/operations-management/solution` module to use the latest version `0.3.1`
+
+### Breaking Changes
+
+- None
+
 ## 0.19.1
 
 ### Changes
@@ -29,11 +52,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Fixed bug of setting `managedIdentities` with `systemAssigned: false` lead to an error
-- Update the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+- None
 
 ### Breaking Changes
 
-- None
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
 
 ## 0.18.0
 

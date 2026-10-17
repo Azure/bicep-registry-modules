@@ -293,7 +293,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         eventHubName: '<eventHubName>'
         metricCategories: [
           {
-            category: 'AllMetrics'
+            category: '<category>'
           }
         ]
         name: 'customSetting'
@@ -446,7 +446,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           "eventHubName": "<eventHubName>",
           "metricCategories": [
             {
-              "category": "AllMetrics"
+              "category": "<category>"
             }
           ],
           "name": "customSetting",
@@ -603,7 +603,7 @@ param diagnosticSettings = [
     eventHubName: '<eventHubName>'
     metricCategories: [
       {
-        category: 'AllMetrics'
+        category: '<category>'
       }
     ]
     name: 'customSetting'
@@ -898,7 +898,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
         eventHubName: '<eventHubName>'
         metricCategories: [
           {
-            category: 'AllMetrics'
+            category: '<category>'
           }
         ]
         name: 'customSetting'
@@ -980,7 +980,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
           "eventHubName": "<eventHubName>",
           "metricCategories": [
             {
-              "category": "AllMetrics"
+              "category": "<category>"
             }
           ],
           "name": "customSetting",
@@ -1064,7 +1064,7 @@ param diagnosticSettings = [
     eventHubName: '<eventHubName>'
     metricCategories: [
       {
-        category: 'AllMetrics'
+        category: '<category>'
       }
     ]
     name: 'customSetting'

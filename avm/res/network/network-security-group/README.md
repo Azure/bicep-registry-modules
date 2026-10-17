@@ -1,6 +1,6 @@
 # Network Security Groups `[Microsoft.Network/networkSecurityGroups]`
 
-This module deploys a Network security Group (NSG).
+This module deploys a Network Security Group (NSG).
 
 You can reference the module as follows:
 ```bicep
@@ -26,7 +26,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/networkSecurityGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networksecuritygroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkSecurityGroups)</li></ul> |
+| `Microsoft.Network/networkSecurityGroups` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networksecuritygroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-09-01/networkSecurityGroups)</li></ul> |
 
 ## Usage examples
 
@@ -115,6 +115,14 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            category: 'NetworkSecurityGroupEvent'
+          }
+          {
+            category: 'NetworkSecurityGroupRuleCounter'
+          }
+        ]
         name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
@@ -124,6 +132,7 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+      notes: 'This is a custom lock note.'
     }
     roleAssignments: [
       {
@@ -131,6 +140,11 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Network Contributor'
       }
       {
         name: '<name>'
@@ -264,6 +278,14 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "category": "NetworkSecurityGroupEvent"
+            },
+            {
+              "category": "NetworkSecurityGroupRuleCounter"
+            }
+          ],
           "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
@@ -276,7 +298,8 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
     "lock": {
       "value": {
         "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "name": "myCustomLockName",
+        "notes": "This is a custom lock note."
       }
     },
     "roleAssignments": {
@@ -286,6 +309,11 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Network Contributor"
         },
         {
           "name": "<name>",
@@ -419,6 +447,14 @@ param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
     eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'NetworkSecurityGroupEvent'
+      }
+      {
+        category: 'NetworkSecurityGroupRuleCounter'
+      }
+    ]
     name: 'customSetting'
     storageAccountResourceId: '<storageAccountResourceId>'
     workspaceResourceId: '<workspaceResourceId>'
@@ -428,6 +464,7 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+  notes: 'This is a custom lock note.'
 }
 param roleAssignments = [
   {
@@ -435,6 +472,11 @@ param roleAssignments = [
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Network Contributor'
   }
   {
     name: '<name>'
@@ -564,6 +606,11 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
     // Required parameters
     name: 'nnsgwaf001'
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     securityRules: [
       {
         name: 'deny-hop-outbound'
@@ -608,6 +655,13 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
       "value": "nnsgwaf001"
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "securityRules": {
       "value": [
         {
@@ -652,6 +706,11 @@ using 'br/public:avm/res/network/network-security-group:<version>'
 // Required parameters
 param name = 'nnsgwaf001'
 // Non-required parameters
+param diagnosticSettings = [
+  {
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param securityRules = [
   {
     name: 'deny-hop-outbound'
@@ -694,11 +753,11 @@ param tags = {
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`flushConnection`](#parameter-flushconnection) | bool | When enabled, flows created from Network Security Group connections will be re-evaluated when rules are updates. Initial enablement will trigger re-evaluation. Network Security Group connection flushing is not available in all regions. |
+| [`flushConnection`](#parameter-flushconnection) | bool | When enabled, flows created from Network Security Group connections will be re-evaluated when rules are updated. Initial enablement will trigger re-evaluation. Note: Network Security Group connection flushing is not available in all regions and the deployment fails if it is enabled in a region that does not support it. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`securityRules`](#parameter-securityrules) | array | Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the built-in roles will be deployed. |
+| [`securityRules`](#parameter-securityrules) | array | Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the default security rules will be deployed. Note: The provided rules replace all custom security rules of the Network Security Group on each deployment, including rules added outside of this module. |
 | [`tags`](#parameter-tags) | object | Tags of the NSG resource. |
 
 ### Parameter: `name`
@@ -830,7 +889,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `flushConnection`
 
-When enabled, flows created from Network Security Group connections will be re-evaluated when rules are updates. Initial enablement will trigger re-evaluation. Network Security Group connection flushing is not available in all regions.
+When enabled, flows created from Network Security Group connections will be re-evaluated when rules are updated. Initial enablement will trigger re-evaluation. Note: Network Security Group connection flushing is not available in all regions and the deployment fails if it is enabled in a region that does not support it.
 
 - Required: No
 - Type: bool
@@ -994,7 +1053,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `securityRules`
 
-Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the built-in roles will be deployed.
+Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the default security rules will be deployed. Note: The provided rules replace all custom security rules of the Network Security Group on each deployment, including rules added outside of this module.
 
 - Required: No
 - Type: array
@@ -1026,7 +1085,7 @@ The properties of the security rule.
 | :-- | :-- | :-- |
 | [`access`](#parameter-securityrulespropertiesaccess) | string | Whether network traffic is allowed or denied. |
 | [`direction`](#parameter-securityrulespropertiesdirection) | string | The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic. |
-| [`priority`](#parameter-securityrulespropertiespriority) | int | Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
+| [`priority`](#parameter-securityrulespropertiespriority) | int | The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
 | [`protocol`](#parameter-securityrulespropertiesprotocol) | string | Network protocol this rule applies to. |
 
 **Optional parameters**
@@ -1034,7 +1093,7 @@ The properties of the security rule.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-securityrulespropertiesdescription) | string | The description of the security rule. |
-| [`destinationAddressPrefix`](#parameter-securityrulespropertiesdestinationaddressprefix) | string | Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. |
+| [`destinationAddressPrefix`](#parameter-securityrulespropertiesdestinationaddressprefix) | string | The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. |
 | [`destinationAddressPrefixes`](#parameter-securityrulespropertiesdestinationaddressprefixes) | array | The destination address prefixes. CIDR or destination IP ranges. |
 | [`destinationApplicationSecurityGroupResourceIds`](#parameter-securityrulespropertiesdestinationapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as destination. |
 | [`destinationPortRange`](#parameter-securityrulespropertiesdestinationportrange) | string | The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
@@ -1075,7 +1134,7 @@ The direction of the rule. The direction specifies if rule will be evaluated on 
 
 ### Parameter: `securityRules.properties.priority`
 
-Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
+The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
 
 - Required: Yes
 - Type: int
@@ -1109,7 +1168,7 @@ The description of the security rule.
 
 ### Parameter: `securityRules.properties.destinationAddressPrefix`
 
-Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.
+The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.
 
 - Required: No
 - Type: string

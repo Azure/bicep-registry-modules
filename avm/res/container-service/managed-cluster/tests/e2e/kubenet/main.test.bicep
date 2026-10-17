@@ -71,10 +71,10 @@ module testDeployment '../../../main.bicep' = [
           availabilityZones: [
             3
           ]
-          count: 1
           enableAutoScaling: true
-          maxCount: 3
+          count: 1
           maxPods: 30
+          maxCount: 3
           minCount: 1
           mode: 'System'
           name: 'systempool'
@@ -89,24 +89,24 @@ module testDeployment '../../../main.bicep' = [
       ]
       agentPools: [
         {
-          availabilityZones: [
-            3
-          ]
-          count: 2
-          enableAutoScaling: true
-          maxCount: 3
           maxPods: 30
-          minCount: 1
           minPods: 2
           mode: 'User'
           name: 'userpool1'
           nodeLabels: {}
           osDiskSizeGB: 128
           osType: 'Linux'
-          scaleSetEvictionPolicy: 'Delete'
-          scaleSetPriority: 'Regular'
-          type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS4_v2'
+          type: 'VirtualMachines'
+          virtualMachinesProfile: {
+            scale: {
+              manual: [
+                {
+                  count: 2
+                  size: 'Standard_DS4_v2'
+                }
+              ]
+            }
+          }
         }
       ]
       networkPlugin: 'kubenet'

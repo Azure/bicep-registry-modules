@@ -22,7 +22,7 @@ on:
 
 env:
   # Used for token replacement steps in both PSRule and deployment validation
-  ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
+  ARM_MGMTGROUP_ID: "${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}"
   TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
   CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
 
@@ -36,7 +36,7 @@ jobs:
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
       - name: Set environment
@@ -64,17 +64,22 @@ jobs:
             baselineName: CB.AVM.WAF.Security
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Run Required PSRule validation with baseline [${{ matrix.baseline.friendlyName}}] on [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
+          modulePath: "${{ inputs.modulePath }}"
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          managementGroupId: "${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: false
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
 
   job_psrule_opt: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Opt [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Optional PSRule"
@@ -91,68 +96,93 @@ jobs:
             baselineName: Azure.Pillar.Security
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Run Optional PSRule validation with baseline [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
+          modulePath: "${{ inputs.modulePath }}"
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          managementGroupId: "${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: true
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
 
   #############################
   #   Deployment validation   #
   #############################
-  job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "Deploy [${{ matrix.testCases.name}}]"
+  job_initialize_subscription_selection:
+    name: "Initialize subscription selection"
     environment: avm-validation
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: (fromJson(inputs.workflowInput)).deploymentValidation == 'true'
+    outputs:
+      deploymentMatrix: ${{ steps.deployment-matrix.outputs.deploymentMatrix }}
+      sharedScope: ${{ steps.deployment-matrix.outputs.sharedScope }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Prepare deployment matrix"
+        id: deployment-matrix
+        uses: ./.github/actions/templates/avm-getModuleDeploymentMatrix
+        with:
+          modulePath: ${{ inputs.modulePath }}
+          moduleTestFilePaths: ${{ inputs.moduleTestFilePaths }}
+          displaySubscriptionNames: ${{ vars.VALIDATE_SUBSCRIPTION_IDS != '' || vars.TEST_SUBSCRIPTION_IDS != '' }}
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+
+  job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: "Deployment validation"
+    permissions:
+      contents: read
+      id-token: write
     if: |
       !cancelled() &&
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
+      needs.job_initialize_subscription_selection.result == 'success' &&
       needs.job_module_static_validation.result != 'failure' &&
       needs.job_psrule_must.result != 'failure'
     needs:
+      - job_initialize_subscription_selection
       - job_module_static_validation
       - job_psrule_must
     strategy:
       fail-fast: false
       matrix:
-        testCases: ${{ fromJson(inputs.moduleTestFilePaths) }}
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
-        with:
-          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
-      - name: "Run deployment validation with test file [${{ matrix.testCases.path }}]"
-        uses: ./.github/actions/templates/avm-validateModuleDeployment
-        with:
-          modulePath: "${{ inputs.modulePath }}"
-          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          deploymentMetadataLocation: "WestEurope"
-          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
-          customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
-          e2eIgnore: "${{ matrix.testCases.e2eIgnore }}"
-        env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }} # Still required for OIDC exception list
-          VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
-          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
-          VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
+        testCases: ${{ fromJson(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}
+    concurrency:
+      group: ${{ needs.job_initialize_subscription_selection.outputs.sharedScope == 'true' && !matrix.testCases.e2eIgnore && format('avm-deploy-{0}-shared', inputs.modulePath) || format('avm-deploy-{0}-run-{1}-{2}-{3}', inputs.modulePath, github.run_id, github.run_attempt, strategy.job-index) }}
+      queue: max
+    uses: ./.github/workflows/avm.template.module.deployment.yml
+    with:
+      workflowInput: ${{ inputs.workflowInput }}
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ toJSON(matrix.testCases) }}
+    secrets: inherit
 
-  ##################
-  #   Publishing   #
-  ##################
-  job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+  ####################
+  #   Tag creation   #
+  ####################
+  # Note: brm CI only creates the module release tag(s). The actual publishing to the Public Bicep
+  # Registry is performed by the Azure DevOps OneBranch pipelines that poll these tags. See the AME
+  # deploy migration to ADO documentation (Workstream 5) in the Azure-Verified-Modules repository.
+  job_publish_module: # Note: Keep this job's display name ("Publishing") stable; it may be referenced as a required branch-protection status check.
     name: "Publishing"
     runs-on: ubuntu-latest
+    concurrency:
+      group: avm-publish-${{ inputs.modulePath }}
+      queue: max
     # Note: Below !cancelled() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
     if: |
       !cancelled() &&
@@ -165,17 +195,30 @@ jobs:
       - job_module_deploy_validation
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Publishing"
-        uses: ./.github/actions/templates/avm-publishModule
-        with:
-          templateFilePath: "${{ inputs.modulePath }}/main.bicep"
-        env:
-          PUBLISH_REGISTRY_SERVER: "${{ secrets.PUBLISH_REGISTRY_SERVER }}"
-          PUBLISH_CLIENT_ID: "${{ secrets.PUBLISH_CLIENT_ID }}"
-          PUBLISH_TENANT_ID: "${{ secrets.PUBLISH_TENANT_ID }}"
-          PUBLISH_SUBSCRIPTION_ID: "${{ secrets.PUBLISH_SUBSCRIPTION_ID }}"
+      - name: "Create module release tag"
+        shell: pwsh
+        run: |
+          # Grouping task logs
+          Write-Output '::group::Create module release tag'
+
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleReleaseTag.ps1')
+
+          $functionInput = @{
+            TemplateFilePath = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.modulePath }}/main.bicep"
+            RepoRoot         = $env:GITHUB_WORKSPACE
+          }
+
+          Write-Verbose "Invoke function with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          if ($tagOutputs = Set-ModuleReleaseTag @functionInput -Verbose) {
+            Write-Verbose ("Created release tag(s):`n{0}" -f ($tagOutputs | ConvertTo-Json -Depth 10 | Out-String)) -Verbose
+          }
+
+          Write-Output '::endgroup::'

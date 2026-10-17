@@ -10,9 +10,6 @@ param location string
 @description('Optional. SKU for the Azure Container Registry.')
 param acrSku string = 'Basic'
 
-@description('Optional. Public network access setting for the Azure Container Registry.')
-param publicNetworkAccess string = 'Enabled'
-
 @description('Optional. Zone redundancy setting for the Azure Container Registry.')
 param zoneRedundancy string = 'Disabled'
 
@@ -41,7 +38,10 @@ param backendSubnetResourceId string = ''
 @description('Optional. Private DNS zone resource ID for Container Registry.')
 param privateDnsZoneResourceId string = ''
 
-module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
+@description('Optional. Public network access setting for the Azure Container Registry.')
+param publicNetworkAccess string = enablePrivateNetworking ? 'Disabled' : 'Enabled'
+
+module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.12.1' = {
   name: acrName
   params: {
     name: acrName
@@ -62,8 +62,8 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3
       : null
     // WAF aligned configuration for Private Networking - Network access restrictions
     networkRuleSetDefaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
-    networkRuleSetIpRules: enablePrivateNetworking ? [] : []
-    exportPolicyStatus: enablePrivateNetworking ? 'disabled' : 'enabled'
+    networkRuleSetIpRules: enablePrivateNetworking ? [] : null
+    exportPolicyStatus: enablePrivateNetworking ? 'disabled' : null
     privateEndpoints: enablePrivateNetworking
       ? [
           {

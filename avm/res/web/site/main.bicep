@@ -102,7 +102,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. To enable client certificate authentication (TLS mutual authentication).')
@@ -244,9 +244,11 @@ var formattedRoleAssignments = [
   })
 ]
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.web-site.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -341,6 +343,7 @@ module app_extensions 'extension/main.bicep' = [
     params: {
       appName: app.name
       properties: extension.properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -418,6 +421,7 @@ module app_basicPublishingCredentialsPolicies 'basic-publishing-credentials-poli
       name: basicPublishingCredentialsPolicy.name
       allow: basicPublishingCredentialsPolicy.?allow
       location: location
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -429,6 +433,7 @@ module app_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep'
       hybridConnectionResourceId: hybridConnectionRelay.hybridConnectionResourceId
       appName: app.name
       sendKeyName: hybridConnectionRelay.?sendKeyName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -480,14 +485,18 @@ resource app_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-0
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true

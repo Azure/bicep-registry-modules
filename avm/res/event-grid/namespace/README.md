@@ -1975,7 +1975,7 @@ param tags = {
 | [`caCertificates`](#parameter-cacertificates) | array | CA certificates (Root or intermediate) used to sign the client certificates for clients authenticated using CA-signed certificates.  Used only when MQTT broker is enabled ('topicSpacesState' is set to 'Enabled'). |
 | [`clientGroups`](#parameter-clientgroups) | array | All namespace Client Groups to create. Used only when MQTT broker is enabled ('topicSpacesState' is set to 'Enabled'). |
 | [`clients`](#parameter-clients) | array | All namespace Clients to create. Used only when MQTT broker is enabled ('topicSpacesState' is set to 'Enabled'). |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`inboundIpRules`](#parameter-inboundiprules) | array | This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled. |
 | [`isZoneRedundant`](#parameter-iszoneredundant) | bool | Allows the user to specify if the namespace resource supports zone-redundancy capability or not. If this property is not specified explicitly by the user, its default value depends on the following conditions: a. For Availability Zones enabled regions - The default property value would be true. b. For non-Availability Zones enabled regions - The default property value would be false. Once specified, this property cannot be updated. |
@@ -2049,7 +2049,7 @@ All namespace Clients to create. Used only when MQTT broker is enabled ('topicSp
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

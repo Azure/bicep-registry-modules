@@ -2,18 +2,27 @@
 
 This module deploys a SQL Database in a CosmosDB Account.
 
+You can reference the module as follows:
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account/sql-database:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases/containers)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/sqlDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/sqlDatabases/containers)</li></ul> |
 
 ## Parameters
 
@@ -35,6 +44,7 @@ This module deploys a SQL Database in a CosmosDB Account.
 | :-- | :-- | :-- |
 | [`autoscaleSettingsMaxThroughput`](#parameter-autoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
 | [`containers`](#parameter-containers) | array | Array of containers to deploy in the SQL database. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`tags`](#parameter-tags) | object | Tags of the SQL database resource. |
 | [`throughput`](#parameter-throughput) | int | Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
 
@@ -80,6 +90,7 @@ Array of containers to deploy in the SQL database.
 | [`analyticalStorageTtl`](#parameter-containersanalyticalstoragettl) | int | Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store. |
 | [`autoscaleSettingsMaxThroughput`](#parameter-containersautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
 | [`conflictResolutionPolicy`](#parameter-containersconflictresolutionpolicy) | object | The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions. |
+| [`dataMaskingPolicy`](#parameter-containersdatamaskingpolicy) | object | The Data Masking policy for the container. |
 | [`defaultTtl`](#parameter-containersdefaultttl) | int | Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default. |
 | [`fullTextPolicy`](#parameter-containersfulltextpolicy) | object | The full text policy for the container. |
 | [`indexingPolicy`](#parameter-containersindexingpolicy) | object | Indexing policy of the container. |
@@ -122,6 +133,13 @@ Specifies the Autoscale settings and represents maximum throughput, the resource
 ### Parameter: `containers.conflictResolutionPolicy`
 
 The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.
+
+- Required: No
+- Type: object
+
+### Parameter: `containers.dataMaskingPolicy`
+
+The Data Masking policy for the container.
 
 - Required: No
 - Type: object
@@ -205,6 +223,14 @@ Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Vers
   ]
   ```
 
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `tags`
 
 Tags of the SQL database resource.
@@ -226,3 +252,7 @@ Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is u
 | `name` | string | The name of the SQL database. |
 | `resourceGroupName` | string | The name of the resource group the SQL database was created in. |
 | `resourceId` | string | The resource ID of the SQL database. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

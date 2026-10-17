@@ -71,8 +71,8 @@ module testDeployment '../../../main.bicep' = [
           cipherSuiteSetType: 'Customized'
           customizedCipherSuiteSet: {
             cipherSuiteSetForTls12: [
-              'DHE_RSA_AES128_GCM_SHA256'
-              'DHE_RSA_AES256_GCM_SHA384'
+              'ECDHE_RSA_AES128_GCM_SHA256'
+              'ECDHE_RSA_AES256_GCM_SHA384'
             ]
             cipherSuiteSetForTls13: [
               'TLS_AES_128_GCM_SHA256'

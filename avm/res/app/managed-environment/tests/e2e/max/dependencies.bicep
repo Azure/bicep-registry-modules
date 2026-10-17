@@ -1,12 +1,6 @@
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the Log Analytics Workspace to create.')
-param logAnalyticsWorkspaceName string
-
-@description('Required. The name of the Application Insights Component to create.')
-param appInsightsComponentName string
-
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
@@ -30,30 +24,6 @@ var certSecretName = 'pfxBase64Certificate'
 param storageAccountName string
 
 var addressPrefix = '10.0.0.0/16'
-
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
-  name: logAnalyticsWorkspaceName
-  location: location
-  properties: any({
-    retentionInDays: 30
-    features: {
-      searchVersion: 1
-    }
-    sku: {
-      name: 'PerGB2018'
-    }
-  })
-}
-
-resource appInsightsComponent 'Microsoft.Insights/components@2020-02-02' = {
-  name: appInsightsComponentName
-  location: location
-  kind: 'web'
-  properties: {
-    Application_Type: 'web'
-    WorkspaceResourceId: logAnalyticsWorkspace.id
-  }
-}
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
   name: virtualNetworkName
@@ -84,6 +54,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
           ]
         }
       }
+      {
+        name: 'pesubnet'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 23, 1)
+        }
+      }
     ]
   }
 }
@@ -108,6 +84,9 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
     enabledForDeployment: true
     enableRbacAuthorization: true
     accessPolicies: []
+  }
+  tags: {
+    SecurityControl: 'Ignore' // Ignore security policies imposed on testing subscriptions
   }
 }
 
@@ -140,6 +119,9 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01'
     arguments: '-KeyVaultName "${keyVault.name}" -CertName "${certname}" -CertSubjectName "CN=*.contoso.com"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
   }
+  tags: {
+    SecurityControl: 'Ignore' // Ignore security policies imposed on testing subscriptions. Key based access for Storage Accounts is otherwise denied
+  }
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
@@ -161,6 +143,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
         }
       ]
     }
+  }
+  tags: {
+    SecurityControl: 'Ignore' // Ignore security policies imposed on testing subscriptions. Key based access for Storage Accounts is otherwise denied
   }
 
   resource fileService 'fileServices@2025-06-01' = {
@@ -184,14 +169,27 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
   }
 }
 
-@description('The resource ID of the created Log Analytics Workspace.')
-output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  name: 'privatelink.${location}.azurecontainerapps.io'
+  location: 'global'
 
-@description('The name of the created Log Analytics Workspace.')
-output logAnalyticsWorkspaceCustomerId string = logAnalyticsWorkspace.properties.customerId
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
+    name: '${virtualNetwork.name}-vnetlink'
+    location: 'global'
+    properties: {
+      virtualNetwork: {
+        id: virtualNetwork.id
+      }
+      registrationEnabled: false
+    }
+  }
+}
 
-@description('The resource ID of the created Virtual Network Subnet.')
-output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+@description('The resource ID of the delegated Virtual Network Subnet.')
+output defaultSubnetResourceId string = virtualNetwork.properties.subnets[0].id
+
+@description('The resource ID of the Virtual Network Subnet for the private endpoint.')
+output peSubnetResourceId string = virtualNetwork.properties.subnets[1].id
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
@@ -214,8 +212,8 @@ output certPWSecretName string = certPWSecretName
 @description('The name of the certification secret.')
 output certSecretName string = certSecretName
 
-@description('The Connection String of the created Application Insights Component.')
-output appInsightsConnectionString string = appInsightsComponent.properties.ConnectionString
-
 @description('The name of the created Storage Account.')
 output storageAccountName string = storageAccount.name
+
+@description('The resource ID of the created Private DNS Zone.')
+output privateDNSZoneResourceId string = privateDNSZone.id

@@ -66,9 +66,11 @@ var formattedRoleAssignments = [
   })
 ]
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.management-servicegroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, deployment().location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, deployment().location), 0, 4)}'
   location: deployment().location
   properties: {
     mode: 'Incremental'

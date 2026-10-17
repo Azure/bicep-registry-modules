@@ -28,7 +28,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.DBforPostgreSQL/flexibleServers` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers)</li></ul> |
 | `Microsoft.DBforPostgreSQL/flexibleServers/administrators` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_administrators.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers/administrators)</li></ul> |
 | `Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_advancedthreatprotectionsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers/advancedThreatProtectionSettings)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers/configurations` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers/configurations)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/configurations` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-08-01/flexibleServers/configurations)</li></ul> |
 | `Microsoft.DBforPostgreSQL/flexibleServers/databases` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers/databases)</li></ul> |
 | `Microsoft.DBforPostgreSQL/flexibleServers/firewallRules` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers/firewallRules)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
@@ -44,13 +44,14 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/db-for-postgre-sql/flexible-server:<version>`.
 
 - [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-1-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
-- [Private access](#example-4-private-access)
-- [Public access with private endpoints](#example-5-public-access-with-private-endpoints)
-- [Public access](#example-6-public-access)
-- [Primary server and Readonly Replication server](#example-7-primary-server-and-readonly-replication-server)
-- [WAF-aligned](#example-8-waf-aligned)
+- [Static configuration persistence](#example-2-static-configuration-persistence)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-4-using-customer-managed-keys-with-user-assigned-identity)
+- [Private access](#example-5-private-access)
+- [Public access with private endpoints](#example-6-public-access-with-private-endpoints)
+- [Public access](#example-7-public-access)
+- [Primary server and Readonly Replication server](#example-8-primary-server-and-readonly-replication-server)
+- [WAF-aligned](#example-9-waf-aligned)
 
 ### Example 1: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
@@ -193,7 +194,116 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Static configuration persistence_
+
+This instance validates that static PostgreSQL server parameters (which require a server restart) are actually persisted after deployment, guarding against regressions such as GitHub issue #7270.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/configurations]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: 1
+    name: 'dfpcfg001'
+    skuName: 'Standard_D2s_v3'
+    tier: 'GeneralPurpose'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    authConfig: {
+      activeDirectoryAuth: 'Disabled'
+      passwordAuth: 'Enabled'
+    }
+    configurations: '<configurations>'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
+    "name": {
+      "value": "dfpcfg001"
+    },
+    "skuName": {
+      "value": "Standard_D2s_v3"
+    },
+    "tier": {
+      "value": "GeneralPurpose"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Disabled",
+        "passwordAuth": "Enabled"
+      }
+    },
+    "configurations": {
+      "value": "<configurations>"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param availabilityZone = 1
+param name = 'dfpcfg001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param authConfig = {
+  activeDirectoryAuth: 'Disabled'
+  passwordAuth: 'Enabled'
+}
+param configurations = '<configurations>'
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -291,7 +401,7 @@ param administrators = [
 </details>
 <p>
 
-### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 4: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -477,7 +587,7 @@ param storageType = 'PremiumV2_LRS'
 </details>
 <p>
 
-### Example 4: _Private access_
+### Example 5: _Private access_
 
 This instance deploys the module with private access only.
 
@@ -758,7 +868,7 @@ param roleAssignments = [
 </details>
 <p>
 
-### Example 5: _Public access with private endpoints_
+### Example 6: _Public access with private endpoints_
 
 This instance deploys the module with public access and private endpoints.
 
@@ -940,7 +1050,7 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 6: _Public access_
+### Example 7: _Public access_
 
 This instance deploys the module with public access and most of its features enabled.
 
@@ -1278,7 +1388,7 @@ param version = '14'
 </details>
 <p>
 
-### Example 7: _Primary server and Readonly Replication server_
+### Example 8: _Primary server and Readonly Replication server_
 
 This instance deploys a primary and readonly replication server using the module with the minimum set of required parameters.
 
@@ -1383,7 +1493,7 @@ param version = '17'
 </details>
 <p>
 
-### Example 8: _WAF-aligned_
+### Example 9: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1677,7 +1787,7 @@ param tags = {
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`delegatedSubnetResourceId`](#parameter-delegatedsubnetresourceid) | string | Delegated subnet arm resource ID. Used when the desired connectivity mode is 'Private Access' - virtual network integration. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableAdvancedThreatProtection`](#parameter-enableadvancedthreatprotection) | bool | Enable/Disable advanced threat protection. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the PostgreSQL flexible server. |
@@ -2002,7 +2112,7 @@ Delegated subnet arm resource ID. Used when the desired connectivity mode is 'Pr
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
@@ -3060,7 +3170,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection

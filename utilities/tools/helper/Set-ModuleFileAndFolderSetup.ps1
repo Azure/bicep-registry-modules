@@ -13,27 +13,42 @@ Mandatory. The full module path to create.
 .PARAMETER CurrentLevelFolderPath
 Optional. The level the current invocation is at. Used for recursion. Do not provide.
 
+.PARAMETER SkipModuleVersionCheck
+Optional. Skip the Avm.Authoring version check only when using a trusted source checkout.
+
 .EXAMPLE
 Set-ModuleFileAndFolderSetup -FullModuleFolderPath '<repoPath>\avm\res\storage\storage-account\blob-service\container'
 
 Results into:
 - Added file [<repoPath>\avm\res\storage\storage-account\main.bicep]
+- Added file [<repoPath>\avm\res\storage\storage-account\metadata.json]
 - Added file [<repoPath>\avm\res\storage\storage-account\version.json]
 - Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\defaults\main.test.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\waf-aligned\main.test.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\blob-service\main.bicep]
+- Added file [<repoPath>\avm\res\storage\storage-account\blob-service\metadata.json]
 - Added file [<repoPath>\avm\res\storage\storage-account\blob-service\container\main.bicep]
+- Added file [<repoPath>\avm\res\storage\storage-account\blob-service\container\metadata.json]
 
 .EXAMPLE
 Set-ModuleFileAndFolderSetup -FullModuleFolderPath '<repoPath>\avm\res\storage\storage-account'
 
 Results into:
 - Added file [<repoPath>\avm\res\storage\storage-account\main.bicep]
+- Added file [<repoPath>\avm\res\storage\storage-account\metadata.json]
 - Added file [<repoPath>\avm\res\storage\storage-account\version.json]
 - Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\defaults\main.test.bicep]
 - Added file [<repoPath>\avm\res\storage\storage-account\tests\e2e\waf-aligned\main.test.bicep]
 
 #>
+function Get-AvmTelemetryIdPrefixGenerator {
+    $generator = Get-Command -Name 'New-AvmTelemetryIdPrefix' -Module 'Avm.Authoring' -ErrorAction Ignore
+    if (-not $generator) {
+        throw 'Creating module metadata requires Avm.Authoring to export New-AvmTelemetryIdPrefix. Install it manually with Install-PSResource -Name Avm.Authoring -Scope CurrentUser, or update it with Update-PSResource -Name Avm.Authoring -Scope CurrentUser, then run Import-Module Avm.Authoring -Force. Alternatively, import a trusted source checkout and pass -SkipModuleVersionCheck. No module was installed.'
+    }
+    return $generator
+}
+
 function Set-ModuleFileAndFolderSetup {
 
     [CmdletBinding(SupportsShouldProcess = $true)]
@@ -42,7 +57,10 @@ function Set-ModuleFileAndFolderSetup {
         [string] $FullModuleFolderPath,
 
         [Parameter(Mandatory = $false)]
-        [string] $CurrentLevelFolderPath
+        [string] $CurrentLevelFolderPath,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $SkipModuleVersionCheck
     )
 
     if ([String]::IsNullOrEmpty($CurrentLevelFolderPath)) {
@@ -54,11 +72,53 @@ function Set-ModuleFileAndFolderSetup {
 
         # Join the required path to get up to the resource type folder
         $CurrentLevelFolderPath = Join-Path $repoRoot 'avm' $moduleType $providerNamespace $resourceType
+
+        $moduleFolderPaths = @($CurrentLevelFolderPath)
+        if ($childResourceType) {
+            $childModulePath = $CurrentLevelFolderPath
+            foreach ($childFolderName in ($childResourceType -split '[\/|\\]')) {
+                $childModulePath = Join-Path $childModulePath $childFolderName
+                $moduleFolderPaths += $childModulePath
+            }
+        }
+        if (-not $WhatIfPreference -and
+            ($moduleFolderPaths | Where-Object { -not (Test-Path -LiteralPath (Join-Path $_ 'metadata.json')) } | Select-Object -First 1)) {
+            $null = Get-AvmTelemetryIdPrefixGenerator
+        }
     }
 
     # Collect data
-    $resourceTypeIdentifier = ($CurrentLevelFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] # avm/res/<provider>/<resourceType>
+    $currentLevelPathElements = $CurrentLevelFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
+    $currentModuleType = $currentLevelPathElements[1] # res|ptn|utl
+    $resourceTypeIdentifier = $currentLevelPathElements[2] # avm/res/<provider>/<resourceType>
     $isTopLevel = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+
+    $metadataFilePath = Join-Path $CurrentLevelFolderPath 'metadata.json'
+    if (-not $WhatIfPreference -and -not (Test-Path -LiteralPath $metadataFilePath)) {
+        $generator = Get-AvmTelemetryIdPrefixGenerator
+        $avmRootPath = Join-Path $currentLevelPathElements[0] 'avm'
+        $knownPrefixes = @(
+            if (Test-Path -LiteralPath $avmRootPath) {
+                foreach ($existingMetadataFile in (Get-ChildItem -LiteralPath $avmRootPath -Recurse -File -Filter 'metadata.json' -ErrorAction Stop)) {
+                    try {
+                        $existingMetadata = Get-Content -LiteralPath $existingMetadataFile.FullName -Raw -ErrorAction Stop |
+                            ConvertFrom-Json -AsHashtable -ErrorAction Stop
+                    } catch {
+                        throw "Failed to read telemetry prefixes from [$($existingMetadataFile.FullName)]: $($_.Exception.Message)"
+                    }
+                    foreach ($prefix in (@($existingMetadata.telemetryIdPrefix) + @($existingMetadata.alternativeTelemetryIdPrefixes))) {
+                        if (-not [string]::IsNullOrWhiteSpace($prefix)) {
+                            $prefix
+                        }
+                    }
+                }
+            }
+        )
+        $telemetryIdPrefix = & $generator -Ecosystem bicep -Kind $currentModuleType -KnownPrefix $knownPrefixes -SkipModuleVersionCheck:$SkipModuleVersionCheck -ErrorAction Stop
+        if ($telemetryIdPrefix -cnotmatch "^46d3xbcp\.$currentModuleType\.[0-9a-f]{7}\z") {
+            throw "New-AvmTelemetryIdPrefix returned an invalid Bicep prefix for [$CurrentLevelFolderPath]."
+        }
+    }
 
     # Mandatory files
     # ===============
@@ -79,6 +139,36 @@ function Set-ModuleFileAndFolderSetup {
             }
         }
         Write-Verbose "Added file [$bicepFilePath]" -Verbose
+    }
+
+    # Metadata file
+    # -------------
+    # Every module (root & child) requires a `metadata.json` that is valid against the AVM module metadata schema
+    # (https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json).
+    # Root modules must additionally carry an (empty-by-default) `owners` array; children inherit ownership from their root and must not define it.
+    if (-not (Test-Path $metadataFilePath)) {
+        if ($PSCmdlet.ShouldProcess("File [$metadataFilePath]", 'Add')) {
+            $identifierSegments = $resourceTypeIdentifier -split '[\/|\\]'
+            $moduleDisplayName = (Get-Culture).TextInfo.ToTitleCase(($identifierSegments[-1] -replace '-', ' '))
+            $canonicalType = ($identifierSegments -join '/')
+
+            $metadataContent = [ordered]@{
+                '$schema'         = 'https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json'
+                moduleDisplayName = $moduleDisplayName
+                moduleDescription = "This module deploys $moduleDisplayName."
+                telemetryIdPrefix = $telemetryIdPrefix
+                canonicalType     = $canonicalType
+            }
+            if ($isTopLevel) {
+                # Root modules must own their `owners` array (kept empty until an owner is assigned); children inherit it and must not define the property
+                $metadataContent['owners'] = @()
+            }
+
+            if ($PSCmdlet.ShouldProcess("content for file [$metadataFilePath]", 'Set')) {
+                $null = Set-Content -Path $metadataFilePath -Value ($metadataContent | ConvertTo-Json)
+            }
+        }
+        Write-Verbose "Added file [$metadataFilePath]" -Verbose
     }
 
     # README can be generated by parent script
@@ -178,6 +268,6 @@ function Set-ModuleFileAndFolderSetup {
     if ($CurrentLevelFolderPath -ne $FullModuleFolderPath) {
         # More children to handle
         $nextChild = ($FullModuleFolderPath -replace ('{0}[\/|\\]*' -f [Regex]::Escape($CurrentLevelFolderPath)) -split '[\/|\\]')[0]
-        Set-ModuleFileAndFolderSetup -FullModuleFolderPath $FullModuleFolderPath -CurrentLevelFolderPath (Join-Path $CurrentLevelFolderPath $nextChild)
+        Set-ModuleFileAndFolderSetup -FullModuleFolderPath $FullModuleFolderPath -CurrentLevelFolderPath (Join-Path $CurrentLevelFolderPath $nextChild) -SkipModuleVersionCheck:$SkipModuleVersionCheck
     }
 }

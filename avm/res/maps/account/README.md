@@ -66,11 +66,6 @@ module account 'br/public:avm/res/maps/account:<version>' = {
       keyVersion: '<keyVersion>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
   }
 }
 ```
@@ -99,13 +94,6 @@ module account 'br/public:avm/res/maps/account:<version>' = {
         "keyVersion": "<keyVersion>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
     }
   }
 }
@@ -129,11 +117,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   keyVersion: '<keyVersion>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 ```
 

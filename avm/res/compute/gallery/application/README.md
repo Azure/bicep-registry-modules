@@ -2,6 +2,14 @@
 
 This module deploys an Azure Compute Gallery Application.
 
+You can reference the module as follows:
+```bicep
+module gallery 'br/public:avm/res/compute/gallery/application:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -9,6 +17,7 @@ This module deploys an Azure Compute Gallery Application.
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -38,6 +47,7 @@ This module deploys an Azure Compute Gallery Application.
 | :-- | :-- | :-- |
 | [`customActions`](#parameter-customactions) | array | A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application. |
 | [`description`](#parameter-description) | string | The description of this gallery Application Definition resource. This property is updatable. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`endOfLifeDate`](#parameter-endoflifedate) | string | The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z. |
 | [`eula`](#parameter-eula) | string | The Eula agreement for the gallery Application Definition. Has to be a valid URL. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -187,6 +197,14 @@ The description of this gallery Application Definition resource. This property i
 
 - Required: No
 - Type: string
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `endOfLifeDate`
 
@@ -350,7 +368,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Notes
 
@@ -452,3 +470,7 @@ customActions: [
 
 </details>
 <p>
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

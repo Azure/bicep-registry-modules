@@ -1,0 +1,2 @@
+The Anthropic Claude model deployment requires the target subscription to subscribe to the paid Anthropic Azure Marketplace offer.
+The deployment validation cannot complete in AVM validation subscription and is therefore skipped here. The scenario has been validated manually on a Marketplace-eligible subscription with approved Anthropic Claude quota.

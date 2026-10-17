@@ -12,6 +12,7 @@ param name string = 'vaultconfig'
   'AlwaysON'
   'Disabled'
   'Enabled'
+  'Invalid'
 ])
 param enhancedSecurityState string?
 
@@ -23,6 +24,7 @@ param resourceGuardOperationRequests array = []
   'AlwaysON'
   'Disabled'
   'Enabled'
+  'Invalid'
 ])
 param softDeleteFeatureState string?
 
@@ -52,23 +54,58 @@ param storageType string = 'GeoRedundant'
 param storageTypeState string = 'Locked'
 
 @description('Optional. Is soft delete feature state editable.')
-param isSoftDeleteFeatureStateEditable bool = true
+param isSoftDeleteFeatureStateEditable bool?
 
-resource rsv 'Microsoft.RecoveryServices/vaults@2025-08-01' existing = {
+@description('Optional. Soft delete retention period in days.')
+param softDeleteRetentionPeriodInDays int?
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource rsv 'Microsoft.RecoveryServices/vaults@2026-01-01' existing = {
   name: recoveryVaultName
 }
 
-resource backupConfig 'Microsoft.RecoveryServices/vaults/backupconfig@2025-08-01' = {
+resource backupConfig 'Microsoft.RecoveryServices/vaults/backupconfig@2026-01-01' = {
   name: name
   parent: rsv
   properties: {
-    enhancedSecurityState: enhancedSecurityState
     resourceGuardOperationRequests: resourceGuardOperationRequests
-    softDeleteFeatureState: softDeleteFeatureState
     storageModelType: storageModelType
     storageType: storageType
     storageTypeState: storageTypeState
-    isSoftDeleteFeatureStateEditable: isSoftDeleteFeatureStateEditable
+    // The soft delete related properties are only sent to the API if they are provided. Once the vault-level
+    // `softDeleteSettings` were used, the backupconfig API rejects any write to these properties, hence they
+    // must be omitted from the request payload entirely instead of being sent as `null`.
+    ...(enhancedSecurityState != null ? { enhancedSecurityState: enhancedSecurityState } : {})
+    ...(softDeleteFeatureState != null ? { softDeleteFeatureState: softDeleteFeatureState } : {})
+    ...(isSoftDeleteFeatureStateEditable != null
+      ? { isSoftDeleteFeatureStateEditable: isSoftDeleteFeatureStateEditable }
+      : {})
+    ...(softDeleteRetentionPeriodInDays != null
+      ? { softDeleteRetentionPeriodInDays: softDeleteRetentionPeriodInDays }
+      : {})
   }
 }
 

@@ -19,12 +19,11 @@ param routingConfiguration object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: take(
-    '46d3xbcp.res.network-virtualhub-hubvirtualnetwork.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}',
-    64
-  )
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -41,11 +40,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2025-01-01' existing = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2025-05-01' existing = {
   name: virtualHubName
 }
 
-resource hubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2025-01-01' = {
+resource hubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2025-05-01' = {
   name: name
   parent: virtualHub
   properties: {

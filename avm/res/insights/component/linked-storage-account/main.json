@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "18407373523862927704"
+      "version": "0.47.16.16243",
+      "templateHash": "3665297473031529344"
     },
     "name": "Application Insights Linked Storage Account",
     "description": "This component deploys an Application Insights Linked Storage Account."
@@ -22,9 +22,40 @@
       "metadata": {
         "description": "Required. Linked storage account resource ID."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.48ecdbe",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     {
       "type": "microsoft.insights/components/linkedStorageAccounts",
       "apiVersion": "2020-03-01-preview",
@@ -52,7 +83,7 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the agent pool was deployed into."
+        "description": "The resource group the Linked Storage Account was deployed into."
       },
       "value": "[resourceGroup().name]"
     }

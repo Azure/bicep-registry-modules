@@ -2,6 +2,41 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/conversation-knowledge-mining/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+NOTE: This is the last published version and the module has since been deprecated.
+
+- Restructured `main.bicep` into a pure orchestrator pattern: all resources are now deployed via local wrapper modules under `modules/{ai,compute,data,identity,monitoring,networking}/`, each wrapping exactly one published `avm/res/...` module, replacing the previous flat `modules/*.bicep` files.
+- Added parameters `deployCosmos` (Cosmos DB is now optional; SQL is the primary database), `azureAdTenantId`, `azureAdClientId`, `adminApiKey`, `existingLogAnalyticsWorkspaceId`, `existingFoundryProjectResourceId`, `deployingUserPrincipalType`, `containerRegistryName`, `appServicePlanSku`, and `kind`.
+- Backend and frontend App Services now use a system-assigned managed identity instead of a user-assigned identity.
+- SQL AAD admin is now permanently set to the deploying principal, relying on the solution accelerator's post-provision `setup-sql-roles.ps1` script to configure additional access.
+- Deployer identity is now granted broad data-plane role assignments (Search Index Data Contributor, Storage Blob Data Contributor, Cognitive Services User, ACR Push, SQL AAD admin) directly in the template.
+- Renamed all outputs from camelCase to `ALL_CAPS` (e.g. `azureOpenAIEndpoint` → `AZURE_OPENAI_ENDPOINT`) to align with the solution accelerator's environment-variable naming convention.
+
+### Breaking Changes
+
+- Renamed parameter `aiServiceLocation` to `azureAiServiceLocation`.
+- Removed parameters `usecase`, `secondaryLocation`, `cosmosDbReplicaLocation`, `azureContentUnderstandingApiVersion`, `azureOpenAIApiVersion`, and `azureAiAgentApiVersion`.
+- Renamed all outputs from camelCase to `ALL_CAPS` (see Changes above) — any consumers referencing the old output names must be updated.
+
+## 0.5.0
+
+### Changes
+
+- Upgraded Content Understanding API version default from `2024-12-01-preview` to `2025-11-01`.
+- Consolidated the separate Content Understanding AI Services account (`-cu`) into the primary AI Foundry AI Services account.
+- Updated allowed values for `aiServiceLocation`: removed `francecentral`; added `southcentralus` and `westeurope`.
+- Added `Microsoft.Insights/dataCollectionRules` (`dcr-<suffix>`) for Windows VM performance counters and security events (deployed when `enablePrivateNetworking` and `enableMonitoring` are both true), and associated it with the jumpbox VM via `extensionMonitoringAgentConfig`.
+- Enabled `requireInfrastructureEncryption` on the storage account.
+- Enabled end-to-end encryption (`e2eEncryptionEnabled`) on backend and frontend web apps.
+
+### Breaking Changes
+
+- Removed parameter `contentUnderstandingLocation` (Content Understanding now uses the consolidated AI Services account in `aiServiceLocation`).
+- Removed outputs `azureContentUnderstandingLocation` and `cuFoundryResourceId`. Output `azureOpenAICuEndpoint` is retained and now sourced from `aiFoundryAiServices.outputs.endpoints['Content Understanding']`.
+
 ## 0.4.0
 
 ### Changes
