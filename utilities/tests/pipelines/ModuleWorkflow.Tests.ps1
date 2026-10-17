@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter()]
     [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.FullName
 )
@@ -30,7 +30,7 @@ Describe 'Generic module workflow' {
     }
 
     It 'does not hold deployment or publishing locks around reusable workflows and static checks' {
-        foreach ($jobName in @('call_module_preview', 'call_module_fork_static', 'call_module_publish', 'call_module_publish_only')) {
+        foreach ($jobName in @('call_module_preview', 'call_module_preview_local', 'call_module_fork_static', 'call_module_publish', 'call_module_publish_local', 'call_module_publish_only')) {
             $workflow.jobs[$jobName].ContainsKey('concurrency') | Should -BeFalse
             $workflow.jobs[$jobName].strategy.ContainsKey('max-parallel') | Should -BeFalse
             $workflow.jobs[$jobName].strategy.'fail-fast' | Should -BeFalse
@@ -50,11 +50,11 @@ Describe 'Generic module workflow' {
         @{ ignored = $false }
     ) {
         $steps = $deploymentWorkflow.jobs.job_module_deploy_validation.steps
-        $steps.Count | Should -Be 4
+        $steps.Count | Should -Be 5
         $steps[0].name | Should -Be 'Report skipped deployment'
         $steps[0].if | Should -Be '${{ fromJson(inputs.testCase).e2eIgnore }}'
         $steps[0].env.TEMPLATE_FILE_PATH | Should -Be '${{ inputs.modulePath }}/${{ fromJson(inputs.testCase).path }}'
-        foreach ($step in $steps[1..3]) {
+        foreach ($step in $steps[1..4]) {
             $step.if | Should -Be '${{ !fromJson(inputs.testCase).e2eIgnore }}'
         }
 
@@ -72,10 +72,11 @@ Describe 'Generic module workflow' {
             $selectedSteps[0].shell | Should -Be 'pwsh'
             $selectedSteps[0].ContainsKey('uses') | Should -BeFalse
         } else {
-            $selectedSteps.Count | Should -Be 3
+            $selectedSteps.Count | Should -Be 4
             $selectedSteps[0].uses | Should -Match '^actions/checkout@'
             $selectedSteps[1].uses | Should -Be './.github/actions/templates/avm-setEnvironment'
-            $selectedSteps[2].uses | Should -Be './.github/actions/templates/avm-validateModuleDeployment'
+            $selectedSteps[2].uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/actions/bicep-module-identity@[0-9a-f]{40}$'
+            $selectedSteps[3].uses | Should -Be './.github/actions/templates/avm-validateModuleDeployment'
         }
     }
 
@@ -191,6 +192,7 @@ Describe 'Generic module workflow' {
 
     It 'keeps automatic preview permissions read-only' {
         $workflow.jobs.call_module_preview.permissions.contents | Should -Be 'read'
+        $workflow.jobs.call_module_preview_local.permissions.contents | Should -Be 'read'
         $workflow.jobs.call_module_fork_static.permissions.contents | Should -Be 'read'
         $previewWorkflow.jobs.Values.permissions.contents | Should -Not -Contain 'write'
         $staticWorkflow.jobs.Values.permissions.contents | Should -Not -Contain 'write'
@@ -204,10 +206,11 @@ Describe 'Generic module workflow' {
 
         $initialize.if | Should -Match ([regex]::Escape("contains(github.event.pull_request.labels.*.name, 'PR: Run Checks')"))
         $initialize.if | Should -Match ([regex]::Escape("github.event.label.name == 'PR: Run Checks'"))
-        $matrixStep.env.BASE_SHA | Should -Be '${{ github.event.before }}'
-        $matrixStep.env.HEAD_SHA | Should -Be '${{ github.sha }}'
-        $matrixStep.env.PR_HEAD_SHA | Should -Be '${{ github.event.pull_request.head.sha }}'
-        $matrixStep.run | Should -Match ([regex]::Escape('-ExcludeMetadataChanges:($env:EVENT_NAME -ne ''pull_request'')'))
+        $matrixStep.with.baseCommit | Should -Be '${{ github.event.before }}'
+        $matrixStep.with.targetCommit | Should -Be '${{ github.sha }}'
+        $matrixStep.with.pullRequestHeadCommit | Should -Be '${{ github.event.pull_request.head.sha }}'
+        $matrixStep.with.eventName | Should -Be '${{ github.event_name }}'
+        $matrixStep.ContainsKey('run') | Should -BeFalse
     }
 
     It 'limits optional pull request deployment validation to internal branches' {
@@ -222,8 +225,8 @@ Describe 'Generic module workflow' {
         $fork = $workflow.jobs.call_module_fork_static
         $fork.if | Should -Match "github.event_name == 'pull_request'"
         $fork.if | Should -Match 'github.event.pull_request.head.repo.full_name != github.repository'
-        $fork.uses | Should -Be './.github/workflows/avm.template.module.static.yml'
-        @($fork.with.Keys) | Should -Be @('modulePath')
+        $fork.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-static\.yml@[0-9a-f]{40}$'
+        @($fork.with.Keys | Sort-Object) | Should -Be @('avm-authoring-version', 'modulePath', 'tools-ref')
         $fork.permissions.Count | Should -Be 1
         $fork.permissions.ContainsKey('id-token') | Should -BeFalse
         $fork.ContainsKey('secrets') | Should -BeFalse
@@ -240,9 +243,10 @@ Describe 'Generic module workflow' {
     It 'excludes metadata-only pushes without changing manual publishing' {
         $workflow.on.push.paths | Should -Be @('avm/**', '!avm/**/README.md', '!avm/**/metadata.json')
         $matrixStep = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.id -eq 'get-module-matrix' }
-        $matrixStep.run | Should -Match ([regex]::Escape('Get-ModuleWorkflowMatrix -ChangedFilePath $changedFilePaths -ExcludeMetadataChanges'))
+        $matrixStep.with.eventName | Should -Be '${{ github.event_name }}'
+        $matrixStep.with.modulePaths | Should -Be '${{ inputs.modulePaths }}'
         $workflow.jobs.call_module_preview.if | Should -Match "github.event_name == 'push'"
-        foreach ($jobName in @('call_module_publish', 'call_module_publish_only')) {
+        foreach ($jobName in @('call_module_publish', 'call_module_publish_local', 'call_module_publish_only')) {
             $workflow.jobs[$jobName].if | Should -Match "github.event_name == 'workflow_dispatch'"
         }
     }
@@ -265,10 +269,10 @@ Describe 'Generic module workflow' {
     }
 
     It 'uses isolated reusable workflows for each permission boundary' {
-        $workflow.jobs.call_module_preview.uses | Should -Be './.github/workflows/avm.template.module.preview.yml'
-        $workflow.jobs.call_module_fork_static.uses | Should -Be './.github/workflows/avm.template.module.static.yml'
-        $workflow.jobs.call_module_publish.uses | Should -Be './.github/workflows/avm.template.module.publish.yml'
-        $workflow.jobs.call_module_publish_only.uses | Should -Be './.github/workflows/avm.template.module.publish-only.yml'
+        $workflow.jobs.call_module_preview.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-preview\.yml@[0-9a-f]{40}$'
+        $workflow.jobs.call_module_fork_static.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-static\.yml@[0-9a-f]{40}$'
+        $workflow.jobs.call_module_publish.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-publish\.yml@[0-9a-f]{40}$'
+        $workflow.jobs.call_module_publish_only.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-publish-only\.yml@[0-9a-f]{40}$'
     }
 
     It 'uses the same stable generic name prefix for PSRule and deployment validation' {
@@ -379,7 +383,7 @@ Describe 'Generic module pull request opt-in' {
             AddedLabel = $AddedLabel
         }
         $runChecks = Test-WorkflowExpression -Expression $initialize.if @context
-        $runDeployment = Test-WorkflowExpression -Expression $matrixStep.env.DEPLOYMENT_VALIDATION @context
+        $runDeployment = Test-WorkflowExpression -Expression $matrixStep.with.deploymentValidation @context
 
         $runChecks | Should -Be $Checks
         ($runChecks -and $runDeployment) | Should -Be $E2E
@@ -392,300 +396,8 @@ Describe 'Generic module pull request opt-in' {
         @{ EventName = 'workflow_dispatch'; ManualDeployment = $true; Expected = $true }
     ) {
         Test-WorkflowExpression -Expression $initialize.if -EventName $EventName | Should -BeTrue
-        Test-WorkflowExpression -Expression $matrixStep.env.DEPLOYMENT_VALIDATION -EventName $EventName -ManualDeployment $ManualDeployment |
+        Test-WorkflowExpression -Expression $matrixStep.with.deploymentValidation -EventName $EventName -ManualDeployment $ManualDeployment |
             Should -Be $Expected
-    }
-}
-
-Describe 'Generic module pull request matrix' {
-
-    BeforeAll {
-        $workflowPath = Join-Path $repoRootPath '.github' 'workflows' 'avm.module.yml'
-        $workflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $workflowPath -Raw)
-        $matrixStep = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.id -eq 'get-module-matrix' }
-        $testRepo = Join-Path $TestDrive 'module-repo'
-        $scriptFolder = Join-Path $testRepo 'utilities' 'pipelines' 'sharedScripts'
-        $moduleFolder = Join-Path $testRepo 'avm' 'res' 'test' 'module'
-        $unrelatedModuleFolder = Join-Path $testRepo 'avm' 'res' 'test' 'unrelated'
-        $null = New-Item -Path $scriptFolder, $moduleFolder, $unrelatedModuleFolder -ItemType Directory -Force
-        Copy-Item -Path (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleWorkflowMatrix.ps1') -Destination $scriptFolder
-        Set-Content -Path (Join-Path $moduleFolder 'main.bicep') -Value "metadata name = 'test'"
-        Set-Content -Path (Join-Path $unrelatedModuleFolder 'main.bicep') -Value "metadata name = 'unrelated'"
-
-        function Invoke-TestGit {
-            param([string[]] $Arguments)
-
-            $output = git -C $testRepo -c user.name=WorkflowTest -c user.email=test@example.invalid -c commit.gpgSign=false @Arguments 2>&1
-            if ($LASTEXITCODE -ne 0) {
-                throw "git $($Arguments -join ' ') failed: $($output -join [Environment]::NewLine)"
-            }
-            return $output
-        }
-
-        function New-TestCommit {
-            param([string] $Message)
-
-            $null = Invoke-TestGit -Arguments @('add', '--all')
-            $null = Invoke-TestGit -Arguments @('commit', '--quiet', '-m', $Message)
-            return Invoke-TestGit -Arguments @('rev-parse', 'HEAD')
-        }
-
-        $null = Invoke-TestGit -Arguments @('init', '--quiet', '--initial-branch=main')
-        $null = Invoke-TestGit -Arguments @('config', 'core.autocrlf', 'false')
-        $baseCommit = New-TestCommit -Message 'base'
-
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', '-c', 'feature')
-        Set-Content -Path (Join-Path $moduleFolder 'metadata.json') -Value '{"name":"test"}'
-        $headCommit = New-TestCommit -Message 'pull request metadata'
-
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', 'main')
-        Set-Content -Path (Join-Path $unrelatedModuleFolder 'metadata.json') -Value '{"name":"unrelated"}'
-        $mergeBaseCommit = New-TestCommit -Message 'unrelated metadata on main'
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', '-c', 'merge-result')
-        $null = Invoke-TestGit -Arguments @('merge', '--quiet', '--no-ff', 'feature', '-m', 'synthetic pull request merge')
-        $mergeCommit = Invoke-TestGit -Arguments @('rev-parse', 'HEAD')
-
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', 'main')
-        Set-Content -Path (Join-Path $unrelatedModuleFolder 'main.bicep') -Value "metadata name = 'updated unrelated'"
-        $latestBaseCommit = New-TestCommit -Message 'main advanced after the synthetic merge'
-
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', 'feature')
-        $null = Invoke-TestGit -Arguments @('merge', '--quiet', '--no-ff', 'main', '-m', 'merge main into the pull request')
-        $updatedHeadCommit = Invoke-TestGit -Arguments @('rev-parse', 'HEAD')
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', '-c', 'updated-merge-result', 'main')
-        $null = Invoke-TestGit -Arguments @('merge', '--quiet', '--no-ff', 'feature', '-m', 'updated synthetic pull request merge')
-        $updatedMergeCommit = Invoke-TestGit -Arguments @('rev-parse', 'HEAD')
-
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', '-c', 'readme-only', 'main')
-        Set-Content -Path (Join-Path $moduleFolder 'README.md') -Value 'Documentation only.'
-        $readmeHeadCommit = New-TestCommit -Message 'pull request documentation'
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', '-c', 'readme-merge-result', 'main')
-        $null = Invoke-TestGit -Arguments @('merge', '--quiet', '--no-ff', 'readme-only', '-m', 'documentation synthetic merge')
-        $readmeMergeCommit = Invoke-TestGit -Arguments @('rev-parse', 'HEAD')
-
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', '-c', 'octopus-merge', 'main')
-        $null = Invoke-TestGit -Arguments @('merge', '--quiet', '--no-ff', 'feature', 'readme-only', '-m', 'unsupported merge topology')
-        $octopusMergeCommit = Invoke-TestGit -Arguments @('rev-parse', 'HEAD')
-
-        $environmentNames = @(
-            'BASE_SHA', 'CREATE_RELEASE_TAG', 'CUSTOM_LOCATION', 'DEPLOYMENT_VALIDATION',
-            'EVENT_NAME', 'HEAD_SHA', 'MODULE_PATH_INPUT', 'PR_HEAD_SHA', 'PUBLISH_ONLY',
-            'REMOVE_DEPLOYMENT', 'STATIC_VALIDATION', 'GITHUB_WORKSPACE', 'GITHUB_OUTPUT'
-        )
-
-        function Invoke-MatrixStep {
-            Push-Location $testRepo
-            try {
-                $null = . ([scriptblock]::Create($matrixStep.run))
-                $outputs = @{}
-                foreach ($line in (Get-Content -Path $env:GITHUB_OUTPUT)) {
-                    $name, $value = $line.Split('=', 2)
-                    $outputs[$name] = $value
-                }
-                return $outputs
-            } finally {
-                Pop-Location
-            }
-        }
-    }
-
-    BeforeEach {
-        $savedEnvironment = @{}
-        foreach ($name in $environmentNames) {
-            $savedEnvironment[$name] = [Environment]::GetEnvironmentVariable($name)
-        }
-        $savedExitCode = $global:LASTEXITCODE
-        $env:BASE_SHA = $baseCommit
-        $env:CREATE_RELEASE_TAG = 'false'
-        $env:CUSTOM_LOCATION = ''
-        $env:DEPLOYMENT_VALIDATION = 'true'
-        $env:HEAD_SHA = $mergeCommit
-        $env:MODULE_PATH_INPUT = ''
-        $env:PR_HEAD_SHA = $headCommit
-        $env:PUBLISH_ONLY = 'false'
-        $env:REMOVE_DEPLOYMENT = 'true'
-        $env:STATIC_VALIDATION = 'true'
-        $env:GITHUB_WORKSPACE = $testRepo
-        $env:GITHUB_OUTPUT = Join-Path $TestDrive ("matrix-{0}.txt" -f [guid]::NewGuid())
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', '--detach', $mergeCommit)
-    }
-
-    AfterEach {
-        foreach ($name in $environmentNames) {
-            [Environment]::SetEnvironmentVariable($name, $savedEnvironment[$name])
-        }
-        $global:LASTEXITCODE = $savedExitCode
-    }
-
-    It 'selects metadata-only pull request changes with deployment validation <DeploymentValidation>' -ForEach @(
-        @{ DeploymentValidation = 'false' }
-        @{ DeploymentValidation = 'true' }
-    ) {
-        $env:EVENT_NAME = 'pull_request'
-        $env:DEPLOYMENT_VALIDATION = $DeploymentValidation
-
-        $outputs = Invoke-MatrixStep
-
-        $outputs.baseCommit | Should -Be $mergeBaseCommit
-        $outputs.targetCommit | Should -Be $mergeCommit
-        $outputs.hasModules | Should -Be 'true'
-        $outputs.includeAllVersionedModules | Should -Be 'false'
-        @(($outputs.moduleMatrix | ConvertFrom-Json).include.modulePath) | Should -Be @('avm/res/test/module')
-        ($outputs.workflowInput | ConvertFrom-Json).staticValidation | Should -Be 'true'
-        ($outputs.workflowInput | ConvertFrom-Json).deploymentValidation | Should -Be $DeploymentValidation
-    }
-
-    It 'excludes base-branch changes when the event base is <BaseState>' -ForEach @(
-        @{ BaseState = 'older than the tested merge' }
-        @{ BaseState = 'the first parent of the tested merge' }
-        @{ BaseState = 'newer than the tested merge' }
-    ) {
-        $env:EVENT_NAME = 'pull_request'
-        $env:BASE_SHA = switch ($BaseState) {
-            'older than the tested merge' { $baseCommit }
-            'the first parent of the tested merge' { $mergeBaseCommit }
-            'newer than the tested merge' { $latestBaseCommit }
-        }
-        $originalDiff = @(Invoke-TestGit -Arguments @('diff', '--name-only', $baseCommit, $mergeCommit, '--', 'avm'))
-        $originalDiff | Should -Contain 'avm/res/test/unrelated/metadata.json'
-
-        $outputs = Invoke-MatrixStep
-
-        @(($outputs.moduleMatrix | ConvertFrom-Json).include.modulePath) | Should -Be @('avm/res/test/module')
-        $outputs.baseCommit | Should -Be $mergeBaseCommit
-        $outputs.targetCommit | Should -Be $mergeCommit
-        $outputs.includeAllVersionedModules | Should -Be 'false'
-    }
-
-    It 'excludes merged main changes when the pull request head is itself a merge' {
-        $env:EVENT_NAME = 'pull_request'
-        $env:HEAD_SHA = $updatedMergeCommit
-        $env:PR_HEAD_SHA = $updatedHeadCommit
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', '--detach', $updatedMergeCommit)
-        @((Invoke-TestGit -Arguments @('rev-list', '--parents', '-n', '1', $updatedHeadCommit)) -split ' ').Count | Should -Be 3
-
-        $outputs = Invoke-MatrixStep
-
-        $outputs.baseCommit | Should -Be $latestBaseCommit
-        $outputs.targetCommit | Should -Be $updatedMergeCommit
-        @(($outputs.moduleMatrix | ConvertFrom-Json).include.modulePath) | Should -Be @('avm/res/test/module')
-    }
-
-    It 'returns no modules for a README-only pull request despite unrelated base changes' {
-        $env:EVENT_NAME = 'pull_request'
-        $env:HEAD_SHA = $readmeMergeCommit
-        $env:PR_HEAD_SHA = $readmeHeadCommit
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', '--detach', $readmeMergeCommit)
-
-        $outputs = Invoke-MatrixStep
-
-        $outputs.baseCommit | Should -Be $latestBaseCommit
-        $outputs.targetCommit | Should -Be $readmeMergeCommit
-        $outputs.hasModules | Should -Be 'false'
-        @(($outputs.moduleMatrix | ConvertFrom-Json).include).Count | Should -Be 0
-    }
-
-    It 'still excludes metadata-only changes on pushes' {
-        $env:EVENT_NAME = 'push'
-        $env:HEAD_SHA = $headCommit
-
-        $outputs = Invoke-MatrixStep
-
-        $outputs.baseCommit | Should -Be $baseCommit
-        $outputs.targetCommit | Should -Be $headCommit
-        $outputs.hasModules | Should -Be 'false'
-        @(($outputs.moduleMatrix | ConvertFrom-Json).include).Count | Should -Be 0
-    }
-
-    It 'preserves the before-to-after comparison for source pushes' {
-        $env:EVENT_NAME = 'push'
-        $env:BASE_SHA = $mergeBaseCommit
-        $env:HEAD_SHA = $latestBaseCommit
-        $null = Invoke-TestGit -Arguments @('switch', '--quiet', '--detach', $latestBaseCommit)
-
-        $outputs = Invoke-MatrixStep
-
-        $outputs.baseCommit | Should -Be $mergeBaseCommit
-        $outputs.targetCommit | Should -Be $latestBaseCommit
-        $outputs.includeAllVersionedModules | Should -Be 'false'
-        @(($outputs.moduleMatrix | ConvertFrom-Json).include.modulePath) | Should -Be @('avm/res/test/unrelated')
-        ($outputs.workflowInput | ConvertFrom-Json).deploymentValidation | Should -Be 'true'
-    }
-
-    It 'keeps the all-module push fallback without deployment when its base is <BaseState>' -ForEach @(
-        @{ BaseState = 'zero' }
-        @{ BaseState = 'missing' }
-    ) {
-        $env:EVENT_NAME = 'push'
-        $env:BASE_SHA = $BaseState -eq 'zero' ? ('0' * 40) : ('f' * 40)
-
-        $outputs = Invoke-MatrixStep
-
-        $outputs.baseCommit | Should -BeNullOrEmpty
-        $outputs.targetCommit | Should -Be $mergeCommit
-        $outputs.includeAllVersionedModules | Should -Be 'true'
-        @(($outputs.moduleMatrix | ConvertFrom-Json).include.modulePath) | Should -Be @('avm/res/test/module', 'avm/res/test/unrelated')
-        ($outputs.workflowInput | ConvertFrom-Json).deploymentValidation | Should -Be 'false'
-    }
-
-    It 'uses the tested merge even when the event base is <BaseState>' -ForEach @(
-        @{ BaseState = 'zero' }
-        @{ BaseState = 'missing' }
-        @{ BaseState = 'empty' }
-    ) {
-        $env:EVENT_NAME = 'pull_request'
-        $env:BASE_SHA = switch ($BaseState) {
-            'zero' { '0' * 40 }
-            'missing' { 'f' * 40 }
-            'empty' { '' }
-        }
-
-        $outputs = Invoke-MatrixStep
-
-        $outputs.baseCommit | Should -Be $mergeBaseCommit
-        $outputs.includeAllVersionedModules | Should -Be 'false'
-        @(($outputs.moduleMatrix | ConvertFrom-Json).include.modulePath) | Should -Be @('avm/res/test/module')
-    }
-
-    It 'rejects <MergeState> pull request history without emitting a matrix' -ForEach @(
-        @{ MergeState = 'missing merge'; ExpectedError = '*Pull request merge commit*unavailable*' }
-        @{ MergeState = 'non-merge head'; ExpectedError = '*exactly two parents*' }
-        @{ MergeState = 'root commit'; ExpectedError = '*exactly two parents*' }
-        @{ MergeState = 'octopus merge'; ExpectedError = '*exactly two parents*' }
-        @{ MergeState = 'mismatched head'; ExpectedError = '*second parent*pull request head*' }
-        @{ MergeState = 'missing head'; ExpectedError = '*second parent*pull request head*' }
-    ) {
-        $env:EVENT_NAME = 'pull_request'
-        switch ($MergeState) {
-            'missing merge' { $env:HEAD_SHA = 'f' * 40 }
-            'non-merge head' { $env:HEAD_SHA = $headCommit }
-            'root commit' { $env:HEAD_SHA = $baseCommit }
-            'octopus merge' { $env:HEAD_SHA = $octopusMergeCommit }
-            'mismatched head' { $env:PR_HEAD_SHA = $mergeBaseCommit }
-            'missing head' { $env:PR_HEAD_SHA = '' }
-        }
-
-        { Invoke-MatrixStep } | Should -Throw $ExpectedError
-        Test-Path -Path $env:GITHUB_OUTPUT | Should -BeFalse
-    }
-
-    It 'preserves explicit manual selection without inspecting pull request history' {
-        $env:EVENT_NAME = 'workflow_dispatch'
-        $env:BASE_SHA = ''
-        $env:HEAD_SHA = $headCommit
-        $env:PR_HEAD_SHA = ''
-        $env:MODULE_PATH_INPUT = 'avm/res/test/module, avm/res/test/unrelated'
-        $env:DEPLOYMENT_VALIDATION = 'false'
-        $env:CUSTOM_LOCATION = 'eastus'
-
-        $outputs = Invoke-MatrixStep
-
-        $outputs.baseCommit | Should -BeNullOrEmpty
-        $outputs.targetCommit | Should -Be $headCommit
-        $outputs.includeAllVersionedModules | Should -Be 'false'
-        @(($outputs.moduleMatrix | ConvertFrom-Json).include.modulePath) | Should -Be @('avm/res/test/module', 'avm/res/test/unrelated')
-        ($outputs.workflowInput | ConvertFrom-Json).deploymentValidation | Should -Be 'false'
-        ($outputs.workflowInput | ConvertFrom-Json).customLocation | Should -Be 'eastus'
     }
 }
 
@@ -696,11 +408,7 @@ Describe 'Module workflow path filters' {
             Get-ChildItem -Path (Join-Path $repoRootPath '.github' 'workflows') -File -Filter '*.yml' |
             ForEach-Object {
                 $workflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $_.FullName -Raw)
-                if ($workflow.on.ContainsKey('push') -and
-                    @($workflow.jobs.Values.uses | Where-Object { $_ -in @(
-                            './.github/workflows/avm.template.module.yml',
-                            './.github/workflows/avm.template.hci.module.yml'
-                        ) }).Count -gt 0) {
+                if ($workflow.on.ContainsKey('push') -and $_.Name -match '^avm\.(res|ptn|utl)\.') {
                     @{
                         WorkflowFileName = $_.Name
                         Workflow         = $workflow

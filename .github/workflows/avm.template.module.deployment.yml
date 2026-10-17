@@ -52,6 +52,14 @@ jobs:
         uses: ./.github/actions/templates/avm-setEnvironment
         with:
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
+      - name: "Resolve mapped module identity"
+        id: module-identity
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-module-identity@2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
+        with:
+          modulePath: ${{ inputs.modulePath }}
+          moduleClientIds: ${{ vars.VALIDATE_MODULE_CLIENT_IDS }}
+          tenantId: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
       - name: "Run deployment validation with test file [${{ fromJson(inputs.testCase).path }}]"
         if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
         uses: ./.github/actions/templates/avm-validateModuleDeployment
@@ -70,6 +78,6 @@ jobs:
         env:
           CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
           TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
-          VALIDATE_CLIENT_ID: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          VALIDATE_CLIENT_ID: ${{ steps.module-identity.outputs.clientId }}
           VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
-          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          VALIDATE_TENANT_ID: ${{ steps.module-identity.outputs.tenantId }}

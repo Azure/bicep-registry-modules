@@ -78,12 +78,20 @@ jobs:
           $subscription = Get-HciTestSubscription -ModulePath $env:MODULE_PATH -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS `
             -SubscriptionIndex $testCase.subscriptionIndex -SubscriptionKey $testCase.subscriptionKey -RepoRootPath $env:GITHUB_WORKSPACE
           "subscriptionId=$($subscription.id)" >> $env:GITHUB_OUTPUT
+      - name: "Resolve mapped module identity"
+        id: module-identity
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-module-identity@2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
+        with:
+          modulePath: ${{ inputs.modulePath }}
+          moduleClientIds: ${{ vars.VALIDATE_MODULE_CLIENT_IDS }}
+          tenantId: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
       - name: "Log in to the reserved subscription"
         if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
         uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
         with:
-          client-id: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
-          tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          client-id: ${{ steps.module-identity.outputs.clientId }}
+          tenant-id: ${{ steps.module-identity.outputs.tenantId }}
           subscription-id: ${{ steps.subscription.outputs.subscriptionId }}
           enable-AzPSSession: true
       - name: "Validate and acquire the prepared environment"
@@ -94,7 +102,7 @@ jobs:
           MODULE_PATH: ${{ inputs.modulePath }}
           TEST_CASE: ${{ inputs.testCase }}
           TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
-          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          VALIDATE_TENANT_ID: ${{ steps.module-identity.outputs.tenantId }}
           HCI_RUN_IDENTITY: ${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}
           AVM_CI_VARIABLES: ${{ toJSON(vars) }}
           AVM_CI_SECRETS: ${{ toJSON(secrets) }}
@@ -126,9 +134,9 @@ jobs:
           requireCompleteRemoval: "true"
         env:
           TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
-          VALIDATE_CLIENT_ID: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          VALIDATE_CLIENT_ID: ${{ steps.module-identity.outputs.clientId }}
           VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
-          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          VALIDATE_TENANT_ID: ${{ steps.module-identity.outputs.tenantId }}
       - name: "Release only a successfully cleaned test environment"
         if: ${{ (success() || failure()) && steps.hci-consumer.outcome == 'success' }}
         uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
