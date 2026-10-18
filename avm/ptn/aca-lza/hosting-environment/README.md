@@ -141,7 +141,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     ]
     vmAdminPassword: '<vmAdminPassword>'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmSize: 'Standard_B1s'
+    vmSize: 'Standard_D2as_v5'
     // Non-required parameters
     acrGeoReplicationLocations: [
       'westeurope'
@@ -203,7 +203,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "10.1.2.32/27"
     },
     "vmSize": {
-      "value": "Standard_B1s"
+      "value": "Standard_D2as_v5"
     },
     // Non-required parameters
     "acrGeoReplicationLocations": {
@@ -255,7 +255,7 @@ param spokeVNetAddressPrefixes = [
 ]
 param vmAdminPassword = '<vmAdminPassword>'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmSize = 'Standard_B1s'
+param vmSize = 'Standard_D2as_v5'
 // Non-required parameters
 param acrGeoReplicationLocations = [
   'westeurope'
@@ -299,7 +299,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     ]
     vmAdminPassword: '<vmAdminPassword>'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmSize: 'Standard_B1s'
+    vmSize: 'Standard_D2as_v5'
     // Non-required parameters
     deployZoneRedundantResources: true
     enableDdosProtection: true
@@ -365,7 +365,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "10.1.2.32/27"
     },
     "vmSize": {
-      "value": "Standard_B1s"
+      "value": "Standard_D2as_v5"
     },
     // Non-required parameters
     "deployZoneRedundantResources": {
@@ -433,7 +433,7 @@ param spokeVNetAddressPrefixes = [
 ]
 param vmAdminPassword = '<vmAdminPassword>'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmSize = 'Standard_B1s'
+param vmSize = 'Standard_D2as_v5'
 // Non-required parameters
 param deployZoneRedundantResources = true
 param enableDdosProtection = true
@@ -481,7 +481,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     ]
     vmAdminPassword: '<vmAdminPassword>'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmSize: 'Standard_B1s'
+    vmSize: 'Standard_D2as_v5'
     // Non-required parameters
     acrGeoReplicationLocations: [
       'westeurope'
@@ -548,7 +548,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "10.1.2.32/27"
     },
     "vmSize": {
-      "value": "Standard_B1s"
+      "value": "Standard_D2as_v5"
     },
     // Non-required parameters
     "acrGeoReplicationLocations": {
@@ -615,7 +615,7 @@ param spokeVNetAddressPrefixes = [
 ]
 param vmAdminPassword = '<vmAdminPassword>'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmSize = 'Standard_B1s'
+param vmSize = 'Standard_D2as_v5'
 // Non-required parameters
 param acrGeoReplicationLocations = [
   'westeurope'

@@ -18,7 +18,7 @@ param namePrefix string = '#_namePrefix_#'
 param password string = newGuid()
 
 @description('Optional. The location to deploy resources to.')
-var enforcedLocation = 'northeurope'
+var enforcedLocation = 'swedencentral'
 
 // ============== //
 // Test Execution //
@@ -34,7 +34,7 @@ module testDeployment '../../../main.bicep' = {
       environment: 'test'
     }
     location: enforcedLocation
-    vmSize: 'Standard_B1s'
+    vmSize: 'Standard_D2as_v5'
     vmAdminPassword: password
     vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'
