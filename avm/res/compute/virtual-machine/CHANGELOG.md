@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.23.0
+
+### Changes
+
+- Added `performancePlus` property to the `dataDisks` parameter to enable Performance Plus on newly created data disks. Only supported for Premium SSD, Standard SSD and Standard HDD disks with a size above 512 GB.
+
+### Breaking Changes
+
+- None
+
 ## 0.22.3
 
 ### Changes

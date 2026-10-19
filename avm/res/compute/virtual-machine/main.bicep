@@ -535,6 +535,7 @@ resource managedDataDisks 'Microsoft.Compute/disks@2025-01-02' = [
       diskSizeGB: dataDisk.?diskSizeGB
       creationData: {
         createOption: dataDisk.?createOption ?? 'Empty'
+        performancePlus: dataDisk.?performancePlus
       }
       encryption: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
         ? {
@@ -1275,6 +1276,9 @@ type dataDiskType = {
 
   @description('Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk.')
   diskMBpsReadWrite: int?
+
+  @description('Optional. Set to true to get a boost on the performance target of the disk deployed. Only supported for Premium SSD, Standard SSD and Standard HDD disks with a size above 512 GB (i.e., 513 GB or larger). Can only be set at disk creation time and cannot be disabled once enabled. Ignored when attaching a pre-existing disk.')
+  performancePlus: bool?
 
   @description('Required. The managed disk parameters.')
   managedDisk: {
