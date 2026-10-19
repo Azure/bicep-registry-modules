@@ -544,6 +544,7 @@ resource managedDataDisks 'Microsoft.Compute/disks@2025-01-02' = [
         : null
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
+      burstingEnabled: dataDisk.?burstingEnabled
       publicNetworkAccess: publicNetworkAccess
       networkAccessPolicy: networkAccessPolicy
     }
@@ -1279,6 +1280,9 @@ type dataDiskType = {
 
   @description('Optional. Set to true to get a boost on the performance target of the disk deployed. Only supported for Premium SSD, Standard SSD and Standard HDD disks with a size above 512 GB (i.e., 513 GB or larger). Can only be set at disk creation time and cannot be disabled once enabled. Ignored when attaching a pre-existing disk.')
   performancePlus: bool?
+
+  @description('Optional. Set to true to enable on-demand bursting beyond the provisioned performance target of the disk. Only supported for Premium SSD disks with a size above 512 GB (i.e., 513 GB or larger). Does not apply to Ultra disks. Ignored when attaching a pre-existing disk.')
+  burstingEnabled: bool?
 
   @description('Required. The managed disk parameters.')
   managedDisk: {

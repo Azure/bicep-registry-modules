@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added `performancePlus` property to the `dataDisks` parameter to enable Performance Plus on newly created data disks. Only supported for Premium SSD, Standard SSD and Standard HDD disks with a size above 512 GB.
+- Added `burstingEnabled` property to the `dataDisks` parameter to enable on-demand bursting on newly created or existing data disks. Only supported for Premium SSD disks with a size above 512 GB.
 
 ### Breaking Changes
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "6306494995630286476"
+      "templateHash": "2071375393606374327"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -206,6 +206,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Set to true to get a boost on the performance target of the disk deployed. Only supported for Premium SSD, Standard SSD and Standard HDD disks with a size above 512 GB (i.e., 513 GB or larger). Can only be set at disk creation time and cannot be disabled once enabled. Ignored when attaching a pre-existing disk."
+          }
+        },
+        "burstingEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Set to true to enable on-demand bursting beyond the provisioned performance target of the disk. Only supported for Premium SSD disks with a size above 512 GB (i.e., 513 GB or larger). Does not apply to Ultra disks. Ignored when attaching a pre-existing disk."
           }
         },
         "managedDisk": {
@@ -2906,6 +2913,7 @@
         "encryption": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'diskEncryptionSetResourceId'))), createObject('diskEncryptionSetId', tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'diskEncryptionSetResourceId')), null())]",
         "diskIOPSReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskIOPSReadWrite')]",
         "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]",
+        "burstingEnabled": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'burstingEnabled')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "networkAccessPolicy": "[parameters('networkAccessPolicy')]"
       },

@@ -7057,6 +7057,7 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`burstingEnabled`](#parameter-datadisksburstingenabled) | bool | Set to true to enable on-demand bursting beyond the provisioned performance target of the disk. Only supported for Premium SSD disks with a size above 512 GB (i.e., 513 GB or larger). Does not apply to Ultra disks. Ignored when attaching a pre-existing disk. |
 | [`caching`](#parameter-datadiskscaching) | string | Specifies the caching requirements. This property is automatically set to 'None' when attaching a pre-existing disk. |
 | [`createOption`](#parameter-datadiskscreateoption) | string | Specifies how the virtual machine should be created. This property is automatically set to 'Attach' when attaching a pre-existing disk. |
 | [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to 'Detach' when attaching a pre-existing disk. |
@@ -7115,6 +7116,13 @@ Specifies the storage account type for the managed disk. Ignored when attaching 
     'UltraSSD_LRS'
   ]
   ```
+
+### Parameter: `dataDisks.burstingEnabled`
+
+Set to true to enable on-demand bursting beyond the provisioned performance target of the disk. Only supported for Premium SSD disks with a size above 512 GB (i.e., 513 GB or larger). Does not apply to Ultra disks. Ignored when attaching a pre-existing disk.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `dataDisks.caching`
 
