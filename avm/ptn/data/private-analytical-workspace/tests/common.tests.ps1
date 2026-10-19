@@ -306,13 +306,13 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.ManagedDiskIdentityPrincipalId | Should -BeNullOrEmpty
     $adb.ManagedDiskIdentityTenantId | Should -BeNullOrEmpty
     $adb.ManagedDiskIdentityType | Should -BeNullOrEmpty
-    $adb.ManagedDiskKeySource | Should -Be 'Microsoft.Keyvault'
+    $adb.ManagedDiskKeySource | Should -BeNullOrEmpty
     $adb.ManagedDiskKeyVaultPropertiesKeyName | Should -BeNullOrEmpty
     $adb.ManagedDiskKeyVaultPropertiesKeyVaultUri | Should -BeNullOrEmpty
     $adb.ManagedDiskKeyVaultPropertiesKeyVersion | Should -BeNullOrEmpty
     $adb.ManagedDiskRotationToLatestKeyVersionEnabled | Should -BeNullOrEmpty
     #Skip $adb.ManagedResourceGroupId
-    $adb.ManagedServiceKeySource | Should -Be 'Microsoft.Keyvault'
+    $adb.ManagedServiceKeySource | Should -BeNullOrEmpty
     $adb.ManagedServicesKeyVaultPropertiesKeyName | Should -BeNullOrEmpty
     $adb.ManagedServicesKeyVaultPropertiesKeyVaultUri | Should -BeNullOrEmpty
     $adb.ManagedServicesKeyVaultPropertiesKeyVersion | Should -BeNullOrEmpty

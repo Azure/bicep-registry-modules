@@ -1,0 +1,67 @@
+param(
+    [Parameter()]
+    [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.FullName
+)
+
+Describe 'Private analytical workspace Databricks encryption verification' {
+    BeforeAll {
+        $modulePath = Join-Path $repoRootPath 'avm' 'ptn' 'data' 'private-analytical-workspace'
+        $tokens = $null
+        $parseErrors = $null
+        $ast = [System.Management.Automation.Language.Parser]::ParseFile(
+            (Join-Path $modulePath 'tests' 'common.tests.ps1'), [ref] $tokens, [ref] $parseErrors)
+        if ($parseErrors) { throw 'Could not parse the real Databricks test helper.' }
+        $helper = @($ast.FindAll({
+                    param($node)
+                    $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+                    $node.Name -eq 'Test-VerifyDatabricks'
+                }, $true))
+        if ($helper.Count -ne 1) { throw 'Expected exactly one Databricks verification helper.' }
+        $assertions = @{}
+        foreach ($propertyName in @('ManagedDiskKeySource', 'ManagedServiceKeySource')) {
+            $pipelines = @($helper[0].Body.FindAll({
+                        param($node)
+                        $node -is [System.Management.Automation.Language.PipelineAst] -and
+                        $node.Extent.Text -match ('^\$adb\.' + $propertyName + '\s+\|')
+                    }, $true))
+            if ($pipelines.Count -ne 1) { throw "Expected one real assertion for $propertyName." }
+            $assertions[$propertyName] = [scriptblock]::Create($pipelines[0].Extent.Text)
+        }
+        $compiledPath = Join-Path $TestDrive 'private-analytical-workspace.json'
+        $diagnostics = bicep build (Join-Path $modulePath 'main.bicep') --no-restore --outfile $compiledPath 2>&1
+        if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+        $template = Get-Content -LiteralPath $compiledPath -Raw | ConvertFrom-Json -AsHashtable
+        $resources = if ($template.resources -is [System.Collections.IDictionary]) {
+            $template.resources.Values
+        } else {
+            $template.resources
+        }
+        $workspaces = @($resources | Where-Object {
+                $_.type -eq 'Microsoft.Resources/deployments' -and $_.name -match '-workspace-'
+            })
+        if ($workspaces.Count -ne 1) { throw 'Expected exactly one compiled Databricks module.' }
+        $workspaceParameters = $workspaces[0].properties.parameters
+    }
+
+    It 'Keeps encryption preparation enabled without configuring customer-managed encryption entities' {
+        $workspaceParameters.prepareEncryption.value | Should -BeTrue
+        @($workspaceParameters.Keys | Where-Object { $_ -match '^(customerManagedKey|encryption)' }).Count |
+            Should -Be 0
+    }
+
+    It 'Checks the actual <propertyName> assertion against <state> encryption configuration' -ForEach @(
+        @{ propertyName = 'ManagedDiskKeySource'; state = 'unconfigured'; keySource = $null; accepted = $true }
+        @{ propertyName = 'ManagedDiskKeySource'; state = 'customer-managed'; keySource = 'Microsoft.Keyvault'; accepted = $false }
+        @{ propertyName = 'ManagedDiskKeySource'; state = 'unexpected'; keySource = 'Microsoft.Storage'; accepted = $false }
+        @{ propertyName = 'ManagedServiceKeySource'; state = 'unconfigured'; keySource = $null; accepted = $true }
+        @{ propertyName = 'ManagedServiceKeySource'; state = 'customer-managed'; keySource = 'Microsoft.Keyvault'; accepted = $false }
+        @{ propertyName = 'ManagedServiceKeySource'; state = 'unexpected'; keySource = 'Microsoft.Storage'; accepted = $false }
+    ) {
+        $adb = [pscustomobject]@{ ManagedDiskKeySource = $keySource; ManagedServiceKeySource = $keySource }
+        if ($accepted) {
+            { . ($assertions[$propertyName]) } | Should -Not -Throw
+        } else {
+            { . ($assertions[$propertyName]) } | Should -Throw
+        }
+    }
+}
