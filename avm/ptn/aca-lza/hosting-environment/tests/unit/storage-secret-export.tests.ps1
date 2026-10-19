@@ -7,11 +7,16 @@ Describe 'ACA storage secret export compatibility' {
         $template = Get-Content -LiteralPath $compiledPath -Raw | ConvertFrom-Json -AsHashtable -Depth 100
         $resources = $template.resources -is [System.Collections.IDictionary] ? @($template.resources.Values) : @($template.resources)
         $storageCalls = @($resources | Where-Object { $_.properties.template.metadata.name -eq 'Storage Accounts' })
-        $secretCalls = @($resources | Where-Object { $_.properties.template.metadata.name -eq 'Key Vault Secrets' })
-        if ($storageCalls.Count -ne 1 -or $secretCalls.Count -ne 1) {
-            throw 'Expected one storage account module and one secret module.'
+        $exporters = @($resources | Where-Object { $_.properties.template.metadata.name -eq 'Storage Key Secret Export' })
+        if ($storageCalls.Count -ne 1 -or $exporters.Count -ne 1) {
+            throw 'Expected one storage account module and one deferred exporter.'
         }
         $storageCall = $storageCalls[0]
+        $exporter = $exporters[0]
+        $exportResources = $exporter.properties.template.resources -is [System.Collections.IDictionary] ?
+            @($exporter.properties.template.resources.Values) : @($exporter.properties.template.resources)
+        $secretCalls = @($exportResources | Where-Object { $_.properties.template.metadata.name -eq 'Key Vault Secrets' })
+        if ($secretCalls.Count -ne 1) { throw 'Expected exactly one secure secret module in the deferred exporter.' }
         $secretCall = $secretCalls[0]
         $storageTemplate = $storageCall.properties.template
         $secretTemplate = $secretCall.properties.template
@@ -20,7 +25,8 @@ Describe 'ACA storage secret export compatibility' {
     It 'Exports the same first storage key with the unchanged listKeys API and secret name' {
         $storageCall.properties.parameters.name.value | Should -BeExactly "[parameters('storageAccountName')]"
         $storageTemplate.outputs.resourceId.value | Should -BeExactly "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]"
-        $secretCall.properties.parameters.value.value | Should -BeExactly "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-05-01').keys[0].value]"
+        $secretCall.properties.parameters.value.value |
+            Should -BeExactly "[listKeys(parameters('storageAccountResourceId'), '2023-05-01').keys[0].value]"
         $secretCall.properties.parameters.name.value | Should -BeExactly 'ciStorageAccessKey1'
         $secretTemplate.resources.secret.name | Should -BeExactly "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]"
     }
@@ -35,11 +41,22 @@ Describe 'ACA storage secret export compatibility' {
 
     It 'Waits for the unchanged storage deployment before reading its key' {
         $storageNameExpression = $storageCall.name.Substring(1, $storageCall.name.Length - 2)
-        @($secretCall.dependsOn) | Should -Be @(
+        @($exporter.dependsOn) | Should -Be @(
             "[resourceId('Microsoft.Resources/deployments', $storageNameExpression)]"
         )
         $secretCall.properties.mode | Should -BeExactly 'Incremental'
         $secretCall.properties.expressionEvaluationOptions.scope | Should -BeExactly 'inner'
+    }
+
+    It 'Defers key evaluation through the authoritative deployed storage output rather than a planned literal account ID' {
+        $storageNameExpression = $storageCall.name.Substring(1, $storageCall.name.Length - 2)
+        $deploymentId = "resourceId('Microsoft.Resources/deployments', $storageNameExpression)"
+        $value = $exporter.properties.parameters.storageAccountResourceId.value
+        $value | Should -Match ('^\[reference\(' + [regex]::Escape($deploymentId) + ", '[^']+'\)\.outputs\.resourceId\.value\]$")
+        @($exporter.properties.parameters.Keys | Sort-Object) | Should -Be @(
+            'enableTelemetry', 'keyVaultResourceId', 'storageAccountResourceId'
+        )
+        $exporter.properties.template.Contains('outputs') | Should -BeFalse
     }
 
     It 'Configures exactly one active exporter and leaves the old exporter disabled' {

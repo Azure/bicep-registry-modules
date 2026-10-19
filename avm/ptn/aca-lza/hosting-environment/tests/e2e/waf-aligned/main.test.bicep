@@ -55,6 +55,7 @@ module testDeployment '../../../main.bicep' = {
     applicationGatewayCertificateKeyName: 'appgwcert'
     deployZoneRedundantResources: true
     exposeContainerAppsWith: 'applicationGateway'
+    deploySampleApplication: true
     enableDdosProtection: true
     acrGeoReplicationLocations: [
       'westeurope'
@@ -62,4 +63,18 @@ module testDeployment '../../../main.bicep' = {
   }
 }
 
+module signatureVerification 'validate-signed-images.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-notation-${serviceShort}'
+  params: {
+    resourceGroupName: testDeployment.outputs.resourceGroupName
+    location: enforcedLocation
+    registryName: testDeployment.outputs.containerRegistryName
+    registryLoginServer: testDeployment.outputs.containerRegistryLoginServer
+    vaultName: testDeployment.outputs.keyVaultName
+    sampleVerification: testDeployment.outputs.sampleImageVerification
+  }
+}
+
 output testDeploymentOutputs object = testDeployment.outputs
+
+output notationVerification object = signatureVerification.outputs.results

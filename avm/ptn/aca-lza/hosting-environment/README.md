@@ -486,6 +486,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     acrGeoReplicationLocations: [
       'westeurope'
     ]
+    deploySampleApplication: true
     deployZoneRedundantResources: true
     enableDdosProtection: true
     environment: 'dev'
@@ -556,6 +557,9 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
         "westeurope"
       ]
     },
+    "deploySampleApplication": {
+      "value": true
+    },
     "deployZoneRedundantResources": {
       "value": true
     },
@@ -620,6 +624,7 @@ param vmSize = 'Standard_D2as_v5'
 param acrGeoReplicationLocations = [
   'westeurope'
 ]
+param deploySampleApplication = true
 param deployZoneRedundantResources = true
 param enableDdosProtection = true
 param environment = 'dev'
@@ -665,7 +670,7 @@ param workloadName = 'cawaf'
 | [`base64Certificate`](#parameter-base64certificate) | securestring | The base64 encoded certificate to use for Application Gateway certificate. When not provided a self signed one will be generated, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. |
 | [`bastionResourceId`](#parameter-bastionresourceid) | string | The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty. |
 | [`deployAgentPool`](#parameter-deployagentpool) | bool | Deploy the agent pool for the container registry. Default value is true. |
-| [`deploySampleApplication`](#parameter-deploysampleapplication) | bool | Deploy sample application to the container apps environment. Default is false. |
+| [`deploySampleApplication`](#parameter-deploysampleapplication) | bool | Deploy the sample application after importing, signing with a non-exportable Key Vault key, and strictly verifying its immutable private-registry image with Notation. Uses a self-signed sample publisher certificate; production publishers must configure their own trusted signing pipeline. Legacy Docker Content Trust cannot be enabled on new registries: https://learn.microsoft.com/azure/container-registry/container-registry-content-trust-deprecation. Default is false. |
 | [`deployZoneRedundantResources`](#parameter-deployzoneredundantresources) | bool | Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true. |
 | [`enableDdosProtection`](#parameter-enableddosprotection) | bool | DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus. Default is "false". |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -810,7 +815,7 @@ Deploy the agent pool for the container registry. Default value is true.
 
 ### Parameter: `deploySampleApplication`
 
-Deploy sample application to the container apps environment. Default is false.
+Deploy the sample application after importing, signing with a non-exportable Key Vault key, and strictly verifying its immutable private-registry image with Notation. Uses a self-signed sample publisher certificate; production publishers must configure their own trusted signing pipeline. Legacy Docker Content Trust cannot be enabled on new registries: https://learn.microsoft.com/azure/container-registry/container-registry-content-trust-deprecation. Default is false.
 
 - Required: No
 - Type: bool
@@ -988,6 +993,7 @@ The name of the workload that is being deployed. Up to 10 characters long.
 | `keyVaultUri` | string | The keyvault URI endpoint. |
 | `logAnalyticsWorkspaceResourceId` | string | The resource ID of the Log Analytics workspace created in the spoke vnet. |
 | `resourceGroupName` | string | The name of the created resource group. |
+| `sampleImageVerification` | object | The sample image digest, public publisher certificate and scoped signing identity. Empty when the sample is disabled. Consuming deployments must strictly verify the exact digest before submission; ACA does not enforce an admission policy for unrelated deployment paths. |
 | `spokeApplicationGatewaySubnetName` | string | The name of the Spoke Application Gateway Subnet.  If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |
 | `spokeApplicationGatewaySubnetResourceId` | string | The resource ID of the Spoke Application Gateway Subnet. If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |
 | `spokeInfraSubnetName` | string | The name of the Spoke Infrastructure Subnet. |
@@ -1019,6 +1025,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/public-ip-address:0.7.1` | Remote reference |
 | `br/public:avm/res/network/route-table:0.4.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.5.2` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.2` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.4.0` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.15.0` | Remote reference |
 

@@ -95,18 +95,13 @@ module storage 'br/public:avm/res/storage/storage-account:0.15.0' = {
   }
 }
 
-module storageAccessKeySecret 'br/public:avm/res/key-vault/vault/secret:0.1.1' = {
+module storageAccessKeySecret 'storage-key-secret.bicep' = {
   name: '${take(uniqueString(deployment().name, location), 4)}-ci-storage-key-secret'
-  scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
   params: {
-    keyVaultName: last(split(keyVaultResourceId, '/'))
-    name: 'ciStorageAccessKey1'
-    value: listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2023-05-01').keys[0].value
+    storageAccountResourceId: storage.outputs.resourceId
+    keyVaultResourceId: keyVaultResourceId
     enableTelemetry: enableTelemetry
   }
-  dependsOn: [
-    storage
-  ]
 }
 
 module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "14105996306774838551"
+      "version": "0.48.1.52935",
+      "templateHash": "16945133356487355549"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework"
@@ -232,7 +232,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Deploy sample application to the container apps environment. Default is false."
+        "description": "Optional. Deploy the sample application after importing, signing with a non-exportable Key Vault key, and strictly verifying its immutable private-registry image with Notation. Uses a self-signed sample publisher certificate; production publishers must configure their own trusted signing pipeline. Legacy Docker Content Trust cannot be enabled on new registries: https://learn.microsoft.com/azure/container-registry/container-registry-content-trust-deprecation. Default is false."
       }
     },
     "enableDdosProtection": {
@@ -316,8 +316,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11256868923533846780"
+              "version": "0.48.1.52935",
+              "templateHash": "3515896394403923786"
             }
           },
           "parameters": {
@@ -357,7 +357,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}",
+            "$fxv#0": "{\r\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n  \"resourceTypeAbbreviations\": {\r\n    \"applicationGateway\": \"agw\",\r\n    \"applicationInsights\": \"appi\",\r\n    \"appService\": \"app\",\r\n    \"azureFirewall\": \"azfw\",\r\n    \"bastion\": \"bas\",\r\n    \"containerAppsEnvironment\": \"cae\",\r\n    \"containerRegistry\": \"cr\",\r\n    \"cosmosDbNoSql\": \"cosno\",\r\n    \"frontDoor\": \"afd\",\r\n    \"frontDoorEndpoint\": \"fde\",\r\n    \"frontDoorWaf\": \"fdfp\",\r\n    \"keyVault\": \"kv\",\r\n    \"logAnalyticsWorkspace\": \"log\",\r\n    \"managedIdentity\": \"id\",\r\n    \"networkInterface\": \"nic\",\r\n    \"networkSecurityGroup\": \"nsg\",\r\n    \"privateEndpoint\": \"pep\",\r\n    \"privateLinkService\": \"pls\",\r\n    \"publicIpAddress\": \"pip\",\r\n    \"resourceGroup\": \"rg\",\r\n    \"routeTable\": \"rt\",\r\n    \"serviceBus\": \"sb\",\r\n    \"serviceBusQueue\": \"sbq\",\r\n    \"serviceBusTopic\": \"sbt\",\r\n    \"storageAccount\": \"st\",\r\n    \"virtualMachine\": \"vm\",\r\n    \"virtualNetwork\": \"vnet\",\r\n    \"redisCache\": \"redis\",\r\n    \"cognitiveAccount\": \"cog\",\r\n    \"openAiDeployment\": \"oaidep\",\r\n    \"azureAISearch\": \"srch\",\r\n    \"documentIntelligence\": \"di\",\r\n    \"eventGridSystemTopic\": \"egst\",\r\n    \"eventGridSubscription\": \"evgs\"\r\n  },\r\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n  \"regionAbbreviations\": {\r\n    \"australiacentral\": \"auc\",\r\n    \"australiacentral2\": \"auc2\",\r\n    \"australiaeast\": \"aue\",\r\n    \"australiasoutheast\": \"ause\",\r\n    \"brazilsouth\": \"brs\",\r\n    \"brazilsoutheast\": \"brse\",\r\n    \"canadacentral\": \"canc\",\r\n    \"canadaeast\": \"cane\",\r\n    \"centralindia\": \"cin\",\r\n    \"centralus\": \"cus\",\r\n    \"centraluseuap\": \"cuseuap\",\r\n    \"eastasia\": \"ea\",\r\n    \"eastus\": \"eus\",\r\n    \"eastus2\": \"eus2\",\r\n    \"eastus2euap\": \"eus2euap\",\r\n    \"francecentral\": \"frc\",\r\n    \"francesouth\": \"frs\",\r\n    \"germanynorth\": \"gern\",\r\n    \"germanywestcentral\": \"gerwc\",\r\n    \"japaneast\": \"jae\",\r\n    \"japanwest\": \"jaw\",\r\n    \"jioindiacentral\": \"jioinc\",\r\n    \"jioindiawest\": \"jioinw\",\r\n    \"koreacentral\": \"koc\",\r\n    \"koreasouth\": \"kors\",\r\n    \"northcentralus\": \"ncus\",\r\n    \"northeurope\": \"neu\",\r\n    \"norwayeast\": \"nore\",\r\n    \"norwaywest\": \"norw\",\r\n    \"southafricanorth\": \"san\",\r\n    \"southafricawest\": \"saw\",\r\n    \"southcentralus\": \"scus\",\r\n    \"southeastasia\": \"sea\",\r\n    \"southindia\": \"sin\",\r\n    \"swedencentral\": \"swc\",\r\n    \"switzerlandnorth\": \"swn\",\r\n    \"switzerlandwest\": \"sww\",\r\n    \"uaecentral\": \"uaec\",\r\n    \"uaenorth\": \"uaen\",\r\n    \"uksouth\": \"uks\",\r\n    \"ukwest\": \"ukw\",\r\n    \"westcentralus\": \"wcus\",\r\n    \"westeurope\": \"weu\",\r\n    \"westindia\": \"win\",\r\n    \"westus\": \"wus\",\r\n    \"westus2\": \"wus2\",\r\n    \"westus3\": \"wus3\"\r\n  }\r\n}",
             "naming": "[json(variables('$fxv#0'))]",
             "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
             "resourceTypeToken": "RES_TYPE",
@@ -998,8 +998,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "7265006018567803539"
+              "version": "0.48.1.52935",
+              "templateHash": "9371594224398792992"
             }
           },
           "parameters": {
@@ -2795,8 +2795,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "3457261632912085772"
+                      "version": "0.48.1.52935",
+                      "templateHash": "6705367900261868367"
                     }
                   },
                   "parameters": {
@@ -6169,8 +6169,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "2151189084919227372"
+                      "version": "0.48.1.52935",
+                      "templateHash": "11532455026747135201"
                     }
                   },
                   "parameters": {
@@ -12803,8 +12803,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "2176359347591482848"
+                      "version": "0.48.1.52935",
+                      "templateHash": "283273435480969140"
                     }
                   },
                   "parameters": {
@@ -19438,8 +19438,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "2452195599128830399"
+              "version": "0.48.1.52935",
+              "templateHash": "15549061372385537071"
             }
           },
           "parameters": {
@@ -19573,8 +19573,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "677116255086840414"
+                      "version": "0.48.1.52935",
+                      "templateHash": "12273354951759235900"
                     }
                   },
                   "parameters": {
@@ -23606,7 +23606,7 @@
                           },
                           "zoneRedundancy": "[if(parameters('deployZoneRedundantResources'), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
                           "trustPolicyStatus": {
-                            "value": "enabled"
+                            "value": "disabled"
                           },
                           "diagnosticSettings": {
                             "value": [
@@ -26894,8 +26894,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "15992303467000887476"
+                      "version": "0.48.1.52935",
+                      "templateHash": "3522133626471350623"
                     }
                   },
                   "parameters": {
@@ -33505,8 +33505,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "14894736613775754470"
+                      "version": "0.48.1.52935",
+                      "templateHash": "10883200140385727713"
                     }
                   },
                   "parameters": {
@@ -39157,22 +39157,17 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
                       "name": "[format('{0}-ci-storage-key-secret', take(uniqueString(deployment().name, parameters('location')), 4))]",
-                      "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
-                      "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
                         },
                         "mode": "Incremental",
                         "parameters": {
-                          "keyVaultName": {
-                            "value": "[last(split(parameters('keyVaultResourceId'), '/'))]"
+                          "storageAccountResourceId": {
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ci-storage-deployment', take(uniqueString(deployment().name, parameters('location')), 4))), '2025-04-01').outputs.resourceId.value]"
                           },
-                          "name": {
-                            "value": "ciStorageAccessKey1"
-                          },
-                          "value": {
-                            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-05-01').keys[0].value]"
+                          "keyVaultResourceId": {
+                            "value": "[parameters('keyVaultResourceId')]"
                           },
                           "enableTelemetry": {
                             "value": "[parameters('enableTelemetry')]"
@@ -39180,294 +39175,355 @@
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "5103626104004050203"
+                              "version": "0.48.1.52935",
+                              "templateHash": "13688560917997114582"
                             },
-                            "name": "Key Vault Secrets",
-                            "description": "This module deploys a Key Vault Secret."
-                          },
-                          "definitions": {
-                            "roleAssignmentType": {
-                              "type": "object",
-                              "properties": {
-                                "name": {
-                                  "type": "string",
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                                  }
-                                },
-                                "roleDefinitionIdOrName": {
-                                  "type": "string",
-                                  "metadata": {
-                                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                                  }
-                                },
-                                "principalId": {
-                                  "type": "string",
-                                  "metadata": {
-                                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                                  }
-                                },
-                                "principalType": {
-                                  "type": "string",
-                                  "allowedValues": [
-                                    "Device",
-                                    "ForeignGroup",
-                                    "Group",
-                                    "ServicePrincipal",
-                                    "User"
-                                  ],
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. The principal type of the assigned principal ID."
-                                  }
-                                },
-                                "description": {
-                                  "type": "string",
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. The description of the role assignment."
-                                  }
-                                },
-                                "condition": {
-                                  "type": "string",
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                                  }
-                                },
-                                "conditionVersion": {
-                                  "type": "string",
-                                  "allowedValues": [
-                                    "2.0"
-                                  ],
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. Version of the condition."
-                                  }
-                                },
-                                "delegatedManagedIdentityResourceId": {
-                                  "type": "string",
-                                  "nullable": true,
-                                  "metadata": {
-                                    "description": "Optional. The Resource Id of the delegated managed identity resource."
-                                  }
-                                }
-                              },
-                              "metadata": {
-                                "description": "An AVM-aligned type for a role assignment.",
-                                "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-                                }
-                              }
-                            }
+                            "name": "Storage Key Secret Export"
                           },
                           "parameters": {
-                            "keyVaultName": {
+                            "storageAccountResourceId": {
                               "type": "string",
                               "metadata": {
-                                "description": "Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment."
+                                "description": "Required. The storage resource ID resolved from the completed storage deployment."
                               }
                             },
-                            "name": {
+                            "keyVaultResourceId": {
                               "type": "string",
-                              "minLength": 1,
-                              "maxLength": 127,
                               "metadata": {
-                                "description": "Required. The name of the secret (letters (upper and lower case), numbers, -)."
-                              }
-                            },
-                            "tags": {
-                              "type": "object",
-                              "metadata": {
-                                "__bicep_resource_derived_type!": {
-                                  "source": "Microsoft.KeyVault/vaults/secrets@2024-11-01#properties/tags"
-                                },
-                                "description": "Optional. Resource tags."
-                              },
-                              "nullable": true
-                            },
-                            "attributesEnabled": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Determines whether the object is enabled."
-                              }
-                            },
-                            "attributesExp": {
-                              "type": "int",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible."
-                              }
-                            },
-                            "attributesNbf": {
-                              "type": "int",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Not before date in seconds since 1970-01-01T00:00:00Z."
-                              }
-                            },
-                            "contentType": {
-                              "type": "securestring",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. The content type of the secret."
-                              }
-                            },
-                            "value": {
-                              "type": "securestring",
-                              "metadata": {
-                                "description": "Required. The value of the secret. NOTE: \"value\" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets."
-                              }
-                            },
-                            "roleAssignments": {
-                              "type": "array",
-                              "items": {
-                                "$ref": "#/definitions/roleAssignmentType"
-                              },
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Array of role assignments to create."
+                                "description": "Required. The destination Key Vault resource ID."
                               }
                             },
                             "enableTelemetry": {
                               "type": "bool",
-                              "defaultValue": true,
                               "metadata": {
-                                "description": "Optional. Enable/Disable usage telemetry for module."
+                                "description": "Required. Enable deployment telemetry."
                               }
                             }
                           },
-                          "variables": {
-                            "copy": [
-                              {
-                                "name": "formattedRoleAssignments",
-                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
-                                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
-                              }
-                            ],
-                            "builtInRoleNames": {
-                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                              "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
-                              "Key Vault Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f25e0fa2-a7c8-4377-a976-54943a77a395')]",
-                              "Key Vault Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '21090545-7ca7-4776-b22c-e363652d74d2')]",
-                              "Key Vault Secrets Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')]",
-                              "Key Vault Secrets User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')]",
-                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-                            }
-                          },
-                          "resources": {
-                            "avmTelemetry": {
-                              "condition": "[parameters('enableTelemetry')]",
+                          "resources": [
+                            {
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2025-04-01",
-                              "name": "[format('46d3xbcp.res.keyvault-secret.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "name": "[take(format('{0}-secret', deployment().name), 64)]",
+                              "subscriptionId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
+                              "resourceGroup": "[split(parameters('keyVaultResourceId'), '/')[4]]",
                               "properties": {
+                                "expressionEvaluationOptions": {
+                                  "scope": "inner"
+                                },
                                 "mode": "Incremental",
+                                "parameters": {
+                                  "keyVaultName": {
+                                    "value": "[last(split(parameters('keyVaultResourceId'), '/'))]"
+                                  },
+                                  "name": {
+                                    "value": "ciStorageAccessKey1"
+                                  },
+                                  "value": {
+                                    "value": "[listKeys(parameters('storageAccountResourceId'), '2023-05-01').keys[0].value]"
+                                  },
+                                  "enableTelemetry": {
+                                    "value": "[parameters('enableTelemetry')]"
+                                  }
+                                },
                                 "template": {
                                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "languageVersion": "2.0",
                                   "contentVersion": "1.0.0.0",
-                                  "resources": [],
+                                  "metadata": {
+                                    "_generator": {
+                                      "name": "bicep",
+                                      "version": "0.47.16.16243",
+                                      "templateHash": "5103626104004050203"
+                                    },
+                                    "name": "Key Vault Secrets",
+                                    "description": "This module deploys a Key Vault Secret."
+                                  },
+                                  "definitions": {
+                                    "roleAssignmentType": {
+                                      "type": "object",
+                                      "properties": {
+                                        "name": {
+                                          "type": "string",
+                                          "nullable": true,
+                                          "metadata": {
+                                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                                          }
+                                        },
+                                        "roleDefinitionIdOrName": {
+                                          "type": "string",
+                                          "metadata": {
+                                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                                          }
+                                        },
+                                        "principalId": {
+                                          "type": "string",
+                                          "metadata": {
+                                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                                          }
+                                        },
+                                        "principalType": {
+                                          "type": "string",
+                                          "allowedValues": [
+                                            "Device",
+                                            "ForeignGroup",
+                                            "Group",
+                                            "ServicePrincipal",
+                                            "User"
+                                          ],
+                                          "nullable": true,
+                                          "metadata": {
+                                            "description": "Optional. The principal type of the assigned principal ID."
+                                          }
+                                        },
+                                        "description": {
+                                          "type": "string",
+                                          "nullable": true,
+                                          "metadata": {
+                                            "description": "Optional. The description of the role assignment."
+                                          }
+                                        },
+                                        "condition": {
+                                          "type": "string",
+                                          "nullable": true,
+                                          "metadata": {
+                                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                                          }
+                                        },
+                                        "conditionVersion": {
+                                          "type": "string",
+                                          "allowedValues": [
+                                            "2.0"
+                                          ],
+                                          "nullable": true,
+                                          "metadata": {
+                                            "description": "Optional. Version of the condition."
+                                          }
+                                        },
+                                        "delegatedManagedIdentityResourceId": {
+                                          "type": "string",
+                                          "nullable": true,
+                                          "metadata": {
+                                            "description": "Optional. The Resource Id of the delegated managed identity resource."
+                                          }
+                                        }
+                                      },
+                                      "metadata": {
+                                        "description": "An AVM-aligned type for a role assignment.",
+                                        "__bicep_imported_from!": {
+                                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "parameters": {
+                                    "keyVaultName": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment."
+                                      }
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 127,
+                                      "metadata": {
+                                        "description": "Required. The name of the secret (letters (upper and lower case), numbers, -)."
+                                      }
+                                    },
+                                    "tags": {
+                                      "type": "object",
+                                      "metadata": {
+                                        "__bicep_resource_derived_type!": {
+                                          "source": "Microsoft.KeyVault/vaults/secrets@2024-11-01#properties/tags"
+                                        },
+                                        "description": "Optional. Resource tags."
+                                      },
+                                      "nullable": true
+                                    },
+                                    "attributesEnabled": {
+                                      "type": "bool",
+                                      "defaultValue": true,
+                                      "metadata": {
+                                        "description": "Optional. Determines whether the object is enabled."
+                                      }
+                                    },
+                                    "attributesExp": {
+                                      "type": "int",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible."
+                                      }
+                                    },
+                                    "attributesNbf": {
+                                      "type": "int",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. Not before date in seconds since 1970-01-01T00:00:00Z."
+                                      }
+                                    },
+                                    "contentType": {
+                                      "type": "securestring",
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. The content type of the secret."
+                                      }
+                                    },
+                                    "value": {
+                                      "type": "securestring",
+                                      "metadata": {
+                                        "description": "Required. The value of the secret. NOTE: \"value\" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets."
+                                      }
+                                    },
+                                    "roleAssignments": {
+                                      "type": "array",
+                                      "items": {
+                                        "$ref": "#/definitions/roleAssignmentType"
+                                      },
+                                      "nullable": true,
+                                      "metadata": {
+                                        "description": "Optional. Array of role assignments to create."
+                                      }
+                                    },
+                                    "enableTelemetry": {
+                                      "type": "bool",
+                                      "defaultValue": true,
+                                      "metadata": {
+                                        "description": "Optional. Enable/Disable usage telemetry for module."
+                                      }
+                                    }
+                                  },
+                                  "variables": {
+                                    "copy": [
+                                      {
+                                        "name": "formattedRoleAssignments",
+                                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                                      }
+                                    ],
+                                    "builtInRoleNames": {
+                                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                                      "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
+                                      "Key Vault Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f25e0fa2-a7c8-4377-a976-54943a77a395')]",
+                                      "Key Vault Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '21090545-7ca7-4776-b22c-e363652d74d2')]",
+                                      "Key Vault Secrets Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')]",
+                                      "Key Vault Secrets User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')]",
+                                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                                    }
+                                  },
+                                  "resources": {
+                                    "avmTelemetry": {
+                                      "condition": "[parameters('enableTelemetry')]",
+                                      "type": "Microsoft.Resources/deployments",
+                                      "apiVersion": "2025-04-01",
+                                      "name": "[format('46d3xbcp.res.keyvault-secret.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                                      "properties": {
+                                        "mode": "Incremental",
+                                        "template": {
+                                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                          "contentVersion": "1.0.0.0",
+                                          "resources": [],
+                                          "outputs": {
+                                            "telemetry": {
+                                              "type": "String",
+                                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "keyVault": {
+                                      "existing": true,
+                                      "type": "Microsoft.KeyVault/vaults",
+                                      "apiVersion": "2026-02-01",
+                                      "name": "[parameters('keyVaultName')]"
+                                    },
+                                    "secret": {
+                                      "type": "Microsoft.KeyVault/vaults/secrets",
+                                      "apiVersion": "2026-02-01",
+                                      "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
+                                      "tags": "[parameters('tags')]",
+                                      "properties": {
+                                        "contentType": "[parameters('contentType')]",
+                                        "attributes": {
+                                          "enabled": "[parameters('attributesEnabled')]",
+                                          "exp": "[parameters('attributesExp')]",
+                                          "nbf": "[parameters('attributesNbf')]"
+                                        },
+                                        "value": "[parameters('value')]"
+                                      }
+                                    },
+                                    "secret_roleAssignments": {
+                                      "copy": {
+                                        "name": "secret_roleAssignments",
+                                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                                      },
+                                      "type": "Microsoft.Authorization/roleAssignments",
+                                      "apiVersion": "2022-04-01",
+                                      "scope": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name'))]",
+                                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                                      "properties": {
+                                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                                      },
+                                      "dependsOn": [
+                                        "secret"
+                                      ]
+                                    }
+                                  },
                                   "outputs": {
-                                    "telemetry": {
-                                      "type": "String",
-                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    "name": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "The name of the secret."
+                                      },
+                                      "value": "[parameters('name')]"
+                                    },
+                                    "resourceId": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "The resource ID of the secret."
+                                      },
+                                      "value": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name'))]"
+                                    },
+                                    "secretUri": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "The uri of the secret."
+                                      },
+                                      "value": "[reference('secret').secretUri]"
+                                    },
+                                    "secretUriWithVersion": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "The uri with version of the secret."
+                                      },
+                                      "value": "[reference('secret').secretUriWithVersion]"
+                                    },
+                                    "resourceGroupName": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "The name of the resource group the secret was created in."
+                                      },
+                                      "value": "[resourceGroup().name]"
                                     }
                                   }
                                 }
                               }
-                            },
-                            "keyVault": {
-                              "existing": true,
-                              "type": "Microsoft.KeyVault/vaults",
-                              "apiVersion": "2026-02-01",
-                              "name": "[parameters('keyVaultName')]"
-                            },
-                            "secret": {
-                              "type": "Microsoft.KeyVault/vaults/secrets",
-                              "apiVersion": "2026-02-01",
-                              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
-                              "tags": "[parameters('tags')]",
-                              "properties": {
-                                "contentType": "[parameters('contentType')]",
-                                "attributes": {
-                                  "enabled": "[parameters('attributesEnabled')]",
-                                  "exp": "[parameters('attributesExp')]",
-                                  "nbf": "[parameters('attributesNbf')]"
-                                },
-                                "value": "[parameters('value')]"
-                              }
-                            },
-                            "secret_roleAssignments": {
-                              "copy": {
-                                "name": "secret_roleAssignments",
-                                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
-                              },
-                              "type": "Microsoft.Authorization/roleAssignments",
-                              "apiVersion": "2022-04-01",
-                              "scope": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name'))]",
-                              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
-                              "properties": {
-                                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
-                                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
-                                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
-                                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
-                                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-                              },
-                              "dependsOn": [
-                                "secret"
-                              ]
                             }
-                          },
-                          "outputs": {
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the secret."
-                              },
-                              "value": "[parameters('name')]"
-                            },
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource ID of the secret."
-                              },
-                              "value": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name'))]"
-                            },
-                            "secretUri": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The uri of the secret."
-                              },
-                              "value": "[reference('secret').secretUri]"
-                            },
-                            "secretUriWithVersion": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The uri with version of the secret."
-                              },
-                              "value": "[reference('secret').secretUriWithVersion]"
-                            },
-                            "resourceGroupName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the resource group the secret was created in."
-                              },
-                              "value": "[resourceGroup().name]"
-                            }
-                          }
+                          ]
                         }
                       },
                       "dependsOn": [
@@ -42659,8 +42715,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "127549223864473719"
+              "version": "0.48.1.52935",
+              "templateHash": "14100705158840024532"
             }
           },
           "parameters": {
@@ -47197,6 +47253,21 @@
           },
           "containerRegistryUserAssignedIdentityId": {
             "value": "[reference('supportingServices').outputs.containerRegistryUserAssignedIdentityId.value]"
+          },
+          "containerRegistryName": {
+            "value": "[reference('supportingServices').outputs.containerRegistryName.value]"
+          },
+          "containerRegistryLoginServer": {
+            "value": "[reference('supportingServices').outputs.containerRegistryLoginServer.value]"
+          },
+          "keyVaultName": {
+            "value": "[reference('supportingServices').outputs.keyVaultName.value]"
+          },
+          "storageAccountName": {
+            "value": "[reference('supportingServices').outputs.storageAccountName.value]"
+          },
+          "deploymentSubnetResourceId": {
+            "value": "[reference('spoke').outputs.deploymentSubnetResourceId.value]"
           }
         },
         "template": {
@@ -47205,8 +47276,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "2714433535522142094"
+              "version": "0.48.1.52935",
+              "templateHash": "10312000916913493262"
             }
           },
           "parameters": {
@@ -47261,9 +47332,1384 @@
               "metadata": {
                 "description": "The container apps environment workload profile to use for the Container App."
               }
+            },
+            "containerRegistryName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the private registry containing the verified image."
+              }
+            },
+            "containerRegistryLoginServer": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The login server of the private registry containing the verified image."
+              }
+            },
+            "keyVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the newly deployed signing vault."
+              }
+            },
+            "storageAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The deployment script storage account name."
+              }
+            },
+            "deploymentSubnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The deployment subnet resource ID."
+              }
             }
           },
           "resources": [
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "verify-sample-image",
+              "resourceGroup": "[parameters('resourcesNames').resourceGroup]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
+                  "containerRegistryName": {
+                    "value": "[parameters('containerRegistryName')]"
+                  },
+                  "containerRegistryLoginServer": {
+                    "value": "[parameters('containerRegistryLoginServer')]"
+                  },
+                  "keyVaultName": {
+                    "value": "[parameters('keyVaultName')]"
+                  },
+                  "storageAccountName": {
+                    "value": "[parameters('storageAccountName')]"
+                  },
+                  "deploymentSubnetResourceId": {
+                    "value": "[parameters('deploymentSubnetResourceId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.48.1.52935",
+                      "templateHash": "2531919860859666777"
+                    }
+                  },
+                  "parameters": {
+                    "containerRegistryName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the newly deployed container registry."
+                      }
+                    },
+                    "containerRegistryLoginServer": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The login server of the newly deployed container registry."
+                      }
+                    },
+                    "keyVaultName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the newly deployed Key Vault."
+                      }
+                    },
+                    "storageAccountName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the deployment script storage account."
+                      }
+                    },
+                    "deploymentSubnetResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The deployment subnet resource ID with private registry and vault connectivity."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. Resource location."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. Resource tags."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable deployment telemetry."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "$fxv#0": "<#\n.SYNOPSIS\nSign and strictly verify the ACA-LZA sample before releasing its immutable private-registry image.\n.DESCRIPTION\nRun in the deployment subnet with the scoped workload managed identity. Keys remain non-exportable\nin Key Vault. Use an isolated XDG_CONFIG_HOME and DOCKER_CONFIG; registry credentials are ephemeral.\nProduction consumers must provision their approved publisher trust roots and call Confirm-NotationImage\nbefore deploying the exact returned digest. This is a deployment gate, not an ACA runtime admission policy.\nReference: https://learn.microsoft.com/azure/container-registry/container-registry-tutorial-sign-build-push\n#>\nfunction Invoke-NotationCommand {\n    [CmdletBinding()]\n    param (\n        [Parameter(Mandatory)] [string] $Executable,\n        [Parameter(Mandatory)] [string[]] $Arguments,\n        [string] $StandardInput\n    )\n\n    $startInfo = [System.Diagnostics.ProcessStartInfo]::new($Executable)\n    $startInfo.UseShellExecute = $false\n    $startInfo.RedirectStandardOutput = $true\n    $startInfo.RedirectStandardError = $true\n    $startInfo.RedirectStandardInput = $true\n    foreach ($argument in $Arguments) { $startInfo.ArgumentList.Add($argument) }\n    $process = [System.Diagnostics.Process]::new()\n    $process.StartInfo = $startInfo\n    try {\n        $null = $process.Start()\n        $stdout = $process.StandardOutput.ReadToEndAsync()\n        $stderr = $process.StandardError.ReadToEndAsync()\n        if ($PSBoundParameters.ContainsKey('StandardInput')) {\n            $process.StandardInput.WriteLine($StandardInput)\n        }\n        $process.StandardInput.Close()\n        if (-not $process.WaitForExit(180000)) {\n            $process.Kill($true)\n            throw 'Notation exceeded its three-minute command deadline.'\n        }\n        @{\n            ExitCode = $process.ExitCode\n            Output   = $stdout.GetAwaiter().GetResult()\n            Error    = $stderr.GetAwaiter().GetResult()\n        }\n    } finally {\n        $process.Dispose()\n    }\n}\n\nfunction Initialize-NotationTools {\n    [CmdletBinding()]\n    param ([Parameter(Mandatory)] [string] $Directory)\n\n    $archive = Join-Path $Directory 'notation.tar.gz'\n    Invoke-WebRequest -Uri 'https://github.com/notaryproject/notation/releases/download/v1.3.2/notation_1.3.2_linux_amd64.tar.gz' -OutFile $archive -ErrorAction Stop\n    if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash -ine 'e1a0f060308086bf8020b2d31defb7c5348f133ca0dba6a1a7820ef3cbb6dfe5') {\n        throw 'Notation package SHA256 does not match the pinned release.'\n    }\n    tar -xzf $archive -C $Directory notation\n    if ($LASTEXITCODE -ne 0) { throw 'Notation package extraction failed.' }\n    $executable = Join-Path $Directory 'notation'\n    $plugin = Invoke-NotationCommand -Executable $executable -Arguments @(\n        'plugin', 'install', '--url',\n        'https://github.com/Azure/notation-azure-kv/releases/download/v1.2.1/notation-azure-kv_1.2.1_linux_amd64.tar.gz',\n        '--sha256sum', '67c5ccaaf28dd44d2b6572684d84e344a02c2258af1d65ead3910b3156d3eaf5'\n    )\n    if ($plugin.ExitCode -ne 0) { throw \"Notation Key Vault plug-in installation failed: $($plugin.Error)\" }\n    $executable\n}\n\nfunction Get-NotationRegistryCredential {\n    [CmdletBinding()]\n    param ([Parameter(Mandatory)] [string] $LoginServer)\n\n    $access = Get-AzAccessToken -ErrorAction Stop\n    $token = if ($access.Token -is [System.Security.SecureString]) {\n        [System.Net.NetworkCredential]::new('', $access.Token).Password\n    } else { [string] $access.Token }\n    try {\n        $response = Invoke-RestMethod -Method Post -Uri \"https://$LoginServer/oauth2/exchange\" -ContentType 'application/x-www-form-urlencoded' -Body @{\n            grant_type   = 'access_token'\n            service      = $LoginServer\n            tenant       = (Get-AzContext -ErrorAction Stop).Tenant.Id\n            access_token = $token\n        } -ErrorAction Stop\n        if ([string]::IsNullOrWhiteSpace($response.refresh_token)) { throw 'ACR did not return a registry credential.' }\n        $response.refresh_token\n    } finally {\n        $token = $null\n        $access = $null\n    }\n}\n\nfunction Get-NotationRepositoryToken {\n    [CmdletBinding()]\n    param (\n        [Parameter(Mandatory)] [string] $LoginServer,\n        [Parameter(Mandatory)] [string] $Repository,\n        [Parameter(Mandatory)] [string] $RegistryCredential\n    )\n\n    $response = Invoke-RestMethod -Method Post -Uri \"https://$LoginServer/oauth2/token\" -ContentType 'application/x-www-form-urlencoded' -Body @{\n        grant_type    = 'refresh_token'\n        service       = $LoginServer\n        scope         = \"repository:${Repository}:pull,push\"\n        refresh_token = $RegistryCredential\n    } -ErrorAction Stop\n    if ([string]::IsNullOrWhiteSpace($response.access_token)) { throw 'ACR did not return a scoped repository token.' }\n    $response.access_token\n}\n\nfunction Set-NotationTrust {\n    [CmdletBinding()]\n    param (\n        [Parameter(Mandatory)] [string] $Executable,\n        [Parameter(Mandatory)] [string] $Directory,\n        [Parameter(Mandatory)] [string] $LoginServer,\n        [Parameter(Mandatory)] [string] $Repository,\n        [Parameter(Mandatory)] [byte[]] $Certificate,\n        [Parameter(Mandatory)] [string] $Subject\n    )\n\n    $certificatePath = Join-Path $Directory 'trusted.cer'\n    [System.IO.File]::WriteAllBytes($certificatePath, $Certificate)\n    $store = $Repository.Replace('/', '-')\n    $add = Invoke-NotationCommand -Executable $Executable -Arguments @('cert', 'add', '--type', 'ca', '--store', $store, $certificatePath)\n    if ($add.ExitCode -ne 0) { throw \"Notation trust store import failed: $($add.Error)\" }\n    $policy = @{\n        version       = '1.0'\n        trustPolicies = @(@{\n            name                  = 'aca-lza-image'\n            registryScopes        = @(\"$LoginServer/$Repository\")\n            signatureVerification = @{ level = 'strict' }\n            trustStores           = @(\"ca:$store\")\n            trustedIdentities     = @(\"x509.subject: $Subject\")\n        })\n    }\n    $policyPath = Join-Path $Directory 'trustpolicy.json'\n    $policy | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $policyPath -Encoding utf8NoBOM\n    $import = Invoke-NotationCommand -Executable $Executable -Arguments @('policy', 'import', '--force', $policyPath)\n    if ($import.ExitCode -ne 0) { throw \"Notation trust policy import failed: $($import.Error)\" }\n}\n\nfunction Confirm-NotationImage {\n    [CmdletBinding()]\n    param (\n        [Parameter(Mandatory)] [string] $Executable,\n        [Parameter(Mandatory)] [string] $Image\n    )\n\n    if ($Image -cnotmatch '^[a-z0-9.-]+/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$') {\n        throw 'Image verification requires an immutable SHA256 image reference, not a tag.'\n    }\n    $result = Invoke-NotationCommand -Executable $Executable -Arguments @('verify', $Image)\n    if ($result.ExitCode -ne 0) { throw \"Image signature verification rejected [$Image]: $($result.Error)\" }\n    $Image\n}\n\nfunction Get-NotationCertificate {\n    [CmdletBinding()]\n    param (\n        [Parameter(Mandatory)] [string] $VaultName,\n        [Parameter(Mandatory)] [string] $Name,\n        [Parameter(Mandatory)] [string] $Subject\n    )\n\n    $existing = @(Get-AzKeyVaultCertificate -VaultName $VaultName -ErrorAction Stop | Where-Object Name -CEQ $Name)\n    if ($existing.Count -gt 1) { throw 'Signing certificate name is not unique in the owned vault.' }\n    $certificate = if ($existing.Count -eq 1) {\n        Get-AzKeyVaultCertificate -VaultName $VaultName -Name $Name -ErrorAction Stop\n    } else { $null }\n    if (-not $certificate) {\n        $policy = New-AzKeyVaultCertificatePolicy -SubjectName $Subject -IssuerName Self -ValidityInMonths 12 `\n            -KeyType RSA -KeySize 2048 -KeyNotExportable -KeyUsage DigitalSignature -Ekus '1.3.6.1.5.5.7.3.3' `\n            -SecretContentType 'application/x-pem-file' -ReuseKeyOnRenewal -ErrorAction Stop\n        $null = Add-AzKeyVaultCertificate -VaultName $VaultName -Name $Name -CertificatePolicy $policy -ErrorAction Stop\n        for ($attempt = 0; $attempt -lt 30; $attempt++) {\n            $operation = Get-AzKeyVaultCertificateOperation -VaultName $VaultName -Name $Name -ErrorAction Stop\n            if ($operation.Status -ieq 'completed') { break }\n            if ($operation.Status -ine 'inProgress') { throw \"Signing certificate creation failed: $($operation.StatusDetails)\" }\n            Start-Sleep -Seconds 10\n        }\n        if ($operation.Status -ine 'completed') { throw 'Signing certificate creation exceeded five minutes.' }\n        $certificate = Get-AzKeyVaultCertificate -VaultName $VaultName -Name $Name -ErrorAction Stop\n    }\n    if (-not $certificate -or $certificate.Certificate.Subject -cne $Subject -or\n        [string]::IsNullOrWhiteSpace($certificate.KeyId) -or $certificate.Certificate.NotAfter.ToUniversalTime() -le [DateTime]::UtcNow) {\n        throw 'Signing certificate is missing, expired, or does not match the expected publisher identity.'\n    }\n    $certificate\n}\n\nfunction Get-NotationSignatures {\n    [CmdletBinding()]\n    param (\n        [Parameter(Mandatory)] [string] $LoginServer,\n        [Parameter(Mandatory)] [string] $Repository,\n        [Parameter(Mandatory)] [string] $Digest,\n        [Parameter(Mandatory)] [string] $Token\n    )\n\n    $response = Invoke-RestMethod -Uri \"https://$LoginServer/v2/$Repository/referrers/${Digest}?artifactType=application%2Fvnd.cncf.notary.signature\" `\n        -Headers @{ Authorization = \"Bearer $Token\" } -ErrorAction Stop\n    if ($response.schemaVersion -ne 2 -or $response.mediaType -cne 'application/vnd.oci.image.index.v1+json') {\n        throw 'ACR did not return a supported OCI signature referrers index.'\n    }\n    @($response.manifests)\n}\n\nfunction Set-VerifiedImageRelease {\n    [CmdletBinding()]\n    param (\n        [Parameter(Mandatory)] [string] $LoginServer,\n        [Parameter(Mandatory)] [string] $Repository,\n        [Parameter(Mandatory)] [string] $Digest,\n        [Parameter(Mandatory)] [string] $Token\n    )\n\n    if ($Digest -cnotmatch '^sha256:[a-f0-9]{64}$') { throw 'Quarantine release requires an exact verified digest.' }\n    $null = Invoke-RestMethod -Method Patch -Uri \"https://$LoginServer/acr/v1/$Repository/_manifests/$Digest\" `\n        -Headers @{ Authorization = \"Bearer $Token\" } -ContentType 'application/json' `\n        -Body (@{ quarantineState = 'Passed'; quarantineDetails = '{\"state\":\"Notation strict signature verification passed\"}' } | ConvertTo-Json -Compress) -ErrorAction Stop\n}\n\nfunction Publish-VerifiedContainerImage {\n    [CmdletBinding()]\n    param (\n        [Parameter(Mandatory)] [string] $Executable,\n        [Parameter(Mandatory)] [string] $Directory,\n        [Parameter(Mandatory)] [string] $RegistryName,\n        [Parameter(Mandatory)] [string] $ResourceGroupName,\n        [Parameter(Mandatory)] [string] $LoginServer,\n        [Parameter(Mandatory)] [string] $VaultName,\n        [string] $Repository = 'aca-lza/sample'\n    )\n\n    $subject = 'CN=aca-lza-sample'\n    $certificate = Get-NotationCertificate -VaultName $VaultName -Name 'aca-lza-image-signing' -Subject $subject\n    Set-NotationTrust -Executable $Executable -Directory $Directory -LoginServer $LoginServer -Repository $Repository `\n        -Certificate $certificate.Certificate.RawData -Subject $subject\n    $credential = Get-NotationRegistryCredential -LoginServer $LoginServer\n    try {\n        $login = Invoke-NotationCommand -Executable $Executable -Arguments @('login', $LoginServer, '--username', '00000000-0000-0000-0000-000000000000', '--password-stdin') -StandardInput $credential\n        if ($login.ExitCode -ne 0) { throw 'Notation managed-identity registry login failed.' }\n        $null = Import-AzContainerRegistryImage -RegistryName $RegistryName -ResourceGroupName $ResourceGroupName `\n            -SourceRegistryUri 'mcr.microsoft.com' -SourceImage 'azuredocs/containerapps-helloworld:latest' `\n            -TargetTag \"${Repository}:sample\" -Mode Force -ErrorAction Stop\n        $token = Get-NotationRepositoryToken -LoginServer $LoginServer -Repository $Repository -RegistryCredential $credential\n        $manifest = Invoke-WebRequest -Uri \"https://$LoginServer/v2/$Repository/manifests/sample\" -Headers @{\n            Authorization = \"Bearer $token\"\n            Accept        = 'application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.list.v2+json,application/vnd.oci.image.manifest.v1+json,application/vnd.docker.distribution.manifest.v2+json'\n        } -ErrorAction Stop\n        $digest = [string] @($manifest.Headers['Docker-Content-Digest'])[0]\n        if ($digest -cnotmatch '^sha256:[a-f0-9]{64}$') { throw 'Imported image did not have an authoritative SHA256 digest.' }\n        $image = \"$LoginServer/$Repository@$digest\"\n        $before = @(Get-NotationSignatures -LoginServer $LoginServer -Repository $Repository -Digest $digest -Token $token)\n        $sign = Invoke-NotationCommand -Executable $Executable -Arguments @(\n            'sign', '--signature-format', 'cose', '--id', $certificate.KeyId, '--plugin', 'azure-kv',\n            '--plugin-config', 'self_signed=true', '--plugin-config', 'credential_type=managedid',\n            '--force-referrers-tag=false', $image\n        )\n        if ($sign.ExitCode -ne 0) { throw \"Notation image signing failed: $($sign.Error)\" }\n        $verified = Confirm-NotationImage -Executable $Executable -Image $image\n        $after = @(Get-NotationSignatures -LoginServer $LoginServer -Repository $Repository -Digest $digest -Token $token)\n        $created = @($after | Where-Object { $_.digest -cnotin @($before.digest) })\n        if ($created.Count -ne 1 -or $created[0].artifactType -cne 'application/vnd.cncf.notary.signature') {\n            throw 'Could not identify exactly one newly signed OCI artifact; refusing quarantine release.'\n        }\n        Set-VerifiedImageRelease -LoginServer $LoginServer -Repository $Repository -Digest $created[0].digest -Token $token\n        Set-VerifiedImageRelease -LoginServer $LoginServer -Repository $Repository -Digest $digest -Token $token\n        @{\n            image               = $verified\n            signatureDigest     = $created[0].digest\n            certificateBase64   = [Convert]::ToBase64String($certificate.Certificate.RawData)\n            certificateSubject  = $subject\n            strictVerification  = $true\n        }\n    } finally {\n        $credential = $null\n        $token = $null\n    }\n}\n",
+                    "signerName": "[format('{0}-image-signer', uniqueString(resourceGroup().id))]",
+                    "signerResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('signerName'))]",
+                    "registryRoles": [
+                      "577a9874-89fd-4f24-9dbd-b5034d0ad23a",
+                      "8311e382-0749-4cb8-b61a-304f252e45ec",
+                      "c8d4ff99-41c3-41a8-9f60-21dfdad59608"
+                    ],
+                    "vaultRoles": [
+                      "a4417e6f-fecd-4de8-b567-7b0420556985",
+                      "12338af0-0e69-4776-bea7-57ae8d297424"
+                    ],
+                    "runScript": "$ErrorActionPreference = 'Stop'\n$directory = Join-Path ([System.IO.Path]::GetTempPath()) ([guid]::NewGuid().ToString('N'))\n$null = New-Item -ItemType Directory -Path $directory\n$env:XDG_CONFIG_HOME = $directory\n$env:DOCKER_CONFIG = Join-Path $directory 'docker'\ntry {\n    $executable = Initialize-NotationTools -Directory $directory\n    $DeploymentScriptOutputs = Publish-VerifiedContainerImage -Executable $executable -Directory $directory `\n        -RegistryName $env:REGISTRY_NAME -ResourceGroupName $env:RESOURCE_GROUP_NAME `\n        -LoginServer $env:REGISTRY_LOGIN_SERVER -VaultName $env:KEY_VAULT_NAME\n} finally {\n    [System.IO.Directory]::Delete($directory, $true)\n}\n"
+                  },
+                  "resources": [
+                    {
+                      "copy": {
+                        "name": "registryPermissions",
+                        "count": "[length(variables('registryRoles'))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName'))]",
+                      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName')), variables('signerResourceId'), variables('registryRoles')[copyIndex()])]",
+                      "properties": {
+                        "principalId": "[reference(resourceId('Microsoft.Resources/deployments', format('image-signer-{0}', uniqueString(resourceGroup().id))), '2025-04-01').outputs.principalId.value]",
+                        "principalType": "ServicePrincipal",
+                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('registryRoles')[copyIndex()])]"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Resources/deployments', format('image-signer-{0}', uniqueString(resourceGroup().id)))]"
+                      ]
+                    },
+                    {
+                      "copy": {
+                        "name": "vaultPermissions",
+                        "count": "[length(variables('vaultRoles'))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+                      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), variables('signerResourceId'), variables('vaultRoles')[copyIndex()])]",
+                      "properties": {
+                        "principalId": "[reference(resourceId('Microsoft.Resources/deployments', format('image-signer-{0}', uniqueString(resourceGroup().id))), '2025-04-01').outputs.principalId.value]",
+                        "principalType": "ServicePrincipal",
+                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('vaultRoles')[copyIndex()])]"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Resources/deployments', format('image-signer-{0}', uniqueString(resourceGroup().id)))]"
+                      ]
+                    },
+                    {
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+                      "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), variables('signerResourceId'), '69566ab7-960f-475b-8e7c-b3118f30c6bd')]",
+                      "properties": {
+                        "principalId": "[reference(resourceId('Microsoft.Resources/deployments', format('image-signer-{0}', uniqueString(resourceGroup().id))), '2025-04-01').outputs.principalId.value]",
+                        "principalType": "ServicePrincipal",
+                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '69566ab7-960f-475b-8e7c-b3118f30c6bd')]"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Resources/deployments', format('image-signer-{0}', uniqueString(resourceGroup().id)))]"
+                      ]
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('image-signer-{0}', uniqueString(resourceGroup().id))]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "name": {
+                            "value": "[variables('signerName')]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.39.26.7824",
+                              "templateHash": "7591858083424858339"
+                            },
+                            "name": "User Assigned Identities",
+                            "description": "This module deploys a User Assigned Identity."
+                          },
+                          "definitions": {
+                            "federatedIdentityCredentialType": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The name of the federated identity credential."
+                                  }
+                                },
+                                "audiences": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "metadata": {
+                                    "description": "Required. The list of audiences that can appear in the issued token."
+                                  }
+                                },
+                                "issuer": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The URL of the issuer to be trusted."
+                                  }
+                                },
+                                "subject": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The identifier of the external identity."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "__bicep_export!": true,
+                                "description": "The type for the federated identity credential."
+                              }
+                            },
+                            "lockType": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Specify the name of lock."
+                                  }
+                                },
+                                "kind": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "CanNotDelete",
+                                    "None",
+                                    "ReadOnly"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Specify the type of lock."
+                                  }
+                                },
+                                "notes": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Specify the notes of the lock."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "description": "An AVM-aligned type for a lock.",
+                                "__bicep_imported_from!": {
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                                }
+                              }
+                            },
+                            "roleAssignmentType": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                                  }
+                                },
+                                "roleDefinitionIdOrName": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                                  }
+                                },
+                                "principalId": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                                  }
+                                },
+                                "principalType": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "Device",
+                                    "ForeignGroup",
+                                    "Group",
+                                    "ServicePrincipal",
+                                    "User"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The principal type of the assigned principal ID."
+                                  }
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The description of the role assignment."
+                                  }
+                                },
+                                "condition": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                                  }
+                                },
+                                "conditionVersion": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "2.0"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Version of the condition."
+                                  }
+                                },
+                                "delegatedManagedIdentityResourceId": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "description": "An AVM-aligned type for a role assignment.",
+                                "__bicep_imported_from!": {
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                }
+                              }
+                            }
+                          },
+                          "parameters": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Name of the User Assigned Identity."
+                              }
+                            },
+                            "location": {
+                              "type": "string",
+                              "defaultValue": "[resourceGroup().location]",
+                              "metadata": {
+                                "description": "Optional. Location for all resources."
+                              }
+                            },
+                            "federatedIdentityCredentials": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/federatedIdentityCredentialType"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object."
+                              }
+                            },
+                            "lock": {
+                              "$ref": "#/definitions/lockType",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The lock settings of the service."
+                              }
+                            },
+                            "roleAssignments": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/roleAssignmentType"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Array of role assignments to create."
+                              }
+                            },
+                            "tags": {
+                              "type": "object",
+                              "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30#properties/tags"
+                                },
+                                "description": "Optional. Tags of the resource."
+                              },
+                              "nullable": true
+                            },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
+                            },
+                            "isolationScope": {
+                              "type": "string",
+                              "nullable": true,
+                              "allowedValues": [
+                                "None",
+                                "Regional"
+                              ],
+                              "metadata": {
+                                "description": "Optional. Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: \"None\", \"Regional\"."
+                              }
+                            }
+                          },
+                          "variables": {
+                            "copy": [
+                              {
+                                "name": "formattedRoleAssignments",
+                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                              }
+                            ],
+                            "builtInRoleNames": {
+                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                              "Managed Identity Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e40ec5ca-96e0-45a2-b4ff-59039f2c2b59')]",
+                              "Managed Identity Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f1a07417-d97a-45cb-824c-7a7467783830')]",
+                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                            }
+                          },
+                          "resources": {
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.managedidentity-userassignedidentity.{0}.{1}', replace('0.5.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "userAssignedIdentity": {
+                              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+                              "apiVersion": "2024-11-30",
+                              "name": "[parameters('name')]",
+                              "location": "[parameters('location')]",
+                              "tags": "[parameters('tags')]",
+                              "properties": "[if(not(equals(parameters('isolationScope'), null())), createObject('isolationScope', parameters('isolationScope')), createObject())]"
+                            },
+                            "userAssignedIdentity_lock": {
+                              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                              "type": "Microsoft.Authorization/locks",
+                              "apiVersion": "2020-05-01",
+                              "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
+                              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+                              "properties": {
+                                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+                              },
+                              "dependsOn": [
+                                "userAssignedIdentity"
+                              ]
+                            },
+                            "userAssignedIdentity_roleAssignments": {
+                              "copy": {
+                                "name": "userAssignedIdentity_roleAssignments",
+                                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                              },
+                              "type": "Microsoft.Authorization/roleAssignments",
+                              "apiVersion": "2022-04-01",
+                              "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
+                              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                              "properties": {
+                                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                              },
+                              "dependsOn": [
+                                "userAssignedIdentity"
+                              ]
+                            },
+                            "userAssignedIdentity_federatedIdentityCredentials": {
+                              "copy": {
+                                "name": "userAssignedIdentity_federatedIdentityCredentials",
+                                "count": "[length(coalesce(parameters('federatedIdentityCredentials'), createArray()))]",
+                                "mode": "serial",
+                                "batchSize": 1
+                              },
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2025-04-01",
+                              "name": "[format('{0}-UserMSI-FederatedIdentityCred-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
+                              "properties": {
+                                "expressionEvaluationOptions": {
+                                  "scope": "inner"
+                                },
+                                "mode": "Incremental",
+                                "parameters": {
+                                  "name": {
+                                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].name]"
+                                  },
+                                  "userAssignedIdentityName": {
+                                    "value": "[parameters('name')]"
+                                  },
+                                  "audiences": {
+                                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].audiences]"
+                                  },
+                                  "issuer": {
+                                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].issuer]"
+                                  },
+                                  "subject": {
+                                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].subject]"
+                                  }
+                                },
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "metadata": {
+                                    "_generator": {
+                                      "name": "bicep",
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "1387931959101373036"
+                                    },
+                                    "name": "User Assigned Identity Federated Identity Credential",
+                                    "description": "This module deploys a User Assigned Identity Federated Identity Credential."
+                                  },
+                                  "parameters": {
+                                    "userAssignedIdentityName": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "Conditional. The name of the parent user assigned identity. Required if the template is used in a standalone deployment."
+                                      }
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "Required. The name of the secret."
+                                      }
+                                    },
+                                    "audiences": {
+                                      "type": "array",
+                                      "metadata": {
+                                        "description": "Required. The list of audiences that can appear in the issued token. Should be set to api://AzureADTokenExchange for Azure AD. It says what Microsoft identity platform should accept in the aud claim in the incoming token. This value represents Azure AD in your external identity provider and has no fixed value across identity providers - you might need to create a new application registration in your IdP to serve as the audience of this token."
+                                      }
+                                    },
+                                    "issuer": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "Required. The URL of the issuer to be trusted. Must match the issuer claim of the external token being exchanged."
+                                      }
+                                    },
+                                    "subject": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "Required. The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD."
+                                      }
+                                    }
+                                  },
+                                  "resources": [
+                                    {
+                                      "type": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials",
+                                      "apiVersion": "2024-11-30",
+                                      "name": "[format('{0}/{1}', parameters('userAssignedIdentityName'), parameters('name'))]",
+                                      "properties": {
+                                        "audiences": "[parameters('audiences')]",
+                                        "issuer": "[parameters('issuer')]",
+                                        "subject": "[parameters('subject')]"
+                                      }
+                                    }
+                                  ],
+                                  "outputs": {
+                                    "name": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "The name of the federated identity credential."
+                                      },
+                                      "value": "[parameters('name')]"
+                                    },
+                                    "resourceId": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "The resource ID of the federated identity credential."
+                                      },
+                                      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials', parameters('userAssignedIdentityName'), parameters('name'))]"
+                                    },
+                                    "resourceGroupName": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "The name of the resource group the federated identity credential was created in."
+                                      },
+                                      "value": "[resourceGroup().name]"
+                                    }
+                                  }
+                                }
+                              },
+                              "dependsOn": [
+                                "userAssignedIdentity"
+                              ]
+                            }
+                          },
+                          "outputs": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the user assigned identity."
+                              },
+                              "value": "[parameters('name')]"
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the user assigned identity."
+                              },
+                              "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
+                            },
+                            "principalId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The principal ID (object ID) of the user assigned identity."
+                              },
+                              "value": "[reference('userAssignedIdentity').principalId]"
+                            },
+                            "clientId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The client ID (application ID) of the user assigned identity."
+                              },
+                              "value": "[reference('userAssignedIdentity').clientId]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource group the user assigned identity was deployed into."
+                              },
+                              "value": "[resourceGroup().name]"
+                            },
+                            "location": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The location the resource was deployed into."
+                              },
+                              "value": "[reference('userAssignedIdentity', '2024-11-30', 'full').location]"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('verify-sample-image-{0}', uniqueString(resourceGroup().id))]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "name": {
+                            "value": "[format('verify-sample-image-{0}', uniqueString(resourceGroup().id))]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
+                          },
+                          "kind": {
+                            "value": "AzurePowerShell"
+                          },
+                          "azPowerShellVersion": {
+                            "value": "16.4"
+                          },
+                          "managedIdentities": {
+                            "value": {
+                              "userAssignedResourceIds": [
+                                "[reference(resourceId('Microsoft.Resources/deployments', format('image-signer-{0}', uniqueString(resourceGroup().id))), '2025-04-01').outputs.resourceId.value]"
+                              ]
+                            }
+                          },
+                          "environmentVariables": {
+                            "value": [
+                              {
+                                "name": "AZURE_CLIENT_ID",
+                                "value": "[reference(resourceId('Microsoft.Resources/deployments', format('image-signer-{0}', uniqueString(resourceGroup().id))), '2025-04-01').outputs.clientId.value]"
+                              },
+                              {
+                                "name": "REGISTRY_NAME",
+                                "value": "[parameters('containerRegistryName')]"
+                              },
+                              {
+                                "name": "REGISTRY_LOGIN_SERVER",
+                                "value": "[parameters('containerRegistryLoginServer')]"
+                              },
+                              {
+                                "name": "RESOURCE_GROUP_NAME",
+                                "value": "[resourceGroup().name]"
+                              },
+                              {
+                                "name": "KEY_VAULT_NAME",
+                                "value": "[parameters('keyVaultName')]"
+                              }
+                            ]
+                          },
+                          "scriptContent": {
+                            "value": "[format('{0}\n{1}', variables('$fxv#0'), variables('runScript'))]"
+                          },
+                          "subnetResourceIds": {
+                            "value": [
+                              "[parameters('deploymentSubnetResourceId')]"
+                            ]
+                          },
+                          "storageAccountResourceId": {
+                            "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+                          },
+                          "cleanupPreference": {
+                            "value": "Always"
+                          },
+                          "timeout": {
+                            "value": "PT30M"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.38.5.1644",
+                              "templateHash": "15708671729414029939"
+                            },
+                            "name": "Deployment Scripts",
+                            "description": "This module deploys Deployment Scripts."
+                          },
+                          "definitions": {
+                            "environmentVariableType": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The name of the environment variable."
+                                  }
+                                },
+                                "secureValue": {
+                                  "type": "securestring",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Conditional. The value of the secure environment variable. Required if `value` is null."
+                                  }
+                                },
+                                "value": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Conditional. The value of the environment variable. Required if `secureValue` is null."
+                                  }
+                                }
+                              }
+                            },
+                            "lockType": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Specify the name of lock."
+                                  }
+                                },
+                                "kind": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "CanNotDelete",
+                                    "None",
+                                    "ReadOnly"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Specify the type of lock."
+                                  }
+                                },
+                                "notes": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Specify the notes of the lock."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "description": "An AVM-aligned type for a lock.",
+                                "__bicep_imported_from!": {
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                                }
+                              }
+                            },
+                            "managedIdentityOnlyUserAssignedType": {
+                              "type": "object",
+                              "properties": {
+                                "userAssignedResourceIds": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+                                "__bicep_imported_from!": {
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                                }
+                              }
+                            },
+                            "roleAssignmentType": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                                  }
+                                },
+                                "roleDefinitionIdOrName": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                                  }
+                                },
+                                "principalId": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                                  }
+                                },
+                                "principalType": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "Device",
+                                    "ForeignGroup",
+                                    "Group",
+                                    "ServicePrincipal",
+                                    "User"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The principal type of the assigned principal ID."
+                                  }
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The description of the role assignment."
+                                  }
+                                },
+                                "condition": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                                  }
+                                },
+                                "conditionVersion": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "2.0"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Version of the condition."
+                                  }
+                                },
+                                "delegatedManagedIdentityResourceId": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "description": "An AVM-aligned type for a role assignment.",
+                                "__bicep_imported_from!": {
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                                }
+                              }
+                            }
+                          },
+                          "parameters": {
+                            "name": {
+                              "type": "string",
+                              "maxLength": 90,
+                              "metadata": {
+                                "description": "Required. Name of the Deployment Script."
+                              }
+                            },
+                            "location": {
+                              "type": "string",
+                              "defaultValue": "[resourceGroup().location]",
+                              "metadata": {
+                                "description": "Optional. Location for all resources."
+                              }
+                            },
+                            "kind": {
+                              "type": "string",
+                              "allowedValues": [
+                                "AzureCLI",
+                                "AzurePowerShell"
+                              ],
+                              "metadata": {
+                                "description": "Required. Specifies the Kind of the Deployment Script."
+                              }
+                            },
+                            "managedIdentities": {
+                              "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The managed identity definition for this resource."
+                              }
+                            },
+                            "tags": {
+                              "type": "object",
+                              "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.Resources/deploymentScripts@2021-12-01#properties/tags"
+                                },
+                                "description": "Optional. Resource tags."
+                              },
+                              "nullable": true
+                            },
+                            "azPowerShellVersion": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Azure PowerShell module version to be used. See a list of supported Azure PowerShell versions: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list."
+                              }
+                            },
+                            "azCliVersion": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Azure CLI module version to be used. See a list of supported Azure CLI versions: https://mcr.microsoft.com/v2/azure-cli/tags/list."
+                              }
+                            },
+                            "scriptContent": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Script body. Max length: 32000 characters. To run an external script, use primaryScriptURI instead."
+                              }
+                            },
+                            "primaryScriptUri": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead."
+                              }
+                            },
+                            "environmentVariables": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/environmentVariableType"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The environment variables to pass over to the script."
+                              }
+                            },
+                            "supportingScriptUris": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent)."
+                              }
+                            },
+                            "subnetResourceIds": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. When using a private network, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys. Also, Shared-Keys must not be disabled on the used storage account [ref](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet)."
+                              }
+                            },
+                            "arguments": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Command-line arguments to pass to the script. Arguments are separated by spaces."
+                              }
+                            },
+                            "retentionInterval": {
+                              "type": "string",
+                              "defaultValue": "P1D",
+                              "metadata": {
+                                "description": "Optional. Interval for which the service retains the script resource after it reaches a terminal state. Resource will be deleted when this duration expires. Duration is based on ISO 8601 pattern (for example P7D means one week)."
+                              }
+                            },
+                            "baseTime": {
+                              "type": "string",
+                              "defaultValue": "[utcNow('yyyy-MM-dd-HH-mm-ss')]",
+                              "metadata": {
+                                "description": "Generated. Do not provide a value! This date value is used to make sure the script run every time the template is deployed."
+                              }
+                            },
+                            "runOnce": {
+                              "type": "bool",
+                              "defaultValue": false,
+                              "metadata": {
+                                "description": "Optional. When set to false, script will run every time the template is deployed. When set to true, the script will only run once."
+                              }
+                            },
+                            "cleanupPreference": {
+                              "type": "string",
+                              "defaultValue": "Always",
+                              "allowedValues": [
+                                "Always",
+                                "OnSuccess",
+                                "OnExpiration"
+                              ],
+                              "metadata": {
+                                "description": "Optional. The clean up preference when the script execution gets in a terminal state. Specify the preference on when to delete the deployment script resources. The default value is Always, which means the deployment script resources are deleted despite the terminal state (Succeeded, Failed, canceled)."
+                              }
+                            },
+                            "containerGroupName": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Container group name, if not specified then the name will get auto-generated. Not specifying a 'containerGroupName' indicates the system to generate a unique name which might end up flagging an Azure Policy as non-compliant. Use 'containerGroupName' when you have an Azure Policy that expects a specific naming convention or when you want to fully control the name. 'containerGroupName' property must be between 1 and 63 characters long, must contain only lowercase letters, numbers, and dashes and it cannot start or end with a dash and consecutive dashes are not allowed."
+                              }
+                            },
+                            "storageAccountResourceId": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. The resource ID of the storage account to use for this deployment script. If none is provided, the deployment script uses a temporary, managed storage account."
+                              }
+                            },
+                            "timeout": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; 'PT30M' - 30 minutes; 'P5D' - 5 days; 'P1Y' 1 year."
+                              }
+                            },
+                            "lock": {
+                              "$ref": "#/definitions/lockType",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The lock settings of the service."
+                              }
+                            },
+                            "roleAssignments": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/roleAssignmentType"
+                              },
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Array of role assignments to create."
+                              }
+                            },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
+                            }
+                          },
+                          "variables": {
+                            "copy": [
+                              {
+                                "name": "formattedRoleAssignments",
+                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                              },
+                              {
+                                "name": "subnetIds",
+                                "count": "[length(coalesce(parameters('subnetResourceIds'), createArray()))]",
+                                "input": {
+                                  "id": "[coalesce(parameters('subnetResourceIds'), createArray())[copyIndex('subnetIds')]]"
+                                }
+                              }
+                            ],
+                            "builtInRoleNames": {
+                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                            },
+                            "containerSettings": {
+                              "containerGroupName": "[parameters('containerGroupName')]",
+                              "subnetIds": "[if(not(empty(coalesce(variables('subnetIds'), createArray()))), variables('subnetIds'), null())]"
+                            },
+                            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+                            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+                          },
+                          "resources": {
+                            "storageAccount": {
+                              "condition": "[not(empty(parameters('storageAccountResourceId')))]",
+                              "existing": true,
+                              "type": "Microsoft.Storage/storageAccounts",
+                              "apiVersion": "2025-01-01",
+                              "subscriptionId": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2]]",
+                              "resourceGroup": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]]",
+                              "name": "[last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))]"
+                            },
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "deploymentScript": {
+                              "type": "Microsoft.Resources/deploymentScripts",
+                              "apiVersion": "2023-08-01",
+                              "name": "[parameters('name')]",
+                              "location": "[parameters('location')]",
+                              "tags": "[parameters('tags')]",
+                              "identity": "[variables('identity')]",
+                              "kind": "[parameters('kind')]",
+                              "properties": {
+                                "azPowerShellVersion": "[if(equals(parameters('kind'), 'AzurePowerShell'), parameters('azPowerShellVersion'), null())]",
+                                "azCliVersion": "[if(equals(parameters('kind'), 'AzureCLI'), parameters('azCliVersion'), null())]",
+                                "containerSettings": "[if(not(empty(variables('containerSettings'))), variables('containerSettings'), null())]",
+                                "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', if(empty(parameters('subnetResourceIds')), listKeys('storageAccount', '2025-01-01').keys[0].value, null()), 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
+                                "arguments": "[parameters('arguments')]",
+                                "environmentVariables": "[parameters('environmentVariables')]",
+                                "scriptContent": "[parameters('scriptContent')]",
+                                "primaryScriptUri": "[parameters('primaryScriptUri')]",
+                                "supportingScriptUris": "[parameters('supportingScriptUris')]",
+                                "cleanupPreference": "[parameters('cleanupPreference')]",
+                                "forceUpdateTag": "[if(parameters('runOnce'), resourceGroup().name, parameters('baseTime'))]",
+                                "retentionInterval": "[parameters('retentionInterval')]",
+                                "timeout": "[parameters('timeout')]"
+                              }
+                            },
+                            "deploymentScript_lock": {
+                              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                              "type": "Microsoft.Authorization/locks",
+                              "apiVersion": "2020-05-01",
+                              "scope": "[format('Microsoft.Resources/deploymentScripts/{0}', parameters('name'))]",
+                              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+                              "properties": {
+                                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+                              },
+                              "dependsOn": [
+                                "deploymentScript"
+                              ]
+                            },
+                            "deploymentScript_roleAssignments": {
+                              "copy": {
+                                "name": "deploymentScript_roleAssignments",
+                                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                              },
+                              "type": "Microsoft.Authorization/roleAssignments",
+                              "apiVersion": "2022-04-01",
+                              "scope": "[format('Microsoft.Resources/deploymentScripts/{0}', parameters('name'))]",
+                              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Resources/deploymentScripts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                              "properties": {
+                                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                              },
+                              "dependsOn": [
+                                "deploymentScript"
+                              ]
+                            },
+                            "deploymentScriptLogs": {
+                              "existing": true,
+                              "type": "Microsoft.Resources/deploymentScripts/logs",
+                              "apiVersion": "2023-08-01",
+                              "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+                              "dependsOn": [
+                                "deploymentScript"
+                              ]
+                            }
+                          },
+                          "outputs": {
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the deployment script."
+                              },
+                              "value": "[resourceId('Microsoft.Resources/deploymentScripts', parameters('name'))]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource group the deployment script was deployed into."
+                              },
+                              "value": "[resourceGroup().name]"
+                            },
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the deployment script."
+                              },
+                              "value": "[parameters('name')]"
+                            },
+                            "location": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The location the resource was deployed into."
+                              },
+                              "value": "[reference('deploymentScript', '2023-08-01', 'full').location]"
+                            },
+                            "outputs": {
+                              "type": "object",
+                              "metadata": {
+                                "description": "The output of the deployment script."
+                              },
+                              "value": "[coalesce(tryGet(reference('deploymentScript'), 'outputs'), createObject())]"
+                            },
+                            "deploymentScriptLogs": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "metadata": {
+                                "description": "The logs of the deployment script."
+                              },
+                              "value": "[split(reference('deploymentScriptLogs').log, '\n')]"
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "registryPermissions",
+                        "[resourceId('Microsoft.Resources/deployments', format('image-signer-{0}', uniqueString(resourceGroup().id)))]",
+                        "[extensionResourceId(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), 'Microsoft.Authorization/roleAssignments', guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), variables('signerResourceId'), '69566ab7-960f-475b-8e7c-b3118f30c6bd'))]",
+                        "vaultPermissions"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "image": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The immutable image reference released only after strict Notation verification."
+                      },
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('verify-sample-image-{0}', uniqueString(resourceGroup().id))), '2025-04-01').outputs.outputs.value.image]"
+                    },
+                    "signatureDigest": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The newly produced OCI signature digest."
+                      },
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('verify-sample-image-{0}', uniqueString(resourceGroup().id))), '2025-04-01').outputs.outputs.value.signatureDigest]"
+                    },
+                    "certificateBase64": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The public sample publisher certificate. Its private signing key remains in Key Vault."
+                      },
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('verify-sample-image-{0}', uniqueString(resourceGroup().id))), '2025-04-01').outputs.outputs.value.certificateBase64]"
+                    },
+                    "certificateSubject": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The exact trusted X.509 publisher identity."
+                      },
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('verify-sample-image-{0}', uniqueString(resourceGroup().id))), '2025-04-01').outputs.outputs.value.certificateSubject]"
+                    },
+                    "strictVerification": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Whether strict Notation verification succeeded."
+                      },
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('verify-sample-image-{0}', uniqueString(resourceGroup().id))), '2025-04-01').outputs.outputs.value.strictVerification]"
+                    },
+                    "signerResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the scoped image signing managed identity."
+                      },
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('image-signer-{0}', uniqueString(resourceGroup().id))), '2025-04-01').outputs.resourceId.value]"
+                    },
+                    "signerClientId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The client ID of the scoped image signing managed identity."
+                      },
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('image-signer-{0}', uniqueString(resourceGroup().id))), '2025-04-01').outputs.clientId.value]"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
@@ -47304,11 +48750,19 @@
                     "value": [
                       {
                         "name": "simple-hello",
-                        "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+                        "image": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', 'verify-sample-image'), '2025-04-01').outputs.image.value]",
                         "resources": {
                           "cpu": "[json('0.25')]",
                           "memory": "0.5Gi"
                         }
+                      }
+                    ]
+                  },
+                  "registries": {
+                    "value": [
+                      {
+                        "server": "[parameters('containerRegistryLoginServer')]",
+                        "identity": "[parameters('containerRegistryUserAssignedIdentityId')]"
                       }
                     ]
                   },
@@ -48459,7 +49913,10 @@
                     }
                   }
                 }
-              }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', 'verify-sample-image')]"
+              ]
             }
           ],
           "outputs": {
@@ -48469,6 +49926,23 @@
                 "description": "The FQDN of the \"Hello World\" Container App."
               },
               "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', parameters('helloWorldContainerAppName')), '2025-04-01').outputs.fqdn.value]"
+            },
+            "imageVerification": {
+              "type": "object",
+              "metadata": {
+                "description": "The actual immutable image verification, public certificate and scoped signer bindings."
+              },
+              "value": {
+                "image": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', 'verify-sample-image'), '2025-04-01').outputs.image.value]",
+                "signatureDigest": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', 'verify-sample-image'), '2025-04-01').outputs.signatureDigest.value]",
+                "certificateBase64": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', 'verify-sample-image'), '2025-04-01').outputs.certificateBase64.value]",
+                "certificateSubject": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', 'verify-sample-image'), '2025-04-01').outputs.certificateSubject.value]",
+                "strictVerification": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', 'verify-sample-image'), '2025-04-01').outputs.strictVerification.value]",
+                "signerResourceId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', 'verify-sample-image'), '2025-04-01').outputs.signerResourceId.value]",
+                "signerClientId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', 'verify-sample-image'), '2025-04-01').outputs.signerClientId.value]",
+                "storageAccountName": "[parameters('storageAccountName')]",
+                "deploymentSubnetResourceId": "[parameters('deploymentSubnetResourceId')]"
+              }
             }
           }
         }
@@ -48476,6 +49950,7 @@
       "dependsOn": [
         "containerAppsEnvironment",
         "naming",
+        "spoke",
         "spokeResourceGroup",
         "supportingServices"
       ]
@@ -48542,8 +50017,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "8630964408160262786"
+              "version": "0.48.1.52935",
+              "templateHash": "14253936802294921109"
             }
           },
           "parameters": {
@@ -49172,8 +50647,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "2992362113950836377"
+                      "version": "0.48.1.52935",
+                      "templateHash": "13234966255371518635"
                     }
                   },
                   "parameters": {
@@ -50114,8 +51589,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "13673269021550513158"
+                      "version": "0.48.1.52935",
+                      "templateHash": "320673647135427633"
                     }
                   },
                   "parameters": {
@@ -50643,6 +52118,13 @@
         "description": "The keyvault URI endpoint."
       },
       "value": "[format('{0}.{1}', reference('supportingServices').outputs.keyVaultName.value, environment().suffixes.keyvaultDns)]"
+    },
+    "sampleImageVerification": {
+      "type": "object",
+      "metadata": {
+        "description": "The sample image digest, public publisher certificate and scoped signing identity. Empty when the sample is disabled. Consuming deployments must strictly verify the exact digest before submission; ACA does not enforce an admission policy for unrelated deployment paths."
+      },
+      "value": "[if(parameters('deploySampleApplication'), reference('sampleApplication').outputs.imageVerification.value, createObject())]"
     },
     "applicationGatewayResourceId": {
       "type": "string",

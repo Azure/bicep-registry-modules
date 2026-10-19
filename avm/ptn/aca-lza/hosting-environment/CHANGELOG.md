@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/aca-lza/hosting-environment/CHANGELOG.md).
 
+## 0.7.0
+
+### Changes
+
+- Replaced legacy Docker Content Trust with a private-registry sample image signed by a non-exportable Key Vault key and strictly verified with Notation before deployment.
+- Preserved quarantine and added native trusted, unsigned, tampered and untrusted-root verification coverage to the existing WAF fixture.
+
+### Breaking Changes
+
+- Docker Content Trust is no longer enabled. Other consuming pipelines must configure approved Notation publisher trust and verify the exact image digest; this sample gate is not an ACA runtime admission policy.
+
 ## 0.6.4
 
 ### Changes
