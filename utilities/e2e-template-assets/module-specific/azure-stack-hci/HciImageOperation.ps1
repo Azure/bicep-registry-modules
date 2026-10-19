@@ -5,9 +5,17 @@
     if ($Value -is [datetimeoffset] -or ($Value -is [datetime] -and $Value.Kind -ne [DateTimeKind]::Unspecified)) {
         return ([datetimeoffset] $Value).ToUniversalTime()
     }
+    if ($Value -isnot [string] -or $Value -cnotmatch '\A(?<seconds>[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(?:\.(?<fraction>[0-9]{1,9}))?(?<offset>Z|[+-][0-9]{2}:[0-9]{2})\z') {
+        throw 'An image build timestamp is missing its valid, absolute time-zone-qualified value.'
+    }
+    $text = $Value
+    $fraction = $Matches['fraction']
+    if ($fraction -and $fraction.Length -gt 7) {
+        # Truncate sub-tick precision for comparisons; rounding could extend a deadline.
+        $text = "$($Matches.seconds).$($fraction.Substring(0, 7))$($Matches.offset)"
+    }
     $timestamp = [datetimeoffset]::MinValue
-    if ($Value -isnot [string] -or $Value -notmatch '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,7})?(?:Z|[+-]\d{2}:\d{2})$' -or
-        -not [datetimeoffset]::TryParse($Value, [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::None, [ref] $timestamp)) {
+    if (-not [datetimeoffset]::TryParse($text, [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::None, [ref] $timestamp)) {
         throw 'An image build timestamp is missing its valid, absolute time-zone-qualified value.'
     }
     return $timestamp.ToUniversalTime()

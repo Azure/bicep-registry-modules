@@ -1,5 +1,64 @@
 ﻿param ([string] $RepoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.FullName)
 
+Describe 'HCI image build timestamps' {
+    BeforeAll {
+        . (Join-Path $RepoRootPath 'utilities' 'e2e-template-assets' 'module-specific' 'azure-stack-hci' 'HciImageOperation.ps1')
+    }
+
+    It 'Parses the absolute timestamp <value> without rounding its sub-tick precision' -ForEach @(
+        @{ value = '2026-10-16T09:46:45Z'; expected = '2026-10-16T09:46:45.0000000+00:00' }
+        @{ value = '2026-10-16T09:46:45.7Z'; expected = '2026-10-16T09:46:45.7000000+00:00' }
+        @{ value = '2026-10-16T09:46:45.7451557Z'; expected = '2026-10-16T09:46:45.7451557+00:00' }
+        @{ value = '2026-10-16T09:46:45.74515578Z'; expected = '2026-10-16T09:46:45.7451557+00:00' }
+        @{ value = '2026-10-16T09:46:45.745155778Z'; expected = '2026-10-16T09:46:45.7451557+00:00' }
+        @{ value = '2026-10-16T17:48:22.992171779Z'; expected = '2026-10-16T17:48:22.9921717+00:00' }
+        @{ value = '2026-10-16T15:31:45.745155778+05:45'; expected = '2026-10-16T09:46:45.7451557+00:00' }
+        @{ value = '2026-10-16T02:16:45.745155778-07:30'; expected = '2026-10-16T09:46:45.7451557+00:00' }
+        @{ value = '2026-10-16T23:59:59.999999999Z'; expected = '2026-10-16T23:59:59.9999999+00:00' }
+    ) {
+        (ConvertTo-HciImageBuildTimestamp -Value $value).ToString('o') | Should -BeExactly $expected
+    }
+
+    It 'Retains existing qualified DateTime and DateTimeOffset behavior' {
+        $utc = [datetime]::SpecifyKind([datetime] '2026-10-16T09:46:45.7451557', [DateTimeKind]::Utc)
+        ConvertTo-HciImageBuildTimestamp -Value $utc | Should -Be ([datetimeoffset] $utc)
+        ConvertTo-HciImageBuildTimestamp -Value $utc.ToLocalTime() | Should -Be ([datetimeoffset] $utc)
+        ConvertTo-HciImageBuildTimestamp -Value ([datetimeoffset] '2026-10-16T15:31:45.7451557+05:45') |
+            Should -Be ([datetimeoffset] $utc)
+    }
+
+    It 'Rejects the invalid or unqualified timestamp <label>' -ForEach @(
+        @{ label = 'null'; value = $null }
+        @{ label = 'empty'; value = '' }
+        @{ label = 'date only'; value = '2026-10-16' }
+        @{ label = 'missing timezone'; value = '2026-10-16T09:46:45.745155778' }
+        @{ label = 'unspecified DateTime'; value = [datetime]::SpecifyKind([datetime] '2026-10-16', [DateTimeKind]::Unspecified) }
+        @{ label = 'number'; value = 123 }
+        @{ label = 'too many fraction digits'; value = '2026-10-16T09:46:45.7451557780Z' }
+        @{ label = 'empty fraction'; value = '2026-10-16T09:46:45.Z' }
+        @{ label = 'invalid calendar date'; value = '2026-02-30T09:46:45.745155778Z' }
+        @{ label = 'invalid offset'; value = '2026-10-16T09:46:45.745155778+14:01' }
+        @{ label = 'leap second'; value = '2026-10-16T09:46:60.745155778Z' }
+        @{ label = 'leading whitespace'; value = ' 2026-10-16T09:46:45Z' }
+        @{ label = 'trailing newline'; value = "2026-10-16T09:46:45Z`n" }
+        @{ label = 'offset without colon'; value = '2026-10-16T09:46:45+0545' }
+        @{ label = 'malformed'; value = 'not-a-timestamp' }
+    ) {
+        { ConvertTo-HciImageBuildTimestamp -Value $value } | Should -Throw
+    }
+
+    It 'Does not promote sub-tick ordering or extend a deadline to the next tick' {
+        $earlier = ConvertTo-HciImageBuildTimestamp -Value '2026-10-16T09:46:45.745155701Z'
+        $later = ConvertTo-HciImageBuildTimestamp -Value '2026-10-16T09:46:45.745155799Z'
+        $nextTick = ConvertTo-HciImageBuildTimestamp -Value '2026-10-16T09:46:45.745155800Z'
+
+        ($later -gt $earlier) | Should -BeFalse
+        ($nextTick -gt $earlier) | Should -BeTrue
+        ($later -le [datetimeoffset] '2026-10-16T09:46:45.7451557Z') | Should -BeTrue
+        $later.UtcTicks | Should -Be ($earlier.UtcTicks)
+    }
+}
+
 Describe 'HCI image build job handoffs' {
     BeforeAll {
         $buildScript = Join-Path $RepoRootPath 'utilities' 'e2e-template-assets' 'module-specific' 'azure-stack-hci' 'Invoke-HciHostImageBuild.ps1'
@@ -35,6 +94,8 @@ Describe 'HCI image build job handoffs' {
         $script:postRunState = 'Running'
         $script:retryAfter = 15
         $script:includeDifferentLocation = $false
+        $script:providerRunStartText = $null
+        $script:postRunStartText = $null
         $script:inputs = @{
             AssetBaseUri = 'https://example.test/pinned-assets'
             SubscriptionId = '11111111-1111-1111-1111-111111111111'
@@ -58,6 +119,7 @@ Describe 'HCI image build job handoffs' {
         Mock Invoke-HciImageOperationRequest {
             if ($Method -eq 'POST') {
                 $script:runStart = $script:now
+                $script:providerRunStartText = $script:postRunStartText
                 $script:runState = $script:postRunState
                 $response = @{ StatusCode = $script:postStatus; RetryAfterSeconds = $script:retryAfter }
                 if (-not $script:omitOperationHeader) {
@@ -93,7 +155,10 @@ Describe 'HCI image build job handoffs' {
             if (-not $script:templateExists) { return New-Response @{} 404 }
             New-Response @{
                 location = 'southeastasia'
-                properties = @{ lastRunStatus = @{ startTime = $script:runStart.ToString('o'); runState = $script:runState } }
+                properties = @{ lastRunStatus = @{
+                    startTime = $script:providerRunStartText ? $script:providerRunStartText : $script:runStart.ToString('o')
+                    runState = $script:runState
+                } }
             }
         }
     }
@@ -121,6 +186,86 @@ Describe 'HCI image build job handoffs' {
             $TemplateParameterObject.resourceGroupName -eq 'rg-avm-ci-azure-local-image' -and
             $TemplateParameterObject.stagingResourceGroupName -eq 'rg-avm-ci-azure-local-image-build' -and
             $TemplateParameterObject.tags.lifecycle -eq 'tenant-persistent'
+        }
+    }
+
+    It 'Starts and observes the actual nine-digit provider value through the real ARM JSON path without replay' {
+        $script:now = [datetimeoffset] '2026-10-16T09:46:45.7451557Z'
+        $script:postRunStartText = '2026-10-16T09:46:45.745155778Z'
+        $deadline = $script:now.AddMinutes(570)
+        $started = . $buildScript @inputs -Operation Start -BuildDeadlineUtc $deadline
+        $receiptHash = Get-HciImageOperationHash -OperationUri $started.OperationReceipt
+        $receipt = ConvertFrom-HciPrivateJson -Value $started.OperationReceipt
+        $raw = Get-ArmResource -ResourceId $started.ImageTemplateResourceId -ApiVersion '2025-10-01'
+
+        $raw.properties.lastRunStatus.startTime | Should -BeOfType [string]
+        $raw.properties.lastRunStatus.startTime | Should -BeExactly $script:postRunStartText
+        $started.BuildStatus | Should -BeExactly 'Running'
+        $receipt.observedRunStartTime | Should -BeExactly '2026-10-16T09:46:45.7451557+00:00'
+        $receipt.deadline | Should -BeExactly $deadline.ToString('o')
+
+        $script:operationState = 'Succeeded'
+        $script:runState = 'Succeeded'
+        $script:published = $true
+        $observed = . $buildScript @inputs -Operation Observe -OperationReceipt $started.OperationReceipt
+
+        $observed.BuildStatus | Should -BeExactly 'Succeeded'
+        Get-HciImageOperationHash -OperationUri $started.OperationReceipt | Should -BeExactly $receiptHash
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+    }
+
+    It 'Requires a strictly newer representable provider run for <label>' -ForEach @(
+        @{ label = 'sub-tick-only change'; nextStart = '2026-10-16T09:46:45.745155799Z'; newer = $false }
+        @{ label = 'the next tick'; nextStart = '2026-10-16T09:46:45.745155800Z'; newer = $true }
+    ) {
+        $script:now = [datetimeoffset] '2026-10-16T09:46:45.7451557Z'
+        $script:templateExists = $true
+        $script:providerRunStartText = '2026-10-16T09:46:45.745155700Z'
+        $script:postRunStartText = $nextStart
+        if ($newer) {
+            $started = . $buildScript @inputs -Operation Start
+            $receipt = ConvertFrom-HciPrivateJson -Value $started.OperationReceipt
+            $receipt.observedRunStartTime | Should -BeExactly '2026-10-16T09:46:45.7451558+00:00'
+            $receipt.previousRunStartTime | Should -BeExactly '2026-10-16T09:46:45.7451557+00:00'
+        } else {
+            { . $buildScript @inputs -Operation Start } | Should -Throw '*no observable run identity*outcome is uncertain*'
+        }
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+    }
+
+    It 'Rejects an expired or exactly reached deadline before POST at <ticks> ticks from now' -ForEach @(
+        @{ ticks = -1 }, @{ ticks = 0 }
+    ) {
+        { . $buildScript @inputs -Operation Start -BuildDeadlineUtc $script:now.AddTicks($ticks) } |
+            Should -Throw '*image deadline has expired*'
+        Should -Invoke Invoke-HciImageOperationRequest -Times 0 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
+    }
+
+    It 'Keeps a deadline one tick in the future unchanged in the new receipt' {
+        $deadline = $script:now.AddTicks(1)
+        $started = . $buildScript @inputs -Operation Start -BuildDeadlineUtc $deadline
+        $receipt = ConvertFrom-HciPrivateJson -Value $started.OperationReceipt
+
+        $receipt.deadline | Should -BeExactly $deadline.ToString('o')
+        Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+    }
+
+    It 'Does not round a receipt deadline past the reached tick or mutate its bytes' {
+        $started = . $buildScript @inputs -Operation Start
+        $receipt = ConvertFrom-HciPrivateJson -Value $started.OperationReceipt
+        $script:now = [datetimeoffset] '2026-10-01T10:01:00.1234567Z'
+        $receipt.deadline = '2026-10-01T10:01:00.123456799Z'
+        $private = ConvertTo-HciPrivateValue ($receipt | ConvertTo-Json -Depth 10 -Compress)
+        try {
+            $hash = Get-HciImageOperationHash -OperationUri $private
+            { . $buildScript @inputs -Operation Observe -OperationReceipt $private } | Should -Throw '*image deadline has expired*'
+            Get-HciImageOperationHash -OperationUri $private | Should -BeExactly $hash
+            Should -Invoke Invoke-HciImageOperationRequest -Times 0 -Exactly -ParameterFilter { $Method -eq 'GET' }
+            Should -Invoke Invoke-HciImageOperationRequest -Times 1 -Exactly -ParameterFilter { $Method -eq 'POST' }
+        } finally {
+            $private.Dispose()
         }
     }
 

@@ -336,7 +336,7 @@ try {
             throw 'An image build is already active. Observe its recorded operation; Start cannot adopt or resubmit it.'
         }
         if ($templateBeforeDeployment.properties.lastRunStatus.startTime) {
-            $observedRunStartTime = [datetimeoffset] $templateBeforeDeployment.properties.lastRunStatus.startTime
+            $observedRunStartTime = ConvertTo-HciImageBuildTimestamp -Value $templateBeforeDeployment.properties.lastRunStatus.startTime
             if (-not $PSBoundParameters.ContainsKey('BuildDeadlineUtc')) {
                 $deadline = $observedRunStartTime.AddMinutes($BuildTimeoutInMinutes)
             }
@@ -374,7 +374,7 @@ try {
 
         $templateBeforeRun = Get-ArmResource -ResourceId $imageTemplateResourceId -ApiVersion $imageTemplateApiVersion
         if ($templateBeforeRun.properties.lastRunStatus.startTime) {
-            $previousRunStartTime = [datetimeoffset] $templateBeforeRun.properties.lastRunStatus.startTime
+            $previousRunStartTime = ConvertTo-HciImageBuildTimestamp -Value $templateBeforeRun.properties.lastRunStatus.startTime
         }
 
         if ([datetimeoffset] (Get-Date) -ge $deadline) {
@@ -480,7 +480,7 @@ try {
             continue
         }
 
-        $runStartTime = [datetimeoffset] $lastRunStatus.startTime
+        $runStartTime = ConvertTo-HciImageBuildTimestamp -Value $lastRunStatus.startTime
         if ($runStartTime -le $previousRunStartTime) {
             continue
         }

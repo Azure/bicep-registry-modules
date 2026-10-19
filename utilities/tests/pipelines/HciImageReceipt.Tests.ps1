@@ -10,6 +10,8 @@ Describe 'HCI confidential JSON parsing' {
         @{ timestamp = '2026-10-15T13:26:36.1234567+00:00' }
         @{ timestamp = '2026-10-15T13:26:36.1234567+05:45' }
         @{ timestamp = '2026-10-15T13:26:36.1234567-07:30' }
+        @{ timestamp = '2026-10-16T09:46:45.745155778Z' }
+        @{ timestamp = '2026-10-16T15:31:45.745155778+05:45' }
         @{ timestamp = '2026-10-15T13:26:36' }
         @{ timestamp = '2026-10-15' }
     ) {
@@ -334,6 +336,41 @@ Describe 'HCI immutable private receipt references' {
         $store.Binding[$field] = 'changed'
         { Get-HciImageReceipt -Store $store -Tags $tags } | Should -Throw '*owner, generation, run, resources, source or original deadline changed*'
         Should -Invoke Invoke-HciImageReceiptRequest -Times 1 -Exactly -ParameterFilter { $Operation -ceq 'Read' }
+    }
+
+    It 'Preserves exact private receipt bytes, hash and binding while interpreting a nine-digit operation time' {
+        $original = ConvertTo-HciPrivateValue $script:record
+        try {
+            $record = ConvertFrom-HciPrivateJson -Value $original
+        } finally {
+            $original.Dispose()
+        }
+        $record.operation.observedRunStartTime = '2026-10-16T09:46:45.745155778Z'
+        $script:record = $record | ConvertTo-Json -Depth 10 -Compress
+        $tags['avm-image-start'] = $record.operation.observedRunStartTime
+        $tags['avm-image-hash'] = Get-HciEnvironmentKey -Value $script:record
+        $originalHash = $tags['avm-image-hash']
+        $confirmed = Confirm-HciImageReceipt -Store $store -ETag $tags['avm-image-etag'] -Hash $originalHash
+        $operation = Get-HciImageReceipt -Store $store -Tags $tags
+        try {
+            $parsed = ConvertFrom-HciPrivateJson -Value $operation
+            (ConvertTo-HciImageBuildTimestamp -Value $parsed.observedRunStartTime).ToString('o') |
+                Should -BeExactly '2026-10-16T09:46:45.7451557+00:00'
+            $parsed.observedRunStartTime | Should -BeExactly '2026-10-16T09:46:45.745155778Z'
+            $exact = ([pscredential]::new('receipt', $confirmed)).GetNetworkCredential().Password
+            $exact | Should -BeExactly $script:record
+            Get-HciEnvironmentKey -Value $exact | Should -BeExactly $originalHash
+            $store.Binding.deadline | Should -BeExactly '2026-10-01T19:00:00.0000000+00:00'
+            Should -Invoke Invoke-HciImageReceiptRequest -Times 2 -Exactly -ParameterFilter { $Operation -ceq 'Read' }
+        } finally {
+            $confirmed.Dispose()
+            $operation.Dispose()
+        }
+    }
+
+    It 'Rejects a differently written but equivalent deadline binding without normalizing stored data' {
+        $store.Binding.deadline = '2026-10-01T19:00:00Z'
+        { Get-HciImageReceipt -Store $store -Tags $tags } | Should -Throw '*original deadline changed*'
     }
 
     It 'Rejects a changed public reference <field>' -ForEach @(
