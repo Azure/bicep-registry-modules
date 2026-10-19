@@ -825,6 +825,7 @@ function New-TemplateDeploymentInner {
                 Write-Verbose "Submission failure kind [$errorKind] for deployment [$deploymentName]." -Verbose
                 $recoveryFailed = $returnedFailure -and -not $returnedFailureDetailsRead
                 $nestedReadRecovery = $false
+                $transportRecovery = $false
                 $authorizationDenied = $false
                 if ($errorKind -eq 'Cancellation') {
                     throw
@@ -934,6 +935,7 @@ function New-TemplateDeploymentInner {
                 if ($submissionStarted -and $null -eq $res -and
                     ($errorKind -eq 'Timeout' -or ($errorKind -eq 'Transport' -and $deploymentScope -eq 'subscription'))) {
                     $requestErrorKind = $errorKind
+                    $transportRecovery = $requestErrorKind -eq 'Transport'
                     $recoveryDescription = $requestErrorKind.ToLowerInvariant()
                     if ($requestErrorKind -eq 'Timeout') {
                         Write-Warning "Request for deployment [$deploymentName] timed out; observing its status without resubmitting. $($deploymentError.Exception.Message)"
@@ -998,7 +1000,7 @@ function New-TemplateDeploymentInner {
                 $failedDeploymentMessage = "^(?:\d{2}:\d{2}:\d{2} - )?The deployment '$([regex]::Escape($deploymentName))' failed with error\(s\)\. (?:Showing \d+ out of \d+ error\(s\)\. Status Message: (?:(?!\(Code:)[^\r\n])* )?\(Code: DeploymentFailed\)(?:\s|$)"
                 $confirmedFailure = $res.ProvisioningState -eq 'Failed' -or ($errorKind -eq 'Other' -and $deploymentError.Exception.Message -cmatch $failedDeploymentMessage)
                 $unknownSubmission = $submissionStarted -and -not $preflightRejected -and -not $confirmedFailure
-                $retryAllowed = -not $unknownSubmission -and -not $recoveryFailed -and -not $nestedReadRecovery -and -not $authorizationDenied -and
+                $retryAllowed = -not $unknownSubmission -and -not $recoveryFailed -and -not $nestedReadRecovery -and -not $transportRecovery -and -not $authorizationDenied -and
                 $errorKind -notin @('Timeout', 'Transport', 'Forbidden')
                 if ($retryCount -ge $RetryLimit -or -not $retryAllowed) {
                     if ($DoNotThrow) {
@@ -1057,7 +1059,8 @@ Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
 After a submitted request times out, observe the same deployment for up to 60 minutes unless an absolute recovery deadline is supplied.
-Subscription transport failures use the same original-root observation, never an unconfirmed resubmission.
+Subscription transport failures use the same original-root observation and never permit legacy replay.
+Confirmed transport-recovered failure requires coordinated classification and complete cleanup before resubmission.
 Structured nested-operation GET 404s during subscription submission observe only the exact original root.
 That recovery never uses legacy replay; confirmed failure still requires coordinated classification and complete cleanup.
 Management-group HTTP 403 submissions use the same observation window and original Azure context.

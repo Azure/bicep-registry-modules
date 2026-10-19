@@ -94,7 +94,11 @@ var nsgRulesDbw = [
       description: 'Required for workers communication with Databricks Webapp'
       protocol: 'Tcp'
       sourcePortRange: '*'
-      destinationPortRange: '443'
+      destinationPortRanges: [
+        '443'
+        '3306'
+        '8443-8451'
+      ]
       sourceAddressPrefix: 'VirtualNetwork'
       destinationAddressPrefix: 'AzureDatabricks'
       access: 'Allow'

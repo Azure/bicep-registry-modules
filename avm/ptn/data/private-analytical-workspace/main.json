@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "16079542451193211781"
+      "version": "0.48.1.52935",
+      "templateHash": "7585762488678465675"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution."
@@ -412,7 +412,11 @@
           "description": "Required for workers communication with Databricks Webapp",
           "protocol": "Tcp",
           "sourcePortRange": "*",
-          "destinationPortRange": "443",
+          "destinationPortRanges": [
+            "443",
+            "3306",
+            "8443-8451"
+          ],
           "sourceAddressPrefix": "VirtualNetwork",
           "destinationAddressPrefix": "AzureDatabricks",
           "access": "Allow",

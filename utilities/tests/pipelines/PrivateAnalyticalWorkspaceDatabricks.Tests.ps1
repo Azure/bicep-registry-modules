@@ -3,7 +3,7 @@ param(
     [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.FullName
 )
 
-Describe 'Private analytical workspace Databricks encryption verification' {
+Describe 'Private analytical workspace Databricks verification' {
     BeforeAll {
         $modulePath = Join-Path $repoRootPath 'avm' 'ptn' 'data' 'private-analytical-workspace'
         $tokens = $null
@@ -47,6 +47,37 @@ Describe 'Private analytical workspace Databricks encryption verification' {
         $workspaceParameters.prepareEncryption.value | Should -BeTrue
         @($workspaceParameters.Keys | Where-Object { $_ -match '^(customerManagedKey|encryption)' }).Count |
             Should -Be 0
+    }
+
+    It 'Allows exactly the service-required control-plane ports without broadening the rule scope' {
+        $rules = @($template.variables.nsgRulesDbw | Where-Object {
+                $_.name -eq 'Microsoft.Databricks-workspaces_UseOnly_databricks-worker-to-webapp'
+            })
+        $rules.Count | Should -Be 1
+        $rule = $rules[0].properties
+        $rule.destinationPortRanges.Count | Should -Be 3
+        $rule.destinationPortRanges -join ',' | Should -Be '443,3306,8443-8451'
+        $rule.destinationPortRange | Should -BeNullOrEmpty
+        $rule.direction | Should -Be 'Outbound'
+        $rule.access | Should -Be 'Allow'
+        $rule.protocol | Should -Be 'Tcp'
+        $rule.sourceAddressPrefix | Should -Be 'VirtualNetwork'
+        $rule.sourcePortRange | Should -Be '*'
+        $rule.destinationAddressPrefix | Should -Be 'AzureDatabricks'
+        $rule.priority | Should -Be 100
+        $workspaceParameters.disablePublicIp.value | Should -BeTrue
+    }
+
+    It 'Passes the required rules to the actual <groupName> security group' -ForEach @(
+        @{ groupName = 'frontend'; nameVariable = 'nsgNameDbwFrontend' }
+        @{ groupName = 'backend'; nameVariable = 'nsgNameDbwBackend' }
+    ) {
+        $groups = @($resources | Where-Object {
+                $_.type -eq 'Microsoft.Resources/deployments' -and
+                $_.properties.parameters.name.value -eq "[variables('$nameVariable')]"
+            })
+        $groups.Count | Should -Be 1
+        $groups[0].properties.parameters.securityRules.value | Should -Be "[variables('nsgRulesDbw')]"
     }
 
     It 'Checks the actual <propertyName> assertion against <state> encryption configuration' -ForEach @(

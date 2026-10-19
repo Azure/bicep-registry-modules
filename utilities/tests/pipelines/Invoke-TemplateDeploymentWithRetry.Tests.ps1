@@ -3207,6 +3207,56 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         @($script:submissions) | Should -Be @('italynorth', 'swedencentral')
         $result.RemainingDeploymentNames | Should -Be @($script:names[1])
         Should -Invoke Get-AzDeployment -Times 3 -Exactly -ParameterFilter { $Name -eq $script:names[0] }
+        $script:trace.IndexOf("remove:$script:groupId") | Should -BeLessThan $script:trace.IndexOf("DELETE:$($script:roots[0])")
+        $script:trace.IndexOf("DELETE:$($script:roots[0])") | Should -BeLessThan $script:trace.IndexOf('submit:swedencentral')
+    }
+
+    It 'Does not legacy-replay a recovered Transport failure through direct <entryPoint> with RetryLimit three' -Tag 'TransportReplay' -ForEach @(
+        @{ entryPoint = 'New-TemplateDeployment' }
+        @{ entryPoint = 'New-TemplateDeploymentInner' }
+    ) {
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
+        $script:outcomes = @('Transport', 'Succeeded')
+        $template.variables.regionToken = 'italynorth'
+        $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+        $directInput = $templateInput.Clone()
+        $directInput.AdditionalParameters = $templateInput.AdditionalParameters.Clone()
+        $directInput.AdditionalParameters.resourceLocation = 'italynorth'
+        $directInput.DoNotThrow = $true
+        $directInput.RetryLimit = 3
+
+        $result = & $entryPoint @directInput
+
+        $result.Exception | Should -Match 'confirmed Failed during transport recovery'
+        $result.ErrorRecord.FullyQualifiedErrorId | Should -Be 'DeploymentFailedAfterTransport'
+        $result.RetryAllowed | Should -BeFalse
+        $result.FailureQueryAllowed | Should -BeTrue
+        $result.RecoveredFailure | Should -BeTrue
+        $result.DeploymentNames | Should -Be @($script:names)
+        $script:submissions.Count | Should -Be 1
+        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+        Should -Invoke Get-AzDeployment -Times 1 -Exactly
+        Should -Invoke Remove-AzResource -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
+    It 'Stops a recovered Transport failure without a positively classified cleanup/retry path' -Tag 'TransportReplay' {
+        $script:outcomes = @('Transport', 'Succeeded')
+        $script:regionalError = @{ error = @{ code = 'InvalidParameter'; message = 'Fixture input is invalid.' } }
+
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.Exception | Should -Match 'confirmed Failed during transport recovery'
+        $result.DeploymentAttempts | Should -Be 1
+        $result.RemainingDeploymentNames | Should -Be @($script:names)
+        $script:submissions.Count | Should -Be 1
+        $script:validations.Count | Should -Be 1
+        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+        Should -Invoke Get-AzDeployment -Times 2 -Exactly
+        Should -Invoke Remove-AzResource -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+        Should -Invoke Start-Sleep -Times 0 -Exactly
     }
 
     It 'Returns original successful outputs after a typed <outcome> without teardown or another submission' -ForEach @(
