@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine-scale-set/CHANGELOG.md).
 
+## 0.12.0
+
+### Changes
+
+- Added the optional, typed `galleryApplications` parameter to assign existing Gallery Application Versions to the common scale set model, including Flexible orchestration.
+
+### Breaking Changes
+
+- None
+
 ## 0.11.1
 
 ### Changes
