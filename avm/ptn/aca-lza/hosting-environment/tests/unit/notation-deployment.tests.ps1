@@ -21,6 +21,40 @@ Describe 'ACA-LZA compiled signing and consuming deployment behavior' {
             })[0]
     }
 
+    Describe 'ACA-LZA cross-platform compiled naming preservation' {
+        It 'Produces the same complete naming template and values from LF and CRLF JSONC inputs' {
+            $moduleRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
+            $namingRoot = Join-Path $moduleRoot 'modules' 'naming'
+            $fixture = Join-Path $TestDrive 'naming.module.bicep'
+            Copy-Item -LiteralPath (Join-Path $namingRoot 'naming.module.bicep') -Destination $fixture
+            $rules = [IO.File]::ReadAllText((Join-Path $namingRoot 'naming-rules.jsonc')).Replace("`r`n", "`n")
+            $compiled = [Collections.Generic.List[Text.Json.Nodes.JsonNode]]::new()
+            foreach ($newline in @("`n", "`r`n")) {
+                [IO.File]::WriteAllText(
+                    (Join-Path $TestDrive 'naming-rules.jsonc'),
+                    $rules.Replace("`n", $newline),
+                    [Text.UTF8Encoding]::new($false)
+                )
+                $outputPath = Join-Path $TestDrive "naming-$($compiled.Count).json"
+                $diagnostics = bicep build $fixture --outfile $outputPath 2>&1
+                if ($LASTEXITCODE -ne 0) { throw "Actual naming compilation failed: $($diagnostics -join "`n")" }
+                $compiled.Add([Text.Json.Nodes.JsonNode]::Parse([IO.File]::ReadAllText($outputPath)))
+            }
+            [Text.Json.Nodes.JsonNode]::DeepEquals($compiled[0], $compiled[1]) |
+                Should -BeTrue -Because 'the generated naming deployment must not depend on the checkout newline convention'
+            $rulesNode = $compiled[0]['variables']['naming']
+            if ($rulesNode -is [Text.Json.Nodes.JsonValue]) {
+                if ($rulesNode.GetValue[string]() -cnotmatch "^\[variables\('(?<variable>[^']+)'\)\]$") {
+                    throw 'Compiled naming rules did not resolve to an object or a direct variable reference.'
+                }
+                $rulesNode = $compiled[0]['variables'][$Matches.variable]
+            }
+            $actualRules = $rulesNode.ToJsonString() | ConvertFrom-Json -AsHashtable
+            ($actualRules | ConvertTo-Json -Depth 20 -Compress) |
+                Should -BeExactly (($rules | ConvertFrom-Json -AsHashtable) | ConvertTo-Json -Depth 20 -Compress)
+        }
+    }
+
     It 'Keeps optional sample deployment off by default but exercises the complete gate in the existing WAF fixture' {
         $main.parameters.deploySampleApplication.defaultValue | Should -BeFalse
         $sample.condition | Should -BeExactly "[parameters('deploySampleApplication')]"
