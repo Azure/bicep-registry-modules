@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module using Customer-Managed-
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-synapse.workspaces-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-synapse.workspaces-${serviceShort}-${uniqueString(subscription().id, baseTime)}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -41,7 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
+    storageAccountName: 'dep${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     location: resourceLocation
   }
 }
