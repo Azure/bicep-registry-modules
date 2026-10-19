@@ -7065,6 +7065,7 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 | [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk. |
 | [`lun`](#parameter-datadiskslun) | int | Specifies the logical unit number of the data disk. |
 | [`name`](#parameter-datadisksname) | string | The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used. |
+| [`performancePlus`](#parameter-datadisksperformanceplus) | bool | Set to true to get a boost on the performance target of the disk deployed. Only supported for Premium SSD, Standard SSD and Standard HDD disks with a size above 512 GB (i.e., 513 GB or larger). Can only be set at disk creation time and cannot be disabled once enabled. Ignored when attaching a pre-existing disk. |
 | [`tags`](#parameter-datadiskstags) | object | The tags of the public IP address. Valid only when creating a new managed disk. |
 
 ### Parameter: `dataDisks.managedDisk`
@@ -7193,6 +7194,13 @@ The disk name. When attaching a pre-existing disk, this name is ignored and the 
 
 - Required: No
 - Type: string
+
+### Parameter: `dataDisks.performancePlus`
+
+Set to true to get a boost on the performance target of the disk deployed. Only supported for Premium SSD, Standard SSD and Standard HDD disks with a size above 512 GB (i.e., 513 GB or larger). Can only be set at disk creation time and cannot be disabled once enabled. Ignored when attaching a pre-existing disk.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `dataDisks.tags`
 
