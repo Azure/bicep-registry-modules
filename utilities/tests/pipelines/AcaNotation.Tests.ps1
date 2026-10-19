@@ -211,8 +211,8 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
 
     It 'Recognizes only actual <Case> verification rejection' -ForEach @(
         @{ Case = 'Unsigned'; NativeError = 'no signature is associated with this artifact' }
-        @{ Case = 'Tampered'; NativeError = 'invalid signature' }
-        @{ Case = 'Untrusted'; NativeError = 'signing certificate is not trusted' }
+        @{ Case = 'Tampered'; NativeError = 'integrity validation failed. Failure reason: signature is invalid. Error: crypto/rsa: verification error' }
+        @{ Case = 'Untrusted'; NativeError = 'authenticity validation failed. Failure reason: the signature''s certificate chain does not contain any trusted certificate' }
     ) {
         $script:verifyExitCode = 1
         $script:verifyError = $NativeError
@@ -220,6 +220,19 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         $result.rejected | Should -BeTrue
         $result.case | Should -BeExactly $Case
         $result.errorSha256 | Should -Match '^[a-f0-9]{64}$'
+    }
+
+    It 'Does not treat inconclusive or wrong-cause <Case> failure as signature evidence: <NativeError>' -ForEach @(
+        @{ Case = 'Tampered'; NativeError = 'signature verification failed: HEAD https://synthetic.invalid/v2/sample: 403 Forbidden' }
+        @{ Case = 'Tampered'; NativeError = 'signature verification failed: unable to retrieve digital signature' }
+        @{ Case = 'Tampered'; NativeError = 'signature verification failed for all the signatures associated with this artifact' }
+        @{ Case = 'Tampered'; NativeError = 'signature verification failed: signing certificate has expired' }
+        @{ Case = 'Untrusted'; NativeError = 'no trusted certificates are found to verify authenticity' }
+        @{ Case = 'Unsigned'; NativeError = 'signature verification failed for all the signatures associated with this artifact' }
+    ) {
+        $script:verifyExitCode = 1
+        $script:verifyError = $NativeError
+        { Confirm-TestSignatureRejection -Executable 'synthetic-notation' -Image $image -Case $Case } | Should -Throw '*did not establish*'
     }
 
     It 'Does not turn transport failure into <Case> security evidence' -ForEach @(

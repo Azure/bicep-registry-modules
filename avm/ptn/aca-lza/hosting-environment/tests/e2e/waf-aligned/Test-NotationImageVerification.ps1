@@ -49,9 +49,9 @@ function Confirm-TestSignatureRejection {
     } catch {
         $message = $_.Exception.Message
         $expected = switch ($Case) {
-            Unsigned { 'no signature is associated|no signatures? (found|available)' }
-            Tampered { 'failed to verify signature|signature verification failed|invalid signature|signature is invalid|signature integrity verification failed' }
-            Untrusted { 'signing certificate is not trusted|certificate chain.*(not trusted|trust store)|no trusted.*certificate' }
+            Unsigned { 'no signature is associated with' }
+            Tampered { 'signature is invalid\. Error:' }
+            Untrusted { 'the signature''s certificate chain does not contain any trusted certificate' }
         }
         if ($message -notmatch $expected -or
             $message -match 'unauthorized|authentication failed|connection refused|timed? out|no such host|certificate signed by unknown authority') {
