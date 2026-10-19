@@ -9,8 +9,14 @@ Describe 'HCI image build timestamps' {
         @{ value = '2026-10-16T09:46:45Z'; expected = '2026-10-16T09:46:45.0000000+00:00' }
         @{ value = '2026-10-16T09:46:45.7Z'; expected = '2026-10-16T09:46:45.7000000+00:00' }
         @{ value = '2026-10-16T09:46:45.7451557Z'; expected = '2026-10-16T09:46:45.7451557+00:00' }
+        @{ value = '2026-10-16T09:46:45.7451557z'; expected = '2026-10-16T09:46:45.7451557+00:00' }
+        @{ value = '2026-10-16t09:46:45.7451557Z'; expected = '2026-10-16T09:46:45.7451557+00:00' }
+        @{ value = '2026-10-16t09:46:45.7451557z'; expected = '2026-10-16T09:46:45.7451557+00:00' }
         @{ value = '2026-10-16T09:46:45.74515578Z'; expected = '2026-10-16T09:46:45.7451557+00:00' }
         @{ value = '2026-10-16T09:46:45.745155778Z'; expected = '2026-10-16T09:46:45.7451557+00:00' }
+        @{ value = '2026-10-16T09:46:45.745155778z'; expected = '2026-10-16T09:46:45.7451557+00:00' }
+        @{ value = '2026-10-16t09:46:45.745155778Z'; expected = '2026-10-16T09:46:45.7451557+00:00' }
+        @{ value = '2026-10-16t09:46:45.745155778z'; expected = '2026-10-16T09:46:45.7451557+00:00' }
         @{ value = '2026-10-16T17:48:22.992171779Z'; expected = '2026-10-16T17:48:22.9921717+00:00' }
         @{ value = '2026-10-16T15:31:45.745155778+05:45'; expected = '2026-10-16T09:46:45.7451557+00:00' }
         @{ value = '2026-10-16T02:16:45.745155778-07:30'; expected = '2026-10-16T09:46:45.7451557+00:00' }
@@ -41,6 +47,8 @@ Describe 'HCI image build timestamps' {
         @{ label = 'leap second'; value = '2026-10-16T09:46:60.745155778Z' }
         @{ label = 'leading whitespace'; value = ' 2026-10-16T09:46:45Z' }
         @{ label = 'trailing newline'; value = "2026-10-16T09:46:45Z`n" }
+        @{ label = 'non-ASCII date digit'; value = "$([char] 0x0662)026-10-16T09:46:45Z" }
+        @{ label = 'non-ASCII fraction digit'; value = "2026-10-16T09:46:45.74515577$([char] 0x0668)Z" }
         @{ label = 'offset without colon'; value = '2026-10-16T09:46:45+0545' }
         @{ label = 'malformed'; value = 'not-a-timestamp' }
     ) {
@@ -189,9 +197,14 @@ Describe 'HCI image build job handoffs' {
         }
     }
 
-    It 'Starts and observes the actual nine-digit provider value through the real ARM JSON path without replay' {
+    It 'Starts and observes the actual nine-digit provider value <providerValue> through the real ARM JSON path without replay' -ForEach @(
+        @{ providerValue = '2026-10-16T09:46:45.745155778Z' }
+        @{ providerValue = '2026-10-16T09:46:45.745155778z' }
+        @{ providerValue = '2026-10-16t09:46:45.745155778Z' }
+        @{ providerValue = '2026-10-16t09:46:45.745155778z' }
+    ) {
         $script:now = [datetimeoffset] '2026-10-16T09:46:45.7451557Z'
-        $script:postRunStartText = '2026-10-16T09:46:45.745155778Z'
+        $script:postRunStartText = $providerValue
         $deadline = $script:now.AddMinutes(570)
         $started = . $buildScript @inputs -Operation Start -BuildDeadlineUtc $deadline
         $receiptHash = Get-HciImageOperationHash -OperationUri $started.OperationReceipt
