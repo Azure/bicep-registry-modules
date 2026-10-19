@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/net-app/net-app-account/CHANGELOG.md).
 
+## 0.12.5
+
+### Changes
+
+- Fixed the capacity pool volume input type to expose the optional `securityStyle` property.
+
+### Breaking Changes
+
+- None
+
 ## 0.12.4
 
 ### Changes
