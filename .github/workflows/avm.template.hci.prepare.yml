@@ -63,6 +63,7 @@ jobs:
           TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
           VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
           CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
+          HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT: ${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
           AVM_CI_VARIABLES: ${{ toJSON(vars) }}
           AVM_CI_SECRETS: ${{ toJSON(secrets) }}
         with:
@@ -77,6 +78,7 @@ jobs:
               -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -TenantId $env:VALIDATE_TENANT_ID `
               -RunIdentity $env:HCI_RUN_IDENTITY -SourceCommit $commit `
               -GitHubVariables $env:AVM_CI_VARIABLES -GitHubSecrets $env:AVM_CI_SECRETS -KeyVaultName $env:CI_KEY_VAULT_NAME `
+              -ReceiptStorageAccountName $env:HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT `
               -Recreate:([bool]::Parse($env:HCI_RECREATE)) -Maintenance:$true
             if ($env:HCI_STAGE -ceq 'Ready') {
               "Resolved immutable host image: $($result.ImageVersionResourceId)" >> $env:GITHUB_STEP_SUMMARY

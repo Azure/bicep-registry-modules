@@ -265,6 +265,7 @@ Describe 'HCI host image builder' {
     BeforeAll {
         $builderRoot = Join-Path $RepoRootPath 'utilities' 'e2e-template-assets' 'module-specific' 'azure-stack-hci'
         $buildScript = Join-Path $builderRoot 'Invoke-HciHostImageBuild.ps1'
+        . (Join-Path $builderRoot 'HciImageOperation.ps1')
 
         function Get-AzContext {
             [pscustomobject] @{ Subscription = [pscustomobject] @{ Id = 'subscription-id' } }
@@ -347,6 +348,11 @@ Describe 'HCI host image builder' {
         Mock Start-Sleep { $script:now = $script:now.AddSeconds(15) }
         Mock New-AzSubscriptionDeployment {
             [pscustomobject] @{ ProvisioningState = 'Succeeded' }
+        }
+        Mock Invoke-HciImageOperationRequest {
+            $uriValue = [uri] [pscredential]::new('operation', $Uri).GetNetworkCredential().Password
+            $response = Invoke-AzRestMethod -Method $Method -Path $uriValue.PathAndQuery
+            @{ StatusCode = $response.StatusCode; RetryAfterSeconds = 15 }
         }
     }
 
@@ -626,12 +632,12 @@ Describe 'HCI host image builder' {
             Should -Invoke Invoke-AzRestMethod -Times ([int] (-not $resume)) -Exactly -ParameterFilter { $Method -eq 'POST' }
         }
 
-        It 'Rejects an unsuccessful image build with provider diagnostics' {
+        It 'Rejects an unsuccessful image build without exposing unfiltered provider diagnostics' {
             $script:templateResource.properties.lastRunStatus.runState = 'Failed'
             $script:templateResource.properties.lastRunStatus.message = 'PackerBuildFailed: payload download failed'
 
             { . $buildScript -AssetBaseUri 'https://example.test/assets' } |
-                Should -Throw '*Failed*PackerBuildFailed: payload download failed*'
+                Should -Throw '*Failed*Provider details require guarded diagnostics*'
         }
 
         It 'Rejects a failed resource deployment before starting an image build' {

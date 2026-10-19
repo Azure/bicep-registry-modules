@@ -37,8 +37,12 @@ Observe only reads that receipt's build and replicas, returning Running when its
 bounded observation window expires. Neither mode treats Running as ready.
 
 .PARAMETER OperationReceipt
-Receipt from Start or a preceding Observe call. Required for Observe; fixes the
-resource identities, original run and absolute build deadline across jobs.
+Confidential SecureString receipt from Start or Observe. Required for Observe;
+fixes the resource identities, original run and absolute deadline across jobs.
+
+.PARAMETER PollNotBeforeUtc
+Recorded Retry-After boundary from the preceding observation job. Observe cannot
+poll before this time or the original receipt's boundary.
 
 .EXAMPLE
 . .\Invoke-HciHostImageBuild.ps1 -AssetBaseUri 'https://example.test/pinned-assets' -BuildLocation australiaeast -ReplicationRegions australiaeast -ImageTemplateName hci-host-image-builder-australiaeast
@@ -116,7 +120,10 @@ param (
     [string] $Operation = 'Complete',
 
     [Parameter()]
-    [string] $OperationReceipt,
+    [securestring] $OperationReceipt,
+
+    [Parameter()]
+    [string] $PollNotBeforeUtc,
 
     [Parameter()]
     [ValidateRange(1, 300)]
@@ -138,6 +145,9 @@ param (
 )
 
 $ErrorActionPreference = 'Stop'
+if (-not (Get-Command Get-HciImageOperationIdentity -CommandType Function -ErrorAction SilentlyContinue)) {
+    . (Join-Path $PSScriptRoot 'HciImageOperation.ps1')
+}
 $imageVersionResourceId = "/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Compute/galleries/$GalleryName/images/$ImageDefinitionName/versions/$ImageVersion"
 $imageTemplateResourceId = "/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.VirtualMachineImages/imageTemplates/$ImageTemplateName"
 $imageVersionApiVersion = '2024-03-03'
@@ -165,33 +175,31 @@ function Get-HciImageBuildResult {
         ResourceGroupName       = $ResourceGroupName
     }
     if ($Operation -ne 'Complete') {
+        $result.PollNotBeforeUtc = $pollNotBefore.ToString('o')
         $result.OperationReceipt = if ($Status -eq 'Running') {
-            @{
+            $privateReceipt = @{
                 imageVersionResourceId  = $imageVersionResourceId
                 imageTemplateResourceId = $imageTemplateResourceId
                 previousRunStartTime    = $previousRunStartTime.ToString('o')
                 observedRunStartTime    = $observedRunStartTime.ToString('o')
                 deadline                = $deadline.ToString('o')
                 requiredRegions         = $requiredReplicationRegions
-                operationPath           = $operationPath
+                completionMode          = $completionMode
+                responseStatus          = $responseStatus
+                operationId             = $operationId
+                operationUri            = $operationUri ? [pscredential]::new('operation', $operationUri).GetNetworkCredential().Password : ''
+                operationUriHash        = $operationUri ? (Get-HciImageOperationHash -OperationUri $operationUri) : ''
+                retryAfterSeconds       = $retryAfterSeconds
+                pollNotBeforeUtc        = $pollNotBefore.ToString('o')
             } | ConvertTo-Json -Depth 5 -Compress
-        } else { '' }
+            try {
+                ConvertTo-HciPrivateValue $privateReceipt
+            } finally {
+                $privateReceipt = $null
+            }
+        } else { [securestring]::new() }
     }
     return [pscustomobject] $result
-}
-
-function ConvertTo-HciImageBuildTimestamp {
-    param ([Parameter(Mandatory)] [object] $Value)
-
-    if ($Value -is [datetimeoffset] -or ($Value -is [datetime] -and $Value.Kind -ne [DateTimeKind]::Unspecified)) {
-        return ([datetimeoffset] $Value).ToUniversalTime()
-    }
-    $timestamp = [datetimeoffset]::MinValue
-    if ($Value -isnot [string] -or $Value -notmatch '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,7})?(?:Z|[+-]\d{2}:\d{2})$' -or
-        -not [datetimeoffset]::TryParse($Value, [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::None, [ref] $timestamp)) {
-        throw 'An image build timestamp is missing its valid, absolute time-zone-qualified value.'
-    }
-    return $timestamp.ToUniversalTime()
 }
 
 function Get-ArmResource {
@@ -215,7 +223,7 @@ function Get-ArmResource {
         return $null
     }
     if ([int] $response.StatusCode -notin 200, 201) {
-        throw "ARM GET [$ResourceId] returned HTTP [$($response.StatusCode)]. $($response.Content)"
+        throw "ARM GET [$ResourceId] returned HTTP [$($response.StatusCode)]."
     }
     return $response.Content | ConvertFrom-Json
 }
@@ -239,212 +247,286 @@ if ([string]::IsNullOrWhiteSpace($SubscriptionId)) {
 
 $previousRunStartTime = [datetimeoffset]::MinValue
 $observedRunStartTime = [datetimeoffset]::MinValue
-$operationPath = ''
+$operationUri = $null
+$operationId = ''
+$completionMode = 'Asynchronous'
+$responseStatus = 202
+$retryAfterSeconds = 15
+$pollNotBefore = [datetimeoffset]::MinValue
+$runResponse = $null
 $deadline = $PSBoundParameters.ContainsKey('BuildDeadlineUtc') ?
-    $BuildDeadlineUtc : ([datetimeoffset] (Get-Date)).AddMinutes($BuildTimeoutInMinutes)
-if ($Operation -eq 'Observe') {
-    $receipt = ConvertFrom-Json -InputObject $OperationReceipt -AsHashtable -ErrorAction Stop
-    if ($receipt -isnot [System.Collections.IDictionary] -or
-        $receipt.imageVersionResourceId -cne $imageVersionResourceId -or
-        $receipt.imageTemplateResourceId -cne $imageTemplateResourceId -or
-        ($receipt.requiredRegions -join ',') -cne ($requiredReplicationRegions -join ',')) {
-        throw 'The image build receipt does not match the explicitly selected resources and replication regions.'
-    }
-    $previousRunStartTime = ConvertTo-HciImageBuildTimestamp -Value $receipt.previousRunStartTime
-    $observedRunStartTime = ConvertTo-HciImageBuildTimestamp -Value $receipt.observedRunStartTime
-    $deadline = ConvertTo-HciImageBuildTimestamp -Value $receipt.deadline
-    if ($observedRunStartTime -le $previousRunStartTime -or $deadline -le $observedRunStartTime) {
-        throw 'The image build receipt does not identify a new run within its immutable overall deadline.'
-    }
-    $operationPath = [string] $receipt.operationPath
-    $expectedOperationPrefix = "/subscriptions/$SubscriptionId/providers/Microsoft.VirtualMachineImages/locations/$BuildLocation/operations/"
-    if ($operationPath -cnotmatch "^$([regex]::Escape($expectedOperationPrefix))[a-zA-Z0-9-]+\?api-version=$imageTemplateApiVersion$") {
-        throw 'The image build receipt does not contain a valid operation identity for the selected subscription and region.'
-    }
-} elseif (-not [string]::IsNullOrEmpty($OperationReceipt)) {
-    throw 'OperationReceipt can only be used with Observe.'
-}
-$deadline = $deadline.ToUniversalTime()
-if ($deadline -le [datetimeoffset] (Get-Date)) {
-    throw 'Timed out: the recorded overall image deadline has expired. No build will be submitted.'
-}
-
-$null = Set-AzContext -SubscriptionId $SubscriptionId
-$existingVersion = if ($Operation -ne 'Observe') {
-    Get-ArmResource -ResourceId $imageVersionResourceId -ApiVersion $imageVersionApiVersion -Expand 'ReplicationStatus'
-} else { $null }
-if ($null -ne $existingVersion) {
-    $availability = Get-ImageVersionAvailability -ImageVersionResource $existingVersion -RequiredRegions $requiredReplicationRegions
-    if (-not $availability.Ready) {
-        throw "Image version [$imageVersionResourceId] already exists but is unavailable. $($availability.Details) No deployment or build was started. Wait for or repair replication before retrying, or choose a new ImageVersion for a new build."
-    }
-    return Get-HciImageBuildResult -Status 'Skipped' -Started $false
-}
-
-$activeRunStates = @('New', 'Pending', 'Running')
-$templateBeforeDeployment = Get-ArmResource -ResourceId $imageTemplateResourceId -ApiVersion $imageTemplateApiVersion
-if ($null -ne $templateBeforeDeployment -and
-    ([string] $templateBeforeDeployment.location).Replace(' ', '').ToLowerInvariant() -ne $BuildLocation.Replace(' ', '').ToLowerInvariant()) {
-    throw "Image template [$ImageTemplateName] has location [$($templateBeforeDeployment.location)], not BuildLocation [$BuildLocation]. Choose a new ImageTemplateName; existing template locations cannot be changed."
-}
-$resumeActiveRun = $Operation -eq 'Observe' -or ($null -ne $templateBeforeDeployment -and
-    [string] $templateBeforeDeployment.properties.lastRunStatus.runState -in $activeRunStates)
-if ($Operation -eq 'Observe') {
-    if ($null -eq $templateBeforeDeployment) {
-        throw 'The image template in the build receipt no longer exists; no build was submitted.'
-    }
-} elseif ($resumeActiveRun) {
-    if ($Operation -eq 'Start') {
-        throw 'An image build is already active. Observe its recorded operation; Start cannot adopt or resubmit it.'
-    }
-    if ($templateBeforeDeployment.properties.lastRunStatus.startTime) {
-        $observedRunStartTime = [datetimeoffset] $templateBeforeDeployment.properties.lastRunStatus.startTime
-        if (-not $PSBoundParameters.ContainsKey('BuildDeadlineUtc')) {
-            $deadline = $observedRunStartTime.AddMinutes($BuildTimeoutInMinutes)
+$BuildDeadlineUtc : ([datetimeoffset] (Get-Date)).AddMinutes($BuildTimeoutInMinutes)
+try {
+    if ($Operation -eq 'Observe') {
+        $receipt = ConvertFrom-HciPrivateJson -Value $OperationReceipt
+        if ($receipt -isnot [System.Collections.IDictionary] -or
+            $receipt.imageVersionResourceId -cne $imageVersionResourceId -or
+            $receipt.imageTemplateResourceId -cne $imageTemplateResourceId -or
+            ($receipt.requiredRegions -join ',') -cne ($requiredReplicationRegions -join ',')) {
+            throw 'The image build receipt does not match the explicitly selected resources and replication regions.'
         }
-    }
-} else {
-    $deploymentName = "hci-host-image-$($ImageVersion.Replace('.', '-'))"
-    $templateParameters = @{
-        assetBaseUri          = $AssetBaseUri
-        buildLocation         = $BuildLocation
-        buildTimeoutInMinutes = $BuildTimeoutInMinutes
-        createResourceGroup   = $CreateResourceGroup
-        galleryName           = $GalleryName
-        hciVhdxDownloadUri    = $HciVhdxDownloadUri
-        hciVhdxSha256          = $HciVhdxSha256
-        imageDefinitionName   = $ImageDefinitionName
-        imageTemplateName     = $ImageTemplateName
-        imageVersion          = $ImageVersion
-        location              = $Location
-        replicationRegions    = $ReplicationRegions
-        resourceGroupName     = $ResourceGroupName
-        imageBuilderIdentityName = $ImageBuilderIdentityName
-        stagingResourceGroupName = $StagingResourceGroupName
-        useScopedContributorRole = $UseScopedContributorRole
-        tags                  = $Tags
-    }
-    $deployment = New-AzSubscriptionDeployment `
-        -Name $deploymentName `
-        -Location $Location `
-        -TemplateFile $TemplateFile `
-        -TemplateParameterObject $templateParameters
-
-    if ($deployment.ProvisioningState -ne 'Succeeded') {
-        throw "Image builder resource deployment [$deploymentName] finished with state [$($deployment.ProvisioningState)]."
-    }
-
-    $templateBeforeRun = Get-ArmResource -ResourceId $imageTemplateResourceId -ApiVersion $imageTemplateApiVersion
-    if ($templateBeforeRun.properties.lastRunStatus.startTime) {
-        $previousRunStartTime = [datetimeoffset] $templateBeforeRun.properties.lastRunStatus.startTime
-    }
-
-    $runResponse = Invoke-AzRestMethod -Method POST -Path "$imageTemplateResourceId/run?api-version=$imageTemplateApiVersion"
-    if ([int] $runResponse.StatusCode -notin 200, 201, 202) {
-        throw "Starting image build [$ImageTemplateName] returned HTTP [$($runResponse.StatusCode)]. $($runResponse.Content)"
-    }
-    if ($Operation -eq 'Start') {
-        $operationUri = $null
-        $headerValues = $null
-        $header = if ($runResponse.Headers -is [System.Net.Http.Headers.HttpResponseHeaders] -and
-            $runResponse.Headers.TryGetValues('Azure-AsyncOperation', [ref] $headerValues) -and @($headerValues).Count -eq 1) {
-            @($headerValues)[0]
+        $previousRunStartTime = ConvertTo-HciImageBuildTimestamp -Value $receipt.previousRunStartTime
+        $observedRunStartTime = ConvertTo-HciImageBuildTimestamp -Value $receipt.observedRunStartTime
+        $deadline = ConvertTo-HciImageBuildTimestamp -Value $receipt.deadline
+        if ($observedRunStartTime -le $previousRunStartTime -or $deadline -le $observedRunStartTime) {
+            throw 'The image build receipt does not identify a new run within its immutable overall deadline.'
         }
-        $expectedOperationPrefix = "/subscriptions/$SubscriptionId/providers/Microsoft.VirtualMachineImages/locations/$BuildLocation/operations/"
-        if (-not [uri]::TryCreate([string] $header, [UriKind]::Absolute, [ref] $operationUri) -or
-            $operationUri.Scheme -cne 'https' -or $operationUri.Authority -cne 'management.azure.com' -or
-            $operationUri.UserInfo -or $operationUri.Fragment -or
-            $operationUri.PathAndQuery -cnotmatch "^$([regex]::Escape($expectedOperationPrefix))[a-zA-Z0-9-]+\?api-version=$imageTemplateApiVersion$") {
-            throw 'The submitted image build returned no unambiguous operation identity. Its outcome is uncertain; do not resubmit or recreate.'
+        $completionMode = $receipt.completionMode
+        $responseStatus = $receipt.responseStatus
+        $retryAfterSeconds = $receipt.retryAfterSeconds
+        $pollNotBefore = ConvertTo-HciImageBuildTimestamp -Value $receipt.pollNotBeforeUtc
+        if ($PollNotBeforeUtc) {
+            $handoffPollTime = ConvertTo-HciImageBuildTimestamp -Value $PollNotBeforeUtc
+            if ($handoffPollTime -lt $pollNotBefore) { throw 'The recorded image Retry-After boundary moved backwards.' }
+            $pollNotBefore = $handoffPollTime
         }
-        $operationPath = $operationUri.PathAndQuery
-    }
-}
-
-if ($Operation -eq 'Start') {
-    $identityDeadline = ([datetimeoffset] (Get-Date)).AddMinutes(2)
-    do {
-        if ([datetimeoffset] (Get-Date) -ge $deadline -or [datetimeoffset] (Get-Date) -ge $identityDeadline) {
-            throw 'The submitted image operation has no observable run identity. Its outcome is uncertain; do not resubmit or recreate.'
+        if ($responseStatus -notin @(200, 202, 204) -or
+            ($retryAfterSeconds -isnot [int] -and $retryAfterSeconds -isnot [long]) -or
+            $retryAfterSeconds -lt 1 -or $retryAfterSeconds -gt [int]::MaxValue) {
+            throw 'The image receipt has an unsupported response contract.'
         }
-        $startedTemplate = Get-ArmResource -ResourceId $imageTemplateResourceId -ApiVersion $imageTemplateApiVersion
-        if ($startedTemplate.properties.lastRunStatus.startTime) {
-            $startedAt = ConvertTo-HciImageBuildTimestamp -Value $startedTemplate.properties.lastRunStatus.startTime
-            if ($startedAt -gt $previousRunStartTime) {
-                $observedRunStartTime = $startedAt
-                break
+        if ($completionMode -ceq 'Asynchronous' -and $receipt.operationUri -is [string] -and $receipt.operationUri) {
+            $operationUri = ConvertTo-HciPrivateValue $receipt.operationUri
+            $operationId = Get-HciImageOperationIdentity -OperationUri $operationUri -SubscriptionId $SubscriptionId -Location $BuildLocation
+            if ($receipt.operationId -cne $operationId -or
+                $receipt.operationUriHash -cne (Get-HciImageOperationHash -OperationUri $operationUri)) {
+                throw 'The image operation identity or exact URI changed.'
             }
+        } elseif ($completionMode -cne 'Synchronous' -or $responseStatus -notin @(200, 204) -or
+            $receipt.operationUri -or $receipt.operationId -or $receipt.operationUriHash) {
+            throw 'The image receipt has no authoritative asynchronous or synchronous completion evidence.'
+        }
+        $receipt = $null
+    } elseif ($OperationReceipt -and $OperationReceipt.Length -gt 0) {
+        throw 'OperationReceipt can only be used with Observe.'
+    } elseif ($PollNotBeforeUtc) {
+        throw 'PollNotBeforeUtc can only be used with Observe.'
+    }
+    $deadline = $deadline.ToUniversalTime()
+    if ($deadline -le [datetimeoffset] (Get-Date)) {
+        throw 'Timed out: the recorded overall image deadline has expired. No build will be submitted.'
+    }
+
+    $null = Set-AzContext -SubscriptionId $SubscriptionId
+    $existingVersion = if ($Operation -ne 'Observe') {
+        Get-ArmResource -ResourceId $imageVersionResourceId -ApiVersion $imageVersionApiVersion -Expand 'ReplicationStatus'
+    } else { $null }
+    if ($null -ne $existingVersion) {
+        $availability = Get-ImageVersionAvailability -ImageVersionResource $existingVersion -RequiredRegions $requiredReplicationRegions
+        if (-not $availability.Ready) {
+            throw "Image version [$imageVersionResourceId] already exists but is unavailable. $($availability.Details) No deployment or build was started. Wait for or repair replication before retrying, or choose a new ImageVersion for a new build."
+        }
+        return Get-HciImageBuildResult -Status 'Skipped' -Started $false
+    }
+
+    $activeRunStates = @('New', 'Pending', 'Running')
+    $templateBeforeDeployment = Get-ArmResource -ResourceId $imageTemplateResourceId -ApiVersion $imageTemplateApiVersion
+    if ($null -ne $templateBeforeDeployment -and
+        ([string] $templateBeforeDeployment.location).Replace(' ', '').ToLowerInvariant() -ne $BuildLocation.Replace(' ', '').ToLowerInvariant()) {
+        throw "Image template [$ImageTemplateName] has location [$($templateBeforeDeployment.location)], not BuildLocation [$BuildLocation]. Choose a new ImageTemplateName; existing template locations cannot be changed."
+    }
+    $resumeActiveRun = $Operation -eq 'Observe' -or ($null -ne $templateBeforeDeployment -and
+        [string] $templateBeforeDeployment.properties.lastRunStatus.runState -in $activeRunStates)
+    if ($Operation -eq 'Observe') {
+        if ($null -eq $templateBeforeDeployment) {
+            throw 'The image template in the build receipt no longer exists; no build was submitted.'
+        }
+    } elseif ($resumeActiveRun) {
+        if ($Operation -eq 'Start') {
+            throw 'An image build is already active. Observe its recorded operation; Start cannot adopt or resubmit it.'
+        }
+        if ($templateBeforeDeployment.properties.lastRunStatus.startTime) {
+            $observedRunStartTime = [datetimeoffset] $templateBeforeDeployment.properties.lastRunStatus.startTime
+            if (-not $PSBoundParameters.ContainsKey('BuildDeadlineUtc')) {
+                $deadline = $observedRunStartTime.AddMinutes($BuildTimeoutInMinutes)
+            }
+        }
+    } else {
+        $deploymentName = "hci-host-image-$($ImageVersion.Replace('.', '-'))"
+        $templateParameters = @{
+            assetBaseUri          = $AssetBaseUri
+            buildLocation         = $BuildLocation
+            buildTimeoutInMinutes = $BuildTimeoutInMinutes
+            createResourceGroup   = $CreateResourceGroup
+            galleryName           = $GalleryName
+            hciVhdxDownloadUri    = $HciVhdxDownloadUri
+            hciVhdxSha256          = $HciVhdxSha256
+            imageDefinitionName   = $ImageDefinitionName
+            imageTemplateName     = $ImageTemplateName
+            imageVersion          = $ImageVersion
+            location              = $Location
+            replicationRegions    = $ReplicationRegions
+            resourceGroupName     = $ResourceGroupName
+            imageBuilderIdentityName = $ImageBuilderIdentityName
+            stagingResourceGroupName = $StagingResourceGroupName
+            useScopedContributorRole = $UseScopedContributorRole
+            tags                  = $Tags
+        }
+        $deployment = New-AzSubscriptionDeployment `
+            -Name $deploymentName `
+            -Location $Location `
+            -TemplateFile $TemplateFile `
+            -TemplateParameterObject $templateParameters
+
+        if ($deployment.ProvisioningState -ne 'Succeeded') {
+            throw "Image builder resource deployment [$deploymentName] finished with state [$($deployment.ProvisioningState)]."
+        }
+
+        $templateBeforeRun = Get-ArmResource -ResourceId $imageTemplateResourceId -ApiVersion $imageTemplateApiVersion
+        if ($templateBeforeRun.properties.lastRunStatus.startTime) {
+            $previousRunStartTime = [datetimeoffset] $templateBeforeRun.properties.lastRunStatus.startTime
+        }
+
+        if ([datetimeoffset] (Get-Date) -ge $deadline) {
+            throw 'Timed out before image submission: the original deadline has expired. No build was submitted.'
+        }
+        $runUri = ConvertTo-HciPrivateValue "https://management.azure.com$imageTemplateResourceId/run?api-version=$imageTemplateApiVersion"
+        try {
+            $runResponse = Invoke-HciImageOperationRequest -Method POST -Uri $runUri
+        } finally {
+            $runUri.Dispose()
+        }
+        if ([int] $runResponse.StatusCode -notin 200, 202, 204) {
+            throw "Starting image build [$ImageTemplateName] returned HTTP [$($runResponse.StatusCode)]. Do not resubmit."
+        }
+        $responseStatus = [int] $runResponse.StatusCode
+        $retryAfterSeconds = [int] $runResponse.RetryAfterSeconds
+        $pollNotBefore = ([datetimeoffset] (Get-Date)).ToUniversalTime().AddSeconds($retryAfterSeconds)
+        if ($Operation -eq 'Start') {
+            $header = $runResponse['Azure-AsyncOperation'] ? $runResponse['Azure-AsyncOperation'] : $runResponse.Location
+            if ($header) {
+                $operationUri = $header.Copy()
+                $operationId = Get-HciImageOperationIdentity -OperationUri $operationUri -SubscriptionId $SubscriptionId -Location $BuildLocation
+            } elseif ($responseStatus -eq 202) {
+                throw 'The submitted image build returned no operation identity. Its outcome is uncertain; do not resubmit or recreate.'
+            } else {
+                $completionMode = 'Synchronous'
+            }
+        }
+    }
+
+    if ($Operation -eq 'Start') {
+        $identityDeadline = ([datetimeoffset] (Get-Date)).AddMinutes(2)
+        do {
+            if ([datetimeoffset] (Get-Date) -ge $deadline -or [datetimeoffset] (Get-Date) -ge $identityDeadline) {
+                throw 'The submitted image operation has no observable run identity. Its outcome is uncertain; do not resubmit or recreate.'
+            }
+            $startedTemplate = Get-ArmResource -ResourceId $imageTemplateResourceId -ApiVersion $imageTemplateApiVersion
+            if ($startedTemplate.properties.lastRunStatus.startTime) {
+                $startedAt = ConvertTo-HciImageBuildTimestamp -Value $startedTemplate.properties.lastRunStatus.startTime
+                if ($startedAt -gt $previousRunStartTime) {
+                    $observedRunStartTime = $startedAt
+                    if ($completionMode -ceq 'Synchronous' -and $startedTemplate.properties.lastRunStatus.runState -cne 'Succeeded') {
+                        throw 'The synchronous image response did not identify a completed new run. Its outcome is uncertain; do not resubmit.'
+                    }
+                    break
+                }
+            }
+            Start-Sleep -Seconds 15
+        } while ($true)
+        return Get-HciImageBuildResult -Status 'Running' -Started (-not $resumeActiveRun)
+    }
+    $observationDeadline = ([datetimeoffset] (Get-Date)).AddMinutes($ObservationTimeoutInMinutes)
+    do {
+        if ([datetimeoffset] (Get-Date) -ge $deadline) {
+            throw "Timed out after [$BuildTimeoutInMinutes] minutes waiting for image build [$ImageTemplateName]."
+        }
+        if ($Operation -eq 'Observe' -and [datetimeoffset] (Get-Date) -ge $observationDeadline) {
+            return Get-HciImageBuildResult -Status 'Running' -Started $false
+        }
+
+        $remainingSeconds = [Math]::Min(($deadline - [datetimeoffset] (Get-Date)).TotalSeconds, ($observationDeadline - [datetimeoffset] (Get-Date)).TotalSeconds)
+        $waitSeconds = $Operation -eq 'Observe' ? [Math]::Max(0, [Math]::Ceiling(($pollNotBefore - [datetimeoffset] (Get-Date)).TotalSeconds)) : $retryAfterSeconds
+        if ($Operation -eq 'Observe' -and $waitSeconds -gt $remainingSeconds) {
+            return Get-HciImageBuildResult -Status 'Running' -Started $false
+        }
+        if ($waitSeconds -gt 0) { Start-Sleep -Seconds $waitSeconds }
+        if ([datetimeoffset] (Get-Date) -ge $deadline) {
+            throw 'Timed out: the original image deadline has expired.'
+        }
+        if ($Operation -eq 'Observe' -and [datetimeoffset] (Get-Date) -ge $observationDeadline) {
+            return Get-HciImageBuildResult -Status 'Running' -Started $false
+        }
+        if ($Operation -eq 'Observe' -and $completionMode -ceq 'Asynchronous') {
+            $operationResponse = Invoke-HciImageOperationRequest -Method GET -Uri $operationUri
+            try {
+                if ([int] $operationResponse.StatusCode -ne 200) {
+                    throw "Reading the recorded image operation returned HTTP [$($operationResponse.StatusCode)]."
+                }
+                $status = ConvertFrom-HciPrivateJson -Value $operationResponse.Body
+                if ($status.name -and $status.name -ine $operationId) { throw 'The provider returned a different image operation.' }
+                $operationState = $status.status
+                if ($operationState -cnotin @('Succeeded', 'InProgress', 'Running', 'Accepted')) {
+                    throw 'The recorded image operation has failed or returned an unknown status.'
+                }
+                $retryAfterSeconds = [int] $operationResponse.RetryAfterSeconds
+                $pollNotBefore = ([datetimeoffset] (Get-Date)).ToUniversalTime().AddSeconds($retryAfterSeconds)
+            } finally {
+                foreach ($value in $operationResponse.Values) {
+                    if ($value -is [securestring]) { $value.Dispose() }
+                }
+                $status = $null
+            }
+            if ($operationState -ne 'Succeeded') {
+                continue
+            }
+        }
+        $template = Get-ArmResource -ResourceId $imageTemplateResourceId -ApiVersion $imageTemplateApiVersion
+        $lastRunStatus = $template.properties.lastRunStatus
+        if ($Operation -eq 'Observe' -and $completionMode -ceq 'Synchronous') {
+            $pollNotBefore = ([datetimeoffset] (Get-Date)).ToUniversalTime().AddSeconds($retryAfterSeconds)
+        }
+        if (-not $lastRunStatus.startTime) {
+            continue
+        }
+
+        $runStartTime = [datetimeoffset] $lastRunStatus.startTime
+        if ($runStartTime -le $previousRunStartTime) {
+            continue
+        }
+        if ($observedRunStartTime -eq [datetimeoffset]::MinValue) {
+            $observedRunStartTime = $runStartTime
+        } elseif ($runStartTime -ne $observedRunStartTime) {
+            throw "Image template [$ImageTemplateName] run changed while waiting for completion."
+        }
+
+        $runState = [string] $lastRunStatus.runState
+        if ($runState -eq 'Succeeded') {
+            break
+        }
+        if ($runState -notin $activeRunStates) {
+            $safeState = $runState -cin @('Failed', 'Canceled', 'Cancelled') ? $runState : 'Unknown'
+            throw "Image build [$ImageTemplateName] finished with state [$safeState]. Provider details require guarded diagnostics."
+        }
+    } while ($true)
+
+    $availability = Get-ImageVersionAvailability -RequiredRegions $requiredReplicationRegions
+    do {
+        if ([datetimeoffset] (Get-Date) -ge $deadline) {
+            throw "Image build succeeded, but version [$ImageVersion] was not available in all required regions [$($requiredReplicationRegions -join ', ')] before the timeout. $($availability.Details)"
+        }
+        if ($Operation -eq 'Observe' -and [datetimeoffset] (Get-Date) -ge $observationDeadline) {
+            return Get-HciImageBuildResult -Status 'Running' -Started $false
+        }
+
+        $publishedVersion = Get-ArmResource -ResourceId $imageVersionResourceId -ApiVersion $imageVersionApiVersion -Expand 'ReplicationStatus'
+        $availability = Get-ImageVersionAvailability -ImageVersionResource $publishedVersion -RequiredRegions $requiredReplicationRegions
+        if ($availability.Ready) {
+            break
+        }
+        if (-not $availability.CanWait) {
+            throw "Image build succeeded, but version [$ImageVersion] is unavailable. $($availability.Details) Repair the existing version's publication or replication before retrying; it will not be rebuilt."
         }
         Start-Sleep -Seconds 15
     } while ($true)
-    return Get-HciImageBuildResult -Status 'Running' -Started (-not $resumeActiveRun)
+
+    return Get-HciImageBuildResult -Status 'Succeeded' -Started ($Operation -ne 'Observe' -and -not $resumeActiveRun)
+} finally {
+    $receipt = $null
+    if ($operationUri -is [securestring]) { $operationUri.Dispose() }
+    if ($runResponse) {
+        foreach ($value in $runResponse.Values) {
+            if ($value -is [securestring]) { $value.Dispose() }
+        }
+    }
 }
-$observationDeadline = ([datetimeoffset] (Get-Date)).AddMinutes($ObservationTimeoutInMinutes)
-do {
-    if ([datetimeoffset] (Get-Date) -ge $deadline) {
-        throw "Timed out after [$BuildTimeoutInMinutes] minutes waiting for image build [$ImageTemplateName]."
-    }
-    if ($Operation -eq 'Observe' -and [datetimeoffset] (Get-Date) -ge $observationDeadline) {
-        return Get-HciImageBuildResult -Status 'Running' -Started $false
-    }
-
-    Start-Sleep -Seconds 15
-    if ($Operation -eq 'Observe') {
-        $operationResponse = Invoke-AzRestMethod -Method GET -Path $operationPath
-        if ([int] $operationResponse.StatusCode -ne 200) {
-            throw "Reading the recorded image operation returned HTTP [$($operationResponse.StatusCode)]."
-        }
-        $operationState = (ConvertFrom-Json -InputObject $operationResponse.Content -AsHashtable -ErrorAction Stop).status
-        if ($operationState -notin @('Succeeded', 'InProgress', 'Running', 'Accepted')) {
-            throw "The recorded image operation has failed or unknown status [$operationState]."
-        }
-        if ($operationState -ne 'Succeeded') {
-            continue
-        }
-    }
-    $template = Get-ArmResource -ResourceId $imageTemplateResourceId -ApiVersion $imageTemplateApiVersion
-    $lastRunStatus = $template.properties.lastRunStatus
-    if (-not $lastRunStatus.startTime) {
-        continue
-    }
-
-    $runStartTime = [datetimeoffset] $lastRunStatus.startTime
-    if ($runStartTime -le $previousRunStartTime) {
-        continue
-    }
-    if ($observedRunStartTime -eq [datetimeoffset]::MinValue) {
-        $observedRunStartTime = $runStartTime
-    } elseif ($runStartTime -ne $observedRunStartTime) {
-        throw "Image template [$ImageTemplateName] run changed while waiting for completion."
-    }
-
-    $runState = [string] $lastRunStatus.runState
-    if ($runState -eq 'Succeeded') {
-        break
-    }
-    if ($runState -notin $activeRunStates) {
-        throw "Image build [$ImageTemplateName] finished with state [$runState]. $($lastRunStatus.message)"
-    }
-} while ($true)
-
-$availability = Get-ImageVersionAvailability -RequiredRegions $requiredReplicationRegions
-do {
-    if ([datetimeoffset] (Get-Date) -ge $deadline) {
-        throw "Image build succeeded, but version [$ImageVersion] was not available in all required regions [$($requiredReplicationRegions -join ', ')] before the timeout. $($availability.Details)"
-    }
-    if ($Operation -eq 'Observe' -and [datetimeoffset] (Get-Date) -ge $observationDeadline) {
-        return Get-HciImageBuildResult -Status 'Running' -Started $false
-    }
-
-    $publishedVersion = Get-ArmResource -ResourceId $imageVersionResourceId -ApiVersion $imageVersionApiVersion -Expand 'ReplicationStatus'
-    $availability = Get-ImageVersionAvailability -ImageVersionResource $publishedVersion -RequiredRegions $requiredReplicationRegions
-    if ($availability.Ready) {
-        break
-    }
-    if (-not $availability.CanWait) {
-        throw "Image build succeeded, but version [$ImageVersion] is unavailable. $($availability.Details) Repair the existing version's publication or replication before retrying; it will not be rebuilt."
-    }
-    Start-Sleep -Seconds 15
-} while ($true)
-
-return Get-HciImageBuildResult -Status 'Succeeded' -Started ($Operation -ne 'Observe' -and -not $resumeActiveRun)

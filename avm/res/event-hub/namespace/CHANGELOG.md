@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated `Microsoft.KeyVault/vaults` and `Microsoft.KeyVault/vaults/secrets` API versions from `2024-11-01` to `2026-02-01`.
+- Fixed `eventhubs[].captureDescription` so that setting `enabled` to `false` is honored instead of omitting the capture configuration. The `destination` property is now only emitted when provided.
 
 ### Breaking Changes
 
