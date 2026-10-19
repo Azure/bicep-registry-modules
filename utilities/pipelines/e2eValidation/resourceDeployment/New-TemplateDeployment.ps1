@@ -532,6 +532,7 @@ Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
 After a submitted request times out, observe the same deployment for up to 60 minutes unless an absolute recovery deadline is supplied.
+Subscription transport failures use the same original-root observation, never an unconfirmed resubmission.
 Structured nested-operation GET 404s during subscription submission observe only the exact original root.
 That recovery never uses legacy replay; confirmed failure still requires coordinated classification and complete cleanup.
 Management-group HTTP 403 submissions use the same observation window and original Azure context.
@@ -821,6 +822,7 @@ function New-TemplateDeploymentInner {
             } catch {
                 $deploymentError = $_
                 $errorKind = Get-DeploymentErrorKind -ErrorRecord $deploymentError
+                Write-Verbose "Submission failure kind [$errorKind] for deployment [$deploymentName]." -Verbose
                 $recoveryFailed = $returnedFailure -and -not $returnedFailureDetailsRead
                 $nestedReadRecovery = $false
                 $authorizationDenied = $false
@@ -929,8 +931,15 @@ function New-TemplateDeploymentInner {
                         $recoveryFailed = $true
                     }
                 }
-                if ($submissionStarted -and $null -eq $res -and $errorKind -eq 'Timeout') {
-                    Write-Warning "Request for deployment [$deploymentName] timed out; observing its status without resubmitting. $($deploymentError.Exception.Message)"
+                if ($submissionStarted -and $null -eq $res -and
+                    ($errorKind -eq 'Timeout' -or ($errorKind -eq 'Transport' -and $deploymentScope -eq 'subscription'))) {
+                    $requestErrorKind = $errorKind
+                    $recoveryDescription = $requestErrorKind.ToLowerInvariant()
+                    if ($requestErrorKind -eq 'Timeout') {
+                        Write-Warning "Request for deployment [$deploymentName] timed out; observing its status without resubmitting. $($deploymentError.Exception.Message)"
+                    } else {
+                        Write-Warning "Request for deployment [$deploymentName] lost its transport connection; observing only its original status without resubmitting."
+                    }
                     try {
                         $res = Wait-TemplateDeployment @recoveryInput -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
                             -SubscriptionId $SubscriptionId -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId -DefaultProfile $submissionContext
@@ -945,7 +954,9 @@ function New-TemplateDeploymentInner {
                             [System.Exception[]] @($deploymentError.Exception, $_.Exception)
                         )
                         $deploymentError = [System.Management.Automation.ErrorRecord]::new(
-                            $exception, 'DeploymentTimeoutRecoveryFailed', [System.Management.Automation.ErrorCategory]::OperationTimeout, $deploymentName
+                            $exception, "Deployment${requestErrorKind}RecoveryFailed",
+                            ($requestErrorKind -eq 'Timeout' ? [System.Management.Automation.ErrorCategory]::OperationTimeout : [System.Management.Automation.ErrorCategory]::ConnectionError),
+                            $deploymentName
                         )
                         $recoveryFailed = $true
                     }
@@ -959,7 +970,7 @@ function New-TemplateDeploymentInner {
                             $failureDetails = Get-ErrorMessageForScope -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
                                 -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId
                             $exception = [System.InvalidOperationException]::new(
-                                "Deployment [$deploymentName] was confirmed Failed during timeout recovery. Error Message: [$failureDetails]. Original request error: $($deploymentError.Exception.Message)",
+                                "Deployment [$deploymentName] was confirmed Failed during $recoveryDescription recovery. Error Message: [$failureDetails]. Original request error: $($deploymentError.Exception.Message)",
                                 $deploymentError.Exception
                             )
                         } catch [System.Management.Automation.PipelineStoppedException] {
@@ -969,13 +980,13 @@ function New-TemplateDeploymentInner {
                                 throw
                             }
                             $exception = [System.AggregateException]::new(
-                                "Deployment [$deploymentName] was confirmed Failed during timeout recovery, but its failure details could not be read.",
+                                "Deployment [$deploymentName] was confirmed Failed during $recoveryDescription recovery, but its failure details could not be read.",
                                 [System.Exception[]] @($deploymentError.Exception, $_.Exception)
                             )
                             $recoveryFailed = $true
                         }
                         $deploymentError = [System.Management.Automation.ErrorRecord]::new(
-                            $exception, 'DeploymentFailedAfterTimeout', [System.Management.Automation.ErrorCategory]::InvalidResult, $deploymentName
+                            $exception, "DeploymentFailedAfter$requestErrorKind", [System.Management.Automation.ErrorCategory]::InvalidResult, $deploymentName
                         )
                     }
                 }
@@ -1004,7 +1015,7 @@ function New-TemplateDeploymentInner {
                             RetryAllowed                     = $retryAllowed
                             FailureQueryAllowed              = $submissionStarted -and -not $preflightRejected -and -not $recoveryFailed -and -not $authorizationDenied -and
                             $errorKind -in @('Other', 'Forbidden') -and (($null -eq $res -and -not $submissionReturned) -or $res.ProvisioningState -eq 'Failed')
-                            RecoveredFailure                 = $deploymentError.FullyQualifiedErrorId -in @('DeploymentFailedAfterTimeout', 'DeploymentFailedAfterReadRecovery') -and -not $recoveryFailed
+                            RecoveredFailure                 = $deploymentError.FullyQualifiedErrorId -in @('DeploymentFailedAfterTimeout', 'DeploymentFailedAfterTransport', 'DeploymentFailedAfterReadRecovery') -and -not $recoveryFailed
                         }
                     } else {
                         throw $deploymentError
@@ -1046,6 +1057,7 @@ Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
 After a submitted request times out, observe the same deployment for up to 60 minutes unless an absolute recovery deadline is supplied.
+Subscription transport failures use the same original-root observation, never an unconfirmed resubmission.
 Structured nested-operation GET 404s during subscription submission observe only the exact original root.
 That recovery never uses legacy replay; confirmed failure still requires coordinated classification and complete cleanup.
 Management-group HTTP 403 submissions use the same observation window and original Azure context.

@@ -3188,7 +3188,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
     }
 
     It 'Does not inspect or replay <outcome> uncertainty' -ForEach @(
-        @{ outcome = 'Transport' }, @{ outcome = 'NoResult' }, @{ outcome = 'Running' }
+        @{ outcome = 'NoResult' }, @{ outcome = 'Running' }
     ) {
         $script:outcomes = @($outcome)
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
@@ -3198,13 +3198,36 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
     }
 
-    It 'Uses recovered Failed evidence after a typed timeout without resubmitting the original deployment' {
-        $script:outcomes = @('Timeout', 'Succeeded')
+    It 'Uses recovered Failed evidence after a typed <outcome> without resubmitting the original deployment' -ForEach @(
+        @{ outcome = 'Timeout' }, @{ outcome = 'Transport' }
+    ) {
+        $script:outcomes = @($outcome, 'Succeeded')
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
         $result.ContainsKey('Exception') | Should -BeFalse
         @($script:submissions) | Should -Be @('italynorth', 'swedencentral')
         $result.RemainingDeploymentNames | Should -Be @($script:names[1])
         Should -Invoke Get-AzDeployment -Times 3 -Exactly -ParameterFilter { $Name -eq $script:names[0] }
+    }
+
+    It 'Returns original successful outputs after a typed <outcome> without teardown or another submission' -ForEach @(
+        @{ outcome = 'Timeout' }, @{ outcome = 'Transport' }
+    ) {
+        $script:outcomes = @($outcome)
+        Mock Get-AzDeployment {
+            $script:records[$script:roots[-1]].State = 'Succeeded'
+            Get-FixtureStatus -Name $Name -Scope subscription -DefaultProfile $DefaultProfile
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.ContainsKey('Exception') | Should -BeFalse
+        $result.DeploymentOutput.region.value | Should -BeExactly 'italynorth'
+        $result.DeploymentAttempts | Should -Be 1
+        $result.RemainingDeploymentNames | Should -Be @($script:names)
+        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+        Should -Invoke Get-AzDeployment -Times 1 -Exactly -ParameterFilter { $Name -eq $script:names[0] }
+        Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+        Should -Invoke Remove-AzResource -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
     }
 
     Context 'Shared status-recovery deadline' -Tag 'RecoveryDeadline' {
@@ -3215,6 +3238,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
 
         Context '<outcome> entry path' -ForEach @(
             @{ outcome = 'Timeout'; scope = 'subscription'; statusCommand = 'Get-AzDeployment'; validationCommand = 'Test-AzSubscriptionDeployment' }
+            @{ outcome = 'Transport'; scope = 'subscription'; statusCommand = 'Get-AzDeployment'; validationCommand = 'Test-AzSubscriptionDeployment' }
             @{ outcome = 'NestedReadNotFound'; scope = 'subscription'; statusCommand = 'Get-AzDeployment'; validationCommand = 'Test-AzSubscriptionDeployment' }
             @{ outcome = 'Forbidden'; scope = 'managementgroup'; statusCommand = 'Get-AzManagementGroupDeployment'; validationCommand = 'Test-AzManagementGroupDeployment' }
         ) {
@@ -4012,8 +4036,10 @@ module dependency './dependency.bicep' = {
         $script:removed.Count | Should -Be 0
     }
 
-    It 'Stops without inspecting or replaying a deployment when timeout recovery is uncertain' {
-        $script:outcomes = @('Timeout', 'Succeeded')
+    It 'Stops without inspecting operations or replaying a deployment when <outcome> recovery is uncertain' -ForEach @(
+        @{ outcome = 'Timeout' }, @{ outcome = 'Transport' }
+    ) {
+        $script:outcomes = @($outcome, 'Succeeded')
         Mock Get-AzDeployment { throw [System.TimeoutException]::new('Status timed out.') }
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
         $result.Exception | Should -Match 'outcome remains unknown'
