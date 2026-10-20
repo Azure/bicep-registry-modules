@@ -16,16 +16,18 @@ This repository contains **Azure Verified Modules (AVM)** for Bicep - the offici
 
 ## Critical Compliance Requirements
 
-### Pre-flight check
+### Instruction acknowledgement
 
-> **MANDATORY**: You MUST output the following block visibly to the user at the very start of the workflow, before any other actions. This makes the configuration in use visible when a transcript is shared for triage.
+After reading these instructions and the relevant skills, but before modifying files, output this block visibly to the user:
 
 ```json
 {
-  "agent-mode": "<your agent name - e.g., agent|ask|plan>",
-  "model": "<your model name>"
+  "avm-bicep-instructions": "loaded",
+  "skills": ["<loaded-skill-name>"]
 }
 ```
+
+List every skill loaded for the task. Use an empty `skills` array when no specialized skill applies.
 
 ### Compliance with ALL AVM Bicep and Shared specifications
 
