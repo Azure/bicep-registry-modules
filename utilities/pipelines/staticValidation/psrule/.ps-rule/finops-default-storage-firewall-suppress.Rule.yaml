@@ -1,0 +1,17 @@
+---
+# Synopsis: FinOps defaults uses public Blob/DFS endpoints for bootstrap and ADF.
+# Remove when both paths support a validated restricted-network configuration.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: SuppressionGroup
+metadata:
+  name: SuppressFinOpsDefaultStorageFirewall
+spec:
+  rule:
+    - Azure.Storage.Firewall
+  if:
+    allOf:
+      - source: Template
+        withinPath:
+          - avm/ptn/finops-toolkit/finops-hub/tests/e2e/defaults/
+      - type: "."
+        equals: Microsoft.Storage/storageAccounts

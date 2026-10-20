@@ -951,7 +951,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 $cloud | Add-Member -NotePropertyName Body -NotePropertyValue @{ Code = 'DeploymentNotFound'; Message = $message }
                 $cloud | Add-Member -NotePropertyName Request -NotePropertyValue @{
                     Method = [System.Net.Http.HttpMethod]::Get
-                    RequestUri = [uri] "https://management.azure.com$resourceGroupId/providers/Microsoft.Resources/deployments/fixture-dependencies/operations?api-version=2024-11-01"
+                    RequestUri = [uri] "https://management.azure.com$resourceGroupId$($script:readProviderSegment)/deployments/fixture-dependencies/operations?api-version=2024-11-01"
                 }
                 $cloud | Add-Member -NotePropertyName Response -NotePropertyValue @{
                     StatusCode = [System.Net.HttpStatusCode]::NotFound
@@ -1053,6 +1053,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
 
         BeforeEach {
             $script:outcomes = @('RequestTimeout')
+            $script:readProviderSegment = '/providers/Microsoft.Resources'
             $script:statusStates = @('Running', 'Succeeded')
             $script:statusReads = [System.Collections.Generic.List[hashtable]]::new()
             $script:recoveryClock = [datetime]::new(2026, 10, 2, 10, 40, 39, [DateTimeKind]::Utc)
@@ -1473,7 +1474,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
 
         It 'Does not add recovery to <outcome> submission outcomes' -ForEach @(
             @{ outcome = 'NoResult' }, @{ outcome = 'Running' }, @{ outcome = 'MissingState' }
-            @{ outcome = 'Unknown' }, @{ outcome = 'TransportFailure' }, @{ outcome = 'AuthenticationFailure' }
+            @{ outcome = 'Unknown' }, @{ outcome = 'AuthenticationFailure' }
         ) {
             $script:outcomes = @($outcome)
             $result = New-TemplateDeployment @deploymentInput
@@ -1484,6 +1485,20 @@ Describe 'Deployment submission and cleanup runtime integration' {
             Should -Invoke Start-Sleep -Times 0 -Exactly
         }
 
+        It 'Observes the original subscription deployment after a transport failure without replay' {
+            $script:outcomes = @('TransportFailure')
+            $script:statusStates = @('Running', 'Succeeded')
+            $result = New-TemplateDeployment @deploymentInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $result.DeploymentOutput.recovered.value | Should -BeExactly 'ready'
+            @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+            $script:attemptNames.Count | Should -Be 1
+            $script:statusReads.Count | Should -Be 2
+            Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+            Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+        }
+
         It 'Does not submit or observe under WhatIf' {
             New-TemplateDeployment @deploymentInput -WhatIf
             $script:attemptNames.Count | Should -Be 0
@@ -1492,9 +1507,13 @@ Describe 'Deployment submission and cleanup runtime integration' {
             Should -Invoke Start-Sleep -Times 0 -Exactly
         }
 
-        Context 'Nested deployment read reconciliation' -Tag 'DeploymentReadRecovery' {
+        Context 'Nested deployment read reconciliation for <route>' -Tag 'DeploymentReadRecovery' -ForEach @(
+            @{ route = 'provider-qualified route'; providerSegment = '/providers/Microsoft.Resources' }
+            @{ route = 'legacy SDK route'; providerSegment = '' }
+        ) {
             BeforeEach {
                 $script:outcomes = @('NestedReadNotFound')
+                $script:readProviderSegment = $providerSegment
                 $script:readErrorFormat = 'SdkWrapper'
                 $script:readErrorCategory = [System.Management.Automation.ErrorCategory]::ObjectNotFound
                 $script:readErrorMutation = $null
@@ -1647,6 +1666,8 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 @{ kind = 'HTTP 403' }, @{ kind = 'HTTP 401' }, @{ kind = 'array status' }
                 @{ kind = 'missing request' }, @{ kind = 'POST' }, @{ kind = 'PUT' }, @{ kind = 'DELETE' }
                 @{ kind = 'different subscription' }, @{ kind = 'root operation read' }
+                @{ kind = 'same-name resource group deployment' }, @{ kind = 'missing resource group' }
+                @{ kind = 'deployment status read' }, @{ kind = 'individual operation read' }
                 @{ kind = 'non-deployment resource' }, @{ kind = 'near-match provider' }, @{ kind = 'malformed JSON' }
                 @{ kind = 'duplicate JSON code' }, @{ kind = 'unknown body code' }
                 @{ kind = 'mismatched body message' }, @{ kind = 'contradictory raw message' }
@@ -1669,11 +1690,25 @@ Describe 'Deployment submission and cleanup runtime integration' {
                         'root operation read' {
                             $Cloud.Request.RequestUri = [uri] "https://management.azure.com/subscriptions/$subscriptionId/providers/Microsoft.Resources/deployments/$RootName/operations?api-version=2024-11-01"
                         }
+                        'same-name resource group deployment' {
+                            $Cloud.Request.RequestUri = [uri] $Cloud.Request.RequestUri.AbsoluteUri.Replace('fixture-dependencies', $RootName)
+                            $Cloud.Body.Message = "Deployment '$RootName' could not be found."
+                            $Cloud.Response.Content = $Cloud.Response.Content.Replace('fixture-dependencies', $RootName)
+                        }
+                        'missing resource group' {
+                            $Cloud.Request.RequestUri = [uri] "https://management.azure.com/subscriptions/$subscriptionId/deployments/fixture-dependencies/operations?api-version=2024-11-01"
+                        }
+                        'deployment status read' {
+                            $Cloud.Request.RequestUri = [uri] $Cloud.Request.RequestUri.AbsoluteUri.Replace('/operations?', '?')
+                        }
+                        'individual operation read' {
+                            $Cloud.Request.RequestUri = [uri] $Cloud.Request.RequestUri.AbsoluteUri.Replace('/operations?', '/operations/fixture-operation?')
+                        }
                         'non-deployment resource' {
                             $Cloud.Request.RequestUri = [uri] "https://management.azure.com$resourceGroupId/providers/Microsoft.Compute/images/fixture-dependencies?api-version=2024-11-01"
                         }
                         'near-match provider' {
-                            $Cloud.Request.RequestUri = [uri] $Cloud.Request.RequestUri.AbsoluteUri.Replace('Microsoft.Resources', 'MicrosoftXResources')
+                            $Cloud.Request.RequestUri = [uri] "https://management.azure.com$resourceGroupId/providers/MicrosoftXResources/deployments/fixture-dependencies/operations?api-version=2024-11-01"
                         }
                         'malformed JSON' { $Cloud.Response.Content = '{"error":' }
                         'duplicate JSON code' {

@@ -332,6 +332,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 'res/azure-stack-hci/virtual-hard-disk'
                 'res/azure-stack-hci/virtual-machine-instance'
                 'res/cache/redis' # Azure Cache for Redis has been announced for retirement; new resource creation is restricted, while updates to existing resources are still allowed to run.
+                'res/operational-insights/cluster'
             )
 
             $incorrectFolders = @()
@@ -341,7 +342,13 @@ Describe 'File/folder tests' -Tag 'Modules' {
             foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
                 $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
                 if (Test-Path $filePath) {
-                    if ($allowedE2eignoreModules -contains $moduleFolderName) {
+                    $devBoxWafException = $moduleFolderName -cin @(
+                        'res/dev-center/devcenter'
+                        'res/dev-center/project'
+                    ) -and $e2eTestFolderPath.Name -ceq 'waf-aligned'
+                    if ($devBoxWafException) {
+                        Write-Warning "Test [$moduleFolderName/$($e2eTestFolderPath.Name)] uses the scoped Dev Box tenant/service-eligibility exception; defaults remain mandatory."
+                    } elseif ($allowedE2eignoreModules -contains $moduleFolderName) {
                         Write-Warning "Module [$moduleFolderName] is in the allowed e2eignore list and is allowed to have an .e2eignore file for its tests, but please consider removing it if the issues causing the need for skipping the tests are resolved."
                     } else {
                         $incorrectFolders += $e2eTestFolderPath.Name
