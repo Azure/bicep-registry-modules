@@ -19,7 +19,7 @@ Describe 'Private analytical workspace Databricks verification' {
                 }, $true))
         if ($helper.Count -ne 1) { throw 'Expected exactly one Databricks verification helper.' }
         $assertions = @{}
-        foreach ($propertyName in @('ManagedDiskKeySource', 'ManagedServiceKeySource')) {
+        foreach ($propertyName in @('ManagedDiskKeySource', 'ManagedServiceKeySource', 'EnableNoPublicIP', 'PublicIPNameType', 'PublicIPNameValue')) {
             $pipelines = @($helper[0].Body.FindAll({
                         param($node)
                         $node -is [System.Management.Automation.Language.PipelineAst] -and
@@ -28,6 +28,10 @@ Describe 'Private analytical workspace Databricks verification' {
             if ($pipelines.Count -ne 1) { throw "Expected one real assertion for $propertyName." }
             $assertions[$propertyName] = [scriptblock]::Create($pipelines[0].Extent.Text)
         }
+        $publicIpAssertions = [scriptblock]::Create(
+            ((@('EnableNoPublicIP', 'PublicIPNameType', 'PublicIPNameValue') | ForEach-Object {
+                        $assertions[$_].ToString()
+                    }) -join [Environment]::NewLine))
         $privateEndpointStatements = @($helper[0].Body.EndBlock.Statements | Where-Object {
                 $_.Extent.Text -match '\$adb\.PrivateEndpointConnection\b'
             })
@@ -54,6 +58,29 @@ Describe 'Private analytical workspace Databricks verification' {
         $workspaceParameters.prepareEncryption.value | Should -BeTrue
         @($workspaceParameters.Keys | Where-Object { $_ -match '^(customerManagedKey|encryption)' }).Count |
             Should -Be 0
+    }
+
+    It 'Leaves managed-VNet public-IP naming unset for the VNet-injected no-public-IP workspace' {
+        $workspaceParameters.disablePublicIp.value | Should -BeTrue
+        $workspaceParameters.customVirtualNetworkResourceId.value | Should -Not -BeNullOrEmpty
+        $workspaceParameters.ContainsKey('publicIpName') | Should -BeFalse
+        $workspaces[0].properties.template.parameters.publicIpName.defaultValue | Should -Be ''
+    }
+
+    It 'Checks the actual public-IP assertions for <scenario>' -ForEach @(
+        @{ scenario = 'unset managed-VNet public-IP name'; disabled = $true; type = $null; name = $null; accepted = $true }
+        @{ scenario = 'empty managed-VNet public-IP name'; disabled = $true; type = ''; name = ''; accepted = $true }
+        @{ scenario = 'legacy managed-VNet public-IP name'; disabled = $true; type = 'String'; name = 'nat-gw-public-ip'; accepted = $false }
+        @{ scenario = 'unexpected public-IP parameter type'; disabled = $true; type = 'String'; name = $null; accepted = $false }
+        @{ scenario = 'unexpected public-IP parameter name'; disabled = $true; type = $null; name = 'unexpected-public-ip'; accepted = $false }
+        @{ scenario = 'public IP enabled'; disabled = $false; type = $null; name = $null; accepted = $false }
+    ) {
+        $adb = [pscustomobject]@{ EnableNoPublicIP = $disabled; PublicIPNameType = $type; PublicIPNameValue = $name }
+        if ($accepted) {
+            { . $publicIpAssertions } | Should -Not -Throw
+        } else {
+            { . $publicIpAssertions } | Should -Throw
+        }
     }
 
     It 'Allows exactly the service-required control-plane ports without broadening the rule scope' {

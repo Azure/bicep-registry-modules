@@ -333,8 +333,8 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
         $connection[0].ProvisioningState | Should -Be 'Succeeded'
     }
 
-    $adb.PublicIPNameType | Should -Be 'String'
-    $adb.PublicIPNameValue | Should -Be 'nat-gw-public-ip'
+    $adb.PublicIPNameType | Should -BeNullOrEmpty
+    $adb.PublicIPNameValue | Should -BeNullOrEmpty
     $adb.PublicNetworkAccess | Should -Be $PublicNetworkAccess
     $adb.RequireInfrastructureEncryption | Should -Be $false
     $adb.RequireInfrastructureEncryptionType | Should -Be 'Bool'
