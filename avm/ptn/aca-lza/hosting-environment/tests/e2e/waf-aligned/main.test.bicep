@@ -58,7 +58,7 @@ module testDeployment '../../../main.bicep' = {
     deploySampleApplication: true
     enableDdosProtection: true
     acrGeoReplicationLocations: [
-      'westeurope'
+      'northeurope'
     ]
   }
 }

@@ -21,6 +21,187 @@ Describe 'ACA-LZA compiled signing and consuming deployment behavior' {
             })[0]
     }
 
+    Describe 'ACA-LZA actual post-deployment consumer verification' {
+        BeforeAll {
+            $moduleRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
+            $tokens = $null
+            $parseErrors = $null
+            $ast = [Management.Automation.Language.Parser]::ParseFile(
+                (Join-Path $moduleRoot 'tests' 'e2e' 'waf-aligned' 'notation.tests.ps1'),
+                [ref] $tokens, [ref] $parseErrors)
+            if ($parseErrors) { throw 'Actual post-deployment consumer test could not be parsed.' }
+            $checks = @($ast.FindAll({
+                        param($node)
+                        $node -is [Management.Automation.Language.CommandAst] -and
+                        $node.GetCommandName() -eq 'It' -and
+                        $node.CommandElements[1].Value -eq 'Runs the verified digest in the actual managed-identity consumer latest ready revision'
+                    }, $true))
+            if ($checks.Count -ne 1) { throw 'Expected exactly one actual consumer post-deployment test.' }
+            $consumerAssertion = $checks[0].CommandElements[-1].ScriptBlock.GetScriptBlock()
+            function Get-AzResource {
+                [CmdletBinding()]
+                param ([string] $ResourceGroupName, [string] $ResourceType, [switch] $ExpandProperties)
+                throw 'Offline consumer tests must not access Azure.'
+            }
+            function Invoke-AzRestMethod {
+                [CmdletBinding()]
+                param ([string] $Method, [string] $Path)
+                throw 'Offline consumer tests must not access Azure.'
+            }
+        }
+
+        BeforeEach {
+            $sample = @{ strictVerification = $true; image = 'registry.invalid/aca-lza/sample@sha256:' + ('a' * 64) }
+            $outputs = @{
+                testDeploymentOutputs = @{
+                    value = @{
+                        resourceGroupName = @{ value = 'case-owned' }
+                        containerRegistryUserAssignedIdentityResourceId = @{ value = '/fixture/pull-identity' }
+                    }
+                }
+            }
+            $app = [pscustomobject]@{
+                ResourceGroupName = 'case-owned'
+                ResourceId = '/subscriptions/fixture/resourceGroups/case-owned/providers/Microsoft.App/containerApps/sample'
+                Properties = @{
+                    provisioningState = 'Succeeded'
+                    latestRevisionName = 'sample--new'
+                    latestReadyRevisionName = 'sample--new'
+                    template = @{ containers = @(@{ image = $sample.image }) }
+                    configuration = @{
+                        activeRevisionsMode = 'Single'
+                        registries = @(@{ server = 'registry.invalid'; identity = '/fixture/pull-identity' })
+                    }
+                }
+            }
+            $script:consumerResources = @($app)
+            $script:consumerRevision = @{
+                id = "$($app.ResourceId)/revisions/sample--new"
+                name = 'sample--new'
+                properties = @{
+                    active = $true
+                    provisioningState = 'Provisioned'
+                    healthState = 'Healthy'
+                    runningState = 'Running'
+                    replicas = 2
+                    template = @{ containers = @(@{ image = $sample.image }) }
+                }
+            }
+            $script:consumerRestStatus = 200
+            $script:consumerRestMalformed = $false
+            Mock Get-AzResource { $script:consumerResources }
+            Mock Invoke-AzRestMethod {
+                [pscustomobject]@{
+                    StatusCode = $script:consumerRestStatus
+                    Content = if ($script:consumerRestMalformed) { 'not JSON' } else {
+                        $script:consumerRevision | ConvertTo-Json -Depth 10
+                    }
+                }
+            }
+        }
+
+        It 'Checks actual consumer metadata for <scenario>' -ForEach @(
+            @{ scenario = 'verified ready consumer'; accepted = $true }
+            @{ scenario = 'case-insensitive resource identity'; accepted = $true }
+            @{ scenario = 'missing consumer'; accepted = $false }
+            @{ scenario = 'extra consumer'; accepted = $false }
+            @{ scenario = 'foreign resource group'; accepted = $false }
+            @{ scenario = 'different digest'; accepted = $false }
+            @{ scenario = 'mutable tag'; accepted = $false }
+            @{ scenario = 'missing container'; accepted = $false }
+            @{ scenario = 'extra container'; accepted = $false }
+            @{ scenario = 'failed provisioning'; accepted = $false }
+            @{ scenario = 'missing ready revision'; accepted = $false }
+            @{ scenario = 'stale ready revision'; accepted = $false }
+            @{ scenario = 'multiple revision mode'; accepted = $false }
+            @{ scenario = 'different registry'; accepted = $false }
+            @{ scenario = 'different pull identity'; accepted = $false }
+            @{ scenario = 'password fallback'; accepted = $false }
+            @{ scenario = 'missing group output'; accepted = $false }
+            @{ scenario = 'missing pull identity output'; accepted = $false }
+            @{ scenario = 'unverified sample'; accepted = $false }
+            @{ scenario = 'revision scaling with running pods'; accepted = $true }
+            @{ scenario = 'revision unavailable'; accepted = $false }
+            @{ scenario = 'revision malformed response'; accepted = $false }
+            @{ scenario = 'revision wrong resource'; accepted = $false }
+            @{ scenario = 'revision wrong name'; accepted = $false }
+            @{ scenario = 'revision inactive'; accepted = $false }
+            @{ scenario = 'revision provisioning'; accepted = $false }
+            @{ scenario = 'revision unhealthy'; accepted = $false }
+            @{ scenario = 'revision stopped'; accepted = $false }
+            @{ scenario = 'revision degraded'; accepted = $false }
+            @{ scenario = 'revision zero pods'; accepted = $false }
+            @{ scenario = 'revision different digest'; accepted = $false }
+            @{ scenario = 'revision missing container'; accepted = $false }
+            @{ scenario = 'revision extra container'; accepted = $false }
+            @{ scenario = 'revision scaling without pods'; accepted = $false }
+        ) {
+            switch ($scenario) {
+                'case-insensitive resource identity' { $app.Properties.configuration.registries[0].identity = '/FIXTURE/PULL-IDENTITY' }
+                'missing consumer' { $script:consumerResources = @() }
+                'extra consumer' { $script:consumerResources = @($app, $app) }
+                'foreign resource group' { $app.ResourceGroupName = 'foreign' }
+                'different digest' { $app.Properties.template.containers[0].image = 'registry.invalid/aca-lza/sample@sha256:' + ('b' * 64) }
+                'mutable tag' { $app.Properties.template.containers[0].image = 'registry.invalid/aca-lza/sample:latest' }
+                'missing container' { $app.Properties.template.containers = @() }
+                'extra container' { $app.Properties.template.containers += @{ image = $sample.image } }
+                'failed provisioning' { $app.Properties.provisioningState = 'Failed' }
+                'missing ready revision' { $app.Properties.latestReadyRevisionName = $null }
+                'stale ready revision' { $app.Properties.latestReadyRevisionName = 'sample--old' }
+                'multiple revision mode' { $app.Properties.configuration.activeRevisionsMode = 'Multiple' }
+                'different registry' { $app.Properties.configuration.registries[0].server = 'foreign.invalid' }
+                'different pull identity' { $app.Properties.configuration.registries[0].identity = '/fixture/foreign-identity' }
+                'password fallback' { $app.Properties.configuration.registries[0].passwordSecretRef = 'password' }
+                'missing group output' { $outputs.testDeploymentOutputs.value.resourceGroupName.value = $null }
+                'missing pull identity output' {
+                    $outputs.testDeploymentOutputs.value.containerRegistryUserAssignedIdentityResourceId.value = $null
+                    $app.Properties.configuration.registries[0].identity = $null
+                }
+                'unverified sample' { $sample.strictVerification = $false }
+                'revision scaling with running pods' { $script:consumerRevision.properties.runningState = 'Processing' }
+                'revision unavailable' { $script:consumerRestStatus = 404 }
+                'revision malformed response' { $script:consumerRestMalformed = $true }
+                'revision wrong resource' { $script:consumerRevision.id = '/fixture/foreign-revision' }
+                'revision wrong name' { $script:consumerRevision.name = 'sample--old' }
+                'revision inactive' { $script:consumerRevision.properties.active = $false }
+                'revision provisioning' { $script:consumerRevision.properties.provisioningState = 'Provisioning' }
+                'revision unhealthy' { $script:consumerRevision.properties.healthState = 'Unhealthy' }
+                'revision stopped' { $script:consumerRevision.properties.runningState = 'Stopped' }
+                'revision degraded' { $script:consumerRevision.properties.runningState = 'Degraded' }
+                'revision zero pods' { $script:consumerRevision.properties.replicas = 0 }
+                'revision different digest' {
+                    $script:consumerRevision.properties.template.containers[0].image = 'registry.invalid/aca-lza/sample@sha256:' + ('b' * 64)
+                }
+                'revision missing container' { $script:consumerRevision.properties.template.containers = @() }
+                'revision extra container' { $script:consumerRevision.properties.template.containers += @{ image = $sample.image } }
+                'revision scaling without pods' {
+                    $script:consumerRevision.properties.runningState = 'Processing'
+                    $script:consumerRevision.properties.replicas = 0
+                }
+            }
+            if ($accepted) {
+                { . $consumerAssertion } | Should -Not -Throw
+            } else {
+                { . $consumerAssertion } | Should -Throw
+            }
+            if ($scenario -in @('missing group output', 'missing pull identity output', 'unverified sample')) {
+                Should -Invoke Get-AzResource -Times 0 -Exactly
+            } else {
+                Should -Invoke Get-AzResource -Times 1 -Exactly -ParameterFilter {
+                    $ResourceGroupName -eq 'case-owned' -and $ResourceType -eq 'Microsoft.App/containerApps' -and $ExpandProperties
+                }
+            }
+            if ($scenario -in @('verified ready consumer', 'case-insensitive resource identity') -or $scenario.StartsWith('revision ')) {
+                Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter {
+                    $Method -eq 'GET' -and
+                    $Path -eq '/subscriptions/fixture/resourceGroups/case-owned/providers/Microsoft.App/containerApps/sample/revisions/sample--new?api-version=2024-03-01'
+                }
+            } else {
+                Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+            }
+        }
+    }
+
     Describe 'ACA-LZA cross-platform compiled naming preservation' {
         It 'Produces the same complete naming template and values from LF and CRLF JSONC inputs' {
             $moduleRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path

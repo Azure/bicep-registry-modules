@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = {
     enableDaprInstrumentation: false
     applicationGatewayCertificateKeyName: certificateName
     acrGeoReplicationLocations: [
-      'westeurope'
+      'northeurope'
     ]
   }
 }

@@ -27,6 +27,12 @@ Describe 'Private analytical workspace Databricks verification' {
             if ($pipelines.Count -ne 1) { throw "Expected one real assertion for $propertyName." }
             $assertions[$propertyName] = [scriptblock]::Create($pipelines[0].Extent.Text)
         }
+        $privateEndpointStatements = @($helper[0].Body.EndBlock.Statements | Where-Object {
+                $_.Extent.Text -match '\$adb\.PrivateEndpointConnection\b'
+            })
+        if (-not $privateEndpointStatements.Count) { throw 'Expected the real private endpoint assertions.' }
+        $privateEndpointAssertions = [scriptblock]::Create(
+            ($privateEndpointStatements.Extent.Text -join [Environment]::NewLine))
         $compiledPath = Join-Path $TestDrive 'private-analytical-workspace.json'
         $diagnostics = bicep build (Join-Path $modulePath 'main.bicep') --no-restore --outfile $compiledPath 2>&1
         if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
@@ -93,6 +99,50 @@ Describe 'Private analytical workspace Databricks verification' {
             { . ($assertions[$propertyName]) } | Should -Not -Throw
         } else {
             { . ($assertions[$propertyName]) } | Should -Throw
+        }
+    }
+
+    It 'Checks the actual private endpoint assertions for <scenario>' -ForEach @(
+        @{ scenario = 'original service order'; accepted = $true }
+        @{ scenario = 'reversed service order'; accepted = $true }
+        @{ scenario = 'missing UI connection'; accepted = $false }
+        @{ scenario = 'duplicate UI connection'; accepted = $false }
+        @{ scenario = 'extra connection'; accepted = $false }
+        @{ scenario = 'multiple UI group IDs'; accepted = $false }
+        @{ scenario = 'unexpected group ID'; accepted = $false }
+        @{ scenario = 'unapproved UI connection'; accepted = $false }
+        @{ scenario = 'unapproved authentication connection'; accepted = $false }
+        @{ scenario = 'failed UI provisioning'; accepted = $false }
+        @{ scenario = 'failed authentication provisioning'; accepted = $false }
+    ) {
+        $ui = [pscustomobject]@{
+            GroupId = @('databricks_ui_api')
+            PrivateLinkServiceConnectionStateStatus = 'Approved'
+            ProvisioningState = 'Succeeded'
+        }
+        $authentication = [pscustomobject]@{
+            GroupId = @('browser_authentication')
+            PrivateLinkServiceConnectionStateStatus = 'Approved'
+            ProvisioningState = 'Succeeded'
+        }
+        $connections = @($ui, $authentication)
+        switch ($scenario) {
+            'reversed service order' { $connections = @($authentication, $ui) }
+            'missing UI connection' { $connections = @($authentication) }
+            'duplicate UI connection' { $connections = @($ui, $ui) }
+            'extra connection' { $connections = @($ui, $authentication, $authentication) }
+            'multiple UI group IDs' { $ui.GroupId = @('databricks_ui_api', 'browser_authentication') }
+            'unexpected group ID' { $authentication.GroupId = @('unexpected') }
+            'unapproved UI connection' { $ui.PrivateLinkServiceConnectionStateStatus = 'Pending' }
+            'unapproved authentication connection' { $authentication.PrivateLinkServiceConnectionStateStatus = 'Rejected' }
+            'failed UI provisioning' { $ui.ProvisioningState = 'Failed' }
+            'failed authentication provisioning' { $authentication.ProvisioningState = 'Failed' }
+        }
+        $adb = [pscustomobject]@{ PrivateEndpointConnection = $connections }
+        if ($accepted) {
+            { . $privateEndpointAssertions } | Should -Not -Throw
+        } else {
+            { . $privateEndpointAssertions } | Should -Throw
         }
     }
 }

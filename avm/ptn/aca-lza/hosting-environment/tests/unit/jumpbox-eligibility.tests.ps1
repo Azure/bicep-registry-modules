@@ -109,9 +109,39 @@ Describe 'ACA landing-zone fixture jumpbox eligibility' {
             $logModule.properties.template.variables.locationPairs.swedencentral | Should -BeExactly 'northeurope'
             if ($geoReplication) {
                 $inputs.acrGeoReplicationLocations.value | Should -HaveCount 1
-                $inputs.acrGeoReplicationLocations.value[0] | Should -BeExactly 'westeurope'
+                $inputs.acrGeoReplicationLocations.value[0] | Should -BeExactly 'northeurope'
+                $inputs.acrGeoReplicationLocations.value[0] | Should -Not -Be $template.variables.enforcedLocation
             } else {
                 $inputs.Contains('acrGeoReplicationLocations') | Should -BeFalse
+            }
+        }
+
+        It 'Forwards the extra replica through the actual registry deployment without moving its primary' {
+            $forwarders = @($resources | Where-Object { $_.properties.parameters.acrGeoReplicationLocations })
+            $forwarders | Should -HaveCount 2
+            foreach ($forwarder in $forwarders) {
+                $forwarder.properties.parameters.acrGeoReplicationLocations.value | Should -BeExactly "[parameters('acrGeoReplicationLocations')]"
+                $forwarder.properties.parameters.location.value | Should -BeExactly "[parameters('location')]"
+            }
+            $mapping = @($forwarders.properties.template.variables.copy | Where-Object name -EQ 'acrGeoReplications')
+            $mapping | Should -HaveCount 1
+            $mapping[0].count | Should -BeExactly "[length(parameters('acrGeoReplicationLocations'))]"
+            $mapping[0].input.location | Should -BeExactly "[parameters('acrGeoReplicationLocations')[copyIndex('acrGeoReplications')]]"
+            $registry = @($resources | Where-Object { $_.properties.parameters.acrSku.value -eq 'Premium' })
+            $registry | Should -HaveCount 1
+            $registry[0].properties.parameters.location.value | Should -BeExactly "[parameters('location')]"
+            $registry[0].properties.parameters.replications.value | Should -BeExactly "[variables('acrGeoReplications')]"
+            $replica = @(Get-TemplateResources $registry[0].properties.template |
+                    Where-Object { $_.copy.name -eq 'registry_replications' })
+            $replica | Should -HaveCount 1
+            $replica[0].copy.count | Should -BeExactly "[length(coalesce(parameters('replications'), createArray()))]"
+            $replica[0].properties.parameters.location.value | Should -BeExactly "[coalesce(parameters('replications'), createArray())[copyIndex()].location]"
+            $leaf = @(Get-TemplateResources $replica[0].properties.template | Where-Object { -not $_.existing })
+            $leaf | Should -HaveCount 1
+            $leaf[0].type | Should -BeExactly 'Microsoft.ContainerRegistry/registries/replications'
+            $leaf[0].location | Should -BeExactly "[parameters('location')]"
+            if (-not $geoReplication) {
+                $main.parameters.acrGeoReplicationLocations.defaultValue | Should -BeNullOrEmpty
             }
         }
 

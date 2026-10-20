@@ -324,15 +324,14 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
 
     $adb.PrivateEndpointConnection.Count | Should -Be 2
 
-    $adb.PrivateEndpointConnection[0].GroupId.Count | Should -Be 1
-    $adb.PrivateEndpointConnection[0].GroupId[0] | Should -Be 'databricks_ui_api'
-    $adb.PrivateEndpointConnection[0].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
-    $adb.PrivateEndpointConnection[0].ProvisioningState | Should -Be 'Succeeded'
-
-    $adb.PrivateEndpointConnection[1].GroupId.Count | Should -Be 1
-    $adb.PrivateEndpointConnection[1].GroupId[0] | Should -Be 'browser_authentication'
-    $adb.PrivateEndpointConnection[1].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
-    $adb.PrivateEndpointConnection[1].ProvisioningState | Should -Be 'Succeeded'
+    foreach ($groupId in @('databricks_ui_api', 'browser_authentication')) {
+        $connection = @($adb.PrivateEndpointConnection | Where-Object { $_.GroupId -contains $groupId })
+        $connection.Count | Should -Be 1
+        $connection[0].GroupId.Count | Should -Be 1
+        $connection[0].GroupId[0] | Should -Be $groupId
+        $connection[0].PrivateLinkServiceConnectionStateStatus | Should -Be 'Approved'
+        $connection[0].ProvisioningState | Should -Be 'Succeeded'
+    }
 
     $adb.PublicIPNameType | Should -Be 'String'
     $adb.PublicIPNameValue | Should -Be 'nat-gw-public-ip'

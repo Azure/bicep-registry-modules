@@ -144,7 +144,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     vmSize: 'Standard_D2as_v5'
     // Non-required parameters
     acrGeoReplicationLocations: [
-      'westeurope'
+      'northeurope'
     ]
     location: '<location>'
     tags: {
@@ -208,7 +208,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     // Non-required parameters
     "acrGeoReplicationLocations": {
       "value": [
-        "westeurope"
+        "northeurope"
       ]
     },
     "location": {
@@ -258,7 +258,7 @@ param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
 param vmSize = 'Standard_D2as_v5'
 // Non-required parameters
 param acrGeoReplicationLocations = [
-  'westeurope'
+  'northeurope'
 ]
 param location = '<location>'
 param tags = {
@@ -484,7 +484,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     vmSize: 'Standard_D2as_v5'
     // Non-required parameters
     acrGeoReplicationLocations: [
-      'westeurope'
+      'northeurope'
     ]
     deploySampleApplication: true
     deployZoneRedundantResources: true
@@ -554,7 +554,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     // Non-required parameters
     "acrGeoReplicationLocations": {
       "value": [
-        "westeurope"
+        "northeurope"
       ]
     },
     "deploySampleApplication": {
@@ -622,7 +622,7 @@ param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
 param vmSize = 'Standard_D2as_v5'
 // Non-required parameters
 param acrGeoReplicationLocations = [
-  'westeurope'
+  'northeurope'
 ]
 param deploySampleApplication = true
 param deployZoneRedundantResources = true
