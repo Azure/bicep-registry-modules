@@ -1,7 +1,7 @@
 BeforeAll {
-    $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..' '..')).Path
-    . (Join-Path $repoRoot 'avm' 'ptn' 'aca-lza' 'hosting-environment' 'scripts' 'Invoke-VerifiedContainerImage.ps1')
-    . (Join-Path $repoRoot 'avm' 'ptn' 'aca-lza' 'hosting-environment' 'tests' 'e2e' 'waf-aligned' 'Test-NotationImageVerification.ps1')
+    $moduleRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
+    . (Join-Path $moduleRoot 'scripts' 'Invoke-VerifiedContainerImage.ps1')
+    . (Join-Path $moduleRoot 'tests' 'e2e' 'waf-aligned' 'Test-NotationImageVerification.ps1')
 
     function Get-AzAccessToken { throw 'Unmocked Azure transport.' }
     function Get-AzContext { throw 'Unmocked Azure transport.' }

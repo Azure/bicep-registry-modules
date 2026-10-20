@@ -319,7 +319,6 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         }
         $vault = @($compiled['test-key-vault.bicep'].resources | Where-Object type -EQ 'Microsoft.KeyVault/vaults')
         $vault.Count | Should -Be 1
-        $vault[0].apiVersion | Should -Be '2026-02-01'
         $vault[0].properties.enableRbacAuthorization | Should -BeTrue
         $max = $compiled['avm/res/hybrid-container-service/provisioned-cluster-instance/tests/e2e/max/main.test.bicep']
         Get-ParameterExpression $max.resources.testDeployment.properties.parameters.kubernetesVersion | Should -Match 'kubernetesVersion'

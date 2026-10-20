@@ -1,6 +1,7 @@
 param(
     [Parameter()]
-    [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.FullName
+    [string] $repoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.Parent.FullName,
+    [array] $moduleFolderPaths
 )
 
 Describe 'Private analytical workspace <fixtureName> dependency vault isolation' -ForEach @(

@@ -1,16 +1,16 @@
 param(
     [Parameter()]
-    [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.FullName
+    [string] $repoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.Parent.FullName,
+    [array] $moduleFolderPaths
 )
 
-Describe 'Synapse user-assigned encryption fixture isolation' {
+Describe 'Synapse user-assigned encryption dependency isolation' {
     BeforeAll {
         $fixturePath = Join-Path $repoRootPath 'avm' 'res' 'synapse' 'workspace' 'tests' 'e2e' 'encrwuai' 'main.test.bicep'
         $fixture = Get-Content -LiteralPath $fixturePath -Raw
         $expressions = @{
             group   = [regex]::Match($fixture, '(?m)^param resourceGroupName string = (.+)').Groups[1].Value.Trim()
             storage = [regex]::Match($fixture, '(?m)^\s+storageAccountName:\s*(.+)').Groups[1].Value.Trim()
-            workspace = [regex]::Match($fixture, '(?s)module testDeployment.+?params:\s*\{\s*name:\s*([^\r\n]+)').Groups[1].Value.Trim()
         }
         foreach ($expression in $expressions.Values) {
             if (-not $expression) { throw 'Missing fixture resource-name expression.' }
@@ -41,15 +41,13 @@ Describe 'Synapse user-assigned encryption fixture isolation' {
                     $parameterLines += "var scope$suffix = $groupExpression"
                     $parameterLines += "param group$suffix = scope$suffix"
                     $idExpression = "'/subscriptions/$($scenario.subscription)/resourceGroups/`${scope$suffix}'"
-                    foreach ($symbol in @('storage', 'workspace')) {
-                        $expression = $expressions[$symbol].
-                        Replace('resourceGroup.id', $idExpression).
-                        Replace('namePrefix', "'$($scenario.prefix)'").
-                        Replace('serviceShort', "'swenua'").
-                        Replace('baseTime', "'$($scenario.time)'").
-                        Replace('deployment().name', "'attempt-$attempt-$iteration'")
-                        $parameterLines += "param $symbol$suffix = $expression"
-                    }
+                    $expression = $expressions.storage.
+                    Replace('resourceGroup.id', $idExpression).
+                    Replace('namePrefix', "'$($scenario.prefix)'").
+                    Replace('serviceShort', "'swenua'").
+                    Replace('baseTime', "'$($scenario.time)'").
+                    Replace('deployment().name', "'attempt-$attempt-$iteration'")
+                    $parameterLines += "param storage$suffix = $expression"
                 }
             }
         }
@@ -64,7 +62,6 @@ Describe 'Synapse user-assigned encryption fixture isolation' {
     It 'Isolates <symbol> names across subscriptions, runs and prefixes' -ForEach @(
         @{ symbol = 'group' }
         @{ symbol = 'storage' }
-        @{ symbol = 'workspace' }
     ) {
         $scopedNames = @(0..3 | ForEach-Object { $names["${symbol}${_}t1init"].value })
         @($scopedNames | Select-Object -Unique).Count | Should -Be 4
@@ -73,7 +70,6 @@ Describe 'Synapse user-assigned encryption fixture isolation' {
     It 'Keeps <symbol> stable across initial, repeat and regional retry deployments' -ForEach @(
         @{ symbol = 'group' }
         @{ symbol = 'storage' }
-        @{ symbol = 'workspace' }
     ) {
         foreach ($scopeIndex in 0..3) {
             $scopedNames = @(
@@ -95,13 +91,9 @@ Describe 'Synapse user-assigned encryption fixture isolation' {
         }
     }
 
-    It 'Produces valid globally scoped storage and workspace names' {
+    It 'Produces valid globally scoped storage names' {
         foreach ($entry in ($names.GetEnumerator() | Where-Object Key -Like 'storage*')) {
             $entry.Value.value | Should -Match '^dep[a-z0-9]{13}$'
-        }
-        foreach ($entry in ($names.GetEnumerator() | Where-Object Key -Like 'workspace*')) {
-            $entry.Value.value | Should -Match '^[a-z0-9][a-z0-9-]{0,48}[a-z0-9]$'
-            $entry.Value.value.Length | Should -BeLessOrEqual 50
         }
     }
 

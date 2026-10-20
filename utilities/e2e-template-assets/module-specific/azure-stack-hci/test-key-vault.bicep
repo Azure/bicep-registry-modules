@@ -4,7 +4,7 @@ param name string
 @description('Required. Location of the test vault.')
 param location string
 
-resource vault 'Microsoft.KeyVault/vaults@2026-02-01' = {
+resource vault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: name
   location: location
   properties: {

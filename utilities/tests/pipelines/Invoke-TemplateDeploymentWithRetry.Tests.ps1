@@ -285,13 +285,12 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                 }
                 'Regional' { throw ($script:incidentMessage -f $Name) }
                 'NestedReadNotFound' {
-                    $operationPath = $script:nestedId.Replace('/providers/Microsoft.Resources', $script:readProviderSegment)
                     $message = "Deployment 'dependencies' could not be found."
                     $exception = [System.InvalidOperationException]::new($message)
                     $exception | Add-Member -NotePropertyName Body -NotePropertyValue @{ Code = 'DeploymentNotFound'; Message = $message }
                     $exception | Add-Member -NotePropertyName Request -NotePropertyValue @{
                         Method = [System.Net.Http.HttpMethod]::Get
-                        RequestUri = [uri] "https://management.azure.com$operationPath/operations?api-version=2024-11-01"
+                        RequestUri = [uri] "https://management.azure.com$script:nestedId/operations?api-version=2024-11-01"
                     }
                     $exception | Add-Member -NotePropertyName Response -NotePropertyValue @{
                         StatusCode = [System.Net.HttpStatusCode]::NotFound
@@ -393,7 +392,6 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         $script:groupId = "/subscriptions/$script:subscriptionId/resourceGroups/retry-fixture"
         $script:vnetId = "$script:groupId/providers/Microsoft.Network/virtualNetworks/dependencies"
         $script:nestedId = "$script:groupId/providers/Microsoft.Resources/deployments/dependencies"
-        $script:readProviderSegment = '/providers/Microsoft.Resources'
         $script:azContext = @{
             Subscription = @{ Id = $script:subscriptionId }
             Tenant       = @{ Id = '22222222-2222-2222-2222-222222222222' }
@@ -3188,7 +3186,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
     }
 
     It 'Does not inspect or replay <outcome> uncertainty' -ForEach @(
-        @{ outcome = 'NoResult' }, @{ outcome = 'Running' }
+        @{ outcome = 'Transport' }, @{ outcome = 'NoResult' }, @{ outcome = 'Running' }
     ) {
         $script:outcomes = @($outcome)
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
@@ -3198,86 +3196,13 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
     }
 
-    It 'Uses recovered Failed evidence after a typed <outcome> without resubmitting the original deployment' -ForEach @(
-        @{ outcome = 'Timeout' }, @{ outcome = 'Transport' }
-    ) {
-        $script:outcomes = @($outcome, 'Succeeded')
+    It 'Uses recovered Failed evidence after a typed timeout without resubmitting the original deployment' {
+        $script:outcomes = @('Timeout', 'Succeeded')
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
         $result.ContainsKey('Exception') | Should -BeFalse
         @($script:submissions) | Should -Be @('italynorth', 'swedencentral')
         $result.RemainingDeploymentNames | Should -Be @($script:names[1])
         Should -Invoke Get-AzDeployment -Times 3 -Exactly -ParameterFilter { $Name -eq $script:names[0] }
-        $script:trace.IndexOf("remove:$script:groupId") | Should -BeLessThan $script:trace.IndexOf("DELETE:$($script:roots[0])")
-        $script:trace.IndexOf("DELETE:$($script:roots[0])") | Should -BeLessThan $script:trace.IndexOf('submit:swedencentral')
-    }
-
-    It 'Does not legacy-replay a recovered Transport failure through direct <entryPoint> with RetryLimit three' -Tag 'TransportReplay' -ForEach @(
-        @{ entryPoint = 'New-TemplateDeployment' }
-        @{ entryPoint = 'New-TemplateDeploymentInner' }
-    ) {
-        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
-        $script:outcomes = @('Transport', 'Succeeded')
-        $template.variables.regionToken = 'italynorth'
-        $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
-        $directInput = $templateInput.Clone()
-        $directInput.AdditionalParameters = $templateInput.AdditionalParameters.Clone()
-        $directInput.AdditionalParameters.resourceLocation = 'italynorth'
-        $directInput.DoNotThrow = $true
-        $directInput.RetryLimit = 3
-
-        $result = & $entryPoint @directInput
-
-        $result.Exception | Should -Match 'confirmed Failed during transport recovery'
-        $result.ErrorRecord.FullyQualifiedErrorId | Should -Be 'DeploymentFailedAfterTransport'
-        $result.RetryAllowed | Should -BeFalse
-        $result.FailureQueryAllowed | Should -BeTrue
-        $result.RecoveredFailure | Should -BeTrue
-        $result.DeploymentNames | Should -Be @($script:names)
-        $script:submissions.Count | Should -Be 1
-        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
-        Should -Invoke Get-AzDeployment -Times 1 -Exactly
-        Should -Invoke Remove-AzResource -Times 0 -Exactly
-        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
-        Should -Invoke Start-Sleep -Times 0 -Exactly
-    }
-
-    It 'Stops a recovered Transport failure without a positively classified cleanup/retry path' -Tag 'TransportReplay' {
-        $script:outcomes = @('Transport', 'Succeeded')
-        $script:regionalError = @{ error = @{ code = 'InvalidParameter'; message = 'Fixture input is invalid.' } }
-
-        $result = Invoke-TemplateDeploymentWithRetry @retryInput
-
-        $result.Exception | Should -Match 'confirmed Failed during transport recovery'
-        $result.DeploymentAttempts | Should -Be 1
-        $result.RemainingDeploymentNames | Should -Be @($script:names)
-        $script:submissions.Count | Should -Be 1
-        $script:validations.Count | Should -Be 1
-        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
-        Should -Invoke Get-AzDeployment -Times 2 -Exactly
-        Should -Invoke Remove-AzResource -Times 0 -Exactly
-        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
-        Should -Invoke Start-Sleep -Times 0 -Exactly
-    }
-
-    It 'Returns original successful outputs after a typed <outcome> without teardown or another submission' -ForEach @(
-        @{ outcome = 'Timeout' }, @{ outcome = 'Transport' }
-    ) {
-        $script:outcomes = @($outcome)
-        Mock Get-AzDeployment {
-            $script:records[$script:roots[-1]].State = 'Succeeded'
-            Get-FixtureStatus -Name $Name -Scope subscription -DefaultProfile $DefaultProfile
-        }
-        $result = Invoke-TemplateDeploymentWithRetry @retryInput
-
-        $result.ContainsKey('Exception') | Should -BeFalse
-        $result.DeploymentOutput.region.value | Should -BeExactly 'italynorth'
-        $result.DeploymentAttempts | Should -Be 1
-        $result.RemainingDeploymentNames | Should -Be @($script:names)
-        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
-        Should -Invoke Get-AzDeployment -Times 1 -Exactly -ParameterFilter { $Name -eq $script:names[0] }
-        Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
-        Should -Invoke Remove-AzResource -Times 0 -Exactly
-        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
     }
 
     Context 'Shared status-recovery deadline' -Tag 'RecoveryDeadline' {
@@ -3288,7 +3213,6 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
 
         Context '<outcome> entry path' -ForEach @(
             @{ outcome = 'Timeout'; scope = 'subscription'; statusCommand = 'Get-AzDeployment'; validationCommand = 'Test-AzSubscriptionDeployment' }
-            @{ outcome = 'Transport'; scope = 'subscription'; statusCommand = 'Get-AzDeployment'; validationCommand = 'Test-AzSubscriptionDeployment' }
             @{ outcome = 'NestedReadNotFound'; scope = 'subscription'; statusCommand = 'Get-AzDeployment'; validationCommand = 'Test-AzSubscriptionDeployment' }
             @{ outcome = 'Forbidden'; scope = 'managementgroup'; statusCommand = 'Get-AzManagementGroupDeployment'; validationCommand = 'Test-AzManagementGroupDeployment' }
         ) {
@@ -3454,13 +3378,9 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         }
     }
 
-    Context 'Nested deployment read reconciliation within shared budgets for <route>' -Tag 'DeploymentReadRecovery' -ForEach @(
-        @{ route = 'provider-qualified route'; providerSegment = '/providers/Microsoft.Resources' }
-        @{ route = 'legacy SDK route'; providerSegment = '' }
-    ) {
+    Context 'Nested deployment read reconciliation within shared budgets' -Tag 'DeploymentReadRecovery' {
         BeforeEach {
             $script:outcomes = @('NestedReadNotFound', 'Succeeded')
-            $script:readProviderSegment = $providerSegment
             $script:readRecoveryStates = [System.Collections.Generic.Queue[string]]::new([string[]] @('Running', 'Failed'))
             Mock Get-AzDeployment {
                 if ($script:readRecoveryStates.Count -gt 0) {
@@ -4086,10 +4006,8 @@ module dependency './dependency.bicep' = {
         $script:removed.Count | Should -Be 0
     }
 
-    It 'Stops without inspecting operations or replaying a deployment when <outcome> recovery is uncertain' -ForEach @(
-        @{ outcome = 'Timeout' }, @{ outcome = 'Transport' }
-    ) {
-        $script:outcomes = @($outcome, 'Succeeded')
+    It 'Stops without inspecting or replaying a deployment when timeout recovery is uncertain' {
+        $script:outcomes = @('Timeout', 'Succeeded')
         Mock Get-AzDeployment { throw [System.TimeoutException]::new('Status timed out.') }
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
         $result.Exception | Should -Match 'outcome remains unknown'

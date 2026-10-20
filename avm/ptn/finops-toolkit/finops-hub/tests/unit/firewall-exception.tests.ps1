@@ -1,5 +1,10 @@
+param(
+    [Parameter()]
+    [string] $repoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.Parent.FullName,
+    [array] $moduleFolderPaths
+)
+
 BeforeAll {
-    $repoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.FullName
     . (Join-Path $repoRootPath 'utilities' 'tests' 'helper' 'Initialize-PSRuleTest.ps1')
     Initialize-PSRuleTest -RepoRootPath $repoRootPath
     $script:option = New-PSRuleOption -Path (Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'psrule' 'ps-rule.yaml')

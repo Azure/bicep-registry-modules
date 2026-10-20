@@ -616,48 +616,6 @@ $Trace.Add('returned')
         ($messages | Out-String) | Should -Not -Match 'synthetic-private-account-field'
     }
 
-    It 'Uses the repository map for <modulePath> when Microsoft.DevCenter is initially <state>' -ForEach @(
-        @{ modulePath = 'avm/res/dev-center/devcenter'; state = 'Registered'; registerCount = 0 }
-        @{ modulePath = 'avm/res/dev-center/devcenter'; state = 'NotRegistered'; registerCount = 1 }
-        @{ modulePath = 'avm/res/dev-center/project'; state = 'Registered'; registerCount = 0 }
-        @{ modulePath = 'avm/res/dev-center/project'; state = 'NotRegistered'; registerCount = 1 }
-    ) {
-        $functionInput.RepoRootPath = $RepoRootPath
-        $functionInput.ModulePath = $modulePath
-        $states = $registerCount ? @('NotRegistered', 'Registering', 'Registered') : @('Registered')
-        $script:providerStates = [System.Collections.Generic.Queue[string]]::new([string[]] $states)
-
-        $result = Register-RequiredSubscriptionResourceProvider @functionInput
-
-        $result.Status | Should -Be 'pass'
-        $result.SubscriptionId | Should -BeExactly $script:subscriptionId
-        $result.TenantId | Should -BeExactly $script:tenantId
-        $result.ProvidersTotal | Should -Be 1
-        $expected = @('account show', 'provider show')
-        if ($registerCount) {
-            $expected += @('provider register', 'provider show', 'provider show')
-            $result.RegisteredProviders | Should -Be @('Microsoft.DevCenter')
-            $result.AlreadyRegisteredProviders.Count | Should -Be 0
-        } else {
-            $result.AlreadyRegisteredProviders | Should -Be @('Microsoft.DevCenter')
-            $result.RegisteredProviders.Count | Should -Be 0
-        }
-        @($script:commands | ForEach-Object { $_.Arguments[0..1] -join ' ' }) | Should -Be $expected
-        foreach ($command in $script:commands) {
-            $command.RepoRootPath | Should -Be $RepoRootPath
-            if ($command.Arguments[0] -eq 'account') {
-                $command.Arguments | Should -Be @('account', 'show', '--output', 'json', '--only-show-errors')
-            } else {
-                $outputFormat = $command.Arguments[1] -eq 'register' ? 'none' : 'json'
-                $command.Arguments | Should -Be @(
-                    'provider', $command.Arguments[1], '--namespace', 'Microsoft.DevCenter',
-                    '--subscription', $script:subscriptionId, '--output', $outputFormat, '--only-show-errors'
-                )
-            }
-        }
-        Should -Invoke Invoke-RequiredFeatureAzCli -Times $registerCount -Exactly -ParameterFilter { $ArgumentList[1] -eq 'register' }
-    }
-
     It 'Declares the documented Azure Local providers for the HCI consumer' {
         $modulePath = 'avm/res/hybrid-container-service/provisioned-cluster-instance'
         $expected = @(

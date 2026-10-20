@@ -1,10 +1,4 @@
 {
-  "avm/res/dev-center/devcenter": [
-    "Microsoft.DevCenter"
-  ],
-  "avm/res/dev-center/project": [
-    "Microsoft.DevCenter"
-  ],
   "avm/res/hybrid-container-service/provisioned-cluster-instance": [
     "Microsoft.HybridCompute",
     "Microsoft.GuestConfiguration",
