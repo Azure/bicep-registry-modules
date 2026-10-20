@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/desktop-virtualization/host-pool/CHANGELOG.md).
 
+## 0.8.2
+
+### Changes
+
+- Added the missing `MultiplePersistent` allowed value to `loadBalancerType` for Personal host pools.
+
+### Breaking Changes
+
+- None
+
 ## 0.8.1
 
 ### Changes
