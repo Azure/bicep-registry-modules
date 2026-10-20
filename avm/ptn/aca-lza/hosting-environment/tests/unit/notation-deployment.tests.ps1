@@ -21,6 +21,125 @@ Describe 'ACA-LZA compiled signing and consuming deployment behavior' {
             })[0]
     }
 
+    Describe 'ACA-LZA isolated Notation installation in both compiled callers' {
+        BeforeAll {
+            . ([scriptblock]::Create($signing.variables.'$fxv#0'))
+            . ([scriptblock]::Create($negative.properties.template.variables.'$fxv#1'))
+            $archiveInput = Join-Path $TestDrive 'notation-package'
+            $null = New-Item -ItemType Directory -Path $archiveInput
+            Set-Content -LiteralPath (Join-Path $archiveInput 'notation') -Value 'offline executable fixture'
+            $archiveFixture = Join-Path $TestDrive 'notation-fixture.tar.gz'
+            tar -czf $archiveFixture -C $archiveInput notation
+            if ($LASTEXITCODE -ne 0) { throw 'Offline Notation fixture archive creation failed.' }
+            $fixtureEnvironment = @{
+                REGISTRY_NAME = 'registry'
+                RESOURCE_GROUP_NAME = 'synthetic-rg'
+                REGISTRY_LOGIN_SERVER = 'registry.example.invalid'
+                KEY_VAULT_NAME = 'synthetic-vault'
+                TRUSTED_IMAGE = 'registry.example.invalid/aca-lza/sample@sha256:' + ('a' * 64)
+                TRUSTED_SIGNATURE_DIGEST = 'sha256:' + ('b' * 64)
+                TRUSTED_CERTIFICATE = 'AQ=='
+                TRUSTED_SUBJECT = 'CN=synthetic'
+            }
+        }
+
+        BeforeEach {
+            $savedEnvironment = @{}
+            foreach ($name in @('XDG_CONFIG_HOME', 'DOCKER_CONFIG') + @($fixtureEnvironment.Keys)) {
+                $savedEnvironment[$name] = [Environment]::GetEnvironmentVariable($name)
+            }
+            foreach ($name in $fixtureEnvironment.Keys) {
+                [Environment]::SetEnvironmentVariable($name, $fixtureEnvironment[$name])
+            }
+            $script:notationHashMismatch = $false
+            $script:notationPluginFailure = $false
+            $script:notationWorkingDirectory = $null
+            $script:notationExecutable = $null
+            Mock Invoke-WebRequest {
+                $Uri | Should -BeExactly 'https://github.com/notaryproject/notation/releases/download/v1.3.2/notation_1.3.2_linux_amd64.tar.gz'
+                $script:notationWorkingDirectory = Split-Path $OutFile -Parent
+                Copy-Item -LiteralPath $archiveFixture -Destination $OutFile
+            }
+            Mock Get-FileHash {
+                $Algorithm | Should -BeExactly 'SHA256'
+                $LiteralPath | Should -BeExactly (Join-Path $script:notationWorkingDirectory 'notation.tar.gz')
+                @{ Hash = $script:notationHashMismatch ? ('0' * 64) : 'e1a0f060308086bf8020b2d31defb7c5348f133ca0dba6a1a7820ef3cbb6dfe5' }
+            }
+            Mock Invoke-NotationCommand {
+                $Arguments | Should -Be @(
+                    'plugin', 'install', '--url',
+                    'https://github.com/Azure/notation-azure-kv/releases/download/v1.2.1/notation-azure-kv_1.2.1_linux_amd64.tar.gz',
+                    '--sha256sum', '67c5ccaaf28dd44d2b6572684d84e344a02c2258af1d65ead3910b3156d3eaf5'
+                )
+                Test-Path -LiteralPath $Executable -PathType Leaf | Should -BeTrue
+                $script:notationExecutable = $Executable
+                if ($script:notationPluginFailure) {
+                    return @{ ExitCode = 1; Output = ''; Error = 'synthetic plug-in installation failure' }
+                }
+                $configuration = Join-Path $env:XDG_CONFIG_HOME 'notation'
+                if (Test-Path -LiteralPath $configuration -PathType Leaf) {
+                    return @{ ExitCode = 1; Output = ''; Error = "stat $configuration/plugins/azure-kv/notation-azure-kv: not a directory" }
+                }
+                $pluginDirectory = Join-Path $configuration 'plugins' 'azure-kv'
+                $null = New-Item -ItemType Directory -Path $pluginDirectory -Force
+                Set-Content -LiteralPath (Join-Path $pluginDirectory 'notation-azure-kv') -Value 'offline plug-in fixture'
+                @{ ExitCode = 0; Output = ''; Error = '' }
+            }
+            Mock Publish-VerifiedContainerImage {
+                $Executable | Should -BeExactly $script:notationExecutable
+                Test-Path -LiteralPath (Join-Path $env:XDG_CONFIG_HOME 'notation' 'plugins' 'azure-kv' 'notation-azure-kv') -PathType Leaf |
+                    Should -BeTrue
+                @{ strictVerification = $true }
+            }
+            Mock Test-NotationImageVerification {
+                $Executable | Should -BeExactly $script:notationExecutable
+                Test-Path -LiteralPath (Join-Path $env:XDG_CONFIG_HOME 'notation' 'plugins' 'azure-kv' 'notation-azure-kv') -PathType Leaf |
+                    Should -BeTrue
+                @{ signedPass = $true }
+            }
+        }
+
+        AfterEach {
+            foreach ($name in $savedEnvironment.Keys) {
+                [Environment]::SetEnvironmentVariable($name, $savedEnvironment[$name])
+            }
+        }
+
+        It 'Runs the actual <consumer> wrapper with <outcome>' -ForEach @(
+            @{ consumer = 'publisher'; outcome = 'isolated executable and plug-in paths' }
+            @{ consumer = 'negative controls'; outcome = 'isolated executable and plug-in paths' }
+            @{ consumer = 'publisher'; outcome = 'rejected archive checksum' }
+            @{ consumer = 'negative controls'; outcome = 'rejected archive checksum' }
+            @{ consumer = 'publisher'; outcome = 'failed plug-in installation' }
+            @{ consumer = 'negative controls'; outcome = 'failed plug-in installation' }
+        ) {
+            $script:notationHashMismatch = $outcome -eq 'rejected archive checksum'
+            $script:notationPluginFailure = $outcome -eq 'failed plug-in installation'
+            $wrapper = if ($consumer -eq 'publisher') {
+                $signing.variables.runScript
+            } else {
+                $negative.properties.template.variables.runTests
+            }
+            $execute = { . ([scriptblock]::Create($wrapper)) }
+            if ($script:notationHashMismatch) {
+                $execute | Should -Throw '*SHA256 does not match the pinned release*'
+                Should -Invoke Invoke-NotationCommand -Times 0 -Exactly
+            } elseif ($script:notationPluginFailure) {
+                $execute | Should -Throw '*synthetic plug-in installation failure*'
+            } else {
+                . $execute
+                $script:notationExecutable | Should -BeExactly (Join-Path $script:notationWorkingDirectory 'bin' 'notation')
+            }
+            $published = ($outcome -eq 'isolated executable and plug-in paths' -and $consumer -eq 'publisher') ? 1 : 0
+            $verified = ($outcome -eq 'isolated executable and plug-in paths' -and $consumer -eq 'negative controls') ? 1 : 0
+            Should -Invoke Publish-VerifiedContainerImage -Times $published -Exactly
+            Should -Invoke Test-NotationImageVerification -Times $verified -Exactly
+            Should -Invoke Invoke-WebRequest -Times 1 -Exactly
+            Should -Invoke Get-FileHash -Times 1 -Exactly
+            Test-Path -LiteralPath $script:notationWorkingDirectory | Should -BeFalse
+        }
+    }
+
     Describe 'ACA-LZA actual post-deployment consumer verification' {
         BeforeAll {
             $moduleRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path

@@ -55,9 +55,11 @@ function Initialize-NotationTools {
     if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash -ine 'e1a0f060308086bf8020b2d31defb7c5348f133ca0dba6a1a7820ef3cbb6dfe5') {
         throw 'Notation package SHA256 does not match the pinned release.'
     }
-    tar -xzf $archive -C $Directory notation
+    $binaryDirectory = Join-Path $Directory 'bin'
+    $null = New-Item -ItemType Directory -Path $binaryDirectory -Force -ErrorAction Stop
+    tar -xzf $archive -C $binaryDirectory notation
     if ($LASTEXITCODE -ne 0) { throw 'Notation package extraction failed.' }
-    $executable = Join-Path $Directory 'notation'
+    $executable = Join-Path $binaryDirectory 'notation'
     $plugin = Invoke-NotationCommand -Executable $executable -Arguments @(
         'plugin', 'install', '--url',
         'https://github.com/Azure/notation-azure-kv/releases/download/v1.2.1/notation-azure-kv_1.2.1_linux_amd64.tar.gz',
