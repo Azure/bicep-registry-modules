@@ -126,7 +126,7 @@ module verifiedImage 'br/public:avm/res/resources/deployment-script:0.5.2' = {
     tags: tags
     enableTelemetry: enableTelemetry
     kind: 'AzurePowerShell'
-    azPowerShellVersion: '16.4'
+    azPowerShellVersion: '16.2'
     managedIdentities: {
       userAssignedResourceIds: [
         signer.outputs.resourceId

@@ -287,6 +287,17 @@ Describe 'ACA-LZA compiled signing and consuming deployment behavior' {
         $script.properties.parameters.managedIdentities.value.userAssignedResourceIds[0] | Should -Match 'image-signer-'
     }
 
+    It 'Compiles signing and negative-control scripts with supported Azure PowerShell 16.2' {
+        $negativeScripts = @($negative.properties.template.resources | Where-Object {
+                $_.properties.parameters.ContainsKey('azPowerShellVersion')
+            })
+        $negativeScripts.Count | Should -Be 1
+        foreach ($deploymentScript in @($script, $negativeScripts[0])) {
+            $deploymentScript.properties.parameters.kind.value | Should -BeExactly 'AzurePowerShell'
+            $deploymentScript.properties.parameters.azPowerShellVersion.value | Should -BeExactly '16.2'
+        }
+    }
+
     It 'Passes the actual verified digest, public root and scoped signer to the in-network native rejection tests' {
         $negative.properties.parameters.sampleVerification.value | Should -Match '\.outputs\.sampleImageVerification\.value\]$'
         $negative.properties.parameters.sampleVerification.value | Should -Match 'test-'

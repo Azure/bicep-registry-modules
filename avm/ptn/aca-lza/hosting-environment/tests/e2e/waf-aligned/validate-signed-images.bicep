@@ -43,7 +43,7 @@ module verification 'br/public:avm/res/resources/deployment-script:0.5.2' = {
     name: 'test-signature-rejection-${uniqueString(subscription().id, resourceGroupName)}'
     location: location
     kind: 'AzurePowerShell'
-    azPowerShellVersion: '16.4'
+    azPowerShellVersion: '16.2'
     managedIdentities: {
       userAssignedResourceIds: [
         sampleVerification.signerResourceId
