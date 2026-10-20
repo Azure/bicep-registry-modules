@@ -26,12 +26,7 @@ Describe 'Test subscription reservation configuration' {
     }
 
     It 'Requires the map to be present rather than silently removing reservations' {
-        $fixture = Get-Item -LiteralPath $mapPath -Force
-        $fixture.PSIsContainer | Should -BeFalse
-        if ($IsWindows) { $fixture.Attributes = $fixture.Attributes -bor [IO.FileAttributes]::Hidden }
-        (Get-Item -LiteralPath $mapPath -Force).Attributes.HasFlag([IO.FileAttributes]::Hidden) | Should -BeTrue
-        Remove-Item -LiteralPath $mapPath -Force
-        Test-Path -LiteralPath $mapPath | Should -BeFalse
+        Remove-Item -LiteralPath $mapPath
         { Get-TestSubscriptionTag -RepoRootPath $TestDrive -ModulePath 'avm/res/azure-stack-hci/cluster' } |
             Should -Throw '*require a file named exactly*'
     }

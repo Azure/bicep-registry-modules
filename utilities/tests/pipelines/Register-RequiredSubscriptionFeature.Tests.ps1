@@ -85,12 +85,7 @@ Describe 'Register-RequiredSubscriptionFeature' {
     }
 
     It 'Logs an absent root map without contacting Azure or creating a file' {
-        $fixture = Get-Item -LiteralPath $manifestPath -Force
-        $fixture.PSIsContainer | Should -BeFalse
-        if ($IsWindows) { $fixture.Attributes = $fixture.Attributes -bor [IO.FileAttributes]::Hidden }
-        (Get-Item -LiteralPath $manifestPath -Force).Attributes.HasFlag([IO.FileAttributes]::Hidden) | Should -BeTrue
-        Remove-Item -LiteralPath $manifestPath -Force
-        Test-Path -LiteralPath $manifestPath | Should -BeFalse
+        Remove-Item -LiteralPath $manifestPath
 
         $messages = @(Register-RequiredSubscriptionFeature @functionInput 4>&1)
 
@@ -240,12 +235,7 @@ Describe 'Register-RequiredSubscriptionFeature' {
     }
 
     It 'Rejects a directory with the manifest name rather than treating it as absent' {
-        $fixture = Get-Item -LiteralPath $manifestPath -Force
-        $fixture.PSIsContainer | Should -BeFalse
-        if ($IsWindows) { $fixture.Attributes = $fixture.Attributes -bor [IO.FileAttributes]::Hidden }
-        (Get-Item -LiteralPath $manifestPath -Force).Attributes.HasFlag([IO.FileAttributes]::Hidden) | Should -BeTrue
-        Remove-Item -LiteralPath $manifestPath -Force
-        Test-Path -LiteralPath $manifestPath | Should -BeFalse
+        Remove-Item -LiteralPath $manifestPath
         $null = New-Item -Path $manifestPath -ItemType Directory
 
         { Register-RequiredSubscriptionFeature @functionInput } | Should -Throw '*file named exactly*'
@@ -253,12 +243,7 @@ Describe 'Register-RequiredSubscriptionFeature' {
     }
 
     It 'Rejects incorrectly cased manifest filenames' {
-        $fixture = Get-Item -LiteralPath $manifestPath -Force
-        $fixture.PSIsContainer | Should -BeFalse
-        if ($IsWindows) { $fixture.Attributes = $fixture.Attributes -bor [IO.FileAttributes]::Hidden }
-        (Get-Item -LiteralPath $manifestPath -Force).Attributes.HasFlag([IO.FileAttributes]::Hidden) | Should -BeTrue
-        Remove-Item -LiteralPath $manifestPath -Force
-        Test-Path -LiteralPath $manifestPath | Should -BeFalse
+        Remove-Item -LiteralPath $manifestPath
         Set-Content -LiteralPath (Join-Path $testRoot '.REQUIRED-FEATURES.json') -Value '{}'
 
         { Register-RequiredSubscriptionFeature @functionInput } | Should -Throw '*file named exactly*'

@@ -136,48 +136,8 @@ function Install-CustomModule {
                 throw ('Installation of module [{0}] did not produce its manifest [{1}].' -f $foundModule.Name, $manifestPath)
             }
             $specification = @{ ModuleName = $manifestPath; RequiredVersion = $version }
-            # Initializer errors can bypass Import-Module's ErrorAction and ErrorVariable.
-            $moduleImport = [powershell]::Create([System.Management.Automation.RunspaceMode]::CurrentRunspace)
-            $importOutput = [System.Collections.Generic.List[psobject]]::new()
-            try {
-                $null = $moduleImport.AddCommand('Import-Module').
-                    AddParameter('FullyQualifiedName', $specification).
-                    AddParameter('Global').
-                    AddParameter('PassThru').
-                    AddParameter('ErrorAction', 'Stop')
-                foreach ($stream in @('Warning', 'Verbose', 'Debug', 'Information')) {
-                    $moduleImport.Commands.Commands[0].MergeMyResults(
-                        [System.Management.Automation.Runspaces.PipelineResultTypes] $stream,
-                        [System.Management.Automation.Runspaces.PipelineResultTypes]::Output
-                    )
-                }
-                $invocationSettings = [System.Management.Automation.PSInvocationSettings]::new()
-                $invocationSettings.Host = $Host
-                try {
-                    $moduleImport.Invoke[psobject]($null, $importOutput, $invocationSettings)
-                } catch {
-                    $reason = $moduleImport.InvocationStateInfo.Reason
-                    if ($reason -is [System.Management.Automation.RuntimeException] -and $reason.ErrorRecord) {
-                        $PSCmdlet.ThrowTerminatingError($reason.ErrorRecord)
-                    }
-                    throw
-                } finally {
-                    foreach ($record in $importOutput) {
-                        switch ($record) {
-                            { $_ -is [System.Management.Automation.WarningRecord] } { Write-Warning $record.Message -WarningAction Continue; break }
-                            { $_ -is [System.Management.Automation.VerboseRecord] } { Write-Verbose $record.Message -Verbose; break }
-                            { $_ -is [System.Management.Automation.DebugRecord] } { Write-Debug $record.Message -Debug; break }
-                            { $_ -is [System.Management.Automation.InformationRecord] } { Write-Information $record.MessageData -Tags $record.Tags -InformationAction Continue; break }
-                        }
-                    }
-                }
-                if ($moduleImport.Streams.Error.Count -gt 0) {
-                    $PSCmdlet.ThrowTerminatingError($moduleImport.Streams.Error[0])
-                }
-                $imported = @($importOutput | Where-Object Name -CEQ $foundModule.Name)
-            } finally {
-                $moduleImport.Dispose()
-            }
+            $imported = @(Import-Module -FullyQualifiedName $specification -Global -PassThru -ErrorAction Stop |
+                    Where-Object Name -CEQ $foundModule.Name)
             if ($imported.Count -ne 1 -or $imported[0].Version -ne $version -or
                 -not [string]::Equals($imported[0].ModuleBase, $moduleBase, $pathComparison)) {
                 throw ('The imported module does not match [{0}] version [{1}] at [{2}].' -f $foundModule.Name, $version, $moduleBase)

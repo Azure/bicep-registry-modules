@@ -21,14 +21,6 @@ Describe 'Module deployment workflow expansion' {
         $hciModule = Get-Content (Join-Path $workflowRoot 'avm.template.hci.module.yml') -Raw | ConvertFrom-Yaml
         $consumer = Get-Content (Join-Path $workflowRoot 'avm.template.hci.consumer.yml') -Raw | ConvertFrom-Yaml
         $reservedModules = Get-Content (Join-Path $RepoRootPath '.reserved-test-subscriptions.json') -Raw | ConvertFrom-Json -AsHashtable
-        $referenceEntry = Get-Content (Join-Path $workflowRoot 'avm.res.data-factory.factory.yml') -Raw | ConvertFrom-Yaml
-        $toolsRef = $referenceEntry.jobs.'call-workflow-passing-data'.with.'tools-ref'
-        $toolsRef | Should -MatchExactly '^[0-9a-f]{40}$'
-        $publishedWorkflows = @{}
-        foreach ($file in @('bicep-module.yml', 'bicep-module-preview.yml', 'bicep-module-publish.yml', 'bicep-module-deployment.yml')) {
-            $response = Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/$toolsRef/.github/workflows/$file" -ErrorAction Stop
-            $publishedWorkflows[$file] = ConvertFrom-Yaml -Yaml $response.Content
-        }
 
         function Resolve-TestCaseExpression {
             param([string] $Expression, [hashtable] $TestCase)
@@ -131,11 +123,10 @@ Describe 'Module deployment workflow expansion' {
                 Resolve-TestCaseExpression -Expression $_.if -TestCase $testCase
             })
         if ($deploy) {
-            $steps.Count | Should -Be 4
+            $steps.Count | Should -Be 3
             $steps[0].uses | Should -Match '^actions/checkout@'
             $steps[1].uses | Should -Be './.github/actions/templates/avm-setEnvironment'
-            $steps[2].uses | Should -Be "Azure/azure-verified-modules-tools/.github/actions/bicep-module-identity@$toolsRef"
-            $steps[3].uses | Should -Be './.github/actions/templates/avm-validateModuleDeployment'
+            $steps[2].uses | Should -Be './.github/actions/templates/avm-validateModuleDeployment'
         } else {
             $steps.Count | Should -Be 1
             $steps[0].name | Should -Be 'Report skipped deployment'
@@ -143,15 +134,15 @@ Describe 'Module deployment workflow expansion' {
         }
     }
 
-    It 'routes Data Factory and shared dispatcher callers through immutable generic workflows while retaining local compatibility' {
-        $entry = $referenceEntry
+    It 'preserves legacy Data Factory deployment while independently routing experimental General validation' {
+        $entry = Get-Content (Join-Path $workflowRoot 'avm.res.data-factory.factory.yml') -Raw | ConvertFrom-Yaml
         $entry.on.push.branches | Should -Be @('main')
         $entry.env.modulePath | Should -Be $modulePath
-        $entry.jobs.'call-workflow-passing-data'.uses | Should -Be "Azure/azure-verified-modules-tools/.github/workflows/bicep-module.yml@$toolsRef"
+        $entry.jobs.'call-workflow-passing-data'.uses | Should -Be './.github/workflows/avm.template.module.yml'
 
         $dispatcher = Get-Content (Join-Path $workflowRoot 'avm.module.yml') -Raw | ConvertFrom-Yaml
-        $dispatcher.jobs.call_module_preview.uses | Should -Be "Azure/azure-verified-modules-tools/.github/workflows/bicep-module-preview.yml@$toolsRef"
-        $dispatcher.jobs.call_module_publish.uses | Should -Be "Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish.yml@$toolsRef"
+        $dispatcher.jobs.call_module_preview.uses | Should -Be 'Azure/azure-verified-modules-tools/.github/workflows/bicep-module-preview.yml@ba9af85f4f1c164839f43080ac152cb372f9db0a'
+        $dispatcher.jobs.call_module_publish.uses | Should -Be 'Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish.yml@ba9af85f4f1c164839f43080ac152cb372f9db0a'
         $dispatcher.jobs.call_module_preview_local.uses | Should -Be './.github/workflows/avm.template.module.preview.yml'
         $dispatcher.jobs.call_module_publish_local.uses | Should -Be './.github/workflows/avm.template.module.publish.yml'
         $dispatcher.jobs.call_module_publish.if | Should -Match "github.event_name == 'workflow_dispatch'"
@@ -162,78 +153,6 @@ Describe 'Module deployment workflow expansion' {
             $job.with.testCase | Should -Be '${{ toJSON(matrix.testCases) }}'
             $job.strategy.matrix.testCases | Should -Be '${{ fromJson(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}'
             $caller | ConvertTo-Json -Depth 30 | Should -Not -Match 'Hci|Azure Local|environmentConcurrencyGroup|avm-hci'
-        }
-    }
-
-    It 'keeps the published <file> deployment chain free of HCI while preserving selection, identity and release gates' -ForEach @(
-        @{ file = 'bicep-module.yml'; publicationJob = 'job_publish_module' }
-        @{ file = 'bicep-module-preview.yml'; publicationJob = 'job_preview_module' }
-        @{ file = 'bicep-module-publish.yml'; publicationJob = 'job_publish_module' }
-    ) {
-        $caller = $publishedWorkflows[$file]
-        $caller | ConvertTo-Json -Depth 50 | Should -Not -Match 'Hci|Azure Local|environmentConcurrencyGroup|avm-hci'
-        $selectionJob = $caller.jobs.job_initialize_subscription_selection
-        $selectionJob.permissions.Count | Should -Be 1
-        $selectionJob.permissions.contents | Should -Be 'read'
-        $selectionJob.environment | Should -Be 'avm-validation'
-        $select = $selectionJob.steps | Where-Object id -EQ 'selection'
-        $select.uses | Should -Be './.avm-tools/.github/actions/bicep-subscription-selection'
-        $select.env.VALIDATE_MODULE_CLIENT_IDS | Should -Be '${{ vars.VALIDATE_MODULE_CLIENT_IDS }}'
-        $select.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
-        $selectionJob.outputs.deploymentMatrix | Should -Be '${{ steps.selection.outputs.deploymentMatrix }}'
-        $selectionJob.outputs.sharedScope | Should -Be '${{ steps.selection.outputs.sharedScope }}'
-
-        $deploy = $caller.jobs.job_module_deploy_validation
-        $deploy.uses | Should -Be './.github/workflows/bicep-module-deployment.yml'
-        $deploy.with.'tools-ref' | Should -Be '${{ inputs.tools-ref }}'
-        $deploy.with.'avm-authoring-version' | Should -Be '${{ inputs.avm-authoring-version }}'
-        $deploy.with.modulePath | Should -Be '${{ inputs.modulePath }}'
-        $deploy.with.testCase | Should -Be '${{ toJSON(matrix.testCases) }}'
-        $deploy.strategy.matrix.testCases | Should -Be '${{ fromJSON(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}'
-        $deploy.concurrency.queue | Should -Be 'max'
-        $deploy.concurrency.ContainsKey('cancel-in-progress') | Should -BeFalse
-        $deploy.concurrency.group | Should -Match "sharedScope == 'true'"
-        $deploy.permissions.contents | Should -Be 'read'
-        $deploy.permissions.'id-token' | Should -Be 'write'
-        $deploy.secrets | Should -Be 'inherit'
-
-        $sharedDeployment = $publishedWorkflows['bicep-module-deployment.yml']
-        @($sharedDeployment.jobs.Keys) | Should -Be @('job_module_deploy_validation')
-        $sharedDeployment | ConvertTo-Json -Depth 50 | Should -Not -Match 'Hci|Azure Local|environmentConcurrencyGroup|avm-hci|AZURE_CREDENTIALS|(vars|secrets)\.VALIDATE_CLIENT_ID'
-        $lifecycle = $sharedDeployment.jobs.job_module_deploy_validation.steps | Where-Object { $_.uses -eq './.avm-tools/.github/actions/bicep-deployment' }
-        $lifecycle.if | Should -Be '${{ !fromJSON(inputs.testCase).e2eIgnore }}'
-        $lifecycle.with.moduleClientIds | Should -Be '${{ vars.VALIDATE_MODULE_CLIENT_IDS }}'
-        $lifecycle.with.tenantId | Should -Be '${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}'
-        $lifecycle.with.subscriptionPool | Should -Be $select.env.TEST_SUBSCRIPTION_IDS
-        $sharedDeployment.jobs.job_module_deploy_validation.concurrency.group | Should -Be '${{ fromJSON(inputs.testCase).concurrencyGroup }}'
-        foreach ($record in $selection.testCases) {
-            $record.concurrencyGroup | Should -Not -BeNullOrEmpty
-        }
-
-        $context = @{
-            deploymentValidation = 'true'
-            testFiles = '[{"name":"defaults","path":"tests/e2e/defaults/main.test.bicep"}]'
-            selectionResult = 'success'
-            staticResult = 'success'
-            requiredPSRuleResult = 'success'
-            deploymentResult = 'success'
-            publishReleaseTag = $true
-            requirePublishApproval = $true
-            publishApprovalResult = 'success'
-            includeAllVersionedModules = $false
-            eventName = 'push'
-            ref = 'refs/heads/main'
-            repository = 'Azure/bicep-registry-modules'
-            notCancelled = $true
-        }
-        Test-WorkflowCondition -Expression $deploy.if -Context $context | Should -BeTrue
-        Test-WorkflowCondition -Expression $caller.jobs[$publicationJob].if -Context $context | Should -BeTrue
-        foreach ($result in @('failure', 'cancelled', 'skipped', '')) {
-            $failed = $context.Clone()
-            $failed.selectionResult = 'failure'
-            $failed.deploymentResult = $result
-            Test-WorkflowCondition -Expression $deploy.if -Context $failed | Should -BeFalse
-            Test-WorkflowCondition -Expression $caller.jobs[$publicationJob].if -Context $failed | Should -BeFalse
         }
     }
 
@@ -248,33 +167,9 @@ Describe 'Module deployment workflow expansion' {
             $entry.on.push.branches | Should -Be @('main')
             $entry.on.push.paths | Should -Contain "$path/**"
             $entry.jobs.'call-workflow-passing-data'.uses | Should -Be './.github/workflows/avm.template.hci.module.yml'
-            $inputs = $entry.jobs.'call-workflow-passing-data'.with
-            @($inputs.Keys | Sort-Object) | Should -Be @('modulePath', 'moduleTestFilePaths', 'psRuleModuleTestFilePaths', 'workflowInput')
-            foreach ($name in $inputs.Keys) {
-                $inputs[$name] | Should -BeExactly $reference.jobs.'call-workflow-passing-data'.with[$name]
-            }
+            $entry.jobs.'call-workflow-passing-data'.with | ConvertTo-Json -Compress |
+                Should -Be ($reference.jobs.'call-workflow-passing-data'.with | ConvertTo-Json -Compress)
             $entry.jobs.'call-workflow-passing-data'.secrets | Should -Be 'inherit'
-        }
-    }
-
-    It 'matches protected generic selection admission for <caseName>' -ForEach @(
-        @{ caseName = 'an empty test list'; testFiles = '[]'; deploymentValidation = 'true'; select = $false }
-        @{ caseName = 'active tests'; testFiles = '[{"path":"tests/e2e/defaults/main.test.bicep","e2eIgnore":false}]'; deploymentValidation = 'true'; select = $true }
-        @{ caseName = 'wholly ignored tests'; testFiles = '[{"path":"tests/e2e/defaults/main.test.bicep","e2eIgnore":true}]'; deploymentValidation = 'true'; select = $true }
-        @{ caseName = 'disabled deployment'; testFiles = '[{"path":"tests/e2e/defaults/main.test.bicep","e2eIgnore":false}]'; deploymentValidation = 'false'; select = $false }
-    ) {
-        $context = @{
-            testFiles = $testFiles
-            deploymentValidation = $deploymentValidation
-        }
-        foreach ($route in @('preview', 'publish')) {
-            $baseline = Get-Content (Join-Path $workflowRoot "avm.template.module.$route.yml") -Raw | ConvertFrom-Yaml
-            $migrated = $publishedWorkflows["bicep-module-$route.yml"]
-
-            Test-WorkflowCondition -Expression $baseline.jobs.job_initialize_subscription_selection.if -Context $context |
-                Should -Be $select
-            Test-WorkflowCondition -Expression $migrated.jobs.job_initialize_subscription_selection.if -Context $context |
-                Should -Be $select
         }
     }
 

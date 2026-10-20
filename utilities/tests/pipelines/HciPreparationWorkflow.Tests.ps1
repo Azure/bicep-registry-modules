@@ -21,8 +21,6 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         foreach ($root in $roots) {
             foreach ($file in Get-ChildItem (Join-Path $RepoRootPath $root 'tests' 'e2e') -Filter 'main.test.bicep' -Recurse) {
                 $output = Join-Path $TestDrive "$($compiled.Count).json"
-                $diagnostics = bicep restore $file.FullName 2>&1
-                if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
                 $diagnostics = bicep build $file.FullName --no-restore --outfile $output 2>&1
                 if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
                 $key = [IO.Path]::GetRelativePath($RepoRootPath, $file.FullName).Replace('\', '/')
@@ -33,8 +31,6 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $environment = Get-Content (Join-Path $assetRoot 'environment.json') -Raw | ConvertFrom-Json -AsHashtable
         foreach ($file in @('foundation.bicep', 'hciHostGalleryBuilder.bicep', 'test-key-vault.bicep')) {
             $output = Join-Path $TestDrive "$file.json"
-            $diagnostics = bicep restore (Join-Path $assetRoot $file) 2>&1
-            if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
             $diagnostics = bicep build (Join-Path $assetRoot $file) --no-restore --outfile $output 2>&1
             if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
             $compiled[$file] = Get-Content $output -Raw | ConvertFrom-Json -AsHashtable
@@ -99,12 +95,7 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
             Should -Be @('avm.template.hci.consumer.yml', 'avm.template.hci.module.yml', 'avm.template.hci.prepare.yml')
         foreach ($job in $prepare.jobs.Values) {
             $job.Contains('uses') | Should -BeFalse
-        }
-        @($prepare.jobs.job_begin.outputs.Keys) | Should -Be @('identityKey')
-        $prepare.jobs.job_begin.outputs.identityKey | Should -Be '${{ steps.module-identity.outputs.identityKey }}'
-        foreach ($jobName in @($prepare.jobs.Keys | Where-Object { $_ -ne 'job_begin' })) {
-            $prepare.jobs[$jobName].Contains('outputs') | Should -BeFalse
-            $prepare.jobs[$jobName].env.INITIAL_IDENTITY_KEY | Should -Be '${{ needs.job_begin.outputs.identityKey }}'
+            $job.Contains('outputs') | Should -BeFalse
         }
     }
 
@@ -142,17 +133,17 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $prepare.jobs.job_begin.env.HCI_STAGE | Should -Be 'Begin'
         $prepare.jobs.job_begin.Contains('needs') | Should -BeFalse
         $prepare.jobs.job_image_wait_1.needs | Should -Be 'job_begin'
-        $prepare.jobs.job_foundation_wait_1.needs | Should -Be @('job_begin', 'job_foundation_start')
-        $prepare.jobs.job_foundation_start.needs | Should -Be @('job_begin', 'job_image_wait_3')
+        $prepare.jobs.job_foundation_wait_1.needs | Should -Be 'job_foundation_start'
+        $prepare.jobs.job_foundation_start.needs | Should -Be 'job_image_wait_3'
         $prepare.jobs.job_foundation_start.env.HCI_STAGE | Should -Be 'FoundationStart'
-        $prepare.jobs.job_ready.needs | Should -Be @('job_begin', 'job_foundation_wait_3')
+        $prepare.jobs.job_ready.needs | Should -Be 'job_foundation_wait_3'
         $prepare.jobs.job_ready.env.HCI_STAGE | Should -Be 'Ready'
         foreach ($index in 1..3) {
             $prepare.jobs["job_image_wait_$index"].env.HCI_STAGE | Should -Be 'ImageObserve'
             $prepare.jobs["job_foundation_wait_$index"].env.HCI_STAGE | Should -Be 'FoundationObserve'
             if ($index -gt 1) {
-                $prepare.jobs["job_image_wait_$index"].needs | Should -Be @('job_begin', "job_image_wait_$($index - 1)")
-                $prepare.jobs["job_foundation_wait_$index"].needs | Should -Be @('job_begin', "job_foundation_wait_$($index - 1)")
+                $prepare.jobs["job_image_wait_$index"].needs | Should -Be "job_image_wait_$($index - 1)"
+                $prepare.jobs["job_foundation_wait_$index"].needs | Should -Be "job_foundation_wait_$($index - 1)"
             }
         }
     }

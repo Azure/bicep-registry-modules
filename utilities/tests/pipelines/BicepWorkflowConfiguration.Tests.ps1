@@ -6,8 +6,8 @@
 Describe 'Coordinated tools dependency updates' {
     It 'keeps every tools workflow, action and support ref on one immutable commit without a package fallback' {
         $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
-        $reference = Get-Content -LiteralPath (Join-Path $workflowRoot 'avm.res.network.route-table.yml') -Raw | ConvertFrom-Yaml
-        $toolsRef = $reference.jobs.'call-workflow-passing-data'.with.'tools-ref'
+        $reference = Get-Content -LiteralPath (Join-Path $workflowRoot 'avm.module.yml') -Raw | ConvertFrom-Yaml
+        $toolsRef = $reference.jobs.call_module_preview.with.'tools-ref'
         $toolsRef | Should -MatchExactly '^[0-9a-f]{40}$'
         $remoteCount = 0
         foreach ($file in Get-ChildItem -LiteralPath $workflowRoot -File -Filter '*.yml') {

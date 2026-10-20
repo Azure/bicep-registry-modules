@@ -133,6 +133,7 @@ Describe 'Generic module matrix partition' {
     It 'preserves data, overrides, permissions and gates across the <Route> job pair' -ForEach @(
         @{ Route = 'preview'; File = 'avm.template.module.preview.yml' }
         @{ Route = 'publish'; File = 'avm.template.module.publish.yml' }
+        @{ Route = 'publish_only'; File = 'avm.template.module.publish-only.yml' }
     ) {
         $shared = $workflow.jobs["call_module_$Route"]
         $local = $workflow.jobs["call_module_${Route}_local"]
@@ -165,7 +166,8 @@ Describe 'Generic module matrix partition' {
             HasShared = $HasShared
             HasLocal = $HasLocal
         }
-        $preview = $EventName -eq 'push' -or ($EventName -eq 'pull_request' -and $Internal)
+
+        $preview = $EventName -eq 'pull_request' -and $Internal
         $manual = $EventName -eq 'workflow_dispatch' -and -not $PublishOnly
         Test-RouteCondition -Condition $workflow.jobs.call_module_preview.if @context | Should -Be ($preview -and $HasShared)
         Test-RouteCondition -Condition $workflow.jobs.call_module_preview_local.if @context | Should -Be ($preview -and $HasLocal)
@@ -174,7 +176,25 @@ Describe 'Generic module matrix partition' {
         Test-RouteCondition -Condition $workflow.jobs.call_module_fork_static.if @context |
             Should -Be ($EventName -eq 'pull_request' -and -not $Internal -and ($HasShared -or $HasLocal))
         Test-RouteCondition -Condition $workflow.jobs.call_module_publish_only.if @context |
-            Should -Be ($EventName -eq 'workflow_dispatch' -and $PublishOnly -and ($HasShared -or $HasLocal))
+            Should -Be ($EventName -eq 'workflow_dispatch' -and $PublishOnly -and $HasShared)
+        Test-RouteCondition -Condition $workflow.jobs.call_module_publish_only_local.if @context |
+            Should -Be ($EventName -eq 'workflow_dispatch' -and $PublishOnly -and $HasLocal)
+    }
+
+    It 'requires explicit manual approval controls on every shared and retained-local publication route' {
+        foreach ($name in @('call_module_publish', 'call_module_publish_local', 'call_module_publish_only', 'call_module_publish_only_local')) {
+            $job = $workflow.jobs[$name]
+            $job.if | Should -Match "github.event_name == 'workflow_dispatch'"
+            $job.with.forcePublish | Should -Be '${{ inputs.createReleaseTag }}'
+            $job.with.requirePublishApproval | Should -Be '${{ inputs.createReleaseTag }}'
+            if ($name -notlike '*publish_only*') {
+                $job.with.publishReleaseTag | Should -Be '${{ inputs.createReleaseTag }}'
+            } else {
+                $job.permissions.ContainsKey('id-token') | Should -BeFalse
+            }
+        }
+        $workflow.on.workflow_dispatch.inputs.createReleaseTag.default | Should -BeFalse
+        $workflow.on.workflow_dispatch.inputs.publishOnly.default | Should -BeFalse
     }
 
     It 'preserves an empty selection as two empty matrices rather than selecting all modules' {

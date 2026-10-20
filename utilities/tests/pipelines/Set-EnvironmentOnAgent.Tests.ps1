@@ -398,36 +398,6 @@ Describe 'PowerShell Gallery initialization' {
         Should -Invoke Install-Module -Times 1 -Exactly
     }
 
-    It 'Preserves the original <kind> import error before accepting valid module metadata' -ForEach @(
-        @{ kind = 'nonterminating'; terminate = $false }
-        @{ kind = 'terminating'; terminate = $true }
-    ) {
-        $script:importFailure = [System.Management.Automation.ErrorRecord]::new(
-            [IO.InvalidDataException]::new('Module import error fixture.'),
-            'ModuleImportFixture', [System.Management.Automation.ErrorCategory]::InvalidData, $script:moduleBase
-        )
-        Mock Import-Module {
-            if ($terminate) {
-                $PSCmdlet.ThrowTerminatingError($script:importFailure)
-            }
-            Write-Error -ErrorRecord $script:importFailure -ErrorAction Continue
-            $script:installedFixture
-        }
-        Mock Write-Verbose {} -ParameterFilter { $Message -like 'Module*is installed with version*' }
-
-        $failure = { Install-CustomModule -Module @{ Name = 'Fixture.Module' } } |
-            Should -Throw '*Module import error fixture.*' -PassThru
-
-        [object]::ReferenceEquals($failure.Exception, $script:importFailure.Exception) | Should -BeTrue
-        $failure.FullyQualifiedErrorId.Split(',')[0] | Should -BeExactly 'ModuleImportFixture'
-        $failure.CategoryInfo.Category | Should -Be ([System.Management.Automation.ErrorCategory]::InvalidData)
-        $failure.TargetObject | Should -BeExactly $script:moduleBase
-        Should -Invoke Import-Module -Times 1 -Exactly
-        Should -Invoke Install-Module -Times 1 -Exactly
-        Should -Invoke Start-Sleep -Times 0 -Exactly
-        Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Module*is installed with version*' }
-    }
-
     It 'Rejects an imported module with the wrong <mismatch>' -ForEach @(
         @{ mismatch = 'name'; name = 'Another.Module'; version = '1.2.3'; useOtherPath = $false }
         @{ mismatch = 'version'; name = 'Fixture.Module'; version = '1.1.0'; useOtherPath = $false }
@@ -623,68 +593,6 @@ Describe 'Installed dependency usability' {
         Should -Invoke Start-Sleep -Times 0 -Exactly
     }
 
-    It 'Rejects a real <kind> initializer error with its original record even when metadata is valid' -ForEach @(
-        @{ kind = 'nonterminating'; action = 'Continue' }
-        @{ kind = 'terminating'; action = 'Stop' }
-    ) {
-        Set-Content -LiteralPath (Join-Path $script:fixtureBase 'Load-Assemblies.ps1') -Value '$null = 1'
-        Set-Content -LiteralPath $script:fixtureManifest -Value "@{ ModuleVersion = '1.2.3'; RootModule = 'Avm.BootstrapFixture.psm1'; FunctionsToExport = @('Get-AvmBootstrapFixtureValue'); ScriptsToProcess = @('Load-Assemblies.ps1') }"
-        Set-Content -LiteralPath $script:fixtureScript -Value @"
-`$failure = [System.Management.Automation.ErrorRecord]::new(
-    [IO.InvalidDataException]::new('Real module import error fixture.'),
-    'RealModuleImportFixture', [System.Management.Automation.ErrorCategory]::InvalidData, '$($script:fixtureBase)'
-)
-Write-Error -ErrorRecord `$failure -ErrorAction $action
-function Get-AvmBootstrapFixtureValue { 'fixture-ready' }
-"@
-
-        $failure = { Install-CustomModule -Module @{ Name = 'Avm.BootstrapFixture'; Version = '1.2.3' } } |
-            Should -Throw '*Real module import error fixture.*' -PassThru
-
-        $failure.Exception.GetType() | Should -Be ([IO.InvalidDataException])
-        $failure.FullyQualifiedErrorId.Split(',')[0] | Should -BeExactly 'RealModuleImportFixture'
-        $failure.CategoryInfo.Category | Should -Be ([System.Management.Automation.ErrorCategory]::InvalidData)
-        $failure.TargetObject | Should -BeExactly $script:fixtureBase
-        Should -Invoke Install-Module -Times 1 -Exactly
-        Should -Invoke Start-Sleep -Times 0 -Exactly
-    }
-
-    It 'Preserves module diagnostics on <kind> without changing the caller session' -ForEach @(
-        @{ kind = 'success'; action = '' }
-        @{ kind = 'nonterminating failure'; action = 'Continue' }
-        @{ kind = 'terminating failure'; action = 'Stop' }
-    ) {
-        Set-Content -LiteralPath $script:fixtureScript -Value @'
-Write-Warning 'Module warning fixture.'
-Write-Verbose 'Module verbose fixture.' -Verbose
-Write-Information 'Module information fixture.' -InformationAction Continue
-function Get-AvmBootstrapFixtureValue { 'fixture-ready' }
-'@
-        if ($action) {
-            Add-Content -LiteralPath $script:fixtureScript -Value "Write-Error 'Module diagnostic error fixture.' -ErrorAction $action"
-        }
-        $failure = $null
-
-        $messages = @(. {
-                try {
-                    Install-CustomModule -Module @{ Name = 'Avm.BootstrapFixture'; Version = '1.2.3' } 3>&1 4>&1 6>&1
-                } catch {
-                    $failure = $_
-                }
-            })
-
-        ($messages | Where-Object { $_ -is [System.Management.Automation.WarningRecord] }).Message | Should -Contain 'Module warning fixture.'
-        ($messages | Where-Object { $_ -is [System.Management.Automation.VerboseRecord] }).Message | Should -Contain 'Module verbose fixture.'
-        ($messages | Where-Object { $_ -is [System.Management.Automation.InformationRecord] }).MessageData | Should -Contain 'Module information fixture.'
-        if ($action) {
-            $failure.Exception.Message | Should -Be 'Module diagnostic error fixture.'
-        } else {
-            $failure | Should -BeNullOrEmpty
-            Get-AvmBootstrapFixtureValue | Should -BeExactly 'fixture-ready'
-            (Get-Module -Name Avm.BootstrapFixture).ModuleBase | Should -BeExactly $script:fixtureBase
-        }
-    }
-
     It 'Rejects a manifest whose required root file is missing' {
         Remove-Item -LiteralPath $script:fixtureScript
 
@@ -708,15 +616,12 @@ Describe 'Bicep CLI installation' {
         function curl { throw 'Unexpected download.' }
         function chmod { throw 'Unexpected permission change.' }
         function sudo { throw 'Unexpected privileged command.' }
-        function Invoke-BicepCandidateFixture { throw 'Unexpected candidate invocation.' }
 
         $candidatePath = Join-Path $TestDrive 'candidate bicep'
-        Set-Alias -Name $candidatePath -Value "MissingCandidateMock$([guid]::NewGuid().ToString('N'))"
+        Set-Item -LiteralPath "Function:\$candidatePath" -Value { throw 'Unexpected candidate invocation.' }
     }
 
     BeforeEach {
-        Set-Alias -Name $candidatePath -Value Invoke-BicepCandidateFixture -Force
-        (Get-Alias -Name $candidatePath).Definition | Should -Be 'Invoke-BicepCandidateFixture'
         $savedExitCode = $global:LASTEXITCODE
         $script:installedPath = Join-Path $TestDrive 'installed-bicep'
         $script:preinstalledContents = 'Preinstalled compiler fixture'
@@ -775,7 +680,7 @@ Describe 'Bicep CLI installation' {
         Mock New-TemporaryFile {
             New-Item -Path $candidatePath -ItemType File -Force
         }
-        Mock Invoke-BicepCandidateFixture {
+        Mock -CommandName $candidatePath -MockWith {
             $script:commands.Add('candidate-version')
             if ((Get-Content -LiteralPath $candidatePath -Raw) -ne $script:validContents) {
                 throw 'Exec format error (offline fixture).'
@@ -796,7 +701,7 @@ Describe 'Bicep CLI installation' {
     }
 
     AfterAll {
-        Remove-Alias -Name $candidatePath -Force
+        Remove-Item -LiteralPath "Function:\$candidatePath"
     }
 
     It 'Preserves the installed compiler when downloaded bytes cannot execute' {
@@ -824,7 +729,7 @@ Describe 'Bicep CLI installation' {
         Should -Invoke chmod -Times 1 -Exactly -ParameterFilter {
             ($args -join '|') -eq "+x|$candidatePath"
         }
-        Should -Invoke Invoke-BicepCandidateFixture -Times 1 -Exactly -ParameterFilter {
+        Should -Invoke -CommandName $candidatePath -Times 1 -Exactly -ParameterFilter {
             ($args -join '|') -eq '--version'
         }
         Should -Invoke Install-CustomModule -Times 1 -Exactly -ParameterFilter { $Module.Name -eq 'Fixture.Module' }
@@ -844,14 +749,14 @@ Describe 'Bicep CLI installation' {
         Get-Content -LiteralPath $script:installedPath -Raw | Should -BeExactly $script:preinstalledContents
         Should -Invoke curl -Times 1 -Exactly
         Should -Invoke chmod -Times 0 -Exactly
-        Should -Invoke Invoke-BicepCandidateFixture -Times 0 -Exactly
+        Should -Invoke -CommandName $candidatePath -Times 0 -Exactly
         Should -Invoke sudo -Times 0 -Exactly
         Should -Invoke Install-CustomModule -Times 0 -Exactly
         Test-Path -LiteralPath $candidatePath | Should -BeFalse
     }
 
     It 'Rejects a candidate with a failing version command even if it prints a Bicep version' {
-        Mock Invoke-BicepCandidateFixture {
+        Mock -CommandName $candidatePath -MockWith {
             $global:LASTEXITCODE = 1
             'Bicep CLI version 1.2.3 (offline fixture)'
             'Candidate runtime failure'
@@ -869,7 +774,7 @@ Describe 'Bicep CLI installation' {
         @{ kind = 'unexpected output'; output = 'Not a Bicep compiler' }
     ) {
         $script:versionOutput = $output
-        Mock Invoke-BicepCandidateFixture {
+        Mock -CommandName $candidatePath -MockWith {
             $global:LASTEXITCODE = 0
             $script:versionOutput
         }
@@ -890,7 +795,7 @@ Describe 'Bicep CLI installation' {
         { Set-EnvironmentOnAgent } | Should -Throw '*permission update failed with exit code 1:*chmod: permission denied*'
 
         Get-Content -LiteralPath $script:installedPath -Raw | Should -BeExactly $script:preinstalledContents
-        Should -Invoke Invoke-BicepCandidateFixture -Times 0 -Exactly
+        Should -Invoke -CommandName $candidatePath -Times 0 -Exactly
         Should -Invoke sudo -Times 0 -Exactly
         Test-Path -LiteralPath $candidatePath | Should -BeFalse
     }
@@ -917,7 +822,7 @@ Describe 'Bicep CLI installation' {
     ) {
         $ErrorActionPreference = $preference
         $PSNativeCommandUseErrorActionPreference = $nativePreference
-        Mock Invoke-BicepCandidateFixture { Write-Error 'Exec format error (offline fixture).' }
+        Mock -CommandName $candidatePath -MockWith { Write-Error 'Exec format error (offline fixture).' }
 
         { Set-EnvironmentOnAgent -ErrorAction $preference } | Should -Throw '*Exec format error*'
 

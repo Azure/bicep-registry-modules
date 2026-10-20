@@ -24,5 +24,3 @@ Publishing a child module does **not** move or reorganize any files. The child m
 ## Workflow
 
 Follow instructions in the [AVM Bicep Child Module Publishing](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/child-module-publishing/) documentation for the full step-by-step process, including code snippets and file templates.
-
-During the packaged-validation transition, keep `.avm/child-module-publish-allowed-list.json` and `utilities/pipelines/staticValidation/compliance/helper/child-module-publish-allowed-list.json` identical when updating approvals. The former is used by `Avm.Authoring`; the latter remains required by local tools and current releases.

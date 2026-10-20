@@ -52,12 +52,12 @@ jobs:
           fetch-depth: 0
       - name: "Set input parameters to output variables"
         id: get-workflow-param
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-workflow-input@2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
+        uses: ./.github/actions/templates/avm-getWorkflowInput
         with:
           workflowPath: "${{ env.workflowPath}}"
       - name: "Get module test file paths"
         id: get-module-test-file-paths
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-module-test-files@2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
+        uses: ./.github/actions/templates/avm-getModuleTestFiles
         with:
           modulePath: "${{ env.modulePath }}"
     outputs:
@@ -75,10 +75,8 @@ jobs:
       contents: write # For release tags
     needs:
       - job_initialize_pipeline
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module.yml@2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
+    uses: ./.github/workflows/avm.template.module.yml
     with:
-      tools-ref: 2d7a09711b5ddbaf16da2f1c51ee80aeef5606f5
-      avm-authoring-version: ${{ vars.AVM_AUTHORING_VERSION }}
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
