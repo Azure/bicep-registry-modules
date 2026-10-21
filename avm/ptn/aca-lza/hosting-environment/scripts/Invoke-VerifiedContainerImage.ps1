@@ -165,6 +165,8 @@ function Get-NotationCertificate {
         [Parameter(Mandatory)] [string] $Subject
     )
 
+    $subjectFormat = [System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags]::Reversed
+    $expectedSubject = [System.Security.Cryptography.X509Certificates.X500DistinguishedName]::new($Subject).Decode($subjectFormat)
     $existing = @(Get-AzKeyVaultCertificate -VaultName $VaultName -ErrorAction Stop | Where-Object Name -CEQ $Name)
     if ($existing.Count -gt 1) { throw 'Signing certificate name is not unique in the owned vault.' }
     $certificate = if ($existing.Count -eq 1) {
@@ -184,7 +186,8 @@ function Get-NotationCertificate {
         if ($operation.Status -ine 'completed') { throw 'Signing certificate creation exceeded five minutes.' }
         $certificate = Get-AzKeyVaultCertificate -VaultName $VaultName -Name $Name -ErrorAction Stop
     }
-    if (-not $certificate -or $certificate.Certificate.Subject -cne $Subject -or
+    if (-not $certificate -or -not $certificate.Certificate -or
+        $certificate.Certificate.SubjectName.Decode($subjectFormat) -cne $expectedSubject -or
         [string]::IsNullOrWhiteSpace($certificate.KeyId) -or $certificate.Certificate.NotAfter.ToUniversalTime() -le [DateTime]::UtcNow) {
         throw 'Signing certificate is missing, expired, or does not match the expected publisher identity.'
     }
@@ -235,10 +238,10 @@ function Publish-VerifiedContainerImage {
         [string] $Repository = 'aca-lza/sample'
     )
 
-    $subject = 'CN=aca-lza-sample'
+    $subject = 'CN=aca-lza-sample, O=Azure Verified Modules, ST=Washington, C=US'
     $certificate = Get-NotationCertificate -VaultName $VaultName -Name 'aca-lza-image-signing' -Subject $subject
     Set-NotationTrust -Executable $Executable -Directory $Directory -LoginServer $LoginServer -Repository $Repository `
-        -Certificate $certificate.Certificate.RawData -Subject $subject
+        -Certificate $certificate.Certificate.RawData -Subject $certificate.Certificate.Subject
     $credential = Get-NotationRegistryCredential -LoginServer $LoginServer
     try {
         $login = Invoke-NotationCommand -Executable $Executable -Arguments @('login', $LoginServer, '--username', '00000000-0000-0000-0000-000000000000', '--password-stdin') -StandardInput $credential
@@ -273,7 +276,7 @@ function Publish-VerifiedContainerImage {
             image               = $verified
             signatureDigest     = $created[0].digest
             certificateBase64   = [Convert]::ToBase64String($certificate.Certificate.RawData)
-            certificateSubject  = $subject
+            certificateSubject  = $certificate.Certificate.Subject
             strictVerification  = $true
         }
     } finally {

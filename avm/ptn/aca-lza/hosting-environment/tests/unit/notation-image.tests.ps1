@@ -20,7 +20,7 @@ BeforeAll {
 
     $rsa = [System.Security.Cryptography.RSA]::Create(2048)
     $request = [System.Security.Cryptography.X509Certificates.CertificateRequest]::new(
-        'CN=aca-lza-sample', $rsa, [System.Security.Cryptography.HashAlgorithmName]::SHA256,
+        'CN=aca-lza-sample, O=Azure Verified Modules, ST=Washington, C=US', $rsa, [System.Security.Cryptography.HashAlgorithmName]::SHA256,
         [System.Security.Cryptography.RSASignaturePadding]::Pkcs1
     )
     $publicCertificate = $request.CreateSelfSigned([DateTimeOffset]::UtcNow.AddDays(-1), [DateTimeOffset]::UtcNow.AddMonths(12))
@@ -124,6 +124,7 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         $result.image | Should -BeExactly $image
         $result.strictVerification | Should -BeTrue
         $result.certificateBase64 | Should -BeExactly ([Convert]::ToBase64String($publicCertificate.RawData))
+        $result.certificateSubject | Should -BeExactly $publicCertificate.Subject
         @($script:releases).Count | Should -Be 2
         $script:releases[0] | Should -Match '/_manifests/sha256:b{63}0$'
         $script:releases[1] | Should -BeExactly "https://registry.example.invalid/acr/v1/aca-lza/sample/_manifests/$digest"
@@ -166,7 +167,7 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
 
     It 'Creates only the missing named public certificate with a non-exportable digital-signature key' {
         $script:certificateExists = $false
-        $null = Get-NotationCertificate -VaultName 'synthetic-vault' -Name 'aca-lza-image-signing' -Subject 'CN=aca-lza-sample'
+        $null = Get-NotationCertificate -VaultName 'synthetic-vault' -Name 'aca-lza-image-signing' -Subject $publicCertificate.Subject
         Should -Invoke New-AzKeyVaultCertificatePolicy -Times 1 -Exactly -ParameterFilter {
             $KeyNotExportable -and $KeyType -ceq 'RSA' -and $KeyUsage -ceq 'DigitalSignature' -and
             $Ekus -ceq '1.3.6.1.5.5.7.3.3' -and $ReuseKeyOnRenewal
@@ -178,11 +179,11 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
 
     It 'Pins the exact repository, publisher identity and public certificate without verification overrides' {
         Set-NotationTrust -Executable 'synthetic-notation' -Directory $TestDrive -LoginServer 'registry.example.invalid' `
-            -Repository 'aca-lza/sample' -Certificate $publicCertificate.RawData -Subject 'CN=aca-lza-sample'
+            -Repository 'aca-lza/sample' -Certificate $publicCertificate.RawData -Subject $publicCertificate.Subject
         $policy = Get-Content -LiteralPath (Join-Path $TestDrive 'trustpolicy.json') -Raw | ConvertFrom-Json
         @($policy.trustPolicies).Count | Should -Be 1
         $policy.trustPolicies[0].registryScopes | Should -Be @('registry.example.invalid/aca-lza/sample')
-        $policy.trustPolicies[0].trustedIdentities | Should -Be @('x509.subject: CN=aca-lza-sample')
+        $policy.trustPolicies[0].trustedIdentities | Should -Be @("x509.subject: $($publicCertificate.Subject)")
         $policy.trustPolicies[0].signatureVerification.level | Should -BeExactly 'strict'
         @($policy.trustPolicies[0].signatureVerification.PSObject.Properties.Name) | Should -Be @('level')
         [Convert]::ToBase64String([IO.File]::ReadAllBytes((Join-Path $TestDrive 'trusted.cer'))) |
