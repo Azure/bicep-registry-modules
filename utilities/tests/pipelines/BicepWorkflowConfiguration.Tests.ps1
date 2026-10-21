@@ -46,14 +46,23 @@ Describe 'Coordinated tools dependency updates' {
 }
 
 Describe 'Registry-owned child module publishing approvals' {
-    It 'keeps packaged and legacy publishing approvals identical during the transition' {
+    It 'does not introduce a root child module publishing approval file' {
         $configurationPath = Join-Path $RepoRootPath '.avm' 'child-module-publish-allowed-list.json'
-        $legacyPath = Join-Path $RepoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-module-publish-allowed-list.json'
-        $configuration = Get-Content -LiteralPath $configurationPath -Raw | ConvertFrom-Json -AsHashtable
-        $legacy = Get-Content -LiteralPath $legacyPath -Raw | ConvertFrom-Json -AsHashtable
 
-        ($configuration | ConvertTo-Json -Depth 5 -Compress) |
-            Should -BeExactly ($legacy | ConvertTo-Json -Depth 5 -Compress)
+        Test-Path -LiteralPath $configurationPath | Should -BeFalse
+    }
+
+    It 'preserves the existing <surface> unchanged from main' -ForEach @(
+        @{ surface = 'approval list'; path = 'utilities/pipelines/staticValidation/compliance/helper/child-module-publish-allowed-list.json' }
+        @{ surface = 'approval validator'; path = 'utilities/pipelines/staticValidation/compliance/module.tests.ps1' }
+    ) {
+        $baseline = '08dab5ba19b6f9b87514954e386226809564445b'
+        $expectedBlob = git -C $RepoRootPath rev-parse "${baseline}:$path"
+        $LASTEXITCODE | Should -Be 0
+
+        (git -C $RepoRootPath hash-object "--path=$path" -- (Join-Path $RepoRootPath $path)) |
+            Should -BeExactly $expectedBlob
+        $LASTEXITCODE | Should -Be 0
     }
 }
 
