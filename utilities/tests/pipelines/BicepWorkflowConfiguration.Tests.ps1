@@ -22,8 +22,8 @@ Describe 'Coordinated tools dependency updates' {
                     if ($node.with -and $node.with.ContainsKey('tools-ref')) {
                         $node.with.'tools-ref' | Should -BeExactly $toolsRef
                     }
-                    if ($node.with -and $node.with.ContainsKey('avm-authoring-version')) {
-                        $node.with.'avm-authoring-version' | Should -Be '${{ vars.AVM_AUTHORING_VERSION }}'
+                    if ($node.with) {
+                        $node.with.ContainsKey('avm-authoring-version') | Should -BeFalse
                     }
                 }
             }
@@ -56,7 +56,7 @@ Describe 'Registry-owned child module publishing approvals' {
         @{ surface = 'approval list'; path = 'utilities/pipelines/staticValidation/compliance/helper/child-module-publish-allowed-list.json' }
         @{ surface = 'approval validator'; path = 'utilities/pipelines/staticValidation/compliance/module.tests.ps1' }
     ) {
-        $baseline = '08dab5ba19b6f9b87514954e386226809564445b'
+        $baseline = '062537582b9392a0dec3388ff8b36bb141a06659'
         $expectedBlob = git -C $RepoRootPath rev-parse "${baseline}:$path"
         $LASTEXITCODE | Should -Be 0
 

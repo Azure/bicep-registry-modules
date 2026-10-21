@@ -4,9 +4,9 @@ param(
 )
 
 BeforeAll {
-    $toolsRef = 'ba9af85f4f1c164839f43080ac152cb372f9db0a'
+    $toolsRef = '90b0b533b6dbef5010d120546f9fbea4e230b694'
     $sharedFiles = @{
-        'Common.ps1' = 'fe306502f3c398b3b0fae3a122f37f0c3d88c6b0'
+        'Common.ps1' = '7fb31ca1d9b6e0d5eb5027e9bb90c11389643d9b'
         'Discovery.ps1' = '75d7b2614cc0f1affd12a1b35e852ef91208e1bf'
     }
     foreach ($file in $sharedFiles.Keys) {
@@ -250,7 +250,7 @@ Describe 'Generic module workflow' {
         $fork.if | Should -Match "github.event_name == 'pull_request'"
         $fork.if | Should -Match 'github.event.pull_request.head.repo.full_name != github.repository'
         $fork.uses | Should -Be "Azure/azure-verified-modules-tools/.github/workflows/bicep-module-static.yml@$toolsRef"
-        @($fork.with.Keys | Sort-Object) | Should -Be @('avm-authoring-version', 'modulePath', 'tools-ref')
+        @($fork.with.Keys | Sort-Object) | Should -Be @('modulePath', 'tools-ref')
         $fork.permissions.Count | Should -Be 1
         $fork.permissions.ContainsKey('id-token') | Should -BeFalse
         $fork.ContainsKey('secrets') | Should -BeFalse

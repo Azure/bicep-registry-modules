@@ -5,13 +5,13 @@ param(
 
 Describe 'Experimental shared workflow isolation' {
     BeforeAll {
-        $baseline = '83845801bb29ea7c3a12b48d647bb5a0f1804e8e'
+        $baseline = '062537582b9392a0dec3388ff8b36bb141a06659'
         $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
         $workflow = Get-Content -LiteralPath (Join-Path $workflowRoot 'avm.module.yml') -Raw | ConvertFrom-Yaml
-        $toolsRef = 'ba9af85f4f1c164839f43080ac152cb372f9db0a'
+        $toolsRef = '90b0b533b6dbef5010d120546f9fbea4e230b694'
     }
 
-    It 'keeps every nonexperimental workflow byte-identical to the pre-adoption main baseline' {
+    It 'keeps every nonexperimental workflow byte-identical to the current main baseline' {
         $entries = @(git -C $RepoRootPath ls-tree -r $baseline -- .github/workflows)
         $LASTEXITCODE | Should -Be 0
         foreach ($entry in $entries) {
@@ -56,7 +56,7 @@ Describe 'Experimental shared workflow isolation' {
                     if ($node.uses -like 'Azure/azure-verified-modules-tools/*') {
                         $file.Name | Should -BeExactly 'avm.module.yml'
                         ($node.uses -split '@')[-1] | Should -BeExactly $toolsRef
-                        $node.with.'avm-authoring-version' | Should -Be '${{ vars.AVM_AUTHORING_VERSION }}'
+                        $node.with.ContainsKey('avm-authoring-version') | Should -BeFalse
                         if ($node.uses -like '*/workflows/*') { $node.with.'tools-ref' | Should -BeExactly $toolsRef }
                         $remoteUses++
                     }

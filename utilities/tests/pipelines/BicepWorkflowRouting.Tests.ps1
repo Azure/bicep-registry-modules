@@ -151,7 +151,6 @@ Describe 'Generic module matrix partition' {
         ($local.permissions | ConvertTo-Json -Compress) | Should -Be ($shared.permissions | ConvertTo-Json -Compress)
         $sharedInputs = $shared.with | ConvertTo-Json -Depth 20 | ConvertFrom-Json -AsHashtable
         $sharedInputs.Remove('tools-ref')
-        $sharedInputs.Remove('avm-authoring-version')
         @($local.with.Keys | Sort-Object) | Should -Be @($sharedInputs.Keys | Sort-Object)
         foreach ($inputKey in $sharedInputs.Keys) {
             $local.with[$inputKey] | Should -BeExactly $sharedInputs[$inputKey]
