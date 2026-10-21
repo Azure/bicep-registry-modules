@@ -77,6 +77,7 @@ Describe 'ACA-LZA actual trust policies with offline Notation 1.3.2' {
         $script:certificates = @{}
         $script:policies = [System.Collections.Generic.List[object]]::new()
         $script:nativeImports = [System.Collections.Generic.List[object]]::new()
+        $script:registryCommands = [System.Collections.Generic.List[object]]::new()
         $script:releases = [System.Collections.Generic.List[string]]::new()
         $script:producerReferrerReads = 0
         $script:controlReferrerReads = @{}
@@ -112,7 +113,13 @@ Describe 'ACA-LZA actual trust policies with offline Notation 1.3.2' {
                 }
                 return $result
             }
-            if ($Arguments[0] -in @('login', 'sign')) { return @{ ExitCode = 0; Output = ''; Error = '' } }
+            if ($Arguments[0] -ceq 'login') { throw 'Persistent registry login must not be used.' }
+            if ($Arguments[0] -cin @('sign', 'verify')) {
+                $RegistryCredential | Should -BeExactly 'offline-refresh'
+                $Arguments | Should -Not -Contain 'offline-refresh'
+                $script:registryCommands.Add(@{ verb = $Arguments[0]; arguments = @($Arguments); credential = $RegistryCredential })
+            }
+            if ($Arguments[0] -ceq 'sign') { return @{ ExitCode = 0; Output = ''; Error = '' } }
             if ($Arguments[0] -ceq 'verify') {
                 $errorText = switch -Regex ($Arguments[-1]) {
                     '/unsigned@' { 'no signature is associated with this artifact' }
@@ -212,6 +219,13 @@ Describe 'ACA-LZA actual trust policies with offline Notation 1.3.2' {
         }
         @($script:nativeImports | ForEach-Object { $_.policy.trustPolicies[0].registryScopes[0] } | Select-Object -Unique).Count | Should -Be 4
         @($verified.controls.case) | Should -Be @('Unsigned', 'Tampered', 'Untrusted')
+        $script:registryCommands.Count | Should -Be 7
+        @($script:registryCommands | Where-Object verb -CEQ 'sign').Count | Should -Be 2
+        @($script:registryCommands | Where-Object verb -CEQ 'verify').Count | Should -Be 5
+        foreach ($command in $script:registryCommands) {
+            $command.credential | Should -BeExactly 'offline-refresh'
+            $command.arguments | Should -Not -Contain '--password'
+        }
         $other = $script:certificates['aca-lza-untrusted-test-signing'].Certificate
         $other.Subject | Should -BeExactly $trusted.Subject
         [Convert]::ToBase64String($other.RawData) | Should -Not -BeExactly $published.certificateBase64

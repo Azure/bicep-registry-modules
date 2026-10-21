@@ -45,19 +45,16 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         $script:verifyExitCode = 0
         $script:verifyError = ''
         $script:signExitCode = 0
-        $script:loginExitCode = 0
-        $script:loginError = ''
+        $script:signError = 'synthetic signing failure'
         $script:referrerReads = 0
         $script:createdSignatureCount = 1
         $script:certificateExists = $true
         $script:releases = [System.Collections.Generic.List[string]]::new()
         Mock Invoke-NotationCommand {
-            $script:commands.Add(@{ arguments = @($Arguments); standardInput = $StandardInput })
-            if ($Arguments[0] -ceq 'login') {
-                return @{ ExitCode = $script:loginExitCode; Output = ''; Error = $script:loginError }
-            }
+            $script:commands.Add(@{ arguments = @($Arguments); registryCredential = $RegistryCredential })
+            if ($Arguments[0] -ceq 'login') { throw 'Persistent registry login must not be used.' }
             if ($Arguments[0] -ceq 'sign') {
-                return @{ ExitCode = $script:signExitCode; Output = ''; Error = 'synthetic signing failure' }
+                return @{ ExitCode = $script:signExitCode; Output = ''; Error = $script:signError }
             }
             if ($Arguments[0] -ceq 'verify') {
                 return @{ ExitCode = $script:verifyExitCode; Output = 'synthetic output cannot override the exit code'; Error = $script:verifyError }
@@ -107,21 +104,21 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         @{ Reference = 'registry.example.invalid/aca-lza/sample:latest' }
         @{ Reference = 'registry.example.invalid/aca-lza/sample@sha256:short' }
     ) {
-        { Confirm-NotationImage -Executable 'synthetic-notation' -Image $Reference } | Should -Throw '*immutable SHA256*'
+        { Confirm-NotationImage -Executable 'synthetic-notation' -Image $Reference -RegistryCredential 'synthetic-refresh' } | Should -Throw '*immutable SHA256*'
         Should -Invoke Invoke-NotationCommand -Times 0 -Exactly
     }
 
     It 'Returns the exact immutable reference only after successful native verification' {
-        Confirm-NotationImage -Executable 'synthetic-notation' -Image $image | Should -BeExactly $image
+        Confirm-NotationImage -Executable 'synthetic-notation' -Image $image -RegistryCredential 'synthetic-refresh' | Should -BeExactly $image
         Should -Invoke Invoke-NotationCommand -Times 1 -Exactly -ParameterFilter {
-            ($Arguments -join '|') -ceq "verify|$image"
+            ($Arguments -join '|') -ceq "verify|$image" -and $RegistryCredential -ceq 'synthetic-refresh'
         }
     }
 
     It 'Does not accept success-shaped output from a failed verifier' {
         $script:verifyExitCode = 1
         $script:verifyError = 'invalid signature'
-        { Confirm-NotationImage -Executable 'synthetic-notation' -Image $image } | Should -Throw '*signature verification rejected*'
+        { Confirm-NotationImage -Executable 'synthetic-notation' -Image $image -RegistryCredential 'synthetic-refresh' } | Should -Throw '*signature verification rejected*'
     }
 
     It 'Imports and signs the exact digest with non-exportable-key managed-identity authentication before releasing signature and image' {
@@ -144,10 +141,14 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         $sign | Should -Contain $testCertificate.KeyId
         $sign | Should -Contain '--force-referrers-tag=false'
         $sign | Should -Not -Contain 'false'
-        $login = @($script:commands | Where-Object { $_.arguments[0] -ceq 'login' })[0]
-        $login.arguments | Should -Contain '--password-stdin'
-        $login.arguments | Should -Not -Contain 'synthetic-refresh'
-        $login.standardInput | Should -BeExactly 'synthetic-refresh'
+        @($script:commands | Where-Object { $_.arguments[0] -ceq 'login' }).Count | Should -Be 0
+        $registryCommands = @($script:commands | Where-Object { $_.arguments[0] -cin @('sign', 'verify') })
+        $registryCommands.Count | Should -Be 2
+        foreach ($command in $registryCommands) {
+            $command.registryCredential | Should -BeExactly 'synthetic-refresh'
+            $command.arguments | Should -Not -Contain 'synthetic-refresh'
+            $command.arguments | Should -Not -Contain '--password'
+        }
     }
 
     It 'Never releases an image when signing fails' {
@@ -157,14 +158,16 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         @($script:commands | Where-Object { $_.arguments[0] -ceq 'verify' }).Count | Should -Be 0
     }
 
-    It 'Retains the native <Boundary> login failure without continuing <Consumer>' -ForEach @(
-        @{ Boundary = 'credential-store'; NativeError = 'a credentials store is required'; Consumer = 'publication' }
-        @{ Boundary = 'authentication'; NativeError = 'failed to validate the credentials: 401 Unauthorized'; Consumer = 'publication' }
-        @{ Boundary = 'credential-store'; NativeError = 'a credentials store is required'; Consumer = 'native controls' }
-        @{ Boundary = 'authentication'; NativeError = 'failed to validate the credentials: 401 Unauthorized'; Consumer = 'native controls' }
+    It 'Retains the native <Boundary> failure without releasing or accepting <Consumer>' -ForEach @(
+        @{ Boundary = 'authentication'; NativeError = '401 Unauthorized'; Consumer = 'publication' }
+        @{ Boundary = 'transport'; NativeError = 'connection refused'; Consumer = 'publication' }
+        @{ Boundary = 'authentication'; NativeError = '401 Unauthorized'; Consumer = 'native controls' }
+        @{ Boundary = 'transport'; NativeError = 'connection refused'; Consumer = 'native controls' }
     ) {
-        $script:loginExitCode = 1
-        $script:loginError = $NativeError
+        $script:signExitCode = 1
+        $script:signError = $NativeError
+        $script:verifyExitCode = 1
+        $script:verifyError = $NativeError
         $execute = if ($Consumer -ceq 'publication') {
             { Publish-VerifiedContainerImage @publish }
         } else {
@@ -173,10 +176,37 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
                     -TrustedCertificate $publicCertificate.RawData -TrustedSubject $publicCertificate.Subject
             }
         }
-        $execute | Should -Throw "*registry login failed (exit code 1): $NativeError*"
-        Should -Invoke Import-AzContainerRegistryImage -Times 0 -Exactly
+        $execute | Should -Throw "*$NativeError*"
+        Should -Invoke Import-AzContainerRegistryImage -Times ($Consumer -ceq 'publication' ? 1 : 0) -Exactly
         $script:releases.Count | Should -Be 0
-        @($script:commands | Where-Object { $_.arguments[0] -in @('sign', 'verify') }).Count | Should -Be 0
+        @($script:commands | Where-Object { $_.arguments[0] -ceq 'login' }).Count | Should -Be 0
+        @($script:commands | Where-Object { $_.arguments[0] -in @('sign', 'verify') }).Count | Should -Be 1
+    }
+
+    It 'Rejects missing explicit credentials before any verification: <Credential>' -ForEach @(
+        @{ Credential = $null }
+        @{ Credential = '' }
+        @{ Credential = ' ' }
+    ) {
+        { Confirm-NotationImage -Executable 'synthetic-notation' -Image $image -RegistryCredential $Credential } | Should -Throw '*Explicit registry credentials*'
+        { Confirm-TestSignatureRejection -Executable 'synthetic-notation' -Image $image -Case Unsigned -RegistryCredential $Credential } | Should -Throw '*Explicit registry credentials*'
+        Should -Invoke Invoke-NotationCommand -Times 0 -Exactly
+    }
+
+    It 'Stops both consumers before importing or using images when the exchange yields no credential: <Credential>' -ForEach @(
+        @{ Credential = $null }
+        @{ Credential = '' }
+        @{ Credential = ' ' }
+    ) {
+        Mock Get-NotationRegistryCredential { $Credential }
+        { Publish-VerifiedContainerImage @publish } | Should -Throw '*ACR did not return a registry credential*'
+        {
+            Test-NotationImageVerification @publish -TrustedImage $image -TrustedSignatureDigest $signatureDigest `
+                -TrustedCertificate $publicCertificate.RawData -TrustedSubject $publicCertificate.Subject
+        } | Should -Throw '*ACR did not return a registry credential*'
+        Should -Invoke Import-AzContainerRegistryImage -Times 0 -Exactly
+        @($script:commands | Where-Object { $_.arguments[0] -cin @('login', 'sign', 'verify') }).Count | Should -Be 0
+        $script:releases.Count | Should -Be 0
     }
 
     It 'Never releases signature or image after consuming verification rejects it' {
@@ -275,7 +305,7 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
     ) {
         $script:verifyExitCode = 1
         $script:verifyError = $NativeError
-        $result = Confirm-TestSignatureRejection -Executable 'synthetic-notation' -Image $image -Case $Case
+        $result = Confirm-TestSignatureRejection -Executable 'synthetic-notation' -Image $image -Case $Case -RegistryCredential 'synthetic-refresh'
         $result.rejected | Should -BeTrue
         $result.case | Should -BeExactly $Case
         $result.errorSha256 | Should -Match '^[a-f0-9]{64}$'
@@ -291,7 +321,7 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
     ) {
         $script:verifyExitCode = 1
         $script:verifyError = $NativeError
-        { Confirm-TestSignatureRejection -Executable 'synthetic-notation' -Image $image -Case $Case } | Should -Throw '*did not establish*'
+        { Confirm-TestSignatureRejection -Executable 'synthetic-notation' -Image $image -Case $Case -RegistryCredential 'synthetic-refresh' } | Should -Throw '*did not establish*'
     }
 
     It 'Does not turn transport failure into <Case> security evidence' -ForEach @(
@@ -301,10 +331,10 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
     ) {
         $script:verifyExitCode = 1
         $script:verifyError = 'connection refused'
-        { Confirm-TestSignatureRejection -Executable 'synthetic-notation' -Image $image -Case $Case } | Should -Throw '*did not establish*'
+        { Confirm-TestSignatureRejection -Executable 'synthetic-notation' -Image $image -Case $Case -RegistryCredential 'synthetic-refresh' } | Should -Throw '*did not establish*'
     }
 
     It 'Fails the negative control if the consuming gate actually accepts it' {
-        { Confirm-TestSignatureRejection -Executable 'synthetic-notation' -Image $image -Case Unsigned } | Should -Throw '*was accepted*'
+        { Confirm-TestSignatureRejection -Executable 'synthetic-notation' -Image $image -Case Unsigned -RegistryCredential 'synthetic-refresh' } | Should -Throw '*was accepted*'
     }
 }

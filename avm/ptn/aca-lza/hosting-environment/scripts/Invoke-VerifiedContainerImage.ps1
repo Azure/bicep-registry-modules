@@ -4,6 +4,8 @@ Sign and strictly verify the ACA-LZA sample before releasing its immutable priva
 .DESCRIPTION
 Run in the deployment subnet with the scoped workload managed identity. Keys remain non-exportable
 in Key Vault. Use an isolated XDG_CONFIG_HOME and DOCKER_CONFIG; registry credentials are ephemeral.
+Registry credentials are scoped to each Notation child and inherited by its checksum-pinned signing
+plug-in, not written to a credential store. Privileged process inspection remains possible.
 Production consumers must provision their approved publisher trust roots and call Confirm-NotationImage
 before deploying the exact returned digest. This is a deployment gate, not an ACA runtime admission policy.
 Reference: https://learn.microsoft.com/azure/container-registry/container-registry-tutorial-sign-build-push
@@ -41,14 +43,31 @@ function Invoke-NotationCommand {
     param (
         [Parameter(Mandatory)] [string] $Executable,
         [Parameter(Mandatory)] [string[]] $Arguments,
-        [string] $StandardInput
+        [string] $StandardInput,
+        [string] $RegistryCredential
     )
 
+    $registryOperation = $Arguments[0] -cin @('sign', 'verify')
+    if ($registryOperation -and [string]::IsNullOrWhiteSpace($RegistryCredential)) {
+        throw 'Explicit registry credentials are required for Notation sign and verify.'
+    }
+    if (-not $registryOperation -and $PSBoundParameters.ContainsKey('RegistryCredential')) {
+        throw 'Registry credentials are only accepted for Notation sign and verify.'
+    }
+    if ($registryOperation -and @($Arguments | Where-Object { $_ -cmatch '^(--(?:username|password)(?:=|$)|-[up])' }).Count) {
+        throw 'Notation registry credentials must use the child environment, not command-line flags.'
+    }
     $startInfo = [System.Diagnostics.ProcessStartInfo]::new($Executable)
     $startInfo.UseShellExecute = $false
     $startInfo.RedirectStandardOutput = $true
     $startInfo.RedirectStandardError = $true
     $startInfo.RedirectStandardInput = $true
+    $null = $startInfo.Environment.Remove('NOTATION_USERNAME')
+    $null = $startInfo.Environment.Remove('NOTATION_PASSWORD')
+    if ($registryOperation) {
+        $startInfo.Environment['NOTATION_USERNAME'] = '00000000-0000-0000-0000-000000000000'
+        $startInfo.Environment['NOTATION_PASSWORD'] = $RegistryCredential
+    }
     foreach ($argument in $Arguments) { $startInfo.ArgumentList.Add($argument) }
     $process = [System.Diagnostics.Process]::new()
     $process.StartInfo = $startInfo
@@ -64,7 +83,7 @@ function Invoke-NotationCommand {
             $process.Kill($true)
             throw 'Notation exceeded its three-minute command deadline.'
         }
-        $sensitiveValues = @($StandardInput)
+        $sensitiveValues = @($StandardInput, $RegistryCredential)
         for ($index = 0; $index -lt $Arguments.Count; $index++) {
             if ($Arguments[$index] -cin @('--password', '-p') -and $index + 1 -lt $Arguments.Count) {
                 $sensitiveValues += $Arguments[$index + 1]
@@ -78,7 +97,16 @@ function Invoke-NotationCommand {
             Error    = Protect-NotationDiagnosticText -Text $stderr.GetAwaiter().GetResult() -SensitiveValues $sensitiveValues
         }
     } finally {
+        $null = $startInfo.Environment.Remove('NOTATION_USERNAME')
+        $null = $startInfo.Environment.Remove('NOTATION_PASSWORD')
         $process.Dispose()
+        $process = $null
+        $startInfo = $null
+        $sensitiveValues = $null
+        $stdout = $null
+        $stderr = $null
+        $StandardInput = $null
+        $RegistryCredential = $null
     }
 }
 
@@ -182,13 +210,15 @@ function Confirm-NotationImage {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)] [string] $Executable,
-        [Parameter(Mandatory)] [string] $Image
+        [Parameter(Mandatory)] [string] $Image,
+        [string] $RegistryCredential
     )
 
     if ($Image -cnotmatch '^[a-z0-9.-]+/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$') {
         throw 'Image verification requires an immutable SHA256 image reference, not a tag.'
     }
-    $result = Invoke-NotationCommand -Executable $Executable -Arguments @('verify', $Image)
+    if ([string]::IsNullOrWhiteSpace($RegistryCredential)) { throw 'Explicit registry credentials are required for image signature verification.' }
+    $result = Invoke-NotationCommand -Executable $Executable -Arguments @('verify', $Image) -RegistryCredential $RegistryCredential
     if ($result.ExitCode -ne 0) { throw "Image signature verification rejected [$Image]: $($result.Error)" }
     $Image
 }
@@ -280,8 +310,7 @@ function Publish-VerifiedContainerImage {
         -Certificate $certificate.Certificate.RawData -Subject $certificate.Certificate.Subject
     $credential = Get-NotationRegistryCredential -LoginServer $LoginServer
     try {
-        $login = Invoke-NotationCommand -Executable $Executable -Arguments @('login', $LoginServer, '--username', '00000000-0000-0000-0000-000000000000', '--password-stdin') -StandardInput $credential
-        if ($login.ExitCode -ne 0) { throw "Notation managed-identity registry login failed (exit code $($login.ExitCode)): $($login.Error)" }
+        if ([string]::IsNullOrWhiteSpace($credential)) { throw 'ACR did not return a registry credential.' }
         $null = Import-AzContainerRegistryImage -RegistryName $RegistryName -ResourceGroupName $ResourceGroupName `
             -SourceRegistryUri 'mcr.microsoft.com' -SourceImage 'azuredocs/containerapps-helloworld:latest' `
             -TargetTag "${Repository}:sample" -Mode Force -ErrorAction Stop
@@ -298,9 +327,9 @@ function Publish-VerifiedContainerImage {
             'sign', '--signature-format', 'cose', '--id', $certificate.KeyId, '--plugin', 'azure-kv',
             '--plugin-config', 'self_signed=true', '--plugin-config', 'credential_type=managedid',
             '--force-referrers-tag=false', $image
-        )
+        ) -RegistryCredential $credential
         if ($sign.ExitCode -ne 0) { throw "Notation image signing failed: $($sign.Error)" }
-        $verified = Confirm-NotationImage -Executable $Executable -Image $image
+        $verified = Confirm-NotationImage -Executable $Executable -Image $image -RegistryCredential $credential
         $after = @(Get-NotationSignatures -LoginServer $LoginServer -Repository $Repository -Digest $digest -Token $token)
         $created = @($after | Where-Object { $_.digest -cnotin @($before.digest) })
         if ($created.Count -ne 1 -or $created[0].artifactType -cne 'application/vnd.cncf.notary.signature') {

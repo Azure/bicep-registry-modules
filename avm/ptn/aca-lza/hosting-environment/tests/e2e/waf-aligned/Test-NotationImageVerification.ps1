@@ -41,11 +41,13 @@ function Confirm-TestSignatureRejection {
     param (
         [Parameter(Mandatory)] [string] $Executable,
         [Parameter(Mandatory)] [string] $Image,
-        [Parameter(Mandatory)] [ValidateSet('Unsigned', 'Tampered', 'Untrusted')] [string] $Case
+        [Parameter(Mandatory)] [ValidateSet('Unsigned', 'Tampered', 'Untrusted')] [string] $Case,
+        [string] $RegistryCredential
     )
 
+    if ([string]::IsNullOrWhiteSpace($RegistryCredential)) { throw 'Explicit registry credentials are required for signature rejection controls.' }
     try {
-        $null = Confirm-NotationImage -Executable $Executable -Image $Image
+        $null = Confirm-NotationImage -Executable $Executable -Image $Image -RegistryCredential $RegistryCredential
     } catch {
         $message = $_.Exception.Message
         $expected = switch ($Case) {
@@ -88,13 +90,10 @@ function Test-NotationImageVerification {
     $sourceRepository = 'aca-lza/sample'
     $credential = Get-NotationRegistryCredential -LoginServer $LoginServer
     try {
-        $login = Invoke-NotationCommand -Executable $Executable -Arguments @(
-            'login', $LoginServer, '--username', '00000000-0000-0000-0000-000000000000', '--password-stdin'
-        ) -StandardInput $credential
-        if ($login.ExitCode -ne 0) { throw "Native signature test registry login failed (exit code $($login.ExitCode)): $($login.Error)" }
+        if ([string]::IsNullOrWhiteSpace($credential)) { throw 'ACR did not return a registry credential.' }
         Set-NotationTrust -Executable $Executable -Directory $Directory -LoginServer $LoginServer -Repository $sourceRepository `
             -Certificate $TrustedCertificate -Subject $TrustedSubject
-        $positive = Confirm-NotationImage -Executable $Executable -Image $TrustedImage
+        $positive = Confirm-NotationImage -Executable $Executable -Image $TrustedImage -RegistryCredential $credential
         $sourceToken = Get-NotationRepositoryToken -LoginServer $LoginServer -Repository $sourceRepository -RegistryCredential $credential
         $signature = Invoke-RestMethod -Uri "https://$LoginServer/v2/$sourceRepository/manifests/$TrustedSignatureDigest" `
             -Headers @{ Authorization = "Bearer $sourceToken"; Accept = 'application/vnd.oci.image.manifest.v1+json' } -ErrorAction Stop
@@ -151,13 +150,13 @@ function Test-NotationImageVerification {
                     'sign', '--signature-format', 'cose', '--id', $other.KeyId, '--plugin', 'azure-kv',
                     '--plugin-config', 'self_signed=true', '--plugin-config', 'credential_type=managedid',
                     '--force-referrers-tag=false', "$LoginServer/$repository@$digest"
-                )
+                ) -RegistryCredential $credential
                 if ($sign.ExitCode -ne 0) { throw "Untrusted test publisher could not produce its actual signature: $($sign.Error)" }
             }
             $present = @(Get-NotationSignatures -LoginServer $LoginServer -Repository $repository -Digest $digest -Token $token)
             $expectedCount = $case -ceq 'Unsigned' ? 0 : 1
             if ($present.Count -ne $expectedCount) { throw 'Negative test signature presence did not match its declared case.' }
-            $checks += Confirm-TestSignatureRejection -Executable $Executable -Image "$LoginServer/$repository@$digest" -Case $case
+            $checks += Confirm-TestSignatureRejection -Executable $Executable -Image "$LoginServer/$repository@$digest" -Case $case -RegistryCredential $credential
         }
         @{
             trustedImage       = $positive
