@@ -4,7 +4,7 @@ param(
 )
 
 BeforeAll {
-    $toolsRef = '90b0b533b6dbef5010d120546f9fbea4e230b694'
+    $toolsRef = '99f2a390207cf75b00ca81dbde22568a25aba8e9'
     $sharedFiles = @{
         'Common.ps1' = '7fb31ca1d9b6e0d5eb5027e9bb90c11389643d9b'
         'Discovery.ps1' = '75d7b2614cc0f1affd12a1b35e852ef91208e1bf'

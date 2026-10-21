@@ -8,7 +8,7 @@ Describe 'Experimental shared workflow isolation' {
         $baseline = '062537582b9392a0dec3388ff8b36bb141a06659'
         $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
         $workflow = Get-Content -LiteralPath (Join-Path $workflowRoot 'avm.module.yml') -Raw | ConvertFrom-Yaml
-        $toolsRef = '90b0b533b6dbef5010d120546f9fbea4e230b694'
+        $toolsRef = '99f2a390207cf75b00ca81dbde22568a25aba8e9'
     }
 
     It 'keeps every nonexperimental workflow byte-identical to the current main baseline' {

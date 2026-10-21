@@ -141,8 +141,8 @@ Describe 'Module deployment workflow expansion' {
         $entry.jobs.'call-workflow-passing-data'.uses | Should -Be './.github/workflows/avm.template.module.yml'
 
         $dispatcher = Get-Content (Join-Path $workflowRoot 'avm.module.yml') -Raw | ConvertFrom-Yaml
-        $dispatcher.jobs.call_module_preview.uses | Should -Be 'Azure/azure-verified-modules-tools/.github/workflows/bicep-module-preview.yml@90b0b533b6dbef5010d120546f9fbea4e230b694'
-        $dispatcher.jobs.call_module_publish.uses | Should -Be 'Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish.yml@90b0b533b6dbef5010d120546f9fbea4e230b694'
+        $dispatcher.jobs.call_module_preview.uses | Should -Be 'Azure/azure-verified-modules-tools/.github/workflows/bicep-module-preview.yml@99f2a390207cf75b00ca81dbde22568a25aba8e9'
+        $dispatcher.jobs.call_module_publish.uses | Should -Be 'Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish.yml@99f2a390207cf75b00ca81dbde22568a25aba8e9'
         $dispatcher.jobs.call_module_preview_local.uses | Should -Be './.github/workflows/avm.template.module.preview.yml'
         $dispatcher.jobs.call_module_publish_local.uses | Should -Be './.github/workflows/avm.template.module.publish.yml'
         $dispatcher.jobs.call_module_publish.if | Should -Match "github.event_name == 'workflow_dispatch'"
