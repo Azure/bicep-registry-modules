@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'WAF-aligned'
 metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
@@ -16,10 +18,12 @@ param serviceShort string = 'krlbwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. The service principal object ID of the Kubernetes Runtime HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 087fca6e-4606-4d41-b3f6-5ebdf75b8b4c`.')
-@secure()
-#disable-next-line secure-parameter-default
-param kubernetesRuntimeRPObjectId string = ''
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
+resource kubernetesRuntimeResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
+  appId: '087fca6e-4606-4d41-b3f6-5ebdf75b8b4c'
+}
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
@@ -46,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       clusterName: nestedDependencies.outputs.clusterName
-      kubernetesRuntimeRPObjectId: kubernetesRuntimeRPObjectId
+      kubernetesRuntimeRPObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : kubernetesRuntimeResourceProvider!.id
       addresses: [
         '10.0.0.100-10.0.0.110'
       ]

@@ -285,12 +285,13 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                 }
                 'Regional' { throw ($script:incidentMessage -f $Name) }
                 'NestedReadNotFound' {
+                    $operationPath = $script:nestedId.Replace('/providers/Microsoft.Resources', $script:readProviderSegment)
                     $message = "Deployment 'dependencies' could not be found."
                     $exception = [System.InvalidOperationException]::new($message)
                     $exception | Add-Member -NotePropertyName Body -NotePropertyValue @{ Code = 'DeploymentNotFound'; Message = $message }
                     $exception | Add-Member -NotePropertyName Request -NotePropertyValue @{
                         Method = [System.Net.Http.HttpMethod]::Get
-                        RequestUri = [uri] "https://management.azure.com$script:nestedId/operations?api-version=2024-11-01"
+                        RequestUri = [uri] "https://management.azure.com$operationPath/operations?api-version=2024-11-01"
                     }
                     $exception | Add-Member -NotePropertyName Response -NotePropertyValue @{
                         StatusCode = [System.Net.HttpStatusCode]::NotFound
@@ -392,6 +393,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         $script:groupId = "/subscriptions/$script:subscriptionId/resourceGroups/retry-fixture"
         $script:vnetId = "$script:groupId/providers/Microsoft.Network/virtualNetworks/dependencies"
         $script:nestedId = "$script:groupId/providers/Microsoft.Resources/deployments/dependencies"
+        $script:readProviderSegment = '/providers/Microsoft.Resources'
         $script:azContext = @{
             Subscription = @{ Id = $script:subscriptionId }
             Tenant       = @{ Id = '22222222-2222-2222-2222-222222222222' }
@@ -560,13 +562,35 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             $result.RemainingDeploymentNames | Should -Be @($script:names[1])
             $script:trace | Should -Contain "GET:$script:nestedId/operations"
             $script:trace | Should -Contain "GET:$script:groupId"
+            $script:trace | Should -Contain "state:$($script:roots[0])"
+            $script:trace | Should -Contain "GET:$($script:roots[0])"
             $script:trace.IndexOf("remove:$script:groupId") |
                 Should -BeLessThan $script:trace.IndexOf("DELETE:$($script:roots[0])")
             $script:trace.IndexOf("DELETE:$($script:roots[0])") |
+                Should -BeLessThan $script:trace.LastIndexOf("GET:$($script:roots[0])")
+            $script:trace.LastIndexOf("GET:$($script:roots[0])") |
                 Should -BeLessThan $script:trace.IndexOf('validate:westeurope')
             $script:trace.IndexOf('validate:westeurope') | Should -BeLessThan $script:trace.IndexOf('submit:westeurope')
             $templateInput.AdditionalParameters.resourceLocation | Should -BeExactly ''
             Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+        }
+
+        It 'Requires a confirmed Failed root before service cleanup: <state>' -ForEach @(
+            @{ state = 'Running' }, @{ state = 'Accepted' }, @{ state = 'Canceled' }
+            @{ state = 'Succeeded' }, @{ state = 'Unknown' }
+        ) {
+            Mock Initialize-DeploymentRemoval { throw 'Unexpected cleanup without a confirmed Failed root.' }
+            Mock Get-AzDeployment { @{ DeploymentName = $Name; ProvisioningState = $state } }
+
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+            $result.Exception | Should -Match 'no retry is safe'
+            $result.AttemptedLocations | Should -Be @($region)
+            @($script:submissions) | Should -Be @($region)
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            Should -Invoke Initialize-DeploymentRemoval -Times 0 -Exactly
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
         }
 
         It 'Classifies original validation responses with the selected subscription before any submission' {
@@ -3164,7 +3188,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
     }
 
     It 'Does not inspect or replay <outcome> uncertainty' -ForEach @(
-        @{ outcome = 'Transport' }, @{ outcome = 'NoResult' }, @{ outcome = 'Running' }
+        @{ outcome = 'NoResult' }, @{ outcome = 'Running' }
     ) {
         $script:outcomes = @($outcome)
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
@@ -3174,18 +3198,269 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
     }
 
-    It 'Uses recovered Failed evidence after a typed timeout without resubmitting the original deployment' {
-        $script:outcomes = @('Timeout', 'Succeeded')
+    It 'Uses recovered Failed evidence after a typed <outcome> without resubmitting the original deployment' -ForEach @(
+        @{ outcome = 'Timeout' }, @{ outcome = 'Transport' }
+    ) {
+        $script:outcomes = @($outcome, 'Succeeded')
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
         $result.ContainsKey('Exception') | Should -BeFalse
         @($script:submissions) | Should -Be @('italynorth', 'swedencentral')
         $result.RemainingDeploymentNames | Should -Be @($script:names[1])
         Should -Invoke Get-AzDeployment -Times 3 -Exactly -ParameterFilter { $Name -eq $script:names[0] }
+        $script:trace.IndexOf("remove:$script:groupId") | Should -BeLessThan $script:trace.IndexOf("DELETE:$($script:roots[0])")
+        $script:trace.IndexOf("DELETE:$($script:roots[0])") | Should -BeLessThan $script:trace.IndexOf('submit:swedencentral')
     }
 
-    Context 'Nested deployment read reconciliation within shared budgets' -Tag 'DeploymentReadRecovery' {
+    It 'Does not legacy-replay a recovered Transport failure through direct <entryPoint> with RetryLimit three' -Tag 'TransportReplay' -ForEach @(
+        @{ entryPoint = 'New-TemplateDeployment' }
+        @{ entryPoint = 'New-TemplateDeploymentInner' }
+    ) {
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
+        $script:outcomes = @('Transport', 'Succeeded')
+        $template.variables.regionToken = 'italynorth'
+        $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+        $directInput = $templateInput.Clone()
+        $directInput.AdditionalParameters = $templateInput.AdditionalParameters.Clone()
+        $directInput.AdditionalParameters.resourceLocation = 'italynorth'
+        $directInput.DoNotThrow = $true
+        $directInput.RetryLimit = 3
+
+        $result = & $entryPoint @directInput
+
+        $result.Exception | Should -Match 'confirmed Failed during transport recovery'
+        $result.ErrorRecord.FullyQualifiedErrorId | Should -Be 'DeploymentFailedAfterTransport'
+        $result.RetryAllowed | Should -BeFalse
+        $result.FailureQueryAllowed | Should -BeTrue
+        $result.RecoveredFailure | Should -BeTrue
+        $result.DeploymentNames | Should -Be @($script:names)
+        $script:submissions.Count | Should -Be 1
+        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+        Should -Invoke Get-AzDeployment -Times 1 -Exactly
+        Should -Invoke Remove-AzResource -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
+    It 'Stops a recovered Transport failure without a positively classified cleanup/retry path' -Tag 'TransportReplay' {
+        $script:outcomes = @('Transport', 'Succeeded')
+        $script:regionalError = @{ error = @{ code = 'InvalidParameter'; message = 'Fixture input is invalid.' } }
+
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.Exception | Should -Match 'confirmed Failed during transport recovery'
+        $result.DeploymentAttempts | Should -Be 1
+        $result.RemainingDeploymentNames | Should -Be @($script:names)
+        $script:submissions.Count | Should -Be 1
+        $script:validations.Count | Should -Be 1
+        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+        Should -Invoke Get-AzDeployment -Times 2 -Exactly
+        Should -Invoke Remove-AzResource -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
+    It 'Returns original successful outputs after a typed <outcome> without teardown or another submission' -ForEach @(
+        @{ outcome = 'Timeout' }, @{ outcome = 'Transport' }
+    ) {
+        $script:outcomes = @($outcome)
+        Mock Get-AzDeployment {
+            $script:records[$script:roots[-1]].State = 'Succeeded'
+            Get-FixtureStatus -Name $Name -Scope subscription -DefaultProfile $DefaultProfile
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+
+        $result.ContainsKey('Exception') | Should -BeFalse
+        $result.DeploymentOutput.region.value | Should -BeExactly 'italynorth'
+        $result.DeploymentAttempts | Should -Be 1
+        $result.RemainingDeploymentNames | Should -Be @($script:names)
+        Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+        Should -Invoke Get-AzDeployment -Times 1 -Exactly -ParameterFilter { $Name -eq $script:names[0] }
+        Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+        Should -Invoke Remove-AzResource -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+    }
+
+    Context 'Shared status-recovery deadline' -Tag 'RecoveryDeadline' {
+        BeforeEach {
+            $script:coordinatorStartUtc = $script:clock
+            $script:deadlineUtc = $script:clock.AddHours(4)
+        }
+
+        Context '<outcome> entry path' -ForEach @(
+            @{ outcome = 'Timeout'; scope = 'subscription'; statusCommand = 'Get-AzDeployment'; validationCommand = 'Test-AzSubscriptionDeployment' }
+            @{ outcome = 'Transport'; scope = 'subscription'; statusCommand = 'Get-AzDeployment'; validationCommand = 'Test-AzSubscriptionDeployment' }
+            @{ outcome = 'NestedReadNotFound'; scope = 'subscription'; statusCommand = 'Get-AzDeployment'; validationCommand = 'Test-AzSubscriptionDeployment' }
+            @{ outcome = 'Forbidden'; scope = 'managementgroup'; statusCommand = 'Get-AzManagementGroupDeployment'; validationCommand = 'Test-AzManagementGroupDeployment' }
+        ) {
+            BeforeEach {
+                $script:outcomes = @($outcome)
+                $script:recoveryScope = $scope
+                if ($scope -eq 'managementgroup') {
+                    $template.'$schema' = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
+                    $template | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $templatePath
+                }
+                Mock $statusCommand {
+                    $script:records[$script:roots[-1]].State = $script:clock -eq $script:coordinatorStartUtc ? 'Running' : 'Succeeded'
+                    Get-FixtureStatus -Name $Name -Scope $script:recoveryScope -ManagementGroupId 'test-management-group' -DefaultProfile $DefaultProfile
+                }
+            }
+
+            It 'Recovers after one hour but before the shared cutoff' {
+                Mock Start-Sleep { $script:clock = $script:clock.AddMinutes(90) }
+                $result = Invoke-TemplateDeploymentWithRetry @retryInput
+                $result.ContainsKey('Exception') | Should -BeFalse
+                $result.DeploymentOutput.region.value | Should -BeExactly 'italynorth'
+                $result.DeploymentAttempts | Should -Be 1
+                $result.RemainingDeploymentNames | Should -Be @($script:names)
+                $script:clock | Should -Be $script:coordinatorStartUtc.AddMinutes(90)
+                Should -Invoke $statusCommand -Times 2 -Exactly -ParameterFilter { $Name -eq $script:names[0] }
+                Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+                Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
+
+            It 'Counts validation time against the cutoff at <elapsed> seconds' -ForEach @(
+                @{ elapsed = 14399; succeeds = $true }
+                @{ elapsed = 14400; succeeds = $false }
+                @{ elapsed = 14401; succeeds = $false }
+            ) {
+                Mock $validationCommand {
+                    Invoke-FixtureValidation $TemplateFile $resourceLocation $baseTime $adminSecret
+                    $script:clock = $script:coordinatorStartUtc.AddSeconds($elapsed)
+                }
+                $result = Invoke-TemplateDeploymentWithRetry @retryInput
+                $result.ContainsKey('Exception') | Should -Be (-not $succeeds)
+                if ($succeeds) {
+                    $result.DeploymentOutput.region.value | Should -BeExactly 'italynorth'
+                } else {
+                    $result.Exception | Should -Match 'recovery deadline'
+                    $result.ContainsKey('DeploymentOutput') | Should -BeFalse
+                }
+                $result.DeploymentAttempts | Should -Be 1
+                $result.RemainingDeploymentNames | Should -Be @($script:names)
+                $result.PendingDeletionDeploymentIds.Count | Should -Be 0
+                Should -Invoke $statusCommand -Times ([int] $succeeds) -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+                Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
+        }
+
+        It 'Shares the exact UTC deadline across <first> and <second> regional attempts' -ForEach @(
+            @{ first = 'Timeout'; second = 'NestedReadNotFound' }
+            @{ first = 'NestedReadNotFound'; second = 'Timeout' }
+        ) {
+            $script:outcomes = @($first, $second, 'Succeeded')
+            $templateInput.RecoveryDeadlineUtc = $script:deadlineUtc.AddHours(8)
+            $script:recoveryDeadlines = [System.Collections.Generic.List[datetime]]::new()
+            $script:waitImplementation = (Get-Command Wait-TemplateDeployment).ScriptBlock
+            Mock Wait-TemplateDeployment {
+                $script:recoveryDeadlines.Add($RecoveryDeadlineUtc)
+                . $script:waitImplementation @PesterBoundParameters
+            }
+            Mock Get-AzDeployment {
+                $script:records[$script:roots[-1]].State =
+                $script:names.Count -eq 1 -and $script:clock -gt $script:coordinatorStartUtc ? 'Failed' : 'Running'
+                Get-FixtureStatus $Name subscription '' '' $DefaultProfile
+            }
+            Mock Start-Sleep { $script:clock = $script:clock.AddHours(2) }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.Exception | Should -Match 'recovery deadline'
+            $result.DeploymentAttempts | Should -Be 2
+            $result.AttemptedLocations | Should -Be @('italynorth', 'swedencentral')
+            $result.DeploymentNames | Should -Be @($script:names)
+            $result.RemainingDeploymentNames | Should -Be @($script:names[1])
+            $result.PendingDeletionDeploymentIds.Count | Should -Be 0
+            $script:clock | Should -Be $script:deadlineUtc
+            $templateInput.RecoveryDeadlineUtc | Should -Be $script:deadlineUtc.AddHours(8)
+            @($script:recoveryDeadlines) | Should -Be @($script:deadlineUtc, $script:deadlineUtc)
+            @($script:recoveryDeadlines | Where-Object Kind -NE Utc).Count | Should -Be 0
+            $script:records.ContainsKey($script:roots[0]) | Should -BeFalse
+            $script:records.ContainsKey($script:roots[1]) | Should -BeTrue
+            Should -Invoke New-AzSubscriptionDeployment -Times 2 -Exactly
+            Should -Invoke Get-AzDeployment -Times 1 -Exactly -ParameterFilter { $Name -eq $script:names[1] }
+            Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+        }
+
+        It 'Converts a local coordinator clock to an absolute UTC deadline' {
+            $script:clock = $script:coordinatorStartUtc.ToLocalTime()
+            Mock New-TemplateDeployment {
+                $RecoveryDeadlineUtc.Kind | Should -Be ([DateTimeKind]::Utc)
+                $RecoveryDeadlineUtc | Should -Be $script:deadlineUtc
+                @{ DeploymentNames = @(); DeploymentOutput = @{ ready = $true } }
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput
+            $result.DeploymentOutput.ready | Should -BeTrue
+            Should -Invoke New-TemplateDeployment -Times 1 -Exactly
+        }
+
+        It 'Does not reset the deadline on a same-region retry with RemoveDeployment=<remove>' -ForEach @(
+            @{ remove = $true }, @{ remove = $false }
+        ) {
+            $script:outcomes = @('Legacy', 'Timeout', 'Succeeded')
+            Mock New-AzSubscriptionDeployment {
+                if ($script:names.Count -eq 1) { $script:clock = $script:deadlineUtc.AddSeconds(-15) }
+                Invoke-FixtureSubmission $DeploymentName $TemplateFile $resourceLocation $baseTime $adminSecret
+            }
+            Mock Get-AzDeployment {
+                if ($script:names.Count -eq 2) { $script:records[$script:roots[-1]].State = 'Running' }
+                Get-FixtureStatus $Name subscription '' '' $DefaultProfile
+            }
+            $result = Invoke-TemplateDeploymentWithRetry @retryInput -RemoveDeployment $remove
+            $result.Exception | Should -Match 'recovery deadline'
+            $result.Exception | Should -Match 'Original submission timed out'
+            $result.DeploymentAttempts | Should -Be 2
+            $result.AttemptedLocations | Should -Be @('italynorth')
+            $result.RemainingDeploymentNames | Should -Be @($script:names)
+            $script:clock | Should -Be $script:deadlineUtc
+            Should -Invoke Get-AzDeployment -Times 1 -Exactly -ParameterFilter { $Name -eq $script:names[1] }
+            Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 5 }
+            Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'DELETE' }
+        }
+
+        It 'Never replays <state> observed after an hour' -ForEach @(
+            @{ state = 'Unknown' }, @{ state = 'Canceled' }, @{ state = 'Unauthorized' }, @{ state = 'Cancelled' }
+        ) {
+            $script:outcomes = @('Timeout', 'Succeeded')
+            Mock Start-Sleep { $script:clock = $script:clock.AddMinutes(90) }
+            Mock Get-AzDeployment {
+                if ($script:clock -eq $script:coordinatorStartUtc) {
+                    $script:records[$script:roots[-1]].State = 'Running'
+                } elseif ($state -eq 'Unauthorized') {
+                    throw [System.UnauthorizedAccessException]::new('Status read denied.')
+                } elseif ($state -eq 'Cancelled') {
+                    throw [System.OperationCanceledException]::new('Status read cancelled.')
+                } else {
+                    $script:records[$script:roots[-1]].State = $state
+                }
+                Get-FixtureStatus $Name subscription '' '' $DefaultProfile
+            }
+            if ($state -eq 'Cancelled') {
+                { Invoke-TemplateDeploymentWithRetry @retryInput } | Should -Throw '*Status read cancelled*'
+            } else {
+                $result = Invoke-TemplateDeploymentWithRetry @retryInput
+                $result.Exception | Should -Match 'Original submission timed out'
+                $result.DeploymentAttempts | Should -Be 1
+                $result.RemainingDeploymentNames | Should -Be @($script:names)
+                $result.ContainsKey('DeploymentOutput') | Should -BeFalse
+            }
+            $script:clock | Should -Be $script:coordinatorStartUtc.AddMinutes(90)
+            Should -Invoke Get-AzDeployment -Times 2 -Exactly
+            Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+            Should -Invoke Remove-AzResource -Times 0 -Exactly
+        }
+    }
+
+    Context 'Nested deployment read reconciliation within shared budgets for <route>' -Tag 'DeploymentReadRecovery' -ForEach @(
+        @{ route = 'provider-qualified route'; providerSegment = '/providers/Microsoft.Resources' }
+        @{ route = 'legacy SDK route'; providerSegment = '' }
+    ) {
         BeforeEach {
             $script:outcomes = @('NestedReadNotFound', 'Succeeded')
+            $script:readProviderSegment = $providerSegment
             $script:readRecoveryStates = [System.Collections.Generic.Queue[string]]::new([string[]] @('Running', 'Failed'))
             Mock Get-AzDeployment {
                 if ($script:readRecoveryStates.Count -gt 0) {
@@ -3404,7 +3679,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             $script:names.Count | Should -Be 1
             @($script:validations) | Should -Be @('italynorth')
             $script:alive.Count | Should -Be 2
-            Should -Invoke Get-AzManagementGroupDeployment -Times 1 -Exactly
+            Should -Invoke Get-AzManagementGroupDeployment -Times ($state -eq 'Running' ? 4 : 1) -Exactly
             Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
             Should -Invoke Remove-AzResource -Times 0 -Exactly
             [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($templatePath)) | Should -Be ([Convert]::ToBase64String($originalBytes))
@@ -3811,8 +4086,10 @@ module dependency './dependency.bicep' = {
         $script:removed.Count | Should -Be 0
     }
 
-    It 'Stops without inspecting or replaying a deployment when timeout recovery is uncertain' {
-        $script:outcomes = @('Timeout', 'Succeeded')
+    It 'Stops without inspecting operations or replaying a deployment when <outcome> recovery is uncertain' -ForEach @(
+        @{ outcome = 'Timeout' }, @{ outcome = 'Transport' }
+    ) {
+        $script:outcomes = @($outcome, 'Succeeded')
         Mock Get-AzDeployment { throw [System.TimeoutException]::new('Status timed out.') }
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
         $result.Exception | Should -Match 'outcome remains unknown'
@@ -3874,6 +4151,7 @@ module dependency './dependency.bicep' = {
         $templateInput.TemplateFilePath = $invalidPath
         $script:nameGenerations = 0
         Mock Get-Date {
+            if (-not $Format) { return $script:clock }
             if (++$script:nameGenerations -gt 2) { throw 'Repeated generation of an invalid deployment name.' }
             $script:clock.ToString($Format)
         }

@@ -1,7 +1,9 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata description = 'This instance deploys the module with most of its features enabled and grants the Azure Virtual Desktop service principal subscription-level autoscale permissions.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
@@ -22,6 +24,27 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
+
+var azureVirtualDesktopAppId = '9cdead84-a844-4324-93f2-b2e6bb768d07'
+var autoscaleRoleDefinitionId = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '40c5ff49-9181-41f8-ae61-143b0e78555e'
+)
+
+// The deployment identity needs Microsoft Graph Application.Read.All to resolve this tenant-specific principal.
+resource azureVirtualDesktop 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+  appId: azureVirtualDesktopAppId
+}
+
+// Autoscale requires this assignment at subscription scope, not on the scaling plan.
+resource autoscaleRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscription().id, azureVirtualDesktopAppId, autoscaleRoleDefinitionId)
+  properties: {
+    roleDefinitionId: autoscaleRoleDefinitionId
+    principalId: azureVirtualDesktop.id
+    principalType: 'ServicePrincipal'
+  }
+}
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
@@ -224,5 +247,8 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
+    dependsOn: [
+      autoscaleRoleAssignment
+    ]
   }
 ]

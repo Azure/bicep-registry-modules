@@ -4,6 +4,7 @@ Create image artifacts from a given image template
 
 .DESCRIPTION
 Create image artifacts and wait for the submitted build to succeed. The wait uses the template's build timeout, plus five minutes for its final status.
+Post-submission status reads can recover from a transport connection reset at most twice within the same deadline, without resubmitting the build.
 
 .PARAMETER ImageTemplateName
 Mandatory. The name of the image template
@@ -101,8 +102,40 @@ process {
             $runSucceeded = $false
             $lastReportedState = $null
             $submittedRunStartTime = $null
+            $statusReadRecoveryCount = 0
+            $maxStatusReadRecoveries = 2
             while ((Get-Date).ToUniversalTime() -lt $deadline) {
-                $imageTemplates = @(Get-AzImageBuilderTemplate @templateInputObject)
+                try {
+                    $imageTemplates = @(Get-AzImageBuilderTemplate @templateInputObject)
+                } catch {
+                    $statusReadException = $_.Exception
+                    while ($statusReadException.GetType() -in @(
+                            [System.Management.Automation.RuntimeException],
+                            [System.Management.Automation.MethodInvocationException]
+                        ) -and $null -ne $statusReadException.InnerException) {
+                        $statusReadException = $statusReadException.InnerException
+                    }
+                    if ($statusReadException -isnot [System.Net.Http.HttpRequestException] -or
+                        $null -ne $statusReadException.StatusCode -or
+                        $statusReadException.InnerException -isnot [System.IO.IOException] -or
+                        $statusReadException.InnerException.InnerException -isnot [System.Net.Sockets.SocketException] -or
+                        $statusReadException.InnerException.InnerException.SocketErrorCode -ne [System.Net.Sockets.SocketError]::ConnectionReset -or
+                        $null -ne $statusReadException.InnerException.InnerException.InnerException -or
+                        $statusReadRecoveryCount -ge $maxStatusReadRecoveries) {
+                        throw
+                    }
+                    $remainingSeconds = ($deadline - (Get-Date).ToUniversalTime()).TotalSeconds
+                    if ($remainingSeconds -le 0) {
+                        throw
+                    }
+                    $statusReadRecoveryCount++
+                    Write-Warning ('Connection reset while reading status for submitted image build [{0}]. Retrying the status read (recovery {1} of {2}); the build will not be resubmitted.' -f $imageTemplateName, $statusReadRecoveryCount, $maxStatusReadRecoveries)
+                    Start-Sleep -Seconds ([Math]::Min(15.0, $remainingSeconds))
+                    continue
+                }
+                if ((Get-Date).ToUniversalTime() -ge $deadline) {
+                    break
+                }
                 if ($imageTemplates.Count -ne 1) {
                     throw ('Expected exactly one image template [{0}] in resource group [{1}].' -f $imageTemplateName, $imageTemplateResourceGroup)
                 }
@@ -132,7 +165,10 @@ process {
                     Write-Verbose ('Waiting for the submitted image build [{0}]. Last reported state [{1}], substate [{2}].' -f $imageTemplateName, $runState, $imageTemplate.LastRunStatusRunSubState) -Verbose
                     $lastReportedState = $runState
                 }
-                Start-Sleep -Seconds 15
+                $remainingSeconds = ($deadline - (Get-Date).ToUniversalTime()).TotalSeconds
+                if ($remainingSeconds -gt 0) {
+                    Start-Sleep -Seconds ([Math]::Min(15.0, $remainingSeconds))
+                }
             }
             if (-not $runSucceeded) {
                 throw ('Timed out after {0} minutes waiting for the submitted image build [{1}]. Last run state [{2}], substate [{3}]: {4}' -f $waitTimeoutInMinutes, $imageTemplateName, $imageTemplate.LastRunStatusRunState, $imageTemplate.LastRunStatusRunSubState, $imageTemplate.LastRunStatusMessage)

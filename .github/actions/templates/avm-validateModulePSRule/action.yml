@@ -14,6 +14,9 @@ inputs:
     description: "The path to the test file"
     required: true
     default: ""
+  modulePath:
+    description: "Exact module root used to resolve the test subscription reservation"
+    required: true
   managementGroupId:
     description: "The management group ID to deploy to"
     required: false
@@ -39,6 +42,8 @@ runs:
     # ---------------------------
     - name: "Replace tokens in template file"
       uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+      env:
+        MODULE_PATH: ${{ inputs.modulePath }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -82,6 +87,8 @@ runs:
             $functionInput = @{
               TestSubscriptionIds    = $env:TEST_SUBSCRIPTION_IDS
               FallbackSubscriptionId = $env:VALIDATE_SUBSCRIPTION_ID
+              ModulePath             = $env:MODULE_PATH
+              RepoRootPath           = $env:GITHUB_WORKSPACE
             }
             $ConvertTokensInputs.Tokens['subscriptionId'] = @(Get-TestSubscriptionList @functionInput)[0].id
           }
@@ -116,12 +123,26 @@ runs:
 
     # [PSRule validation] task(s)
     #-----------------------------
+    - name: Prepare PSRule packages
+      id: prepare_psrule
+      shell: pwsh
+      env:
+        CONTINUE_ON_ERROR: ${{ inputs.softFailure }}
+      continue-on-error: ${{ fromJSON(env.CONTINUE_ON_ERROR) }}
+      run: |
+        $ErrorActionPreference = 'Stop'
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'psrule' 'Initialize-PSRuleRepository.ps1')
+        $repository = Initialize-PSRuleRepository -TemporaryPath $env:RUNNER_TEMP
+        "repository=$repository" >> $env:GITHUB_OUTPUT
+
     - name: Run PSRule analysis
+      if: ${{ steps.prepare_psrule.outcome == 'success' }}
       uses: microsoft/ps-rule@46451b8f5258c41beb5ae69ed7190ccbba84112c # v2.9.0
       env:
         CONTINUE_ON_ERROR: ${{ inputs.softFailure }}
       continue-on-error: ${{ fromJSON(env.CONTINUE_ON_ERROR) }}
       with:
+        repository: ${{ steps.prepare_psrule.outputs.repository }}
         modules: "PSRule.Rules.Azure"
         prerelease: true
         baseline: "${{ inputs.psruleBaseline }}"

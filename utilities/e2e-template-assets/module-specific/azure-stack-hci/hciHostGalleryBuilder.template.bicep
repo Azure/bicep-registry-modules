@@ -1,5 +1,14 @@
-@description('Required. Location for the image template.')
+@description('Required. Location of the image definition, which Azure VM Image Builder also uses for the image version.')
 param location string
+
+@description('Optional. Location for the image template and build VM. Use a new imageTemplateName when changing an existing template location.')
+param buildLocation string = location
+
+@minLength(1)
+@description('Optional. Regions where the image version must be available. The image definition and build locations are always included.')
+param replicationRegions string[] = [
+  location
+]
 
 @description('Required. Name of the Azure VM Image Builder template.')
 param imageTemplateName string
@@ -19,6 +28,11 @@ param assetBaseUri string
 @description('Required. Download URL for the Azure Stack HCI VHDX payload.')
 param hciVhdxDownloadUri string
 
+@minLength(64)
+@maxLength(64)
+@description('Required. Expected SHA256 of the downloaded VHDX.')
+param hciVhdxSha256 string
+
 @description('Required. Source marketplace image used by Azure VM Image Builder.')
 param sourceImage object
 
@@ -31,12 +45,26 @@ param buildTimeoutInMinutes int
 @description('Optional. Tags applied to the image template and output version.')
 param tags object = {}
 
+@description('Optional. Explicit resource group for image-build staging.')
+param stagingResourceGroupResourceId string?
+
+var requiredReplicationRegions = union(
+  [
+    toLower(replace(location, ' ', ''))
+    toLower(replace(buildLocation, ' ', ''))
+  ],
+  map(replicationRegions, region => toLower(replace(region, ' ', '')))
+)
+
 var stage1ScriptUri = '${assetBaseUri}/azureStackHCIHost/scripts/hciHostStage1.ps1'
 var encodedPayloadUri = base64(hciVhdxDownloadUri)
+var encodedPayloadSha256 = base64(hciVhdxSha256)
 var payloadDownload = [
   '$ErrorActionPreference = \'Stop\''
   '$destination = \'C:\\ISOs\\hci_os.vhdx\''
   '$payloadUri = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(\'${encodedPayloadUri}\'))'
+  '$expectedSha256 = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(\'${encodedPayloadSha256}\'))'
+  'if ($expectedSha256 -notmatch \'\\A[0-9a-fA-F]{64}\\z\') { throw \'A valid HCI VHDX SHA256 digest is required.\' }'
   'New-Item -Path (Split-Path -Path $destination -Parent) -ItemType Directory -Force | Out-Null'
   '$attempt = 0'
   'do {'
@@ -50,11 +78,13 @@ var payloadDownload = [
   '  }'
   '} while ($true)'
   'if (-not (Test-Path -LiteralPath $destination -PathType Leaf)) { throw \'HCI VHDX payload was not downloaded.\' }'
+  '$actualSha256 = (Get-FileHash -LiteralPath $destination -Algorithm SHA256).Hash'
+  'if ($actualSha256 -ine $expectedSha256) { throw "HCI VHDX payload SHA256 mismatch. Expected [$expectedSha256], received [$actualSha256]." }'
 ]
 
 resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2025-10-01' = {
   name: imageTemplateName
-  location: location
+  location: buildLocation
   tags: tags
   identity: {
     type: 'UserAssigned'
@@ -63,6 +93,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2025-10-01
     }
   }
   properties: {
+    stagingResourceGroup: stagingResourceGroupResourceId
     buildTimeoutInMinutes: buildTimeoutInMinutes
     source: {
       type: 'PlatformImage'
@@ -99,10 +130,13 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2025-10-01
         runOutputName: 'hci-host-image-${replace(imageVersion, '.', '-')}'
         galleryImageId: '${galleryImageDefinitionResourceId}/versions/${imageVersion}'
         excludeFromLatest: false
-        replicationRegions: [
-          location
+        targetRegions: [
+          for region in requiredReplicationRegions: {
+            name: region
+            replicaCount: 1
+            storageAccountType: 'Standard_LRS'
+          }
         ]
-        storageAccountType: 'Standard_LRS'
         artifactTags: union(tags, {
           imageVersion: imageVersion
           source: 'AVM HCI host image builder'

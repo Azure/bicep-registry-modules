@@ -129,6 +129,10 @@ function Test-DeploymentRetryError {
                 $pattern = "\AThe region '$regionPattern' currently does not have enough resources available to provision services with the SKU '[A-Za-z][A-Za-z0-9_]*'\. " +
                 "Try creating the service in another region or selecting a different SKU\. RequestId: $guidPattern\z"
             }
+            'InsufficientResourcesAvailable' {
+                $pattern = "\AThe region '$regionPattern' is currently out of the resources required to provision new services\. " +
+                "Try creating the service in another region\. RequestId: $guidPattern\z"
+            }
             'BadRequest' {
                 $pattern = "\ASemantic Search is not available in '$regionPattern' region\. " +
                 'Please refer to https://aka\.ms/semanticsearchavailability for list of available regions\.\z'
@@ -359,7 +363,7 @@ function Test-DeploymentRetryError {
             -not [string]::IsNullOrWhiteSpace($Node.message) -and -not [string]::IsNullOrWhiteSpace($ResourceTarget) -and
             ($null -eq $Node.target -or ($Node.target -is [string] -and $Node.target -ieq $ResourceTarget))
         }
-        if ($Node.code -cin @('ResourcesForSkuUnavailable', 'BadRequest', 'ManagedEnvironmentCapacityHeavyUsageError') -and
+        if ($Node.code -cin @('ResourcesForSkuUnavailable', 'InsufficientResourcesAvailable', 'BadRequest', 'ManagedEnvironmentCapacityHeavyUsageError') -and
             (Test-RegionalServiceError -Node $Node -Targets $Targets)) {
             $classification.HasRegionalServiceError = $true
             return $true
@@ -494,6 +498,8 @@ cleaned between attempts. Metadata location, non-location parameters and tokens 
 Results distinguish all submitted names from names still requiring final cleanup.
 Wholly transient InternalServerError resource failures may retry in the same movable location after the same complete cleanup.
 Structured authorization denials override legacy same-region retry permission.
+Status recovery shares one absolute UTC deadline four hours from coordinator entry across all
+attempts and recovery paths. Native submissions and the existing retry budgets are unchanged.
 
 .PARAMETER TemplateInput
 Required. Common template, scope and parameter inputs. Only one parameter file is supported.
@@ -556,12 +562,16 @@ function Invoke-TemplateDeploymentWithRetry {
         [bool] $RemoveDeployment = $true,
 
         [Parameter()]
+        [string[]] $ProtectedResourceIds = @(),
+
+        [Parameter()]
         [switch] $ValidationOnly,
 
         [Parameter()]
         [switch] $DoNotThrow
     )
 
+    $recoveryDeadlineUtc = (Get-Date).ToUniversalTime().AddHours(4)
     if (-not $PSCmdlet.ShouldProcess($TemplateInput.TemplateFilePath, ($ValidationOnly ? 'Validate' : 'Validate and deploy'))) {
         return
     }
@@ -570,7 +580,7 @@ function Invoke-TemplateDeploymentWithRetry {
         throw 'Coordinated retries require a single parameter file, not a directory or multiple files.'
     }
     $validationParameters = $TemplateInput.Clone()
-    foreach ($name in @('DoNotThrow', 'RetryLimit', 'AttemptNumber', 'AdditionalTags')) {
+    foreach ($name in @('DoNotThrow', 'RetryLimit', 'AttemptNumber', 'AdditionalTags', 'RecoveryDeadlineUtc')) {
         $validationParameters.Remove($name)
     }
     $validationParameters.AdditionalParameters = ($TemplateInput.AdditionalParameters ?? @{}).Clone()
@@ -661,6 +671,7 @@ function Invoke-TemplateDeploymentWithRetry {
             $deploymentInput.DoNotThrow = $true
             $deploymentInput.RetryLimit = 1
             $deploymentInput.AttemptNumber = $deploymentAttempts
+            $deploymentInput.RecoveryDeadlineUtc = $recoveryDeadlineUtc
             $attemptResult = New-TemplateDeployment @deploymentInput -ErrorAction Stop
             foreach ($name in @($attemptResult.DeploymentNames)) {
                 if ($name -in $deploymentNames) {
@@ -739,6 +750,9 @@ function Invoke-TemplateDeploymentWithRetry {
                         ManagementGroupId                = $validationParameters.ManagementGroupId
                         RequireCompleteRemoval           = $true
                         RequireNoDeploymentScripts       = $transientFailure
+                    }
+                    if ($ProtectedResourceIds.Count -gt 0) {
+                        $cleanupInput.ProtectedResourceIds = $ProtectedResourceIds
                     }
                     try {
                         $cleanup = Initialize-DeploymentRemoval @cleanupInput -ErrorAction Stop

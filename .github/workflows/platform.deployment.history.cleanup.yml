@@ -31,6 +31,7 @@ jobs:
   job_initialize_pipeline:
     runs-on: ubuntu-latest
     name: "Initialize pipeline"
+    environment: avm-validation
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -41,8 +42,32 @@ jobs:
         uses: ./.github/actions/templates/avm-getWorkflowInput
         with:
           workflowPath: "${{ env.workflowPath}}"
+      - name: "Route subscription history maintenance"
+        id: history-pools
+        if: ${{ fromJson(steps.get-workflow-param.outputs.workflowInput).handleSubscriptionScope == 'true' }}
+        shell: pwsh
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+          $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID)
+          $reserved = @($subscriptions | Where-Object tag -CEQ 'Azure Local' | ForEach-Object {
+            @{
+              subscriptionIndex = $_.index
+              subscriptionKey = $_.key
+              environmentConcurrencyGroup = "avm-hci-$($_.key)"
+            }
+          })
+          "reservedSubscriptions=$(ConvertTo-Json -InputObject $reserved -Compress)" >> $env:GITHUB_OUTPUT
+          "hasReservedSubscriptions=$(($reserved.Count -gt 0).ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+          "hasOrdinarySubscriptions=$((@($subscriptions | Where-Object tag -CNE 'Azure Local').Count -gt 0).ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
     outputs:
       workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+      reservedSubscriptions: ${{ steps.history-pools.outputs.reservedSubscriptions }}
+      hasReservedSubscriptions: ${{ steps.history-pools.outputs.hasReservedSubscriptions }}
+      hasOrdinarySubscriptions: ${{ steps.history-pools.outputs.hasOrdinarySubscriptions }}
 
   ###############
   #   Removal   #
@@ -55,7 +80,7 @@ jobs:
       id-token: write # For OIDC
     needs:
       - job_initialize_pipeline
-    if: ${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).handleSubscriptionScope == 'true' }}
+    if: ${{ fromJson(needs.job_initialize_pipeline.outputs.workflowInput).handleSubscriptionScope == 'true' && needs.job_initialize_pipeline.outputs.hasOrdinarySubscriptions == 'true' }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -69,12 +94,14 @@ jobs:
         id: get-test-subscriptions
         shell: pwsh
         env:
-          TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
-          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
 
-          $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID -Verbose)
+          $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID -Verbose |
+            Where-Object tag -CNE 'Azure Local')
+          if ($subscriptions.Count -eq 0) { throw 'The ordinary maintenance pool changed after selection.' }
           Write-Output ("subscriptionId={0}" -f $subscriptions[0].id) >> $env:GITHUB_OUTPUT
           Write-Output ("subscriptions={0}" -f (ConvertTo-Json -InputObject $subscriptions -Compress)) >> $env:GITHUB_OUTPUT
 
@@ -85,8 +112,8 @@ jobs:
       - name: Azure Login
         uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
         with:
-          client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
-          tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
+          client-id: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
           subscription-id: ${{ steps.get-test-subscriptions.outputs.subscriptionId }}
           enable-AzPSSession: true
 
@@ -112,6 +139,77 @@ jobs:
             }
           azPSVersion: "latest"
 
+  job_cleanup_reserved_deployments:
+    name: "Maintain reserved subscription [${{ matrix.testCase.subscriptionIndex }}]"
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    needs: job_initialize_pipeline
+    if: ${{ fromJson(needs.job_initialize_pipeline.outputs.workflowInput).handleSubscriptionScope == 'true' && needs.job_initialize_pipeline.outputs.hasReservedSubscriptions == 'true' }}
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        testCase: ${{ fromJson(needs.job_initialize_pipeline.outputs.reservedSubscriptions) }}
+    concurrency:
+      group: ${{ matrix.testCase.environmentConcurrencyGroup }}
+      queue: max
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+        with:
+          removeDeployment: "false"
+      - name: "Install history maintenance dependencies"
+        shell: pwsh
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')
+          Install-CustomModule -Module @{ Name = 'Az.KeyVault' } -InstalledModule @(Get-Module -ListAvailable)
+      - name: "Resolve the pinned reserved subscription"
+        id: subscription
+        shell: pwsh
+        env:
+          TEST_CASE: ${{ toJson(matrix.testCase) }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
+          $testCase = ConvertFrom-Json $env:TEST_CASE -AsHashtable
+          $subscription = Get-HciTestSubscription -ModulePath 'avm/res/azure-stack-hci/cluster' `
+            -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -SubscriptionIndex $testCase.subscriptionIndex `
+            -SubscriptionKey $testCase.subscriptionKey -RepoRootPath $env:GITHUB_WORKSPACE
+          "subscriptionId=$($subscription.id)" >> $env:GITHUB_OUTPUT
+      - name: "Log in to the reserved subscription"
+        uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
+        with:
+          client-id: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          subscription-id: ${{ steps.subscription.outputs.subscriptionId }}
+          enable-AzPSSession: true
+      - name: "Clean history only with confirmed idle ownership"
+        uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+        env:
+          TEST_CASE: ${{ toJson(matrix.testCase) }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          HCI_RUN_IDENTITY: ${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}
+          AVM_CI_VARIABLES: ${{ toJSON(vars) }}
+          AVM_CI_SECRETS: ${{ toJSON(secrets) }}
+          CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
+          RETENTION_DAYS: ${{ fromJson(needs.job_initialize_pipeline.outputs.workflowInput).maxDeploymentRetentionInDays }}
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            $ErrorActionPreference = 'Stop'
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciDeploymentHistoryCleanup.ps1')
+            Invoke-HciDeploymentHistoryCleanup -RepoRootPath $env:GITHUB_WORKSPACE `
+              -TestCase (ConvertFrom-Json $env:TEST_CASE -AsHashtable) -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS `
+              -TenantId $env:VALIDATE_TENANT_ID -RunIdentity $env:HCI_RUN_IDENTITY `
+              -GitHubVariables $env:AVM_CI_VARIABLES -GitHubSecrets $env:AVM_CI_SECRETS `
+              -KeyVaultName $env:CI_KEY_VAULT_NAME -MaxDeploymentRetentionInDays ([int]::Parse($env:RETENTION_DAYS))
+
   job_cleanup_managementGroup_deployments:
     runs-on: ubuntu-latest
     name: "Remove Management Group deployments"
@@ -134,8 +232,8 @@ jobs:
         id: get-test-subscriptions
         shell: pwsh
         env:
-          TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
-          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
 
@@ -149,8 +247,8 @@ jobs:
       - name: Azure Login
         uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
         with:
-          client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
-          tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
+          client-id: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
           subscription-id: ${{ steps.get-test-subscriptions.outputs.subscriptionId }}
           enable-AzPSSession: true
 
@@ -163,7 +261,7 @@ jobs:
 
             $mgmtGroupIdInput = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).customManagementGroupId }}'
 
-            foreach($mgmtGroupId in @('${{ secrets.ARM_MGMTGROUP_ID }}', 'bicep-lz-vending-automation-child')) {
+            foreach($mgmtGroupId in @('${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}', 'bicep-lz-vending-automation-child')) {
               Write-Verbose "Processing mgmtGroupId [$mgmtGroupId]" -Verbose
               $functionInput = @{
                 ManagementGroupId            = $mgmtGroupId
