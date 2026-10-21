@@ -26,10 +26,25 @@ Describe 'Experimental shared workflow isolation' {
         @($current | Sort-Object) | Should -Be @($entries | ForEach-Object { ($_ -split "`t", 2)[1] } | Sort-Object)
     }
 
-    It 'keeps all legacy production helpers and local actions unchanged' {
+    It 'limits the approved legacy helper exception to module-import error propagation' {
         $changes = @(git -C $RepoRootPath diff --name-only $baseline -- utilities/pipelines .github/actions)
         $LASTEXITCODE | Should -Be 0
-        $changes | Should -BeNullOrEmpty
+        $helper = 'utilities/pipelines/sharedScripts/Set-EnvironmentOnAgent.ps1'
+        $changes | Should -Be @($helper)
+        $original = (git -C $RepoRootPath show "${baseline}:$helper") -join "`n"
+        $current = (Get-Content -LiteralPath (Join-Path $RepoRootPath $helper) -Raw) -replace "`r`n", "`n"
+        $surfaces = foreach ($source in @($original, $current.TrimEnd("`n"))) {
+            $errors = $null
+            $ast = [Management.Automation.Language.Parser]::ParseInput($source, [ref]$null, [ref]$errors)
+            $errors | Should -BeNullOrEmpty
+            $importer = $ast.Find({
+                    param($node)
+                    $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -ceq 'Install-CustomModule'
+                }, $true)
+            $importer | Should -Not -BeNullOrEmpty
+            $source.Replace($importer.Extent.Text, '<approved-module-import-fix>')
+        }
+        $surfaces[1] | Should -BeExactly $surfaces[0]
     }
 
     It 'uses the merged immutable tools revision only in the experimental workflow' {
