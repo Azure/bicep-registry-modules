@@ -146,6 +146,7 @@ var appGwAndDefaultSubnets = !empty(spokeApplicationGatewaySubnetAddressPrefix)
         name: spokeApplicationGatewaySubnetName
         addressPrefix: spokeApplicationGatewaySubnetAddressPrefix
         networkSecurityGroupResourceId: nsgAppGw.outputs.resourceId
+        delegation: 'Microsoft.Network/applicationGateways'
       }
     ])
   : defaultSubnets

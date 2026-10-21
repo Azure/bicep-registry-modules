@@ -156,5 +156,112 @@ Describe 'ACA landing-zone fixture jumpbox eligibility' {
                 $inputs.enableDdosProtection.value | Should -BeTrue
             }
         }
+
+        It 'Passes the gateway service delegation to the native subnet without narrowing shared gateway configurations' {
+            $vnet = @(Get-TemplateResources $spoke.properties.template |
+                    Where-Object { $_.properties.parameters.subnets })
+            $vnet | Should -HaveCount 1
+            $vnet[0].properties.parameters.subnets |
+                Should -Match "'delegation', 'Microsoft.Network/applicationGateways'"
+            $subnet = @(Get-TemplateResources $vnet[0].properties.template |
+                    Where-Object { $_.properties.parameters.delegation })
+            $subnet | Should -HaveCount 1
+            $subnet[0].properties.parameters.delegation.value |
+                Should -BeExactly "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'delegation')]"
+            $native = @(Get-TemplateResources $subnet[0].properties.template |
+                    Where-Object type -EQ 'Microsoft.Network/virtualNetworks/subnets')
+            $native | Should -HaveCount 1
+            $native[0].properties.delegations |
+                Should -BeExactly "[if(not(empty(parameters('delegation'))), createArray(createObject('name', parameters('delegation'), 'properties', createObject('serviceName', parameters('delegation')))), createArray())]"
+            $native[0].properties.applicationGatewayIPConfigurations |
+                Should -BeExactly "[parameters('applicationGatewayIPConfigurations')]"
+            $subnet[0].properties.template.parameters.applicationGatewayIPConfigurations.type | Should -BeExactly 'array'
+            $subnet[0].properties.template.parameters.applicationGatewayIPConfigurations.Contains('maxLength') | Should -BeFalse
+        }
+    }
+
+    Context 'Actual subnet assembly: <scenario>' -ForEach @(
+        @{ scenario = 'gateway and Linux jumpbox with hub egress'; gatewayPrefix = '10.1.3.0/24'; os = 'linux'; hub = 'hub-id'; appliance = '10.0.0.4' }
+        @{ scenario = 'gateway without jumpbox or hub'; gatewayPrefix = '10.1.3.0/24'; os = 'none'; hub = ''; appliance = '' }
+        @{ scenario = 'Windows jumpbox without gateway'; gatewayPrefix = ''; os = 'windows'; hub = 'hub-id'; appliance = '10.0.0.4' }
+        @{ scenario = 'neither gateway nor jumpbox'; gatewayPrefix = ''; os = 'none'; hub = ''; appliance = '' }
+    ) {
+        BeforeAll {
+            $sourcePath = Join-Path $PSScriptRoot '..' '..' 'modules' 'spoke' 'deploy.spoke.bicep'
+            $source = Get-Content -LiteralPath $sourcePath -Raw
+            $match = [regex]::Match($source, '(?ms)^var defaultSubnets = .*?(?=^// -+\r?\n// RESOURCES)')
+            if (-not $match.Success) { throw 'Actual spoke subnet assembly expressions were not found.' }
+            $expressions = $match.Value
+            foreach ($binding in @{
+                    'nsgContainerAppsEnvironment.outputs.resourceId' = 'nsg-infra'
+                    'nsgDeploymentSubnet.outputs.resourceId' = 'nsg-deployment'
+                    'nsgPep.outputs.resourceId' = 'nsg-pep'
+                    'nsgAppGw.outputs.resourceId' = 'nsg-gateway'
+                    'egressLockdownUdr.outputs.resourceId' = 'udr-egress'
+                }.GetEnumerator()) {
+                $expressions = $expressions.Replace($binding.Key, "'$($binding.Value)'")
+            }
+            $bindings = @{
+                spokeInfraSubnetName = 'infra'; spokeInfraSubnetAddressPrefix = '10.1.0.0/23'
+                deploymentSubnetName = 'deployment'; deploymentSubnetAddressPrefix = '10.1.4.0/24'
+                spokePrivateEndpointsSubnetName = 'private-endpoints'; spokePrivateEndpointsSubnetAddressPrefix = '10.1.2.0/27'
+                spokeApplicationGatewaySubnetName = 'custom-gateway'; spokeApplicationGatewaySubnetAddressPrefix = $gatewayPrefix
+                vmSubnetName = 'jumpbox'; vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'; vmJumpboxOSType = $os
+                hubVNetId = $hub; networkApplianceIpAddress = $appliance
+            }
+            $parameters = @('using none') + @($bindings.GetEnumerator() | Sort-Object Key | ForEach-Object {
+                    "var $($_.Key) = '$($_.Value)'"
+                }) + @($expressions, 'param actualSubnets = spokeSubnets')
+            $parameterPath = Join-Path $TestDrive 'subnets.bicepparam'
+            $output = Join-Path $TestDrive 'subnets.json'
+            $parameters -join "`n" | Set-Content -LiteralPath $parameterPath
+            $diagnostics = bicep build-params $parameterPath --no-restore --outfile $output 2>&1
+            if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+            $subnets = (Get-Content -LiteralPath $output -Raw | ConvertFrom-Json -AsHashtable).parameters.actualSubnets.value
+        }
+
+        It 'Delegates only the optional dedicated gateway subnet to Application Gateway' {
+            $gateway = @($subnets | Where-Object name -CEQ 'custom-gateway')
+            if ($gatewayPrefix) {
+                $gateway | Should -HaveCount 1
+                $gateway[0].delegation | Should -BeExactly 'Microsoft.Network/applicationGateways'
+                $gateway[0].addressPrefix | Should -BeExactly $gatewayPrefix
+                $gateway[0].networkSecurityGroupResourceId | Should -BeExactly 'nsg-gateway'
+            } else {
+                $gateway | Should -HaveCount 0
+            }
+            @($subnets | Where-Object delegation -CEQ 'Microsoft.Network/applicationGateways').Count |
+                Should -Be ([int][bool]$gatewayPrefix)
+        }
+
+        It 'Preserves infrastructure and deployment delegations, private endpoints and egress controls' {
+            $infra = @($subnets | Where-Object name -CEQ 'infra')[0]
+            $infra.delegation | Should -BeExactly 'Microsoft.App/environments'
+            $infra.networkSecurityGroupResourceId | Should -BeExactly 'nsg-infra'
+            if ($hub -and $appliance) {
+                $infra.routeTableResourceId | Should -BeExactly 'udr-egress'
+            } else {
+                $infra.routeTableResourceId | Should -BeNullOrEmpty
+            }
+            $deployment = @($subnets | Where-Object name -CEQ 'deployment')[0]
+            $deployment.delegation | Should -BeExactly 'Microsoft.ContainerInstance/containerGroups'
+            $deployment.networkSecurityGroupResourceId | Should -BeExactly 'nsg-deployment'
+            $privateEndpoints = @($subnets | Where-Object name -CEQ 'private-endpoints')[0]
+            $privateEndpoints.Contains('delegation') | Should -BeFalse
+            $privateEndpoints.networkSecurityGroupResourceId | Should -BeExactly 'nsg-pep'
+        }
+
+        It 'Preserves optional subnet cardinality and leaves jumpbox subnets undelegated' {
+            $subnets.Count | Should -Be (3 + [int][bool]$gatewayPrefix + [int]($os -ne 'none'))
+            @($subnets.name | Select-Object -Unique).Count | Should -Be $subnets.Count
+            $jumpbox = @($subnets | Where-Object name -CEQ 'jumpbox')
+            if ($os -ne 'none') {
+                $jumpbox | Should -HaveCount 1
+                $jumpbox[0].addressPrefix | Should -BeExactly '10.1.2.32/27'
+                $jumpbox[0].Contains('delegation') | Should -BeFalse
+            } else {
+                $jumpbox | Should -HaveCount 0
+            }
+        }
     }
 }
