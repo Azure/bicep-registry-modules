@@ -45,12 +45,17 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         $script:verifyExitCode = 0
         $script:verifyError = ''
         $script:signExitCode = 0
+        $script:loginExitCode = 0
+        $script:loginError = ''
         $script:referrerReads = 0
         $script:createdSignatureCount = 1
         $script:certificateExists = $true
         $script:releases = [System.Collections.Generic.List[string]]::new()
         Mock Invoke-NotationCommand {
             $script:commands.Add(@{ arguments = @($Arguments); standardInput = $StandardInput })
+            if ($Arguments[0] -ceq 'login') {
+                return @{ ExitCode = $script:loginExitCode; Output = ''; Error = $script:loginError }
+            }
             if ($Arguments[0] -ceq 'sign') {
                 return @{ ExitCode = $script:signExitCode; Output = ''; Error = 'synthetic signing failure' }
             }
@@ -152,11 +157,64 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         @($script:commands | Where-Object { $_.arguments[0] -ceq 'verify' }).Count | Should -Be 0
     }
 
+    It 'Retains the native <Boundary> login failure without continuing <Consumer>' -ForEach @(
+        @{ Boundary = 'credential-store'; NativeError = 'a credentials store is required'; Consumer = 'publication' }
+        @{ Boundary = 'authentication'; NativeError = 'failed to validate the credentials: 401 Unauthorized'; Consumer = 'publication' }
+        @{ Boundary = 'credential-store'; NativeError = 'a credentials store is required'; Consumer = 'native controls' }
+        @{ Boundary = 'authentication'; NativeError = 'failed to validate the credentials: 401 Unauthorized'; Consumer = 'native controls' }
+    ) {
+        $script:loginExitCode = 1
+        $script:loginError = $NativeError
+        $execute = if ($Consumer -ceq 'publication') {
+            { Publish-VerifiedContainerImage @publish }
+        } else {
+            {
+                Test-NotationImageVerification @publish -TrustedImage $image -TrustedSignatureDigest $signatureDigest `
+                    -TrustedCertificate $publicCertificate.RawData -TrustedSubject $publicCertificate.Subject
+            }
+        }
+        $execute | Should -Throw "*registry login failed (exit code 1): $NativeError*"
+        Should -Invoke Import-AzContainerRegistryImage -Times 0 -Exactly
+        $script:releases.Count | Should -Be 0
+        @($script:commands | Where-Object { $_.arguments[0] -in @('sign', 'verify') }).Count | Should -Be 0
+    }
+
     It 'Never releases signature or image after consuming verification rejects it' {
         $script:verifyExitCode = 1
         $script:verifyError = 'invalid signature'
         { Publish-VerifiedContainerImage @publish } | Should -Throw '*signature verification rejected*'
         $script:releases.Count | Should -Be 0
+    }
+
+    Describe 'ACA-LZA credential-safe native diagnostics' {
+        It 'Redacts known credentials, encodings and unlabelled echoes before returning diagnostics' {
+            $secret = 'synthetic-refresh+/= %value'
+            $variants = @(
+                $secret
+                [uri]::EscapeDataString($secret)
+                [Net.WebUtility]::UrlEncode($secret)
+                [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($secret))
+                [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("00000000-0000-0000-0000-000000000000:$secret"))
+            )
+            $result = Protect-NotationDiagnosticText -Text ($variants -join "`n") -SensitiveValues @($secret)
+            foreach ($variant in $variants) { $result.Contains($variant) | Should -BeFalse }
+            $result | Should -Match '\[redacted\]'
+        }
+
+        It 'Redacts <Kind> while retaining the actionable failure' -ForEach @(
+            @{ Kind = 'authorization header'; Text = 'Authorization: Basic unknown-sensitive-value'; Secret = 'unknown-sensitive-value' }
+            @{ Kind = 'bearer header'; Text = 'Authorization=Bearer unknown-sensitive-value'; Secret = 'unknown-sensitive-value' }
+            @{ Kind = 'JSON refresh token'; Text = '{"refresh_token":"unknown-sensitive-value"}'; Secret = 'unknown-sensitive-value' }
+            @{ Kind = 'JSON access token'; Text = '{"access_token":"unknown-sensitive-value"}'; Secret = 'unknown-sensitive-value' }
+            @{ Kind = 'JSON password'; Text = '{"password":"unknown-sensitive-value"}'; Secret = 'unknown-sensitive-value' }
+            @{ Kind = 'Docker auth'; Text = '{"auth":"unknown-sensitive-value"}'; Secret = 'unknown-sensitive-value' }
+            @{ Kind = 'signed URL'; Text = 'https://offline.invalid/path?sig=unknown-sensitive-value'; Secret = 'unknown-sensitive-value' }
+            @{ Kind = 'JWT'; Text = 'eyJhbGciOiJub25l.eyJzdWIiOiJvZmZsaW5lIn0.signature'; Secret = 'eyJhbGciOiJub25l.eyJzdWIiOiJvZmZsaW5lIn0.signature' }
+        ) {
+            $result = Protect-NotationDiagnosticText -Text "native failure: 401 Unauthorized`n$Text"
+            $result.Contains($Secret) | Should -BeFalse
+            $result | Should -Match 'native failure: 401 Unauthorized'
+        }
     }
 
     It 'Refuses ambiguous newly produced signature ownership before release' {

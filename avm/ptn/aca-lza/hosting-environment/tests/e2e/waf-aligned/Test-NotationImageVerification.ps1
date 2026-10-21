@@ -91,7 +91,7 @@ function Test-NotationImageVerification {
         $login = Invoke-NotationCommand -Executable $Executable -Arguments @(
             'login', $LoginServer, '--username', '00000000-0000-0000-0000-000000000000', '--password-stdin'
         ) -StandardInput $credential
-        if ($login.ExitCode -ne 0) { throw 'Native signature test registry login failed.' }
+        if ($login.ExitCode -ne 0) { throw "Native signature test registry login failed (exit code $($login.ExitCode)): $($login.Error)" }
         Set-NotationTrust -Executable $Executable -Directory $Directory -LoginServer $LoginServer -Repository $sourceRepository `
             -Certificate $TrustedCertificate -Subject $TrustedSubject
         $positive = Confirm-NotationImage -Executable $Executable -Image $TrustedImage

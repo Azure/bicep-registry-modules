@@ -8,6 +8,34 @@ Production consumers must provision their approved publisher trust roots and cal
 before deploying the exact returned digest. This is a deployment gate, not an ACA runtime admission policy.
 Reference: https://learn.microsoft.com/azure/container-registry/container-registry-tutorial-sign-build-push
 #>
+function Protect-NotationDiagnosticText {
+    param (
+        [AllowEmptyString()] [string] $Text,
+        [string[]] $SensitiveValues = @()
+    )
+
+    $value = $Text
+    foreach ($secret in $SensitiveValues) {
+        if ([string]::IsNullOrEmpty($secret)) { continue }
+        $variants = @(
+            $secret
+            [uri]::EscapeDataString($secret)
+            [Net.WebUtility]::UrlEncode($secret)
+            [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($secret))
+            [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("00000000-0000-0000-0000-000000000000:$secret"))
+            ($secret | ConvertTo-Json -Compress).Trim('"')
+        )
+        foreach ($variant in ($variants | Select-Object -Unique | Sort-Object { $_.Length } -Descending)) {
+            $value = $value.Replace($variant, '[redacted]')
+        }
+    }
+    $value = $value -replace '(?i)\b(?:Bearer|Basic)\s+[A-Za-z0-9._~+/=-]+', '[authorization redacted]'
+    $value = $value -replace '\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b', '[token redacted]'
+    $value = $value -replace '(?im)(\b(?:proxy-authorization|authorization)\b["'']?\s*[:=]\s*)[^\r\n]+', '$1[redacted]'
+    $value = $value -replace '(?i)(\b(?:access[_-]?token|refresh[_-]?token|id[_-]?token|identitytoken|registrytoken|password|passwd|client[_-]?secret|secret|token|auth)\b["'']?\s*[:=]\s*)(?:"(?:\\.|[^"])*"|''[^'']*''|[^\s,;}]+)', '$1[redacted]'
+    $value -replace '(?i)https?://[^\s"''<>]+', '[URL redacted]'
+}
+
 function Invoke-NotationCommand {
     [CmdletBinding()]
     param (
@@ -36,10 +64,18 @@ function Invoke-NotationCommand {
             $process.Kill($true)
             throw 'Notation exceeded its three-minute command deadline.'
         }
+        $sensitiveValues = @($StandardInput)
+        for ($index = 0; $index -lt $Arguments.Count; $index++) {
+            if ($Arguments[$index] -cin @('--password', '-p') -and $index + 1 -lt $Arguments.Count) {
+                $sensitiveValues += $Arguments[$index + 1]
+            } elseif ($Arguments[$index] -cmatch '^--password=(.+)$') {
+                $sensitiveValues += $Matches[1]
+            }
+        }
         @{
             ExitCode = $process.ExitCode
-            Output   = $stdout.GetAwaiter().GetResult()
-            Error    = $stderr.GetAwaiter().GetResult()
+            Output   = Protect-NotationDiagnosticText -Text $stdout.GetAwaiter().GetResult() -SensitiveValues $sensitiveValues
+            Error    = Protect-NotationDiagnosticText -Text $stderr.GetAwaiter().GetResult() -SensitiveValues $sensitiveValues
         }
     } finally {
         $process.Dispose()
@@ -245,7 +281,7 @@ function Publish-VerifiedContainerImage {
     $credential = Get-NotationRegistryCredential -LoginServer $LoginServer
     try {
         $login = Invoke-NotationCommand -Executable $Executable -Arguments @('login', $LoginServer, '--username', '00000000-0000-0000-0000-000000000000', '--password-stdin') -StandardInput $credential
-        if ($login.ExitCode -ne 0) { throw 'Notation managed-identity registry login failed.' }
+        if ($login.ExitCode -ne 0) { throw "Notation managed-identity registry login failed (exit code $($login.ExitCode)): $($login.Error)" }
         $null = Import-AzContainerRegistryImage -RegistryName $RegistryName -ResourceGroupName $ResourceGroupName `
             -SourceRegistryUri 'mcr.microsoft.com' -SourceImage 'azuredocs/containerapps-helloworld:latest' `
             -TargetTag "${Repository}:sample" -Mode Force -ErrorAction Stop
