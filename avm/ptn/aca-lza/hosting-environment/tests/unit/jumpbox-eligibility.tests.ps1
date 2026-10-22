@@ -193,10 +193,10 @@ Describe 'ACA landing-zone fixture jumpbox eligibility' {
             if (-not $match.Success) { throw 'Actual spoke subnet assembly expressions were not found.' }
             $expressions = $match.Value
             foreach ($binding in @{
-                    'nsgContainerAppsEnvironment.outputs.resourceId' = 'nsg-infra'
-                    'nsgDeploymentSubnet.outputs.resourceId' = 'nsg-deployment'
-                    'nsgPep.outputs.resourceId' = 'nsg-pep'
-                    'nsgAppGw.outputs.resourceId' = 'nsg-gateway'
+                    'networkSecurityGroups[0].outputs.resourceId' = 'nsg-infra'
+                    'networkSecurityGroups[3].outputs.resourceId' = 'nsg-deployment'
+                    'networkSecurityGroups[2].outputs.resourceId' = 'nsg-pep'
+                    'networkSecurityGroups[1].outputs.resourceId' = 'nsg-gateway'
                     'egressLockdownUdr.outputs.resourceId' = 'udr-egress'
                 }.GetEnumerator()) {
                 $expressions = $expressions.Replace($binding.Key, "'$($binding.Value)'")
