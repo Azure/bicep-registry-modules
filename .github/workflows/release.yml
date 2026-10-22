@@ -1,0 +1,17 @@
+name: ".Module - Release [EXPERIMENTAL]"
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+
+permissions: {}
+
+jobs:
+  release:
+    name: "Module release [EXPERIMENTAL]"
+    permissions:
+      contents: write
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@d7639019598dda955ed55b614e7268f5d132d013
+    secrets: inherit
