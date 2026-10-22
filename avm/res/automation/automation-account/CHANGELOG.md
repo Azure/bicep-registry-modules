@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/CHANGELOG.md).
 
+## 0.20.0
+
+### Changes
+
+- Added support for creating runtime environments and associating runbooks with them.
+- Fixed webhook deployment ordering to wait for runbook creation.
+
+### Breaking Changes
+
+- None
+
 ## 0.19.3
 
 ### Changes
@@ -149,4 +160,3 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - None
-
