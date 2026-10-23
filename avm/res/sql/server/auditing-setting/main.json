@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12925585819649971906"
+      "templateHash": "17862310359846417645"
     },
     "name": "Azure SQL Server Audit Settings",
     "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -53,7 +53,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Specifies whether audit events are sent to Azure Monitor."
+        "description": "Optional. Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, a diagnostic setting with the `SQLSecurityAuditEvents` log category must be configured on the server's `master` database."
       }
     },
     "isDevopsAuditEnabled": {
@@ -93,7 +93,7 @@
     },
     "storageAccountResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. A blob storage to hold the auditing storage account."
       }
@@ -150,7 +150,7 @@
         "isStorageSecondaryKeyInUse": "[parameters('isStorageSecondaryKeyInUse')]",
         "queueDelayMs": "[parameters('queueDelayMs')]",
         "retentionDays": "[parameters('retentionDays')]",
-        "storageAccountAccessKey": "[if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('isManagedIdentityInUse'))), listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, null())]",
+        "storageAccountAccessKey": "[if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('isManagedIdentityInUse'))), listKeys(parameters('storageAccountResourceId'), '2025-08-01').keys[0].value, null())]",
         "storageAccountSubscriptionId": "[if(not(empty(parameters('storageAccountResourceId'))), split(parameters('storageAccountResourceId'), '/')[2], null())]",
         "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), format('https://{0}.blob.{1}', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage), null())]"
       }
@@ -171,7 +171,7 @@
           "storageAccountName": {
             "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
           },
-          "managedIdentityPrincipalId": "[if(equals(reference('server', '2025-01-01', 'full').identity.type, 'UserAssigned'), createObject('value', filter(items(reference('server', '2025-01-01', 'full').identity.userAssignedIdentities), lambda('identity', equals(lambdaVariables('identity').key, reference('server').primaryUserAssignedIdentityId)))[0].value.principalId), createObject('value', reference('server', '2025-01-01', 'full').identity.principalId))]"
+          "managedIdentityPrincipalId": "[if(not(empty(if(contains(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'type'), ''), 'SystemAssigned'), reference('server', '2025-01-01', 'full').identity.principalId, tryGet(tryGet(tryGet(filter(items(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'userAssignedIdentities'), createObject())), lambda('identity', equals(toLower(lambdaVariables('identity').key), toLower(coalesce(tryGet(reference('server'), 'primaryUserAssignedIdentityId'), ''))))), 0), 'value'), 'principalId')))), if(contains(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'type'), ''), 'SystemAssigned'), createObject('value', reference('server', '2025-01-01', 'full').identity.principalId), createObject('value', tryGet(tryGet(tryGet(filter(items(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'userAssignedIdentities'), createObject())), lambda('identity', equals(toLower(lambdaVariables('identity').key), toLower(coalesce(tryGet(reference('server'), 'primaryUserAssignedIdentityId'), ''))))), 0), 'value'), 'principalId'))), createObject('value', fail('The SQL server must have a system-assigned or a primary user-assigned identity to use a managed identity for auditing.')))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

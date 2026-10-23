@@ -14,18 +14,18 @@ param location string = resourceGroup().location
 @description('Required. The name of the server.')
 param name string
 
-import { managedIdentityAllType, managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityAllType, managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-@description('Conditional. The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.')
+@description('Conditional. The resource ID of a user assigned identity to be used by default. Required if more than one user-assigned identity is provided in `managedIdentities.userAssignedResourceIds`. If exactly one user-assigned identity is provided, it is used by default.')
 param primaryUserAssignedIdentityResourceId string?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -53,7 +53,7 @@ param securityAlertPolicies securityAlertPolicyType[]?
 @description('Optional. The keys to configure.')
 param keys keyType[]?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition for server TDE.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -66,12 +66,10 @@ param administrators serverExternalAdministratorType?
 param federatedClientId string?
 
 @allowed([
-  '1.0'
-  '1.1'
   '1.2'
   '1.3'
 ])
-@description('Optional. Minimal TLS version allowed.')
+@description('Optional. Minimal TLS version allowed. TLS 1.0 and 1.1 are retired for Azure SQL Database.')
 param minimalTlsVersion string = '1.2'
 
 @allowed([
@@ -81,18 +79,12 @@ param minimalTlsVersion string = '1.2'
 @description('Optional. Whether or not to enable IPv6 support for this server.')
 param isIPv6Enabled string = 'Disabled'
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and neither firewall rules nor virtual network rules are set.')
-@allowed([
-  ''
-  'Enabled'
-  'Disabled'
-  'SecuredByPerimeter'
-])
-param publicNetworkAccess string = ''
+param publicNetworkAccess ('Enabled' | 'Disabled' | 'SecuredByPerimeter')?
 
 @description('Optional. Whether or not to restrict outbound network access for this server.')
 @allowed([
@@ -127,13 +119,28 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-@description('Optional. The vulnerability assessment configuration.')
+var primaryUserAssignedIdentityId = !empty(primaryUserAssignedIdentityResourceId)
+  ? primaryUserAssignedIdentityResourceId
+  : (length(managedIdentities.?userAssignedResourceIds ?? []) == 1
+      ? managedIdentities!.userAssignedResourceIds![0]
+      : (length(managedIdentities.?userAssignedResourceIds ?? []) > 1
+          ? fail('The \'primaryUserAssignedIdentityResourceId\' parameter is required if more than one user-assigned identity is provided.')
+          : null))
+
+@description('Optional. The vulnerability assessment configuration (classic configuration, requires a storage account). Cannot be combined with `expressVulnerabilityAssessmentState` set to `Enabled`.')
 param vulnerabilityAssessmentsObj vulnerabilityAssessmentType?
 
-@description('Optional. The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object.')
+@description('Optional. The state of the SQL vulnerability assessment express configuration, which does not require a storage account and is the recommended configuration. Requires Microsoft Defender for SQL to be enabled (e.g., via `securityAlertPolicies`). Cannot be combined with `vulnerabilityAssessmentsObj` (classic configuration).')
+param expressVulnerabilityAssessmentState ('Enabled' | 'Disabled')?
+
+@description('Optional. The audit settings configuration. To disable auditing, set `state` to `Disabled`. If set to an empty object, the audit settings are not deployed (i.e., any existing configuration remains unchanged).')
 param auditSettings auditSettingsType = {
   state: 'Enabled'
 }
+
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@description('Optional. The diagnostic settings of the server. As a logical SQL server does not support diagnostic settings itself, they are applied to its `master` database. Required to route server-level audit logs (category `SQLSecurityAuditEvents`) to a Log Analytics workspace or Event Hub if `auditSettings.isAzureMonitorTargetEnabled` is `true`.')
+param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
@@ -204,7 +211,22 @@ var formattedRoleAssignments = [
   })
 ]
 
-var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+var isHSMManagedCMK = (split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] ?? '') =~ 'managedHSMs'
+
+// Managed HSM key URIs follow the pattern 'https://<hsmName>.managedhsm.<cloudSuffix>/keys/<keyName>'
+var hsmKeyUri = 'https://${last(split(customerManagedKey.?keyVaultResourceId ?? '', '/'))}${replace(environment().suffixes.keyvaultDns, '.vault.', '.managedhsm.')}/keys/${customerManagedKey.?keyName ?? ''}'
+
+var cMKKeyUri = customerManagedKey != null
+  ? !empty(customerManagedKey.?keyVersion)
+      ? (!isHSMManagedCMK
+          ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+          : '${hsmKeyUri}/${customerManagedKey!.keyVersion!}')
+      : (customerManagedKey.?autoRotationEnabled ?? true)
+          ? (!isHSMManagedCMK ? cMKKeyVault::cMKKey!.properties.keyUri : hsmKeyUri)
+          : (!isHSMManagedCMK
+              ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+              : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
+  : null
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
@@ -245,30 +267,20 @@ resource server 'Microsoft.Sql/servers@2025-01-01' = {
   tags: tags
   identity: identity
   properties: {
-    administratorLogin: administratorLogin
+    administratorLogin: empty(administratorLogin) && empty(administrators)
+      ? fail('Either the \'administratorLogin\' (SQL authentication) or the \'administrators\' (Microsoft Entra authentication) parameter must be provided.')
+      : administratorLogin
     administratorLoginPassword: administratorLoginPassword
-    administrators: union({ administratorType: 'ActiveDirectory' }, administrators ?? {})
+    administrators: !empty(administrators) ? union({ administratorType: 'ActiveDirectory' }, administrators!) : null
     federatedClientId: federatedClientId
     isIPv6Enabled: isIPv6Enabled
-    keyId: customerManagedKey != null
-      ? !empty(customerManagedKey.?keyVersion)
-          ? (!isHSMManagedCMK
-              ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-              : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
-          : (customerManagedKey.?autoRotationEnabled ?? true)
-              ? (!isHSMManagedCMK
-                  ? cMKKeyVault::cMKKey!.properties.keyUri
-                  : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}')
-              : (!isHSMManagedCMK
-                  ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
-                  : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
-      : null
+    keyId: cMKKeyUri
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
-    primaryUserAssignedIdentityId: primaryUserAssignedIdentityResourceId
-    publicNetworkAccess: !empty(publicNetworkAccess)
-      ? publicNetworkAccess
-      : (!empty(privateEndpoints) && empty(firewallRules) && empty(virtualNetworkRules) ? 'Disabled' : null)
+    primaryUserAssignedIdentityId: primaryUserAssignedIdentityId
+    publicNetworkAccess: publicNetworkAccess ?? (!empty(privateEndpoints) && empty(firewallRules) && empty(virtualNetworkRules)
+      ? 'Disabled'
+      : null)
     restrictOutboundNetworkAccess: restrictOutboundNetworkAccess
   }
 }
@@ -351,6 +363,7 @@ module server_databases 'database/main.bicep' = [
       diagnosticSettings: database.?diagnosticSettings
       backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy
       backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy
+      roleAssignments: database.?roleAssignments
       enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
@@ -385,6 +398,8 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
       perDatabaseSettings: elasticPool.?perDatabaseSettings
       preferredEnclaveType: elasticPool.?preferredEnclaveType
       zoneRedundant: elasticPool.?zoneRedundant
+      roleAssignments: elasticPool.?roleAssignments
+      diagnosticSettings: elasticPool.?diagnosticSettings
       enableTelemetry: enableReferencedModulesTelemetry
     }
   }
@@ -493,7 +508,9 @@ module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if
   name: '${uniqueString(deployment().name, location)}-Sql-VulnAssessm'
   params: {
     serverName: server.name
-    name: vulnerabilityAssessmentsObj!.name
+    name: expressVulnerabilityAssessmentState == 'Enabled'
+      ? fail('The classic vulnerability assessment configuration (\'vulnerabilityAssessmentsObj\') cannot be combined with the express configuration (\'expressVulnerabilityAssessmentState\' set to \'Enabled\').')
+      : vulnerabilityAssessmentsObj!.name
     recurringScans: vulnerabilityAssessmentsObj.?recurringScans
     storageAccountResourceId: vulnerabilityAssessmentsObj!.storageAccountResourceId
     useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey
@@ -523,17 +540,7 @@ module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
   params: {
     serverName: server.name
     serverKeyType: 'AzureKeyVault'
-    uri: !empty(customerManagedKey.?keyVersion)
-      ? (!isHSMManagedCMK
-          ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-          : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
-      : (customerManagedKey.?autoRotationEnabled ?? true)
-          ? (!isHSMManagedCMK
-              ? cMKKeyVault::cMKKey!.properties.keyUri
-              : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}')
-          : (!isHSMManagedCMK
-              ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
-              : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
+    uri: cMKKeyUri!
     enableTelemetry: enableReferencedModulesTelemetry
   }
 }
@@ -541,7 +548,7 @@ module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
 module server_encryptionProtector 'encryption-protector/main.bicep' = if (customerManagedKey != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
   params: {
-    sqlServerName: server.name
+    serverName: server.name
     serverKeyName: cmk_key.?outputs.name ?? ''
     serverKeyType: 'AzureKeyVault'
     autoRotationEnabled: customerManagedKey.?autoRotationEnabled
@@ -576,7 +583,12 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
   params: {
     keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
-      [],
+      (contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName') || contains(
+          secretsExportConfiguration!,
+          'sqlAzureConnectionStringSecretName'
+        )) && empty(administratorLoginPassword)
+        ? fail('The \'administratorLoginPassword\' parameter must be provided to export the \'sqlAdminPasswordSecretName\' or \'sqlAzureConnectionStringSecretName\' secrets.')
+        : [],
       contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
         ? [
             {
@@ -626,9 +638,58 @@ resource server_connection_policy 'Microsoft.Sql/servers/connectionPolicies@2025
 }
 
 resource server_outbound_firewall_rules 'Microsoft.Sql/servers/outboundFirewallRules@2025-01-01' = [
-  for domain in (outboundFirewallRules ?? []): if (outboundFirewallRules != null) {
+  for domain in (outboundFirewallRules ?? []): {
     parent: server
     name: domain
+  }
+]
+
+resource server_sqlVulnerabilityAssessment 'Microsoft.Sql/servers/sqlVulnerabilityAssessments@2025-01-01' = if (expressVulnerabilityAssessmentState != null) {
+  name: 'default'
+  parent: server
+  properties: {
+    state: expressVulnerabilityAssessmentState
+  }
+  dependsOn: [
+    server_securityAlertPolicies
+  ]
+}
+
+resource masterDatabase 'Microsoft.Sql/servers/databases@2025-01-01' existing = {
+  name: 'master'
+  parent: server
+}
+
+resource server_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: masterDatabase
   }
 ]
 
@@ -650,7 +711,7 @@ output systemAssignedMIPrincipalId string? = server.?identity.?principalId
 @description('The location the resource was deployed into.')
 output location string = server.location
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(
@@ -671,11 +732,27 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
+@description('The databases of the SQL server.')
+output databases childResourceOutputType[] = [
+  for (database, index) in (databases ?? []): {
+    name: server_databases[index].outputs.name
+    resourceId: server_databases[index].outputs.resourceId
+  }
+]
+
+@description('The elastic pools of the SQL server.')
+output elasticPools childResourceOutputType[] = [
+  for (elasticPool, index) in (elasticPools ?? []): {
+    name: server_elasticPools[index].outputs.name
+    resourceId: server_elasticPools[index].outputs.resourceId
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 import { perDatabaseSettingsType, skuType } from 'elastic-pool/main.bicep'
 import { databaseSkuType, shortTermBackupRetentionPolicyType, longTermBackupRetentionPolicyType } from 'database/main.bicep'
 import { recurringScansType } from 'vulnerability-assessment/main.bicep'
@@ -707,6 +784,16 @@ type privateEndpointOutputType = {
 }
 
 @export()
+@description('The type for a child resource output.')
+type childResourceOutputType = {
+  @description('The name of the child resource.')
+  name: string
+
+  @description('The resource ID of the child resource.')
+  resourceId: string
+}
+
+@export()
 @description('The type for audit settings.')
 type auditSettingsType = {
   @description('Optional. Specifies the name of the audit settings.')
@@ -715,7 +802,7 @@ type auditSettingsType = {
   @description('Optional. Specifies the Actions-Groups and Actions to audit.')
   auditActionsAndGroups: string[]?
 
-  @description('Optional. Specifies whether audit events are sent to Azure Monitor.')
+  @description('Optional. Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, the server\'s `diagnosticSettings` must be configured with the `SQLSecurityAuditEvents` log category (included in the `allLogs` category group).')
   isAzureMonitorTargetEnabled: bool?
 
   @description('Optional. Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor.')
@@ -738,9 +825,6 @@ type auditSettingsType = {
 
   @description('Optional. Specifies the identifier key of the auditing storage account.')
   storageAccountResourceId: string?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
 }
 
 @export()
@@ -781,11 +865,11 @@ type serverExternalAdministratorType = {
 @export()
 @description('The type for a database.')
 type databaseType = {
-  @description('Required. The name of the Elastic Pool.')
+  @description('Required. The name of the database.')
   name: string
 
   @description('Optional. Tags of the resource.')
-  tags: resourceInput<'Microsoft.Sql/servers/databases@2023-08-01'>.tags?
+  tags: resourceInput<'Microsoft.Sql/servers/databases@2025-01-01'>.tags?
 
   @description('Optional. The lock settings of the database.')
   lock: lockType?
@@ -915,8 +999,8 @@ type databaseType = {
   @description('Optional. The long term backup retention policy for the database.')
   backupLongTermRetentionPolicy: longTermBackupRetentionPolicyType?
 
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
+  @description('Optional. Array of role assignments to create on the database.')
+  roleAssignments: roleAssignmentType[]?
 }
 
 @export()
@@ -926,7 +1010,7 @@ type elasticPoolType = {
   name: string
 
   @description('Optional. Tags of the resource.')
-  tags: resourceInput<'Microsoft.Sql/servers/elasticPools@2023-08-01'>.tags?
+  tags: resourceInput<'Microsoft.Sql/servers/elasticPools@2025-01-01'>.tags?
 
   @description('Optional. The lock settings of the elastic pool.')
   lock: lockType?
@@ -964,11 +1048,11 @@ type elasticPoolType = {
   @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType[]?
 
+  @description('Optional. The diagnostic settings of the elastic pool.')
+  diagnosticSettings: diagnosticSettingMetricsOnlyType[]?
+
   @description('Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.')
   zoneRedundant: bool?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
 }
 
 @export()
@@ -988,9 +1072,6 @@ type vulnerabilityAssessmentType = {
 
   @description('Optional. Specifies whether to create a role assignment for the storage account.')
   createStorageRoleAssignment: bool?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
 }
 
 @export()
@@ -1004,9 +1085,6 @@ type firewallRuleType = {
 
   @description('Optional. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value \'0.0.0.0\' for all Azure-internal IP addresses.')
   endIpAddress: string?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
 }
 
 @export()
@@ -1020,9 +1098,6 @@ type keyType = {
 
   @description('Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: \'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion\'.')
   uri: string?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
 }
 
 @export()
@@ -1036,9 +1111,6 @@ type virtualNetworkRuleType = {
 
   @description('Optional. Allow creating a firewall rule before the virtual network has vnet service endpoint enabled.')
   ignoreMissingVnetServiceEndpoint: bool?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
 }
 
 @export()
@@ -1069,13 +1141,11 @@ type securityAlertPolicyType = {
   state: 'Enabled' | 'Disabled'?
 
   @description('Optional. Specifies the identifier key of the Threat Detection audit storage account.')
+  @secure()
   storageAccountAccessKey: string?
 
   @description('Optional. Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs.')
   storageEndpoint: string?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
 }
 
 @export()
@@ -1101,7 +1171,4 @@ type failoverGroupType = {
 
   @description('Required. Databases secondary type on partner server.')
   secondaryType: 'Geo' | 'Standby'
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
 }

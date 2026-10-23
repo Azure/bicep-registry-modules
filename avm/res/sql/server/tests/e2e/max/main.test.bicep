@@ -58,7 +58,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}azsa${serviceShort}01'
+    storageAccountName: 'dep${namePrefix}azsa${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
@@ -75,7 +75,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}-${serviceShort}'
+      name: '${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -84,6 +84,15 @@ module testDeployment '../../../main.bicep' = [
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       location: enforcedLocation
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
       roleAssignments: [
         {
           name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
@@ -120,7 +129,7 @@ module testDeployment '../../../main.bicep' = [
       }
       elasticPools: [
         {
-          name: '${namePrefix}-${serviceShort}-ep-001'
+          name: '${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}-ep-001'
           sku: {
             name: 'GP_Gen5'
             tier: 'GeneralPurpose'
@@ -138,11 +147,17 @@ module testDeployment '../../../main.bicep' = [
               principalType: 'ServicePrincipal'
             }
           ]
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
         }
       ]
       databases: [
         {
-          name: '${namePrefix}-${serviceShort}db-001'
+          name: '${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}db-001'
           collation: 'SQL_Latin1_General_CP1_CI_AS'
           sku: {
             name: 'ElasticPool'
@@ -165,20 +180,27 @@ module testDeployment '../../../main.bicep' = [
               workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
             }
           ]
-          elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
+          elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}/elasticPools/${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}-ep-001'
           backupShortTermRetentionPolicy: {
             retentionDays: 14
           }
           backupLongTermRetentionPolicy: {
             monthlyRetention: 'P6M'
             timeBasedImmutability: 'Enabled'
-            timeBasedImmutabilityMode: 'Locked'
+            timeBasedImmutabilityMode: 'Unlocked'
           }
           availabilityZone: -1
           lock: {
             kind: 'CanNotDelete'
             name: 'myCustomLockName'
           }
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'SQL DB Contributor'
+              principalId: nestedDependencies.outputs.serverIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
           customerManagedKey: {
             keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
             keyName: nestedDependencies.outputs.databaseKeyVaultKeyName

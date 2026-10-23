@@ -83,11 +83,11 @@ Read-write endpoint of the failover group instance.
 | :-- | :-- | :-- |
 | [`failoverPolicy`](#parameter-readwriteendpointfailoverpolicy) | string | Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required. |
 
-**Optional parameters**
+**Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`failoverWithDataLossGracePeriodMinutes`](#parameter-readwriteendpointfailoverwithdatalossgraceperiodminutes) | int | Grace period before failover with data loss is attempted for the read-write endpoint. |
+| [`failoverWithDataLossGracePeriodMinutes`](#parameter-readwriteendpointfailoverwithdatalossgraceperiodminutes) | int | Grace period before failover with data loss is attempted for the read-write endpoint. Required if `failoverPolicy` is `Automatic`. |
 
 ### Parameter: `readWriteEndpoint.failoverPolicy`
 
@@ -105,7 +105,7 @@ Failover policy of the read-write endpoint for the failover group. If failoverPo
 
 ### Parameter: `readWriteEndpoint.failoverWithDataLossGracePeriodMinutes`
 
-Grace period before failover with data loss is attempted for the read-write endpoint.
+Grace period before failover with data loss is attempted for the read-write endpoint. Required if `failoverPolicy` is `Automatic`.
 
 - Required: No
 - Type: int
@@ -151,7 +151,7 @@ Read-only endpoint of the failover group instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`failoverPolicy`](#parameter-readonlyendpointfailoverpolicy) | string | Failover policy of the read-only endpoint for the failover group. |
-| [`targetServer`](#parameter-readonlyendpointtargetserver) | string | The target partner server where the read-only endpoint points to. |
+| [`targetServer`](#parameter-readonlyendpointtargetserver) | string | The target partner server where the read-only endpoint points to. Can be either the resource ID of the partner server (recommended, required if the partner server is in a different resource group or subscription) or the name of a partner server in the same resource group. |
 
 ### Parameter: `readOnlyEndpoint.failoverPolicy`
 
@@ -169,7 +169,7 @@ Failover policy of the read-only endpoint for the failover group.
 
 ### Parameter: `readOnlyEndpoint.targetServer`
 
-The target partner server where the read-only endpoint points to.
+The target partner server where the read-only endpoint points to. Can be either the resource ID of the partner server (recommended, required if the partner server is in a different resource group or subscription) or the name of a partner server in the same resource group.
 
 - Required: Yes
 - Type: string
