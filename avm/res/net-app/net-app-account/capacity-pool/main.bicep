@@ -145,6 +145,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       keyVaultPrivateEndpointResourceId: volume.?keyVaultPrivateEndpointResourceId
       dataProtection: volume.?dataProtection
       kerberosEnabled: volume.?kerberosEnabled
+      ldapEnabled: volume.?ldapEnabled
       smbContinuouslyAvailable: volume.?smbContinuouslyAvailable
       smbEncryption: volume.?smbEncryption
       smbNonBrowsable: volume.?smbNonBrowsable
@@ -272,6 +273,9 @@ type volumeType = {
 
   @description('Optional. Define if a volume is KerberosEnabled.')
   kerberosEnabled: bool?
+
+  @description('Optional. Specifies whether LDAP is enabled for the NFS volume.')
+  ldapEnabled: bool?
 
   @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
   volumeType: string?

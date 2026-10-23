@@ -66,6 +66,12 @@ module testDeployment '../../../main.bicep' = {
           minute: 0
           hour: 0
         }
+        weeklySchedule: {
+          day: 'Monday,Tuesday'
+          hour: 0
+          minute: 0
+          snapshotsToKeep: 2
+        }
       }
     ]
     capacityPools: [
@@ -113,6 +119,7 @@ module testDeployment '../../../main.bicep' = {
             }
             availabilityZone: 1
             networkFeatures: 'Standard'
+            ldapEnabled: false
             encryptionKeySource: encryptionKeySource
             protocolTypes: [
               'NFSv4.1'

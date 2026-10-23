@@ -354,6 +354,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ]
             }
+            ldapEnabled: false
             name: 'vol-001'
             networkFeatures: 'Standard'
             protocolTypes: [
@@ -450,6 +451,12 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           snapshotsToKeep: 1
         }
         name: 'mySnapshotPolicy'
+        weeklySchedule: {
+          day: 'Monday,Tuesday'
+          hour: 0
+          minute: 0
+          snapshotsToKeep: 2
+        }
       }
     ]
     tags: {
@@ -547,6 +554,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                   }
                 ]
               },
+              "ldapEnabled": false,
               "name": "vol-001",
               "networkFeatures": "Standard",
               "protocolTypes": [
@@ -648,7 +656,13 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             "minute": 0,
             "snapshotsToKeep": 1
           },
-          "name": "mySnapshotPolicy"
+          "name": "mySnapshotPolicy",
+          "weeklySchedule": {
+            "day": "Monday,Tuesday",
+            "hour": 0,
+            "minute": 0,
+            "snapshotsToKeep": 2
+          }
         }
       ]
     },
@@ -740,6 +754,7 @@ param capacityPools = [
             }
           ]
         }
+        ldapEnabled: false
         name: 'vol-001'
         networkFeatures: 'Standard'
         protocolTypes: [
@@ -836,6 +851,12 @@ param snapshotPolicies = [
       snapshotsToKeep: 1
     }
     name: 'mySnapshotPolicy'
+    weeklySchedule: {
+      day: 'Monday,Tuesday'
+      hour: 0
+      minute: 0
+      snapshotsToKeep: 2
+    }
   }
 ]
 param tags = {
@@ -1780,6 +1801,7 @@ List of volumes to create in the capacity pool.
 | [`isLargeVolume`](#parameter-capacitypoolsvolumesislargevolume) | bool | Specifies whether volume is a Large Volume or Regular Volume. |
 | [`kerberosEnabled`](#parameter-capacitypoolsvolumeskerberosenabled) | bool | Define if a volume is KerberosEnabled. |
 | [`keyVaultPrivateEndpointResourceId`](#parameter-capacitypoolsvolumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
+| [`ldapEnabled`](#parameter-capacitypoolsvolumesldapenabled) | bool | Specifies whether LDAP is enabled for the NFS volume. |
 | [`location`](#parameter-capacitypoolsvolumeslocation) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-capacitypoolsvolumesnetworkfeatures) | string | Network feature for the volume. |
 | [`protocolTypes`](#parameter-capacitypoolsvolumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
@@ -2205,6 +2227,13 @@ The resource ID of the key vault private endpoint.
 
 - Required: No
 - Type: string
+
+### Parameter: `capacityPools.volumes.ldapEnabled`
+
+Specifies whether LDAP is enabled for the NFS volume.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `capacityPools.volumes.location`
 
@@ -2965,7 +2994,7 @@ Weekly schedule for the snapshot policy.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`day`](#parameter-snapshotpoliciesweeklyscheduleday) | string | The weekly snapshot day. |
+| [`day`](#parameter-snapshotpoliciesweeklyscheduleday) | string | The weekdays on which snapshots are taken, as a comma-separated list of English day names. E.g., 'Monday,Tuesday'. |
 | [`hour`](#parameter-snapshotpoliciesweeklyschedulehour) | int | The weekly snapshot hour. |
 | [`minute`](#parameter-snapshotpoliciesweeklyscheduleminute) | int | The weekly snapshot minute. |
 | [`snapshotsToKeep`](#parameter-snapshotpoliciesweeklyschedulesnapshotstokeep) | int | Weekly snapshot count to keep. |
@@ -2978,22 +3007,10 @@ Weekly schedule for the snapshot policy.
 
 ### Parameter: `snapshotPolicies.weeklySchedule.day`
 
-The weekly snapshot day.
+The weekdays on which snapshots are taken, as a comma-separated list of English day names. E.g., 'Monday,Tuesday'.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Friday'
-    'Monday'
-    'Saturday'
-    'Sunday'
-    'Thursday'
-    'Tuesday'
-    'Wednesday'
-  ]
-  ```
 
 ### Parameter: `snapshotPolicies.weeklySchedule.hour`
 
