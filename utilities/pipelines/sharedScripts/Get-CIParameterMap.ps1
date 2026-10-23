@@ -203,7 +203,7 @@ function Get-CIParameterMap {
             $billingScope = $billingScopes[$canonicalBillingModulePath]
             if ($billingScope -isnot [string] -or
                 [string]::IsNullOrWhiteSpace($billingScope) -or
-                $billingScope -cnotmatch '^/providers/Microsoft\.Billing/billingAccounts/[^/\s]+/enrollmentAccounts/[^/\s]+$') {
+                $billingScope -cnotmatch '^/providers/Microsoft\.Billing/billingAccounts/(?:[A-Za-z0-9:_-]+/billingProfiles/[A-Za-z0-9_-]+/invoiceSections/[A-Za-z0-9_-]+|[^/\s]+/enrollmentAccounts/[^/\s]+)$') {
                 throw 'The validated subscription-vending billing scope has an invalid format.'
             }
             if (-not $TemplateParameters.Contains('subscriptionBillingScope')) {

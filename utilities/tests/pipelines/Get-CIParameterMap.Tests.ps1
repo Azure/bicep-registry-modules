@@ -189,8 +189,21 @@ Describe 'Get-CIParameterMap' {
         Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
     }
 
-    It 'Uses the validated BAMI billing scope for the canonical subscription-vending module before Key Vault' {
+    It 'Uses the validated legacy enrollment-account billing scope before Key Vault' {
         $billingScope = '/providers/Microsoft.Billing/billingAccounts/test-account/enrollmentAccounts/test-enrollment'
+        $result = Get-CIParameterMap `
+            -TemplateParameters @{ subscriptionBillingScope = @{ type = 'secureString' } } `
+            -ModulePath 'avm/ptn/lz/sub-vending' `
+            -ModuleBillingScopes (@{ 'avm/ptn/lz/sub-vending' = $billingScope } | ConvertTo-Json -Compress) `
+            -KeyVaultName 'test-vault'
+
+        $result.subscriptionBillingScope | Should -BeOfType [securestring]
+        ConvertFrom-SecureString -SecureString $result.subscriptionBillingScope -AsPlainText | Should -Be $billingScope
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
+    }
+
+    It 'Uses the validated MCA invoice-section billing scope before Key Vault' {
+        $billingScope = '/providers/Microsoft.Billing/billingAccounts/test:account/billingProfiles/test-profile/invoiceSections/test-section'
         $result = Get-CIParameterMap `
             -TemplateParameters @{ subscriptionBillingScope = @{ type = 'secureString' } } `
             -ModulePath 'avm/ptn/lz/sub-vending' `
@@ -223,7 +236,11 @@ Describe 'Get-CIParameterMap' {
     It 'Rejects malformed, non-canonical and invalid BAMI billing-scope maps without exposing values' -ForEach @(
         @{ map = '{"avm/ptn/lz/sub-vending":'; message = 'valid JSON object'; secret = '' }
         @{ map = '{"avm/ptn/lz/other":"/providers/Microsoft.Billing/billingAccounts/a/enrollmentAccounts/e"}'; message = 'only the canonical'; secret = '' }
+        @{ map = '{"avm/ptn/lz/sub-vending":"/providers/Microsoft.Billing/billingAccounts/a/enrollmentAccounts/e","avm/ptn/lz/other":"/providers/Microsoft.Billing/billingAccounts/a/enrollmentAccounts/e"}'; message = 'only the canonical'; secret = '' }
+        @{ map = '{"avm/ptn/lz/sub-vending":"/providers/Microsoft.Compute/virtualMachines/a"}'; message = 'invalid format'; secret = 'Microsoft.Compute' }
         @{ map = '{"avm/ptn/lz/sub-vending":"/providers/Microsoft.Billing/billingAccounts/a/invoiceSections/e"}'; message = 'invalid format'; secret = 'invoiceSections' }
+        @{ map = '{"avm/ptn/lz/sub-vending":"/providers/Microsoft.Billing/billingAccounts/a/billingProfiles/p/invoiceSections/"}'; message = 'invalid format'; secret = 'billingProfiles' }
+        @{ map = '{"avm/ptn/lz/sub-vending":"/providers/Microsoft.Billing/billingAccounts/a/billingProfiles/p:name/invoiceSections/e"}'; message = 'invalid format'; secret = 'billingProfiles' }
     ) {
         $errorRecord = $null
         try {
