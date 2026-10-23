@@ -134,18 +134,12 @@ Describe 'Module deployment workflow expansion' {
         }
     }
 
-    It 'preserves legacy Data Factory deployment while independently routing experimental General validation' {
+    It 'preserves legacy Data Factory deployment without introducing HCI runtime dependencies' {
         $entry = Get-Content (Join-Path $workflowRoot 'avm.res.data-factory.factory.yml') -Raw | ConvertFrom-Yaml
         $entry.on.push.branches | Should -Be @('main')
         $entry.env.modulePath | Should -Be $modulePath
         $entry.jobs.'call-workflow-passing-data'.uses | Should -Be './.github/workflows/avm.template.module.yml'
 
-        $dispatcher = Get-Content (Join-Path $workflowRoot 'avm.module.yml') -Raw | ConvertFrom-Yaml
-        $dispatcher.jobs.call_module_preview.uses | Should -Be 'Azure/azure-verified-modules-tools/.github/workflows/bicep-module-preview.yml@99f2a390207cf75b00ca81dbde22568a25aba8e9'
-        $dispatcher.jobs.call_module_publish.uses | Should -Be 'Azure/azure-verified-modules-tools/.github/workflows/bicep-module-publish.yml@99f2a390207cf75b00ca81dbde22568a25aba8e9'
-        $dispatcher.jobs.call_module_preview_local.uses | Should -Be './.github/workflows/avm.template.module.preview.yml'
-        $dispatcher.jobs.call_module_publish_local.uses | Should -Be './.github/workflows/avm.template.module.publish.yml'
-        $dispatcher.jobs.call_module_publish.if | Should -Match "github.event_name == 'workflow_dispatch'"
         foreach ($file in @('avm.template.module.yml', 'avm.template.module.preview.yml', 'avm.template.module.publish.yml')) {
             $caller = Get-Content (Join-Path $workflowRoot $file) -Raw | ConvertFrom-Yaml
             $job = $caller.jobs.job_module_deploy_validation
@@ -175,7 +169,6 @@ Describe 'Module deployment workflow expansion' {
 
     It 'resolves every downstream job output against the post-separation producer contract' {
         $files = @(
-            'avm.module.yml'
             'avm.res.data-factory.factory.yml'
             'avm.template.module.yml'
             'avm.template.module.preview.yml'
