@@ -189,6 +189,69 @@ Describe 'Get-CIParameterMap' {
         Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
     }
 
+    It 'Uses the validated BAMI billing scope for the canonical subscription-vending module before Key Vault' {
+        $billingScope = '/providers/Microsoft.Billing/billingAccounts/test-account/enrollmentAccounts/test-enrollment'
+        $result = Get-CIParameterMap `
+            -TemplateParameters @{ subscriptionBillingScope = @{ type = 'secureString' } } `
+            -ModulePath 'avm/ptn/lz/sub-vending' `
+            -ModuleBillingScopes (@{ 'avm/ptn/lz/sub-vending' = $billingScope } | ConvertTo-Json -Compress) `
+            -KeyVaultName 'test-vault'
+
+        $result.subscriptionBillingScope | Should -BeOfType [securestring]
+        ConvertFrom-SecureString -SecureString $result.subscriptionBillingScope -AsPlainText | Should -Be $billingScope
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
+    }
+
+    It 'Allows an empty validated BAMI billing-scope map to preserve Key Vault fallback' {
+        Mock Get-AzKeyVaultSecret {
+            if (-not $Name) {
+                return @{ Name = 'CI-subscriptionBillingScope' }
+            }
+            return @{ SecretValue = ConvertTo-SecureString -String 'vault-billing-scope' -AsPlainText -Force }
+        }
+        $result = Get-CIParameterMap `
+            -TemplateParameters @{ subscriptionBillingScope = @{ type = 'secureString' } } `
+            -ModulePath 'avm/ptn/lz/sub-vending' `
+            -ModuleBillingScopes '{}' `
+            -KeyVaultName 'test-vault'
+
+        ConvertFrom-SecureString -SecureString $result.subscriptionBillingScope -AsPlainText | Should -Be 'vault-billing-scope'
+        Should -Invoke Get-AzKeyVaultSecret -Times 1 -Exactly -ParameterFilter { -not $Name }
+        Should -Invoke Get-AzKeyVaultSecret -Times 1 -Exactly -ParameterFilter { $Name -eq 'CI-subscriptionBillingScope' }
+    }
+
+    It 'Rejects malformed, non-canonical and invalid BAMI billing-scope maps without exposing values' -ForEach @(
+        @{ map = '{"avm/ptn/lz/sub-vending":'; message = 'valid JSON object'; secret = '' }
+        @{ map = '{"avm/ptn/lz/other":"/providers/Microsoft.Billing/billingAccounts/a/enrollmentAccounts/e"}'; message = 'only the canonical'; secret = '' }
+        @{ map = '{"avm/ptn/lz/sub-vending":"/providers/Microsoft.Billing/billingAccounts/a/invoiceSections/e"}'; message = 'invalid format'; secret = 'invoiceSections' }
+    ) {
+        $errorRecord = $null
+        try {
+            Get-CIParameterMap `
+                -TemplateParameters @{ subscriptionBillingScope = @{ type = 'secureString' } } `
+                -ModulePath 'avm/ptn/lz/sub-vending' `
+                -ModuleBillingScopes $map
+        } catch {
+            $errorRecord = $_
+        }
+
+        $errorRecord | Should -Not -BeNullOrEmpty
+        $errorRecord.Exception.Message | Should -BeLike "*$message*"
+        if ($secret) {
+            $errorRecord.Exception.Message | Should -Not -Match $secret
+        }
+    }
+
+    It 'Ignores the validated BAMI billing-scope map for legacy and non-vending modules' {
+        $result = Get-CIParameterMap `
+            -TemplateParameters @{ location = @{ type = 'string' } } `
+            -ModulePath 'avm/res/storage/storage-account' `
+            -ModuleBillingScopes '{"not-a-module":"not-used"}'
+
+        $result.Count | Should -Be 0
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
+    }
+
     It 'Uses an exact alias to supply keyVaultName independently of the legacy selector' {
         $result = Get-CIParameterMap -TemplateParameters @{ keyVaultName = @{ type = 'string' } } `
             -GitHubVariables '{"CI_KEY_VAULT_NAME":"legacy-vault","CI__KEYVAULTNAME":"test-vault"}'
