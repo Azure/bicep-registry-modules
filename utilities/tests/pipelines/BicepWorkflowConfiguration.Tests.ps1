@@ -4,31 +4,31 @@
 )
 
 Describe 'Coordinated tools dependency updates' {
-    It 'keeps every tools workflow, action and support ref on one immutable commit without a package fallback' {
+    It 'keeps the experimental callers on one immutable merged tools commit' {
         $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
-        $reference = Get-Content -LiteralPath (Join-Path $workflowRoot 'avm.module.yml') -Raw | ConvertFrom-Yaml
-        $toolsRef = $reference.jobs.call_module_preview.with.'tools-ref'
-        $toolsRef | Should -MatchExactly '^[0-9a-f]{40}$'
-        $remoteCount = 0
-        foreach ($file in Get-ChildItem -LiteralPath $workflowRoot -File -Filter '*.yml') {
-            $workflow = Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Yaml
-            foreach ($job in $workflow.jobs.Values) {
-                foreach ($node in @($job) + @($job.steps | Where-Object { $null -ne $_ })) {
-                    if ($node.uses -like 'Azure/azure-verified-modules-tools/*') {
-                        $node.uses | Should -MatchExactly '^Azure/azure-verified-modules-tools/[^@]+@[0-9a-f]{40}$'
-                        ($node.uses -split '@')[-1] | Should -BeExactly $toolsRef
-                        $remoteCount++
-                    }
-                    if ($node.with -and $node.with.ContainsKey('tools-ref')) {
-                        $node.with.'tools-ref' | Should -BeExactly $toolsRef
-                    }
-                    if ($node.with) {
-                        $node.with.ContainsKey('avm-authoring-version') | Should -BeFalse
-                    }
-                }
-            }
+        $callers = @{
+            'pr-check.yml' = 'bicep-pr-check.yml'
+            'release.yml' = 'bicep-release.yml'
         }
-        $remoteCount | Should -BeGreaterThan 0
+        $uses = @(
+            foreach ($caller in $callers.GetEnumerator()) {
+                $workflow = Get-Content -LiteralPath (Join-Path $workflowRoot $caller.Key) -Raw | ConvertFrom-Yaml
+                @($workflow.jobs.Keys) | Should -HaveCount 1
+                $job = $workflow.jobs.Values | Select-Object -First 1
+                $job.uses | Should -MatchExactly (
+                    '^Azure/azure-verified-modules-tools/\.github/workflows/' +
+                    [regex]::Escape($caller.Value) +
+                    '@[0-9a-f]{40}$'
+                )
+                $job.ContainsKey('with') | Should -BeFalse
+                $job.ContainsKey('steps') | Should -BeFalse
+                $job.ContainsKey('strategy') | Should -BeFalse
+                $job.uses
+            }
+        )
+        $toolsRef = ($uses[0] -split '@')[-1]
+        $toolsRef | Should -MatchExactly '^[0-9a-f]{40}$'
+        @($uses | ForEach-Object { ($_ -split '@')[-1] } | Select-Object -Unique) | Should -Be @($toolsRef)
     }
 
     It 'prevents automatic uses-only changes from diverging from tools-ref inputs' {
