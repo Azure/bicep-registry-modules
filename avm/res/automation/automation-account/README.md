@@ -344,7 +344,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -612,7 +612,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
           "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -856,7 +856,7 @@ param roleAssignments = [
     name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

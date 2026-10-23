@@ -39,7 +39,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -56,7 +56,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2024-11-01' = {
+  resource key 'keys@2026-02-01' = {
     name: 'encryptionKey'
     properties: {
       kty: 'RSA'

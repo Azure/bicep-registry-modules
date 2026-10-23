@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
+## 0.19.2
+
+### Changes
+
+- Updated `Microsoft.KeyVault/vaults` and `Microsoft.KeyVault/vaults/secrets` API versions from `2025-05-01` to `2026-02-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.19.1
 
 ### Changes

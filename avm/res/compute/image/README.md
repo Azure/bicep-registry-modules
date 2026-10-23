@@ -146,7 +146,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
         name: '2dfcdedd-220c-4b6b-b8bd-58e22e0c5434'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -220,7 +220,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
           "name": "2dfcdedd-220c-4b6b-b8bd-58e22e0c5434",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -276,7 +276,7 @@ param roleAssignments = [
     name: '2dfcdedd-220c-4b6b-b8bd-58e22e0c5434'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

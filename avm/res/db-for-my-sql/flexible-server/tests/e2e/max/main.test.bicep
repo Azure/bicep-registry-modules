@@ -56,7 +56,7 @@ module nestedDependencies2 'dependencies2.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    geoBackupKeyVaultName: 'dep-${namePrefix}-kvp-${serviceShort}-${substring(uniqueString(baseTime), 0, 2)}'
+    geoBackupKeyVaultName: 'dep-kvp-${uniqueString(resourceGroup.id, namePrefix, serviceShort, baseTime)}'
     geoBackupManagedIdentityName: 'dep-${namePrefix}-msip-${serviceShort}'
     geoBackupLocation: nestedDependencies1.outputs.pairedRegionName
   }
@@ -94,7 +94,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           name: '2478b63b-0cae-457f-9bd3-9feb00e1925b'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
@@ -107,7 +107,7 @@ module testDeployment '../../../main.bicep' = [
         {
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
           )
           principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

@@ -29,9 +29,39 @@ param containerAppsEnvironmentResourceId string
 @description('The container apps environment workload profile to use for the Container App.')
 param workloadProfileName string
 
+@description('Required. The name of the private registry containing the verified image.')
+param containerRegistryName string
+
+@description('Required. The login server of the private registry containing the verified image.')
+param containerRegistryLoginServer string
+
+@description('Required. The name of the newly deployed signing vault.')
+param keyVaultName string
+
+@description('Required. The deployment script storage account name.')
+param storageAccountName string
+
+@description('Required. The deployment subnet resource ID.')
+param deploymentSubnetResourceId string
+
 // ------------------
 // RESOURCES
 // ------------------
+
+module verifiedSampleImage 'verify.sample-image.bicep' = {
+  name: 'verify-sample-image'
+  scope: resourceGroup(resourcesNames.resourceGroup)
+  params: {
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    containerRegistryName: containerRegistryName
+    containerRegistryLoginServer: containerRegistryLoginServer
+    keyVaultName: keyVaultName
+    storageAccountName: storageAccountName
+    deploymentSubnetResourceId: deploymentSubnetResourceId
+  }
+}
 
 module sampleApplication 'br/public:avm/res/app/container-app:0.12.0' = {
   name: helloWorldContainerAppName
@@ -51,11 +81,17 @@ module sampleApplication 'br/public:avm/res/app/container-app:0.12.0' = {
     containers: [
       {
         name: 'simple-hello'
-        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        image: verifiedSampleImage.outputs.image
         resources: {
           cpu: json('0.25')
           memory: '0.5Gi'
         }
+      }
+    ]
+    registries: [
+      {
+        server: containerRegistryLoginServer
+        identity: containerRegistryUserAssignedIdentityId
       }
     ]
     scaleMinReplicas: 2
@@ -74,3 +110,16 @@ module sampleApplication 'br/public:avm/res/app/container-app:0.12.0' = {
 
 @description('The FQDN of the "Hello World" Container App.')
 output helloWorldAppFqdn string = sampleApplication.outputs.fqdn
+
+@description('The actual immutable image verification, public certificate and scoped signer bindings.')
+output imageVerification object = {
+  image: verifiedSampleImage.outputs.image
+  signatureDigest: verifiedSampleImage.outputs.signatureDigest
+  certificateBase64: verifiedSampleImage.outputs.certificateBase64
+  certificateSubject: verifiedSampleImage.outputs.certificateSubject
+  strictVerification: verifiedSampleImage.outputs.strictVerification
+  signerResourceId: verifiedSampleImage.outputs.signerResourceId
+  signerClientId: verifiedSampleImage.outputs.signerClientId
+  storageAccountName: storageAccountName
+  deploymentSubnetResourceId: deploymentSubnetResourceId
+}

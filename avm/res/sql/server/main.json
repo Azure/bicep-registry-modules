@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "15415534570389463212"
+      "templateHash": "4873278436277461521"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -2318,7 +2318,7 @@
       "condition": "[and(and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))), and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2025-05-01",
+      "apiVersion": "2026-02-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -2327,7 +2327,7 @@
       "condition": "[and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2025-05-01",
+      "apiVersion": "2026-02-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -2588,7 +2588,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7822195020058646192"
+              "templateHash": "11455275193879246497"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -3327,7 +3327,7 @@
               "condition": "[and(and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))), and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults/keys",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -3342,7 +3342,7 @@
               "condition": "[and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK')))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -6659,7 +6659,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10615204754408994326"
+              "templateHash": "17472922432282647880"
             }
           },
           "definitions": {
@@ -6737,7 +6737,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secrets": {
@@ -6746,7 +6746,7 @@
                 "count": "[length(parameters('secretsToSet'))]"
               },
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"

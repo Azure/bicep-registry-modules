@@ -37,8 +37,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    storageAccountName: '${take('dep${namePrefix}st${serviceShort}', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
+    keyVaultName: 'dep-kv-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     privateDnsZoneName: 'privatelink.search.windows.net'
   }
 }
@@ -53,7 +53,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${take('${namePrefix}${serviceShort}001', 46)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
       publicNetworkAccess: 'Disabled'
       privateEndpoints: [
         {

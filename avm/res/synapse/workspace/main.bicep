@@ -37,7 +37,7 @@ import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
-@description('Optional. Activate workspace by adding the system managed identity in the KeyVault containing the customer managed key and activating the workspace.')
+@description('Optional. Grant the workspace system identity access to the customer-managed key and activate the workspace. Creates a deployment script and a dedicated identity with Contributor access only to the workspace key. Activation is verified for up to 10 minutes. Requires permission to deploy the helper identity, deployment script and its supporting resources, and assign the key-scoped role.')
 param encryptionActivateWorkspace bool = false
 
 @maxLength(90)
@@ -184,14 +184,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -271,6 +271,9 @@ module synapse_integrationRuntimes 'integration-runtime/main.bicep' = [
       typeProperties: integrationRuntime.?typeProperties ?? {}
       enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      workspace_key
+    ]
   }
 ]
 
@@ -292,14 +295,14 @@ module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivat
 }
 
 // - Workspace encryption - Activate Workspace
-module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
+module workspace_key 'modules/nested_cmkActivation.bicep' = if (encryptionActivateWorkspace) {
   name: take('${workspace.name}-cmk-activation', 64)
   params: {
-    name: customerManagedKey!.keyName
-    isActiveCMK: true
-    keyVaultResourceId: cMKKeyVault.id
+    keyName: customerManagedKey!.keyName
+    keyVaultUrl: cMKKeyVault::cMKKey!.properties.keyUri
     workspaceName: workspace.name
-    enableTelemetry: enableReferencedModulesTelemetry
+    location: location
+    tags: tags
   }
   dependsOn: [
     workspace_cmk_rbac
@@ -317,6 +320,9 @@ module workspace_administrator 'administrator/main.bicep' = if (!empty(administr
     tenantId: administrator.?tenantId
     enableTelemetry: enableReferencedModulesTelemetry
   }
+  dependsOn: [
+    workspace_key
+  ]
 }
 
 // Resource Lock
@@ -329,6 +335,9 @@ resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(
       : 'Cannot delete or modify the resource or child resources.')
   }
   scope: workspace
+  dependsOn: [
+    workspace_key
+  ]
 }
 
 // RBAC
@@ -359,6 +368,9 @@ module workspace_firewallRules 'firewall-rule/main.bicep' = [
       workspaceName: workspace.name
       enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      workspace_key
+    ]
   }
 ]
 
@@ -392,6 +404,9 @@ module workspace_bigDataPools 'big-data-pool/main.bicep' = [
       roleAssignments: bigDataPool.?roleAssignments ?? []
       enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      workspace_key
+    ]
   }
 ]
 
@@ -416,6 +431,9 @@ module workspace_sqlPools 'sql-pool/main.bicep' = [
       tags: sqlPool.?tags ?? tags
       enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      workspace_key
+    ]
   }
 ]
 
