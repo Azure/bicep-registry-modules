@@ -1,0 +1,26 @@
+name: ".Module - PR Check [EXPERIMENTAL]"
+
+on:
+  workflow_dispatch:
+    inputs:
+      modulePaths:
+        type: string
+        description: "Module path or comma-separated module paths"
+        required: true
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+
+permissions: {}
+
+jobs:
+  pr-check:
+    name: "Module checks [EXPERIMENTAL]"
+    permissions:
+      contents: read
+      id-token: write
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-pr-check.yml@f45518678dbc010284dbc14747a30a67d11f41fb
+    secrets: inherit
