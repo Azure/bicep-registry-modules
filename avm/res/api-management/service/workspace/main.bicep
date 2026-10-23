@@ -687,6 +687,7 @@ type namedValueType = {
   secret: bool?
 
   @sys.description('Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on \'GET\' operations! Use \'/listSecrets\' POST request to get the value.')
+  @secure()
   @maxLength(4096)
   value: string?
 }
@@ -768,6 +769,7 @@ type subscriptionType = {
   @sys.description('Optional. Primary subscription key. If not specified during request key will be generated automatically.')
   @minLength(1)
   @maxLength(256)
+  @secure()
   primaryKey: string?
 
   @sys.description('Optional. Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".')
@@ -776,6 +778,7 @@ type subscriptionType = {
   @sys.description('Optional. Secondary subscription key. If not specified during request key will be generated automatically.')
   @minLength(1)
   @maxLength(256)
+  @secure()
   secondaryKey: string?
 
   @sys.description('''Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:

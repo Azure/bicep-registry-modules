@@ -1077,6 +1077,7 @@ type extensionType = {
   releaseTrain: string?
 
   @description('Optional. The configuration protected settings of the extension.')
+  @secure()
   configurationProtectedSettings: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.configurationProtectedSettings?
 
   @description('Optional. The configuration settings of the extension.')
