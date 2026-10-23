@@ -113,6 +113,7 @@ module testDeployment '../../../main.bicep' = {
             }
             availabilityZone: 1
             networkFeatures: 'Standard'
+            securityStyle: 'unix'
             encryptionKeySource: encryptionKeySource
             protocolTypes: [
               'NFSv4.1'
