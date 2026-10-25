@@ -1,0 +1,21 @@
+{
+  "status": "Failed",
+  "error": {
+    "code": "DeploymentFailed",
+    "target": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/retry-fixture/providers/Microsoft.Resources/deployments/regional-fixture",
+    "message": "At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-deployment-operations for usage details.",
+    "details": [
+      {
+        "code": "ResourceDeploymentFailure",
+        "target": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/retry-fixture/providers/Microsoft.MachineLearningServices/workspaces/encrypted-workspace",
+        "message": "The resource write operation failed to complete successfully, because it reached terminal provisioning state 'Failed'.",
+        "details": [
+          {
+            "code": "BadRequest",
+            "message": "Long running operation failed with status 'Failed'. Additional Info:'Database account creation failed. Operation Id: 22222222-2222-2222-2222-222222222222, Error : Message: {\"code\":\"ServiceUnavailable\",\"message\":\"Sorry, we are currently experiencing high demand in Norway East region, and cannot fulfill your request at this time Mon, 05 Oct 2026 07:42:40 GMT. To request region access for your subscription, please follow this link https://aka.ms/cosmosdbquota for more details on how to create a region access request.\\r\\nActivityId: 33333333-3333-3333-3333-333333333333, Microsoft.Azure.Documents.Common/2.14.0\"}, Request URI: /serviceReservation, RequestStats: , SDK: Microsoft.Azure.Documents.Common/2.14.0, Microsoft.Azure.Documents.Common/2.14.0, Microsoft.Azure.Documents.Common/2.14.0, Microsoft.Azure.Documents.Common/2.14.0, Microsoft.Azure.Documents.Common/2.14.0, Microsoft.Azure.Documents.Common/2.14.0, Microsoft.Azure.Documents.Common/2.14.0, Microsoft.Azure.Documents.Common/2.14.0, Microsoft.Azure.Documents.Common/2.14.0, Microsoft.Azure.Documents.Common/2.14.0'"
+          }
+        ]
+      }
+    ]
+  }
+}

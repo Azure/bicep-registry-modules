@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned configuration with default parameter values'
-metadata description = 'This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for WAF-aligned environments.'
+metadata description = 'This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) with the required AI service location, an explicit solution name and primary location, scalability, telemetry, monitoring, private networking, redundancy, and VM administrator credentials. All other optional parameters use their defaults.'
 
 // ========== //
 // Parameters //
@@ -28,9 +28,6 @@ param vmAdminPassword string = newGuid()
 #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
 var enforcedLocation = 'australiaeast'
 
-#disable-next-line no-hardcoded-location // Zone-redundant SQL requires a region that supports it
-var enforcedSecondaryLocation = 'swedencentral'
-
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
@@ -50,8 +47,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       solutionName: take('${namePrefix}${serviceShort}${uniqueString(deployment().name, enforcedLocation)}', 16)
       location: enforcedLocation
-      aiServiceLocation: enforcedLocation
-      secondaryLocation: enforcedSecondaryLocation
+      azureAiServiceLocation: enforcedLocation
       enableScalability: true
       enableTelemetry: true
       enableMonitoring: true
@@ -59,7 +55,6 @@ module testDeployment '../../../main.bicep' = [
       enableRedundancy: true
       vmAdminUsername: 'adminuser'
       vmAdminPassword: vmAdminPassword
-      usecase: 'telecom'
     }
   }
 ]

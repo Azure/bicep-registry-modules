@@ -1,0 +1,5 @@
+{
+  "avm/res/compute/virtual-machine-scale-set": [
+    "Microsoft.Compute/EncryptionAtHost"
+  ]
+}

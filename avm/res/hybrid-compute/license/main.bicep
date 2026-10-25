@@ -57,7 +57,7 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-resource license 'Microsoft.HybridCompute/licenses@2025-01-13' = {
+resource license 'Microsoft.HybridCompute/licenses@2026-07-15' = {
   name: name
   location: location
   properties: {
@@ -78,7 +78,7 @@ resource license 'Microsoft.HybridCompute/licenses@2025-01-13' = {
 var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'

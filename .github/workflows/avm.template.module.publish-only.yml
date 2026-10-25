@@ -41,6 +41,9 @@ jobs:
   job_publish_module:
     name: "Publishing"
     runs-on: ubuntu-latest
+    concurrency:
+      group: avm-publish-${{ inputs.modulePath }}
+      queue: max
     permissions:
       contents: write
     if: |

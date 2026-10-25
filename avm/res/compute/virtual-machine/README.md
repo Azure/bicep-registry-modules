@@ -711,7 +711,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     imageReference: {
       offer: '0001-com-ubuntu-server-focal'
       publisher: 'Canonical'
-      sku: '<sku>'
+      sku: '20_04-lts-gen2'
       version: 'latest'
     }
     location: '<location>'
@@ -1053,7 +1053,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "offer": "0001-com-ubuntu-server-focal",
         "publisher": "Canonical",
-        "sku": "<sku>",
+        "sku": "20_04-lts-gen2",
         "version": "latest"
       }
     },
@@ -1365,7 +1365,7 @@ param extensionNetworkWatcherAgentConfig = {
 param imageReference = {
   offer: '0001-com-ubuntu-server-focal'
   publisher: 'Canonical'
-  sku: '<sku>'
+  sku: '20_04-lts-gen2'
   version: 'latest'
 }
 param location = '<location>'
