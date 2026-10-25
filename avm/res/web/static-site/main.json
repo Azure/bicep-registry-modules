@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "8111819583653518701"
+      "version": "0.48.1.52935",
+      "templateHash": "9549416577163650611"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App."
@@ -937,8 +937,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "7857043673229673751"
+              "version": "0.48.1.52935",
+              "templateHash": "6779388413867848282"
             },
             "name": "Static Web App Site Linked Backends",
             "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property."
@@ -1072,8 +1072,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "8832619595941105655"
+              "version": "0.48.1.52935",
+              "templateHash": "10899513419034289479"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config."
@@ -1200,8 +1200,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "8832619595941105655"
+              "version": "0.48.1.52935",
+              "templateHash": "10899513419034289479"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config."
@@ -1331,8 +1331,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "532334733967108873"
+              "version": "0.48.1.52935",
+              "templateHash": "2955046521386211285"
             },
             "name": "Static Web App Site Custom Domains",
             "description": "This module deploys a Static Web App Site Custom Domain."
@@ -4861,7 +4861,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
           "privateDnsZoneGroup": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroup'), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', tryGet(if(and(not(empty(parameters('privateEndpoints'))), equals(parameters('createPrivateDnsZone'), 'Enabled')), reference('staticSite_privateDnsZone'), null()), 'outputs', 'resourceId', 'value')))))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroup'), if(equals(parameters('createPrivateDnsZone'), 'Enabled'), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('staticSite_privateDnsZone').outputs.resourceId.value))), null()))]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
