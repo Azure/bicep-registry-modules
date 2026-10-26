@@ -2,6 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/database/CHANGELOG.md).
 
+## 0.4.0
+
+### Changes
+
+- Added the `roleAssignments` parameter
+- Managed HSM key URIs are now derived from the cloud environment instead of being hardcoded to the Azure public cloud, and the HSM detection is case-insensitive
+- Updated `avm-common-types` to version `0.7.0`
+- Updated the child module `backup-long-term-retention-policy` (see its changelog)
+
+### Breaking Changes
+
+- Removed the ignored `enableTelemetry` property from the exported `shortTermBackupRetentionPolicyType` and `longTermBackupRetentionPolicyType` types
+- The `timeBasedImmutabilityMode` of the long-term backup retention policy now defaults to `Unlocked` (instead of `Locked`) if time-based immutability is enabled
+
 ## 0.3.1
 
 ### Changes
