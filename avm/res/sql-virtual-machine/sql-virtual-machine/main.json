@@ -1,0 +1,473 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.47.16.16243",
+      "templateHash": "12125803526873611384"
+    },
+    "name": "SQL Virtual Machine",
+    "description": "This module deploys an Azure SQL Virtual Machine."
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "virtualMachineResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the underlying virtual machine."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[last(split(parameters('virtualMachineResourceId'), '/'))]",
+      "metadata": {
+        "description": "Optional. The name of the SQL virtual machine. Must match the name of the underlying virtual machine. Defaults to the name of the virtual machine referenced in `virtualMachineResourceId`."
+      }
+    },
+    "sqlServerLicenseType": {
+      "type": "string",
+      "allowedValues": [
+        "AHUB",
+        "DR",
+        "PAYG"
+      ],
+      "metadata": {
+        "description": "Required. The SQL Server license type."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "autoBackupSettings": {
+      "type": "secureObject",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01#properties/properties/properties/autoBackupSettings"
+        },
+        "description": "Optional. Automated backup settings for SQL Server. Note: Automated Backup authenticates to the target storage account using a storage account access key, so the storage account must allow shared key access and be reachable from the virtual machine."
+      },
+      "nullable": true
+    },
+    "autoPatchingSettings": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01#properties/properties/properties/autoPatchingSettings"
+        },
+        "description": "Optional. Automated patching settings for the SQL virtual machine. Note: Automated Patching is scheduled to retire on September 17, 2027 and should not be used for new environments. Use Azure Update Manager (for example, a maintenance configuration assigned to the underlying virtual machine) instead. Do not combine multiple patching solutions on the same virtual machine."
+      },
+      "nullable": true
+    },
+    "assessmentSettings": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01#properties/properties/properties/assessmentSettings"
+        },
+        "description": "Optional. SQL best practices assessment settings."
+      },
+      "nullable": true
+    },
+    "enableAutomaticUpgrade": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable automatic upgrade of the SQL IaaS Agent extension."
+      }
+    },
+    "keyVaultCredentialSettings": {
+      "type": "secureObject",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01#properties/properties/properties/keyVaultCredentialSettings"
+        },
+        "description": "Optional. Key Vault credential settings for the SQL virtual machine."
+      },
+      "nullable": true
+    },
+    "leastPrivilegeMode": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "NotSet"
+      ],
+      "metadata": {
+        "description": "Optional. SQL IaaS Agent least privilege mode."
+      }
+    },
+    "serverConfigurationsManagementSettings": {
+      "type": "secureObject",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01#properties/properties/properties/serverConfigurationsManagementSettings"
+        },
+        "description": "Optional. SQL Server configuration management settings."
+      },
+      "nullable": true
+    },
+    "sqlImageOffer": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. SQL Server image offer. Examples include SQL2019-WS2022 and SQL2022-WS2022."
+      }
+    },
+    "sqlImageSku": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Developer",
+        "Enterprise",
+        "Express",
+        "Standard",
+        "Web"
+      ],
+      "metadata": {
+        "description": "Optional. SQL Server edition."
+      }
+    },
+    "sqlManagement": {
+      "type": "string",
+      "defaultValue": "Full",
+      "allowedValues": [
+        "Full",
+        "LightWeight",
+        "NoAgent"
+      ],
+      "metadata": {
+        "description": "Optional. SQL Server IaaS Agent management mode. Although the API documents this property as automatically detected, it must be set to `Full` when `leastPrivilegeMode` is `Enabled`, as the registration may otherwise fall back to `LightWeight` mode and fail."
+      }
+    },
+    "sqlVirtualMachineGroupResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Resource ID of the SQL virtual machine group that this SQL virtual machine is or will be part of."
+      }
+    },
+    "storageConfigurationSettings": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01#properties/properties/properties/storageConfigurationSettings"
+        },
+        "description": "Optional. SQL Server storage configuration settings. Cannot be combined with `serverConfigurationsManagementSettings.sqlStorageUpdateSettings` or `serverConfigurationsManagementSettings.sqlWorkloadTypeUpdateSettings`; use `storageWorkloadType` instead."
+      },
+      "nullable": true
+    },
+    "virtualMachineIdentitySettings": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01#properties/properties/properties/virtualMachineIdentitySettings"
+        },
+        "description": "Optional. Virtual machine identity details used for SQL IaaS Agent extension configurations."
+      },
+      "nullable": true
+    },
+    "wsfcDomainCredentials": {
+      "type": "secureObject",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01#properties/properties/properties/wsfcDomainCredentials"
+        },
+        "description": "Optional. Domain credentials for configuring a Windows Server Failover Cluster for a SQL availability group."
+      },
+      "nullable": true
+    },
+    "wsfcStaticIp": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Static IP address used for the Windows Server Failover Cluster."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "roleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SqlVirtualMachine/sqlVirtualMachines@2023-10-01#properties/tags"
+        },
+        "description": "Optional. Tags of the resource."
+      },
+      "nullable": true
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
+    "$fxv#0": "46d3xbcp.res.56a27ae",
+    "builtInRoleNames": {
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+      "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "sqlVirtualMachine": {
+      "type": "Microsoft.SqlVirtualMachine/sqlVirtualMachines",
+      "apiVersion": "2023-10-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "assessmentSettings": "[parameters('assessmentSettings')]",
+        "autoBackupSettings": "[parameters('autoBackupSettings')]",
+        "autoPatchingSettings": "[parameters('autoPatchingSettings')]",
+        "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+        "keyVaultCredentialSettings": "[parameters('keyVaultCredentialSettings')]",
+        "leastPrivilegeMode": "[parameters('leastPrivilegeMode')]",
+        "serverConfigurationsManagementSettings": "[parameters('serverConfigurationsManagementSettings')]",
+        "sqlImageOffer": "[parameters('sqlImageOffer')]",
+        "sqlImageSku": "[parameters('sqlImageSku')]",
+        "sqlManagement": "[parameters('sqlManagement')]",
+        "sqlServerLicenseType": "[parameters('sqlServerLicenseType')]",
+        "sqlVirtualMachineGroupResourceId": "[parameters('sqlVirtualMachineGroupResourceId')]",
+        "storageConfigurationSettings": "[parameters('storageConfigurationSettings')]",
+        "virtualMachineIdentitySettings": "[parameters('virtualMachineIdentitySettings')]",
+        "virtualMachineResourceId": "[parameters('virtualMachineResourceId')]",
+        "wsfcDomainCredentials": "[parameters('wsfcDomainCredentials')]",
+        "wsfcStaticIp": "[parameters('wsfcStaticIp')]"
+      }
+    },
+    "sqlVirtualMachine_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[resourceId('Microsoft.SqlVirtualMachine/sqlVirtualMachines', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+      },
+      "dependsOn": [
+        "sqlVirtualMachine"
+      ]
+    },
+    "sqlVirtualMachine_roleAssignments": {
+      "copy": {
+        "name": "sqlVirtualMachine_roleAssignments",
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.SqlVirtualMachine/sqlVirtualMachines', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.SqlVirtualMachine/sqlVirtualMachines', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+      "properties": {
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "sqlVirtualMachine"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the SQL virtual machine."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the SQL virtual machine."
+      },
+      "value": "[resourceId('Microsoft.SqlVirtualMachine/sqlVirtualMachines', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group in which the SQL virtual machine was created."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the SQL virtual machine."
+      },
+      "value": "[reference('sqlVirtualMachine', '2023-10-01', 'full').location]"
+    }
+  }
+}
