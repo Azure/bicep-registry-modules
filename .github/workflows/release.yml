@@ -13,5 +13,5 @@ jobs:
     name: "Module release [EXPERIMENTAL]"
     permissions:
       contents: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@f45518678dbc010284dbc14747a30a67d11f41fb
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@9d2f05b93a97ca3ba6fb525cb0ac1451585ac36e
     secrets: inherit
