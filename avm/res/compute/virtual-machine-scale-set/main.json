@@ -6,12 +6,62 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5031947852026030223"
+      "templateHash": "2602111131771423542"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set."
   },
   "definitions": {
+    "vmGalleryApplicationType": {
+      "type": "object",
+      "properties": {
+        "packageReferenceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of an existing Gallery Application Version, for example /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{applicationName}/versions/1.0.0."
+          }
+        },
+        "configurationReference": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. URI of a configuration blob that overrides the application version's default configuration."
+          }
+        },
+        "enableAutomaticUpgrade": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to automatically upgrade the application when a newer Gallery Application Version becomes available. Set to false to retain the specified version."
+          }
+        },
+        "order": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Installation order of applications within each VM, not the rollout order of VM instances."
+          }
+        },
+        "tags": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Passthrough string for application-specific context. This is not a resource tags object."
+          }
+        },
+        "treatFailureAsDeploymentFailure": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether an application install, update, or removal failure should fail deployment. This reports application operation failure, not end-to-end application or network health or continuous drift compliance."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "A Gallery Application Version to assign to the common virtual machine scale set model."
+      }
+    },
     "extensionHealthConfigType": {
       "type": "object",
       "properties": {
@@ -638,6 +688,16 @@
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format."
+      }
+    },
+    "galleryApplications": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/vmGalleryApplicationType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Existing Gallery Application Versions to assign to the common scale set model; this parameter does not publish application packages. Existing instances are updated according to the platform upgrade behavior, not by this parameter. Include all intended application assignments when managing this array; omission does not guarantee preservation of applications assigned outside this model."
       }
     },
     "roleAssignments": {
@@ -1301,6 +1361,7 @@
           "gracePeriod": "[parameters('gracePeriod')]"
         },
         "virtualMachineProfile": {
+          "applicationProfile": "[if(not(empty(parameters('galleryApplications'))), createObject('galleryApplications', parameters('galleryApplications')), null())]",
           "osProfile": {
             "computerNamePrefix": "[parameters('vmNamePrefix')]",
             "adminUsername": "[parameters('adminUsername')]",
