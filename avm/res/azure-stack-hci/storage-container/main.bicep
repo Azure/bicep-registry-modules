@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('Required. Resource ID of the associated custom location.')
 param customLocationResourceId string
 
-@description('Required. Path of the storage container on the cluster shared volume. For example: `C:\\ClusterStorage\\UserStorage_1\\myStorageContainer`. Note: On creation, Azure Local appends a unique subfolder to the given path and stores the extended path in the resource\'s `properties.path`. The path can\'t be changed after creation, so re-deploying with the original value fails with "Path cannot be changed after resource creation". To re-deploy an existing storage container, provide the path stored on the resource.')
+@description('Required. Path of the storage container on the cluster shared volume. For example: `C:\\ClusterStorage\\UserStorage_1\\myStorageContainer`. Note: On creation, Azure Local may append a unique subfolder to the given path and store the extended path in the resource\'s `properties.path`. On re-deployment, the module re-sends the stored path if it is the given path plus one subfolder, so the original value can be used again. The path can\'t be changed after creation.')
 param path string
 
 @description('Optional. Tags of the resource.')
@@ -89,6 +89,26 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
+// Azure Local may store the path with an appended unique subfolder and rejects any later path change. The stored path is
+// read in a nested deployment, as a template can't reference a resource it also deploys.
+module storageContainer_storedPath 'modules/stored-path.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-StorageContainer-StoredPath'
+  params: {
+    name: name
+  }
+}
+
+var storedPath = storageContainer_storedPath.outputs.path
+var pathPrefix = endsWith(path, '\\') ? path : '${path}\\'
+var storedPathSuffix = startsWith(toLower(storedPath), toLower(pathPrefix)) ? skip(storedPath, length(pathPrefix)) : ''
+// Re-send the stored path only if it is the given path or the given path plus exactly one subfolder, so that a real path change still fails
+var effectivePath = !empty(storedPath) && (toLower(storedPath) == toLower(path) || (!empty(storedPathSuffix) && !contains(
+    storedPathSuffix,
+    '\\'
+  )))
+  ? storedPath
+  : path
+
 resource storageContainer 'Microsoft.AzureStackHCI/storageContainers@2024-01-01' = {
   name: name
   location: location
@@ -98,7 +118,7 @@ resource storageContainer 'Microsoft.AzureStackHCI/storageContainers@2024-01-01'
     name: customLocationResourceId
   }
   properties: {
-    path: path
+    path: effectivePath
   }
 }
 

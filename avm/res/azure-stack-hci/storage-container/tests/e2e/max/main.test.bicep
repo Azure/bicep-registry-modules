@@ -5,7 +5,7 @@ extension microsoftGraphV1
 import { preparedHciEnvironmentType } from '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/consumer.types.bicep'
 
 metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled. The module is deployed only once (no idempotency run), because Azure Local appends a unique subfolder to the storage container\'s path on creation and rejects a re-deployment with the original path.'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
@@ -229,48 +229,47 @@ module managedIdentity 'dependencies.bicep' = {
   }
 }
 
-// Note: When Azure Local creates a storage container, it appends a unique folder name to the given path (for example
-// '<path>\<id>'), and the path can't be changed afterwards. A re-deployment sends the original path again and is rejected
-// with 'Blocked StorageContainer update: Path cannot be changed after resource creation'.
-// Therefore, the standard 'idem' iteration is skipped for this module.
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: enforcedLocation
-    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment!.customLocationResourceId : customLocation!.id
-    path: 'C:\\ClusterStorage\\UserStorage_1\\${namePrefix}${serviceShort}'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        name: 'a7ab4d51-a2b8-4a0e-9d6c-0d93f6e2c5c1'
-        roleDefinitionIdOrName: 'Azure Stack HCI VM Reader'
-        principalId: managedIdentity.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: enforcedLocation
+      customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment!.customLocationResourceId : customLocation!.id
+      path: 'C:\\ClusterStorage\\UserStorage_1\\${namePrefix}${serviceShort}'
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
       }
-      {
-        name: guid('Custom seed ${namePrefix}${serviceShort}')
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-        principalId: managedIdentity.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+      roleAssignments: [
+        {
+          name: 'a7ab4d51-a2b8-4a0e-9d6c-0d93f6e2c5c1'
+          roleDefinitionIdOrName: 'Azure Stack HCI VM Reader'
+          principalId: managedIdentity.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: managedIdentity.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: managedIdentity.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-      {
-        roleDefinitionIdOrName: subscriptionResourceId(
-          'Microsoft.Authorization/roleDefinitions',
-          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-        )
-        principalId: managedIdentity.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-}
+]

@@ -5,7 +5,7 @@ extension microsoftGraphV1
 import { preparedHciEnvironmentType } from '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/consumer.types.bicep'
 
 metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework. The module is deployed only once (no idempotency run), because Azure Local appends a unique subfolder to the storage container\'s path on creation and rejects a re-deployment with the original path.'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
@@ -220,22 +220,21 @@ resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-15' 
   ]
 }
 
-// Note: When Azure Local creates a storage container, it appends a unique folder name to the given path (for example
-// '<path>\<id>'), and the path can't be changed afterwards. A re-deployment sends the original path again and is rejected
-// with 'Blocked StorageContainer update: Path cannot be changed after resource creation'.
-// Therefore, the standard 'idem' iteration is skipped for this module.
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
-  params: {
-    name: '${namePrefix}${serviceShort}001'
-    location: enforcedLocation
-    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment!.customLocationResourceId : customLocation!.id
-    path: 'C:\\ClusterStorage\\UserStorage_1\\${namePrefix}${serviceShort}'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      location: enforcedLocation
+      customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment!.customLocationResourceId : customLocation!.id
+      path: 'C:\\ClusterStorage\\UserStorage_1\\${namePrefix}${serviceShort}'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
-}
+]

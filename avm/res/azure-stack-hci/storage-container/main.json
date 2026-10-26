@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "5084032667703639972"
+      "templateHash": "15459412289239493466"
     },
     "name": "Azure Stack HCI Storage Container",
     "description": "This module deploys an Azure Stack HCI Storage Container."
@@ -148,7 +148,7 @@
     "path": {
       "type": "string",
       "metadata": {
-        "description": "Required. Path of the storage container on the cluster shared volume. For example: `C:\\ClusterStorage\\UserStorage_1\\myStorageContainer`. Note: On creation, Azure Local appends a unique subfolder to the given path and stores the extended path in the resource's `properties.path`. The path can't be changed after creation, so re-deploying with the original value fails with \"Path cannot be changed after resource creation\". To re-deploy an existing storage container, provide the path stored on the resource."
+        "description": "Required. Path of the storage container on the cluster shared volume. For example: `C:\\ClusterStorage\\UserStorage_1\\myStorageContainer`. Note: On creation, Azure Local may append a unique subfolder to the given path and store the extended path in the resource's `properties.path`. On re-deployment, the module re-sends the stored path if it is the given path plus one subfolder, so the original value can be used again. The path can't be changed after creation."
       }
     },
     "tags": {
@@ -205,7 +205,8 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "telemetryIdPrefix": "[variables('$fxv#0')]"
+    "telemetryIdPrefix": "[variables('$fxv#0')]",
+    "pathPrefix": "[if(endsWith(parameters('path'), '\\'), parameters('path'), format('{0}\\', parameters('path')))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -239,8 +240,11 @@
         "name": "[parameters('customLocationResourceId')]"
       },
       "properties": {
-        "path": "[parameters('path')]"
-      }
+        "path": "[if(and(not(empty(reference('storageContainer_storedPath').outputs.path.value)), or(equals(toLower(reference('storageContainer_storedPath').outputs.path.value), toLower(parameters('path'))), and(not(empty(if(startsWith(toLower(reference('storageContainer_storedPath').outputs.path.value), toLower(variables('pathPrefix'))), skip(reference('storageContainer_storedPath').outputs.path.value, length(variables('pathPrefix'))), ''))), not(contains(if(startsWith(toLower(reference('storageContainer_storedPath').outputs.path.value), toLower(variables('pathPrefix'))), skip(reference('storageContainer_storedPath').outputs.path.value, length(variables('pathPrefix'))), ''), '\\'))))), reference('storageContainer_storedPath').outputs.path.value, parameters('path'))]"
+      },
+      "dependsOn": [
+        "storageContainer_storedPath"
+      ]
     },
     "storageContainer_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -277,6 +281,64 @@
       "dependsOn": [
         "storageContainer"
       ]
+    },
+    "storageContainer_storedPath": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-StorageContainer-StoredPath', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.48.1.52935",
+              "templateHash": "4180903516861834029"
+            },
+            "name": "Storage Container Stored Path",
+            "description": "Returns the path stored on an existing storage container, or an empty string if the storage container doesn't exist."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the storage container."
+              }
+            }
+          },
+          "resources": {
+            "storageContainer": {
+              "existing": true,
+              "@options": {
+                "nullIfNotFound": []
+              },
+              "type": "Microsoft.AzureStackHCI/storageContainers",
+              "apiVersion": "2024-01-01",
+              "name": "[parameters('name')]"
+            }
+          },
+          "outputs": {
+            "path": {
+              "type": "string",
+              "metadata": {
+                "description": "The path stored on the storage container, or an empty string if the storage container doesn't exist."
+              },
+              "value": "[coalesce(tryGet(tryGet(reference('storageContainer', '2024-01-01', 'full'), 'properties'), 'path'), '')]"
+            }
+          }
+        }
+      }
     }
   },
   "outputs": {

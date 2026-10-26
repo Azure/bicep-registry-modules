@@ -41,7 +41,7 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Using only defaults_
 
-This instance deploys the module with the minimum set of required parameters. The module is deployed only once (no idempotency run), because Azure Local appends a unique subfolder to the storage container's path on creation and rejects a re-deployment with the original path.
+This instance deploys the module with the minimum set of required parameters.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
@@ -120,7 +120,7 @@ param location = '<location>'
 
 ### Example 2: _Using large parameter set_
 
-This instance deploys the module with most of its features enabled. The module is deployed only once (no idempotency run), because Azure Local appends a unique subfolder to the storage container's path on creation and rejects a re-deployment with the original path.
+This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
@@ -289,7 +289,7 @@ param tags = {
 
 ### Example 3: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework. The module is deployed only once (no idempotency run), because Azure Local appends a unique subfolder to the storage container's path on creation and rejects a re-deployment with the original path.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
@@ -391,7 +391,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`customLocationResourceId`](#parameter-customlocationresourceid) | string | Resource ID of the associated custom location. |
 | [`name`](#parameter-name) | string | Name of the storage container. |
-| [`path`](#parameter-path) | string | Path of the storage container on the cluster shared volume. For example: `C:\ClusterStorage\UserStorage_1\myStorageContainer`. Note: On creation, Azure Local appends a unique subfolder to the given path and stores the extended path in the resource's `properties.path`. The path can't be changed after creation, so re-deploying with the original value fails with "Path cannot be changed after resource creation". To re-deploy an existing storage container, provide the path stored on the resource. |
+| [`path`](#parameter-path) | string | Path of the storage container on the cluster shared volume. For example: `C:\ClusterStorage\UserStorage_1\myStorageContainer`. Note: On creation, Azure Local may append a unique subfolder to the given path and store the extended path in the resource's `properties.path`. On re-deployment, the module re-sends the stored path if it is the given path plus one subfolder, so the original value can be used again. The path can't be changed after creation. |
 
 **Optional parameters**
 
@@ -419,7 +419,7 @@ Name of the storage container.
 
 ### Parameter: `path`
 
-Path of the storage container on the cluster shared volume. For example: `C:\ClusterStorage\UserStorage_1\myStorageContainer`. Note: On creation, Azure Local appends a unique subfolder to the given path and stores the extended path in the resource's `properties.path`. The path can't be changed after creation, so re-deploying with the original value fails with "Path cannot be changed after resource creation". To re-deploy an existing storage container, provide the path stored on the resource.
+Path of the storage container on the cluster shared volume. For example: `C:\ClusterStorage\UserStorage_1\myStorageContainer`. Note: On creation, Azure Local may append a unique subfolder to the given path and store the extended path in the resource's `properties.path`. On re-deployment, the module re-sends the stored path if it is the given path plus one subfolder, so the original value can be used again. The path can't be changed after creation.
 
 - Required: Yes
 - Type: string
