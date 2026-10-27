@@ -22,5 +22,5 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-pr-check.yml@9d2f05b93a97ca3ba6fb525cb0ac1451585ac36e
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-pr-check.yml@b760e02949d44f653cce2548d172fd276453e813
     secrets: inherit
