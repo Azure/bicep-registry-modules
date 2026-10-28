@@ -257,7 +257,7 @@ Schedule for weekly snapshots.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`day`](#parameter-weeklyscheduleday) | string | The weekly snapshot day. |
+| [`day`](#parameter-weeklyscheduleday) | string | The weekdays on which snapshots are taken, as a comma-separated list of English day names. E.g., 'Monday,Tuesday'. |
 | [`hour`](#parameter-weeklyschedulehour) | int | The weekly snapshot hour. |
 | [`minute`](#parameter-weeklyscheduleminute) | int | The weekly snapshot minute. |
 | [`snapshotsToKeep`](#parameter-weeklyschedulesnapshotstokeep) | int | Weekly snapshot count to keep. |
@@ -270,22 +270,10 @@ Schedule for weekly snapshots.
 
 ### Parameter: `weeklySchedule.day`
 
-The weekly snapshot day.
+The weekdays on which snapshots are taken, as a comma-separated list of English day names. E.g., 'Monday,Tuesday'.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Friday'
-    'Monday'
-    'Saturday'
-    'Sunday'
-    'Thursday'
-    'Tuesday'
-    'Wednesday'
-  ]
-  ```
 
 ### Parameter: `weeklySchedule.hour`
 

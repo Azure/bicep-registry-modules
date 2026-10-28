@@ -58,6 +58,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`isLargeVolume`](#parameter-islargevolume) | bool | Specifies whether volume is a Large Volume or Regular Volume. |
 | [`kerberosEnabled`](#parameter-kerberosenabled) | bool | Define if a volume is KerberosEnabled. |
 | [`keyVaultPrivateEndpointResourceId`](#parameter-keyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
+| [`ldapEnabled`](#parameter-ldapenabled) | bool | Specifies whether LDAP is enabled for the NFS volume. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
@@ -519,6 +520,13 @@ The resource ID of the key vault private endpoint.
 
 - Required: No
 - Type: string
+
+### Parameter: `ldapEnabled`
+
+Specifies whether LDAP is enabled for the NFS volume.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `location`
 

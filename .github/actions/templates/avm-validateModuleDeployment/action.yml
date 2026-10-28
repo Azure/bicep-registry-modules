@@ -112,6 +112,10 @@ inputs:
     description: "Opt into complete final teardown confirmation instead of the existing best-effort cleanup."
     default: "false"
     required: false
+  dependencyPreparationParameter:
+    description: "Optional boolean test parameter defaulting to false. Deploy dependencies with it set to true, wait 15 seconds on the runner for RBAC propagation, then run the full test with it set to false. Both phases are tracked for cleanup."
+    default: ""
+    required: false
 
 outputs:
   cleanupStatus:
@@ -346,7 +350,7 @@ runs:
           Write-Output '::group::Validate and deploy template file'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Invoke-TemplateDeploymentWithRetry.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Invoke-TemplateDeploymentWithPreparation.ps1')
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleDeploymentData.ps1')
 
@@ -438,7 +442,13 @@ runs:
           if ($deploymentData.ProtectedResourceIds.Count -gt 0) {
             $retryInput.ProtectedResourceIds = $deploymentData.ProtectedResourceIds
           }
-          $res = Invoke-TemplateDeploymentWithRetry @retryInput -Verbose
+          $preparationInput = @{
+            RetryInput           = $retryInput
+            PreparationParameter = '${{ inputs.dependencyPreparationParameter }}'
+            TemplateParameters   = $moduleTemplateParameters
+            GitHubOutputPath     = $env:GITHUB_OUTPUT
+          }
+          $res = Invoke-TemplateDeploymentWithPreparation @preparationInput -Verbose
 
           if ($requireCompleteRemoval) {
             if ($res -isnot [System.Collections.IDictionary]) {

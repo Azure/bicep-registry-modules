@@ -108,6 +108,9 @@ param smbNonBrowsable string = 'Disabled'
 @description('Optional. Define if a volume is KerberosEnabled.')
 param kerberosEnabled bool = false
 
+@description('Optional. Specifies whether LDAP is enabled for the NFS volume.')
+param ldapEnabled bool?
+
 @description('Optional. Specifies whether volume is a Large Volume or Regular Volume.')
 param isLargeVolume bool = false
 
@@ -299,6 +302,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2025-01-0
     creationToken: creationToken
     usageThreshold: usageThreshold
     protocolTypes: protocolTypes
+    ldapEnabled: ldapEnabled
     subnetId: vnet::subnet.id
     exportPolicy: exportPolicy ?? {
       rules: []

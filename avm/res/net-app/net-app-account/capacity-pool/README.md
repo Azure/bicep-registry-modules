@@ -289,6 +289,7 @@ List of volumes to create in the capacity pool.
 | [`isLargeVolume`](#parameter-volumesislargevolume) | bool | Specifies whether volume is a Large Volume or Regular Volume. |
 | [`kerberosEnabled`](#parameter-volumeskerberosenabled) | bool | Define if a volume is KerberosEnabled. |
 | [`keyVaultPrivateEndpointResourceId`](#parameter-volumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
+| [`ldapEnabled`](#parameter-volumesldapenabled) | bool | Specifies whether LDAP is enabled for the NFS volume. |
 | [`location`](#parameter-volumeslocation) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-volumesnetworkfeatures) | string | Network feature for the volume. |
 | [`protocolTypes`](#parameter-volumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
@@ -714,6 +715,13 @@ The resource ID of the key vault private endpoint.
 
 - Required: No
 - Type: string
+
+### Parameter: `volumes.ldapEnabled`
+
+Specifies whether LDAP is enabled for the NFS volume.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `volumes.location`
 
