@@ -337,13 +337,15 @@ module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup ?? {
-        privateDnsZoneGroupConfigs: [
-          {
-            privateDnsZoneResourceId: staticSite_privateDnsZone.?outputs.resourceId
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup ?? (createPrivateDnsZone == 'Enabled'
+        ? {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: staticSite_privateDnsZone!.outputs.resourceId
+              }
+            ]
           }
-        ]
-      }
+        : null)
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
