@@ -34,7 +34,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-pr-check.yml@91c442251d5aa3649ad61f1034ac2e5043567239
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-pr-check.yml@7379a19fe3ca4e97a602a6bc1d78a61be09d31e7
     with:
       authoringSource: ${{ inputs.authoringSource || 'gallery' }}
       authoringRef: ${{ inputs.authoringRef || '' }}
