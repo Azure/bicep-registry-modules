@@ -211,13 +211,41 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
+      runtimeEnvironments: [
+        {
+          name: 'TestPowerShellRuntime'
+          description: 'Custom PowerShell runtime environment'
+          runtime: {
+            language: 'PowerShell'
+            version: '7.4'
+          }
+          defaultPackages: {
+            Az: '12.3.0'
+          }
+        }
+        {
+          name: 'TestPythonRuntime'
+          description: 'Custom Python runtime environment'
+          runtime: {
+            language: 'Python'
+            version: '3.10'
+          }
+        }
+      ]
       runbooks: [
         {
           description: 'Test runbook'
           name: 'TestRunbook'
           type: 'PowerShell'
+          runtimeEnvironment: 'TestPowerShellRuntime'
           uri: 'https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1'
           version: '1.0.0.0'
+        }
+        {
+          description: 'Test Python runbook'
+          name: 'TestPythonRunbook'
+          type: 'Python'
+          runtimeEnvironment: 'TestPythonRuntime'
         }
       ]
       schedules: [
