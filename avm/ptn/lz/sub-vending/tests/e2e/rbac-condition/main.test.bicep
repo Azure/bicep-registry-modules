@@ -36,7 +36,7 @@ module testDeployment '../../../main.bicep' = {
     }
     subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: managementGroup().name
     resourceProviders: {}
     roleAssignmentEnabled: true
     roleAssignments: [
@@ -63,6 +63,7 @@ module testDeployment '../../../main.bicep' = {
 }
 
 output createdSubId string = testDeployment.outputs.subscriptionId
+output deploymentManagementGroupId string = managementGroup().name
 output namePrefix string = namePrefix
 output serviceShort string = serviceShort
 output resourceLocation string = resourceLocation

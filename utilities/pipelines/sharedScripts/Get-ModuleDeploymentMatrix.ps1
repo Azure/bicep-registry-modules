@@ -7,6 +7,8 @@ Preserves seeded round-robin selection while exposing only pool positions and ID
 Ignored tests use unique groups and do not share deployment locks.
 Subscription locks are invariant across revisions. Management-group and tenant scopes, plus
 linked or expression-based templates, additionally require a shared deployment-phase lock.
+Active tests must match the caller's expected subscription tag. General is the default;
+reserved pools require an explicit dedicated caller. Ignored tests do not select a pool.
 #>
 function Get-ModuleDeploymentMatrix {
 
@@ -25,6 +27,10 @@ function Get-ModuleDeploymentMatrix {
         [Parameter()]
         [string] $FallbackSubscriptionId,
 
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [string] $ExpectedSubscriptionTag = 'General',
+
         [Parameter(Mandatory)]
         [ValidateRange(0, 2147483647)]
         [int] $RandomSeed,
@@ -37,16 +43,29 @@ function Get-ModuleDeploymentMatrix {
     )
 
     . (Join-Path $PSScriptRoot 'Get-TestSubscriptionList.ps1')
+    . (Join-Path $PSScriptRoot 'Get-TestSubscriptionTag.ps1')
     . (Join-Path $PSScriptRoot 'Get-ScopeOfTemplateFile.ps1')
     . (Join-Path $PSScriptRoot 'Get-NestedResourceList.ps1')
 
     $activeTests = @($TestFilePaths | Where-Object { $_.e2eIgnore -ne $true -and $_.e2eIgnore -ne 'true' })
     $sharedScope = $false
     if ($activeTests.Count -gt 0) {
+        Assert-TestSubscriptionTag -Tag $ExpectedSubscriptionTag
+        $requiredTag = Get-TestSubscriptionTag -ModulePath $ModulePath -RepoRootPath $RepoRoot
+        if ($requiredTag -cne $ExpectedSubscriptionTag) {
+            throw "Module [$ModulePath] requires test subscription tag [$requiredTag], but this deployment workflow accepts [$ExpectedSubscriptionTag]. Use the module's dedicated workflow for deployment validation."
+        }
         if (-not [string]::IsNullOrEmpty($TestSubscriptionIds) -and [string]::IsNullOrWhiteSpace($TestSubscriptionIds)) {
             throw 'The configured test subscription pool must not contain only whitespace.'
         }
-        $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $TestSubscriptionIds -FallbackSubscriptionId $FallbackSubscriptionId -RandomSeed $RandomSeed)
+        $subscriptionInput = @{
+            TestSubscriptionIds    = $TestSubscriptionIds
+            FallbackSubscriptionId = $FallbackSubscriptionId
+            RandomSeed             = $RandomSeed
+            ModulePath             = $ModulePath
+            RepoRootPath           = $RepoRoot
+        }
+        $subscriptions = @(Get-TestSubscriptionList @subscriptionInput)
 
         foreach ($test in $activeTests) {
             $templateFilePath = Join-Path $RepoRoot $ModulePath $test.path

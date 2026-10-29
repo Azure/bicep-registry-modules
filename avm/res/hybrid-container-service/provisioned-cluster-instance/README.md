@@ -190,7 +190,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     }
     enableTelemetry: true
     keyVaultName: '<keyVaultName>'
-    kubernetesVersion: '1.29.4'
+    kubernetesVersion: '<kubernetesVersion>'
     licenseProfile: {
       azureHybridBenefit: 'False'
     }
@@ -289,7 +289,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       "value": "<keyVaultName>"
     },
     "kubernetesVersion": {
-      "value": "1.29.4"
+      "value": "<kubernetesVersion>"
     },
     "licenseProfile": {
       "value": {
@@ -378,7 +378,7 @@ param controlPlane = {
 }
 param enableTelemetry = true
 param keyVaultName = '<keyVaultName>'
-param kubernetesVersion = '1.29.4'
+param kubernetesVersion = '<kubernetesVersion>'
 param licenseProfile = {
   azureHybridBenefit: 'False'
 }

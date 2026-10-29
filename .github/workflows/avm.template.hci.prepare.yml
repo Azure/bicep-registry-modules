@@ -1,0 +1,159 @@
+name: "avm.template.hci.prepare"
+
+on:
+  workflow_call:
+    inputs:
+      testCase:
+        type: string
+        required: true
+      recreate:
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  job_begin:
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      HCI_STAGE: Begin
+    steps: &preparation-steps
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+        with:
+          removeDeployment: "false"
+      - name: "Install preparation dependencies"
+        shell: pwsh
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')
+          Install-CustomModule -Module @{ Name = 'Az.KeyVault' } -InstalledModule @(Get-Module -ListAvailable)
+      - name: "Resolve the pinned reserved subscription"
+        id: subscription
+        shell: pwsh
+        env:
+          TEST_CASE: ${{ inputs.testCase }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
+          $testCase = ConvertFrom-Json -InputObject $env:TEST_CASE -AsHashtable
+          $subscription = Get-HciTestSubscription -ModulePath 'avm/res/azure-stack-hci/logical-network' `
+            -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -SubscriptionIndex $testCase.subscriptionIndex `
+            -SubscriptionKey $testCase.subscriptionKey -RepoRootPath $env:GITHUB_WORKSPACE
+          "subscriptionId=$($subscription.id)" >> $env:GITHUB_OUTPUT
+      - name: "Log in to the reserved subscription"
+        uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
+        with:
+          client-id: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          subscription-id: ${{ steps.subscription.outputs.subscriptionId }}
+          enable-AzPSSession: true
+      - name: "Advance the recorded preparation operation"
+        uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+        env:
+          TEST_CASE: ${{ inputs.testCase }}
+          HCI_RECREATE: ${{ inputs.recreate && env.HCI_STAGE == 'Begin' }}
+          HCI_RUN_IDENTITY: ${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
+          HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT: ${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
+          AVM_CI_VARIABLES: ${{ toJSON(vars) }}
+          AVM_CI_SECRETS: ${{ toJSON(secrets) }}
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            $ErrorActionPreference = 'Stop'
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciPreparationStep.ps1')
+            $commit = git rev-parse HEAD
+            if ($LASTEXITCODE -ne 0) { throw 'Cannot identify the checked-out asset revision.' }
+            $result = Invoke-HciPreparationStep -Stage $env:HCI_STAGE -RepoRootPath $env:GITHUB_WORKSPACE `
+              -ModulePath 'avm/res/azure-stack-hci/logical-network' -TestCase (ConvertFrom-Json $env:TEST_CASE -AsHashtable) `
+              -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -TenantId $env:VALIDATE_TENANT_ID `
+              -RunIdentity $env:HCI_RUN_IDENTITY -SourceCommit $commit `
+              -GitHubVariables $env:AVM_CI_VARIABLES -GitHubSecrets $env:AVM_CI_SECRETS -KeyVaultName $env:CI_KEY_VAULT_NAME `
+              -ReceiptStorageAccountName $env:HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT `
+              -Recreate:([bool]::Parse($env:HCI_RECREATE)) -Maintenance:$true
+            if ($env:HCI_STAGE -ceq 'Ready') {
+              "Resolved immutable host image: $($result.ImageVersionResourceId)" >> $env:GITHUB_STEP_SUMMARY
+              "External read-only image: $($result.ExternalImage)" >> $env:GITHUB_STEP_SUMMARY
+              "Owned resource groups: $($result.OwnedResourceIds -join ', ')" >> $env:GITHUB_STEP_SUMMARY
+            }
+
+  job_image_wait_1:
+    needs: job_begin
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      HCI_STAGE: ImageObserve
+    steps: *preparation-steps
+
+  job_image_wait_2:
+    needs: job_image_wait_1
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      HCI_STAGE: ImageObserve
+    steps: *preparation-steps
+
+  job_image_wait_3:
+    needs: job_image_wait_2
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      HCI_STAGE: ImageObserve
+    steps: *preparation-steps
+
+  job_foundation_start:
+    needs: job_image_wait_3
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      HCI_STAGE: FoundationStart
+    steps: *preparation-steps
+
+  job_foundation_wait_1:
+    needs: job_foundation_start
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      HCI_STAGE: FoundationObserve
+    steps: *preparation-steps
+
+  job_foundation_wait_2:
+    needs: job_foundation_wait_1
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      HCI_STAGE: FoundationObserve
+    steps: *preparation-steps
+
+  job_foundation_wait_3:
+    needs: job_foundation_wait_2
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      HCI_STAGE: FoundationObserve
+    steps: *preparation-steps
+
+  job_ready:
+    needs: job_foundation_wait_3
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      HCI_STAGE: Ready
+    steps: *preparation-steps
