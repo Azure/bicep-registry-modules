@@ -2,6 +2,19 @@ name: ".Module - Release [EXPERIMENTAL]"
 
 on:
   workflow_dispatch:
+    inputs:
+      authoringSource:
+        type: choice
+        description: "Where to obtain the Avm.Authoring PowerShell module."
+        required: true
+        default: gallery
+        options:
+          - gallery
+          - repo
+      authoringRef:
+        type: string
+        description: "Avm.Authoring reference: authoringSource=gallery uses a package version (blank = latest); authoringSource=repo uses a tools SHA, tag or branch (blank = latest stable tag)."
+        required: false
   # push:
   #   branches:
   #     - main
@@ -13,5 +26,8 @@ jobs:
     name: "Module release [EXPERIMENTAL]"
     permissions:
       contents: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@598c043447ba9030bde0afb3318e9a59c889008e
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@7379a19fe3ca4e97a602a6bc1d78a61be09d31e7
+    with:
+      authoringSource: ${{ inputs.authoringSource || 'gallery' }}
+      authoringRef: ${{ inputs.authoringRef || '' }}
     secrets: inherit

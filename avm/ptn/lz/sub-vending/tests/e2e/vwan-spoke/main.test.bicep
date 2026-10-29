@@ -58,7 +58,7 @@ module testDeployment '../../../main.bicep' = {
     }
     subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: managementGroup().name
     virtualNetworkEnabled: true
     virtualNetworkLocation: resourceLocation
     virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-vwan-${namePrefix}-${serviceShort}'
@@ -90,6 +90,7 @@ module testDeployment '../../../main.bicep' = {
 }
 
 output createdSubId string = testDeployment.outputs.subscriptionId
+output deploymentManagementGroupId string = managementGroup().name
 output virtualHubResourceId string = nestedDependencies.outputs.virtualHubResourceId
 output hubNetworkResourceId string = nestedDependencies.outputs.hubNetworkResourceId
 output namePrefix string = namePrefix
