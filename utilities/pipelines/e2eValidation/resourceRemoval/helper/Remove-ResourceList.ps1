@@ -24,6 +24,8 @@ function Remove-ResourceListInner {
 
         [Parameter()]
         [switch] $RequireCompleteRemoval
+        ,
+        [string] $SubscriptionCleanupManagementGroupId
     )
 
     begin {
@@ -65,7 +67,7 @@ function Remove-ResourceListInner {
                     Write-Verbose ('[-] Removing resource [{0}] of type [{1}]' -f $resourceName, $resource.type) -Verbose
                     try {
                         if ($PSCmdlet.ShouldProcess(('Resource [{0}]' -f $resource.resourceId), 'Remove')) {
-                            Invoke-ResourceRemoval -Type $resource.type -ResourceId $resource.resourceId
+                            Invoke-ResourceRemoval -Type $resource.type -ResourceId $resource.resourceId -SubscriptionCleanupManagementGroupId $SubscriptionCleanupManagementGroupId
                         }
 
                         # If we removed a parent remove its children
@@ -150,6 +152,8 @@ function Remove-ResourceList {
 
         [Parameter()]
         [switch] $RequireCompleteRemoval
+        ,
+        [string] $SubscriptionCleanupManagementGroupId
     )
 
     $removalRetryCount = 1
@@ -157,7 +161,7 @@ function Remove-ResourceList {
 
     do {
         if ($PSCmdlet.ShouldProcess(("[{0}] Resource(s) with a maximum of [$removalRetryLimit] attempts." -f (($resourcesToRetry -is [array]) ? $resourcesToRetry.Count : 1)), 'Remove')) {
-            $resourcesToRetry = Remove-ResourceListInner -ResourcesToRemove $resourcesToRetry -RequireCompleteRemoval:$RequireCompleteRemoval
+            $resourcesToRetry = Remove-ResourceListInner -ResourcesToRemove $resourcesToRetry -RequireCompleteRemoval:$RequireCompleteRemoval -SubscriptionCleanupManagementGroupId $SubscriptionCleanupManagementGroupId
         } else {
             Remove-ResourceListInner -ResourcesToRemove $resourcesToRemove -WhatIf
         }

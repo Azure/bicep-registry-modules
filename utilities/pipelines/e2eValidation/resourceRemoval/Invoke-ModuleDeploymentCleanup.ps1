@@ -18,6 +18,7 @@ function Invoke-ModuleDeploymentCleanup {
         [int] $DeploymentAttempts = -1,
         [string] $SubscriptionId,
         [string] $ManagementGroupId,
+        [string] $SubscriptionCleanupManagementGroupId,
         [string] $ResourceGroupName,
         [string[]] $ProtectedResourceIds = @(),
         [switch] $RequireCompleteRemoval
@@ -27,6 +28,12 @@ function Invoke-ModuleDeploymentCleanup {
         foreach ($name in @('RemainingDeploymentNames', 'PreflightRejectedDeploymentNames', 'PendingDeletionDeploymentIds', 'DeploymentAttempts')) {
             if (-not $PSBoundParameters.ContainsKey($name) -or $null -eq $PSBoundParameters[$name]) {
                 throw 'Complete final cleanup requires authoritative deployment tracking.'
+            }
+            if ($ManagementGroupId -eq 'avm-subscription-vending') {
+                if ($SubscriptionCleanupManagementGroupId -and $SubscriptionCleanupManagementGroupId -ne 'avm-subscription-vending') {
+                    throw 'BAMI subscription cleanup must target the isolated avm-subscription-vending management group.'
+                }
+                $SubscriptionCleanupManagementGroupId = 'avm-subscription-vending'
             }
         }
         if ($DeploymentAttempts -lt 0 -or ($DeploymentNames.Count -gt 0 -and $DeploymentAttempts -eq 0)) {
@@ -68,6 +75,7 @@ function Invoke-ModuleDeploymentCleanup {
         PreflightRejectedDeploymentNames = @($PreflightRejectedDeploymentNames | Where-Object { $_ -in $remaining })
         PendingDeletionDeploymentIds     = $PendingDeletionDeploymentIds
         ManagementGroupId                = $ManagementGroupId
+        SubscriptionCleanupManagementGroupId = $SubscriptionCleanupManagementGroupId
         ProtectedResourceIds             = $ProtectedResourceIds
     }
     if ($SubscriptionId) { $inputObject.SubscriptionId = $SubscriptionId }

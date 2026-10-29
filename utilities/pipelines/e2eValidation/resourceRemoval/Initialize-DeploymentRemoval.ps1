@@ -76,6 +76,7 @@ function Initialize-DeploymentRemoval {
 
         [Parameter(Mandatory = $false)]
         [string] $ManagementGroupId,
+        [string] $SubscriptionCleanupManagementGroupId,
 
         [Parameter(Mandatory = $false)]
         [switch] $PurgeTestResources,
@@ -213,6 +214,7 @@ function Initialize-DeploymentRemoval {
             FinalCleanup                     = $FinalCleanup
             RequireNoDeploymentScripts       = $RequireNoDeploymentScripts
             ProtectedResourceIds             = $ProtectedResourceIds
+            SubscriptionCleanupManagementGroupId = $SubscriptionCleanupManagementGroupId
         }
         if (-not [String]::IsNullOrEmpty($TemplateFilePath)) {
             $inputObject['TemplateFilePath'] = $TemplateFilePath

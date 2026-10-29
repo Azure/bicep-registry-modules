@@ -234,6 +234,7 @@ function Remove-Deployment {
 
         [Parameter(Mandatory = $false)]
         [string] $ManagementGroupId,
+        [string] $SubscriptionCleanupManagementGroupId,
 
         [Parameter(Mandatory = $false)]
         [string[]] $DeploymentNames = @(),
@@ -459,7 +460,7 @@ function Remove-Deployment {
         # ================
         if ($resourcesToRemove.Count -gt 0) {
             if ($PSCmdlet.ShouldProcess(('[{0}] resources' -f (($resourcesToRemove -is [array]) ? $resourcesToRemove.Count : 1)), 'Remove')) {
-                Remove-ResourceList -ResourcesToRemove $resourcesToRemove -RequireCompleteRemoval:$RequireCompleteRemoval
+                Remove-ResourceList -ResourcesToRemove $resourcesToRemove -RequireCompleteRemoval:$RequireCompleteRemoval -SubscriptionCleanupManagementGroupId $SubscriptionCleanupManagementGroupId
             }
         } else {
             Write-Verbose 'Found [0] resources to remove'

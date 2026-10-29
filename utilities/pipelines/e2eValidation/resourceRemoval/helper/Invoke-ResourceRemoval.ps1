@@ -24,7 +24,9 @@ function Invoke-ResourceRemoval {
         [string] $ResourceId,
 
         [Parameter(Mandatory = $true)]
-        [string] $Type
+        [string] $Type,
+
+        [string] $SubscriptionCleanupManagementGroupId
     )
     if (
         $Type -eq 'Microsoft.Authorization/roleAssignments' -and
@@ -504,6 +506,10 @@ function Invoke-ResourceRemoval {
             break
         }
         { $PSItem -eq 'Microsoft.Subscription/aliases' -and $ResourceId -like '*dep-sub-blzv-tests*' } {
+            $cleanupManagementGroupId = $SubscriptionCleanupManagementGroupId ?? 'bicep-lz-vending-automation-decom'
+            if ($cleanupManagementGroupId -eq 'bicep-lz-vending-automation-decom' -and $SubscriptionCleanupManagementGroupId) {
+                throw 'BAMI subscription cleanup must not use the legacy decomposition management group.'
+            }
             $subscriptionName = $ResourceId.Split('/')[4]
             $subscription = Get-AzSubscription | Where-Object { $_.Name -eq $subscriptionName }
             $subscriptionId = $subscription.Id
@@ -519,10 +525,10 @@ function Invoke-ResourceRemoval {
             }
 
             # Moving Subscription to Management Group: bicep-lz-vending-automation-decom
-            if (-not (Get-AzManagementGroupSubscription -GroupName 'bicep-lz-vending-automation-decom' -SubscriptionId $subscriptionId -ErrorAction 'SilentlyContinue')) {
-                Write-Verbose ('[*] Moving resource [{0}] of type [{1}] to management group: bicep-lz-vending-automation-decom' -f $subscriptionName, $Type) -Verbose
-                if ($PSCmdlet.ShouldProcess("Subscription [$subscriptionName] to Management Group: bicep-lz-vending-automation-decom", 'Move')) {
-                    $null = New-AzManagementGroupSubscription -GroupName 'bicep-lz-vending-automation-decom' -SubscriptionId $subscriptionId
+            if (-not (Get-AzManagementGroupSubscription -GroupName $cleanupManagementGroupId -SubscriptionId $subscriptionId -ErrorAction 'SilentlyContinue')) {
+                Write-Verbose ('[*] Moving resource [{0}] of type [{1}] to management group: {2}' -f $subscriptionName, $Type, $cleanupManagementGroupId) -Verbose
+                if ($PSCmdlet.ShouldProcess("Subscription [$subscriptionName] to Management Group: $cleanupManagementGroupId", 'Move')) {
+                    $null = New-AzManagementGroupSubscription -GroupName $cleanupManagementGroupId -SubscriptionId $subscriptionId
                 }
             }
 
