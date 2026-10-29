@@ -66,6 +66,114 @@ Portal setting properties.
 - Required: Yes
 - Type: object
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-propertiesenabled) | bool | Redirect anonymous users to the sign-in page, or allow users to sign up on the developer portal. |
+| [`subscriptions`](#parameter-propertiessubscriptions) | object | Subscription delegation settings. |
+| [`termsOfService`](#parameter-propertiestermsofservice) | object | Terms of service contract properties for sign-up settings. |
+| [`url`](#parameter-propertiesurl) | string | The delegation URL. |
+| [`userRegistration`](#parameter-propertiesuserregistration) | object | User registration delegation settings. |
+| [`validationKey`](#parameter-propertiesvalidationkey) | securestring | A base64-encoded validation key to validate that a request comes from Azure API Management. |
+
+### Parameter: `properties.enabled`
+
+Redirect anonymous users to the sign-in page, or allow users to sign up on the developer portal.
+
+- Required: No
+- Type: bool
+
+### Parameter: `properties.subscriptions`
+
+Subscription delegation settings.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-propertiessubscriptionsenabled) | bool | Enable or disable delegation for subscriptions. |
+
+### Parameter: `properties.subscriptions.enabled`
+
+Enable or disable delegation for subscriptions.
+
+- Required: No
+- Type: bool
+
+### Parameter: `properties.termsOfService`
+
+Terms of service contract properties for sign-up settings.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`consentRequired`](#parameter-propertiestermsofserviceconsentrequired) | bool | Ask the user for consent to the terms of service. |
+| [`enabled`](#parameter-propertiestermsofserviceenabled) | bool | Display terms of service during sign-up. |
+| [`text`](#parameter-propertiestermsofservicetext) | string | Terms of service text. |
+
+### Parameter: `properties.termsOfService.consentRequired`
+
+Ask the user for consent to the terms of service.
+
+- Required: No
+- Type: bool
+
+### Parameter: `properties.termsOfService.enabled`
+
+Display terms of service during sign-up.
+
+- Required: No
+- Type: bool
+
+### Parameter: `properties.termsOfService.text`
+
+Terms of service text.
+
+- Required: No
+- Type: string
+
+### Parameter: `properties.url`
+
+The delegation URL.
+
+- Required: No
+- Type: string
+
+### Parameter: `properties.userRegistration`
+
+User registration delegation settings.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-propertiesuserregistrationenabled) | bool | Enable or disable delegation for user registration. |
+
+### Parameter: `properties.userRegistration.enabled`
+
+Enable or disable delegation for user registration.
+
+- Required: No
+- Type: bool
+
+### Parameter: `properties.validationKey`
+
+A base64-encoded validation key to validate that a request comes from Azure API Management.
+
+- Required: No
+- Type: securestring
+
 ### Parameter: `apiManagementServiceName`
 
 The name of the parent API Management service. Required if the template is used in a standalone deployment.

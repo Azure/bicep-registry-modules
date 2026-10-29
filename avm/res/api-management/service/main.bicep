@@ -116,6 +116,7 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Necessary to create a new GUID.')
+@secure()
 param newGuidValue string = newGuid()
 
 @description('Optional. APIs.')
@@ -1078,6 +1079,7 @@ type cacheType = {
   name: string
 
   @description('Required. Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}.')
+  @secure()
   connectionString: string
 
   @description('Optional. Cache description.')
@@ -1252,6 +1254,7 @@ type subscriptionType = {
   @minLength(1)
   @maxLength(256)
   @description('Optional. Primary subscription key. If not specified during request key will be generated automatically.')
+  @secure()
   primaryKey: string?
 
   @description('Optional. Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".')
@@ -1260,6 +1263,7 @@ type subscriptionType = {
   @minLength(1)
   @maxLength(256)
   @description('Optional. Secondary subscription key. If not specified during request key will be generated automatically.')
+  @secure()
   secondaryKey: string?
 
   @description('''Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:

@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/portalsetting/CHANGELOG.md).
 
+## 0.1.3
+
+### Changes
+
+- Added `portalSettingPropertiesType` to secure the delegation validation key while keeping the other portal settings inspectable.
+
+### Breaking Changes
+
+- None
+
 ## 0.1.2
 
 ### Changes
