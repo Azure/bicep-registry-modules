@@ -1214,7 +1214,7 @@ Loggers to deploy in this workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`credentials`](#parameter-loggerscredentials) | object | The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor. |
+| [`credentials`](#parameter-loggerscredentials) | secureObject | The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor. |
 | [`targetResourceId`](#parameter-loggerstargetresourceid) | string | Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub. |
 
 **Optional parameters**
@@ -1251,7 +1251,7 @@ Logger type.
 The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor.
 
 - Required: No
-- Type: object
+- Type: secureObject
 
 ### Parameter: `loggers.targetResourceId`
 

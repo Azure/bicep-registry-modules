@@ -116,6 +116,7 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Necessary to create a new GUID.')
+@secure()
 param newGuidValue string = newGuid()
 
 @description('Optional. APIs.')
