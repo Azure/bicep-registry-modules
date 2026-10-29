@@ -23,8 +23,7 @@ function Remove-ResourceListInner {
         [Hashtable[]] $ResourcesToRemove = @(),
 
         [Parameter()]
-        [switch] $RequireCompleteRemoval
-        ,
+        [switch] $RequireCompleteRemoval,
         [string] $SubscriptionCleanupManagementGroupId
     )
 
@@ -151,8 +150,7 @@ function Remove-ResourceList {
         [int] $RemovalRetryInterval = 15,
 
         [Parameter()]
-        [switch] $RequireCompleteRemoval
-        ,
+        [switch] $RequireCompleteRemoval,
         [string] $SubscriptionCleanupManagementGroupId
     )
 
@@ -163,7 +161,7 @@ function Remove-ResourceList {
         if ($PSCmdlet.ShouldProcess(("[{0}] Resource(s) with a maximum of [$removalRetryLimit] attempts." -f (($resourcesToRetry -is [array]) ? $resourcesToRetry.Count : 1)), 'Remove')) {
             $resourcesToRetry = Remove-ResourceListInner -ResourcesToRemove $resourcesToRetry -RequireCompleteRemoval:$RequireCompleteRemoval -SubscriptionCleanupManagementGroupId $SubscriptionCleanupManagementGroupId
         } else {
-            Remove-ResourceListInner -ResourcesToRemove $resourcesToRemove -WhatIf
+            Remove-ResourceListInner -ResourcesToRemove $resourcesToRemove -SubscriptionCleanupManagementGroupId $SubscriptionCleanupManagementGroupId -WhatIf
         }
 
         if (-not $resourcesToRetry) {

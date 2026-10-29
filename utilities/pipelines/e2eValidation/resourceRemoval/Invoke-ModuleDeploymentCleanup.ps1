@@ -24,16 +24,17 @@ function Invoke-ModuleDeploymentCleanup {
         [switch] $RequireCompleteRemoval
     )
 
+    if ($ManagementGroupId -eq 'avm-subscription-vending') {
+        if (-not [string]::IsNullOrWhiteSpace($SubscriptionCleanupManagementGroupId) -and $SubscriptionCleanupManagementGroupId -ne 'avm-subscription-vending') {
+            throw 'BAMI subscription cleanup must target the isolated avm-subscription-vending management group.'
+        }
+        $SubscriptionCleanupManagementGroupId = 'avm-subscription-vending'
+    }
+
     if ($RequireCompleteRemoval) {
         foreach ($name in @('RemainingDeploymentNames', 'PreflightRejectedDeploymentNames', 'PendingDeletionDeploymentIds', 'DeploymentAttempts')) {
             if (-not $PSBoundParameters.ContainsKey($name) -or $null -eq $PSBoundParameters[$name]) {
                 throw 'Complete final cleanup requires authoritative deployment tracking.'
-            }
-            if ($ManagementGroupId -eq 'avm-subscription-vending') {
-                if ($SubscriptionCleanupManagementGroupId -and $SubscriptionCleanupManagementGroupId -ne 'avm-subscription-vending') {
-                    throw 'BAMI subscription cleanup must target the isolated avm-subscription-vending management group.'
-                }
-                $SubscriptionCleanupManagementGroupId = 'avm-subscription-vending'
             }
         }
         if ($DeploymentAttempts -lt 0 -or ($DeploymentNames.Count -gt 0 -and $DeploymentAttempts -eq 0)) {

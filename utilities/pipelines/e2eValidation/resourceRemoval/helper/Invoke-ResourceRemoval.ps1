@@ -34,6 +34,11 @@ function Invoke-ResourceRemoval {
     ) {
         throw "Invalid role assignment resource ID [$ResourceId]."
     }
+    if ($Type -eq 'Microsoft.Subscription/aliases' -and $ResourceId -like '*dep-sub-blzv-tests*' -and
+        -not [string]::IsNullOrWhiteSpace($SubscriptionCleanupManagementGroupId) -and
+        $SubscriptionCleanupManagementGroupId -eq 'bicep-lz-vending-automation-decom') {
+        throw 'BAMI subscription cleanup must not use the legacy decomposition management group.'
+    }
     # Load functions
     . (Join-Path $PSScriptRoot 'Invoke-ResourceLockRemoval.ps1')
 
@@ -506,10 +511,10 @@ function Invoke-ResourceRemoval {
             break
         }
         { $PSItem -eq 'Microsoft.Subscription/aliases' -and $ResourceId -like '*dep-sub-blzv-tests*' } {
-            $cleanupManagementGroupId = $SubscriptionCleanupManagementGroupId ?? 'bicep-lz-vending-automation-decom'
-            if ($cleanupManagementGroupId -eq 'bicep-lz-vending-automation-decom' -and $SubscriptionCleanupManagementGroupId) {
-                throw 'BAMI subscription cleanup must not use the legacy decomposition management group.'
+            if ($WhatIfPreference) {
+                break
             }
+            $cleanupManagementGroupId = [string]::IsNullOrWhiteSpace($SubscriptionCleanupManagementGroupId) ? 'bicep-lz-vending-automation-decom' : $SubscriptionCleanupManagementGroupId
             $subscriptionName = $ResourceId.Split('/')[4]
             $subscription = Get-AzSubscription | Where-Object { $_.Name -eq $subscriptionName }
             $subscriptionId = $subscription.Id
