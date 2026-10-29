@@ -24,7 +24,9 @@ param namePrefix string = '#_namePrefix_#'
 // Setting max length to 12 to stay within bounds of baseName length constraints.
 // Setting min length to 12 to prevent min-char warnings on the test deployment.
 // These warnings cannot be disabled due to AVM processes not able to parse the # characer.
-var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12), 12)
+var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12, '0'), 12)
+var uniqueSuffix = substring(uniqueString(subscription().id, resourceGroupName, serviceShort), 0, 5)
+var uniqueWorkloadName = '${take(workloadName, 11)}${uniqueSuffix}'
 
 // ============ //
 // Dependencies //
@@ -60,12 +62,12 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       baseName: workloadName
-      baseUniqueName: substring(uniqueString(subscription().id, resourceGroup.name, serviceShort), 0, 5)
+      baseUniqueName: uniqueSuffix
       location: enforcedLocation
       includeAssociatedResources: true
       privateEndpointSubnetResourceId: dependencies.outputs.subnetPrivateEndpointsResourceId
       aiFoundryConfiguration: {
-        accountName: 'aifcustom${workloadName}'
+        accountName: 'aifcustom${uniqueWorkloadName}'
         location: enforcedLocation
         sku: 'S0'
         createCapabilityHosts: true
@@ -91,7 +93,7 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       keyVaultConfiguration: {
-        name: 'kvcustom${workloadName}'
+        name: 'kvcustom${uniqueWorkloadName}'
         privateDnsZoneResourceId: dependencies.outputs.keyVaultDnsZoneResourceId
         roleAssignments: [
           {
@@ -102,7 +104,7 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       storageAccountConfiguration: {
-        name: 'stcustom${workloadName}'
+        name: 'stcustom${uniqueWorkloadName}'
         blobPrivateDnsZoneResourceId: dependencies.outputs.blobDnsZoneResourceId
         roleAssignments: [
           {
@@ -113,7 +115,7 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       cosmosDbConfiguration: {
-        name: 'cosmoscustom${workloadName}'
+        name: 'cosmoscustom${uniqueWorkloadName}'
         privateDnsZoneResourceId: dependencies.outputs.documentsDnsZoneResourceId
         enableZoneRedundancy: false
         enableServerless: true
@@ -126,7 +128,7 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       aiSearchConfiguration: {
-        name: 'srchcustom${workloadName}'
+        name: 'srchcustom${uniqueWorkloadName}'
         sku: 'basic'
         replicaCount: 1
         partitionCount: 1

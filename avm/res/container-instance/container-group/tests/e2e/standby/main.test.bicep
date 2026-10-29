@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'Deploying with standby container group pool'
 metadata description = 'This instance deploys the module with the parameters required to have the container instance used a standby container pool.'
 
@@ -20,9 +22,8 @@ param serviceShort string = 'cicgsb'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. The object id of the \'Standby Pool Resource Provider\' Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-StandbyPoolResourceProviderEnterpriseApplicationObjectId\'.')
-@secure()
-param standbyPoolResourceProviderEnterpriseApplicationObjectId string = ''
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
 
 // ============ //
 // Dependencies //
@@ -30,6 +31,10 @@ param standbyPoolResourceProviderEnterpriseApplicationObjectId string = ''
 
 // General resources
 // =================
+resource standbyPoolResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
+  appId: 'd4398a72-b879-49e5-9f3a-ff22c32efb42'
+}
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
@@ -41,7 +46,9 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     containerGroupProfileName: 'dep-${namePrefix}-cgp-${serviceShort}'
     standbyContainerGroupPoolName: 'dep-${namePrefix}-scgp-${serviceShort}'
-    standbyPoolResourceProviderEnterpriseApplicationObjectId: standbyPoolResourceProviderEnterpriseApplicationObjectId
+    standbyPoolResourceProviderEnterpriseApplicationObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : standbyPoolResourceProvider!.id
   }
 }
 

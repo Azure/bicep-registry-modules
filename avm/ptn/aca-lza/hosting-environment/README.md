@@ -47,19 +47,18 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Insights/dataCollectionRuleAssociations` | 2023-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionruleassociations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRuleAssociations)</li></ul> |
 | `Microsoft.Insights/dataCollectionRules` | 2023-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRules)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults)</li></ul> |
-| `Microsoft.KeyVault/vaults/accessPolicies` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies)</li></ul> |
-| `Microsoft.KeyVault/vaults/keys` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets)</li></ul> |
+| `Microsoft.KeyVault/vaults` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults)</li></ul> |
+| `Microsoft.KeyVault/vaults/accessPolicies` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/accessPolicies)</li></ul> |
+| `Microsoft.KeyVault/vaults/keys` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/keys)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/secrets)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2023-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2024-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-04-01-preview/vaults/secrets)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
 | `Microsoft.Maintenance/maintenanceConfigurations` | 2023-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-10-01-preview/maintenanceConfigurations)</li></ul> |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2023-07-31-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-07-31-preview/userAssignedIdentities)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2023-01-31 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities)</li></ul> |
-| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2023-01-31 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2023-07-31-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-07-31-preview/userAssignedIdentities)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2023-01-31 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
 | `Microsoft.Network/applicationGateways` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/applicationGateways)</li></ul> |
 | `Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgatewaywebapplicationfirewallpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/ApplicationGatewayWebApplicationFirewallPolicies)</li></ul> |
 | `Microsoft.Network/networkInterfaces` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkinterfaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces)</li></ul> |
@@ -75,7 +74,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2023-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses)</li></ul> |
@@ -140,10 +141,10 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     ]
     vmAdminPassword: '<vmAdminPassword>'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmSize: 'Standard_B1s'
+    vmSize: 'Standard_D2as_v5'
     // Non-required parameters
     acrGeoReplicationLocations: [
-      'westeurope'
+      'northeurope'
     ]
     location: '<location>'
     tags: {
@@ -202,12 +203,12 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "10.1.2.32/27"
     },
     "vmSize": {
-      "value": "Standard_B1s"
+      "value": "Standard_D2as_v5"
     },
     // Non-required parameters
     "acrGeoReplicationLocations": {
       "value": [
-        "westeurope"
+        "northeurope"
       ]
     },
     "location": {
@@ -254,10 +255,10 @@ param spokeVNetAddressPrefixes = [
 ]
 param vmAdminPassword = '<vmAdminPassword>'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmSize = 'Standard_B1s'
+param vmSize = 'Standard_D2as_v5'
 // Non-required parameters
 param acrGeoReplicationLocations = [
-  'westeurope'
+  'northeurope'
 ]
 param location = '<location>'
 param tags = {
@@ -298,7 +299,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     ]
     vmAdminPassword: '<vmAdminPassword>'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmSize: 'Standard_B1s'
+    vmSize: 'Standard_D2as_v5'
     // Non-required parameters
     deployZoneRedundantResources: true
     enableDdosProtection: true
@@ -364,7 +365,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "10.1.2.32/27"
     },
     "vmSize": {
-      "value": "Standard_B1s"
+      "value": "Standard_D2as_v5"
     },
     // Non-required parameters
     "deployZoneRedundantResources": {
@@ -432,7 +433,7 @@ param spokeVNetAddressPrefixes = [
 ]
 param vmAdminPassword = '<vmAdminPassword>'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmSize = 'Standard_B1s'
+param vmSize = 'Standard_D2as_v5'
 // Non-required parameters
 param deployZoneRedundantResources = true
 param enableDdosProtection = true
@@ -480,11 +481,12 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     ]
     vmAdminPassword: '<vmAdminPassword>'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmSize: 'Standard_B1s'
+    vmSize: 'Standard_D2as_v5'
     // Non-required parameters
     acrGeoReplicationLocations: [
-      'westeurope'
+      'northeurope'
     ]
+    deploySampleApplication: true
     deployZoneRedundantResources: true
     enableDdosProtection: true
     environment: 'dev'
@@ -547,13 +549,16 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "10.1.2.32/27"
     },
     "vmSize": {
-      "value": "Standard_B1s"
+      "value": "Standard_D2as_v5"
     },
     // Non-required parameters
     "acrGeoReplicationLocations": {
       "value": [
-        "westeurope"
+        "northeurope"
       ]
+    },
+    "deploySampleApplication": {
+      "value": true
     },
     "deployZoneRedundantResources": {
       "value": true
@@ -614,11 +619,12 @@ param spokeVNetAddressPrefixes = [
 ]
 param vmAdminPassword = '<vmAdminPassword>'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmSize = 'Standard_B1s'
+param vmSize = 'Standard_D2as_v5'
 // Non-required parameters
 param acrGeoReplicationLocations = [
-  'westeurope'
+  'northeurope'
 ]
+param deploySampleApplication = true
 param deployZoneRedundantResources = true
 param enableDdosProtection = true
 param environment = 'dev'
@@ -664,7 +670,7 @@ param workloadName = 'cawaf'
 | [`base64Certificate`](#parameter-base64certificate) | securestring | The base64 encoded certificate to use for Application Gateway certificate. When not provided a self signed one will be generated, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. |
 | [`bastionResourceId`](#parameter-bastionresourceid) | string | The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty. |
 | [`deployAgentPool`](#parameter-deployagentpool) | bool | Deploy the agent pool for the container registry. Default value is true. |
-| [`deploySampleApplication`](#parameter-deploysampleapplication) | bool | Deploy sample application to the container apps environment. Default is false. |
+| [`deploySampleApplication`](#parameter-deploysampleapplication) | bool | Deploy the sample application after importing, signing with a non-exportable Key Vault key, and strictly verifying its immutable private-registry image with Notation. Uses a self-signed sample publisher certificate; production publishers must configure their own trusted signing pipeline. Legacy Docker Content Trust cannot be enabled on new registries: https://learn.microsoft.com/azure/container-registry/container-registry-content-trust-deprecation. Default is false. |
 | [`deployZoneRedundantResources`](#parameter-deployzoneredundantresources) | bool | Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true. |
 | [`enableDdosProtection`](#parameter-enableddosprotection) | bool | DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus. Default is "false". |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -809,7 +815,7 @@ Deploy the agent pool for the container registry. Default value is true.
 
 ### Parameter: `deploySampleApplication`
 
-Deploy sample application to the container apps environment. Default is false.
+Deploy the sample application after importing, signing with a non-exportable Key Vault key, and strictly verifying its immutable private-registry image with Notation. Uses a self-signed sample publisher certificate; production publishers must configure their own trusted signing pipeline. Legacy Docker Content Trust cannot be enabled on new registries: https://learn.microsoft.com/azure/container-registry/container-registry-content-trust-deprecation. Default is false.
 
 - Required: No
 - Type: bool
@@ -987,6 +993,7 @@ The name of the workload that is being deployed. Up to 10 characters long.
 | `keyVaultUri` | string | The keyvault URI endpoint. |
 | `logAnalyticsWorkspaceResourceId` | string | The resource ID of the Log Analytics workspace created in the spoke vnet. |
 | `resourceGroupName` | string | The name of the created resource group. |
+| `sampleImageVerification` | object | The sample image digest, public publisher certificate and scoped signing identity. Empty when the sample is disabled. Consuming deployments must strictly verify the exact digest before submission; ACA does not enforce an admission policy for unrelated deployment paths. |
 | `spokeApplicationGatewaySubnetName` | string | The name of the Spoke Application Gateway Subnet.  If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |
 | `spokeApplicationGatewaySubnetResourceId` | string | The resource ID of the Spoke Application Gateway Subnet. If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |
 | `spokeInfraSubnetName` | string | The name of the Spoke Infrastructure Subnet. |
@@ -1007,7 +1014,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/compute/virtual-machine:0.11.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.9.3` | Remote reference |
 | `br/public:avm/res/insights/component:0.4.2` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.11.1` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.14.2` | Remote reference |
+| `br/public:avm/res/key-vault/vault/secret:0.1.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.5.0` | Remote reference |
 | `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.2.0` | Remote reference |
@@ -1017,6 +1025,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/public-ip-address:0.7.1` | Remote reference |
 | `br/public:avm/res/network/route-table:0.4.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.5.2` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.2` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.4.0` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.15.0` | Remote reference |
 

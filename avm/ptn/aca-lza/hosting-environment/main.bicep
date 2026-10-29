@@ -116,7 +116,7 @@ param deployZoneRedundantResources bool = true
 ])
 param exposeContainerAppsWith string = 'applicationGateway'
 
-@description('Optional. Deploy sample application to the container apps environment. Default is false.')
+@description('Optional. Deploy the sample application after importing, signing with a non-exportable Key Vault key, and strictly verifying its immutable private-registry image with Notation. Uses a self-signed sample publisher certificate; production publishers must configure their own trusted signing pipeline. Legacy Docker Content Trust cannot be enabled on new registries: https://learn.microsoft.com/azure/container-registry/container-registry-content-trust-deprecation. Default is false.')
 param deploySampleApplication bool = false
 
 @description('Optional. DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus. Default is "false".')
@@ -235,6 +235,11 @@ module sampleApplication 'modules/sample-application/deploy.sample-application.b
     containerAppsEnvironmentResourceId: containerAppsEnvironment.outputs.containerAppsEnvironmentId
     workloadProfileName: containerAppsEnvironment.outputs.workloadProfileNames[0]
     containerRegistryUserAssignedIdentityId: supportingServices.outputs.containerRegistryUserAssignedIdentityId
+    containerRegistryName: supportingServices.outputs.containerRegistryName
+    containerRegistryLoginServer: supportingServices.outputs.containerRegistryLoginServer
+    keyVaultName: supportingServices.outputs.keyVaultName
+    storageAccountName: supportingServices.outputs.storageAccountName
+    deploymentSubnetResourceId: spoke.outputs.deploymentSubnetResourceId
   }
 }
 
@@ -339,6 +344,9 @@ output keyVaultName string = supportingServices.outputs.keyVaultName
 
 @description('The keyvault URI endpoint.')
 output keyVaultUri string = '${supportingServices.outputs.keyVaultName}.${az.environment().suffixes.keyvaultDns}'
+
+@description('The sample image digest, public publisher certificate and scoped signing identity. Empty when the sample is disabled. Consuming deployments must strictly verify the exact digest before submission; ACA does not enforce an admission policy for unrelated deployment paths.')
+output sampleImageVerification object = deploySampleApplication ? sampleApplication.outputs.imageVerification : {}
 
 // Application Gateway
 @description('The resource ID of the Azure Application Gateway.')

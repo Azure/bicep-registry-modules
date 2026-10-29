@@ -11,8 +11,8 @@ metadata description = 'This instance deploys the module with the minimum set of
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-kusto.clusters-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+@description('The supported location for the cluster SKU.')
+var resourceLocation = 'centralus'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'kcmin'

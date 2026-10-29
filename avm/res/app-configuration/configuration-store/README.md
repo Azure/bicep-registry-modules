@@ -295,7 +295,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
             name: '56e2c190-b31e-4518-84de-170b8a5c1b24'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -329,10 +329,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     replicaLocations: [
       {
         name: 'mycentralusreplica'
-        replicaLocation: 'centralus'
+        replicaLocation: '<replicaLocation>'
       }
       {
-        replicaLocation: 'westus'
+        replicaLocation: '<replicaLocation>'
       }
     ]
     roleAssignments: [
@@ -340,7 +340,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         name: '695044c2-3f1f-4843-970a-bed584b95a9a'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -416,7 +416,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
               "name": "56e2c190-b31e-4518-84de-170b8a5c1b24",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -458,10 +458,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       "value": [
         {
           "name": "mycentralusreplica",
-          "replicaLocation": "centralus"
+          "replicaLocation": "<replicaLocation>"
         },
         {
-          "replicaLocation": "westus"
+          "replicaLocation": "<replicaLocation>"
         }
       ]
     },
@@ -471,7 +471,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           "name": "695044c2-3f1f-4843-970a-bed584b95a9a",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -539,7 +539,7 @@ param keyValues = [
         name: '56e2c190-b31e-4518-84de-170b8a5c1b24'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -573,10 +573,10 @@ param managedIdentities = {
 param replicaLocations = [
   {
     name: 'mycentralusreplica'
-    replicaLocation: 'centralus'
+    replicaLocation: '<replicaLocation>'
   }
   {
-    replicaLocation: 'westus'
+    replicaLocation: '<replicaLocation>'
   }
 ]
 param roleAssignments = [
@@ -584,7 +584,7 @@ param roleAssignments = [
     name: '695044c2-3f1f-4843-970a-bed584b95a9a'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -804,10 +804,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     ]
     replicaLocations: [
       {
-        replicaLocation: 'centralus'
+        replicaLocation: '<replicaLocation>'
       }
       {
-        replicaLocation: 'westus'
+        replicaLocation: '<replicaLocation>'
       }
     ]
     softDeleteRetentionInDays: 1
@@ -868,10 +868,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     "replicaLocations": {
       "value": [
         {
-          "replicaLocation": "centralus"
+          "replicaLocation": "<replicaLocation>"
         },
         {
-          "replicaLocation": "westus"
+          "replicaLocation": "<replicaLocation>"
         }
       ]
     },
@@ -922,10 +922,10 @@ param keyValues = [
 ]
 param replicaLocations = [
   {
-    replicaLocation: 'centralus'
+    replicaLocation: '<replicaLocation>'
   }
   {
-    replicaLocation: 'westus'
+    replicaLocation: '<replicaLocation>'
   }
 ]
 param softDeleteRetentionInDays = 1

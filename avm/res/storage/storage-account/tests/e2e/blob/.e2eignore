@@ -1,0 +1,1 @@
+Azure rejects new legacy BlobStorage accounts with AccountKindNotSupported. The max and waf-aligned scenarios cover StorageV2 accounts and blob containers.

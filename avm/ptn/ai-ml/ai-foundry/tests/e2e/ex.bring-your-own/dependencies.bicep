@@ -35,7 +35,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: take('kvbyor${workloadName}', 24)
   location: location
   tags: tags
@@ -60,7 +60,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
 }
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
-  name: take('cosmosbyor${workloadName}', 44)
+  name: '${take('cosmosbyor${workloadName}', 30)}-${uniqueString(resourceGroup().id, workloadName)}'
   location: location
   tags: tags
   kind: 'GlobalDocumentDB'

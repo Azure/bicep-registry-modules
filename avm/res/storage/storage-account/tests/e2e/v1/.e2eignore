@@ -1,0 +1,1 @@
+Azure no longer permits creating general-purpose-v1 storage accounts. The max and waf-aligned scenarios cover StorageV2 accounts and blob containers.

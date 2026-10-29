@@ -365,7 +365,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
         name: '2478b63b-0cae-457f-9bd3-9feb00e1925b'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -538,7 +538,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
           "name": "2478b63b-0cae-457f-9bd3-9feb00e1925b",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -681,7 +681,7 @@ param roleAssignments = [
     name: '2478b63b-0cae-457f-9bd3-9feb00e1925b'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

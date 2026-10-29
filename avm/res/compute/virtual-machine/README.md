@@ -540,7 +540,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
                   principalId: '<principalId>'
                   principalType: 'ServicePrincipal'
-                  roleDefinitionIdOrName: 'Owner'
+                  roleDefinitionIdOrName: 'Reader'
                 }
                 {
                   principalId: '<principalId>'
@@ -563,7 +563,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -589,7 +589,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v6'
+    vmSize: 'Standard_D4ads_v5'
     // Non-required parameters
     adminUsername: 'localAdministrator'
     backupPolicyName: '<backupPolicyName>'
@@ -619,6 +619,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     disablePasswordAuthentication: true
+    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -738,7 +739,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -842,7 +843,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "name": "696e6067-3ddc-4b71-bf97-9caebeba441a",
                     "principalId": "<principalId>",
                     "principalType": "ServicePrincipal",
-                    "roleDefinitionIdOrName": "Owner"
+                    "roleDefinitionIdOrName": "Reader"
                   },
                   {
                     "principalId": "<principalId>",
@@ -865,7 +866,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               "name": "ff72f58d-a3cf-42fd-9c27-c61906bdddfe",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -897,7 +898,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2s_v6"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "adminUsername": {
@@ -941,6 +942,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "disablePasswordAuthentication": {
       "value": true
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -1094,7 +1098,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "name": "eb01de52-d2be-4272-a7b9-13de6c399e27",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1194,7 +1198,7 @@ param nicConfigurations = [
               name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               principalId: '<principalId>'
@@ -1217,7 +1221,7 @@ param nicConfigurations = [
         name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -1243,7 +1247,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Linux'
-param vmSize = 'Standard_D2s_v6'
+param vmSize = 'Standard_D4ads_v5'
 // Non-required parameters
 param adminUsername = 'localAdministrator'
 param backupPolicyName = '<backupPolicyName>'
@@ -1273,6 +1277,7 @@ param dataDisks = [
   }
 ]
 param disablePasswordAuthentication = true
+param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
@@ -1392,7 +1397,7 @@ param roleAssignments = [
     name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -1515,7 +1520,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v6'
+    vmSize: 'Standard_D4ads_v5'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'VMAdmin'
@@ -1544,6 +1549,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
+    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -1671,7 +1677,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -1801,7 +1807,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v6"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "adminPassword": {
@@ -1846,6 +1852,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         }
       ]
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -2005,7 +2014,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "principalId": "<principalId>",
@@ -2125,7 +2134,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v6'
+param vmSize = 'Standard_D4ads_v5'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'VMAdmin'
@@ -2154,6 +2163,7 @@ param dataDisks = [
     }
   }
 ]
+param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
@@ -2281,7 +2291,7 @@ param roleAssignments = [
   {
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     principalId: '<principalId>'
@@ -2502,7 +2512,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: '<osType>'
-    vmSize: 'Standard_E2s_v3'
+    vmSize: 'Standard_D4ads_v5'
     // Non-required parameters
     dataDisks: [
       {
@@ -2576,7 +2586,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "<osType>"
     },
     "vmSize": {
-      "value": "Standard_E2s_v3"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "dataDisks": {
@@ -2646,7 +2656,7 @@ param osDisk = {
   }
 }
 param osType = '<osType>'
-param vmSize = 'Standard_E2s_v3'
+param vmSize = 'Standard_D4ads_v5'
 // Non-required parameters
 param dataDisks = [
   {
@@ -2981,7 +2991,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D4s_v3'
+    vmSize: 'Standard_D4ads_v5'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
@@ -3067,7 +3077,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D4s_v3"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "adminPassword": {
@@ -3155,7 +3165,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D4s_v3'
+param vmSize = 'Standard_D4ads_v5'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
@@ -3271,7 +3281,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
                   principalId: '<principalId>'
                   principalType: 'ServicePrincipal'
-                  roleDefinitionIdOrName: 'Owner'
+                  roleDefinitionIdOrName: 'Reader'
                 }
                 {
                   principalId: '<principalId>'
@@ -3294,7 +3304,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             name: '95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -3320,7 +3330,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D4ads_v5'
     // Non-required parameters
     additionalUnattendContent: [
       {
@@ -3517,7 +3527,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -3617,7 +3627,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "name": "e962e7c1-261a-4afd-b5ad-17a640a0b7bc",
                     "principalId": "<principalId>",
                     "principalType": "ServicePrincipal",
-                    "roleDefinitionIdOrName": "Owner"
+                    "roleDefinitionIdOrName": "Reader"
                   },
                   {
                     "principalId": "<principalId>",
@@ -3640,7 +3650,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               "name": "95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -3672,7 +3682,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "additionalUnattendContent": {
@@ -3925,7 +3935,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "name": "c70e8c48-6945-4607-9695-1098ba5a86ed",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -4021,7 +4031,7 @@ param nicConfigurations = [
               name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               principalId: '<principalId>'
@@ -4044,7 +4054,7 @@ param nicConfigurations = [
         name: '95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -4070,7 +4080,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D4ads_v5'
 // Non-required parameters
 param additionalUnattendContent = [
   {
@@ -4267,7 +4277,7 @@ param roleAssignments = [
     name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -4297,6 +4307,10 @@ This instance deploys the module for a VM with dedicated nVidia graphic card.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.nvidia]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+This test is skipped in CI because the required GPU SKU is not available in the CI subscription: deployment job 112203203905 failed because quota for `standardNVADSA10v5Family` in `SwedenCentral` is 0 (limit 0 / used 0), while the test requires 6 cores. This is a CI-subscription capacity prerequisite, not a fixture or module defect, so no fixture-level change can resolve it; the GPU/hibernation-specific test inputs are preserved unchanged. Re-enable this test once the CI subscription is guaranteed adequate GPU quota for `standardNVADSA10v5Family` in the target region.
+```
 
 <details>
 
@@ -4684,7 +4698,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D4ads_v5'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
@@ -4753,7 +4767,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D4ads_v5"
     },
     // Non-required parameters
     "adminPassword": {
@@ -4820,7 +4834,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D4ads_v5'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'

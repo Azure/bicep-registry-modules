@@ -1,0 +1,3 @@
+Temporarily excluded after the managed Cosmos DB dependency reported ServiceUnavailable/high demand in Norway East. Relocation correctly stopped because the purge-protected CMK vault name remained reserved. Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/38540661047/job/115775175481.
+
+Defaults, WAF-aligned and the other scenarios remain enabled. Re-enable after this encryption scenario provisions and completes normal cleanup successfully in a separately scoped validation. ML customer-managed-key integration coverage is deferred; purge protection and cleanup safeguards must not be weakened.

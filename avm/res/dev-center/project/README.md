@@ -111,6 +111,14 @@ This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+This fixture requires Microsoft Dev Box definitions, pools and network connections. The CI tenant's actual validation returned TenantNotOnboardedToLegacy after Microsoft.DevCenter registration: https://github.com/Azure/bicep-registry-modules/actions/runs/39298613891/job/118219638777.
+
+No documented self-service tenant setting overrides this new-resource eligibility rejection. Dev Box is closing down, not yet retired; current product/subscription eligibility determines new-resource availability: https://learn.microsoft.com/en-us/azure/dev-box/dev-box-retirement-guide.
+
+Re-enable when the required Dev Box resources are available to the test tenant. Defaults and non-Dev-Box coverage remain enabled; this is not a capacity or general deployment-failure waiver.
+```
 
 <details>
 
@@ -192,7 +200,7 @@ module project 'br/public:avm/res/dev-center/project:<version>' = {
           {
             objectId: '<objectId>'
             roleDefinitions: [
-              '<roleDefinitionId // Custom role>'
+              '<roleDefinitionId>'
             ]
           }
         ]
@@ -373,7 +381,7 @@ module project 'br/public:avm/res/dev-center/project:<version>' = {
             {
               "objectId": "<objectId>",
               "roleDefinitions": [
-                "<roleDefinitionId // Custom role>"
+                "<roleDefinitionId>"
               ]
             }
           ]
@@ -552,7 +560,7 @@ param environmentTypes = [
       {
         objectId: '<objectId>'
         roleDefinitions: [
-          '<roleDefinitionId // Custom role>'
+          '<roleDefinitionId>'
         ]
       }
     ]
@@ -642,6 +650,14 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+This fixture requires Microsoft Dev Box definitions and a Dev Box pool. The CI tenant's Dev Box validation returned TenantNotOnboardedToLegacy: https://github.com/Azure/bicep-registry-modules/actions/runs/39298613891/job/118219638777. This fixture also refused new-customer creation in its fixed westeurope region: https://github.com/Azure/bicep-registry-modules/actions/runs/39298613891/job/118219638733.
+
+No documented self-service tenant setting overrides the unavailable Dev Box prerequisite. Dev Box is closing down, not yet retired; current product/subscription eligibility determines new-resource availability: https://learn.microsoft.com/en-us/azure/dev-box/dev-box-retirement-guide.
+
+Re-enable when the required Dev Box resources are available to the test tenant. Defaults and non-Dev-Box coverage remain enabled; this is not a general regional or capacity waiver.
+```
 
 <details>
 

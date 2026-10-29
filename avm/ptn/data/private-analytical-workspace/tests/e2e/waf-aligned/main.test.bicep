@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata description = 'This instance supplies a replicated Log Analytics workspace and deploys the module in alignment with the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -32,6 +32,28 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: enforcedLocation
 }
 
+var testTags = {
+  'hidden-title': 'This is visible in the resource name'
+  Owner: 'Contoso'
+  CostCenter: '123-456-789'
+}
+
+module replicatedLogAnalytics '../../../../../../res/operational-insights/workspace/main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-replicatedLogAnalytics'
+  params: {
+    name: '${namePrefix}${serviceShort}002-log'
+    location: enforcedLocation
+    dataRetention: 35
+    dailyQuotaGb: '1'
+    replication: {
+      enabled: true
+      location: 'germanywestcentral'
+    }
+    tags: testTags
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -44,11 +66,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}002'
       location: enforcedLocation
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Owner: 'Contoso'
-        CostCenter: '123-456-789'
-      }
+      tags: testTags
+      logAnalyticsWorkspaceResourceId: replicatedLogAnalytics.outputs.resourceId
       enableTelemetry: true
       enableDatabricks: true
       advancedOptions: {
