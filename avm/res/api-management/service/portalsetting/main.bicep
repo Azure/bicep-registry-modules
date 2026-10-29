@@ -13,7 +13,7 @@ param apiManagementServiceName string
 param name string
 
 @description('Required. Portal setting properties.')
-param properties resourceInput<'Microsoft.ApiManagement/service/portalsettings@2024-05-01'>.properties
+param properties portalSettingPropertiesType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -57,3 +57,41 @@ output name string = portalSetting.name
 
 @description('The resource group the API Management service portal setting was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@export()
+@description('The properties for sign-in, sign-up, or delegation portal settings.')
+type portalSettingPropertiesType = {
+  @description('Optional. Redirect anonymous users to the sign-in page, or allow users to sign up on the developer portal.')
+  enabled: bool?
+
+  @description('Optional. Terms of service contract properties for sign-up settings.')
+  termsOfService: {
+    @description('Optional. Ask the user for consent to the terms of service.')
+    consentRequired: bool?
+
+    @description('Optional. Display terms of service during sign-up.')
+    enabled: bool?
+
+    @description('Optional. Terms of service text.')
+    text: string?
+  }?
+
+  @description('Optional. Subscription delegation settings.')
+  subscriptions: {
+    @description('Optional. Enable or disable delegation for subscriptions.')
+    enabled: bool?
+  }?
+
+  @description('Optional. The delegation URL.')
+  url: string?
+
+  @description('Optional. User registration delegation settings.')
+  userRegistration: {
+    @description('Optional. Enable or disable delegation for user registration.')
+    enabled: bool?
+  }?
+
+  @secure()
+  @description('Optional. A base64-encoded validation key to validate that a request comes from Azure API Management.')
+  validationKey: string?
+}

@@ -527,6 +527,18 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     portalsettings: [
       {
+        name: 'delegation'
+        properties: {
+          subscriptions: {
+            enabled: false
+          }
+          userRegistration: {
+            enabled: false
+          }
+          validationKey: '<validationKey>'
+        }
+      }
+      {
         name: 'signin'
         properties: {
           enabled: false
@@ -1128,6 +1140,18 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "portalsettings": {
       "value": [
         {
+          "name": "delegation",
+          "properties": {
+            "subscriptions": {
+              "enabled": false
+            },
+            "userRegistration": {
+              "enabled": false
+            },
+            "validationKey": "<validationKey>"
+          }
+        },
+        {
           "name": "signin",
           "properties": {
             "enabled": false
@@ -1708,6 +1732,18 @@ param policies = [
   }
 ]
 param portalsettings = [
+  {
+    name: 'delegation'
+    properties: {
+      subscriptions: {
+        enabled: false
+      }
+      userRegistration: {
+        enabled: false
+      }
+      validationKey: '<validationKey>'
+    }
+  }
   {
     name: 'signin'
     properties: {
@@ -3703,7 +3739,7 @@ param virtualNetworkType = 'None'
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`minApiVersion`](#parameter-minapiversion) | string | Limit control plane API calls to API Management service with version equal to or newer than this value. |
 | [`namedValues`](#parameter-namedvalues) | array | Named values. |
-| [`newGuidValue`](#parameter-newguidvalue) | string | Necessary to create a new GUID. |
+| [`newGuidValue`](#parameter-newguidvalue) | securestring | Necessary to create a new GUID. |
 | [`notificationSenderEmail`](#parameter-notificationsenderemail) | string | The notification sender email address for the service. |
 | [`policies`](#parameter-policies) | array | Policies. |
 | [`portalsettings`](#parameter-portalsettings) | array | Portal settings. |
@@ -5501,7 +5537,7 @@ Value of the NamedValue. Can contain policy expressions. It may not be empty or 
 Necessary to create a new GUID.
 
 - Required: No
-- Type: string
+- Type: securestring
 - Default: `[newGuid()]`
 
 ### Parameter: `notificationSenderEmail`
@@ -7950,7 +7986,7 @@ Loggers to deploy in this workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`credentials`](#parameter-workspacesloggerscredentials) | object | The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor. |
+| [`credentials`](#parameter-workspacesloggerscredentials) | secureObject | The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor. |
 | [`targetResourceId`](#parameter-workspacesloggerstargetresourceid) | string | Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub. |
 
 **Optional parameters**
@@ -7987,7 +8023,7 @@ Logger type.
 The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor.
 
 - Required: No
-- Type: object
+- Type: secureObject
 
 ### Parameter: `workspaces.loggers.targetResourceId`
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "7884885604104235471"
+      "version": "0.48.1.52935",
+      "templateHash": "13204736389961301225"
     },
     "name": "API Management Service Workspace",
     "description": "This module deploys an API Management Service Workspace."
@@ -577,7 +577,7 @@
           }
         },
         "credentials": {
-          "type": "object",
+          "type": "secureObject",
           "metadata": {
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.ApiManagement/service/workspaces/loggers@2024-05-01#properties/properties/properties/credentials"
@@ -1818,8 +1818,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "5769340833206429584"
+              "version": "0.48.1.52935",
+              "templateHash": "11254958942457082376"
             },
             "name": "API Management Workspace APIs",
             "description": "This module deploys an API in an API Management Workspace."
@@ -2463,8 +2463,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "11820152653395138426"
+                      "version": "0.48.1.52935",
+                      "templateHash": "17718621761059966712"
                     },
                     "name": "API Management Workspace APIs Policies",
                     "description": "This module deploys an API Policy in an API Management Workspace."
@@ -2653,8 +2653,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "4620181838018168449"
+                      "version": "0.48.1.52935",
+                      "templateHash": "13502010982679902802"
                     },
                     "name": "API Management Workspace APIs Diagnostics",
                     "description": "This module deploys an API Diagnostic in an API Management Workspace."
@@ -2947,8 +2947,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "9074431541129226070"
+                      "version": "0.48.1.52935",
+                      "templateHash": "16778870402757513997"
                     },
                     "name": "API Management Workspace API Operations",
                     "description": "This module deploys an API Operation under an API Management Workspace."
@@ -3194,8 +3194,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "5531977160897538441"
+                              "version": "0.48.1.52935",
+                              "templateHash": "7173255890299333042"
                             },
                             "name": "API Management Workspace API Operation Policies",
                             "description": "This module deploys an API Operation Policy in an API Management Workspace."
@@ -3434,8 +3434,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "1405706387344012145"
+              "version": "0.48.1.52935",
+              "templateHash": "16449150576375694421"
             },
             "name": "API Management Workspace API Version Sets",
             "description": "This module deploys an API Version Set in an API Management Workspace."
@@ -3661,8 +3661,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "16046230489222855494"
+              "version": "0.48.1.52935",
+              "templateHash": "954283232861502395"
             },
             "name": "API Management Workspace Backends",
             "description": "This module deploys a Backend in an API Management Workspace."
@@ -3939,8 +3939,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "18184920787235037519"
+              "version": "0.48.1.52935",
+              "templateHash": "14890328481410664965"
             },
             "name": "API Management Workspace Diagnostics",
             "description": "This module deploys a Diagnostic at API Management Workspace scope."
@@ -4198,8 +4198,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "3151713488724578957"
+              "version": "0.48.1.52935",
+              "templateHash": "7104225364950578554"
             },
             "name": "API Management Workspace Loggers",
             "description": "This module deploys a Logger in an API Management Workspace."
@@ -4397,8 +4397,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "2448474728692040953"
+              "version": "0.48.1.52935",
+              "templateHash": "2420323465302809705"
             },
             "name": "API Management Workspace Named Values",
             "description": "This module deploys a Named Value in an API Management Workspace."
@@ -4591,8 +4591,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "1736551482133870767"
+              "version": "0.48.1.52935",
+              "templateHash": "10940128718936958303"
             },
             "name": "API Management Workspace Policies",
             "description": "This module deploys a Policy at API Management Workspace scope."
@@ -4772,8 +4772,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "14082566164845710093"
+              "version": "0.48.1.52935",
+              "templateHash": "10829940301527758050"
             },
             "name": "API Management Workspace Products",
             "description": "This module deploys a Product in an API Management Workspace."
@@ -5062,8 +5062,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "13650155963304210158"
+                      "version": "0.48.1.52935",
+                      "templateHash": "18192454649685951878"
                     },
                     "name": "API Management Workspace Product API Links",
                     "description": "This module deploys an Product API Link in an API Management Workspace."
@@ -5209,8 +5209,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "16283693892686569198"
+                      "version": "0.48.1.52935",
+                      "templateHash": "4919618273934232236"
                     },
                     "name": "API Management Workspace Product Group Links",
                     "description": "This module deploys a Product Group Link in an API Management Workspace."
@@ -5359,8 +5359,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "13194024346563845368"
+                      "version": "0.48.1.52935",
+                      "templateHash": "5830960281426390816"
                     },
                     "name": "API Management Workspace Product Policies",
                     "description": "This module deploys a Policy for a Product in an API Management Workspace."
@@ -5568,8 +5568,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "7381772402194009873"
+              "version": "0.48.1.52935",
+              "templateHash": "4929521964446875365"
             },
             "name": "API Management Workspace Subscriptions",
             "description": "This module deploys a Subscription in an API Management Workspace."
@@ -5782,8 +5782,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "17430965159529275593"
+              "version": "0.48.1.52935",
+              "templateHash": "1183744489465997845"
             }
           },
           "parameters": {
