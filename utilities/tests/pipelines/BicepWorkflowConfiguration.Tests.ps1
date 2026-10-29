@@ -13,6 +13,14 @@ Describe 'Coordinated tools dependency updates' {
         $uses = @(
             foreach ($caller in $callers.GetEnumerator()) {
                 $workflow = Get-Content -LiteralPath (Join-Path $workflowRoot $caller.Key) -Raw | ConvertFrom-Yaml
+                $dispatchInputs = $workflow.on.workflow_dispatch.inputs
+                $dispatchInputs.authoringSource.type | Should -BeExactly 'choice'
+                $dispatchInputs.authoringSource.options | Should -Be @('gallery', 'repo')
+                $dispatchInputs.authoringSource.default | Should -BeExactly 'gallery'
+                $dispatchInputs.authoringSource.required | Should -BeTrue
+                $dispatchInputs.authoringRef.type | Should -BeExactly 'string'
+                $dispatchInputs.authoringRef.required | Should -BeFalse
+
                 @($workflow.jobs.Keys) | Should -HaveCount 1
                 $job = $workflow.jobs.Values | Select-Object -First 1
                 $job.uses | Should -MatchExactly (
@@ -20,7 +28,10 @@ Describe 'Coordinated tools dependency updates' {
                     [regex]::Escape($caller.Value) +
                     '@[0-9a-f]{40}$'
                 )
-                $job.ContainsKey('with') | Should -BeFalse
+                $job.ContainsKey('with') | Should -BeTrue
+                @($job.with.Keys | Sort-Object) | Should -Be @('authoringRef', 'authoringSource')
+                $job.with.authoringSource | Should -BeExactly ('$' + '{{ inputs.authoringSource || ''gallery'' }}')
+                $job.with.authoringRef | Should -BeExactly ('$' + '{{ inputs.authoringRef || ' + "''" + ' }}')
                 $job.ContainsKey('steps') | Should -BeFalse
                 $job.ContainsKey('strategy') | Should -BeFalse
                 $job.uses
