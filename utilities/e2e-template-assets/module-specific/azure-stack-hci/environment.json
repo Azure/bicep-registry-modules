@@ -1,0 +1,21 @@
+{
+  "version": "1",
+  "location": "australiaeast",
+  "controlResourceGroupName": "rg-avm-ci-azure-local-control",
+  "foundationResourceGroupName": "rg-avm-ci-azure-local-foundation",
+  "imageResourceGroupName": "rg-avm-ci-azure-local-image",
+  "stagingResourceGroupName": "rg-avm-ci-azure-local-image-build",
+  "galleryName": "galavmciazurelocal",
+  "imageDefinitionName": "hci-host-image",
+  "imageVersion": "26.1.0",
+  "hciVhdxDownloadUri": "https://jumpstartprodsg.blob.core.windows.net/jslocal/localbox/prod/AzLocal2601.vhdx",
+  "hciVhdxSha256": "3a797826d7e7ae7abc55d1071322ddecc80575c2356fea9e74818ab9f6720a1f",
+  "imageTemplateName": "hci-host-image-builder",
+  "imageBuilderIdentityName": "id-avm-ci-azure-local-image-builder",
+  "clusterName": "avm-ci-azure-local",
+  "customLocationName": "avm-ci-azure-local-location",
+  "logicalNetworkName": "avm-ci-azure-local-network",
+  "deploymentName": "avm-ci-azure-local-foundation-v1",
+  "imageTimeoutMinutes": 570,
+  "foundationTimeoutMinutes": 660
+}

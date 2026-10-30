@@ -195,6 +195,9 @@ function Test-ModuleLocally {
         if ($PesterTest -or $PesterTestRecurse) {
             Write-Verbose "Pester Testing Module: $ModuleName"
 
+            . (Join-Path $utilitiesFolderPath 'pipelines' 'sharedScripts' 'Initialize-AvmPester.ps1')
+            Initialize-AvmPester -RepoRootPath $repoRootPath
+
             try {
                 $testFiles = @(
                     (Join-Path $repoRootPath $PesterTestFilePath), # AVM Compliance Tests

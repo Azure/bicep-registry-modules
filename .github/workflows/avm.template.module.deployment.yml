@@ -20,6 +20,7 @@ env:
   ARM_MGMTGROUP_ID: "${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}"
   TOKEN_NAMEPREFIX: "${{ inputs.tokenNamePrefix || secrets.TOKEN_NAMEPREFIX }}"
   CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
+  VALIDATE_MODULE_BILLING_SCOPES: "${{ secrets.VALIDATE_MODULE_BILLING_SCOPES }}"
 
 permissions: {}
 
@@ -68,7 +69,6 @@ jobs:
           githubVariables: ${{ toJSON(vars) }}
           githubSecrets: ${{ toJSON(secrets) }}
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
           CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
           TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
           VALIDATE_CLIENT_ID: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}

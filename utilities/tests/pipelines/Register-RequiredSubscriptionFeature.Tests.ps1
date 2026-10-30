@@ -85,7 +85,8 @@ Describe 'Register-RequiredSubscriptionFeature' {
     }
 
     It 'Logs an absent root map without contacting Azure or creating a file' {
-        Remove-Item -LiteralPath $manifestPath
+        if ($IsWindows) { (Get-Item -LiteralPath $manifestPath -Force).Attributes = 'Hidden' }
+        Remove-Item -LiteralPath $manifestPath -Force
 
         $messages = @(Register-RequiredSubscriptionFeature @functionInput 4>&1)
 
@@ -235,7 +236,7 @@ Describe 'Register-RequiredSubscriptionFeature' {
     }
 
     It 'Rejects a directory with the manifest name rather than treating it as absent' {
-        Remove-Item -LiteralPath $manifestPath
+        Remove-Item -LiteralPath $manifestPath -Force
         $null = New-Item -Path $manifestPath -ItemType Directory
 
         { Register-RequiredSubscriptionFeature @functionInput } | Should -Throw '*file named exactly*'
@@ -243,7 +244,7 @@ Describe 'Register-RequiredSubscriptionFeature' {
     }
 
     It 'Rejects incorrectly cased manifest filenames' {
-        Remove-Item -LiteralPath $manifestPath
+        Remove-Item -LiteralPath $manifestPath -Force
         Set-Content -LiteralPath (Join-Path $testRoot '.REQUIRED-FEATURES.json') -Value '{}'
 
         { Register-RequiredSubscriptionFeature @functionInput } | Should -Throw '*file named exactly*'

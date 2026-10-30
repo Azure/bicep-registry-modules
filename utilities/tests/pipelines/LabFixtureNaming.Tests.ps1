@@ -10,7 +10,7 @@ Describe 'Lab fixture storage naming' {
         $nameExpression = [regex]::Match($fixture, '(?m)^\s+storageAccountName:\s*(.+)').Groups[1].Value.Trim()
         $nameExpression | Should -Not -BeNullOrEmpty
         $compiledPath = Join-Path $TestDrive 'fixture.json'
-        $diagnostics = bicep build $fixturePath --no-restore --outfile $compiledPath 2>&1
+        $diagnostics = bicep build $fixturePath --outfile $compiledPath 2>&1
         if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
         $template = Get-Content -LiteralPath $compiledPath -Raw | ConvertFrom-Json -AsHashtable
         $dependencies = $template.resources | Where-Object { $_.properties.parameters.storageAccountName }

@@ -1,4 +1,4 @@
-. (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
+﻿. (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
 . (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentOperationAtScope.ps1')
 . (Join-Path $PSScriptRoot '..' '..' 'resourceDeployment' 'New-TemplateDeployment.ps1')
 
@@ -33,6 +33,10 @@ Optional. Require failed roots and terminal nested deployments; restore cross-su
 
 .PARAMETER ResolvedDeploymentIds
 Optional. Accumulates deployment record IDs in child-before-parent order for strict removal.
+
+.PARAMETER PreflightRejectedDeploymentId
+Optional. Exact nested deployment ID rejected by a failed parent's unambiguous Create operation.
+Only an explicit DeploymentNotFound from that record's GET permits omission during strict discovery.
 
 .EXAMPLE
 Get-DeploymentTargetResourceListInner -Name 'keyvault-12356' -Scope 'resourcegroup'
@@ -82,7 +86,13 @@ function Get-DeploymentTargetResourceListInner {
         [switch] $RequireCompleteRemoval,
 
         [Parameter()]
-        [System.Collections.Generic.List[string]] $ResolvedDeploymentIds = [System.Collections.Generic.List[string]]::new()
+        [switch] $FinalCleanup,
+
+        [Parameter()]
+        [System.Collections.Generic.List[string]] $ResolvedDeploymentIds = [System.Collections.Generic.List[string]]::new(),
+
+        [Parameter()]
+        [string] $PreflightRejectedDeploymentId
     )
 
     $resultSet = [System.Collections.ArrayList]@()
@@ -112,16 +122,42 @@ function Get-DeploymentTargetResourceListInner {
     }
     try {
         if ($RequireCompleteRemoval) {
-            $state = Get-TemplateDeployment -DeploymentScope $Scope -DeploymentName $Name `
-                -SubscriptionId $baseInputObject.SubscriptionId -ResourceGroupName $ResourceGroupName `
-                -ManagementGroupId $ManagementGroupId -DefaultProfile $currentContext
-            $allowedStates = $DoThrow ? @('Failed') : @('Succeeded', 'Failed')
-            if ($state.ProvisioningState -notin $allowedStates) {
-                throw "Deployment [$Name] is [$($state.ProvisioningState)]; cleanup cannot authorize regional relocation."
+            if (-not $DoThrow -and $PreflightRejectedDeploymentId) {
+                $resourceId = Get-DeploymentResourceId @baseInputObject
+                if ($resourceId -ine $PreflightRejectedDeploymentId) {
+                    throw "Preflight rejection target [$PreflightRejectedDeploymentId] does not match deployment [$resourceId]."
+                }
+                # Check the record itself; missing operation pages do not prove a deployment was never created.
+                $response = Invoke-AzRestMethod -Method GET -Path "${resourceId}?api-version=2021-04-01" -ErrorAction Stop
+                $content = ConvertFrom-Json -InputObject $response.Content -NoEnumerate -ErrorAction Stop
+                if ($response.StatusCode -eq 404 -and $content -is [System.Management.Automation.PSCustomObject] -and
+                    $content.error -is [System.Management.Automation.PSCustomObject] -and
+                    $content.error.code -is [string] -and $content.error.code -ceq 'DeploymentNotFound' -and
+                    ($null -eq $content.error.target -or
+                    ($content.error.target -is [string] -and $content.error.target -ieq $resourceId))) {
+                    Write-Verbose "Confirmed no record for preflight-rejected nested deployment [$resourceId]." -Verbose
+                    return
+                }
+                if ($response.StatusCode -ne 200 -or $content -isnot [System.Management.Automation.PSCustomObject] -or
+                    $content.id -isnot [string] -or $content.id -ine $resourceId) {
+                    throw "Cannot confirm preflight-rejected deployment [$resourceId]: HTTP [$($response.StatusCode)]."
+                }
+            }
+            $state = Invoke-DeploymentRead -Read {
+                Get-TemplateDeployment -DeploymentScope $Scope -DeploymentName $Name `
+                    -SubscriptionId $baseInputObject.SubscriptionId -ResourceGroupName $ResourceGroupName `
+                    -ManagementGroupId $ManagementGroupId -DefaultProfile $currentContext -ErrorAction Stop
+            }
+            $allowedStates = ($DoThrow -and -not $FinalCleanup) ? @('Failed') : @('Succeeded', 'Failed')
+            if ($state.ProvisioningState -isnot [string] -or $state.ProvisioningState -notin $allowedStates) {
+                $cleanupPurpose = $FinalCleanup ? 'complete final teardown' : 'regional relocation'
+                throw "Deployment [$Name] is [$($state.ProvisioningState)]; cleanup cannot authorize $cleanupPurpose."
             }
         }
-        $op = Get-DeploymentOperationAtScope @baseInputObject -RequireCompleteRemoval:$RequireCompleteRemoval -ResolvedResourceIds $ResolvedResourceIds
-        [array] $deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
+        $op = Get-DeploymentOperationAtScope @baseInputObject -RequireCompleteRemoval:$RequireCompleteRemoval `
+            -IncludeAllOperations:$RequireCompleteRemoval -ResolvedResourceIds $ResolvedResourceIds
+        [array] $deploymentTargets = ($op | Where-Object { $_.provisioningOperation -eq 'Create' }).TargetResource.id |
+            Where-Object { $_ -ne $null } | Select-Object -Unique
     } catch {
         if (-not $RequireCompleteRemoval -and -not $DoThrow -and $_.FullyQualifiedErrorId.Split(',')[0] -eq 'DeploymentNotFound' -and (Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Other') {
             Write-Warning "Deployment [$Name] was not found in scope [$Scope]. Ignoring, as nested deployment."
@@ -151,6 +187,41 @@ function Get-DeploymentTargetResourceListInner {
             ResolvedResourceIds    = $ResolvedResourceIds
             RequireCompleteRemoval = $RequireCompleteRemoval
             ResolvedDeploymentIds  = $ResolvedDeploymentIds
+        }
+        if ($RequireCompleteRemoval -and $state.ProvisioningState -is [string] -and $state.ProvisioningState -eq 'Failed') {
+            $targetOperations = @($op | Where-Object { $_.targetResource.id -eq $deployment })
+            if ($targetOperations.Count -eq 1) {
+                $operation = $targetOperations[0]
+                $target = $operation.targetResource
+                $status = $operation.statusMessage
+                if ($operation.provisioningOperation -ceq 'Create' -and
+                    $operation.provisioningState -is [string] -and $operation.provisioningState -ceq 'Failed' -and
+                    $operation.statusCode -is [string] -and $operation.statusCode -cin @('BadRequest', '400') -and
+                    $target -is [System.Management.Automation.PSCustomObject] -and $target.id -is [string] -and
+                    $target.resourceType -is [string] -and $target.resourceType -ieq 'Microsoft.Resources/deployments' -and
+                    $target.resourceName -is [string] -and $target.resourceName -ceq $name -and
+                    $status -is [System.Management.Automation.PSCustomObject] -and
+                    $status.status -is [string] -and $status.status -ceq 'Failed' -and
+                    $status.error -is [System.Management.Automation.PSCustomObject] -and $status.error.code -is [string] -and
+                    ($null -eq $status.error.target -or ($status.error.target -is [string] -and $status.error.target -ieq $deployment)) -and
+                    $status.error.details -is [array] -and $status.error.details.Count -gt 0 -and
+                    @($status.error.details | Where-Object {
+                            $_ -isnot [System.Management.Automation.PSCustomObject] -or
+                            $_.code -isnot [string] -or [string]::IsNullOrWhiteSpace($_.code) -or
+                            $_.message -isnot [string] -or [string]::IsNullOrWhiteSpace($_.message)
+                        }).Count -eq 0) {
+                    $rejection = [System.Management.Automation.ErrorRecord]::new(
+                        [System.InvalidOperationException]::new('Nested deployment preflight validation failed.'),
+                        'NestedDeploymentPreflightRejected', [System.Management.Automation.ErrorCategory]::InvalidOperation, $deployment
+                    )
+                    $rejection.ErrorDetails = [System.Management.Automation.ErrorDetails]::new(
+                        (ConvertTo-Json -InputObject $status -Depth 30 -Compress -WarningAction Stop)
+                    )
+                    if (Test-DeploymentPreflightRejection -ErrorRecord $rejection -DeploymentName $name) {
+                        $nestedInput.PreflightRejectedDeploymentId = $deployment
+                    }
+                }
+            }
         }
         $restoreContext = $false
         $discoveryError = $null
@@ -223,8 +294,9 @@ Get all deployments that match a given deployment name in a given scope using a 
 
 .DESCRIPTION
 Get all deployments that match a given deployment name in a given scope using a retry mechanic.
-Only DeploymentNotFound is retried. A preflight-rejected attempt with that response is known not to have been created.
-Other lookup failures, including request timeouts, retain known resources for cleanup before reporting the error.
+Only DeploymentNotFound repeats discovery. A preflight-rejected attempt with that response is known not to have been created.
+Individual status and operation-page reads retry typed request timeouts at most twice.
+Other lookup failures and exhausted read timeouts retain known resources for cleanup before reporting the error.
 Genuine cancellation propagates without further discovery or removal.
 
 .PARAMETER ResourceGroupName
@@ -250,7 +322,11 @@ Optional. Seconds between discovery rounds. Defaults to 60.
 
 .PARAMETER RequireCompleteRemoval
 Optional. Require complete terminal-state discovery and collect deployment records for removal.
-Only proven missing root preflight attempts may omit a record. Other missing or incomplete records block relocation.
+Only proven missing preflight attempts or nested preflight rejections may omit a record.
+Other missing or incomplete records block relocation.
+
+.PARAMETER FinalCleanup
+Optional. Allow Succeeded or Failed terminal roots for complete final teardown; retries require Failed roots.
 
 .EXAMPLE
 Get-DeploymentTargetResourceList -name 'KeyVault' -ResourceGroupName 'validation-rg' -scope 'resourcegroup'
@@ -298,9 +374,15 @@ function Get-DeploymentTargetResourceList {
         [int] $SearchRetryInterval = 60,
 
         [Parameter()]
-        [switch] $RequireCompleteRemoval
+        [switch] $RequireCompleteRemoval,
+
+        [Parameter()]
+        [switch] $FinalCleanup
     )
 
+    if ($FinalCleanup -and -not $RequireCompleteRemoval) {
+        throw 'Final cleanup confirmation requires complete discovery and removal.'
+    }
     if (@($PreflightRejectedDeploymentNames | Where-Object { $_ -notin $DeploymentNames }).Count -gt 0) {
         throw 'Preflight rejection metadata contains names outside the supplied deployments.'
     }
@@ -329,6 +411,7 @@ function Get-DeploymentTargetResourceList {
                 ResolvedResourceIds    = $resolvedResourceIds
                 ErrorAction            = 'Stop'
                 RequireCompleteRemoval = $RequireCompleteRemoval
+                FinalCleanup           = $FinalCleanup
                 ResolvedDeploymentIds  = $resolvedDeploymentIds
             }
             if (-not [String]::IsNullOrEmpty($resourceGroupName)) {
