@@ -1,0 +1,379 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.48.1.52935",
+      "templateHash": "17797109361539643528"
+    },
+    "name": "Azure Local Gallery Image",
+    "description": "This module imports a prepared customer-provided OS image into Azure Local. It does not build, harden, or patch the source image."
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "metadata": {
+        "description": "Required. Name of the resource to create."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Azure region of the associated custom location. Defaults to the resource group location."
+      }
+    },
+    "customLocationResourceId": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Required. Resource ID of the Azure Local custom location on which to import the image."
+      }
+    },
+    "imagePath": {
+      "type": "securestring",
+      "minLength": 1,
+      "metadata": {
+        "description": "Required. Path to a prepared source image: a VHDX on a cluster shared volume accessible to the Azure Local instance, or an HTTPS SAS URL for a VHD/VHDX page blob in Azure Storage. This is not a path on the deployment client. Treat the entire value as a secret; do not log it or place it in outputs. Image preparation, activation, upload, and SAS generation are caller responsibilities."
+      }
+    },
+    "osType": {
+      "type": "string",
+      "allowedValues": [
+        "Windows",
+        "Linux"
+      ],
+      "metadata": {
+        "description": "Required. Operating system of the prepared source image."
+      }
+    },
+    "hyperVGeneration": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/galleryImages@2024-01-01#properties/properties/properties/hyperVGeneration"
+        },
+        "description": "Optional. Hyper-V generation of the prepared source image. Use V1 or V2 to match the source; VHDX sources require V2."
+      },
+      "defaultValue": "V2"
+    },
+    "cloudInitDataSource": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/galleryImages@2024-01-01#properties/properties/properties/cloudInitDataSource"
+        },
+        "description": "Optional. Cloud-init data source supported by the prepared image, such as NoCloud or Azure. Omit when not applicable."
+      },
+      "nullable": true
+    },
+    "containerResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Resource ID of an existing Azure Local storage container associated with the same custom location. Use the storage-container module resourceId output, not its filesystem path. When omitted, Azure Local selects the storage placement."
+      }
+    },
+    "identifier": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/galleryImages@2024-01-01#properties/properties/properties/identifier"
+        },
+        "description": "Optional. Image identifier containing publisher, offer, and SKU. This describes the customer image; it does not select a Marketplace image."
+      },
+      "nullable": true
+    },
+    "version": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/galleryImages@2024-01-01#properties/properties/properties/version"
+        },
+        "description": "Optional. Gallery image version metadata. This does not import an Azure Compute Gallery version or guarantee that changing the source or version in place is supported. Image properties may be creation-only; validate unchanged redeployment before relying on idempotency."
+      },
+      "nullable": true
+    },
+    "tags": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AzureStackHCI/galleryImages@2024-01-01#properties/tags"
+        },
+        "description": "Optional. Tags of the resource."
+      },
+      "nullable": true
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the resource."
+      }
+    },
+    "roleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
+    "$fxv#0": "46d3xbcp.res.31cbc1d",
+    "builtInRoleNames": {
+      "Azure Stack HCI Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'bda0d508-adf1-4af0-9c28-88919fc3ae06')]",
+      "Azure Stack HCI VM Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '874d1c73-6003-4e60-a13a-cb31ea190a85')]",
+      "Azure Stack HCI VM Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4b3fe76c-f777-4d24-a2d7-b027b0f7b273')]",
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "galleryImage": {
+      "type": "Microsoft.AzureStackHCI/galleryImages",
+      "apiVersion": "2024-01-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "extendedLocation": {
+        "type": "CustomLocation",
+        "name": "[parameters('customLocationResourceId')]"
+      },
+      "properties": {
+        "imagePath": "[parameters('imagePath')]",
+        "osType": "[parameters('osType')]",
+        "hyperVGeneration": "[parameters('hyperVGeneration')]",
+        "cloudInitDataSource": "[parameters('cloudInitDataSource')]",
+        "containerId": "[parameters('containerResourceId')]",
+        "identifier": "[parameters('identifier')]",
+        "version": "[parameters('version')]"
+      }
+    },
+    "galleryImage_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[resourceId('Microsoft.AzureStackHCI/galleryImages', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+      },
+      "dependsOn": [
+        "galleryImage"
+      ]
+    },
+    "galleryImage_roleAssignments": {
+      "copy": {
+        "name": "galleryImage_roleAssignments",
+        "count": "[length(variables('formattedRoleAssignments'))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.AzureStackHCI/galleryImages', parameters('name'))]",
+      "name": "[coalesce(tryGet(variables('formattedRoleAssignments')[copyIndex()], 'name'), guid(resourceId('Microsoft.AzureStackHCI/galleryImages', parameters('name')), variables('formattedRoleAssignments')[copyIndex()].principalId, variables('formattedRoleAssignments')[copyIndex()].roleDefinitionId))]",
+      "properties": {
+        "roleDefinitionId": "[variables('formattedRoleAssignments')[copyIndex()].roleDefinitionId]",
+        "principalId": "[variables('formattedRoleAssignments')[copyIndex()].principalId]",
+        "description": "[tryGet(variables('formattedRoleAssignments')[copyIndex()], 'description')]",
+        "principalType": "[tryGet(variables('formattedRoleAssignments')[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(variables('formattedRoleAssignments')[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(variables('formattedRoleAssignments')[copyIndex()], 'condition'))), coalesce(tryGet(variables('formattedRoleAssignments')[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(variables('formattedRoleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "galleryImage"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the gallery image."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the gallery image. Pass this to the virtual-machine-instance module storageProfile.imageReference.id."
+      },
+      "value": "[resourceId('Microsoft.AzureStackHCI/galleryImages', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the gallery image was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the gallery image was deployed into."
+      },
+      "value": "[reference('galleryImage', '2024-01-01', 'full').location]"
+    }
+  }
+}
