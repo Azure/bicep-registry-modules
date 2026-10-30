@@ -172,6 +172,17 @@ jobs:
             throw 'Azure context validation failed (az-context-cardinality-invalid); no operations GET was made.'
           }
           try {
+            $accountModules = @(Get-Module -Name Az.Accounts -ErrorAction Stop 2>$null 3>$null 4>$null 5>$null 6>$null)
+            if ($accountModules.Count -ne 1 -or $accountModules[0].Name -cne 'Az.Accounts' -or
+                $accountModules[0].Version -isnot [version]) { throw 'Invalid module provenance.' }
+            $accountVersion = $accountModules[0].Version.ToString()
+            if ($accountVersion -cnotmatch '^\d+\.\d+(?:\.\d+){0,2}$') { throw 'Invalid module version.' }
+          }
+          catch {
+            throw 'Azure context validation failed (az-accounts-version-unavailable); no operations GET was made.'
+          }
+          Write-Output "Loaded Az.Accounts version: $accountVersion"
+          try {
             $context = $contexts[0]
             $contextFields = @($context.Environment.Name, $context.Tenant.Id, $context.Subscription.Id,
               $context.Subscription.Name, $context.Account.Type, $context.Account.Id)
@@ -193,7 +204,7 @@ jobs:
           if ($context.Tenant.Id -ine $tenantId) { $mismatches.Add('az.tenantId') }
           if ($context.Subscription.Id -ine $subscriptionId) { $mismatches.Add('az.subscriptionId') }
           if ($context.Subscription.Name -cne $subscriptionName) { $mismatches.Add('az.subscriptionName') }
-          if ($context.Account.Type -ine 'ServicePrincipal') { $mismatches.Add('az.accountType') }
+          if ($context.Account.Type -ine 'ClientAssertion') { $mismatches.Add('az.accountType') }
           if ($context.Account.Id -ine $clientId.ToString('D')) { $mismatches.Add('az.clientId') }
           if ($mismatches.Count -ne 0) {
             throw "Azure context validation failed (mismatch: $($mismatches -join ', ')); no operations GET was made."
