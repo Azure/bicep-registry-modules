@@ -1,41 +1,184 @@
-name: ".Module - PR Check [EXPERIMENTAL]"
+name: "DO NOT MERGE - Read-only cleanup diagnostic probe"
 
 on:
   workflow_dispatch:
-    inputs:
-      modulePaths:
-        type: string
-        description: "Module path or comma-separated module paths"
-        required: true
-      authoringSource:
-        type: choice
-        description: "Where to obtain the Avm.Authoring PowerShell module."
-        required: true
-        default: gallery
-        options:
-          - gallery
-          - repo
-      authoringRef:
-        type: string
-        description: "Avm.Authoring reference: authoringSource=gallery uses a package version (blank = latest); authoringSource=repo uses a tools SHA, tag or branch (blank = latest stable tag)."
-        required: false
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
 
 permissions: {}
 
 jobs:
-  pr-check:
-    name: "Module checks [EXPERIMENTAL]"
+  bootstrap:
+    permissions:
+      contents: read
+    uses: Azure/azure-verified-modules-tools/.github/workflows/authoring-bootstrap.yml@ce21d83c1ee5a4145f052f5cd53886bdb8c99fed
+    with:
+      authoringSource: repo
+      authoringRef: ce21d83c1ee5a4145f052f5cd53886bdb8c99fed
+
+  probe:
+    needs: bootstrap
+    runs-on: ubuntu-latest
+    environment: avm-validation
     permissions:
       contents: read
       id-token: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-pr-check.yml@7379a19fe3ca4e97a602a6bc1d78a61be09d31e7
-    with:
-      authoringSource: ${{ inputs.authoringSource || 'gallery' }}
-      authoringRef: ${{ inputs.authoringRef || '' }}
-    secrets: inherit
+    steps:
+      - name: Check out dispatched commit
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Download candidate authoring runtime
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ needs.bootstrap.outputs.artifact }}
+          path: ${{ runner.temp }}/avm-authoring
+      - name: Verify provenance, identity and dependencies
+        id: identity
+        shell: pwsh
+        env:
+          CALLER_SHA: ${{ github.sha }}
+          CALLER_REF: ${{ github.ref }}
+          AUTHORING_ARTIFACT: ${{ needs.bootstrap.outputs.artifact }}
+          VALIDATE_MODULE_CLIENT_IDS: ${{ vars.VALIDATE_MODULE_CLIENT_IDS }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $ProgressPreference = 'SilentlyContinue'
+          $VerbosePreference = 'SilentlyContinue'
+          $DebugPreference = 'SilentlyContinue'
+          Set-StrictMode -Version 3.0
+          $candidate = 'ce21d83c1ee5a4145f052f5cd53886bdb8c99fed'
+          $head = (git rev-parse HEAD 2>$null)
+          if ($LASTEXITCODE -ne 0 -or $env:CALLER_SHA -cnotmatch '^[0-9a-f]{40}$' -or
+              $head -cne $env:CALLER_SHA -or $env:AUTHORING_ARTIFACT -cnotmatch '^avm-authoring-[0-9a-f]{32}$') {
+            throw 'Caller checkout or authoring artifact provenance is invalid.'
+          }
+          Write-Output "Caller SHA: $head"
+          Write-Output "Caller ref: $env:CALLER_REF"
+          Write-Output "Authoring source: repository commit $candidate; bootstrap artifact: $env:AUTHORING_ARTIFACT"
+          $manifest = Join-Path $env:RUNNER_TEMP 'avm-authoring' 'Avm.Authoring.psd1'
+          try {
+            $modules = @(Import-Module -Name $manifest -PassThru -ErrorAction Stop 3>$null 4>$null 5>$null 6>$null)
+            if ($modules.Count -ne 1 -or $modules[0].Name -cne 'Avm.Authoring' -or
+                $modules[0].ModuleBase -cne (Split-Path -Parent $manifest)) { throw 'Unexpected module.' }
+            $identity = & $modules[0] {
+              param($root, $mapping, $tenant)
+              Get-AvmBicepWorkflowModuleIdentityInternal -Root $root -ModulePath 'avm/ptn/authorization/policy-assignment' `
+                -ModuleClientIds $mapping -TenantId $tenant
+            } $env:GITHUB_WORKSPACE $env:VALIDATE_MODULE_CLIENT_IDS $env:VALIDATE_TENANT_ID 3>$null 4>$null 5>$null 6>$null
+            $client = [guid]::Empty
+            $tenant = [guid]::Empty
+            if ($identity.ModuleRoot -cne 'avm/ptn/authorization/policy-assignment' -or
+                -not [guid]::TryParseExact($identity.ClientId, 'D', [ref]$client) -or
+                $client -eq [guid]::Empty -or $client -ne [guid]'cc1ea1c9-b77a-4ab1-adf8-356240edee04' -or
+                -not [guid]::TryParseExact($identity.TenantId, 'D', [ref]$tenant) -or
+                $tenant -ne [guid]'39e9d0f2-14b2-4aa1-96e5-798e9872f09f') { throw 'Unexpected identity.' }
+            $capabilities = $modules[0].PrivateData.AvmCapabilities
+            if ($capabilities.BicepAzureDependencyInventory -isnot [int] -or
+                $capabilities.BicepAzureDependencyInventory -ne 1) { throw 'Missing capability.' }
+            $dependencies = @(Get-AvmBicepAzureDependency -SkipModuleVersionCheck)
+            if ($dependencies.Count -eq 0) { throw 'Missing dependencies.' }
+          }
+          catch {
+            throw 'Candidate runtime or historical module identity validation failed before authentication.'
+          }
+          try {
+            if (-not (Get-Module -ListAvailable -Name Microsoft.PowerShell.PSResourceGet)) {
+              Install-Module -Name Microsoft.PowerShell.PSResourceGet -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
+            }
+            Import-Module Microsoft.PowerShell.PSResourceGet -ErrorAction Stop
+            foreach ($dependency in $dependencies) {
+              $available = @(Get-Module -ListAvailable -Name $dependency.Name | Where-Object { $_.Version -ge $dependency.MinimumVersion })
+              if ($available.Count -gt 0) { continue }
+              if ($env:AVM_OFFLINE -eq '1') { throw 'Offline mode.' }
+              $repository = Get-PSResourceRepository -Name PSGallery -ErrorAction Stop
+              if ([string]$repository.Uri -cne 'https://www.powershellgallery.com/api/v2') { throw 'Unexpected repository.' }
+              Install-PSResource -Name $dependency.Name -Version $dependency.MinimumVersion.ToString() `
+                -Repository PSGallery -Scope CurrentUser -TrustRepository -Quiet -ErrorAction Stop
+              $available = @(Get-Module -ListAvailable -Name $dependency.Name | Where-Object { $_.Version -ge $dependency.MinimumVersion })
+              if ($available.Count -eq 0) { throw 'Dependency unavailable.' }
+            }
+          }
+          catch {
+            throw 'Required Azure PowerShell dependencies could not be prepared before authentication.'
+          }
+          "clientId=$($client.ToString('D'))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - name: Sign in with historical module identity
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
+        with:
+          client-id: ${{ steps.identity.outputs.clientId }}
+          tenant-id: 39e9d0f2-14b2-4aa1-96e5-798e9872f09f
+          subscription-id: 15b210d7-4565-4fdc-9024-6026bbb105ea
+          enable-AzPSSession: true
+      - name: Inspect one operations response
+        shell: pwsh
+        env:
+          SELECTED_CLIENT_ID: ${{ steps.identity.outputs.clientId }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $ProgressPreference = 'SilentlyContinue'
+          $VerbosePreference = 'SilentlyContinue'
+          $DebugPreference = 'SilentlyContinue'
+          Set-StrictMode -Version 3.0
+          $tenantId = '39e9d0f2-14b2-4aa1-96e5-798e9872f09f'
+          $subscriptionId = '15b210d7-4565-4fdc-9024-6026bbb105ea'
+          $subscriptionName = 'sub-avm-test-017'
+          $clientId = [guid]::Empty
+          if (-not [guid]::TryParseExact($env:SELECTED_CLIENT_ID, 'D', [ref]$clientId) -or
+              $clientId -ne [guid]'cc1ea1c9-b77a-4ab1-adf8-356240edee04') {
+            throw 'The selected module client ID does not match the historical job.'
+          }
+          $manifest = Join-Path $env:RUNNER_TEMP 'avm-authoring' 'Avm.Authoring.psd1'
+          try {
+            $modules = @(Import-Module -Name $manifest -PassThru -ErrorAction Stop 3>$null 4>$null 5>$null 6>$null)
+            if ($modules.Count -ne 1 -or $modules[0].Name -cne 'Avm.Authoring' -or
+                $modules[0].ModuleBase -cne (Split-Path -Parent $manifest)) { throw 'Unexpected module.' }
+          }
+          catch {
+            throw 'The candidate runtime could not be imported from the expected artifact path.'
+          }
+          try {
+            $cliJson = az account show --only-show-errors --output json 2>$null
+            if ($LASTEXITCODE -ne 0) { throw 'Azure CLI context unavailable.' }
+            $cli = $cliJson | ConvertFrom-Json -AsHashtable -ErrorAction Stop
+            $contexts = @(Get-AzContext -ErrorAction Stop 3>$null 4>$null 5>$null 6>$null)
+            if ($contexts.Count -ne 1) { throw 'Azure PowerShell context unavailable.' }
+            $context = $contexts[0]
+            if ($cli.environmentName -cne 'AzureCloud' -or $cli.tenantId -ine $tenantId -or
+                $cli.id -ine $subscriptionId -or $cli.name -cne $subscriptionName -or
+                $cli.user.type -ine 'servicePrincipal' -or $cli.user.name -ine $clientId.ToString('D') -or
+                $context.Environment.Name -cne 'AzureCloud' -or $context.Tenant.Id -ine $tenantId -or
+                $context.Subscription.Id -ine $subscriptionId -or $context.Subscription.Name -cne $subscriptionName -or
+                $context.Account.Type -ine 'ServicePrincipal' -or $context.Account.Id -ine $clientId.ToString('D')) {
+              throw 'Azure contexts do not match the trusted identity.'
+            }
+          }
+          catch {
+            throw 'Azure context validation failed; no operations request was made.'
+          }
+          $path = '/providers/Microsoft.Management/managementGroups/wnapaxszgr3q2-additional-mg/providers/Microsoft.Resources/deployments/pol-asi-mg-rbac-mg-42o7xp77ny5wu/operations?api-version=2025-04-01'
+          try {
+            $responses = @(Invoke-AzRestMethod -Method GET -Path $path -ErrorAction Stop 3>$null 4>$null 5>$null 6>$null)
+          }
+          catch {
+            throw 'The operations request failed before a response could be safely inspected.'
+          }
+          $response = if ($responses.Count -eq 1) { $responses[0] } elseif ($responses.Count -eq 0) { $null } else { $responses }
+          try {
+            $null = & $modules[0] {
+              param($item)
+              ConvertFrom-AvmBicepRestResponse -Response $item -Activity 'Probe operations' -AllowedStatus @(200)
+            } $response 3>$null 4>$null 5>$null 6>$null
+            Write-Output 'Probe operations returned HTTP 200.'
+          }
+          catch {
+            $exception = $_.Exception
+            $message = $exception.Message
+            if ($exception.GetType().Name -ceq 'AvmProcessException' -and
+                ($message.StartsWith('Probe operations returned an invalid response or HTTP status. ', [StringComparison]::Ordinal) -or
+                  $message -ceq 'Probe operations returned invalid JSON.' -or
+                  $message -ceq 'Probe operations did not return one JSON object.')) {
+              Write-Output $message
+            }
+            throw 'The operations response could not be accepted; any available safe diagnostics are above.'
+          }
