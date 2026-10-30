@@ -137,24 +137,66 @@ jobs:
           catch {
             throw 'The candidate runtime could not be imported from the expected artifact path.'
           }
+          if (-not (Get-Command -Name az -ErrorAction SilentlyContinue)) {
+            throw 'Azure context validation failed (cli-command-unavailable); no operations GET was made.'
+          }
           try {
-            $cliJson = az account show --only-show-errors --output json 2>$null
-            if ($LASTEXITCODE -ne 0) { throw 'Azure CLI context unavailable.' }
-            $cli = $cliJson | ConvertFrom-Json -AsHashtable -ErrorAction Stop
-            $contexts = @(Get-AzContext -ErrorAction Stop 3>$null 4>$null 5>$null 6>$null)
-            if ($contexts.Count -ne 1) { throw 'Azure PowerShell context unavailable.' }
+            $cliLines = @(az account show --only-show-errors --output json 2>$null 3>$null 4>$null 5>$null 6>$null)
+            $cliExitCode = $LASTEXITCODE
+          }
+          catch {
+            throw 'Azure context validation failed (cli-command-failed); no operations GET was made.'
+          }
+          if ($cliExitCode -ne 0) {
+            throw 'Azure context validation failed (cli-nonzero-exit); no operations GET was made.'
+          }
+          try {
+            $cli = ConvertFrom-Json -InputObject ($cliLines -join "`n") -AsHashtable -NoEnumerate -ErrorAction Stop
+          }
+          catch {
+            throw 'Azure context validation failed (cli-json-invalid); no operations GET was made.'
+          }
+          if ($cli -isnot [System.Collections.IDictionary] -or
+              $cli['user'] -isnot [System.Collections.IDictionary] -or
+              @($cli['environmentName'], $cli['tenantId'], $cli['id'], $cli['name'], $cli['user']['type'], $cli['user']['name'] |
+                Where-Object { $_ -isnot [string] -or [string]::IsNullOrWhiteSpace($_) }).Count -ne 0) {
+            throw 'Azure context validation failed (cli-shape-invalid); no operations GET was made.'
+          }
+          try {
+            $contexts = @(Get-AzContext -ErrorAction Stop 2>$null 3>$null 4>$null 5>$null 6>$null)
+          }
+          catch {
+            throw 'Azure context validation failed (az-context-read-failed); no operations GET was made.'
+          }
+          if ($contexts.Count -ne 1) {
+            throw 'Azure context validation failed (az-context-cardinality-invalid); no operations GET was made.'
+          }
+          try {
             $context = $contexts[0]
-            if ($cli.environmentName -cne 'AzureCloud' -or $cli.tenantId -ine $tenantId -or
-                $cli.id -ine $subscriptionId -or $cli.name -cne $subscriptionName -or
-                $cli.user.type -ine 'servicePrincipal' -or $cli.user.name -ine $clientId.ToString('D') -or
-                $context.Environment.Name -cne 'AzureCloud' -or $context.Tenant.Id -ine $tenantId -or
-                $context.Subscription.Id -ine $subscriptionId -or $context.Subscription.Name -cne $subscriptionName -or
-                $context.Account.Type -ine 'ServicePrincipal' -or $context.Account.Id -ine $clientId.ToString('D')) {
-              throw 'Azure contexts do not match the trusted identity.'
+            $contextFields = @($context.Environment.Name, $context.Tenant.Id, $context.Subscription.Id,
+              $context.Subscription.Name, $context.Account.Type, $context.Account.Id)
+            if (@($contextFields | Where-Object { $_ -isnot [string] -or [string]::IsNullOrWhiteSpace($_) }).Count -ne 0) {
+              throw 'Invalid context shape.'
             }
           }
           catch {
-            throw 'Azure context validation failed; no operations request was made.'
+            throw 'Azure context validation failed (az-context-shape-invalid); no operations GET was made.'
+          }
+          $mismatches = [System.Collections.Generic.List[string]]::new()
+          if ($cli['environmentName'] -cne 'AzureCloud') { $mismatches.Add('cli.environmentName') }
+          if ($cli['tenantId'] -ine $tenantId) { $mismatches.Add('cli.tenantId') }
+          if ($cli['id'] -ine $subscriptionId) { $mismatches.Add('cli.subscriptionId') }
+          if ($cli['name'] -cne $subscriptionName) { $mismatches.Add('cli.subscriptionName') }
+          if ($cli['user']['type'] -ine 'servicePrincipal') { $mismatches.Add('cli.userType') }
+          if ($cli['user']['name'] -ine $clientId.ToString('D')) { $mismatches.Add('cli.clientId') }
+          if ($context.Environment.Name -cne 'AzureCloud') { $mismatches.Add('az.environmentName') }
+          if ($context.Tenant.Id -ine $tenantId) { $mismatches.Add('az.tenantId') }
+          if ($context.Subscription.Id -ine $subscriptionId) { $mismatches.Add('az.subscriptionId') }
+          if ($context.Subscription.Name -cne $subscriptionName) { $mismatches.Add('az.subscriptionName') }
+          if ($context.Account.Type -ine 'ServicePrincipal') { $mismatches.Add('az.accountType') }
+          if ($context.Account.Id -ine $clientId.ToString('D')) { $mismatches.Add('az.clientId') }
+          if ($mismatches.Count -ne 0) {
+            throw "Azure context validation failed (mismatch: $($mismatches -join ', ')); no operations GET was made."
           }
           $path = '/providers/Microsoft.Management/managementGroups/wnapaxszgr3q2-additional-mg/providers/Microsoft.Resources/deployments/pol-asi-mg-rbac-mg-42o7xp77ny5wu/operations?api-version=2025-04-01'
           try {
