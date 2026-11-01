@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.44.1.10279",
+      "templateHash": "2595620649405743935"
+    },
+    "name": "AI Gateway Foundry Upstream Role Assignment",
+    "description": "Grants Azure AI User and Cognitive Services OpenAI User on an upstream Foundry account."
+  },
+  "parameters": {
+    "foundryAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Upstream Foundry account name."
+      }
+    },
+    "principalId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Principal ID to receive upstream Foundry access."
+      }
+    },
+    "gatewayResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Gateway resource ID for deterministic role assignment naming."
+      }
+    }
+  },
+  "variables": {
+    "foundryUserRoleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '53ca6127-db72-4b80-b1b0-d745d6d5456d')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('foundryAccountName'))]",
+      "name": "[guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('foundryAccountName')), parameters('gatewayResourceId'), variables('foundryUserRoleDefinitionId'))]",
+      "properties": {
+        "principalId": "[parameters('principalId')]",
+        "principalType": "ServicePrincipal",
+        "roleDefinitionId": "[variables('foundryUserRoleDefinitionId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "roleAssignmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Role assignment name."
+      },
+      "value": "[guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('foundryAccountName')), parameters('gatewayResourceId'), variables('foundryUserRoleDefinitionId'))]"
+    }
+  }
+}

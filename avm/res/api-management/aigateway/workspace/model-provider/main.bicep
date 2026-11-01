@@ -30,13 +30,37 @@ var wireAuthentication = authentication.kind == 'ManagedIdentity'
     }
 
 #disable-next-line BCP081
-resource workspace 'Microsoft.ApiManagement/aigateways/workspaces@2025-09-01-preview' existing = {
-  name: '${aiGatewayName}/${workspaceName}'
+resource gateway 'Microsoft.ApiManagement/aigateways@2025-09-01-preview' existing = {
+  name: aiGatewayName
 }
+#disable-next-line BCP081
+resource workspace 'Microsoft.ApiManagement/aigateways/workspaces@2025-09-01-preview' existing = {
+  parent: gateway
+  name: workspaceName
+}
+
+var assignUpstreamRole = properties.kind == 'Foundry' && (properties.foundry.?assignUpstreamRole ?? false)
+var upstreamFoundryResourceIds = properties.kind == 'Foundry' ? properties.foundry.resourceIds : []
+
+module upstreamRoleAssignments './foundry-role-assignment.bicep' = [
+  for (foundryResourceId, index) in (assignUpstreamRole ? upstreamFoundryResourceIds : []): {
+    name: '${uniqueString(deployment().name, foundryResourceId)}-FoundryRole-${index}'
+    scope: az.resourceGroup(split(foundryResourceId, '/')[2], split(foundryResourceId, '/')[4])
+    params: {
+      foundryAccountName: last(split(foundryResourceId, '/'))
+      principalId: gateway.identity.principalId
+      gatewayResourceId: gateway.id
+    }
+  }
+]
+
 #disable-next-line BCP081
 resource provider 'Microsoft.ApiManagement/aigateways/workspaces/modelProviders@2025-09-01-preview' = {
   name: name
   parent: workspace
+  dependsOn: [
+    upstreamRoleAssignments
+  ]
   properties: union(
     {
       kind: properties.kind
@@ -103,6 +127,7 @@ type foundryProviderPropertiesType = {
     endpoint: string
     @minLength(1)
     resourceIds: string[]
+    assignUpstreamRole: bool?
     authentication: authenticationType
   }
 }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "9831133620849585081"
+      "templateHash": "14226511184116800727"
     },
     "name": "AI Gateway Workspace",
     "description": "References the service-provisioned default workspace or writes workspace policies, then deploys child configuration."
@@ -238,6 +238,10 @@
                 "type": "string"
               },
               "minLength": 1
+            },
+            "assignUpstreamRole": {
+              "type": "bool",
+              "nullable": true
             },
             "authentication": {
               "$ref": "#/definitions/_2.authenticationType"
@@ -1212,7 +1216,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.44.1.10279",
-              "templateHash": "15069201373551995988"
+              "templateHash": "12643070713801823085"
             },
             "name": "AI Gateway Model Provider",
             "description": "Configures a Foundry or custom provider and its model catalog."
@@ -1287,6 +1291,10 @@
                         "type": "string"
                       },
                       "minLength": 1
+                    },
+                    "assignUpstreamRole": {
+                      "type": "bool",
+                      "nullable": true
                     },
                     "authentication": {
                       "$ref": "#/definitions/authenticationType"
@@ -1693,9 +1701,17 @@
           "variables": {
             "configuration": "[if(equals(parameters('properties').kind, 'Foundry'), parameters('properties').foundry, parameters('properties').custom)]",
             "authentication": "[variables('configuration').authentication]",
-            "wireAuthentication": "[if(equals(variables('authentication').kind, 'ManagedIdentity'), variables('authentication'), createObject('kind', 'ApiKey', 'apiKey', createObject('headerName', variables('authentication').apiKey.headerName, 'value', parameters('secrets')[variables('authentication').apiKey.secretName])))]"
+            "wireAuthentication": "[if(equals(variables('authentication').kind, 'ManagedIdentity'), variables('authentication'), createObject('kind', 'ApiKey', 'apiKey', createObject('headerName', variables('authentication').apiKey.headerName, 'value', parameters('secrets')[variables('authentication').apiKey.secretName])))]",
+            "assignUpstreamRole": "[and(equals(parameters('properties').kind, 'Foundry'), coalesce(tryGet(parameters('properties').foundry, 'assignUpstreamRole'), false()))]",
+            "upstreamFoundryResourceIds": "[if(equals(parameters('properties').kind, 'Foundry'), parameters('properties').foundry.resourceIds, createArray())]"
           },
           "resources": {
+            "gateway": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/aigateways",
+              "apiVersion": "2025-09-01-preview",
+              "name": "[parameters('aiGatewayName')]"
+            },
             "workspace": {
               "existing": true,
               "type": "Microsoft.ApiManagement/aigateways/workspaces",
@@ -1705,8 +1721,100 @@
             "provider": {
               "type": "Microsoft.ApiManagement/aigateways/workspaces/modelProviders",
               "apiVersion": "2025-09-01-preview",
-              "name": "[format('{0}/{1}/{2}', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]",
-              "properties": "[union(createObject('kind', parameters('properties').kind, 'displayName', parameters('properties').displayName, 'description', tryGet(parameters('properties'), 'description')), if(equals(parameters('properties').kind, 'Foundry'), createObject('foundry', createObject('endpoint', parameters('properties').foundry.endpoint, 'resourceIds', parameters('properties').foundry.resourceIds, 'authentication', variables('wireAuthentication'))), createObject('custom', createObject('endpoint', parameters('properties').custom.endpoint, 'authentication', variables('wireAuthentication')))))]"
+              "name": "[format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('name'))]",
+              "properties": "[union(createObject('kind', parameters('properties').kind, 'displayName', parameters('properties').displayName, 'description', tryGet(parameters('properties'), 'description')), if(equals(parameters('properties').kind, 'Foundry'), createObject('foundry', createObject('endpoint', parameters('properties').foundry.endpoint, 'resourceIds', parameters('properties').foundry.resourceIds, 'authentication', variables('wireAuthentication'))), createObject('custom', createObject('endpoint', parameters('properties').custom.endpoint, 'authentication', variables('wireAuthentication')))))]",
+              "dependsOn": [
+                "upstreamRoleAssignments"
+              ]
+            },
+            "upstreamRoleAssignments": {
+              "copy": {
+                "name": "upstreamRoleAssignments",
+                "count": "[length(if(variables('assignUpstreamRole'), variables('upstreamFoundryResourceIds'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-FoundryRole-{1}', uniqueString(deployment().name, if(variables('assignUpstreamRole'), variables('upstreamFoundryResourceIds'), createArray())[copyIndex()]), copyIndex())]",
+              "subscriptionId": "[split(if(variables('assignUpstreamRole'), variables('upstreamFoundryResourceIds'), createArray())[copyIndex()], '/')[2]]",
+              "resourceGroup": "[split(if(variables('assignUpstreamRole'), variables('upstreamFoundryResourceIds'), createArray())[copyIndex()], '/')[4]]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "foundryAccountName": {
+                    "value": "[last(split(if(variables('assignUpstreamRole'), variables('upstreamFoundryResourceIds'), createArray())[copyIndex()], '/'))]"
+                  },
+                  "principalId": {
+                    "value": "[reference('gateway', '2025-09-01-preview', 'full').identity.principalId]"
+                  },
+                  "gatewayResourceId": {
+                    "value": "[resourceId('Microsoft.ApiManagement/aigateways', parameters('aiGatewayName'))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.44.1.10279",
+                      "templateHash": "2595620649405743935"
+                    },
+                    "name": "AI Gateway Foundry Upstream Role Assignment",
+                    "description": "Grants Azure AI User and Cognitive Services OpenAI User on an upstream Foundry account."
+                  },
+                  "parameters": {
+                    "foundryAccountName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Upstream Foundry account name."
+                      }
+                    },
+                    "principalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Principal ID to receive upstream Foundry access."
+                      }
+                    },
+                    "gatewayResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Gateway resource ID for deterministic role assignment naming."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "foundryUserRoleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '53ca6127-db72-4b80-b1b0-d745d6d5456d')]"
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('foundryAccountName'))]",
+                      "name": "[guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('foundryAccountName')), parameters('gatewayResourceId'), variables('foundryUserRoleDefinitionId'))]",
+                      "properties": {
+                        "principalId": "[parameters('principalId')]",
+                        "principalType": "ServicePrincipal",
+                        "roleDefinitionId": "[variables('foundryUserRoleDefinitionId')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "roleAssignmentName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Role assignment name."
+                      },
+                      "value": "[guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('foundryAccountName')), parameters('gatewayResourceId'), variables('foundryUserRoleDefinitionId'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "gateway"
+              ]
             },
             "provider_models": {
               "copy": {
@@ -2073,7 +2181,7 @@
               "metadata": {
                 "description": "The provider resource ID."
               },
-              "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/modelProviders', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]"
+              "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/modelProviders', parameters('aiGatewayName'), parameters('workspaceName'), parameters('name'))]"
             },
             "name": {
               "type": "string",
