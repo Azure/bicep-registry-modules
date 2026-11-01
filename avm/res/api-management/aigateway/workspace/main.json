@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "6681608725178085879"
+      "templateHash": "9831133620849585081"
     },
     "name": "AI Gateway Workspace",
     "description": "References the service-provisioned default workspace or writes workspace policies, then deploys child configuration."
@@ -684,7 +684,12 @@
                 "type": "string"
               },
               "secretName": {
-                "type": "string"
+                "type": "string",
+                "nullable": true
+              },
+              "value": {
+                "type": "string",
+                "nullable": true
               }
             }
           },
@@ -731,7 +736,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "nullable": true
         },
         "namespace": {
           "type": "string",
@@ -785,7 +791,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "nullable": true
         },
         "namespace": {
           "type": "string",
@@ -899,6 +906,14 @@
             "openApi"
           ]
         },
+        "failureMode": {
+          "type": "string",
+          "allowedValues": [
+            "failClosed",
+            "failOpen"
+          ],
+          "nullable": true
+        },
         "accessState": {
           "type": "string",
           "allowedValues": [
@@ -926,6 +941,13 @@
           "type": "array",
           "items": {
             "type": "string"
+          },
+          "nullable": true
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/policyType"
           },
           "nullable": true
         },
@@ -2509,7 +2531,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.44.1.10279",
-              "templateHash": "11358965044943910803"
+              "templateHash": "3594885935451222987"
             },
             "name": "AI Gateway Tool Server",
             "description": "Configures MCP and OpenAPI upstream endpoints."
@@ -2549,6 +2571,14 @@
                     "openApi"
                   ]
                 },
+                "failureMode": {
+                  "type": "string",
+                  "allowedValues": [
+                    "failClosed",
+                    "failOpen"
+                  ],
+                  "nullable": true
+                },
                 "accessState": {
                   "type": "string",
                   "allowedValues": [
@@ -2576,6 +2606,13 @@
                   "type": "array",
                   "items": {
                     "type": "string"
+                  },
+                  "nullable": true
+                },
+                "policies": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/policyType"
                   },
                   "nullable": true
                 },
@@ -2615,7 +2652,8 @@
               "type": "object",
               "properties": {
                 "id": {
-                  "type": "string"
+                  "type": "string",
+                  "nullable": true
                 },
                 "namespace": {
                   "type": "string",
@@ -2664,7 +2702,8 @@
               "type": "object",
               "properties": {
                 "id": {
-                  "type": "string"
+                  "type": "string",
+                  "nullable": true
                 },
                 "namespace": {
                   "type": "string",
@@ -2760,7 +2799,12 @@
                         "type": "string"
                       },
                       "secretName": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "value": {
+                        "type": "string",
+                        "nullable": true
                       }
                     }
                   },
@@ -2792,6 +2836,186 @@
                 }
               },
               "additionalProperties": false
+            },
+            "_1.contentSafetyPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "contentSafety"
+                  ]
+                },
+                "hateSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                },
+                "selfHarmSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                },
+                "sexualSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                },
+                "violenceSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Content safety policy thresholds.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "../model-provider/model/main.bicep"
+                }
+              }
+            },
+            "_1.costLimitPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "costLimit"
+                  ]
+                },
+                "id": {
+                  "type": "string"
+                },
+                "scope": {
+                  "type": "string",
+                  "allowedValues": [
+                    "resource",
+                    "workspace"
+                  ],
+                  "nullable": true
+                },
+                "amount": {
+                  "type": "int",
+                  "minValue": 1
+                },
+                "period": {
+                  "type": "string",
+                  "allowedValues": [
+                    "day",
+                    "hour",
+                    "month",
+                    "week",
+                    "year"
+                  ]
+                },
+                "counterKey": {
+                  "type": "array",
+                  "allowedValues": [
+                    "identity",
+                    "ipAddress"
+                  ],
+                  "minLength": 1,
+                  "maxLength": 2
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Cost limit policy. Amounts are whole USD in this draft.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "../model-provider/model/main.bicep"
+                }
+              }
+            },
+            "_1.tokenLimitPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "tokenLimit"
+                  ]
+                },
+                "scope": {
+                  "type": "string",
+                  "allowedValues": [
+                    "resource",
+                    "workspace"
+                  ],
+                  "nullable": true
+                },
+                "count": {
+                  "type": "int",
+                  "minValue": 1
+                },
+                "period": {
+                  "type": "string",
+                  "allowedValues": [
+                    "day",
+                    "hour",
+                    "minute"
+                  ]
+                },
+                "counterKey": {
+                  "type": "array",
+                  "allowedValues": [
+                    "identity",
+                    "ipAddress"
+                  ],
+                  "minLength": 1,
+                  "maxLength": 2
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Token limit policy with public counter dimensions.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "../model-provider/model/main.bicep"
+                }
+              }
+            },
+            "policyType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "tokenLimit": {
+                    "$ref": "#/definitions/_1.tokenLimitPolicyType"
+                  },
+                  "costLimit": {
+                    "$ref": "#/definitions/_1.costLimitPolicyType"
+                  },
+                  "contentSafety": {
+                    "$ref": "#/definitions/_1.contentSafetyPolicyType"
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Typed inline governance policies supported by this draft.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "../model-provider/model/main.bicep"
+                }
+              }
             }
           },
           "parameters": {
@@ -2847,17 +3071,19 @@
                   {
                     "name": "endpoints",
                     "count": "[length(parameters('properties').endpoints)]",
-                    "input": "[union(createObject('id', parameters('properties').endpoints[copyIndex('endpoints')].id, 'namespace', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'namespace'), 'tools', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'tools'), 'required', coalesce(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'required'), false()), 'kind', parameters('properties').endpoints[copyIndex('endpoints')].kind, 'credentials', if(equals(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'credentials'), null()), createObject('type', 'none'), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].credentials.type, 'header'), createObject('type', 'header', 'headers', map(parameters('properties').endpoints[copyIndex('endpoints')].credentials.headers, lambda('header', createObject('name', lambdaVariables('header').name, 'values', createArray(parameters('secrets')[lambdaVariables('header').secretName]))))), parameters('properties').endpoints[copyIndex('endpoints')].credentials))), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].kind, 'mcp'), createObject('mcp', parameters('properties').endpoints[copyIndex('endpoints')].mcp), createObject('openApi', parameters('properties').endpoints[copyIndex('endpoints')].openApi)))]"
+                    "input": "[union(createObject('id', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'id'), 'namespace', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'namespace'), 'tools', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'tools'), 'required', coalesce(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'required'), false()), 'kind', parameters('properties').endpoints[copyIndex('endpoints')].kind, 'credentials', if(equals(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'credentials'), null()), createObject('type', 'none'), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].credentials.type, 'header'), createObject('type', 'header', 'headers', toObject(parameters('properties').endpoints[copyIndex('endpoints')].credentials.headers, lambda('header', lambdaVariables('header').name), lambda('header', createArray(if(not(equals(tryGet(lambdaVariables('header'), 'secretName'), null())), parameters('secrets')[lambdaVariables('header').secretName], coalesce(tryGet(lambdaVariables('header'), 'value'), '')))))), parameters('properties').endpoints[copyIndex('endpoints')].credentials))), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].kind, 'mcp'), createObject('mcp', parameters('properties').endpoints[copyIndex('endpoints')].mcp), createObject('openApi', parameters('properties').endpoints[copyIndex('endpoints')].openApi)))]"
                   }
                 ],
                 "displayName": "[tryGet(parameters('properties'), 'displayName')]",
                 "description": "[tryGet(parameters('properties'), 'description')]",
                 "type": "[parameters('properties').type]",
+                "failureMode": "[tryGet(parameters('properties'), 'failureMode')]",
                 "accessState": "[tryGet(parameters('properties'), 'accessState')]",
                 "path": "[tryGet(parameters('properties'), 'path')]",
                 "subscriptionRequired": "[coalesce(tryGet(parameters('properties'), 'subscriptionRequired'), true())]",
                 "allowList": "[tryGet(parameters('properties'), 'allowList')]",
-                "blocked": "[tryGet(parameters('properties'), 'blocked')]"
+                "blocked": "[tryGet(parameters('properties'), 'blocked')]",
+                "policies": "[tryGet(parameters('properties'), 'policies')]"
               }
             }
           },

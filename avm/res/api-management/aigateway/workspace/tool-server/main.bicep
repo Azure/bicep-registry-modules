@@ -1,6 +1,8 @@
 metadata name = 'AI Gateway Tool Server'
 metadata description = 'Configures MCP and OpenAPI upstream endpoints.'
 
+import { policyType } from '../model-provider/model/main.bicep'
+
 @description('Required. Parent gateway name.')
 param aiGatewayName string
 @description('Required. Parent workspace name.')
@@ -25,15 +27,17 @@ resource toolServer 'Microsoft.ApiManagement/aigateways/workspaces/toolServers@2
     displayName: properties.?displayName
     description: properties.?description
     type: properties.type
+    failureMode: properties.?failureMode
     accessState: properties.?accessState
     path: properties.?path
     subscriptionRequired: properties.?subscriptionRequired ?? true
     allowList: properties.?allowList
     blocked: properties.?blocked
+    policies: properties.?policies
     endpoints: [
       for endpoint in properties.endpoints: union(
         {
-          id: endpoint.id
+          id: endpoint.?id
           namespace: endpoint.?namespace
           tools: endpoint.?tools
           required: endpoint.?required ?? false
@@ -45,12 +49,13 @@ resource toolServer 'Microsoft.ApiManagement/aigateways/workspaces/toolServers@2
             : (endpoint.credentials!.type == 'header'
                 ? {
                     type: 'header'
-                    headers: map(endpoint.credentials!.headers, header => {
-                      name: header.name
-                      values: [
-                        secrets[header.secretName]
+                    headers: toObject(
+                      endpoint.credentials!.headers,
+                      header => header.name,
+                      header => [
+                        header.?secretName != null ? secrets[header.secretName!] : (header.?value ?? '')
                       ]
-                    })
+                    )
                   }
                 : endpoint.credentials!)
         },
@@ -87,11 +92,13 @@ type toolServerPropertiesType = {
   displayName: string?
   description: string?
   type: 'mcp' | 'openApi'
+  failureMode: ('failClosed' | 'failOpen')?
   accessState: ('active' | 'blocked')?
   path: string?
   subscriptionRequired: bool?
   allowList: string[]?
   blocked: string[]?
+  policies: policyType[]?
   @minLength(1)
   endpoints: toolEndpointType[]
 }
@@ -101,7 +108,7 @@ type toolServerPropertiesType = {
 type toolEndpointType = mcpEndpointType | openApiEndpointType
 @sealed()
 type mcpEndpointType = {
-  id: string
+  id: string?
   namespace: string?
   kind: 'mcp'
   mcp: {
@@ -114,7 +121,7 @@ type mcpEndpointType = {
 }
 @sealed()
 type openApiEndpointType = {
-  id: string
+  id: string?
   namespace: string?
   kind: 'openApi'
   openApi: {
@@ -139,7 +146,8 @@ type headerCredentialsType = {
   @minLength(1)
   headers: {
     name: string
-    secretName: string
+    secretName: string?
+    value: string?
   }[]
 }
 @sealed()
