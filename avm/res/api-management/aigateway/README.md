@@ -33,8 +33,8 @@ The following example assumes two existing Foundry deployments and a user-assign
 param gatewayName string
 param foundryAccountResourceId string
 param foundryEndpoint string
-param primaryDeploymentName string
-param secondaryDeploymentName string
+param primaryDeploymentName string = 'gpt-6.1-sol'
+param secondaryDeploymentName string = 'gpt-5-mini'
 param userAssignedIdentityResourceId string
 param userAssignedIdentityClientId string
 

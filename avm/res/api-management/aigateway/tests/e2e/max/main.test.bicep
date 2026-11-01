@@ -22,10 +22,13 @@ param foundryResourceGroupName string
 param foundrySubscriptionId string = subscription().subscriptionId
 @description('Required. Foundry endpoint including its trailing slash.')
 param foundryEndpoint string
-@description('Required. Two existing deployment names in the Foundry account, in primary/secondary order.')
+@description('Optional. Two existing deployment names in the Foundry account, in primary/secondary order.')
 @minLength(2)
 @maxLength(2)
-param foundryDeploymentNames string[]
+param foundryDeploymentNames string[] = [
+  'gpt-6.1-sol'
+  'gpt-5-mini'
+]
 @description('Required. Reachable custom provider base endpoint.')
 param customProviderEndpoint string
 @secure()

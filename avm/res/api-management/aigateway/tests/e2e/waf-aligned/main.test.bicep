@@ -20,10 +20,13 @@ param foundryResourceGroupName string
 param foundrySubscriptionId string = subscription().subscriptionId
 @description('Required. Foundry endpoint including its trailing slash.')
 param foundryEndpoint string
-@description('Required. Two existing Foundry deployment names, in primary/secondary order.')
+@description('Optional. Two existing Foundry deployment names, in primary/secondary order.')
 @minLength(2)
 @maxLength(2)
-param foundryDeploymentNames string[]
+param foundryDeploymentNames string[] = [
+  'gpt-6.1-sol'
+  'gpt-5-mini'
+]
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
