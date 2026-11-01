@@ -6,6 +6,8 @@ Deploy a standalone Azure AI Gateway, register model providers and tools in its 
 
 Start with the [shape review](https://github.com/paulyuk/bicep-registry-modules/blob/feat/aigateway-avm-review/avm/res/api-management/aigateway/DESIGN.md) before deciding whether to submit the module to AVM. Compilation does not establish live deployment compatibility or AVM certification.
 
+> **Looking for a one-click standalone quickstart?** If you want a single template that provisions both a new Microsoft Foundry account (`gpt-6.1-sol` + `gpt-5-mini`) and an AI Gateway with default aliases and optional Microsoft Learn MCP (`mcpMode: 'create'`), see the companion ARM Quickstart [`quickstarts/microsoft.apimanagement/aigateway`](https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.apimanagement/aigateway) ([draft PR `paulyuk/azure-quickstart-templates#1`](https://github.com/paulyuk/azure-quickstart-templates/pull/1)).
+
 ## Minimal deployment
 
 From a checkout containing this module:
