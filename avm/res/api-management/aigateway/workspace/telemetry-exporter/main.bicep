@@ -13,6 +13,26 @@ param properties telemetryExporterPropertiesType
 @description('Optional. Secure connection strings and OTLP headers.')
 param secrets { *: string } = {}
 
+var resolveAppInsightsFromResourceId = properties.kind == 'ApplicationInsights' && properties.applicationInsights.?connectionStringSecretName == null && !empty(properties.applicationInsights.?resourceId ?? '')
+var appInsightsResourceIdParts = resolveAppInsightsFromResourceId
+  ? split(properties.applicationInsights!.resourceId!, '/')
+  : [
+      ''
+      'subscriptions'
+      subscription().subscriptionId
+      'resourceGroups'
+      resourceGroup().name
+      'providers'
+      'Microsoft.Insights'
+      'components'
+      'placeholder'
+    ]
+
+resource existingAppInsights 'Microsoft.Insights/components@2020-02-02' existing = if (resolveAppInsightsFromResourceId) {
+  name: last(appInsightsResourceIdParts)
+  scope: az.resourceGroup(appInsightsResourceIdParts[2], appInsightsResourceIdParts[4])
+}
+
 #disable-next-line BCP081
 resource workspace 'Microsoft.ApiManagement/aigateways/workspaces@2025-09-01-preview' existing = {
   name: '${aiGatewayName}/${workspaceName}'
@@ -29,7 +49,9 @@ resource exporter 'Microsoft.ApiManagement/aigateways/workspaces/telemetryExport
     properties.kind == 'ApplicationInsights'
       ? {
           applicationInsights: {
-            connectionString: secrets[properties.applicationInsights.connectionStringSecretName]
+            connectionString: properties.applicationInsights.?connectionStringSecretName != null
+              ? secrets[properties.applicationInsights.connectionStringSecretName!]
+              : existingAppInsights!.properties.ConnectionString
             resourceId: properties.applicationInsights.?resourceId
           }
         }
@@ -72,7 +94,7 @@ type applicationInsightsPropertiesType = {
   kind: 'ApplicationInsights'
   payloadCapture: bool?
   applicationInsights: {
-    connectionStringSecretName: string
+    connectionStringSecretName: string?
     resourceId: string?
   }
 }

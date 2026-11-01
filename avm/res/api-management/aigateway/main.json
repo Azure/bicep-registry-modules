@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "8929656896977239771"
+      "templateHash": "12538172673900417511"
     },
     "name": "API Management AI Gateway",
     "description": "Deploys a standalone AI Gateway and its workspace-scoped model and tool configuration."
@@ -424,7 +424,8 @@
           "type": "object",
           "properties": {
             "connectionStringSecretName": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "resourceId": {
               "type": "string",
@@ -1819,7 +1820,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.44.1.10279",
-              "templateHash": "14226511184116800727"
+              "templateHash": "7696670771291513209"
             },
             "name": "AI Gateway Workspace",
             "description": "References the service-provisioned default workspace or writes workspace policies, then deploys child configuration."
@@ -2363,7 +2364,8 @@
                   "type": "object",
                   "properties": {
                     "connectionStringSecretName": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     },
                     "resourceId": {
                       "type": "string",
@@ -5075,7 +5077,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.44.1.10279",
-                      "templateHash": "3990616342254270720"
+                      "templateHash": "13941397077271758637"
                     },
                     "name": "AI Gateway Telemetry Exporter",
                     "description": "Configures runtime telemetry with payload capture disabled by default."
@@ -5132,7 +5134,8 @@
                           "type": "object",
                           "properties": {
                             "connectionStringSecretName": {
-                              "type": "string"
+                              "type": "string",
+                              "nullable": true
                             },
                             "resourceId": {
                               "type": "string",
@@ -5243,7 +5246,20 @@
                       }
                     }
                   },
+                  "variables": {
+                    "resolveAppInsightsFromResourceId": "[and(and(equals(parameters('properties').kind, 'ApplicationInsights'), equals(tryGet(parameters('properties').applicationInsights, 'connectionStringSecretName'), null())), not(empty(coalesce(tryGet(parameters('properties').applicationInsights, 'resourceId'), ''))))]",
+                    "appInsightsResourceIdParts": "[if(variables('resolveAppInsightsFromResourceId'), split(parameters('properties').applicationInsights.resourceId, '/'), createArray('', 'subscriptions', subscription().subscriptionId, 'resourceGroups', resourceGroup().name, 'providers', 'Microsoft.Insights', 'components', 'placeholder'))]"
+                  },
                   "resources": {
+                    "existingAppInsights": {
+                      "condition": "[variables('resolveAppInsightsFromResourceId')]",
+                      "existing": true,
+                      "type": "Microsoft.Insights/components",
+                      "apiVersion": "2020-02-02",
+                      "subscriptionId": "[variables('appInsightsResourceIdParts')[2]]",
+                      "resourceGroup": "[variables('appInsightsResourceIdParts')[4]]",
+                      "name": "[last(variables('appInsightsResourceIdParts'))]"
+                    },
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.ApiManagement/aigateways/workspaces",
@@ -5254,7 +5270,10 @@
                       "type": "Microsoft.ApiManagement/aigateways/workspaces/telemetryExporters",
                       "apiVersion": "2025-09-01-preview",
                       "name": "[format('{0}/{1}/{2}', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]",
-                      "properties": "[union(createObject('kind', parameters('properties').kind, 'payloadCapture', coalesce(tryGet(parameters('properties'), 'payloadCapture'), false())), if(equals(parameters('properties').kind, 'ApplicationInsights'), createObject('applicationInsights', createObject('connectionString', parameters('secrets')[parameters('properties').applicationInsights.connectionStringSecretName], 'resourceId', tryGet(parameters('properties').applicationInsights, 'resourceId'))), createObject('openTelemetry', createObject('metricsEndpoint', tryGet(parameters('properties').openTelemetry, 'metricsEndpoint'), 'logsEndpoint', tryGet(parameters('properties').openTelemetry, 'logsEndpoint'), 'tracesEndpoint', tryGet(parameters('properties').openTelemetry, 'tracesEndpoint'), 'managedIdentity', tryGet(parameters('properties').openTelemetry, 'managedIdentity'), 'headers', toObject(coalesce(tryGet(parameters('properties').openTelemetry, 'headers'), createArray()), lambda('header', lambdaVariables('header').name), lambda('header', parameters('secrets')[lambdaVariables('header').secretName]))))))]"
+                      "properties": "[union(createObject('kind', parameters('properties').kind, 'payloadCapture', coalesce(tryGet(parameters('properties'), 'payloadCapture'), false())), if(equals(parameters('properties').kind, 'ApplicationInsights'), createObject('applicationInsights', createObject('connectionString', if(not(equals(tryGet(parameters('properties').applicationInsights, 'connectionStringSecretName'), null())), parameters('secrets')[parameters('properties').applicationInsights.connectionStringSecretName], reference('existingAppInsights').ConnectionString), 'resourceId', tryGet(parameters('properties').applicationInsights, 'resourceId'))), createObject('openTelemetry', createObject('metricsEndpoint', tryGet(parameters('properties').openTelemetry, 'metricsEndpoint'), 'logsEndpoint', tryGet(parameters('properties').openTelemetry, 'logsEndpoint'), 'tracesEndpoint', tryGet(parameters('properties').openTelemetry, 'tracesEndpoint'), 'managedIdentity', tryGet(parameters('properties').openTelemetry, 'managedIdentity'), 'headers', toObject(coalesce(tryGet(parameters('properties').openTelemetry, 'headers'), createArray()), lambda('header', lambdaVariables('header').name), lambda('header', parameters('secrets')[lambdaVariables('header').secretName]))))))]",
+                      "dependsOn": [
+                        "existingAppInsights"
+                      ]
                     }
                   },
                   "outputs": {
