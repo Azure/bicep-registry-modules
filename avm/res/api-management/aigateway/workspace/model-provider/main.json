@@ -1,0 +1,900 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.44.1.10279",
+      "templateHash": "15069201373551995988"
+    },
+    "name": "AI Gateway Model Provider",
+    "description": "Configures a Foundry or custom provider and its model catalog."
+  },
+  "definitions": {
+    "modelProviderType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "$ref": "#/definitions/modelProviderPropertiesType"
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/modelType"
+          },
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Provider configuration and nested catalog models."
+      }
+    },
+    "modelProviderPropertiesType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "kind",
+        "mapping": {
+          "Foundry": {
+            "$ref": "#/definitions/foundryProviderPropertiesType"
+          },
+          "Custom": {
+            "$ref": "#/definitions/customProviderPropertiesType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Provider kind selects its required configuration."
+      }
+    },
+    "foundryProviderPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Foundry"
+          ]
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "foundry": {
+          "type": "object",
+          "properties": {
+            "endpoint": {
+              "type": "string"
+            },
+            "resourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minLength": 1
+            },
+            "authentication": {
+              "$ref": "#/definitions/authenticationType"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "customProviderPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Custom"
+          ]
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "custom": {
+          "type": "object",
+          "properties": {
+            "endpoint": {
+              "type": "string"
+            },
+            "authentication": {
+              "$ref": "#/definitions/apiKeyAuthenticationType"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "authenticationType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "kind",
+        "mapping": {
+          "ManagedIdentity": {
+            "$ref": "#/definitions/managedIdentityAuthenticationType"
+          },
+          "ApiKey": {
+            "$ref": "#/definitions/apiKeyAuthenticationType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Upstream provider authentication."
+      }
+    },
+    "managedIdentityAuthenticationType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "ManagedIdentity"
+          ]
+        },
+        "managedIdentity": {
+          "type": "object",
+          "properties": {
+            "resource": {
+              "type": "string",
+              "nullable": true
+            },
+            "clientId": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "apiKeyAuthenticationType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "ApiKey"
+          ]
+        },
+        "apiKey": {
+          "type": "object",
+          "properties": {
+            "headerName": {
+              "type": "string"
+            },
+            "secretName": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "_1.contentSafetyPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "contentSafety"
+          ]
+        },
+        "hateSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+          ],
+          "nullable": true
+        },
+        "selfHarmSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+          ],
+          "nullable": true
+        },
+        "sexualSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+          ],
+          "nullable": true
+        },
+        "violenceSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+          ],
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Content safety policy thresholds.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model/main.bicep"
+        }
+      }
+    },
+    "_1.costLimitPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "costLimit"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string",
+          "allowedValues": [
+            "resource",
+            "workspace"
+          ],
+          "nullable": true
+        },
+        "amount": {
+          "type": "int",
+          "minValue": 1
+        },
+        "period": {
+          "type": "string",
+          "allowedValues": [
+            "day",
+            "hour",
+            "month",
+            "week",
+            "year"
+          ]
+        },
+        "counterKey": {
+          "type": "array",
+          "allowedValues": [
+            "identity",
+            "ipAddress"
+          ],
+          "minLength": 1,
+          "maxLength": 2
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Cost limit policy. Amounts are whole USD in this draft.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model/main.bicep"
+        }
+      }
+    },
+    "_1.modelPropertiesType": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "apiFormat": {
+          "type": "string"
+        },
+        "supportedEndpoints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1
+        },
+        "deployment": {
+          "type": "object",
+          "properties": {
+            "resourceId": {
+              "type": "string",
+              "nullable": true
+            },
+            "modelName": {
+              "type": "string"
+            },
+            "modelVersion": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.policyType"
+          },
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Model wire properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model/main.bicep"
+        }
+      }
+    },
+    "_1.policyType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type",
+        "mapping": {
+          "tokenLimit": {
+            "$ref": "#/definitions/_1.tokenLimitPolicyType"
+          },
+          "costLimit": {
+            "$ref": "#/definitions/_1.costLimitPolicyType"
+          },
+          "contentSafety": {
+            "$ref": "#/definitions/_1.contentSafetyPolicyType"
+          }
+        }
+      },
+      "metadata": {
+        "description": "Typed inline governance policies supported by this draft.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model/main.bicep"
+        }
+      }
+    },
+    "_1.tokenLimitPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "tokenLimit"
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "allowedValues": [
+            "resource",
+            "workspace"
+          ],
+          "nullable": true
+        },
+        "count": {
+          "type": "int",
+          "minValue": 1
+        },
+        "period": {
+          "type": "string",
+          "allowedValues": [
+            "day",
+            "hour",
+            "minute"
+          ]
+        },
+        "counterKey": {
+          "type": "array",
+          "allowedValues": [
+            "identity",
+            "ipAddress"
+          ],
+          "minLength": 1,
+          "maxLength": 2
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Token limit policy with public counter dimensions.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model/main.bicep"
+        }
+      }
+    },
+    "modelType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "$ref": "#/definitions/_1.modelPropertiesType"
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Catalog model configuration.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model/main.bicep"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "aiGatewayName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Parent gateway name."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Parent workspace name."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Model provider resource name."
+      }
+    },
+    "properties": {
+      "$ref": "#/definitions/modelProviderPropertiesType",
+      "metadata": {
+        "description": "Required. Typed provider configuration."
+      }
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/modelType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Models registered under this provider."
+      }
+    },
+    "secrets": {
+      "type": "secureObject",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Secure upstream API key values."
+      }
+    }
+  },
+  "variables": {
+    "configuration": "[if(equals(parameters('properties').kind, 'Foundry'), parameters('properties').foundry, parameters('properties').custom)]",
+    "authentication": "[variables('configuration').authentication]",
+    "wireAuthentication": "[if(equals(variables('authentication').kind, 'ManagedIdentity'), variables('authentication'), createObject('kind', 'ApiKey', 'apiKey', createObject('headerName', variables('authentication').apiKey.headerName, 'value', parameters('secrets')[variables('authentication').apiKey.secretName])))]"
+  },
+  "resources": {
+    "workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/aigateways/workspaces",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName'))]"
+    },
+    "provider": {
+      "type": "Microsoft.ApiManagement/aigateways/workspaces/modelProviders",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[format('{0}/{1}/{2}', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]",
+      "properties": "[union(createObject('kind', parameters('properties').kind, 'displayName', parameters('properties').displayName, 'description', tryGet(parameters('properties'), 'description')), if(equals(parameters('properties').kind, 'Foundry'), createObject('foundry', createObject('endpoint', parameters('properties').foundry.endpoint, 'resourceIds', parameters('properties').foundry.resourceIds, 'authentication', variables('wireAuthentication'))), createObject('custom', createObject('endpoint', parameters('properties').custom.endpoint, 'authentication', variables('wireAuthentication')))))]"
+    },
+    "provider_models": {
+      "copy": {
+        "name": "provider_models",
+        "count": "[length(coalesce(parameters('models'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Model-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "aiGatewayName": {
+            "value": "[parameters('aiGatewayName')]"
+          },
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "modelProviderName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('models'), createArray())[copyIndex()].name]"
+          },
+          "properties": {
+            "value": "[coalesce(parameters('models'), createArray())[copyIndex()].properties]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.44.1.10279",
+              "templateHash": "16627306435110958753"
+            },
+            "name": "AI Gateway Model",
+            "description": "Registers a provider model and applies inline governance policies."
+          },
+          "definitions": {
+            "modelType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "properties": {
+                  "$ref": "#/definitions/modelPropertiesType"
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Catalog model configuration."
+              }
+            },
+            "modelPropertiesType": {
+              "type": "object",
+              "properties": {
+                "displayName": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "apiFormat": {
+                  "type": "string"
+                },
+                "supportedEndpoints": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minLength": 1
+                },
+                "deployment": {
+                  "type": "object",
+                  "properties": {
+                    "resourceId": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "modelName": {
+                      "type": "string"
+                    },
+                    "modelVersion": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                },
+                "policies": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/policyType"
+                  },
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Model wire properties."
+              }
+            },
+            "policyType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "tokenLimit": {
+                    "$ref": "#/definitions/tokenLimitPolicyType"
+                  },
+                  "costLimit": {
+                    "$ref": "#/definitions/costLimitPolicyType"
+                  },
+                  "contentSafety": {
+                    "$ref": "#/definitions/contentSafetyPolicyType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Typed inline governance policies supported by this draft."
+              }
+            },
+            "tokenLimitPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "tokenLimit"
+                  ]
+                },
+                "scope": {
+                  "type": "string",
+                  "allowedValues": [
+                    "resource",
+                    "workspace"
+                  ],
+                  "nullable": true
+                },
+                "count": {
+                  "type": "int",
+                  "minValue": 1
+                },
+                "period": {
+                  "type": "string",
+                  "allowedValues": [
+                    "day",
+                    "hour",
+                    "minute"
+                  ]
+                },
+                "counterKey": {
+                  "type": "array",
+                  "allowedValues": [
+                    "identity",
+                    "ipAddress"
+                  ],
+                  "minLength": 1,
+                  "maxLength": 2
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Token limit policy with public counter dimensions."
+              }
+            },
+            "costLimitPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "costLimit"
+                  ]
+                },
+                "id": {
+                  "type": "string"
+                },
+                "scope": {
+                  "type": "string",
+                  "allowedValues": [
+                    "resource",
+                    "workspace"
+                  ],
+                  "nullable": true
+                },
+                "amount": {
+                  "type": "int",
+                  "minValue": 1
+                },
+                "period": {
+                  "type": "string",
+                  "allowedValues": [
+                    "day",
+                    "hour",
+                    "month",
+                    "week",
+                    "year"
+                  ]
+                },
+                "counterKey": {
+                  "type": "array",
+                  "allowedValues": [
+                    "identity",
+                    "ipAddress"
+                  ],
+                  "minLength": 1,
+                  "maxLength": 2
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Cost limit policy. Amounts are whole USD in this draft."
+              }
+            },
+            "contentSafetyPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "contentSafety"
+                  ]
+                },
+                "hateSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                },
+                "selfHarmSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                },
+                "sexualSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                },
+                "violenceSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Content safety policy thresholds."
+              }
+            }
+          },
+          "parameters": {
+            "aiGatewayName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Parent gateway name."
+              }
+            },
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Parent workspace name."
+              }
+            },
+            "modelProviderName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Parent model provider name."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Model resource name."
+              }
+            },
+            "properties": {
+              "$ref": "#/definitions/modelPropertiesType",
+              "metadata": {
+                "description": "Required. Model deployment and runtime configuration."
+              }
+            }
+          },
+          "resources": {
+            "provider": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/aigateways/workspaces/modelProviders",
+              "apiVersion": "2025-09-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName'))]"
+            },
+            "model": {
+              "type": "Microsoft.ApiManagement/aigateways/workspaces/modelProviders/models",
+              "apiVersion": "2025-09-01-preview",
+              "name": "[format('{0}/{1}/{2}/{3}', split(format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName')), '/')[0], split(format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName')), '/')[1], split(format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName')), '/')[2], parameters('name'))]",
+              "properties": "[parameters('properties')]"
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The model resource ID."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/modelProviders/models', split(format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName')), '/')[0], split(format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName')), '/')[1], split(format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName')), '/')[2], parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The model name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group name."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "provider"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The provider resource ID."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/modelProviders', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The provider name."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group name."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "modelResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The registered model resource IDs."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('models'), createArray()))]",
+        "input": "[reference(format('provider_models[{0}]', copyIndex())).outputs.resourceId.value]"
+      }
+    }
+  }
+}

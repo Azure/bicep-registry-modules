@@ -1,0 +1,3218 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.44.1.10279",
+      "templateHash": "6681608725178085879"
+    },
+    "name": "AI Gateway Workspace",
+    "description": "References the service-provisioned default workspace or writes workspace policies, then deploys child configuration."
+  },
+  "definitions": {
+    "workspaceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "default"
+          ]
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/policyType"
+          },
+          "nullable": true
+        },
+        "modelProviders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/modelProviderType"
+          },
+          "nullable": true
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/aliasType"
+          },
+          "nullable": true
+        },
+        "toolServers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/toolServerType"
+          },
+          "nullable": true
+        },
+        "telemetryExporters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/telemetryExporterType"
+          },
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Default workspace configuration. Additional named workspaces require preview RP support verification before extending this type."
+      }
+    },
+    "_1.aliasPropertiesType": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "routes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.routeType"
+          },
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/policyType"
+          },
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Alias wire properties for the preview routes contract.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "alias/main.bicep"
+        }
+      }
+    },
+    "_1.routeType": {
+      "type": "object",
+      "properties": {
+        "providerName": {
+          "type": "string"
+        },
+        "modelName": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 100
+        },
+        "weight": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 100
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Route to a catalog model. Lower priority wins; weight is relative within a priority group.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "alias/main.bicep"
+        }
+      }
+    },
+    "_2.apiKeyAuthenticationType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "ApiKey"
+          ]
+        },
+        "apiKey": {
+          "type": "object",
+          "properties": {
+            "headerName": {
+              "type": "string"
+            },
+            "secretName": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/main.bicep"
+        }
+      }
+    },
+    "_2.authenticationType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "kind",
+        "mapping": {
+          "ManagedIdentity": {
+            "$ref": "#/definitions/_2.managedIdentityAuthenticationType"
+          },
+          "ApiKey": {
+            "$ref": "#/definitions/_2.apiKeyAuthenticationType"
+          }
+        }
+      },
+      "metadata": {
+        "description": "Upstream provider authentication.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/main.bicep"
+        }
+      }
+    },
+    "_2.customProviderPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Custom"
+          ]
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "custom": {
+          "type": "object",
+          "properties": {
+            "endpoint": {
+              "type": "string"
+            },
+            "authentication": {
+              "$ref": "#/definitions/_2.apiKeyAuthenticationType"
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/main.bicep"
+        }
+      }
+    },
+    "_2.foundryProviderPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Foundry"
+          ]
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "foundry": {
+          "type": "object",
+          "properties": {
+            "endpoint": {
+              "type": "string"
+            },
+            "resourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minLength": 1
+            },
+            "authentication": {
+              "$ref": "#/definitions/_2.authenticationType"
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/main.bicep"
+        }
+      }
+    },
+    "_2.managedIdentityAuthenticationType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "ManagedIdentity"
+          ]
+        },
+        "managedIdentity": {
+          "type": "object",
+          "properties": {
+            "resource": {
+              "type": "string",
+              "nullable": true
+            },
+            "clientId": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/main.bicep"
+        }
+      }
+    },
+    "_2.modelProviderPropertiesType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "kind",
+        "mapping": {
+          "Foundry": {
+            "$ref": "#/definitions/_2.foundryProviderPropertiesType"
+          },
+          "Custom": {
+            "$ref": "#/definitions/_2.customProviderPropertiesType"
+          }
+        }
+      },
+      "metadata": {
+        "description": "Provider kind selects its required configuration.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/main.bicep"
+        }
+      }
+    },
+    "_3.contentSafetyPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "contentSafety"
+          ]
+        },
+        "hateSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+          ],
+          "nullable": true
+        },
+        "selfHarmSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+          ],
+          "nullable": true
+        },
+        "sexualSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+          ],
+          "nullable": true
+        },
+        "violenceSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+          ],
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Content safety policy thresholds.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/model/main.bicep"
+        }
+      }
+    },
+    "_3.costLimitPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "costLimit"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string",
+          "allowedValues": [
+            "resource",
+            "workspace"
+          ],
+          "nullable": true
+        },
+        "amount": {
+          "type": "int",
+          "minValue": 1
+        },
+        "period": {
+          "type": "string",
+          "allowedValues": [
+            "day",
+            "hour",
+            "month",
+            "week",
+            "year"
+          ]
+        },
+        "counterKey": {
+          "type": "array",
+          "allowedValues": [
+            "identity",
+            "ipAddress"
+          ],
+          "minLength": 1,
+          "maxLength": 2
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Cost limit policy. Amounts are whole USD in this draft.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/model/main.bicep"
+        }
+      }
+    },
+    "_3.modelPropertiesType": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "apiFormat": {
+          "type": "string"
+        },
+        "supportedEndpoints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1
+        },
+        "deployment": {
+          "type": "object",
+          "properties": {
+            "resourceId": {
+              "type": "string",
+              "nullable": true
+            },
+            "modelName": {
+              "type": "string"
+            },
+            "modelVersion": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/policyType"
+          },
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Model wire properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/model/main.bicep"
+        }
+      }
+    },
+    "_3.modelType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "$ref": "#/definitions/_3.modelPropertiesType"
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Catalog model configuration.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/model/main.bicep"
+        }
+      }
+    },
+    "_3.tokenLimitPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "tokenLimit"
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "allowedValues": [
+            "resource",
+            "workspace"
+          ],
+          "nullable": true
+        },
+        "count": {
+          "type": "int",
+          "minValue": 1
+        },
+        "period": {
+          "type": "string",
+          "allowedValues": [
+            "day",
+            "hour",
+            "minute"
+          ]
+        },
+        "counterKey": {
+          "type": "array",
+          "allowedValues": [
+            "identity",
+            "ipAddress"
+          ],
+          "minLength": 1,
+          "maxLength": 2
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Token limit policy with public counter dimensions.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/model/main.bicep"
+        }
+      }
+    },
+    "_4.applicationInsightsPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "ApplicationInsights"
+          ]
+        },
+        "payloadCapture": {
+          "type": "bool",
+          "nullable": true
+        },
+        "applicationInsights": {
+          "type": "object",
+          "properties": {
+            "connectionStringSecretName": {
+              "type": "string"
+            },
+            "resourceId": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "telemetry-exporter/main.bicep"
+        }
+      }
+    },
+    "_4.openTelemetryPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "OpenTelemetry"
+          ]
+        },
+        "payloadCapture": {
+          "type": "bool",
+          "nullable": true
+        },
+        "openTelemetry": {
+          "type": "object",
+          "properties": {
+            "metricsEndpoint": {
+              "type": "string",
+              "nullable": true
+            },
+            "logsEndpoint": {
+              "type": "string",
+              "nullable": true
+            },
+            "tracesEndpoint": {
+              "type": "string",
+              "nullable": true
+            },
+            "managedIdentity": {
+              "type": "object",
+              "properties": {
+                "resource": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "clientId": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "nullable": true
+            },
+            "headers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "secretName": {
+                    "type": "string"
+                  }
+                }
+              },
+              "nullable": true
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "telemetry-exporter/main.bicep"
+        }
+      }
+    },
+    "_4.telemetryExporterPropertiesType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "kind",
+        "mapping": {
+          "ApplicationInsights": {
+            "$ref": "#/definitions/_4.applicationInsightsPropertiesType"
+          },
+          "OpenTelemetry": {
+            "$ref": "#/definitions/_4.openTelemetryPropertiesType"
+          }
+        }
+      },
+      "metadata": {
+        "description": "Exporter kind selects its destination.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "telemetry-exporter/main.bicep"
+        }
+      }
+    },
+    "_5.anonymousCredentialsType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "none"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "tool-server/main.bicep"
+        }
+      }
+    },
+    "_5.headerCredentialsType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "header"
+          ]
+        },
+        "headers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "secretName": {
+                "type": "string"
+              }
+            }
+          },
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "tool-server/main.bicep"
+        }
+      }
+    },
+    "_5.managedIdentityCredentialsType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "managedIdentity"
+          ]
+        },
+        "managedIdentity": {
+          "type": "object",
+          "properties": {
+            "resource": {
+              "type": "string"
+            },
+            "clientId": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "tool-server/main.bicep"
+        }
+      }
+    },
+    "_5.mcpEndpointType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string",
+          "nullable": true
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "mcp"
+          ]
+        },
+        "mcp": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string"
+            },
+            "transport": {
+              "type": "string",
+              "allowedValues": [
+                "streamableHttp"
+              ],
+              "nullable": true
+            }
+          }
+        },
+        "credentials": {
+          "$ref": "#/definitions/_5.toolCredentialsType",
+          "nullable": true
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true
+        },
+        "required": {
+          "type": "bool",
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "tool-server/main.bicep"
+        }
+      }
+    },
+    "_5.openApiEndpointType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string",
+          "nullable": true
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "openApi"
+          ]
+        },
+        "openApi": {
+          "type": "object",
+          "properties": {
+            "specSource": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "url"
+                  ]
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "credentials": {
+          "$ref": "#/definitions/_5.toolCredentialsType",
+          "nullable": true
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true
+        },
+        "required": {
+          "type": "bool",
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "tool-server/main.bicep"
+        }
+      }
+    },
+    "_5.toolCredentialsType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type",
+        "mapping": {
+          "none": {
+            "$ref": "#/definitions/_5.anonymousCredentialsType"
+          },
+          "header": {
+            "$ref": "#/definitions/_5.headerCredentialsType"
+          },
+          "managedIdentity": {
+            "$ref": "#/definitions/_5.managedIdentityCredentialsType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "tool-server/main.bicep"
+        }
+      }
+    },
+    "_5.toolEndpointType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "kind",
+        "mapping": {
+          "mcp": {
+            "$ref": "#/definitions/_5.mcpEndpointType"
+          },
+          "openApi": {
+            "$ref": "#/definitions/_5.openApiEndpointType"
+          }
+        }
+      },
+      "metadata": {
+        "description": "MCP or URL-based OpenAPI upstream endpoint.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "tool-server/main.bicep"
+        }
+      }
+    },
+    "_5.toolServerPropertiesType": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "nullable": true
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "mcp",
+            "openApi"
+          ]
+        },
+        "accessState": {
+          "type": "string",
+          "allowedValues": [
+            "active",
+            "blocked"
+          ],
+          "nullable": true
+        },
+        "path": {
+          "type": "string",
+          "nullable": true
+        },
+        "subscriptionRequired": {
+          "type": "bool",
+          "nullable": true
+        },
+        "allowList": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true
+        },
+        "blocked": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true
+        },
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_5.toolEndpointType"
+          },
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Tool server wire properties. Connector-backed servers are deliberately excluded.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "tool-server/main.bicep"
+        }
+      }
+    },
+    "aliasType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "$ref": "#/definitions/_1.aliasPropertiesType"
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Alias resource configuration.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "alias/main.bicep"
+        }
+      }
+    },
+    "modelProviderType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "$ref": "#/definitions/_2.modelProviderPropertiesType"
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_3.modelType"
+          },
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Provider configuration and nested catalog models.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/main.bicep"
+        }
+      }
+    },
+    "policyType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type",
+        "mapping": {
+          "tokenLimit": {
+            "$ref": "#/definitions/_3.tokenLimitPolicyType"
+          },
+          "costLimit": {
+            "$ref": "#/definitions/_3.costLimitPolicyType"
+          },
+          "contentSafety": {
+            "$ref": "#/definitions/_3.contentSafetyPolicyType"
+          }
+        }
+      },
+      "metadata": {
+        "description": "Typed inline governance policies supported by this draft.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/model/main.bicep"
+        }
+      }
+    },
+    "telemetryExporterType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "$ref": "#/definitions/_4.telemetryExporterPropertiesType"
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Runtime telemetry exporter configuration.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "telemetry-exporter/main.bicep"
+        }
+      }
+    },
+    "toolServerType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "$ref": "#/definitions/_5.toolServerPropertiesType"
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Tool server resource configuration.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "tool-server/main.bicep"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "aiGatewayName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Parent gateway name."
+      }
+    },
+    "name": {
+      "type": "string",
+      "allowedValues": [
+        "default"
+      ],
+      "defaultValue": "default",
+      "metadata": {
+        "description": "Optional. The preview service provisions the default workspace automatically."
+      }
+    },
+    "policies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/policyType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Inline workspace policies. Null leaves existing policies unchanged; an empty array clears policies."
+      }
+    },
+    "modelProviders": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/modelProviderType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Model providers and their models."
+      }
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/aliasType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Model aliases."
+      }
+    },
+    "toolServers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/toolServerType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tool servers."
+      }
+    },
+    "telemetryExporters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/telemetryExporterType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Runtime telemetry exporters."
+      }
+    },
+    "secrets": {
+      "type": "secureObject",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Secure values used by child resource configurations."
+      }
+    }
+  },
+  "resources": {
+    "gateway": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/aigateways",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[parameters('aiGatewayName')]"
+    },
+    "workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/aigateways/workspaces",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[format('{0}/{1}', parameters('aiGatewayName'), parameters('name'))]"
+    },
+    "workspacePolicies": {
+      "condition": "[not(equals(parameters('policies'), null()))]",
+      "type": "Microsoft.ApiManagement/aigateways/workspaces",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[format('{0}/{1}', parameters('aiGatewayName'), parameters('name'))]",
+      "properties": {
+        "policies": "[parameters('policies')]"
+      }
+    },
+    "workspace_modelProviders": {
+      "copy": {
+        "name": "workspace_modelProviders",
+        "count": "[length(coalesce(parameters('modelProviders'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Provider-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "aiGatewayName": {
+            "value": "[parameters('aiGatewayName')]"
+          },
+          "workspaceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('modelProviders'), createArray())[copyIndex()].name]"
+          },
+          "properties": {
+            "value": "[coalesce(parameters('modelProviders'), createArray())[copyIndex()].properties]"
+          },
+          "models": {
+            "value": "[tryGet(coalesce(parameters('modelProviders'), createArray())[copyIndex()], 'models')]"
+          },
+          "secrets": {
+            "value": "[parameters('secrets')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.44.1.10279",
+              "templateHash": "15069201373551995988"
+            },
+            "name": "AI Gateway Model Provider",
+            "description": "Configures a Foundry or custom provider and its model catalog."
+          },
+          "definitions": {
+            "modelProviderType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "properties": {
+                  "$ref": "#/definitions/modelProviderPropertiesType"
+                },
+                "models": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/modelType"
+                  },
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Provider configuration and nested catalog models."
+              }
+            },
+            "modelProviderPropertiesType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "kind",
+                "mapping": {
+                  "Foundry": {
+                    "$ref": "#/definitions/foundryProviderPropertiesType"
+                  },
+                  "Custom": {
+                    "$ref": "#/definitions/customProviderPropertiesType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Provider kind selects its required configuration."
+              }
+            },
+            "foundryProviderPropertiesType": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Foundry"
+                  ]
+                },
+                "displayName": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "foundry": {
+                  "type": "object",
+                  "properties": {
+                    "endpoint": {
+                      "type": "string"
+                    },
+                    "resourceIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "minLength": 1
+                    },
+                    "authentication": {
+                      "$ref": "#/definitions/authenticationType"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "customProviderPropertiesType": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Custom"
+                  ]
+                },
+                "displayName": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "custom": {
+                  "type": "object",
+                  "properties": {
+                    "endpoint": {
+                      "type": "string"
+                    },
+                    "authentication": {
+                      "$ref": "#/definitions/apiKeyAuthenticationType"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "authenticationType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "kind",
+                "mapping": {
+                  "ManagedIdentity": {
+                    "$ref": "#/definitions/managedIdentityAuthenticationType"
+                  },
+                  "ApiKey": {
+                    "$ref": "#/definitions/apiKeyAuthenticationType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Upstream provider authentication."
+              }
+            },
+            "managedIdentityAuthenticationType": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "ManagedIdentity"
+                  ]
+                },
+                "managedIdentity": {
+                  "type": "object",
+                  "properties": {
+                    "resource": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "clientId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "apiKeyAuthenticationType": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "ApiKey"
+                  ]
+                },
+                "apiKey": {
+                  "type": "object",
+                  "properties": {
+                    "headerName": {
+                      "type": "string"
+                    },
+                    "secretName": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "_1.contentSafetyPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "contentSafety"
+                  ]
+                },
+                "hateSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                },
+                "selfHarmSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                },
+                "sexualSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                },
+                "violenceSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Content safety policy thresholds.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "model/main.bicep"
+                }
+              }
+            },
+            "_1.costLimitPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "costLimit"
+                  ]
+                },
+                "id": {
+                  "type": "string"
+                },
+                "scope": {
+                  "type": "string",
+                  "allowedValues": [
+                    "resource",
+                    "workspace"
+                  ],
+                  "nullable": true
+                },
+                "amount": {
+                  "type": "int",
+                  "minValue": 1
+                },
+                "period": {
+                  "type": "string",
+                  "allowedValues": [
+                    "day",
+                    "hour",
+                    "month",
+                    "week",
+                    "year"
+                  ]
+                },
+                "counterKey": {
+                  "type": "array",
+                  "allowedValues": [
+                    "identity",
+                    "ipAddress"
+                  ],
+                  "minLength": 1,
+                  "maxLength": 2
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Cost limit policy. Amounts are whole USD in this draft.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "model/main.bicep"
+                }
+              }
+            },
+            "_1.modelPropertiesType": {
+              "type": "object",
+              "properties": {
+                "displayName": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "apiFormat": {
+                  "type": "string"
+                },
+                "supportedEndpoints": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minLength": 1
+                },
+                "deployment": {
+                  "type": "object",
+                  "properties": {
+                    "resourceId": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "modelName": {
+                      "type": "string"
+                    },
+                    "modelVersion": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                },
+                "policies": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/_1.policyType"
+                  },
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Model wire properties.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "model/main.bicep"
+                }
+              }
+            },
+            "_1.policyType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "tokenLimit": {
+                    "$ref": "#/definitions/_1.tokenLimitPolicyType"
+                  },
+                  "costLimit": {
+                    "$ref": "#/definitions/_1.costLimitPolicyType"
+                  },
+                  "contentSafety": {
+                    "$ref": "#/definitions/_1.contentSafetyPolicyType"
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Typed inline governance policies supported by this draft.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "model/main.bicep"
+                }
+              }
+            },
+            "_1.tokenLimitPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "tokenLimit"
+                  ]
+                },
+                "scope": {
+                  "type": "string",
+                  "allowedValues": [
+                    "resource",
+                    "workspace"
+                  ],
+                  "nullable": true
+                },
+                "count": {
+                  "type": "int",
+                  "minValue": 1
+                },
+                "period": {
+                  "type": "string",
+                  "allowedValues": [
+                    "day",
+                    "hour",
+                    "minute"
+                  ]
+                },
+                "counterKey": {
+                  "type": "array",
+                  "allowedValues": [
+                    "identity",
+                    "ipAddress"
+                  ],
+                  "minLength": 1,
+                  "maxLength": 2
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Token limit policy with public counter dimensions.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "model/main.bicep"
+                }
+              }
+            },
+            "modelType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "properties": {
+                  "$ref": "#/definitions/_1.modelPropertiesType"
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Catalog model configuration.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "model/main.bicep"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "aiGatewayName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Parent gateway name."
+              }
+            },
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Parent workspace name."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Model provider resource name."
+              }
+            },
+            "properties": {
+              "$ref": "#/definitions/modelProviderPropertiesType",
+              "metadata": {
+                "description": "Required. Typed provider configuration."
+              }
+            },
+            "models": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/modelType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Models registered under this provider."
+              }
+            },
+            "secrets": {
+              "type": "secureObject",
+              "properties": {},
+              "additionalProperties": {
+                "type": "string"
+              },
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Secure upstream API key values."
+              }
+            }
+          },
+          "variables": {
+            "configuration": "[if(equals(parameters('properties').kind, 'Foundry'), parameters('properties').foundry, parameters('properties').custom)]",
+            "authentication": "[variables('configuration').authentication]",
+            "wireAuthentication": "[if(equals(variables('authentication').kind, 'ManagedIdentity'), variables('authentication'), createObject('kind', 'ApiKey', 'apiKey', createObject('headerName', variables('authentication').apiKey.headerName, 'value', parameters('secrets')[variables('authentication').apiKey.secretName])))]"
+          },
+          "resources": {
+            "workspace": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/aigateways/workspaces",
+              "apiVersion": "2025-09-01-preview",
+              "name": "[format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName'))]"
+            },
+            "provider": {
+              "type": "Microsoft.ApiManagement/aigateways/workspaces/modelProviders",
+              "apiVersion": "2025-09-01-preview",
+              "name": "[format('{0}/{1}/{2}', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]",
+              "properties": "[union(createObject('kind', parameters('properties').kind, 'displayName', parameters('properties').displayName, 'description', tryGet(parameters('properties'), 'description')), if(equals(parameters('properties').kind, 'Foundry'), createObject('foundry', createObject('endpoint', parameters('properties').foundry.endpoint, 'resourceIds', parameters('properties').foundry.resourceIds, 'authentication', variables('wireAuthentication'))), createObject('custom', createObject('endpoint', parameters('properties').custom.endpoint, 'authentication', variables('wireAuthentication')))))]"
+            },
+            "provider_models": {
+              "copy": {
+                "name": "provider_models",
+                "count": "[length(coalesce(parameters('models'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-Model-{1}', uniqueString(deployment().name), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "aiGatewayName": {
+                    "value": "[parameters('aiGatewayName')]"
+                  },
+                  "workspaceName": {
+                    "value": "[parameters('workspaceName')]"
+                  },
+                  "modelProviderName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[coalesce(parameters('models'), createArray())[copyIndex()].name]"
+                  },
+                  "properties": {
+                    "value": "[coalesce(parameters('models'), createArray())[copyIndex()].properties]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.44.1.10279",
+                      "templateHash": "16627306435110958753"
+                    },
+                    "name": "AI Gateway Model",
+                    "description": "Registers a provider model and applies inline governance policies."
+                  },
+                  "definitions": {
+                    "modelType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "properties": {
+                          "$ref": "#/definitions/modelPropertiesType"
+                        }
+                      },
+                      "additionalProperties": false,
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "Catalog model configuration."
+                      }
+                    },
+                    "modelPropertiesType": {
+                      "type": "object",
+                      "properties": {
+                        "displayName": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "apiFormat": {
+                          "type": "string"
+                        },
+                        "supportedEndpoints": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "minLength": 1
+                        },
+                        "deployment": {
+                          "type": "object",
+                          "properties": {
+                            "resourceId": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "modelName": {
+                              "type": "string"
+                            },
+                            "modelVersion": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "policies": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/policyType"
+                          },
+                          "nullable": true
+                        }
+                      },
+                      "additionalProperties": false,
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "Model wire properties."
+                      }
+                    },
+                    "policyType": {
+                      "type": "object",
+                      "discriminator": {
+                        "propertyName": "type",
+                        "mapping": {
+                          "tokenLimit": {
+                            "$ref": "#/definitions/tokenLimitPolicyType"
+                          },
+                          "costLimit": {
+                            "$ref": "#/definitions/costLimitPolicyType"
+                          },
+                          "contentSafety": {
+                            "$ref": "#/definitions/contentSafetyPolicyType"
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "Typed inline governance policies supported by this draft."
+                      }
+                    },
+                    "tokenLimitPolicyType": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "allowedValues": [
+                            "tokenLimit"
+                          ]
+                        },
+                        "scope": {
+                          "type": "string",
+                          "allowedValues": [
+                            "resource",
+                            "workspace"
+                          ],
+                          "nullable": true
+                        },
+                        "count": {
+                          "type": "int",
+                          "minValue": 1
+                        },
+                        "period": {
+                          "type": "string",
+                          "allowedValues": [
+                            "day",
+                            "hour",
+                            "minute"
+                          ]
+                        },
+                        "counterKey": {
+                          "type": "array",
+                          "allowedValues": [
+                            "identity",
+                            "ipAddress"
+                          ],
+                          "minLength": 1,
+                          "maxLength": 2
+                        }
+                      },
+                      "additionalProperties": false,
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "Token limit policy with public counter dimensions."
+                      }
+                    },
+                    "costLimitPolicyType": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "allowedValues": [
+                            "costLimit"
+                          ]
+                        },
+                        "id": {
+                          "type": "string"
+                        },
+                        "scope": {
+                          "type": "string",
+                          "allowedValues": [
+                            "resource",
+                            "workspace"
+                          ],
+                          "nullable": true
+                        },
+                        "amount": {
+                          "type": "int",
+                          "minValue": 1
+                        },
+                        "period": {
+                          "type": "string",
+                          "allowedValues": [
+                            "day",
+                            "hour",
+                            "month",
+                            "week",
+                            "year"
+                          ]
+                        },
+                        "counterKey": {
+                          "type": "array",
+                          "allowedValues": [
+                            "identity",
+                            "ipAddress"
+                          ],
+                          "minLength": 1,
+                          "maxLength": 2
+                        }
+                      },
+                      "additionalProperties": false,
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "Cost limit policy. Amounts are whole USD in this draft."
+                      }
+                    },
+                    "contentSafetyPolicyType": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "allowedValues": [
+                            "contentSafety"
+                          ]
+                        },
+                        "hateSeverity": {
+                          "type": "string",
+                          "allowedValues": [
+                            "High",
+                            "Low",
+                            "Medium",
+                            "None"
+                          ],
+                          "nullable": true
+                        },
+                        "selfHarmSeverity": {
+                          "type": "string",
+                          "allowedValues": [
+                            "High",
+                            "Low",
+                            "Medium",
+                            "None"
+                          ],
+                          "nullable": true
+                        },
+                        "sexualSeverity": {
+                          "type": "string",
+                          "allowedValues": [
+                            "High",
+                            "Low",
+                            "Medium",
+                            "None"
+                          ],
+                          "nullable": true
+                        },
+                        "violenceSeverity": {
+                          "type": "string",
+                          "allowedValues": [
+                            "High",
+                            "Low",
+                            "Medium",
+                            "None"
+                          ],
+                          "nullable": true
+                        }
+                      },
+                      "additionalProperties": false,
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "Content safety policy thresholds."
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "aiGatewayName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Parent gateway name."
+                      }
+                    },
+                    "workspaceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Parent workspace name."
+                      }
+                    },
+                    "modelProviderName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Parent model provider name."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Model resource name."
+                      }
+                    },
+                    "properties": {
+                      "$ref": "#/definitions/modelPropertiesType",
+                      "metadata": {
+                        "description": "Required. Model deployment and runtime configuration."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "provider": {
+                      "existing": true,
+                      "type": "Microsoft.ApiManagement/aigateways/workspaces/modelProviders",
+                      "apiVersion": "2025-09-01-preview",
+                      "name": "[format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName'))]"
+                    },
+                    "model": {
+                      "type": "Microsoft.ApiManagement/aigateways/workspaces/modelProviders/models",
+                      "apiVersion": "2025-09-01-preview",
+                      "name": "[format('{0}/{1}/{2}/{3}', split(format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName')), '/')[0], split(format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName')), '/')[1], split(format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName')), '/')[2], parameters('name'))]",
+                      "properties": "[parameters('properties')]"
+                    }
+                  },
+                  "outputs": {
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The model resource ID."
+                      },
+                      "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/modelProviders/models', split(format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName')), '/')[0], split(format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName')), '/')[1], split(format('{0}/{1}/{2}', parameters('aiGatewayName'), parameters('workspaceName'), parameters('modelProviderName')), '/')[2], parameters('name'))]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The model name."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group name."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "provider"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The provider resource ID."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/modelProviders', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The provider name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group name."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "modelResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "The registered model resource IDs."
+              },
+              "copy": {
+                "count": "[length(coalesce(parameters('models'), createArray()))]",
+                "input": "[reference(format('provider_models[{0}]', copyIndex())).outputs.resourceId.value]"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "workspacePolicies"
+      ]
+    },
+    "workspace_aliases": {
+      "copy": {
+        "name": "workspace_aliases",
+        "count": "[length(coalesce(parameters('aliases'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Alias-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "aiGatewayName": {
+            "value": "[parameters('aiGatewayName')]"
+          },
+          "workspaceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('aliases'), createArray())[copyIndex()].name]"
+          },
+          "properties": {
+            "value": "[coalesce(parameters('aliases'), createArray())[copyIndex()].properties]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.44.1.10279",
+              "templateHash": "2593324071035124968"
+            },
+            "name": "AI Gateway Alias",
+            "description": "Creates a client-facing alias with priority and weighted routing."
+          },
+          "definitions": {
+            "aliasType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "properties": {
+                  "$ref": "#/definitions/aliasPropertiesType"
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Alias resource configuration."
+              }
+            },
+            "aliasPropertiesType": {
+              "type": "object",
+              "properties": {
+                "displayName": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "routes": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/routeType"
+                  },
+                  "minLength": 1,
+                  "maxLength": 30
+                },
+                "policies": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/policyType"
+                  },
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Alias wire properties for the preview routes contract."
+              }
+            },
+            "routeType": {
+              "type": "object",
+              "properties": {
+                "providerName": {
+                  "type": "string"
+                },
+                "modelName": {
+                  "type": "string"
+                },
+                "priority": {
+                  "type": "int",
+                  "nullable": true,
+                  "minValue": 0,
+                  "maxValue": 100
+                },
+                "weight": {
+                  "type": "int",
+                  "nullable": true,
+                  "minValue": 1,
+                  "maxValue": 100
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Route to a catalog model. Lower priority wins; weight is relative within a priority group."
+              }
+            },
+            "_1.contentSafetyPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "contentSafety"
+                  ]
+                },
+                "hateSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                },
+                "selfHarmSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                },
+                "sexualSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                },
+                "violenceSeverity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "High",
+                    "Low",
+                    "Medium",
+                    "None"
+                  ],
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Content safety policy thresholds.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "../model-provider/model/main.bicep"
+                }
+              }
+            },
+            "_1.costLimitPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "costLimit"
+                  ]
+                },
+                "id": {
+                  "type": "string"
+                },
+                "scope": {
+                  "type": "string",
+                  "allowedValues": [
+                    "resource",
+                    "workspace"
+                  ],
+                  "nullable": true
+                },
+                "amount": {
+                  "type": "int",
+                  "minValue": 1
+                },
+                "period": {
+                  "type": "string",
+                  "allowedValues": [
+                    "day",
+                    "hour",
+                    "month",
+                    "week",
+                    "year"
+                  ]
+                },
+                "counterKey": {
+                  "type": "array",
+                  "allowedValues": [
+                    "identity",
+                    "ipAddress"
+                  ],
+                  "minLength": 1,
+                  "maxLength": 2
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Cost limit policy. Amounts are whole USD in this draft.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "../model-provider/model/main.bicep"
+                }
+              }
+            },
+            "_1.tokenLimitPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "tokenLimit"
+                  ]
+                },
+                "scope": {
+                  "type": "string",
+                  "allowedValues": [
+                    "resource",
+                    "workspace"
+                  ],
+                  "nullable": true
+                },
+                "count": {
+                  "type": "int",
+                  "minValue": 1
+                },
+                "period": {
+                  "type": "string",
+                  "allowedValues": [
+                    "day",
+                    "hour",
+                    "minute"
+                  ]
+                },
+                "counterKey": {
+                  "type": "array",
+                  "allowedValues": [
+                    "identity",
+                    "ipAddress"
+                  ],
+                  "minLength": 1,
+                  "maxLength": 2
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Token limit policy with public counter dimensions.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "../model-provider/model/main.bicep"
+                }
+              }
+            },
+            "policyType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "tokenLimit": {
+                    "$ref": "#/definitions/_1.tokenLimitPolicyType"
+                  },
+                  "costLimit": {
+                    "$ref": "#/definitions/_1.costLimitPolicyType"
+                  },
+                  "contentSafety": {
+                    "$ref": "#/definitions/_1.contentSafetyPolicyType"
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Typed inline governance policies supported by this draft.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "../model-provider/model/main.bicep"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "aiGatewayName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Parent gateway name."
+              }
+            },
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Parent workspace name."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Alias resource name."
+              }
+            },
+            "properties": {
+              "$ref": "#/definitions/aliasPropertiesType",
+              "metadata": {
+                "description": "Required. Alias routes and policies."
+              }
+            }
+          },
+          "resources": {
+            "workspace": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/aigateways/workspaces",
+              "apiVersion": "2025-09-01-preview",
+              "name": "[format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName'))]"
+            },
+            "alias": {
+              "type": "Microsoft.ApiManagement/aigateways/workspaces/aliases",
+              "apiVersion": "2025-09-01-preview",
+              "name": "[format('{0}/{1}/{2}', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "routes",
+                    "count": "[length(parameters('properties').routes)]",
+                    "input": {
+                      "providerName": "[parameters('properties').routes[copyIndex('routes')].providerName]",
+                      "modelName": "[parameters('properties').routes[copyIndex('routes')].modelName]",
+                      "priority": "[coalesce(tryGet(parameters('properties').routes[copyIndex('routes')], 'priority'), 0)]",
+                      "weight": "[coalesce(tryGet(parameters('properties').routes[copyIndex('routes')], 'weight'), 1)]"
+                    }
+                  }
+                ],
+                "displayName": "[parameters('properties').displayName]",
+                "description": "[tryGet(parameters('properties'), 'description')]",
+                "policies": "[tryGet(parameters('properties'), 'policies')]"
+              }
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The alias resource ID."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/aliases', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The alias name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group name."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "workspace_modelProviders",
+        "workspacePolicies"
+      ]
+    },
+    "workspace_toolServers": {
+      "copy": {
+        "name": "workspace_toolServers",
+        "count": "[length(coalesce(parameters('toolServers'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-ToolServer-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "aiGatewayName": {
+            "value": "[parameters('aiGatewayName')]"
+          },
+          "workspaceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('toolServers'), createArray())[copyIndex()].name]"
+          },
+          "properties": {
+            "value": "[coalesce(parameters('toolServers'), createArray())[copyIndex()].properties]"
+          },
+          "secrets": {
+            "value": "[parameters('secrets')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.44.1.10279",
+              "templateHash": "11358965044943910803"
+            },
+            "name": "AI Gateway Tool Server",
+            "description": "Configures MCP and OpenAPI upstream endpoints."
+          },
+          "definitions": {
+            "toolServerType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "properties": {
+                  "$ref": "#/definitions/toolServerPropertiesType"
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Tool server resource configuration."
+              }
+            },
+            "toolServerPropertiesType": {
+              "type": "object",
+              "properties": {
+                "displayName": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "mcp",
+                    "openApi"
+                  ]
+                },
+                "accessState": {
+                  "type": "string",
+                  "allowedValues": [
+                    "active",
+                    "blocked"
+                  ],
+                  "nullable": true
+                },
+                "path": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "subscriptionRequired": {
+                  "type": "bool",
+                  "nullable": true
+                },
+                "allowList": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true
+                },
+                "blocked": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true
+                },
+                "endpoints": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/toolEndpointType"
+                  },
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Tool server wire properties. Connector-backed servers are deliberately excluded."
+              }
+            },
+            "toolEndpointType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "kind",
+                "mapping": {
+                  "mcp": {
+                    "$ref": "#/definitions/mcpEndpointType"
+                  },
+                  "openApi": {
+                    "$ref": "#/definitions/openApiEndpointType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "MCP or URL-based OpenAPI upstream endpoint."
+              }
+            },
+            "mcpEndpointType": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "namespace": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "mcp"
+                  ]
+                },
+                "mcp": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "transport": {
+                      "type": "string",
+                      "allowedValues": [
+                        "streamableHttp"
+                      ],
+                      "nullable": true
+                    }
+                  }
+                },
+                "credentials": {
+                  "$ref": "#/definitions/toolCredentialsType",
+                  "nullable": true
+                },
+                "tools": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true
+                },
+                "required": {
+                  "type": "bool",
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false
+            },
+            "openApiEndpointType": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "namespace": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "openApi"
+                  ]
+                },
+                "openApi": {
+                  "type": "object",
+                  "properties": {
+                    "specSource": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "allowedValues": [
+                            "url"
+                          ]
+                        },
+                        "url": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "credentials": {
+                  "$ref": "#/definitions/toolCredentialsType",
+                  "nullable": true
+                },
+                "tools": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true
+                },
+                "required": {
+                  "type": "bool",
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false
+            },
+            "toolCredentialsType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "none": {
+                    "$ref": "#/definitions/anonymousCredentialsType"
+                  },
+                  "header": {
+                    "$ref": "#/definitions/headerCredentialsType"
+                  },
+                  "managedIdentity": {
+                    "$ref": "#/definitions/managedIdentityCredentialsType"
+                  }
+                }
+              }
+            },
+            "anonymousCredentialsType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "none"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "headerCredentialsType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "header"
+                  ]
+                },
+                "headers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "secretName": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "managedIdentityCredentialsType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "managedIdentity"
+                  ]
+                },
+                "managedIdentity": {
+                  "type": "object",
+                  "properties": {
+                    "resource": {
+                      "type": "string"
+                    },
+                    "clientId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "aiGatewayName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Parent gateway name."
+              }
+            },
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Parent workspace name."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Tool server resource name."
+              }
+            },
+            "properties": {
+              "$ref": "#/definitions/toolServerPropertiesType",
+              "metadata": {
+                "description": "Required. Tool server configuration."
+              }
+            },
+            "secrets": {
+              "type": "secureObject",
+              "properties": {},
+              "additionalProperties": {
+                "type": "string"
+              },
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Secure upstream header values."
+              }
+            }
+          },
+          "resources": {
+            "workspace": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/aigateways/workspaces",
+              "apiVersion": "2025-09-01-preview",
+              "name": "[format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName'))]"
+            },
+            "toolServer": {
+              "type": "Microsoft.ApiManagement/aigateways/workspaces/toolServers",
+              "apiVersion": "2025-09-01-preview",
+              "name": "[format('{0}/{1}/{2}', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "endpoints",
+                    "count": "[length(parameters('properties').endpoints)]",
+                    "input": "[union(createObject('id', parameters('properties').endpoints[copyIndex('endpoints')].id, 'namespace', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'namespace'), 'tools', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'tools'), 'required', coalesce(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'required'), false()), 'kind', parameters('properties').endpoints[copyIndex('endpoints')].kind, 'credentials', if(equals(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'credentials'), null()), createObject('type', 'none'), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].credentials.type, 'header'), createObject('type', 'header', 'headers', map(parameters('properties').endpoints[copyIndex('endpoints')].credentials.headers, lambda('header', createObject('name', lambdaVariables('header').name, 'values', createArray(parameters('secrets')[lambdaVariables('header').secretName]))))), parameters('properties').endpoints[copyIndex('endpoints')].credentials))), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].kind, 'mcp'), createObject('mcp', parameters('properties').endpoints[copyIndex('endpoints')].mcp), createObject('openApi', parameters('properties').endpoints[copyIndex('endpoints')].openApi)))]"
+                  }
+                ],
+                "displayName": "[tryGet(parameters('properties'), 'displayName')]",
+                "description": "[tryGet(parameters('properties'), 'description')]",
+                "type": "[parameters('properties').type]",
+                "accessState": "[tryGet(parameters('properties'), 'accessState')]",
+                "path": "[tryGet(parameters('properties'), 'path')]",
+                "subscriptionRequired": "[coalesce(tryGet(parameters('properties'), 'subscriptionRequired'), true())]",
+                "allowList": "[tryGet(parameters('properties'), 'allowList')]",
+                "blocked": "[tryGet(parameters('properties'), 'blocked')]"
+              }
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The tool server resource ID."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/toolServers', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The tool server name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group name."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "workspacePolicies"
+      ]
+    },
+    "workspace_telemetryExporters": {
+      "copy": {
+        "name": "workspace_telemetryExporters",
+        "count": "[length(coalesce(parameters('telemetryExporters'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Exporter-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "aiGatewayName": {
+            "value": "[parameters('aiGatewayName')]"
+          },
+          "workspaceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('telemetryExporters'), createArray())[copyIndex()].name]"
+          },
+          "properties": {
+            "value": "[coalesce(parameters('telemetryExporters'), createArray())[copyIndex()].properties]"
+          },
+          "secrets": {
+            "value": "[parameters('secrets')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.44.1.10279",
+              "templateHash": "3990616342254270720"
+            },
+            "name": "AI Gateway Telemetry Exporter",
+            "description": "Configures runtime telemetry with payload capture disabled by default."
+          },
+          "definitions": {
+            "telemetryExporterType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "properties": {
+                  "$ref": "#/definitions/telemetryExporterPropertiesType"
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Runtime telemetry exporter configuration."
+              }
+            },
+            "telemetryExporterPropertiesType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "kind",
+                "mapping": {
+                  "ApplicationInsights": {
+                    "$ref": "#/definitions/applicationInsightsPropertiesType"
+                  },
+                  "OpenTelemetry": {
+                    "$ref": "#/definitions/openTelemetryPropertiesType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Exporter kind selects its destination."
+              }
+            },
+            "applicationInsightsPropertiesType": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "ApplicationInsights"
+                  ]
+                },
+                "payloadCapture": {
+                  "type": "bool",
+                  "nullable": true
+                },
+                "applicationInsights": {
+                  "type": "object",
+                  "properties": {
+                    "connectionStringSecretName": {
+                      "type": "string"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "openTelemetryPropertiesType": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "OpenTelemetry"
+                  ]
+                },
+                "payloadCapture": {
+                  "type": "bool",
+                  "nullable": true
+                },
+                "openTelemetry": {
+                  "type": "object",
+                  "properties": {
+                    "metricsEndpoint": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "logsEndpoint": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "tracesEndpoint": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "managedIdentity": {
+                      "type": "object",
+                      "properties": {
+                        "resource": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "clientId": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "headers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "secretName": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "aiGatewayName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Parent gateway name."
+              }
+            },
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Parent workspace name."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Exporter resource name."
+              }
+            },
+            "properties": {
+              "$ref": "#/definitions/telemetryExporterPropertiesType",
+              "metadata": {
+                "description": "Required. Export destination configuration."
+              }
+            },
+            "secrets": {
+              "type": "secureObject",
+              "properties": {},
+              "additionalProperties": {
+                "type": "string"
+              },
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Secure connection strings and OTLP headers."
+              }
+            }
+          },
+          "resources": {
+            "workspace": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/aigateways/workspaces",
+              "apiVersion": "2025-09-01-preview",
+              "name": "[format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName'))]"
+            },
+            "exporter": {
+              "type": "Microsoft.ApiManagement/aigateways/workspaces/telemetryExporters",
+              "apiVersion": "2025-09-01-preview",
+              "name": "[format('{0}/{1}/{2}', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]",
+              "properties": "[union(createObject('kind', parameters('properties').kind, 'payloadCapture', coalesce(tryGet(parameters('properties'), 'payloadCapture'), false())), if(equals(parameters('properties').kind, 'ApplicationInsights'), createObject('applicationInsights', createObject('connectionString', parameters('secrets')[parameters('properties').applicationInsights.connectionStringSecretName], 'resourceId', tryGet(parameters('properties').applicationInsights, 'resourceId'))), createObject('openTelemetry', createObject('metricsEndpoint', tryGet(parameters('properties').openTelemetry, 'metricsEndpoint'), 'logsEndpoint', tryGet(parameters('properties').openTelemetry, 'logsEndpoint'), 'tracesEndpoint', tryGet(parameters('properties').openTelemetry, 'tracesEndpoint'), 'managedIdentity', tryGet(parameters('properties').openTelemetry, 'managedIdentity'), 'headers', toObject(coalesce(tryGet(parameters('properties').openTelemetry, 'headers'), createArray()), lambda('header', lambdaVariables('header').name), lambda('header', parameters('secrets')[lambdaVariables('header').secretName]))))))]"
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The exporter resource ID."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/telemetryExporters', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The exporter name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group name."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "workspacePolicies"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The workspace resource ID."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces', parameters('aiGatewayName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The workspace name."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group name."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "modelProviderResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The model provider resource IDs."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('modelProviders'), createArray()))]",
+        "input": "[reference(format('workspace_modelProviders[{0}]', copyIndex())).outputs.resourceId.value]"
+      }
+    },
+    "aliasResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The alias resource IDs."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('aliases'), createArray()))]",
+        "input": "[reference(format('workspace_aliases[{0}]', copyIndex())).outputs.resourceId.value]"
+      }
+    },
+    "toolServerResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The tool server resource IDs."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('toolServers'), createArray()))]",
+        "input": "[reference(format('workspace_toolServers[{0}]', copyIndex())).outputs.resourceId.value]"
+      }
+    },
+    "telemetryExporterResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The runtime telemetry exporter resource IDs."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('telemetryExporters'), createArray()))]",
+        "input": "[reference(format('workspace_telemetryExporters[{0}]', copyIndex())).outputs.resourceId.value]"
+      }
+    }
+  }
+}

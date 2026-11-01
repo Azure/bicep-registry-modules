@@ -1,0 +1,384 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.44.1.10279",
+      "templateHash": "11358965044943910803"
+    },
+    "name": "AI Gateway Tool Server",
+    "description": "Configures MCP and OpenAPI upstream endpoints."
+  },
+  "definitions": {
+    "toolServerType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "$ref": "#/definitions/toolServerPropertiesType"
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Tool server resource configuration."
+      }
+    },
+    "toolServerPropertiesType": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "nullable": true
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "mcp",
+            "openApi"
+          ]
+        },
+        "accessState": {
+          "type": "string",
+          "allowedValues": [
+            "active",
+            "blocked"
+          ],
+          "nullable": true
+        },
+        "path": {
+          "type": "string",
+          "nullable": true
+        },
+        "subscriptionRequired": {
+          "type": "bool",
+          "nullable": true
+        },
+        "allowList": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true
+        },
+        "blocked": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true
+        },
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/toolEndpointType"
+          },
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Tool server wire properties. Connector-backed servers are deliberately excluded."
+      }
+    },
+    "toolEndpointType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "kind",
+        "mapping": {
+          "mcp": {
+            "$ref": "#/definitions/mcpEndpointType"
+          },
+          "openApi": {
+            "$ref": "#/definitions/openApiEndpointType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "MCP or URL-based OpenAPI upstream endpoint."
+      }
+    },
+    "mcpEndpointType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string",
+          "nullable": true
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "mcp"
+          ]
+        },
+        "mcp": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string"
+            },
+            "transport": {
+              "type": "string",
+              "allowedValues": [
+                "streamableHttp"
+              ],
+              "nullable": true
+            }
+          }
+        },
+        "credentials": {
+          "$ref": "#/definitions/toolCredentialsType",
+          "nullable": true
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true
+        },
+        "required": {
+          "type": "bool",
+          "nullable": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "openApiEndpointType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string",
+          "nullable": true
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "openApi"
+          ]
+        },
+        "openApi": {
+          "type": "object",
+          "properties": {
+            "specSource": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "url"
+                  ]
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "credentials": {
+          "$ref": "#/definitions/toolCredentialsType",
+          "nullable": true
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true
+        },
+        "required": {
+          "type": "bool",
+          "nullable": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "toolCredentialsType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type",
+        "mapping": {
+          "none": {
+            "$ref": "#/definitions/anonymousCredentialsType"
+          },
+          "header": {
+            "$ref": "#/definitions/headerCredentialsType"
+          },
+          "managedIdentity": {
+            "$ref": "#/definitions/managedIdentityCredentialsType"
+          }
+        }
+      }
+    },
+    "anonymousCredentialsType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "none"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "headerCredentialsType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "header"
+          ]
+        },
+        "headers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "secretName": {
+                "type": "string"
+              }
+            }
+          },
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "managedIdentityCredentialsType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "managedIdentity"
+          ]
+        },
+        "managedIdentity": {
+          "type": "object",
+          "properties": {
+            "resource": {
+              "type": "string"
+            },
+            "clientId": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "parameters": {
+    "aiGatewayName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Parent gateway name."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Parent workspace name."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Tool server resource name."
+      }
+    },
+    "properties": {
+      "$ref": "#/definitions/toolServerPropertiesType",
+      "metadata": {
+        "description": "Required. Tool server configuration."
+      }
+    },
+    "secrets": {
+      "type": "secureObject",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Secure upstream header values."
+      }
+    }
+  },
+  "resources": {
+    "workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/aigateways/workspaces",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName'))]"
+    },
+    "toolServer": {
+      "type": "Microsoft.ApiManagement/aigateways/workspaces/toolServers",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[format('{0}/{1}/{2}', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "endpoints",
+            "count": "[length(parameters('properties').endpoints)]",
+            "input": "[union(createObject('id', parameters('properties').endpoints[copyIndex('endpoints')].id, 'namespace', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'namespace'), 'tools', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'tools'), 'required', coalesce(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'required'), false()), 'kind', parameters('properties').endpoints[copyIndex('endpoints')].kind, 'credentials', if(equals(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'credentials'), null()), createObject('type', 'none'), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].credentials.type, 'header'), createObject('type', 'header', 'headers', map(parameters('properties').endpoints[copyIndex('endpoints')].credentials.headers, lambda('header', createObject('name', lambdaVariables('header').name, 'values', createArray(parameters('secrets')[lambdaVariables('header').secretName]))))), parameters('properties').endpoints[copyIndex('endpoints')].credentials))), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].kind, 'mcp'), createObject('mcp', parameters('properties').endpoints[copyIndex('endpoints')].mcp), createObject('openApi', parameters('properties').endpoints[copyIndex('endpoints')].openApi)))]"
+          }
+        ],
+        "displayName": "[tryGet(parameters('properties'), 'displayName')]",
+        "description": "[tryGet(parameters('properties'), 'description')]",
+        "type": "[parameters('properties').type]",
+        "accessState": "[tryGet(parameters('properties'), 'accessState')]",
+        "path": "[tryGet(parameters('properties'), 'path')]",
+        "subscriptionRequired": "[coalesce(tryGet(parameters('properties'), 'subscriptionRequired'), true())]",
+        "allowList": "[tryGet(parameters('properties'), 'allowList')]",
+        "blocked": "[tryGet(parameters('properties'), 'blocked')]"
+      }
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The tool server resource ID."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/toolServers', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The tool server name."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group name."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
