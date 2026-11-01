@@ -23,20 +23,28 @@ This creates a Premium gateway with a system-assigned identity. The resource pro
 
 There is no `br/public:avm/res/api-management/aigateway` release to consume yet. Use the local module path while reviewing.
 
-## Two models behind one alias
+## Bring an existing Foundry resource group with two models behind one alias
+
+When your Foundry account and model deployments live in a separate resource group (for example `rg-foundrymodels`), reference that existing account with `scope: az.resourceGroup(foundryResourceGroupName)` and pass its resource ID and endpoint into the gateway module.
 
 Use `properties.routes` to route to catalog model names, not to upstream deployment IDs. Lower priority is preferred. Weights are relative within a priority group: these two routes use 80/20 selection at priority zero.
 
-The following example assumes two existing Foundry deployments and a user-assigned identity already granted **Cognitive Services OpenAI User** on that account. Supply a Foundry endpoint with a trailing slash and use a region where the gateway preview is available.
+The following example assumes `gpt-6.1-sol` and `gpt-5-mini` deployments in `foundryResourceGroupName` and a user-assigned identity already granted **Cognitive Services OpenAI User** on that Foundry account:
 
 ```bicep
 param gatewayName string
-param foundryAccountResourceId string
-param foundryEndpoint string
+param foundryResourceGroupName string
+param foundryAccountName string
+param foundryEndpoint string = 'https://${foundryAccountName}.openai.azure.com/'
 param primaryDeploymentName string = 'gpt-6.1-sol'
 param secondaryDeploymentName string = 'gpt-5-mini'
 param userAssignedIdentityResourceId string
 param userAssignedIdentityClientId string
+
+resource existingFoundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
+  scope: az.resourceGroup(foundryResourceGroupName)
+  name: foundryAccountName
+}
 
 module gateway './avm/res/api-management/aigateway/main.bicep' = {
   name: 'aigateway'
@@ -59,7 +67,7 @@ module gateway './avm/res/api-management/aigateway/main.bicep' = {
               foundry: {
                 endpoint: foundryEndpoint
                 resourceIds: [
-                  foundryAccountResourceId
+                  existingFoundryAccount.id
                 ]
                 authentication: {
                   kind: 'ManagedIdentity'
@@ -77,9 +85,10 @@ module gateway './avm/res/api-management/aigateway/main.bicep' = {
                 apiFormat: 'OpenAIChatCompletions'
                 supportedEndpoints: [
                   '/openai/v1/chat/completions'
+                  '/openai/v1/responses'
                 ]
                 deployment: {
-                  resourceId: '${foundryAccountResourceId}/deployments/${deploymentName}'
+                  resourceId: '${existingFoundryAccount.id}/deployments/${deploymentName}'
                   modelName: deploymentName
                 }
               }
@@ -88,9 +97,9 @@ module gateway './avm/res/api-management/aigateway/main.bicep' = {
         ]
         aliases: [
           {
-            name: 'chat'
+            name: 'gpt-latest'
             properties: {
-              displayName: 'Chat'
+              displayName: 'gpt-latest'
               routes: [
                 {
                   providerName: 'foundry'
