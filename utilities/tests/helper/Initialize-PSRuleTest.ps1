@@ -3,7 +3,8 @@
 Imports repository-pinned PSRule dependencies for tests that need expansion.
 
 .DESCRIPTION
-Uses the already-installed Avm.Authoring module. Missing dependencies are installed
+Reuses a capable loaded Avm.Authoring package, including a path-bound source build.
+Otherwise imports the supported installed module. Missing dependencies are installed
 only after a failed exact-version import and when automatic installation is enabled.
 
 .PARAMETER RepoRootPath
@@ -18,12 +19,43 @@ function Initialize-PSRuleTest {
     )
 
     $ErrorActionPreference = 'Stop'
-    foreach ($loaded in @(Get-Module -Name 'Avm.Authoring' -All)) {
-        if ($loaded.Version -lt [version] '0.21.0') {
-            throw 'Avm.Authoring 0.21.0 or later is required. Start a fresh PowerShell session with the supported module.'
+    $loadedAuthoring = @(Get-Module -Name 'Avm.Authoring' -All)
+    if ($loadedAuthoring.Count -eq 0) {
+        Import-Module -Name 'Avm.Authoring' -MinimumVersion '0.21.0' -Global -ErrorAction Stop
+        $loadedAuthoring = @(Get-Module -Name 'Avm.Authoring' -All)
+    }
+    if ($loadedAuthoring.Count -ne 1) {
+        throw 'Exactly one supported Avm.Authoring package must be loaded. Start a fresh PowerShell session.'
+    }
+    $authoring = $loadedAuthoring[0]
+    if ($authoring.Guid -ne [guid] '356c238f-88dd-48bf-ad0a-b7de6a5bb877' -or
+        $authoring.Version -isnot [version] -or
+        ($authoring.Version -lt [version] '0.21.0' -and $authoring.Version -ne [version] '0.0.0')) {
+        throw 'Avm.Authoring 0.21.0 or later, or a capable loaded source package, is required.'
+    }
+    if ($authoring.Version -eq [version] '0.0.0' -and
+        ($authoring.PrivateData -isnot [Collections.IDictionary] -or
+            $authoring.PrivateData['AvmCapabilities'] -isnot [Collections.IDictionary] -or
+            $authoring.PrivateData['AvmCapabilities']['PowerShellModuleArchiveRecovery'] -isnot [int] -or
+            $authoring.PrivateData['AvmCapabilities']['PowerShellModuleArchiveRecovery'] -ne 1)) {
+        throw 'The loaded Avm.Authoring source package lacks the required managed PowerShell module capability.'
+    }
+    $comparison = $IsWindows ? [StringComparison]::OrdinalIgnoreCase : [StringComparison]::Ordinal
+    foreach ($name in @('Get-AvmTool', 'Install-AvmTool')) {
+        $exported = $authoring.ExportedCommands[$name]
+        if ($null -eq $exported -or
+            @('Name', 'Path', 'SkipModuleVersionCheck' | Where-Object { -not $exported.Parameters.ContainsKey($_) }).Count) {
+            throw "The loaded Avm.Authoring package does not export the required $name managed-tool contract."
+        }
+        $command = Get-Command -Name $name -CommandType Function -ErrorAction Stop
+        foreach ($owner in @($exported.Module, $command.Module)) {
+            if ($null -eq $owner -or $owner.Guid -ne $authoring.Guid -or
+                $owner.Version -ne $authoring.Version -or
+                -not [string]::Equals($owner.ModuleBase, $authoring.ModuleBase, $comparison)) {
+                throw "$name does not resolve to the loaded Avm.Authoring package. Start a fresh PowerShell session."
+            }
         }
     }
-    Import-Module -Name 'Avm.Authoring' -MinimumVersion '0.21.0' -Global -ErrorAction Stop
 
     foreach ($name in @('PSRule', 'PSRule.Rules.Azure')) {
         $toolInput = @{
