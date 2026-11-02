@@ -2,13 +2,11 @@
 
 Deploy a standalone Azure AI Gateway, register model providers and tools in its default workspace, and give clients a stable model alias with priority and weighted routing.
 
-**Review draft, not a published Azure Verified Module.** This module targets `Microsoft.ApiManagement/aigateways@2025-09-01-preview`. It is separate from the existing API Management `service` module. The preview accepts the `Premium` SKU; this module does not deploy the retired connector gateway resource.
+This module targets `Microsoft.ApiManagement/aigateways@2025-09-01-preview`. It is separate from the existing API Management `service` module (`avm/res/api-management/service`). The preview accepts the `Premium` SKU; this module does not deploy the retired connector gateway resource.
 
-Start with the [shape review](https://github.com/paulyuk/bicep-registry-modules/blob/feat/aigateway-avm-review/avm/res/api-management/aigateway/DESIGN.md) before deciding whether to submit the module to AVM. Compilation does not establish live deployment compatibility or AVM certification.
-
-> **Looking for a one-click standalone quickstart?** If you want a single template that provisions both a new Microsoft Foundry account (`gpt-6.1-sol` + `gpt-5-mini`) and an AI Gateway with default aliases and optional Microsoft Learn MCP (`mcpMode: 'create'`), see the companion ARM Quickstart [`quickstarts/microsoft.apimanagement/aigateway`](https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.apimanagement/aigateway) ([draft PR `paulyuk/azure-quickstart-templates#1`](https://github.com/paulyuk/azure-quickstart-templates/pull/1)).
+> **Looking for a one-click standalone quickstart?** If you want a single template that provisions both a new Microsoft Foundry account (`gpt-6.1-sol` + `gpt-5-mini`) and an AI Gateway with default aliases and optional Microsoft Learn MCP (`mcpMode: 'create'`), see the companion ARM Quickstart [`quickstarts/microsoft.apimanagement/aigateway`](https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.apimanagement/aigateway).
 >
-> **REST API & TypeSpec specification:** See [`Microsoft.ApiManagement/AIGateway` in `Azure/azure-rest-api-specs`](https://github.com/Azure/azure-rest-api-specs/tree/main/specification/apimanagement/resource-manager/Microsoft.ApiManagement/AIGateway) for the control-plane specification. Note that several wire-contract bug fixes aligning the spec with the live `2025-09-01-preview` resource provider are about to go into the spec via [`Azure/azure-rest-api-specs#47711`](https://github.com/Azure/azure-rest-api-specs/issues/47711).
+> **REST API & TypeSpec specification:** See [`Microsoft.ApiManagement/AIGateway` in `Azure/azure-rest-api-specs`](https://github.com/Azure/azure-rest-api-specs/tree/main/specification/apimanagement/resource-manager/Microsoft.ApiManagement/AIGateway) and [`Azure/azure-rest-api-specs#47711`](https://github.com/Azure/azure-rest-api-specs/issues/47711) for the control-plane specification.
 
 ## Minimal deployment
 
@@ -181,9 +179,9 @@ Workspace child outputs expose provider, alias, tool server and exporter resourc
 
 | Scenario | Coverage | Deployment prerequisites |
 |---|---|---|
-| [Defaults](https://github.com/paulyuk/bicep-registry-modules/blob/feat/aigateway-avm-review/avm/res/api-management/aigateway/tests/e2e/defaults/main.test.bicep) | Minimum parameters; identity; service-provisioned workspace; sequential initial/idempotency deployment | Preview-enabled subscription and region |
-| [Max](https://github.com/paulyuk/bicep-registry-modules/blob/feat/aigateway-avm-review/avm/res/api-management/aigateway/tests/e2e/max/main.test.bicep) | Both identities; RBAC; lock; VNet; API keys; Foundry/custom providers; three models; weighted/priority alias; policies; MCP/OpenAPI endpoints; both exporters | Existing Foundry account and two deployments, reachable custom/tool/OTLP endpoints, secure credentials, Reader principal; gateway subnet prerequisites need live confirmation |
-| [WAF-aligned](https://github.com/paulyuk/bicep-registry-modules/blob/feat/aigateway-avm-review/avm/res/api-management/aigateway/tests/e2e/waf-aligned/main.test.bicep) | User-assigned identity; upstream least-privilege RBAC; budgets; content safety; two-model routing; metadata-only monitoring; delete lock | Existing Foundry account and two deployments; preview-enabled region |
+| [Defaults](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/aigateway/tests/e2e/defaults/main.test.bicep) | Minimum parameters; identity; service-provisioned workspace; sequential initial/idempotency deployment | Preview-enabled subscription and region |
+| [Max](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/aigateway/tests/e2e/max/main.test.bicep) | Both identities; RBAC; lock; VNet; API keys; Foundry/custom providers; three models; weighted/priority alias; policies; MCP/OpenAPI endpoints; both exporters | Existing Foundry account and two deployments, reachable custom/tool/OTLP endpoints, secure credentials, Reader principal |
+| [WAF-aligned](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/aigateway/tests/e2e/waf-aligned/main.test.bicep) | User-assigned identity; upstream least-privilege RBAC; budgets; content safety; two-model routing; metadata-only monitoring; delete lock | Existing Foundry account and two deployments; preview-enabled region |
 
 The max and WAF scenarios create their own user-assigned identity and monitoring resources, then grant the identity access to the specified Foundry account before deploying the gateway configuration. Test execution therefore changes RBAC on that external account. They do not create Foundry model deployments or reserve model quota.
 
@@ -217,8 +215,8 @@ For zero-dependency Bash and PowerShell post-provision scripts that automate the
 
 ## References
 
-- Shape review: https://github.com/paulyuk/bicep-registry-modules/blob/feat/aigateway-avm-review/avm/res/api-management/aigateway/DESIGN.md
+- Design overview: [DESIGN.md](./DESIGN.md)
 - Adjacent API Management module: https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/api-management/service
 - AVM Bicep specifications: https://azure.github.io/Azure-Verified-Modules/specs/bicep/
 - AVM telemetry: https://aka.ms/avm/TelemetryInfo
-- Public sample used for hierarchy context, not as an authoritative preview schema: https://github.com/Azure-Samples/simple-foundry-hosted-agent-python-aigateway/blob/main/infra/ai-gateway/main.bicep
+- Companion Hosted Agent sample: https://github.com/Azure-Samples/simple-foundry-hosted-agent-python-aigateway/blob/main/infra/ai-gateway/main.bicep
