@@ -1,10 +1,26 @@
 ---
 name: AVM-Tech-debt-analysis
-description: 'Analyze Azure Verified Module (AVM) Bicep files and examples for technical debt, inconsistencies, documentation gaps, and quality issues.'
+description: "Analyze Azure Verified Module (AVM) Bicep files and examples for technical debt, inconsistencies, documentation gaps, and quality issues."
 argument-hint: Provide the name of the module your want to analyze
 agent: agent
 model: Auto (copilot)
-tools: ['search', 'runCommands', 'runTasks', 'usages', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests', 'Azure MCP/documentation', 'search']
+tools:
+  [
+    "search",
+    "runCommands",
+    "runTasks",
+    "usages",
+    "problems",
+    "changes",
+    "testFailure",
+    "openSimpleBrowser",
+    "fetch",
+    "githubRepo",
+    "todos",
+    "runTests",
+    "Azure MCP/documentation",
+    "search",
+  ]
 ---
 
 # Technical Debt Analysis for Azure Verified Module
@@ -80,11 +96,11 @@ Here is a ReAct-style Thought–Action–Observation execution flow that you MUS
 
 ### 5.1. Technical Debt Summary (MANDATORY)
 
-| Category | File | Issue Type | Severity | Description | Line/Section |
-|----------|------|------------|----------|-------------|--------------|
-| Documentation | `README.md` | Spelling Error | Low | "parameter" should be "parameter" | Line 45 |
-| Examples | `tests/e2e/defaults/main.test.bicep` | Inconsistency | Medium | Parameter value differs from documentation example | Line 12 |
-| Code Quality | `main.bicep` | Missing Description | High | Parameter lacks @description decorator | Line 23 |
+| Category      | File                                 | Issue Type          | Severity | Description                                        | Line/Section |
+| ------------- | ------------------------------------ | ------------------- | -------- | -------------------------------------------------- | ------------ |
+| Documentation | `README.md`                          | Spelling Error      | Low      | "parameter" should be "parameter"                  | Line 45      |
+| Examples      | `tests/e2e/defaults/main.test.bicep` | Inconsistency       | Medium   | Parameter value differs from documentation example | Line 12      |
+| Code Quality  | `main.bicep`                         | Missing Description | High     | Parameter lacks @description decorator             | Line 23      |
 
 ### 5.2. Issue Categories
 
@@ -100,22 +116,26 @@ Here is a ReAct-style Thought–Action–Observation execution flow that you MUS
 For each identified issue, provide the following details:
 
 #### Issue: {IssueTitle}
+
 - **Category**: {Documentation | Code Quality | Examples | Compliance | Consistency | Testing}
 - **Severity**: {Low | Medium | High | Critical}
 - **File(s)**: {affected file paths}
 - **Location**: {specific line numbers or sections}
 
 **Problem Description:**
+
 - Clear description of the issue found
 - Impact on module quality or usability
 - Specific examples of the problem
 
 **Recommended Fix:**
+
 - Specific corrective actions required
 - Exact text changes or structural modifications needed
 - References to AVM specifications or best practices
 
 **Validation Steps:**
+
 - How to verify the fix is correct
 - Testing requirements to ensure quality
 - Documentation updates needed
