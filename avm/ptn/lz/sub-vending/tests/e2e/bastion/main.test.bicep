@@ -33,7 +33,7 @@ module testDeployment '../../../main.bicep' = {
       serviceShort: serviceShort
     }
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: managementGroup().name
     virtualNetworkEnabled: true
     virtualNetworkLocation: resourceLocation
     virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
@@ -62,6 +62,7 @@ module testDeployment '../../../main.bicep' = {
 }
 
 output createdSubId string = testDeployment.outputs.subscriptionId
+output deploymentManagementGroupId string = managementGroup().name
 output namePrefix string = namePrefix
 output serviceShort string = serviceShort
 output resourceLocation string = resourceLocation
