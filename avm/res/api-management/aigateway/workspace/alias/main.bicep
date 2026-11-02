@@ -21,12 +21,17 @@ resource alias 'Microsoft.ApiManagement/aigateways/workspaces/aliases@2025-09-01
   name: name
   parent: workspace
   properties: {
-    displayName: properties.displayName
+    aliasName: properties.?aliasName ?? properties.?displayName ?? name
     description: properties.?description
-    routes: [
+    backendModels: [
       for route in properties.routes: {
-        providerName: route.providerName
-        modelName: route.modelName
+        resourceId: resourceId(
+          'Microsoft.ApiManagement/aigateways/workspaces/modelProviders/models',
+          aiGatewayName,
+          workspaceName,
+          route.providerName,
+          route.modelName
+        )
         priority: route.?priority ?? 0
         weight: route.?weight ?? 1
       }
@@ -51,9 +56,10 @@ type aliasType = {
 }
 @export()
 @sealed()
-@description('Alias wire properties for the preview routes contract.')
+@description('Alias wire properties for the preview backendModels contract.')
 type aliasPropertiesType = {
-  displayName: string
+  aliasName: string?
+  displayName: string?
   description: string?
   @minLength(1)
   @maxLength(30)

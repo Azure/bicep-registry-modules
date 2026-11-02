@@ -11,6 +11,7 @@ import {
   tokenLimitPolicyType as childTokenLimitPolicyType
   costLimitPolicyType as childCostLimitPolicyType
   contentSafetyPolicyType as childContentSafetyPolicyType
+  ipFilterPolicyType as childIpFilterPolicyType
 } from './workspace/model-provider/model/main.bicep'
 import { aliasType as childAliasType, routeType as childRouteType } from './workspace/alias/main.bicep'
 import { toolServerType as childToolServerType, toolEndpointType as childToolEndpointType } from './workspace/tool-server/main.bicep'
@@ -75,6 +76,10 @@ var identity = {
 }
 
 var builtInRoleNames = {
+  'AI Gateway User': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'caad7a21-134e-43f4-a550-c5ffc17e051c'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
@@ -132,9 +137,10 @@ resource gateway 'Microsoft.ApiManagement/aigateways@2025-09-01-preview' = {
   properties: virtualNetworkConfiguration == null
     ? {}
     : {
-        virtualNetworkType: virtualNetworkConfiguration!.virtualNetworkType
-        virtualNetworkConfiguration: {
-          subnetResourceId: virtualNetworkConfiguration!.subnetResourceId
+        backend: {
+          subnet: {
+            id: virtualNetworkConfiguration!.subnetResourceId
+          }
         }
       }
 }
@@ -252,6 +258,9 @@ type costLimitPolicyType = childCostLimitPolicyType
 @description('Content safety thresholds.')
 type contentSafetyPolicyType = childContentSafetyPolicyType
 @export()
+@description('Inbound caller IP filter policy.')
+type ipFilterPolicyType = childIpFilterPolicyType
+@export()
 @description('Client-facing model alias configuration.')
 type aliasType = childAliasType
 @export()
@@ -268,8 +277,7 @@ type toolEndpointType = childToolEndpointType
 type telemetryExporterType = childTelemetryExporterType
 @export()
 @sealed()
-@description('Gateway virtual network attachment.')
+@description('Gateway outbound virtual network attachment (`properties.backend.subnet.id`). Requires a subnet in the same subscription and region delegated to Microsoft.App/environments.')
 type virtualNetworkConfigurationType = {
-  virtualNetworkType: 'External' | 'Internal'
   subnetResourceId: string
 }

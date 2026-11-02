@@ -56,7 +56,7 @@ type modelPropertiesType = {
 @export()
 @discriminator('type')
 @description('Typed inline governance policies supported by this draft.')
-type policyType = tokenLimitPolicyType | costLimitPolicyType | contentSafetyPolicyType
+type policyType = tokenLimitPolicyType | costLimitPolicyType | contentSafetyPolicyType | ipFilterPolicyType
 @export()
 @sealed()
 @description('Token limit policy with public counter dimensions.')
@@ -93,4 +93,14 @@ type contentSafetyPolicyType = {
   selfHarmSeverity: ('Low' | 'Medium' | 'High' | 'None')?
   sexualSeverity: ('Low' | 'Medium' | 'High' | 'None')?
   violenceSeverity: ('Low' | 'Medium' | 'High' | 'None')?
+}
+@export()
+@sealed()
+@description('Inbound caller IP filter policy.')
+type ipFilterPolicyType = {
+  type: 'ipFilter'
+  id: string?
+  action: 'Allow' | 'Deny'
+  @minLength(1)
+  cidrRanges: string[]
 }

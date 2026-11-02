@@ -141,7 +141,7 @@ The gateway creates providers and their models before aliases. A route may also 
 | `roleAssignments` | AVM `roleAssignmentType[]?` | No gateway-scoped assignments |
 | `lock` | AVM `lockType?` | No lock; absent `kind` or `None` also creates no lock |
 | `enableTelemetry` | `bool` | `true`; AVM usage telemetry only |
-| `virtualNetworkConfiguration` | `virtualNetworkConfigurationType?` | No network attachment |
+| `virtualNetworkConfiguration` | `virtualNetworkConfigurationType?` | Optional outbound VNet subnet attachment (`properties.backend.subnet.id`; subnet must be in the same subscription and region, delegated to `Microsoft.App/environments`) |
 | `apiKeys` | `apiKeyType[]?` | No API keys |
 | `workspaces` | `workspaceType[]` | One entry: `{ name: 'default' }` |
 | `secrets` | Secure string dictionary | `{}`; values referenced by child configuration |
@@ -150,7 +150,7 @@ Each resource entry has a `name` and strongly typed `properties`; a provider add
 
 `workspaces: []` skips workspace configuration; it does not delete the service-provisioned workspace. The parameter permits at most one `default` entry. `policies: null` leaves workspace policies untouched, while `policies: []` explicitly replaces them with an empty set. Resource deployments use incremental mode; removing a child from an array does not delete a previously deployed child.
 
-Gateway-level `roleAssignments` accepts the common names `Owner`, `Contributor`, `Reader`, `Role Based Access Control Administrator` and `User Access Administrator`, or a role-definition GUID/full resource ID. Other role display names must be resolved to a GUID or resource ID first. These assignments do not grant the gateway access to upstream Foundry accounts.
+Gateway-level `roleAssignments` accepts the common names `AI Gateway User`, `Owner`, `Contributor`, `Reader`, `Role Based Access Control Administrator` and `User Access Administrator`, or a role-definition GUID/full resource ID. Other role display names must be resolved to a GUID or resource ID first. These assignments do not grant the gateway access to upstream Foundry accounts.
 
 ## Secret inputs and telemetry
 

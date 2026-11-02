@@ -57,16 +57,17 @@ All public types below are exported from `main.bicep`. Their definitions live wi
 | `modelProviderType` | `name`, Foundry/Custom properties, optional `models` |
 | `authenticationType` | ManagedIdentity audience/client ID, or ApiKey header/secret reference |
 | `modelType` | `name`, display name, API format, supported endpoints, deployment details, policies |
-| `policyType` | Discriminated tokenLimit / costLimit / contentSafety union |
+| `policyType` | Discriminated tokenLimit / costLimit / contentSafety / ipFilter union |
 | `tokenLimitPolicyType` | Positive token count, minute/hour/day period, camelCase counter-dimension array |
 | `costLimitPolicyType` | Stable ID, positive whole-USD amount, hour/day/week/month/year period, counter dimensions |
 | `contentSafetyPolicyType` | Hate, self-harm, sexual and violence severity thresholds |
-| `aliasType` | `name`, display name, description, routes and optional policies |
+| `ipFilterPolicyType` | Inbound caller IP filter (`Allow` / `Deny` action and `cidrRanges` array) |
+| `aliasType` | `name`, alias/display name, description, routes and optional policies |
 | `routeType` | Provider name, model name, priority 0-100, weight 1-100 |
 | `toolServerType` | MCP/OpenAPI server metadata, endpoint array, allow/block lists and access settings |
 | `toolEndpointType` | MCP URL or URL-based OpenAPI source with optional upstream credentials |
 | `telemetryExporterType` | Application Insights or OTLP configuration with boolean payload capture |
-| `virtualNetworkConfigurationType` | External/Internal attachment with subnet ARM ID |
+| `virtualNetworkConfigurationType` | Outbound VNet subnet attachment (`subnetResourceId` -> `properties.backend.subnet.id`) |
 
 The common AVM identity, lock and RBAC types come from `br/public:avm/utl/types/avm-common-types:0.7.0`, matching the adjacent API Management module.
 

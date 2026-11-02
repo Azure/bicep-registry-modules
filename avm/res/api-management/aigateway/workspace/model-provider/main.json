@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "12643070713801823085"
+      "templateHash": "8326322979470444705"
     },
     "name": "AI Gateway Model Provider",
     "description": "Configures a Foundry or custom provider and its model catalog."
@@ -300,6 +300,42 @@
         }
       }
     },
+    "_1.ipFilterPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "ipFilter"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "nullable": true
+        },
+        "action": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Deny"
+          ]
+        },
+        "cidrRanges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Inbound caller IP filter policy.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model/main.bicep"
+        }
+      }
+    },
     "_1.modelPropertiesType": {
       "type": "object",
       "properties": {
@@ -365,6 +401,9 @@
           },
           "contentSafety": {
             "$ref": "#/definitions/_1.contentSafetyPolicyType"
+          },
+          "ipFilter": {
+            "$ref": "#/definitions/_1.ipFilterPolicyType"
           }
         }
       },
@@ -644,7 +683,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.44.1.10279",
-              "templateHash": "16627306435110958753"
+              "templateHash": "9095371517906034093"
             },
             "name": "AI Gateway Model",
             "description": "Registers a provider model and applies inline governance policies."
@@ -729,6 +768,9 @@
                   },
                   "contentSafety": {
                     "$ref": "#/definitions/contentSafetyPolicyType"
+                  },
+                  "ipFilter": {
+                    "$ref": "#/definitions/ipFilterPolicyType"
                   }
                 }
               },
@@ -886,6 +928,40 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "Content safety policy thresholds."
+              }
+            },
+            "ipFilterPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "ipFilter"
+                  ]
+                },
+                "id": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "action": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Allow",
+                    "Deny"
+                  ]
+                },
+                "cidrRanges": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Inbound caller IP filter policy."
               }
             }
           },

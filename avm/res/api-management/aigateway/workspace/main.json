@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "7696670771291513209"
+      "templateHash": "8933469903661254297"
     },
     "name": "AI Gateway Workspace",
     "description": "References the service-provisioned default workspace or writes workspace policies, then deploys child configuration."
@@ -66,8 +66,13 @@
     "_1.aliasPropertiesType": {
       "type": "object",
       "properties": {
+        "aliasName": {
+          "type": "string",
+          "nullable": true
+        },
         "displayName": {
-          "type": "string"
+          "type": "string",
+          "nullable": true
         },
         "description": {
           "type": "string",
@@ -91,7 +96,7 @@
       },
       "additionalProperties": false,
       "metadata": {
-        "description": "Alias wire properties for the preview routes contract.",
+        "description": "Alias wire properties for the preview backendModels contract.",
         "__bicep_imported_from!": {
           "sourceTemplate": "alias/main.bicep"
         }
@@ -411,6 +416,42 @@
       "additionalProperties": false,
       "metadata": {
         "description": "Cost limit policy. Amounts are whole USD in this draft.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "model-provider/model/main.bicep"
+        }
+      }
+    },
+    "_3.ipFilterPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "ipFilter"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "nullable": true
+        },
+        "action": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Deny"
+          ]
+        },
+        "cidrRanges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Inbound caller IP filter policy.",
         "__bicep_imported_from!": {
           "sourceTemplate": "model-provider/model/main.bicep"
         }
@@ -1028,6 +1069,9 @@
           },
           "contentSafety": {
             "$ref": "#/definitions/_3.contentSafetyPolicyType"
+          },
+          "ipFilter": {
+            "$ref": "#/definitions/_3.ipFilterPolicyType"
           }
         }
       },
@@ -1217,7 +1261,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.44.1.10279",
-              "templateHash": "12643070713801823085"
+              "templateHash": "8326322979470444705"
             },
             "name": "AI Gateway Model Provider",
             "description": "Configures a Foundry or custom provider and its model catalog."
@@ -1511,6 +1555,42 @@
                 }
               }
             },
+            "_1.ipFilterPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "ipFilter"
+                  ]
+                },
+                "id": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "action": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Allow",
+                    "Deny"
+                  ]
+                },
+                "cidrRanges": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Inbound caller IP filter policy.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "model/main.bicep"
+                }
+              }
+            },
             "_1.modelPropertiesType": {
               "type": "object",
               "properties": {
@@ -1576,6 +1656,9 @@
                   },
                   "contentSafety": {
                     "$ref": "#/definitions/_1.contentSafetyPolicyType"
+                  },
+                  "ipFilter": {
+                    "$ref": "#/definitions/_1.ipFilterPolicyType"
                   }
                 }
               },
@@ -1855,7 +1938,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.44.1.10279",
-                      "templateHash": "16627306435110958753"
+                      "templateHash": "9095371517906034093"
                     },
                     "name": "AI Gateway Model",
                     "description": "Registers a provider model and applies inline governance policies."
@@ -1940,6 +2023,9 @@
                           },
                           "contentSafety": {
                             "$ref": "#/definitions/contentSafetyPolicyType"
+                          },
+                          "ipFilter": {
+                            "$ref": "#/definitions/ipFilterPolicyType"
                           }
                         }
                       },
@@ -2098,6 +2184,40 @@
                         "__bicep_export!": true,
                         "description": "Content safety policy thresholds."
                       }
+                    },
+                    "ipFilterPolicyType": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "allowedValues": [
+                            "ipFilter"
+                          ]
+                        },
+                        "id": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "action": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Allow",
+                            "Deny"
+                          ]
+                        },
+                        "cidrRanges": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "minLength": 1
+                        }
+                      },
+                      "additionalProperties": false,
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "Inbound caller IP filter policy."
+                      }
                     }
                   },
                   "parameters": {
@@ -2253,7 +2373,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.44.1.10279",
-              "templateHash": "2593324071035124968"
+              "templateHash": "13909099536842009984"
             },
             "name": "AI Gateway Alias",
             "description": "Creates a client-facing alias with priority and weighted routing."
@@ -2278,8 +2398,13 @@
             "aliasPropertiesType": {
               "type": "object",
               "properties": {
+                "aliasName": {
+                  "type": "string",
+                  "nullable": true
+                },
                 "displayName": {
-                  "type": "string"
+                  "type": "string",
+                  "nullable": true
                 },
                 "description": {
                   "type": "string",
@@ -2304,7 +2429,7 @@
               "additionalProperties": false,
               "metadata": {
                 "__bicep_export!": true,
-                "description": "Alias wire properties for the preview routes contract."
+                "description": "Alias wire properties for the preview backendModels contract."
               }
             },
             "routeType": {
@@ -2445,6 +2570,42 @@
                 }
               }
             },
+            "_1.ipFilterPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "ipFilter"
+                  ]
+                },
+                "id": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "action": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Allow",
+                    "Deny"
+                  ]
+                },
+                "cidrRanges": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Inbound caller IP filter policy.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "../model-provider/model/main.bicep"
+                }
+              }
+            },
             "_1.tokenLimitPolicyType": {
               "type": "object",
               "properties": {
@@ -2505,6 +2666,9 @@
                   },
                   "contentSafety": {
                     "$ref": "#/definitions/_1.contentSafetyPolicyType"
+                  },
+                  "ipFilter": {
+                    "$ref": "#/definitions/_1.ipFilterPolicyType"
                   }
                 }
               },
@@ -2556,17 +2720,16 @@
               "properties": {
                 "copy": [
                   {
-                    "name": "routes",
+                    "name": "backendModels",
                     "count": "[length(parameters('properties').routes)]",
                     "input": {
-                      "providerName": "[parameters('properties').routes[copyIndex('routes')].providerName]",
-                      "modelName": "[parameters('properties').routes[copyIndex('routes')].modelName]",
-                      "priority": "[coalesce(tryGet(parameters('properties').routes[copyIndex('routes')], 'priority'), 0)]",
-                      "weight": "[coalesce(tryGet(parameters('properties').routes[copyIndex('routes')], 'weight'), 1)]"
+                      "resourceId": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/modelProviders/models', parameters('aiGatewayName'), parameters('workspaceName'), parameters('properties').routes[copyIndex('backendModels')].providerName, parameters('properties').routes[copyIndex('backendModels')].modelName)]",
+                      "priority": "[coalesce(tryGet(parameters('properties').routes[copyIndex('backendModels')], 'priority'), 0)]",
+                      "weight": "[coalesce(tryGet(parameters('properties').routes[copyIndex('backendModels')], 'weight'), 1)]"
                     }
                   }
                 ],
-                "displayName": "[parameters('properties').displayName]",
+                "aliasName": "[coalesce(coalesce(tryGet(parameters('properties'), 'aliasName'), tryGet(parameters('properties'), 'displayName')), parameters('name'))]",
                 "description": "[tryGet(parameters('properties'), 'description')]",
                 "policies": "[tryGet(parameters('properties'), 'policies')]"
               }
@@ -2640,7 +2803,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.44.1.10279",
-              "templateHash": "3594885935451222987"
+              "templateHash": "7850618709783689720"
             },
             "name": "AI Gateway Tool Server",
             "description": "Configures MCP and OpenAPI upstream endpoints."
@@ -3056,6 +3219,42 @@
                 }
               }
             },
+            "_1.ipFilterPolicyType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "ipFilter"
+                  ]
+                },
+                "id": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "action": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Allow",
+                    "Deny"
+                  ]
+                },
+                "cidrRanges": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false,
+              "metadata": {
+                "description": "Inbound caller IP filter policy.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "../model-provider/model/main.bicep"
+                }
+              }
+            },
             "_1.tokenLimitPolicyType": {
               "type": "object",
               "properties": {
@@ -3116,6 +3315,9 @@
                   },
                   "contentSafety": {
                     "$ref": "#/definitions/_1.contentSafetyPolicyType"
+                  },
+                  "ipFilter": {
+                    "$ref": "#/definitions/_1.ipFilterPolicyType"
                   }
                 }
               },

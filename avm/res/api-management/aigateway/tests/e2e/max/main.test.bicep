@@ -148,6 +148,13 @@ var workspaceConfiguration workspaceType = {
                 'ipAddress'
               ]
             }
+            {
+              type: 'ipFilter'
+              action: 'Allow'
+              cidrRanges: [
+                '10.42.0.0/16'
+              ]
+            }
           ]
         }
       })
@@ -336,7 +343,6 @@ module testDeployment '../../../main.bicep' = [
       }
       enableTelemetry: false
       virtualNetworkConfiguration: {
-        virtualNetworkType: 'External'
         subnetResourceId: dependencies.outputs.subnetResourceId!
       }
       apiKeys: [

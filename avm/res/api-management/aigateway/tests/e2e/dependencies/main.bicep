@@ -26,6 +26,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-07-01' = if (ena
         name: 'aigateway'
         properties: {
           addressPrefix: '10.42.0.0/24'
+          delegations: [
+            {
+              name: 'app-environments'
+              properties: {
+                serviceName: 'Microsoft.App/environments'
+              }
+            }
+          ]
         }
       }
     ]

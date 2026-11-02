@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "2593324071035124968"
+      "templateHash": "13909099536842009984"
     },
     "name": "AI Gateway Alias",
     "description": "Creates a client-facing alias with priority and weighted routing."
@@ -31,8 +31,13 @@
     "aliasPropertiesType": {
       "type": "object",
       "properties": {
+        "aliasName": {
+          "type": "string",
+          "nullable": true
+        },
         "displayName": {
-          "type": "string"
+          "type": "string",
+          "nullable": true
         },
         "description": {
           "type": "string",
@@ -57,7 +62,7 @@
       "additionalProperties": false,
       "metadata": {
         "__bicep_export!": true,
-        "description": "Alias wire properties for the preview routes contract."
+        "description": "Alias wire properties for the preview backendModels contract."
       }
     },
     "routeType": {
@@ -198,6 +203,42 @@
         }
       }
     },
+    "_1.ipFilterPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "ipFilter"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "nullable": true
+        },
+        "action": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Deny"
+          ]
+        },
+        "cidrRanges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Inbound caller IP filter policy.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "../model-provider/model/main.bicep"
+        }
+      }
+    },
     "_1.tokenLimitPolicyType": {
       "type": "object",
       "properties": {
@@ -258,6 +299,9 @@
           },
           "contentSafety": {
             "$ref": "#/definitions/_1.contentSafetyPolicyType"
+          },
+          "ipFilter": {
+            "$ref": "#/definitions/_1.ipFilterPolicyType"
           }
         }
       },
@@ -309,17 +353,16 @@
       "properties": {
         "copy": [
           {
-            "name": "routes",
+            "name": "backendModels",
             "count": "[length(parameters('properties').routes)]",
             "input": {
-              "providerName": "[parameters('properties').routes[copyIndex('routes')].providerName]",
-              "modelName": "[parameters('properties').routes[copyIndex('routes')].modelName]",
-              "priority": "[coalesce(tryGet(parameters('properties').routes[copyIndex('routes')], 'priority'), 0)]",
-              "weight": "[coalesce(tryGet(parameters('properties').routes[copyIndex('routes')], 'weight'), 1)]"
+              "resourceId": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/modelProviders/models', parameters('aiGatewayName'), parameters('workspaceName'), parameters('properties').routes[copyIndex('backendModels')].providerName, parameters('properties').routes[copyIndex('backendModels')].modelName)]",
+              "priority": "[coalesce(tryGet(parameters('properties').routes[copyIndex('backendModels')], 'priority'), 0)]",
+              "weight": "[coalesce(tryGet(parameters('properties').routes[copyIndex('backendModels')], 'weight'), 1)]"
             }
           }
         ],
-        "displayName": "[parameters('properties').displayName]",
+        "aliasName": "[coalesce(coalesce(tryGet(parameters('properties'), 'aliasName'), tryGet(parameters('properties'), 'displayName')), parameters('name'))]",
         "description": "[tryGet(parameters('properties'), 'description')]",
         "policies": "[tryGet(parameters('properties'), 'policies')]"
       }

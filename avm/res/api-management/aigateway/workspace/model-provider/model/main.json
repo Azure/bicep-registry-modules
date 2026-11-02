@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "16627306435110958753"
+      "templateHash": "9095371517906034093"
     },
     "name": "AI Gateway Model",
     "description": "Registers a provider model and applies inline governance policies."
@@ -91,6 +91,9 @@
           },
           "contentSafety": {
             "$ref": "#/definitions/contentSafetyPolicyType"
+          },
+          "ipFilter": {
+            "$ref": "#/definitions/ipFilterPolicyType"
           }
         }
       },
@@ -248,6 +251,40 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "Content safety policy thresholds."
+      }
+    },
+    "ipFilterPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "ipFilter"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "nullable": true
+        },
+        "action": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Deny"
+          ]
+        },
+        "cidrRanges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Inbound caller IP filter policy."
       }
     }
   },

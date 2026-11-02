@@ -81,8 +81,9 @@ class ContractTests(unittest.TestCase):
         expected = {
             "apiKeyType", "workspaceType", "modelProviderType", "authenticationType",
             "modelType", "policyType", "tokenLimitPolicyType", "costLimitPolicyType",
-            "contentSafetyPolicyType", "aliasType", "routeType", "toolServerType",
-            "toolEndpointType", "telemetryExporterType", "virtualNetworkConfigurationType",
+            "contentSafetyPolicyType", "ipFilterPolicyType", "aliasType", "routeType",
+            "toolServerType", "toolEndpointType", "telemetryExporterType",
+            "virtualNetworkConfigurationType",
         }
         exported = {
             name for name, schema in self.root["definitions"].items()
@@ -98,9 +99,8 @@ class ContractTests(unittest.TestCase):
     def test_routes_have_preview_fields_and_bounds(self):
         alias = self.resource(f"{PREFIX}/workspaces/aliases")
         routing = alias["properties"]["copy"][0]
-        self.assertEqual(routing["name"], "routes")
-        self.assertEqual(set(routing["input"]), {"providerName", "modelName", "priority", "weight"})
-        self.assertNotIn("backendModels", json.dumps(alias))
+        self.assertEqual(routing["name"], "backendModels")
+        self.assertEqual(set(routing["input"]), {"resourceId", "priority", "weight"})
         self.assertIn("coalesce", routing["input"]["priority"])
         self.assertIn(", 0)", routing["input"]["priority"])
         self.assertIn(", 1)", routing["input"]["weight"])
@@ -110,7 +110,10 @@ class ContractTests(unittest.TestCase):
 
     def test_policy_dimensions_and_budgets(self):
         policy = self.definition("policyType")
-        self.assertEqual(set(policy["discriminator"]["mapping"]), {"tokenLimit", "costLimit", "contentSafety"})
+        self.assertEqual(
+            set(policy["discriminator"]["mapping"]),
+            {"tokenLimit", "costLimit", "contentSafety", "ipFilter"},
+        )
         for name in ("tokenLimitPolicyType", "costLimitPolicyType"):
             dimension = self.definition(name)["properties"]["counterKey"]
             self.assertEqual(dimension["type"], "array")
@@ -118,6 +121,9 @@ class ContractTests(unittest.TestCase):
             self.assertEqual((dimension["minLength"], dimension["maxLength"]), (1, 2))
         self.assertEqual(self.definition("tokenLimitPolicyType")["properties"]["count"]["minValue"], 1)
         self.assertEqual(self.definition("costLimitPolicyType")["properties"]["amount"]["minValue"], 1)
+        ip_filter = self.definition("ipFilterPolicyType")["properties"]
+        self.assertEqual(set(ip_filter["action"]["allowedValues"]), {"Allow", "Deny"})
+        self.assertEqual(ip_filter["cidrRanges"]["minLength"], 1)
 
     def test_exporter_kinds_and_boolean_capture_default(self):
         exporter = self.resource(f"{PREFIX}/workspaces/telemetryExporters")
