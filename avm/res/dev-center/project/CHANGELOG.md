@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Regenerated ARM template artifacts with Bicep 0.48.1 without changing resource configuration.
+- Regenerated documentation with the native authoring generator to refresh custom-role placeholders.
 
 ### Breaking Changes
 

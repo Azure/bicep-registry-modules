@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Update API versions of child-modules to 2026-02-01 before retirement 02/27/2027
+- Regenerated documentation with the native authoring generator to restore JSON usage-example grouping comments.
 
 ### Breaking Changes
 
