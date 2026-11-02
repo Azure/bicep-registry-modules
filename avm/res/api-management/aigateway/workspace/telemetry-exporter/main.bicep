@@ -13,7 +13,8 @@ param properties telemetryExporterPropertiesType
 @description('Optional. Secure connection strings and OTLP headers.')
 param secrets { *: string } = {}
 
-var resolveAppInsightsFromResourceId = properties.kind == 'ApplicationInsights' && properties.applicationInsights.?connectionStringSecretName == null && !empty(properties.applicationInsights.?resourceId ?? '')
+var hasAppInsightsResourceId = !empty(properties.?applicationInsights.?resourceId ?? '')
+var resolveAppInsightsFromResourceId = hasAppInsightsResourceId && ((properties.kind == 'ApplicationInsights' && properties.applicationInsights.?connectionStringSecretName == null) || (properties.kind == 'OpenTelemetry' && (properties.openTelemetry.?metricsEndpoint == null || properties.openTelemetry.?logsEndpoint == null || properties.openTelemetry.?tracesEndpoint == null)))
 var appInsightsResourceIdParts = resolveAppInsightsFromResourceId
   ? split(properties.applicationInsights!.resourceId!, '/')
   : [
@@ -65,9 +66,12 @@ resource exporter 'Microsoft.ApiManagement/aigateways/workspaces/telemetryExport
             : {},
           {
             openTelemetry: {
-              metricsEndpoint: properties.openTelemetry.?metricsEndpoint
-              logsEndpoint: properties.openTelemetry.?logsEndpoint
-              tracesEndpoint: properties.openTelemetry.?tracesEndpoint
+              #disable-next-line BCP053
+              metricsEndpoint: properties.openTelemetry.?metricsEndpoint ?? (resolveAppInsightsFromResourceId ? (existingAppInsights!.properties.?OTLPMetricsEndpoint ?? existingAppInsights!.properties.?MetricsIngestionEndpoint) : null)
+              #disable-next-line BCP053
+              logsEndpoint: properties.openTelemetry.?logsEndpoint ?? (resolveAppInsightsFromResourceId ? (existingAppInsights!.properties.?OTLPLogsEndpoint ?? existingAppInsights!.properties.?LogsIngestionEndpoint) : null)
+              #disable-next-line BCP053
+              tracesEndpoint: properties.openTelemetry.?tracesEndpoint ?? (resolveAppInsightsFromResourceId ? (existingAppInsights!.properties.?OTLPTracesEndpoint ?? existingAppInsights!.properties.?TracesIngestionEndpoint) : null)
               credentials: properties.openTelemetry.?credentials != null
                 ? properties.openTelemetry!.credentials
                 : (properties.openTelemetry.?managedIdentity != null

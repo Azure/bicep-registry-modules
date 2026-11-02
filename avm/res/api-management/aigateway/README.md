@@ -158,7 +158,7 @@ Keep credentials out of configuration arrays and source control. For example, a 
 
 Supply `secrets` from secure parameters or a Key Vault-backed parameter file. An absent referenced secret fails deployment rather than supplying an empty credential. The secure dictionary stays secure through every child deployment. No output lists or regenerates API key values.
 
-Runtime exporters use `kind: 'ApplicationInsights'` or `kind: 'OpenTelemetry'`. `payloadCapture` is a boolean and defaults to `false`. Enabling it can record prompts, completions and tool payloads without built-in PII redaction. For OpenTelemetry, supply at least one complete signal endpoint; the module does not append `/v1/traces`, `/v1/logs` or `/v1/metrics`. Do not configure duplicate header names or both header and managed-identity authentication.
+Runtime exporters use `kind: 'ApplicationInsights'` or `kind: 'OpenTelemetry'`. `payloadCapture` is a boolean and defaults to `false`. Enabling it can record prompts, completions and tool payloads without built-in PII redaction. For OpenTelemetry, either supply at least one complete signal endpoint (`metricsEndpoint`, `logsEndpoint`, `tracesEndpoint`) or pass `applicationInsights.resourceId` pointing to an Application Insights component with `AzureMonitorWorkspaceIngestionMode: 'Enabled'` so the module resolves `OTLPMetricsEndpoint`, `OTLPLogsEndpoint`, and `OTLPTracesEndpoint` automatically. Do not configure duplicate header names or both header and managed-identity authentication.
 
 AVM `enableTelemetry` controls the module's empty usage-telemetry deployment, not runtime exporter behavior. The draft emits usage telemetry only at the root; child modules are local components, not independently published modules.
 
@@ -204,6 +204,16 @@ python3 -m unittest discover -s tests/unit -v
 ```
 
 These commands compile and inspect templates without creating Azure resources. `BCP081` is suppressed only at the preview resource declarations because the preview resource schemas are not yet in the compiler catalog. Typed module inputs provide compile-time shape checks but do not replace live ARM validation.
+
+## Operational notes
+
+Pure Bicep handles all core gateway, workspace, model provider, alias, policy, MCP tool server, VNet, RBAC, and telemetry exporter resources. A few operational behaviors sit outside declarative ARM deployments:
+
+- **RBAC propagation readiness:** Entra role assignments (`Azure AI User`, `AI Gateway User`, `Monitoring Metrics Publisher`) can take 1–3 minutes to propagate on the data plane after ARM completes.
+- **Managed DCR role scope:** When `AzureMonitorWorkspaceIngestionMode: 'Enabled'` creates a default Data Collection Rule in Azure Monitor's managed `ai_*_managed` resource group, Azure's deny assignment on that managed resource group blocks nested `Microsoft.Resources/deployments/write`. If your gateway identity does not inherit `Monitoring Metrics Publisher` at subscription scope, grant it directly on the DCR resource via CLI or REST.
+- **Failed-gateway recovery and Foundry project/agent wiring:** Automatically deleting and recreating a gateway stuck in `Failed` state, wiring Foundry Project connections (`ApiManagement`), or injecting local developer CLI tokens (`gh auth token`) require imperative steps.
+
+For zero-dependency Bash and PowerShell post-provision scripts that automate these optional checks and Foundry Hosted Agent wiring, see [`infra/scripts/` in `Azure-Samples/simple-foundry-hosted-agent-python-aigateway`](https://github.com/Azure-Samples/simple-foundry-hosted-agent-python-aigateway/tree/main/infra/scripts) and [`infra/scripts/` in `Azure-Samples/simple-foundry-hosted-agent-dotnet-aigateway`](https://github.com/Azure-Samples/simple-foundry-hosted-agent-dotnet-aigateway/tree/main/infra/scripts).
 
 ## References
 
