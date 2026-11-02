@@ -78,20 +78,23 @@ Describe 'ACA spoke NSG semantic preservation' {
 
     It 'Preserves the virtual-network dependency closure and all other virtual-network inputs' {
         $names = @('nsgContainerAppsEnvironment', 'nsgAppGw', 'nsgPep', 'nsgDeploymentSubnet')
+        @($vnet.dependsOn | Where-Object { $_ -ceq 'networkSecurityGroups' }) | Should -HaveCount 1
+        $nsgCollection.copy.count | Should -BeExactly "[length(variables('nsgConfigurations'))]"
+        $nsgCollection.name | Should -BeExactly "[variables('nsgConfigurations')[copyIndex()].deploymentName]"
         for ($index = 0; $index -lt $names.Count; $index++) {
             $reference = "variables('nsgConfigurations')[$index].deploymentName"
-            $actualDependency = @($vnet.dependsOn | Where-Object { $_.Contains($reference) })
             $expectedDependency = @($baseline.vnet.dependsOn | Where-Object { $_.Contains("deploy-$($names[$index])-") })
-            $actualDependency | Should -HaveCount 1
             $expectedDependency | Should -HaveCount 1
             $expectedScope = [regex]::Replace(
                 $expectedDependency[0],
                 'take\(format\(''deploy-nsg[^'']+-\{0\}'', deployment\(\)\.name\), 64\)',
                 '__NSG__'
             )
-            $actualDependency[0].Replace($reference, '__NSG__') | Should -BeExactly $expectedScope
+            $scopeExpression = $nsgCollection.resourceGroup.TrimStart('[').TrimEnd(']')
+            $actualDependency = "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, $scopeExpression), 'Microsoft.Resources/deployments', $reference)]"
+            $actualDependency.Replace($reference, '__NSG__') | Should -BeExactly $expectedScope
         }
-        $remaining = @($vnet.dependsOn | Where-Object { -not $_.Contains("variables('nsgConfigurations')") } | Sort-Object)
+        $remaining = @($vnet.dependsOn | Where-Object { $_ -cne 'networkSecurityGroups' } | Sort-Object)
         $before = @($baseline.vnet.dependsOn | Where-Object { $_ -notmatch 'deploy-nsg' } | Sort-Object)
         ConvertTo-CanonicalJson $remaining | Should -BeExactly (ConvertTo-CanonicalJson $before)
         Get-ObjectHash $vnet.properties.template | Should -BeExactly $baseline.vnet.templateSha256
@@ -101,6 +104,15 @@ Describe 'ACA spoke NSG semantic preservation' {
         $afterParameters.Remove('subnets')
         $beforeParameters.Remove('subnets')
         ConvertTo-CanonicalJson $afterParameters | Should -BeExactly (ConvertTo-CanonicalJson $beforeParameters)
+    }
+
+    It 'Emits a single NSG collection dependency without retaining any indexed dependency ordering' {
+        $vnet.dependsOn | Should -HaveCount 2
+        @($vnet.dependsOn | Where-Object { $_.Contains("variables('nsgConfigurations')") }) | Should -HaveCount 0
+        $subnets = $vnet.properties.parameters.subnets | ConvertTo-Json -Depth 100
+        foreach ($index in 0..3) {
+            $subnets | Should -Match ([regex]::Escape("variables('nsgConfigurations')[$index].deploymentName"))
+        }
     }
 
     It 'Leaves optional Linux/Windows deployments, workspace, routes and public interfaces unchanged' {

@@ -169,6 +169,8 @@ var spokeSubnets = vmJumpboxOSType != 'none'
 module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.2' = {
   name: take('deploy-vnetSpoke-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
+  // A collection dependency preserves the indexed closure without unstable dependency-array ordering.
+  dependsOn: [networkSecurityGroups]
   params: {
     name: resourcesNames.vnetSpoke
     location: location

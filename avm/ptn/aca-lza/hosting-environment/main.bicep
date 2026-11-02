@@ -20,8 +20,8 @@ param bastionResourceId string = ''
 @description('Optional. If set, the spoke virtual network will be peered with the hub virtual network and egres traffic will be routed through the network appliance. Default is empty.')
 param networkApplianceIpAddress string = ''
 
-@description('Optional. Tags related to the Azure Container Apps deployment. Default is empty.')
-param tags object = {}
+@description('Optional. Tags related to the Azure Container Apps deployment. Null or omitted tags use an empty object.')
+param tags object?
 
 @description('Optional. The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long. Default is "test".')
 @maxLength(8)
@@ -155,7 +155,7 @@ module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
     name: naming.outputs.resourcesNames.resourceGroup
     location: location
     enableTelemetry: enableTelemetry
-    tags: tags
+    tags: tags ?? {}
   }
 }
 
@@ -165,7 +165,7 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     //subscriptionId: subscriptionId
     hubVNetId: hubVirtualNetworkResourceId
@@ -194,7 +194,7 @@ module supportingServices 'modules/supporting-services/deploy.supporting-service
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     spokePrivateEndpointSubnetResourceId: spoke.outputs.spokePrivateEndpointsSubnetResourceId
     spokeVNetResourceId: spoke.outputs.spokeVNetId
@@ -211,7 +211,7 @@ module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-e
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     hubVNetId: hubVirtualNetworkResourceId
     spokeVNetName: spoke.outputs.spokeVNetName
@@ -230,7 +230,7 @@ module sampleApplication 'modules/sample-application/deploy.sample-application.b
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     containerAppsEnvironmentResourceId: containerAppsEnvironment.outputs.containerAppsEnvironmentId
     workloadProfileName: containerAppsEnvironment.outputs.workloadProfileNames[0]
@@ -249,7 +249,7 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     applicationGatewayFqdn: applicationGatewayFqdn

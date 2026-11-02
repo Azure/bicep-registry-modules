@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "15840486251280976101"
+      "templateHash": "13381984748126204571"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework"
@@ -44,9 +44,9 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Tags related to the Azure Container Apps deployment. Default is empty."
+        "description": "Optional. Tags related to the Azure Container Apps deployment. Null or omitted tags use an empty object."
       }
     },
     "environment": {
@@ -541,7 +541,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           }
         },
         "template": {
@@ -1023,7 +1023,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -1085,7 +1085,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.48.1.52935",
-              "templateHash": "2115998728226010939"
+              "templateHash": "7007387119052176942"
             }
           },
           "parameters": {
@@ -3105,10 +3105,7 @@
               },
               "dependsOn": [
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64))]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[1].deploymentName)]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[2].deploymentName)]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[3].deploymentName)]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[0].deploymentName)]"
+                "networkSecurityGroups"
               ],
               "metadata": {
                 "description": "The spoke virtual network in which the workload will run from. This virtual network would normally already be provisioned by your subscription vending process, and only the subnets would need to be configured."
@@ -17586,7 +17583,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -40857,7 +40854,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -45418,7 +45415,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -48152,7 +48149,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
