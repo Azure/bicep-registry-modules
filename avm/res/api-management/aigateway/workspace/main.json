@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "8933469903661254297"
+      "templateHash": "12483829868495647674"
     },
     "name": "AI Gateway Workspace",
     "description": "References the service-provisioned default workspace or writes workspace policies, then deploys child configuration."
@@ -621,6 +621,16 @@
           "type": "bool",
           "nullable": true
         },
+        "applicationInsights": {
+          "type": "object",
+          "properties": {
+            "resourceId": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "nullable": true
+        },
         "openTelemetry": {
           "type": "object",
           "properties": {
@@ -634,6 +644,26 @@
             },
             "tracesEndpoint": {
               "type": "string",
+              "nullable": true
+            },
+            "credentials": {
+              "type": "object",
+              "properties": {
+                "managedIdentity": {
+                  "type": "object",
+                  "properties": {
+                    "resource": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "clientId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "nullable": true
+                }
+              },
               "nullable": true
             },
             "managedIdentity": {
@@ -833,6 +863,23 @@
         }
       }
     },
+    "_5.noAuthCredentialsType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "noAuth"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "tool-server/main.bicep"
+        }
+      }
+    },
     "_5.openApiEndpointType": {
       "type": "object",
       "properties": {
@@ -897,6 +944,9 @@
       "discriminator": {
         "propertyName": "type",
         "mapping": {
+          "noAuth": {
+            "$ref": "#/definitions/_5.noAuthCredentialsType"
+          },
           "none": {
             "$ref": "#/definitions/_5.anonymousCredentialsType"
           },
@@ -2803,7 +2853,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.44.1.10279",
-              "templateHash": "7850618709783689720"
+              "templateHash": "9938259395432567012"
             },
             "name": "AI Gateway Tool Server",
             "description": "Configures MCP and OpenAPI upstream endpoints."
@@ -3029,6 +3079,9 @@
               "discriminator": {
                 "propertyName": "type",
                 "mapping": {
+                  "noAuth": {
+                    "$ref": "#/definitions/noAuthCredentialsType"
+                  },
                   "none": {
                     "$ref": "#/definitions/anonymousCredentialsType"
                   },
@@ -3040,6 +3093,18 @@
                   }
                 }
               }
+            },
+            "noAuthCredentialsType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "noAuth"
+                  ]
+                }
+              },
+              "additionalProperties": false
             },
             "anonymousCredentialsType": {
               "type": "object",
@@ -3382,13 +3447,13 @@
                   {
                     "name": "endpoints",
                     "count": "[length(parameters('properties').endpoints)]",
-                    "input": "[union(createObject('id', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'id'), 'namespace', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'namespace'), 'tools', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'tools'), 'required', coalesce(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'required'), false()), 'kind', parameters('properties').endpoints[copyIndex('endpoints')].kind, 'credentials', if(equals(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'credentials'), null()), createObject('type', 'none'), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].credentials.type, 'header'), createObject('type', 'header', 'headers', toObject(parameters('properties').endpoints[copyIndex('endpoints')].credentials.headers, lambda('header', lambdaVariables('header').name), lambda('header', createArray(if(not(equals(tryGet(lambdaVariables('header'), 'secretName'), null())), parameters('secrets')[lambdaVariables('header').secretName], coalesce(tryGet(lambdaVariables('header'), 'value'), '')))))), parameters('properties').endpoints[copyIndex('endpoints')].credentials))), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].kind, 'mcp'), createObject('mcp', parameters('properties').endpoints[copyIndex('endpoints')].mcp), createObject('openApi', parameters('properties').endpoints[copyIndex('endpoints')].openApi)))]"
+                    "input": "[union(createObject('id', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'id'), 'namespace', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'namespace'), 'tools', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'tools'), 'required', coalesce(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'required'), false()), 'kind', parameters('properties').endpoints[copyIndex('endpoints')].kind, 'credentials', if(or(or(equals(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'credentials'), null()), equals(parameters('properties').endpoints[copyIndex('endpoints')].credentials.type, 'none')), equals(parameters('properties').endpoints[copyIndex('endpoints')].credentials.type, 'noAuth')), createObject('type', 'noAuth'), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].credentials.type, 'header'), createObject('type', 'header', 'headers', toObject(parameters('properties').endpoints[copyIndex('endpoints')].credentials.headers, lambda('header', lambdaVariables('header').name), lambda('header', createArray(if(not(equals(tryGet(lambdaVariables('header'), 'secretName'), null())), parameters('secrets')[lambdaVariables('header').secretName], coalesce(tryGet(lambdaVariables('header'), 'value'), '')))))), parameters('properties').endpoints[copyIndex('endpoints')].credentials))), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].kind, 'mcp'), createObject('mcp', parameters('properties').endpoints[copyIndex('endpoints')].mcp), createObject('openApi', parameters('properties').endpoints[copyIndex('endpoints')].openApi)))]"
                   }
                 ],
                 "displayName": "[tryGet(parameters('properties'), 'displayName')]",
                 "description": "[tryGet(parameters('properties'), 'description')]",
                 "type": "[parameters('properties').type]",
-                "failureMode": "[tryGet(parameters('properties'), 'failureMode')]",
+                "failureMode": "[coalesce(tryGet(parameters('properties'), 'failureMode'), 'failClosed')]",
                 "accessState": "[tryGet(parameters('properties'), 'accessState')]",
                 "path": "[tryGet(parameters('properties'), 'path')]",
                 "subscriptionRequired": "[coalesce(tryGet(parameters('properties'), 'subscriptionRequired'), true())]",
@@ -3465,7 +3530,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.44.1.10279",
-              "templateHash": "13941397077271758637"
+              "templateHash": "17654213495074986585"
             },
             "name": "AI Gateway Telemetry Exporter",
             "description": "Configures runtime telemetry with payload capture disabled by default."
@@ -3547,6 +3612,16 @@
                   "type": "bool",
                   "nullable": true
                 },
+                "applicationInsights": {
+                  "type": "object",
+                  "properties": {
+                    "resourceId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "nullable": true
+                },
                 "openTelemetry": {
                   "type": "object",
                   "properties": {
@@ -3560,6 +3635,26 @@
                     },
                     "tracesEndpoint": {
                       "type": "string",
+                      "nullable": true
+                    },
+                    "credentials": {
+                      "type": "object",
+                      "properties": {
+                        "managedIdentity": {
+                          "type": "object",
+                          "properties": {
+                            "resource": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "clientId": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "nullable": true
+                        }
+                      },
                       "nullable": true
                     },
                     "managedIdentity": {
@@ -3658,7 +3753,7 @@
               "type": "Microsoft.ApiManagement/aigateways/workspaces/telemetryExporters",
               "apiVersion": "2025-09-01-preview",
               "name": "[format('{0}/{1}/{2}', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]",
-              "properties": "[union(createObject('kind', parameters('properties').kind, 'payloadCapture', coalesce(tryGet(parameters('properties'), 'payloadCapture'), false())), if(equals(parameters('properties').kind, 'ApplicationInsights'), createObject('applicationInsights', createObject('connectionString', if(not(equals(tryGet(parameters('properties').applicationInsights, 'connectionStringSecretName'), null())), parameters('secrets')[parameters('properties').applicationInsights.connectionStringSecretName], reference('existingAppInsights').ConnectionString), 'resourceId', tryGet(parameters('properties').applicationInsights, 'resourceId'))), createObject('openTelemetry', createObject('metricsEndpoint', tryGet(parameters('properties').openTelemetry, 'metricsEndpoint'), 'logsEndpoint', tryGet(parameters('properties').openTelemetry, 'logsEndpoint'), 'tracesEndpoint', tryGet(parameters('properties').openTelemetry, 'tracesEndpoint'), 'managedIdentity', tryGet(parameters('properties').openTelemetry, 'managedIdentity'), 'headers', toObject(coalesce(tryGet(parameters('properties').openTelemetry, 'headers'), createArray()), lambda('header', lambdaVariables('header').name), lambda('header', parameters('secrets')[lambdaVariables('header').secretName]))))))]",
+              "properties": "[union(createObject('kind', parameters('properties').kind, 'payloadCapture', coalesce(tryGet(parameters('properties'), 'payloadCapture'), false())), if(equals(parameters('properties').kind, 'ApplicationInsights'), createObject('applicationInsights', createObject('connectionString', if(not(equals(tryGet(parameters('properties').applicationInsights, 'connectionStringSecretName'), null())), parameters('secrets')[parameters('properties').applicationInsights.connectionStringSecretName], reference('existingAppInsights').ConnectionString), 'resourceId', tryGet(parameters('properties').applicationInsights, 'resourceId'))), union(if(not(equals(tryGet(tryGet(parameters('properties'), 'applicationInsights'), 'resourceId'), null())), createObject('applicationInsights', createObject('resourceId', parameters('properties').applicationInsights.resourceId)), createObject()), createObject('openTelemetry', createObject('metricsEndpoint', tryGet(parameters('properties').openTelemetry, 'metricsEndpoint'), 'logsEndpoint', tryGet(parameters('properties').openTelemetry, 'logsEndpoint'), 'tracesEndpoint', tryGet(parameters('properties').openTelemetry, 'tracesEndpoint'), 'credentials', if(not(equals(tryGet(parameters('properties').openTelemetry, 'credentials'), null())), parameters('properties').openTelemetry.credentials, if(not(equals(tryGet(parameters('properties').openTelemetry, 'managedIdentity'), null())), createObject('managedIdentity', parameters('properties').openTelemetry.managedIdentity), null())), 'headers', toObject(coalesce(tryGet(parameters('properties').openTelemetry, 'headers'), createArray()), lambda('header', lambdaVariables('header').name), lambda('header', parameters('secrets')[lambdaVariables('header').secretName])))))))]",
               "dependsOn": [
                 "existingAppInsights"
               ]

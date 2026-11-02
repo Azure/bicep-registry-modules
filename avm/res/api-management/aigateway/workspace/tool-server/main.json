@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "7850618709783689720"
+      "templateHash": "9938259395432567012"
     },
     "name": "AI Gateway Tool Server",
     "description": "Configures MCP and OpenAPI upstream endpoints."
@@ -232,6 +232,9 @@
       "discriminator": {
         "propertyName": "type",
         "mapping": {
+          "noAuth": {
+            "$ref": "#/definitions/noAuthCredentialsType"
+          },
           "none": {
             "$ref": "#/definitions/anonymousCredentialsType"
           },
@@ -243,6 +246,18 @@
           }
         }
       }
+    },
+    "noAuthCredentialsType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "noAuth"
+          ]
+        }
+      },
+      "additionalProperties": false
     },
     "anonymousCredentialsType": {
       "type": "object",
@@ -585,13 +600,13 @@
           {
             "name": "endpoints",
             "count": "[length(parameters('properties').endpoints)]",
-            "input": "[union(createObject('id', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'id'), 'namespace', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'namespace'), 'tools', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'tools'), 'required', coalesce(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'required'), false()), 'kind', parameters('properties').endpoints[copyIndex('endpoints')].kind, 'credentials', if(equals(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'credentials'), null()), createObject('type', 'none'), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].credentials.type, 'header'), createObject('type', 'header', 'headers', toObject(parameters('properties').endpoints[copyIndex('endpoints')].credentials.headers, lambda('header', lambdaVariables('header').name), lambda('header', createArray(if(not(equals(tryGet(lambdaVariables('header'), 'secretName'), null())), parameters('secrets')[lambdaVariables('header').secretName], coalesce(tryGet(lambdaVariables('header'), 'value'), '')))))), parameters('properties').endpoints[copyIndex('endpoints')].credentials))), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].kind, 'mcp'), createObject('mcp', parameters('properties').endpoints[copyIndex('endpoints')].mcp), createObject('openApi', parameters('properties').endpoints[copyIndex('endpoints')].openApi)))]"
+            "input": "[union(createObject('id', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'id'), 'namespace', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'namespace'), 'tools', tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'tools'), 'required', coalesce(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'required'), false()), 'kind', parameters('properties').endpoints[copyIndex('endpoints')].kind, 'credentials', if(or(or(equals(tryGet(parameters('properties').endpoints[copyIndex('endpoints')], 'credentials'), null()), equals(parameters('properties').endpoints[copyIndex('endpoints')].credentials.type, 'none')), equals(parameters('properties').endpoints[copyIndex('endpoints')].credentials.type, 'noAuth')), createObject('type', 'noAuth'), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].credentials.type, 'header'), createObject('type', 'header', 'headers', toObject(parameters('properties').endpoints[copyIndex('endpoints')].credentials.headers, lambda('header', lambdaVariables('header').name), lambda('header', createArray(if(not(equals(tryGet(lambdaVariables('header'), 'secretName'), null())), parameters('secrets')[lambdaVariables('header').secretName], coalesce(tryGet(lambdaVariables('header'), 'value'), '')))))), parameters('properties').endpoints[copyIndex('endpoints')].credentials))), if(equals(parameters('properties').endpoints[copyIndex('endpoints')].kind, 'mcp'), createObject('mcp', parameters('properties').endpoints[copyIndex('endpoints')].mcp), createObject('openApi', parameters('properties').endpoints[copyIndex('endpoints')].openApi)))]"
           }
         ],
         "displayName": "[tryGet(parameters('properties'), 'displayName')]",
         "description": "[tryGet(parameters('properties'), 'description')]",
         "type": "[parameters('properties').type]",
-        "failureMode": "[tryGet(parameters('properties'), 'failureMode')]",
+        "failureMode": "[coalesce(tryGet(parameters('properties'), 'failureMode'), 'failClosed')]",
         "accessState": "[tryGet(parameters('properties'), 'accessState')]",
         "path": "[tryGet(parameters('properties'), 'path')]",
         "subscriptionRequired": "[coalesce(tryGet(parameters('properties'), 'subscriptionRequired'), true())]",

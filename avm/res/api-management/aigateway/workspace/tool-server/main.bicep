@@ -27,7 +27,7 @@ resource toolServer 'Microsoft.ApiManagement/aigateways/workspaces/toolServers@2
     displayName: properties.?displayName
     description: properties.?description
     type: properties.type
-    failureMode: properties.?failureMode
+    failureMode: properties.?failureMode ?? 'failClosed'
     accessState: properties.?accessState
     path: properties.?path
     subscriptionRequired: properties.?subscriptionRequired ?? true
@@ -42,9 +42,9 @@ resource toolServer 'Microsoft.ApiManagement/aigateways/workspaces/toolServers@2
           tools: endpoint.?tools
           required: endpoint.?required ?? false
           kind: endpoint.kind
-          credentials: endpoint.?credentials == null
+          credentials: endpoint.?credentials == null || endpoint.credentials!.type == 'none' || endpoint.credentials!.type == 'noAuth'
             ? {
-                type: 'none'
+                type: 'noAuth'
               }
             : (endpoint.credentials!.type == 'header'
                 ? {
@@ -135,7 +135,11 @@ type openApiEndpointType = {
   required: bool?
 }
 @discriminator('type')
-type toolCredentialsType = anonymousCredentialsType | headerCredentialsType | managedIdentityCredentialsType
+type toolCredentialsType = noAuthCredentialsType | anonymousCredentialsType | headerCredentialsType | managedIdentityCredentialsType
+@sealed()
+type noAuthCredentialsType = {
+  type: 'noAuth'
+}
 @sealed()
 type anonymousCredentialsType = {
   type: 'none'

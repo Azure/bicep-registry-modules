@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "13941397077271758637"
+      "templateHash": "17654213495074986585"
     },
     "name": "AI Gateway Telemetry Exporter",
     "description": "Configures runtime telemetry with payload capture disabled by default."
@@ -88,6 +88,16 @@
           "type": "bool",
           "nullable": true
         },
+        "applicationInsights": {
+          "type": "object",
+          "properties": {
+            "resourceId": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "nullable": true
+        },
         "openTelemetry": {
           "type": "object",
           "properties": {
@@ -101,6 +111,26 @@
             },
             "tracesEndpoint": {
               "type": "string",
+              "nullable": true
+            },
+            "credentials": {
+              "type": "object",
+              "properties": {
+                "managedIdentity": {
+                  "type": "object",
+                  "properties": {
+                    "resource": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "clientId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "nullable": true
+                }
+              },
               "nullable": true
             },
             "managedIdentity": {
@@ -199,7 +229,7 @@
       "type": "Microsoft.ApiManagement/aigateways/workspaces/telemetryExporters",
       "apiVersion": "2025-09-01-preview",
       "name": "[format('{0}/{1}/{2}', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]",
-      "properties": "[union(createObject('kind', parameters('properties').kind, 'payloadCapture', coalesce(tryGet(parameters('properties'), 'payloadCapture'), false())), if(equals(parameters('properties').kind, 'ApplicationInsights'), createObject('applicationInsights', createObject('connectionString', if(not(equals(tryGet(parameters('properties').applicationInsights, 'connectionStringSecretName'), null())), parameters('secrets')[parameters('properties').applicationInsights.connectionStringSecretName], reference('existingAppInsights').ConnectionString), 'resourceId', tryGet(parameters('properties').applicationInsights, 'resourceId'))), createObject('openTelemetry', createObject('metricsEndpoint', tryGet(parameters('properties').openTelemetry, 'metricsEndpoint'), 'logsEndpoint', tryGet(parameters('properties').openTelemetry, 'logsEndpoint'), 'tracesEndpoint', tryGet(parameters('properties').openTelemetry, 'tracesEndpoint'), 'managedIdentity', tryGet(parameters('properties').openTelemetry, 'managedIdentity'), 'headers', toObject(coalesce(tryGet(parameters('properties').openTelemetry, 'headers'), createArray()), lambda('header', lambdaVariables('header').name), lambda('header', parameters('secrets')[lambdaVariables('header').secretName]))))))]",
+      "properties": "[union(createObject('kind', parameters('properties').kind, 'payloadCapture', coalesce(tryGet(parameters('properties'), 'payloadCapture'), false())), if(equals(parameters('properties').kind, 'ApplicationInsights'), createObject('applicationInsights', createObject('connectionString', if(not(equals(tryGet(parameters('properties').applicationInsights, 'connectionStringSecretName'), null())), parameters('secrets')[parameters('properties').applicationInsights.connectionStringSecretName], reference('existingAppInsights').ConnectionString), 'resourceId', tryGet(parameters('properties').applicationInsights, 'resourceId'))), union(if(not(equals(tryGet(tryGet(parameters('properties'), 'applicationInsights'), 'resourceId'), null())), createObject('applicationInsights', createObject('resourceId', parameters('properties').applicationInsights.resourceId)), createObject()), createObject('openTelemetry', createObject('metricsEndpoint', tryGet(parameters('properties').openTelemetry, 'metricsEndpoint'), 'logsEndpoint', tryGet(parameters('properties').openTelemetry, 'logsEndpoint'), 'tracesEndpoint', tryGet(parameters('properties').openTelemetry, 'tracesEndpoint'), 'credentials', if(not(equals(tryGet(parameters('properties').openTelemetry, 'credentials'), null())), parameters('properties').openTelemetry.credentials, if(not(equals(tryGet(parameters('properties').openTelemetry, 'managedIdentity'), null())), createObject('managedIdentity', parameters('properties').openTelemetry.managedIdentity), null())), 'headers', toObject(coalesce(tryGet(parameters('properties').openTelemetry, 'headers'), createArray()), lambda('header', lambdaVariables('header').name), lambda('header', parameters('secrets')[lambdaVariables('header').secretName])))))))]",
       "dependsOn": [
         "existingAppInsights"
       ]

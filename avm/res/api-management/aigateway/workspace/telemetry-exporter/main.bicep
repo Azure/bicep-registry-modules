@@ -55,19 +55,34 @@ resource exporter 'Microsoft.ApiManagement/aigateways/workspaces/telemetryExport
             resourceId: properties.applicationInsights.?resourceId
           }
         }
-      : {
-          openTelemetry: {
-            metricsEndpoint: properties.openTelemetry.?metricsEndpoint
-            logsEndpoint: properties.openTelemetry.?logsEndpoint
-            tracesEndpoint: properties.openTelemetry.?tracesEndpoint
-            managedIdentity: properties.openTelemetry.?managedIdentity
-            headers: toObject(
-              properties.openTelemetry.?headers ?? [],
-              header => header.name,
-              header => secrets[header.secretName]
-            )
+      : union(
+          properties.?applicationInsights.?resourceId != null
+            ? {
+                applicationInsights: {
+                  resourceId: properties.applicationInsights!.resourceId
+                }
+              }
+            : {},
+          {
+            openTelemetry: {
+              metricsEndpoint: properties.openTelemetry.?metricsEndpoint
+              logsEndpoint: properties.openTelemetry.?logsEndpoint
+              tracesEndpoint: properties.openTelemetry.?tracesEndpoint
+              credentials: properties.openTelemetry.?credentials != null
+                ? properties.openTelemetry!.credentials
+                : (properties.openTelemetry.?managedIdentity != null
+                    ? {
+                        managedIdentity: properties.openTelemetry!.managedIdentity
+                      }
+                    : null)
+              headers: toObject(
+                properties.openTelemetry.?headers ?? [],
+                header => header.name,
+                header => secrets[header.secretName]
+              )
+            }
           }
-        }
+        )
   )
 }
 
@@ -102,10 +117,19 @@ type applicationInsightsPropertiesType = {
 type openTelemetryPropertiesType = {
   kind: 'OpenTelemetry'
   payloadCapture: bool?
+  applicationInsights: {
+    resourceId: string?
+  }?
   openTelemetry: {
     metricsEndpoint: string?
     logsEndpoint: string?
     tracesEndpoint: string?
+    credentials: {
+      managedIdentity: {
+        resource: string?
+        clientId: string?
+      }?
+    }?
     managedIdentity: {
       resource: string?
       clientId: string?
