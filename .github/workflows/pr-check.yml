@@ -19,6 +19,10 @@ on:
         type: string
         description: "Avm.Authoring reference: authoringSource=gallery uses a package version (blank = latest); authoringSource=repo uses a tools SHA, tag or branch (blank = latest stable tag)."
         required: false
+      runE2E:
+        type: boolean
+        description: "Run Azure deployment tests in addition to PR checks and unit tests."
+        default: false
   pull_request:
     types:
       - opened
@@ -29,13 +33,46 @@ on:
 permissions: {}
 
 jobs:
-  pr-check:
-    name: "Module checks [EXPERIMENTAL]"
+  initialize:
+    name: "[AVM] Initialize module checks"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      hasModules: ${{ steps.initialize.outputs.hasModules }}
+      moduleMatrix: ${{ steps.initialize.outputs.moduleMatrix }}
+      baseCommit: ${{ steps.initialize.outputs.baseCommit }}
+      targetCommit: ${{ steps.initialize.outputs.targetCommit }}
+      workflowInput: ${{ steps.initialize.outputs.workflowInput }}
+      authoringArtifact: ${{ steps.initialize.outputs.authoringArtifact }}
+    steps:
+      - name: "[AVM] Prepare module checks"
+        id: initialize
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@29666d3bf652eab60439e29218e6e9bd4bbf05aa
+        with:
+          authoringSource: ${{ inputs.authoringSource || 'gallery' }}
+          authoringRef: ${{ inputs.authoringRef || '' }}
+          modulePaths: ${{ inputs.modulePaths || '' }}
+          deploymentValidation: ${{ inputs.runE2E && 'true' || 'false' }}
+
+  check:
+    name: "[AVM] ${{ matrix.modulePath }}"
+    needs: initialize
+    if: needs.initialize.outputs.hasModules == 'true'
     permissions:
       contents: read
       id-token: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-pr-check.yml@790f00b5bb824ce381ae3cddb81d5fd1976a9478
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@29666d3bf652eab60439e29218e6e9bd4bbf05aa
     with:
-      authoringSource: ${{ inputs.authoringSource || 'gallery' }}
-      authoringRef: ${{ inputs.authoringRef || '' }}
+      modulePath: ${{ matrix.modulePath }}
+      moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
+      psRuleModuleTestFilePaths: ${{ matrix.psRuleModuleTestFilePaths }}
+      e2eRoute: ${{ matrix.e2eRoute }}
+      baseCommit: ${{ needs.initialize.outputs.baseCommit }}
+      workflowInput: ${{ needs.initialize.outputs.workflowInput }}
+      targetCommit: ${{ needs.initialize.outputs.targetCommit }}
+      authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
     secrets: inherit
