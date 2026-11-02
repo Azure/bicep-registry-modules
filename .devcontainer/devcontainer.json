@@ -5,7 +5,6 @@
     "vscode": {
       "extensions": [
         "cschleiden.vscode-github-actions",
-        "esbenp.prettier-vscode",
         "GitHub.copilot",
         "GitHub.copilot-chat",
         "GitHub.vscode-github-actions",
@@ -35,7 +34,6 @@
     "ghcr.io/devcontainers/features/powershell:1": {
       "modules": ["Az.Accounts", "Az.Resources", "Az.KeyVault", "Pester"]
     },
-    "ghcr.io/devcontainers-extra/features/prettier:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
     // act to run github actions locally
     "ghcr.io/devcontainers-extra/features/act-asdf:2": {},
