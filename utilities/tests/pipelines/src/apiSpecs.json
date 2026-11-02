@@ -1,13 +1,7 @@
 {
   "Microsoft.Authorization": {
-    "locks": [
-      "2017-04-01",
-      "2020-05-01"
-    ],
-    "roleAssignments": [
-      "2022-04-01",
-      "2025-10-01-preview"
-    ]
+    "locks": ["2017-04-01", "2020-05-01"],
+    "roleAssignments": ["2022-04-01", "2025-10-01-preview"]
   },
   "microsoft.insights": {
     "diagnosticSettings": [

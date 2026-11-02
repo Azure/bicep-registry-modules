@@ -25,10 +25,10 @@ By default, the Domain Admin account and local administrator accounts have the u
 - Use a Run Command on the host VM to reset the admin password. Ex: `net user admin-hci '<aNewKnownValue1>'`
 - Use a Run Command to decrypt the exported password stored locally on the host VM. Note, this password is encrypted to the SYSTEM account, so you must use Run Command or a tool like PSExec to decrypt it. Ex:
 
-    ```powershell
-    $c = Import-CliXML -Path 'C:\temp\hciHostDeployAdminCred.xml'
-    $c.GetNetworkCredential().password
-    ```
+  ```powershell
+  $c = Import-CliXML -Path 'C:\temp\hciHostDeployAdminCred.xml'
+  $c.GetNetworkCredential().password
+  ```
 
 ### Logging
 
@@ -53,15 +53,16 @@ This walkthrough deploys a standalone cluster. Shared CI infrastructure is prepa
 1. Pick one of the E2E test templates in `avm\res\azure-stack-hci\cluster\tests\e2e`. Their `enforcedLocation` parameter defaults to the shared CI region in `utilities\e2e-template-assets\module-specific\azure-stack-hci\environment.json` (currently `australiaeast`). To choose another region for a standalone deployment, pass this parameter without changing the shared CI configuration.
 1. Create a parameter object in PowerShell to pass to the deployment. For example:
 
-    ```powershell
-    $templateParameterObjectAIRS = @{
-        'arbDeploymentServicePrincipalSecret' = (Read-Host -AsSecureString -Prompt 'arbDeploymentServicePrincipalSecret')
-        'localAdminAndDeploymentUserPass'     = (Read-Host -AsSecureString -Prompt 'localAdminAndDeploymentUserPass')
-        'arbDeploymentSPObjectId'             = '4aceef22-f89f-42e8-8d8b-5aa3fb8fb57b'
-        'arbDeploymentAppId'                  = '6e9515aa-715d-4a18-bdfe-463e8a004ffe'
-        'hciResourceProviderObjectId'         = 'e44d5f5e-21c6-4b3a-b697-e1236d00b006'
-        'enforcedLocation'                    = 'australiaeast'
-        'deploymentPrefix'                    = -join ((97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
-    }
-    ```
+   ```powershell
+   $templateParameterObjectAIRS = @{
+       'arbDeploymentServicePrincipalSecret' = (Read-Host -AsSecureString -Prompt 'arbDeploymentServicePrincipalSecret')
+       'localAdminAndDeploymentUserPass'     = (Read-Host -AsSecureString -Prompt 'localAdminAndDeploymentUserPass')
+       'arbDeploymentSPObjectId'             = '4aceef22-f89f-42e8-8d8b-5aa3fb8fb57b'
+       'arbDeploymentAppId'                  = '6e9515aa-715d-4a18-bdfe-463e8a004ffe'
+       'hciResourceProviderObjectId'         = 'e44d5f5e-21c6-4b3a-b697-e1236d00b006'
+       'enforcedLocation'                    = 'australiaeast'
+       'deploymentPrefix'                    = -join ((97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
+   }
+   ```
+
 1. Execute the deployment. The command's `-Location` selects the subscription deployment metadata location, not the HCI resource region controlled by `enforcedLocation`. Example: `new-AzSubscriptionDeployment -TemplateFile C:\Users\mbratschun\repos\bicep-registry-modules\avm\res\azure-stack-hci\cluster\tests\e2e\2nodeswitched.defaults\main.test.bicep -TemplateParameterObject $templateParameterObjectBAMI24H2 -Location australiaeast`

@@ -1,6 +1,3 @@
 {
-  "recommendations": [
-    "editorconfig.editorconfig",
-    "ms-vscode.powershell"
-  ]
+  "recommendations": ["editorconfig.editorconfig", "ms-vscode.powershell"]
 }

@@ -1,0 +1,11 @@
+{
+  "name": "bicep-registry-modules",
+  "private": true,
+  "scripts": {
+    "prettier": "prettier --write .",
+    "prettier:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "3.9.8"
+  }
+}
