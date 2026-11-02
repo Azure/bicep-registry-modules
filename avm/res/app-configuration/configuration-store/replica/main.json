@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "5563478073509400751"
+      "version": "0.48.1.52935",
+      "templateHash": "17017800864757232812"
     },
     "name": "App Configuration Replicas",
     "description": "This module deploys an App Configuration Replica."
@@ -91,6 +91,13 @@
         "description": "The resource ID of the replica that was deployed."
       },
       "value": "[resourceId('Microsoft.AppConfiguration/configurationStores/replicas', parameters('appConfigurationName'), parameters('name'))]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the replica."
+      },
+      "value": "[reference(resourceId('Microsoft.AppConfiguration/configurationStores/replicas', parameters('appConfigurationName'), parameters('name')), '2025-02-01-preview', 'full').location]"
     }
   }
 }

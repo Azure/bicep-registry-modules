@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "14957581293671837693"
+      "version": "0.48.1.52935",
+      "templateHash": "3709196063668767315"
     },
     "name": "DocumentDB Database Account Gremlin Databases",
     "description": "This module deploys a Gremlin Database within a CosmosDB Account."
@@ -200,8 +200,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "14952591836662231999"
+              "version": "0.48.1.52935",
+              "templateHash": "12916943596425517251"
             },
             "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
             "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."

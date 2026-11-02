@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "2070355690699208101"
+      "version": "0.48.1.52935",
+      "templateHash": "17937765213808768333"
     },
     "name": "Integration Account Certificates",
     "description": "This module deploys an Integration Account Certificate."
@@ -140,6 +140,13 @@
         "description": "The resource group the integration account certificate was deployed into."
       },
       "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the integration account certificate."
+      },
+      "value": "[reference('certificate', '2019-05-01', 'full').location]"
     }
   }
 }

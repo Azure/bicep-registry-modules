@@ -3688,7 +3688,7 @@ Git integration settings.
 | `name` | string | The name of the deployed Synapse Workspace. |
 | `privateEndpoints` | array | The private endpoints of the Synapse Workspace. |
 | `resourceGroupName` | string | The resource group of the deployed Synapse Workspace. |
-| `resourceID` | string | The resource ID of the deployed Synapse Workspace. |
+| `resourceId` | string | The resource ID of the deployed Synapse Workspace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules

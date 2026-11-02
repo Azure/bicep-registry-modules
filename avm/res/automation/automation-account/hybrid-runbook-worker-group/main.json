@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "18145839711960548350"
+      "version": "0.48.1.52935",
+      "templateHash": "12366418696344664786"
     },
     "name": "Automation Account Hybrid Runbook Worker Groups",
     "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group."
@@ -141,8 +141,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "7542107436877816551"
+              "version": "0.48.1.52935",
+              "templateHash": "2790776962511932587"
             },
             "name": "Automation Account Hybrid Runbook Worker Group Workers",
             "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group Worker."

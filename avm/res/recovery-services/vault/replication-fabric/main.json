@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "5223755383264526088"
+      "version": "0.48.1.52935",
+      "templateHash": "5356346331860552033"
     },
     "name": "Recovery Services Vault Replication Fabrics",
     "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario."
@@ -210,8 +210,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "460732922317360585"
+              "version": "0.48.1.52935",
+              "templateHash": "6179444422257667140"
             },
             "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
             "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -408,8 +408,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "16952605796107887386"
+                      "version": "0.48.1.52935",
+                      "templateHash": "8347693974437956697"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                     "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "11455275193879246497"
+      "version": "0.48.1.52935",
+      "templateHash": "6947159984522603013"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database."
@@ -920,8 +920,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "6638102118403877124"
+              "version": "0.48.1.52935",
+              "templateHash": "13568165272207022854"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -1071,8 +1071,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "10272308555566155293"
+              "version": "0.48.1.52935",
+              "templateHash": "15230278097924634261"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."

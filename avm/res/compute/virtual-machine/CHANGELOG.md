@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.22.4
+
+### Changes
+
+- Regenerated ARM template artifacts with Bicep 0.48.1 without changing resource configuration.
+
+### Breaking Changes
+
+- None
+
 ## 0.22.3
 
 ### Changes

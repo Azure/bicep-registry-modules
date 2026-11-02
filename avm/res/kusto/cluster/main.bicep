@@ -116,7 +116,7 @@ import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-com
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-@description('Optional. Enable/disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'

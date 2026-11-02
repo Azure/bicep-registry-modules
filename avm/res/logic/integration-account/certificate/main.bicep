@@ -74,3 +74,6 @@ output name string = certificate.name
 
 @description('The resource group the integration account certificate was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location of the integration account certificate.')
+output location string = certificate.location

@@ -220,6 +220,7 @@ Location for the databases.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the Kusto Cluster database. |
 | `name` | string | The name of the Kusto Cluster database. |
 | `resourceGroupName` | string | The resource group containing the Kusto Cluster database. |
 | `resourceId` | string | The resource ID of the Kusto Cluster database. |

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "10022079303329624741"
+      "version": "0.48.1.52935",
+      "templateHash": "17611150403470890414"
     },
     "name": "Integration Account Maps",
     "description": "This module deploys an Integration Account Map."
@@ -169,6 +169,13 @@
         "description": "The resource group the integration account map was deployed into."
       },
       "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the integration account map."
+      },
+      "value": "[reference('map', '2019-05-01', 'full').location]"
     }
   }
 }

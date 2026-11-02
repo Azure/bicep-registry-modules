@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "18020723666071825133"
+      "version": "0.48.1.52935",
+      "templateHash": "4499227535334235994"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN."
@@ -1129,8 +1129,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "15097795369616680026"
+              "version": "0.48.1.52935",
+              "templateHash": "12462917259185495216"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group."
@@ -2031,8 +2031,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "1530967667235091520"
+                      "version": "0.48.1.52935",
+                      "templateHash": "13818564218435857447"
                     },
                     "name": "Elastic SAN Volumes",
                     "description": "This module deploys an Elastic SAN Volume."
@@ -2231,8 +2231,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "7245068298357676029"
+                              "version": "0.48.1.52935",
+                              "templateHash": "18105873133014794071"
                             },
                             "name": "Elastic SAN Volume Snapshots",
                             "description": "This module deploys an Elastic SAN Volume Snapshot."

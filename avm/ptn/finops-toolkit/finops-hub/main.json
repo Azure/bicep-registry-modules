@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "2299298044929473602"
+      "version": "0.48.1.52935",
+      "templateHash": "9641417934888910605"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit."
@@ -211,8 +211,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "16064381995268853379"
+              "version": "0.48.1.52935",
+              "templateHash": "14161731921490710808"
             }
           },
           "parameters": {
@@ -5615,8 +5615,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "16095784587130697295"
+              "version": "0.48.1.52935",
+              "templateHash": "954743127210291301"
             }
           },
           "parameters": {
@@ -8375,8 +8375,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "12328813631164629087"
+              "version": "0.48.1.52935",
+              "templateHash": "16368541924631873493"
             }
           },
           "parameters": {

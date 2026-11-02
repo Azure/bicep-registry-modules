@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "7751388716888879634"
+      "version": "0.48.1.52935",
+      "templateHash": "9611216542764122167"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -642,7 +642,7 @@
         },
         "description": "Optional. Specifies the resource tags for all the resources."
       },
-      "defaultValue": {}
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -762,7 +762,7 @@
             "value": "[tryGet(parameters('aiFoundryConfiguration'), 'roleAssignments')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -778,8 +778,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "12245558016468316947"
+              "version": "0.48.1.52935",
+              "templateHash": "2317631062325679321"
             }
           },
           "definitions": {
@@ -3790,7 +3790,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -3812,8 +3812,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "2692735394080255994"
+              "version": "0.48.1.52935",
+              "templateHash": "2066462238046272031"
             }
           },
           "definitions": {
@@ -7573,7 +7573,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -7604,8 +7604,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "5036941218626531688"
+              "version": "0.48.1.52935",
+              "templateHash": "10058792205312986791"
             }
           },
           "definitions": {
@@ -10029,7 +10029,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -10051,8 +10051,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "5453447899308568482"
+              "version": "0.48.1.52935",
+              "templateHash": "16617750928353776093"
             }
           },
           "definitions": {
@@ -18537,7 +18537,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -18565,8 +18565,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11639296185979376043"
+              "version": "0.48.1.52935",
+              "templateHash": "9879755466792653078"
             }
           },
           "definitions": {
@@ -24865,7 +24865,7 @@
           "aiSearchConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', reference('aiSearch').outputs.name.value, 'subscriptionId', reference('aiSearch').outputs.subscriptionId.value, 'resourceGroupName', reference('aiSearch').outputs.resourceGroupName.value)), createObject('value', null()))]",
           "cosmosDbConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', reference('cosmosDb').outputs.name.value, 'subscriptionId', reference('cosmosDb').outputs.subscriptionId.value, 'resourceGroupName', reference('cosmosDb').outputs.resourceGroupName.value)), createObject('value', null()))]",
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "lock": {
             "value": "[parameters('lock')]"
@@ -24878,8 +24878,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "14769608498987839423"
+              "version": "0.48.1.52935",
+              "templateHash": "14336301300135123633"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -25041,7 +25041,7 @@
                 },
                 "description": "Optional. Tags to be applied to the resources."
               },
-              "defaultValue": {}
+              "nullable": true
             }
           },
           "variables": {
@@ -25094,7 +25094,7 @@
                 "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), parameters('name'))]",
                 "description": "[if(not(empty(parameters('desc'))), parameters('desc'), parameters('name'))]"
               },
-              "tags": "[parameters('tags')]"
+              "tags": "[coalesce(parameters('tags'), createObject())]"
             },
             "cosmosDbConnectionResource": {
               "condition": "[not(empty(parameters('cosmosDbConnection')))]",
@@ -25169,7 +25169,7 @@
               "name": "[format('{0}/{1}', parameters('accountName'), format('chagent{0}', replace(parameters('accountName'), '-', '')))]",
               "properties": {
                 "capabilityHostKind": "Agents",
-                "tags": "[parameters('tags')]"
+                "tags": "[coalesce(parameters('tags'), createObject())]"
               },
               "dependsOn": [
                 "aiSearchConnectionResource",
@@ -25194,7 +25194,7 @@
                 "storageConnections": [
                   "[format('{0}', parameters('storageAccountConnection').resourceName)]"
                 ],
-                "tags": "[parameters('tags')]"
+                "tags": "[coalesce(parameters('tags'), createObject())]"
               },
               "dependsOn": [
                 "accountCapabilityHost",
@@ -25245,8 +25245,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "17200224943645191747"
+                      "version": "0.48.1.52935",
+                      "templateHash": "9909329263607001138"
                     }
                   },
                   "parameters": {
@@ -25308,8 +25308,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "13065792564353351624"
+                      "version": "0.48.1.52935",
+                      "templateHash": "2393090564444546167"
                     }
                   },
                   "parameters": {
@@ -25371,8 +25371,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "17642323173492771442"
+                      "version": "0.48.1.52935",
+                      "templateHash": "9990002856175995322"
                     }
                   },
                   "parameters": {
@@ -25448,8 +25448,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "6980253785932858738"
+                      "version": "0.48.1.52935",
+                      "templateHash": "13415573132318883611"
                     }
                   },
                   "parameters": {
@@ -25535,8 +25535,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "7502832477035962053"
+                      "version": "0.48.1.52935",
+                      "templateHash": "17255027842168017826"
                     }
                   },
                   "parameters": {

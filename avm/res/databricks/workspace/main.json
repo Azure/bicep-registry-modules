@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "2836790893206817782"
+      "version": "0.48.1.52935",
+      "templateHash": "4309579322712924224"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace."
@@ -1091,8 +1091,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11913795046786283149"
+              "version": "0.48.1.52935",
+              "templateHash": "5928705069071818862"
             }
           },
           "parameters": {
@@ -1162,8 +1162,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11913795046786283149"
+              "version": "0.48.1.52935",
+              "templateHash": "5928705069071818862"
             }
           },
           "parameters": {

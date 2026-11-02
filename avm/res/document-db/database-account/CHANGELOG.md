@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated `Microsoft.KeyVault/vaults` and `Microsoft.KeyVault/vaults/keys` API versions from `2024-11-01` to `2026-02-01`.
+- Added the resource-derived location output to the Cassandra view child module.
 
 ### Breaking Changes
 

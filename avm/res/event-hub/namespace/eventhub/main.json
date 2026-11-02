@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "6704776785603613856"
+      "version": "0.48.1.52935",
+      "templateHash": "6810064323765977179"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -551,8 +551,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "17941916867999728617"
+              "version": "0.48.1.52935",
+              "templateHash": "91974138872119648"
             },
             "name": "Event Hub Namespace Event Hub Consumer Groups",
             "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -691,8 +691,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "510686048412952583"
+              "version": "0.48.1.52935",
+              "templateHash": "8996226119818469728"
             },
             "name": "Event Hub Namespace Event Hub Authorization Rules",
             "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."

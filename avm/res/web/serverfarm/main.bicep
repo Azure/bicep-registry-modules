@@ -57,7 +57,12 @@ param targetWorkerCount resourceInput<'Microsoft.Web/serverfarms@2025-03-01'>.pr
 param targetWorkerSize int = 0
 
 @description('Optional. Zone Redundant server farms can only be used on Premium or ElasticPremium SKU tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs).')
-param zoneRedundant resourceInput<'Microsoft.Web/serverfarms@2025-03-01'>.properties.zoneRedundant = startsWith(skuName, 'P') || startsWith(skuName, 'EP') ? true : false
+param zoneRedundant resourceInput<'Microsoft.Web/serverfarms@2025-03-01'>.properties.zoneRedundant = startsWith(
+    skuName,
+    'P'
+  ) || startsWith(skuName, 'EP')
+  ? true
+  : false
 
 @description('Optional. If Hyper-V container app service plan true, false otherwise.')
 param hyperV resourceInput<'Microsoft.Web/serverfarms@2025-03-01'>.properties.hyperV?

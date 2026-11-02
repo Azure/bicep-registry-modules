@@ -2175,7 +2175,6 @@ Specifies the resource tags for all the resources.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ## Outputs
 

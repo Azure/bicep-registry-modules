@@ -116,6 +116,7 @@ The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the backup policy. |
 | `name` | string | The name of the Backup Policy. |
 | `resourceGroupName` | string | The name of the Resource Group the Backup Policy was created in. |
 | `resourceId` | string | The resource IDs of the backup Policy created within volume. |

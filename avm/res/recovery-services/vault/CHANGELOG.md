@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Deploy all replication fabrics and containers before their mappings to support cross-fabric and forward container references.
 - Fixed generated policy and target-container resource IDs to include the resource group.
+- Added the resource-derived location output to the embedded protected-item module.
 
 ### Breaking Changes
 

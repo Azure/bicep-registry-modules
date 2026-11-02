@@ -124,7 +124,7 @@ module testDeployment '../../../main.bicep' = [
           identity: nestedDependencies.outputs.managedIdentityResourceId
         }
       ]
-      service:{
+      service: {
         type: 'Web'
       }
       containers: [
