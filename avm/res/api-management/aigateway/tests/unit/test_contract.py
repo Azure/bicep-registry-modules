@@ -59,7 +59,7 @@ class ContractTests(unittest.TestCase):
         )
         self.assertEqual(
             self.root["parameters"]["sku"]["allowedValues"],
-            ["Consumption", "Premium", "Standard"],
+            ["Standard"],
         )
         self.assertTrue(self.root["parameters"]["sku"]["nullable"])
         self.assertNotIn("defaultValue", self.root["parameters"]["sku"])

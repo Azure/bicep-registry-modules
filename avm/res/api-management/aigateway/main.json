@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "9274567950532758952"
+      "templateHash": "2588816660465608564"
     },
     "name": "API Management AI Gateway",
     "description": "Deploys a standalone AI Gateway and its workspace-scoped model and tool configuration."
@@ -1514,13 +1514,11 @@
     "sku": {
       "type": "string",
       "allowedValues": [
-        "Consumption",
-        "Premium",
         "Standard"
       ],
       "nullable": true,
       "metadata": {
-        "description": "Optional. Gateway SKU name. Omit to let the resource provider apply its default SKU (Standard)."
+        "description": "Optional. Gateway SKU name (Standard). Omit to let the resource provider apply its default SKU (Standard)."
       }
     },
     "tags": {

@@ -133,7 +133,7 @@ The gateway creates providers and their models before aliases. A route may also 
 |---|---|---|
 | `name` | `string` | Required; 3-24 characters, lowercase letters, numbers and hyphens |
 | `location` | `string` | Resource group location |
-| `sku` | `'Standard' \| 'Premium' \| 'Consumption'?` | Omitted (`null`) by default so the RP applies `Standard` |
+| `sku` | `'Standard'?` | Omitted (`null`) by default so the RP applies `Standard` |
 | `tags` | String dictionary | `{}` |
 | `managedIdentities` | AVM `managedIdentityAllType` | System-assigned identity enabled; supply `{}` to disable identities |
 | `roleAssignments` | AVM `roleAssignmentType[]?` | No gateway-scoped assignments |

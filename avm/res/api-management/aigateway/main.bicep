@@ -25,8 +25,8 @@ param name string
 @description('Optional. Azure region with AI Gateway preview availability.')
 param location string = resourceGroup().location
 
-@description('Optional. Gateway SKU name. Omit to let the resource provider apply its default SKU (Standard).')
-param sku ('Standard' | 'Premium' | 'Consumption')?
+@description('Optional. Gateway SKU name (Standard). Omit to let the resource provider apply its default SKU (Standard).')
+param sku ('Standard')?
 
 @description('Optional. Tags of the gateway.')
 param tags { *: string } = {}
