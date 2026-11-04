@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "14082566164845710093"
+      "version": "0.48.1.52935",
+      "templateHash": "10829940301527758050"
     },
     "name": "API Management Workspace Products",
     "description": "This module deploys a Product in an API Management Workspace."
@@ -295,8 +295,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "13650155963304210158"
+              "version": "0.48.1.52935",
+              "templateHash": "18192454649685951878"
             },
             "name": "API Management Workspace Product API Links",
             "description": "This module deploys an Product API Link in an API Management Workspace."
@@ -442,8 +442,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "16283693892686569198"
+              "version": "0.48.1.52935",
+              "templateHash": "4919618273934232236"
             },
             "name": "API Management Workspace Product Group Links",
             "description": "This module deploys a Product Group Link in an API Management Workspace."
@@ -592,8 +592,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "13194024346563845368"
+              "version": "0.48.1.52935",
+              "templateHash": "5830960281426390816"
             },
             "name": "API Management Workspace Product Policies",
             "description": "This module deploys a Policy for a Product in an API Management Workspace."
