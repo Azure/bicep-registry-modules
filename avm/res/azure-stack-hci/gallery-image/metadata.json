@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Local Gallery Image",
+  "moduleDescription": "This module imports a prepared customer-provided OS image into Azure Local. It does not build, harden, or patch the source image.",
+  "telemetryIdPrefix": "46d3xbcp.res.31cbc1d",
+  "canonicalType": "Microsoft.AzureStackHCI/galleryImages",
+  "owners": ["chirag1603", "bniranjanbhat", "abhisheksharma-ops"]
+}
