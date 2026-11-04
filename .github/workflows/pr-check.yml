@@ -23,22 +23,6 @@ on:
         type: boolean
         description: "Run Azure deployment tests in addition to PR checks and unit tests."
         default: false
-      readOnlyEvidence:
-        type: boolean
-        description: "Run only the separately reviewed retained TEST read-only diagnostic."
-        default: false
-      expectedCommit:
-        type: string
-        description: "Exact reviewed caller commit approved for the read-only diagnostic."
-        required: false
-      evidenceBundle:
-        type: string
-        description: "Base64 of the approved retained TEST scope bundle."
-        required: false
-      evidenceBundleSha256:
-        type: string
-        description: "Approved bundle SHA256, independently admitted by the tools workflow."
-        required: false
   pull_request:
     types:
       - opened
@@ -51,7 +35,6 @@ permissions: {}
 jobs:
   initialize:
     name: "[AVM] Initialize module checks"
-    if: ${{ github.event_name != 'workflow_dispatch' || !inputs.readOnlyEvidence }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -93,20 +76,3 @@ jobs:
       targetCommit: ${{ needs.initialize.outputs.targetCommit }}
       authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
     secrets: inherit
-
-  read-only-evidence:
-    name: "[AVM] Retained TEST read-only evidence"
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.readOnlyEvidence }}
-    permissions:
-      contents: read
-      id-token: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-retained-test-evidence.yml@51d107f63597f4f63bd3a7a8c247a8ee27b5a169
-    with:
-      tools-ref: 51d107f63597f4f63bd3a7a8c247a8ee27b5a169
-      expectedCommit: ${{ inputs.expectedCommit }}
-      evidenceBundle: ${{ inputs.evidenceBundle }}
-      evidenceBundleSha256: ${{ inputs.evidenceBundleSha256 }}
-      readOnlyEvidence: ${{ inputs.readOnlyEvidence }}
-      runE2E: ${{ inputs.runE2E }}
-    secrets:
-      VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
