@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "2247266165849084320"
+      "templateHash": "9274567950532758952"
     },
     "name": "API Management AI Gateway",
     "description": "Deploys a standalone AI Gateway and its workspace-scoped model and tool configuration."
@@ -1514,11 +1514,13 @@
     "sku": {
       "type": "string",
       "allowedValues": [
-        "Premium"
+        "Consumption",
+        "Premium",
+        "Standard"
       ],
-      "defaultValue": "Premium",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The only SKU accepted by the preview resource provider."
+        "description": "Optional. Gateway SKU name. Omit to let the resource provider apply its default SKU (Standard)."
       }
     },
     "tags": {
@@ -1660,9 +1662,7 @@
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "sku": {
-        "name": "[parameters('sku')]"
-      },
+      "sku": "[if(equals(parameters('sku'), null()), null(), createObject('name', parameters('sku')))]",
       "identity": "[variables('identity')]",
       "properties": "[if(equals(parameters('virtualNetworkConfiguration'), null()), createObject(), createObject('backend', createObject('subnet', createObject('id', parameters('virtualNetworkConfiguration').subnetResourceId))))]"
     },

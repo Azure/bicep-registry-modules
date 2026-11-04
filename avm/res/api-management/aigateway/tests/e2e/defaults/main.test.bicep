@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = 'Deploys Premium with system-assigned identity and references the service-provisioned default workspace.'
+metadata description = 'Deploys an AI Gateway with default SKU (omitted so the RP defaults to Standard), system-assigned identity, and references the service-provisioned default workspace.'
 
 @description('Optional. Test resource group name.')
 @maxLength(90)

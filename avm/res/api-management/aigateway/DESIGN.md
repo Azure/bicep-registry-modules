@@ -8,7 +8,7 @@ Azure AI Gateway needs a reusable infrastructure module that combines a standalo
 
 ```text
 avm/res/api-management/aigateway/
-  main.bicep                         standalone Premium gateway
+  main.bicep                         standalone AI Gateway
   main.json                          compiled root and nested templates
   metadata.json                      candidate owner and telemetry metadata
   version.json                       proposed 0.1 version
@@ -38,7 +38,7 @@ The resource provider automatically creates `workspaces/default`. Without polici
 
 The root takes the common AVM parameters `name`, `location`, `tags`, `managedIdentities`, `roleAssignments`, `lock` and `enableTelemetry`, plus `sku`, `virtualNetworkConfiguration`, `apiKeys`, `workspaces` and secure `secrets`.
 
-Only `name` is required. Defaults select Premium, a system-assigned identity and a reference to the default workspace. The module does not silently register models, create client keys or provision monitoring destinations.
+Only `name` is required. Defaults omit `sku` (so the RP applies `Standard`), select a system-assigned identity and reference the default workspace. The module does not silently register models, create client keys or provision monitoring destinations.
 
 Resource configuration uses a typed `{ name, properties }` envelope to separate ARM identifiers from writable wire properties. Model providers add `models`; workspaces group their child arrays. This is a deliberate variation from adjacent modules that flatten many child resource properties. It keeps the preview contract visible and avoids generic unvalidated `object` payloads. The README documents each root parameter and output.
 
@@ -75,7 +75,7 @@ The common AVM identity, lock and RBAC types come from `br/public:avm/utl/types/
 
 | Concern | Draft behavior |
 |---|---|
-| Gateway type and SKU | `Microsoft.ApiManagement/aigateways`, `sku.name: 'Premium'`; no SKU capacity |
+| Gateway type and SKU | `Microsoft.ApiManagement/aigateways`, `sku` omitted by default (RP defaults to `Standard`); no SKU capacity |
 | Gateway properties | Empty by default; optional virtual network type/subnet |
 | Runtime hostname | Read `properties.frontend.defaultHostname`; no success-shaped fallback |
 | Workspace lifecycle | Reference service-provisioned default; PUT only when policies are supplied |
@@ -102,7 +102,7 @@ Incremental deployments do not delete children removed from configuration arrays
 
 | Scenario | What it demonstrates | Remaining live evaluation |
 |---|---|---|
-| Defaults | Minimum inputs, Premium, system identity, default-workspace reference, sequential init/idem | Preview region availability, automatic workspace provisioning, repeat deployment |
+| Defaults | Minimum inputs, default SKU omitted (`Standard`), system identity, default-workspace reference, sequential init/idem | Preview region availability, automatic workspace provisioning, repeat deployment |
 | Max | Both identity forms; gateway RBAC; lock; network attachment; explicit/generated keys; Foundry/custom providers; three models; 80/20 priority-zero routing plus priority-one target; governance; MCP/OpenAPI; both exporters | All preview child PUT shapes, endpoint connectivity, key behavior, network/subnet requirements, routing/failover semantics |
 | WAF-aligned | User-assigned identity, upstream least-privilege RBAC, token/cost governance, content safety, two-model alias, metadata-only monitoring, delete protection | Client authentication, policy scope behavior, enforcement and runtime failure handling; network isolation is not asserted |
 

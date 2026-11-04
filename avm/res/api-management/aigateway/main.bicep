@@ -25,8 +25,8 @@ param name string
 @description('Optional. Azure region with AI Gateway preview availability.')
 param location string = resourceGroup().location
 
-@description('Optional. The only SKU accepted by the preview resource provider.')
-param sku 'Premium' = 'Premium'
+@description('Optional. Gateway SKU name. Omit to let the resource provider apply its default SKU (Standard).')
+param sku ('Standard' | 'Premium' | 'Consumption')?
 
 @description('Optional. Tags of the gateway.')
 param tags { *: string } = {}
@@ -130,9 +130,12 @@ resource gateway 'Microsoft.ApiManagement/aigateways@2025-09-01-preview' = {
   name: name
   location: location
   tags: tags
-  sku: {
-    name: sku
-  }
+  #disable-next-line BCP321
+  sku: sku == null
+    ? null
+    : {
+        name: sku!
+      }
   identity: identity
   properties: virtualNetworkConfiguration == null
     ? {}

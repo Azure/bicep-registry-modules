@@ -320,7 +320,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      sku: 'Premium'
+      sku: 'Standard'
       tags: {
         scenario: 'max'
         workload: 'aigateway'

@@ -53,9 +53,16 @@ class ContractTests(unittest.TestCase):
     def test_standalone_preview_and_sku(self):
         gateway = self.resource(PREFIX)
         self.assertEqual(gateway["apiVersion"], API_VERSION)
-        self.assertEqual(gateway["sku"], {"name": "[parameters('sku')]"})
-        self.assertEqual(self.root["parameters"]["sku"]["allowedValues"], ["Premium"])
-        self.assertEqual(self.root["parameters"]["sku"]["defaultValue"], "Premium")
+        self.assertEqual(
+            gateway["sku"],
+            "[if(equals(parameters('sku'), null()), null(), createObject('name', parameters('sku')))]",
+        )
+        self.assertEqual(
+            self.root["parameters"]["sku"]["allowedValues"],
+            ["Consumption", "Premium", "Standard"],
+        )
+        self.assertTrue(self.root["parameters"]["sku"]["nullable"])
+        self.assertNotIn("defaultValue", self.root["parameters"]["sku"])
         serialized = json.dumps(self.root)
         self.assertNotIn("Microsoft.Web/connectorGateways", serialized)
         self.assertNotIn("Microsoft.ApiManagement/service", serialized)

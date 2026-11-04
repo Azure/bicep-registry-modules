@@ -2,7 +2,7 @@
 
 Deploy a standalone Azure AI Gateway, register model providers and tools in its default workspace, and give clients a stable model alias with priority and weighted routing.
 
-This module targets `Microsoft.ApiManagement/aigateways@2025-09-01-preview`. It is separate from the existing API Management `service` module (`avm/res/api-management/service`). The preview accepts the `Premium` SKU; this module does not deploy the retired connector gateway resource.
+This module targets `Microsoft.ApiManagement/aigateways@2025-09-01-preview`. It is separate from the existing API Management `service` module (`avm/res/api-management/service`). By default it omits `sku` so the resource provider applies its default (`Standard`); this module does not deploy the retired connector gateway resource.
 
 > **Looking for a one-click standalone quickstart?** If you want a single template that provisions both a new Microsoft Foundry account (`gpt-6.1-sol` + `gpt-5-mini`) and an AI Gateway with default aliases and optional Microsoft Learn MCP (`mcpMode: 'create'`), see the companion ARM Quickstart [`quickstarts/microsoft.apimanagement/aigateway`](https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.apimanagement/aigateway).
 >
@@ -21,7 +21,7 @@ module gateway './avm/res/api-management/aigateway/main.bicep' = {
 }
 ```
 
-This creates a Premium gateway with a system-assigned identity. The resource provider provisions `workspaces/default`; the module references that workspace without writing its policies. It does not create API keys, model providers, tools or runtime telemetry destinations unless requested.
+This creates a gateway (omitting `sku` so the RP defaults to `Standard`) with a system-assigned identity. The resource provider provisions `workspaces/default`; the module references that workspace without writing its policies. It does not create API keys, model providers, tools or runtime telemetry destinations unless requested.
 
 There is no `br/public:avm/res/api-management/aigateway` release to consume yet. Use the local module path while reviewing.
 
@@ -133,7 +133,7 @@ The gateway creates providers and their models before aliases. A route may also 
 |---|---|---|
 | `name` | `string` | Required; 3-24 characters, lowercase letters, numbers and hyphens |
 | `location` | `string` | Resource group location |
-| `sku` | `'Premium'` | Only supported preview SKU |
+| `sku` | `'Standard' \| 'Premium' \| 'Consumption'?` | Omitted (`null`) by default so the RP applies `Standard` |
 | `tags` | String dictionary | `{}` |
 | `managedIdentities` | AVM `managedIdentityAllType` | System-assigned identity enabled; supply `{}` to disable identities |
 | `roleAssignments` | AVM `roleAssignmentType[]?` | No gateway-scoped assignments |
