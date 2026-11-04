@@ -74,6 +74,7 @@ Describe 'Test subscription reservation configuration' {
             'avm/res/azure-stack-hci/logical-network'
             'avm/res/azure-stack-hci/marketplace-gallery-image'
             'avm/res/azure-stack-hci/network-interface'
+            'avm/res/azure-stack-hci/storage-container'
             'avm/res/azure-stack-hci/virtual-hard-disk'
             'avm/res/azure-stack-hci/virtual-machine-instance'
             'avm/res/hybrid-container-service/provisioned-cluster-instance'

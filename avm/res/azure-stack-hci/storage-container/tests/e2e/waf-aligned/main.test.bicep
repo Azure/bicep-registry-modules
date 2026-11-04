@@ -1,0 +1,241 @@
+targetScope = 'subscription'
+
+extension microsoftGraphV1
+
+import { preparedHciEnvironmentType } from '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/consumer.types.bicep'
+
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework. The module is deployed only once (no idempotency run), because Azure Local appends a unique subfolder to the storage container\'s path on creation and rejects a re-deployment with the original path.'
+
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-azurestackhci.storagecontainer-${serviceShort}-rg'
+
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'ashscwaf'
+
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
+@description('Optional. Validated persistent dependencies supplied by reserved Azure Local CI. Omit for a cold build.')
+param preparedHciEnvironment preparedHciEnvironmentType?
+
+@description('Optional. The password of the LCM deployment user and local administrator accounts.')
+@secure()
+param localAdminAndDeploymentUserPass string = newGuid()
+
+@description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
+@secure()
+#disable-next-line secure-parameter-default
+param arbDeploymentAppId string = ''
+
+@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
+@secure()
+#disable-next-line secure-parameter-default
+param arbDeploymentSPObjectId string = ''
+
+@description('Required. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
+@secure()
+#disable-next-line secure-parameter-default
+param arbDeploymentServicePrincipalSecret string = ''
+
+@description('Optional. The resource ID of the HCI host image to pre-stage on the VMSS host VM. When provided, speeds up cluster bootstrap by using a pre-baked VHDX.')
+@secure()
+#disable-next-line secure-parameter-default
+param hciHostImageReferenceId string = ''
+
+var enforcedLocation = loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')
+
+var customLocationName = '${namePrefix}${serviceShort}-location'
+
+resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null && preparedHciEnvironment == null) {
+  appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'
+}
+
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
+}
+
+module nestedDependencies '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/dependencies/waf-dependencies.bicep' = if (preparedHciEnvironment == null) {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
+  scope: resourceGroup
+  params: {
+    clusterName: '${namePrefix}${serviceShort}001'
+    clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
+    keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    userAssignedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
+    maintenanceConfigurationAssignmentName: 'dep-${namePrefix}-mca-${serviceShort}'
+    HCIHostVirtualMachineScaleSetName: 'dep-${namePrefix}-hvmss-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    networkInterfaceName: 'dep-${namePrefix}-mice-${serviceShort}'
+    diskNamePrefix: 'dep-${namePrefix}-disk-${serviceShort}'
+    virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
+    waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
+    arbDeploymentAppId: arbDeploymentAppId
+    arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
+    arbDeploymentSPObjectId: arbDeploymentSPObjectId
+    deploymentUserPassword: localAdminAndDeploymentUserPass
+    localAdminPassword: localAdminAndDeploymentUserPass
+    location: enforcedLocation
+    hciHostImageReferenceId: hciHostImageReferenceId
+  }
+}
+
+module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.6.0' = if (preparedHciEnvironment == null) {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
+  scope: resourceGroup
+  params: {
+    name: nestedDependencies!.outputs.clusterName
+    deploymentUser: 'deployUser'
+    deploymentUserPassword: localAdminAndDeploymentUserPass
+    localAdminUser: 'admin-hci'
+    localAdminPassword: localAdminAndDeploymentUserPass
+    servicePrincipalId: arbDeploymentAppId
+    servicePrincipalSecret: arbDeploymentServicePrincipalSecret
+    deploymentSettings: {
+      customLocationName: customLocationName
+      clusterNodeNames: nestedDependencies!.outputs.clusterNodeNames
+      clusterWitnessStorageAccountName: nestedDependencies!.outputs.clusterWitnessStorageAccountName
+      defaultGateway: '172.20.0.1'
+      deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
+      dnsServers: ['172.20.0.1']
+      domainFqdn: 'hci.local'
+      domainOUPath: nestedDependencies!.outputs.domainOUPath
+      startingIPAddress: '172.20.0.2'
+      endingIPAddress: '172.20.0.7'
+      enableStorageAutoIp: true
+      keyVaultName: nestedDependencies!.outputs.keyVaultName
+      networkIntents: [
+        {
+          adapter: ['mgmt']
+          name: 'management'
+          overrideAdapterProperty: true
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
+          }
+          overrideQosPolicy: false
+          qosPolicyOverrides: {
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
+          }
+          overrideVirtualSwitchConfiguration: false
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+          trafficType: ['Management']
+        }
+        {
+          adapter: ['comp0', 'comp1']
+          name: 'compute'
+          overrideAdapterProperty: true
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
+          }
+          overrideQosPolicy: false
+          qosPolicyOverrides: {
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
+          }
+          overrideVirtualSwitchConfiguration: false
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+          trafficType: ['Compute']
+        }
+        {
+          adapter: ['smb0', 'smb1']
+          name: 'storage'
+          overrideAdapterProperty: true
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
+          }
+          overrideQosPolicy: true
+          qosPolicyOverrides: {
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
+          }
+          overrideVirtualSwitchConfiguration: false
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+          trafficType: ['Storage']
+        }
+      ]
+      storageConnectivitySwitchless: false
+      storageNetworks: [
+        {
+          name: 'smb0'
+          adapterName: 'smb0'
+          vlan: '711'
+        }
+        {
+          name: 'smb1'
+          adapterName: 'smb1'
+          vlan: '712'
+        }
+      ]
+      subnetMask: '255.255.255.0'
+      driftControlEnforced: true
+      smbSigningEnforced: true
+      smbClusterEncryption: true
+      sideChannelMitigationEnforced: true
+      bitlockerBootVolume: true
+      bitlockerDataVolumes: true
+    }
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : hciResourceProvider!.id
+  }
+}
+
+resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-15' existing = if (preparedHciEnvironment == null) {
+  scope: resourceGroup
+  name: customLocationName
+  dependsOn: [
+    azlocal
+  ]
+}
+
+// Note: When Azure Local creates a storage container, it appends a unique folder name to the given path (for example
+// '<path>\<id>'), and the path can't be changed afterwards. A re-deployment sends the original path again and is rejected
+// with 'Blocked StorageContainer update: Path cannot be changed after resource creation'.
+// Therefore, the standard 'idem' iteration is skipped for this module.
+module testDeployment '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
+  params: {
+    name: '${namePrefix}${serviceShort}001'
+    location: enforcedLocation
+    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment!.customLocationResourceId : customLocation!.id
+    path: 'C:\\ClusterStorage\\UserStorage_1\\${namePrefix}${serviceShort}'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Stack HCI Storage Container",
+  "moduleDescription": "AVM Resource Module for Azure Stack HCI Storage Container",
+  "telemetryIdPrefix": "46d3xbcp.res.a3c99a1",
+  "canonicalType": "Microsoft.AzureStackHCI/storageContainers",
+  "owners": [
+    "abhisheksharma-ops"
+  ]
+}
