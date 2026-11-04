@@ -23,6 +23,9 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. Prepare the dependencies without deploying the account so the CI runner can wait for role assignment propagation.')
+param dependenciesOnly bool = false
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -41,7 +44,6 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForPropagation'
   }
 }
 
@@ -49,7 +51,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = if (!dependenciesOnly) {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
