@@ -1,0 +1,22 @@
+{
+  "status": "Failed",
+  "error": {
+    "code": "DeploymentFailed",
+    "target": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/retry-fixture/providers/Microsoft.Resources/deployments/dependencies",
+    "message": "At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-deployment-operations for usage details.",
+    "details": [
+      {
+        "code": "ResourceDeploymentFailure",
+        "target": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/retry-fixture/providers/Microsoft.Network/applicationGateways/gateway",
+        "message": "The resource write operation failed to complete successfully, because it reached terminal provisioning state 'Failed'.",
+        "details": [
+          {
+            "code": "ApplicationGatewayAllocationFailureDueToCapacityInZone",
+            "message": "We have a temporary capacity issue with Application Gateways in this region/zone. Please retry after a few days or please try the operation in another region or zone. For a list of Azure regions, refer to: https://azure.microsoft.com/en-us/global-infrastructure/regions/.",
+            "details": []
+          }
+        ]
+      }
+    ]
+  }
+}
