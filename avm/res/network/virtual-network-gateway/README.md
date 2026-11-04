@@ -1903,6 +1903,12 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Non-required parameters
     clientRevokedCertThumbprint: '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
     clientRootCertData: 'MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f'
+    clientRootCertificates: [
+      {
+        name: 'IntermediateCert1'
+        publicCertData: 'MIIDUTCCAjmgAwIBAgIUUXHMUncbYKCzbyl8+H8zvaJynSEwDQYJKoZIhvcNAQELBQAwODE2MDQGA1UEAwwtQVZNIFZpcnR1YWwgTmV0d29yayBHYXRld2F5IFRlc3QgSW50ZXJtZWRpYXRlMB4XDTI2MTEwNDEzNDYxMFoXDTM2MTEwMTEzNDYxMFowODE2MDQGA1UEAwwtQVZNIFZpcnR1YWwgTmV0d29yayBHYXRld2F5IFRlc3QgSW50ZXJtZWRpYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtP2ymt8njwuR8HEqb8d+EEgzG0I0n9O9J5fTjChv6LODPpeJAnoTJUxwG3PsvcdkkQUbghZ8mpb3vSDW/ZbEzwban4/JHIotplJYDBS4RXTc7jC29vjeDvY9kHa7eCR0cxcK9SeS81rNKFKlPB07umhXEDwZHTi1tzuREyz4R5GagrsB7CxmkvbHtsYi3AooJZF6NcRK14rP9FHkFv8tgxnBgTYWDKtPElVVa07kyatyQwOXQKFbEEOZtQFdFmJCAOqZk3zZons62U48pRFpkVExHEFYdHLtkMlbESeQdiQuBur68c+7AEvbICxCpAuqo5yVYf+h+m7weXbljWWJAwIDAQABo1MwUTAdBgNVHQ4EFgQUATHDkhmPGyAZgHquqMRFpNVcJPswHwYDVR0jBBgwFoAUATHDkhmPGyAZgHquqMRFpNVcJPswDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAdQz5Y7Ks5Y2vQ73+dxQVoKZcsxLWaZKEjfxDaLGOur8gpx8Uo/dYeYiNFm0GsVik9jP9IsG8MnI9xt5pa/u7Pc7I1ZVL/PAbUtblNiH4aS+cAJxywekY8/7SZXDkcet4zBkixI+tr228PCxkRVG/7x2K0j1vhMMzwuvler0Yri7A3IHW5VluPyX1r/TZLEJMEPRmkvi0oNBEojhiD2kC3V6fXWeH7F4Ah4VQkiRdvhDSOnJLHYjvisteX+9lkRA83TPAEyL6tbjqoKVagLmwtWuZxVcJjBhQhXzzDyvKFFB1DjSLgFhdkVptr+gCQgVQ3ZeV0lC15aIqtQtAmfZFhA=='
+      }
+    ]
     skuName: 'VpnGw2AZ'
     vpnClientAadConfiguration: {
       aadAudience: '11111111-1234-4321-1234-111111111111'
@@ -1956,6 +1962,14 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "clientRootCertData": {
       "value": "MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f"
     },
+    "clientRootCertificates": {
+      "value": [
+        {
+          "name": "IntermediateCert1",
+          "publicCertData": "MIIDUTCCAjmgAwIBAgIUUXHMUncbYKCzbyl8+H8zvaJynSEwDQYJKoZIhvcNAQELBQAwODE2MDQGA1UEAwwtQVZNIFZpcnR1YWwgTmV0d29yayBHYXRld2F5IFRlc3QgSW50ZXJtZWRpYXRlMB4XDTI2MTEwNDEzNDYxMFoXDTM2MTEwMTEzNDYxMFowODE2MDQGA1UEAwwtQVZNIFZpcnR1YWwgTmV0d29yayBHYXRld2F5IFRlc3QgSW50ZXJtZWRpYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtP2ymt8njwuR8HEqb8d+EEgzG0I0n9O9J5fTjChv6LODPpeJAnoTJUxwG3PsvcdkkQUbghZ8mpb3vSDW/ZbEzwban4/JHIotplJYDBS4RXTc7jC29vjeDvY9kHa7eCR0cxcK9SeS81rNKFKlPB07umhXEDwZHTi1tzuREyz4R5GagrsB7CxmkvbHtsYi3AooJZF6NcRK14rP9FHkFv8tgxnBgTYWDKtPElVVa07kyatyQwOXQKFbEEOZtQFdFmJCAOqZk3zZons62U48pRFpkVExHEFYdHLtkMlbESeQdiQuBur68c+7AEvbICxCpAuqo5yVYf+h+m7weXbljWWJAwIDAQABo1MwUTAdBgNVHQ4EFgQUATHDkhmPGyAZgHquqMRFpNVcJPswHwYDVR0jBBgwFoAUATHDkhmPGyAZgHquqMRFpNVcJPswDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAdQz5Y7Ks5Y2vQ73+dxQVoKZcsxLWaZKEjfxDaLGOur8gpx8Uo/dYeYiNFm0GsVik9jP9IsG8MnI9xt5pa/u7Pc7I1ZVL/PAbUtblNiH4aS+cAJxywekY8/7SZXDkcet4zBkixI+tr228PCxkRVG/7x2K0j1vhMMzwuvler0Yri7A3IHW5VluPyX1r/TZLEJMEPRmkvi0oNBEojhiD2kC3V6fXWeH7F4Ah4VQkiRdvhDSOnJLHYjvisteX+9lkRA83TPAEyL6tbjqoKVagLmwtWuZxVcJjBhQhXzzDyvKFFB1DjSLgFhdkVptr+gCQgVQ3ZeV0lC15aIqtQtAmfZFhA=="
+        }
+      ]
+    },
     "skuName": {
       "value": "VpnGw2AZ"
     },
@@ -2005,6 +2019,12 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param clientRevokedCertThumbprint = '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
 param clientRootCertData = 'MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f'
+param clientRootCertificates = [
+  {
+    name: 'IntermediateCert1'
+    publicCertData: 'MIIDUTCCAjmgAwIBAgIUUXHMUncbYKCzbyl8+H8zvaJynSEwDQYJKoZIhvcNAQELBQAwODE2MDQGA1UEAwwtQVZNIFZpcnR1YWwgTmV0d29yayBHYXRld2F5IFRlc3QgSW50ZXJtZWRpYXRlMB4XDTI2MTEwNDEzNDYxMFoXDTM2MTEwMTEzNDYxMFowODE2MDQGA1UEAwwtQVZNIFZpcnR1YWwgTmV0d29yayBHYXRld2F5IFRlc3QgSW50ZXJtZWRpYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtP2ymt8njwuR8HEqb8d+EEgzG0I0n9O9J5fTjChv6LODPpeJAnoTJUxwG3PsvcdkkQUbghZ8mpb3vSDW/ZbEzwban4/JHIotplJYDBS4RXTc7jC29vjeDvY9kHa7eCR0cxcK9SeS81rNKFKlPB07umhXEDwZHTi1tzuREyz4R5GagrsB7CxmkvbHtsYi3AooJZF6NcRK14rP9FHkFv8tgxnBgTYWDKtPElVVa07kyatyQwOXQKFbEEOZtQFdFmJCAOqZk3zZons62U48pRFpkVExHEFYdHLtkMlbESeQdiQuBur68c+7AEvbICxCpAuqo5yVYf+h+m7weXbljWWJAwIDAQABo1MwUTAdBgNVHQ4EFgQUATHDkhmPGyAZgHquqMRFpNVcJPswHwYDVR0jBBgwFoAUATHDkhmPGyAZgHquqMRFpNVcJPswDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAdQz5Y7Ks5Y2vQ73+dxQVoKZcsxLWaZKEjfxDaLGOur8gpx8Uo/dYeYiNFm0GsVik9jP9IsG8MnI9xt5pa/u7Pc7I1ZVL/PAbUtblNiH4aS+cAJxywekY8/7SZXDkcet4zBkixI+tr228PCxkRVG/7x2K0j1vhMMzwuvler0Yri7A3IHW5VluPyX1r/TZLEJMEPRmkvi0oNBEojhiD2kC3V6fXWeH7F4Ah4VQkiRdvhDSOnJLHYjvisteX+9lkRA83TPAEyL6tbjqoKVagLmwtWuZxVcJjBhQhXzzDyvKFFB1DjSLgFhdkVptr+gCQgVQ3ZeV0lC15aIqtQtAmfZFhA=='
+  }
+]
 param skuName = 'VpnGw2AZ'
 param vpnClientAadConfiguration = {
   aadAudience: '11111111-1234-4321-1234-111111111111'
@@ -2550,6 +2570,7 @@ param vpnType = 'RouteBased'
 | [`autoScaleConfiguration`](#parameter-autoscaleconfiguration) | object | Autoscale configuration for virtual network gateway. Only applicable for certain SKUs. |
 | [`clientRevokedCertThumbprint`](#parameter-clientrevokedcertthumbprint) | string | Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet. |
 | [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Can be combined with vpnClientAadConfiguration to support both certificate and Entra ID authentication. |
+| [`clientRootCertificates`](#parameter-clientrootcertificates) | array | Additional VPN client root or intermediate certificates. Names must be unique and must not be RootCert1 when clientRootCertData is set. |
 | [`customRoutes`](#parameter-customroutes) | object | The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableIPSecReplayProtection`](#parameter-disableipsecreplayprotection) | bool | disableIPSecReplayProtection flag. Used for VPN Gateways. |
@@ -2914,6 +2935,35 @@ Client root certificate data used to authenticate VPN clients. Can be combined w
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `clientRootCertificates`
+
+Additional VPN client root or intermediate certificates. Names must be unique and must not be RootCert1 when clientRootCertData is set.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-clientrootcertificatesname) | string | The name of the VPN client root certificate. |
+| [`publicCertData`](#parameter-clientrootcertificatespubliccertdata) | string | The public certificate data of the VPN client root certificate. |
+
+### Parameter: `clientRootCertificates.name`
+
+The name of the VPN client root certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `clientRootCertificates.publicCertData`
+
+The public certificate data of the VPN client root certificate.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `customRoutes`
 
