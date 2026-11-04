@@ -34,7 +34,7 @@ permissions: {}
 
 jobs:
   initialize:
-    name: "[AVM] Initialize module checks"
+    name: "Initialize module checks"
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -46,7 +46,7 @@ jobs:
       workflowInput: ${{ steps.initialize.outputs.workflowInput }}
       authoringArtifact: ${{ steps.initialize.outputs.authoringArtifact }}
     steps:
-      - name: "[AVM] Prepare module checks"
+      - name: "Prepare module checks"
         id: initialize
         uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@ff00fff10582fc206757e3ea33647b6023a4e33e
         with:
@@ -56,7 +56,7 @@ jobs:
           deploymentValidation: ${{ inputs.runE2E && 'true' || 'false' }}
 
   check:
-    name: "[AVM] ${{ matrix.modulePath }}"
+    name: "${{ matrix.modulePath }}"
     needs: initialize
     if: needs.initialize.outputs.hasModules == 'true'
     permissions:
