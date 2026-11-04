@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "18051267013601056174"
+      "version": "0.48.1.52935",
+      "templateHash": "52959964072031098"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -1167,8 +1167,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "6994712508674015182"
+              "version": "0.48.1.52935",
+              "templateHash": "10975253151808989738"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -1329,8 +1329,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "17189783041879286275"
+              "version": "0.48.1.52935",
+              "templateHash": "12384375647753927788"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -1482,6 +1482,13 @@
                 "description": "The resource group the certificate was deployed into."
               },
               "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location of the certificate."
+              },
+              "value": "[reference('managedEnvironmentCertificate', '2026-01-01', 'full').location]"
             }
           }
         }

@@ -184,6 +184,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvec002"
     },
+    // Non-required parameters
     "enablePurgeProtection": {
       "value": false
     },
@@ -552,6 +553,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvmax002"
     },
+    // Non-required parameters
     "accessPolicies": {
       "value": [
         {
@@ -1138,6 +1140,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvrsa002"
     },
+    // Non-required parameters
     "enablePurgeProtection": {
       "value": false
     },
@@ -1352,6 +1355,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvwaf002"
     },
+    // Non-required parameters
     "diagnosticSettings": {
       "value": [
         {
