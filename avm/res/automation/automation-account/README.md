@@ -35,6 +35,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Automation/automationAccounts/python2Packages` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python2packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/python2Packages)</li></ul> |
 | `Microsoft.Automation/automationAccounts/python3Packages` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python3packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/python3Packages)</li></ul> |
 | `Microsoft.Automation/automationAccounts/runbooks` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_runbooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/runbooks)</li></ul> |
+| `Microsoft.Automation/automationAccounts/runtimeEnvironments` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_runtimeenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/runtimeEnvironments)</li></ul> |
 | `Microsoft.Automation/automationAccounts/schedules` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/schedules)</li></ul> |
 | `Microsoft.Automation/automationAccounts/sourceControls` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_sourcecontrols.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/sourceControls)</li></ul> |
 | `Microsoft.Automation/automationAccounts/variables` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_variables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/variables)</li></ul> |
@@ -362,9 +363,37 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       {
         description: 'Test runbook'
         name: 'TestRunbook'
+        runtimeEnvironment: 'TestPowerShellRuntime'
         type: 'PowerShell'
         uri: 'https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1'
         version: '1.0.0.0'
+      }
+      {
+        description: 'Test Python runbook'
+        name: 'TestPythonRunbook'
+        runtimeEnvironment: 'TestPythonRuntime'
+        type: 'Python'
+      }
+    ]
+    runtimeEnvironments: [
+      {
+        defaultPackages: {
+          Az: '12.3.0'
+        }
+        description: 'Custom PowerShell runtime environment'
+        name: 'TestPowerShellRuntime'
+        runtime: {
+          language: 'PowerShell'
+          version: '7.4'
+        }
+      }
+      {
+        description: 'Custom Python runtime environment'
+        name: 'TestPythonRuntime'
+        runtime: {
+          language: 'Python'
+          version: '3.10'
+        }
       }
     ]
     schedules: [
@@ -632,9 +661,39 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         {
           "description": "Test runbook",
           "name": "TestRunbook",
+          "runtimeEnvironment": "TestPowerShellRuntime",
           "type": "PowerShell",
           "uri": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1",
           "version": "1.0.0.0"
+        },
+        {
+          "description": "Test Python runbook",
+          "name": "TestPythonRunbook",
+          "runtimeEnvironment": "TestPythonRuntime",
+          "type": "Python"
+        }
+      ]
+    },
+    "runtimeEnvironments": {
+      "value": [
+        {
+          "defaultPackages": {
+            "Az": "12.3.0"
+          },
+          "description": "Custom PowerShell runtime environment",
+          "name": "TestPowerShellRuntime",
+          "runtime": {
+            "language": "PowerShell",
+            "version": "7.4"
+          }
+        },
+        {
+          "description": "Custom Python runtime environment",
+          "name": "TestPythonRuntime",
+          "runtime": {
+            "language": "Python",
+            "version": "3.10"
+          }
         }
       ]
     },
@@ -874,9 +933,37 @@ param runbooks = [
   {
     description: 'Test runbook'
     name: 'TestRunbook'
+    runtimeEnvironment: 'TestPowerShellRuntime'
     type: 'PowerShell'
     uri: 'https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.automation/101-automation/scripts/AzureAutomationTutorial.ps1'
     version: '1.0.0.0'
+  }
+  {
+    description: 'Test Python runbook'
+    name: 'TestPythonRunbook'
+    runtimeEnvironment: 'TestPythonRuntime'
+    type: 'Python'
+  }
+]
+param runtimeEnvironments = [
+  {
+    defaultPackages: {
+      Az: '12.3.0'
+    }
+    description: 'Custom PowerShell runtime environment'
+    name: 'TestPowerShellRuntime'
+    runtime: {
+      language: 'PowerShell'
+      version: '7.4'
+    }
+  }
+  {
+    description: 'Custom Python runtime environment'
+    name: 'TestPythonRuntime'
+    runtime: {
+      language: 'Python'
+      version: '3.10'
+    }
   }
 ]
 param schedules = [
@@ -1429,6 +1516,7 @@ param variables = [
 | [`python3Packages`](#parameter-python3packages) | array | List of python 3 packages to be created in the automation account. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`runbooks`](#parameter-runbooks) | array | List of runbooks to be created in the automation account. |
+| [`runtimeEnvironments`](#parameter-runtimeenvironments) | array | List of runtime environments to be created in the automation account. |
 | [`schedules`](#parameter-schedules) | array | List of schedules to be created in the automation account. |
 | [`skuName`](#parameter-skuname) | string | SKU name of the account. |
 | [`sourceControlConfigurations`](#parameter-sourcecontrolconfigurations) | array | The source control configurations. |
@@ -2627,6 +2715,203 @@ List of runbooks to be created in the automation account.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-runbooksname) | string | Name of the Automation Account runbook. |
+| [`type`](#parameter-runbookstype) | string | The type of the runbook. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-runbooksdescription) | string | The description of the runbook. |
+| [`runtimeEnvironment`](#parameter-runbooksruntimeenvironment) | string | Name of the runtime environment used by the runbook. |
+| [`sasTokenValidityLength`](#parameter-runbookssastokenvaliditylength) | string | SAS token validity length. Usage: `PT8H` for 8 hours, `P5D` for 5 days, or `P1Y` for 1 year. |
+| [`scriptStorageAccountResourceId`](#parameter-runbooksscriptstorageaccountresourceid) | string | Resource ID of the runbook storage account. |
+| [`tags`](#parameter-runbookstags) | object | Tags of the runbook resource. |
+| [`uri`](#parameter-runbooksuri) | string | The URI of the runbook content. |
+| [`version`](#parameter-runbooksversion) | string | The version of the runbook content. |
+
+### Parameter: `runbooks.name`
+
+Name of the Automation Account runbook.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `runbooks.type`
+
+The type of the runbook.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Graph'
+    'GraphPowerShell'
+    'GraphPowerShellWorkflow'
+    'PowerShell'
+    'PowerShell72'
+    'PowerShellWorkflow'
+    'Python'
+    'Python2'
+    'Python3'
+    'Script'
+  ]
+  ```
+
+### Parameter: `runbooks.description`
+
+The description of the runbook.
+
+- Required: No
+- Type: string
+
+### Parameter: `runbooks.runtimeEnvironment`
+
+Name of the runtime environment used by the runbook.
+
+- Required: No
+- Type: string
+
+### Parameter: `runbooks.sasTokenValidityLength`
+
+SAS token validity length. Usage: `PT8H` for 8 hours, `P5D` for 5 days, or `P1Y` for 1 year.
+
+- Required: No
+- Type: string
+
+### Parameter: `runbooks.scriptStorageAccountResourceId`
+
+Resource ID of the runbook storage account.
+
+- Required: No
+- Type: string
+
+### Parameter: `runbooks.tags`
+
+Tags of the runbook resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `runbooks.uri`
+
+The URI of the runbook content.
+
+- Required: No
+- Type: string
+
+### Parameter: `runbooks.version`
+
+The version of the runbook content.
+
+- Required: No
+- Type: string
+
+### Parameter: `runtimeEnvironments`
+
+List of runtime environments to be created in the automation account.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-runtimeenvironmentsname) | string | Name of the runtime environment. |
+| [`runtime`](#parameter-runtimeenvironmentsruntime) | object | Runtime configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`defaultPackages`](#parameter-runtimeenvironmentsdefaultpackages) | object | Default packages available in the runtime environment. |
+| [`description`](#parameter-runtimeenvironmentsdescription) | string | Description of the runtime environment. |
+| [`location`](#parameter-runtimeenvironmentslocation) | string | Location for the runtime environment. |
+| [`tags`](#parameter-runtimeenvironmentstags) | object | Tags of the runtime environment resource. |
+
+### Parameter: `runtimeEnvironments.name`
+
+Name of the runtime environment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `runtimeEnvironments.runtime`
+
+Runtime configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`language`](#parameter-runtimeenvironmentsruntimelanguage) | string | Runtime language, for example PowerShell or Python. |
+| [`version`](#parameter-runtimeenvironmentsruntimeversion) | string | Runtime language version. |
+
+### Parameter: `runtimeEnvironments.runtime.language`
+
+Runtime language, for example PowerShell or Python.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `runtimeEnvironments.runtime.version`
+
+Runtime language version.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `runtimeEnvironments.defaultPackages`
+
+Default packages available in the runtime environment.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-runtimeenvironmentsdefaultpackages>any_other_property<) | string | A default package name and version pair. |
+
+### Parameter: `runtimeEnvironments.defaultPackages.>Any_other_property<`
+
+A default package name and version pair.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `runtimeEnvironments.description`
+
+Description of the runtime environment.
+
+- Required: No
+- Type: string
+
+### Parameter: `runtimeEnvironments.location`
+
+Location for the runtime environment.
+
+- Required: No
+- Type: string
+
+### Parameter: `runtimeEnvironments.tags`
+
+Tags of the runtime environment resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `schedules`
 
