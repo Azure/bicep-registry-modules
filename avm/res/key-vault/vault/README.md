@@ -184,6 +184,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvec002"
     },
+    // Non-required parameters
     "enablePurgeProtection": {
       "value": false
     },
@@ -552,6 +553,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvmax002"
     },
+    // Non-required parameters
     "accessPolicies": {
       "value": [
         {
@@ -1138,6 +1140,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvrsa002"
     },
+    // Non-required parameters
     "enablePurgeProtection": {
       "value": false
     },
@@ -1352,6 +1355,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvwaf002"
     },
+    // Non-required parameters
     "diagnosticSettings": {
       "value": [
         {
@@ -3076,7 +3080,7 @@ All secrets to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`attributes`](#parameter-secretsattributes) | object | Contains attributes of the secret. |
-| [`contentType`](#parameter-secretscontenttype) | string | The content type of the secret. |
+| [`contentType`](#parameter-secretscontenttype) | securestring | The content type of the secret. |
 | [`roleAssignments`](#parameter-secretsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-secretstags) | object | Resource tags. |
 
@@ -3135,7 +3139,7 @@ If set, defines the date from which onwards the secret becomes valid. Defined in
 The content type of the secret.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `secrets.roleAssignments`
 

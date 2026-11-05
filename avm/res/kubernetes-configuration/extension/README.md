@@ -639,7 +639,7 @@ param version = '0.5.2'
 | [`configurationProtectedSettings`](#parameter-configurationprotectedsettings) | secureObject | Configuration settings that are sensitive, as name-value pairs for configuring this extension. |
 | [`configurationSettings`](#parameter-configurationsettings) | object | Configuration settings, as name-value pairs for configuring this extension. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`fluxConfigurations`](#parameter-fluxconfigurations) | array | A list of flux configuraitons. |
+| [`fluxConfigurations`](#parameter-fluxconfigurations) | array | A list of flux configurations. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`releaseNamespace`](#parameter-releasenamespace) | string | Namespace where the extension Release must be placed, for a Cluster scoped extension. If this namespace does not exist, it will be created. |
 | [`releaseTrain`](#parameter-releasetrain) | string | ReleaseTrain this extension participates in for auto-upgrade (e.g. Stable, Preview, etc.) - only if autoUpgradeMinorVersion is "true". |
@@ -706,10 +706,84 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `fluxConfigurations`
 
-A list of flux configuraitons.
+A list of flux configurations.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kustomizations`](#parameter-fluxconfigurationskustomizations) | object | Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster. |
+| [`namespace`](#parameter-fluxconfigurationsnamespace) | string | The namespace to which this configuration is installed to. |
+| [`scope`](#parameter-fluxconfigurationsscope) | string | Scope at which the configuration will be installed. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bucket`](#parameter-fluxconfigurationsbucket) | object | Parameters to reconcile to the Bucket source kind type. |
+| [`configurationProtectedSettings`](#parameter-fluxconfigurationsconfigurationprotectedsettings) | secureObject | Key-value pairs of protected configuration settings for the configuration. |
+| [`gitRepository`](#parameter-fluxconfigurationsgitrepository) | object | Parameters to reconcile to the GitRepository source kind type. |
+| [`name`](#parameter-fluxconfigurationsname) | string | The name of the Flux configuration. |
+| [`suspend`](#parameter-fluxconfigurationssuspend) | bool | Whether this configuration should suspend its reconciliation of its kustomizations and sources. |
+
+### Parameter: `fluxConfigurations.kustomizations`
+
+Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `fluxConfigurations.namespace`
+
+The namespace to which this configuration is installed to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `fluxConfigurations.scope`
+
+Scope at which the configuration will be installed.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `fluxConfigurations.bucket`
+
+Parameters to reconcile to the Bucket source kind type.
+
+- Required: No
+- Type: object
+
+### Parameter: `fluxConfigurations.configurationProtectedSettings`
+
+Key-value pairs of protected configuration settings for the configuration.
+
+- Required: No
+- Type: secureObject
+
+### Parameter: `fluxConfigurations.gitRepository`
+
+Parameters to reconcile to the GitRepository source kind type.
+
+- Required: No
+- Type: object
+
+### Parameter: `fluxConfigurations.name`
+
+The name of the Flux configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `fluxConfigurations.suspend`
+
+Whether this configuration should suspend its reconciliation of its kustomizations and sources.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `location`
 

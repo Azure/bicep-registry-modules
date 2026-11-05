@@ -2743,7 +2743,7 @@ All webhooks to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`serviceUri`](#parameter-webhooksserviceuri) | string | The service URI for the webhook to post notifications. |
+| [`serviceUri`](#parameter-webhooksserviceuri) | securestring | The service URI for the webhook to post notifications. |
 
 **Optional parameters**
 
@@ -2762,7 +2762,7 @@ All webhooks to create.
 The service URI for the webhook to post notifications.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `webhooks.action`
 

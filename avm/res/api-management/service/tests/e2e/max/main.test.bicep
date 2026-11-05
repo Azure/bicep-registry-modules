@@ -304,6 +304,18 @@ module testDeployment '../../../main.bicep' = [
       ]
       portalsettings: [
         {
+          name: 'delegation'
+          properties: {
+            subscriptions: {
+              enabled: false
+            }
+            userRegistration: {
+              enabled: false
+            }
+            validationKey: base64(customSecret)
+          }
+        }
+        {
           name: 'signin'
           properties: {
             enabled: false

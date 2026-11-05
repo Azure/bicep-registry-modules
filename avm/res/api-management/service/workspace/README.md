@@ -1214,7 +1214,7 @@ Loggers to deploy in this workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`credentials`](#parameter-loggerscredentials) | object | The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor. |
+| [`credentials`](#parameter-loggerscredentials) | secureObject | The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor. |
 | [`targetResourceId`](#parameter-loggerstargetresourceid) | string | Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub. |
 
 **Optional parameters**
@@ -1251,7 +1251,7 @@ Logger type.
 The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor.
 
 - Required: No
-- Type: object
+- Type: secureObject
 
 ### Parameter: `loggers.targetResourceId`
 
@@ -1295,7 +1295,7 @@ Named values to deploy in this workspace.
 | [`keyVault`](#parameter-namedvalueskeyvault) | object | KeyVault location details of the namedValue. |
 | [`secret`](#parameter-namedvaluessecret) | bool | Determines whether the value is a secret and should be encrypted or not. |
 | [`tags`](#parameter-namedvaluestags) | array | Tags that when provided can be used to filter the NamedValue list. |
-| [`value`](#parameter-namedvaluesvalue) | string | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
+| [`value`](#parameter-namedvaluesvalue) | securestring | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
 
 ### Parameter: `namedValues.displayName`
 
@@ -1337,7 +1337,7 @@ Tags that when provided can be used to filter the NamedValue list.
 Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `policies`
 
@@ -1719,9 +1719,9 @@ Subscriptions to deploy in this workspace.
 | :-- | :-- | :-- |
 | [`allowTracing`](#parameter-subscriptionsallowtracing) | bool | Determines whether tracing can be enabled. |
 | [`ownerId`](#parameter-subscriptionsownerid) | string | User (user ID path) for whom subscription is being created in form /users/{userId}. |
-| [`primaryKey`](#parameter-subscriptionsprimarykey) | string | Primary subscription key. If not specified during request key will be generated automatically. |
+| [`primaryKey`](#parameter-subscriptionsprimarykey) | securestring | Primary subscription key. If not specified during request key will be generated automatically. |
 | [`scope`](#parameter-subscriptionsscope) | string | Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}". |
-| [`secondaryKey`](#parameter-subscriptionssecondarykey) | string | Secondary subscription key. If not specified during request key will be generated automatically. |
+| [`secondaryKey`](#parameter-subscriptionssecondarykey) | securestring | Secondary subscription key. If not specified during request key will be generated automatically. |
 | [`state`](#parameter-subscriptionsstate) | string | Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:<p>* active - the subscription is active<p>* suspended - the subscription is blocked, and the subscriber cannot call any APIs of the product<p>* submitted - the subscription request has been made by the developer, but has not yet been approved or rejected<p>* rejected - the subscription request has been denied by an administrator<p>* cancelled - the subscription has been cancelled by the developer or administrator<p>* expired - the subscription reached its expiration date and was deactivated. |
 
 ### Parameter: `subscriptions.displayName`
@@ -1757,7 +1757,7 @@ User (user ID path) for whom subscription is being created in form /users/{userI
 Primary subscription key. If not specified during request key will be generated automatically.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `subscriptions.scope`
 
@@ -1771,7 +1771,7 @@ Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".
 Secondary subscription key. If not specified during request key will be generated automatically.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `subscriptions.state`
 
