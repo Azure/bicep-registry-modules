@@ -42,6 +42,16 @@ type vpnClientAadConfigurationType = {
 }
 
 @export()
+@description('Configuration for a VPN client root certificate.')
+type vpnClientRootCertificateType = {
+  @description('Required. The name of the VPN client root certificate.')
+  name: string
+
+  @description('Required. The public certificate data of the VPN client root certificate.')
+  publicCertData: string
+}
+
+@export()
 @description('Configuration for IPAM Pool Prefix Allocation.')
 type ipamPoolPrefixAllocationType = {
   @description('Optional. Number of IP addresses to allocate.')
@@ -176,6 +186,9 @@ param enableBgpRouteTranslationForNat bool = false
 
 @description('Optional. Client root certificate data used to authenticate VPN clients. Can be combined with vpnClientAadConfiguration to support both certificate and Entra ID authentication.')
 param clientRootCertData string = ''
+
+@description('Optional. Additional VPN client root or intermediate certificates. Names must be unique and must not be RootCert1 when clientRootCertData is set.')
+param clientRootCertificates vpnClientRootCertificateType[] = []
 
 @description('Optional. Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet.')
 param clientRevokedCertThumbprint string = ''
@@ -410,7 +423,25 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
           }
         ]
 
-var hasClientRootCertificate = !empty(clientRootCertData)
+var legacyClientRootCertificates = !empty(clientRootCertData)
+  ? [
+      {
+        name: 'RootCert1'
+        properties: {
+          publicCertData: clientRootCertData
+        }
+      }
+    ]
+  : []
+var additionalClientRootCertificates = [
+  for certificate in clientRootCertificates: {
+    name: certificate.name
+    properties: {
+      publicCertData: certificate.publicCertData
+    }
+  }
+]
+var hasClientRootCertificate = !empty(clientRootCertData) || !empty(clientRootCertificates)
 var hasVpnClientAadConfiguration = !empty(vpnClientAadConfiguration)
 var vpnClientConfiguration = hasClientRootCertificate || hasVpnClientAadConfiguration
   ? {
@@ -420,14 +451,7 @@ var vpnClientConfiguration = hasClientRootCertificate || hasVpnClientAadConfigur
         ]
       }
       vpnClientRootCertificates: hasClientRootCertificate
-        ? [
-            {
-              name: 'RootCert1'
-              properties: {
-                publicCertData: clientRootCertData
-              }
-            }
-          ]
+        ? concat(legacyClientRootCertificates, additionalClientRootCertificates)
         : null
       vpnClientRevokedCertificates: hasClientRootCertificate && !empty(clientRevokedCertThumbprint)
         ? [
