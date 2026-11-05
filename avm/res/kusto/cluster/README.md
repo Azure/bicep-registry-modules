@@ -1060,7 +1060,7 @@ param tier = 'Standard'
 | [`enablePurge`](#parameter-enablepurge) | bool | Enable/disable purge. |
 | [`enableRestrictOutboundNetworkAccess`](#parameter-enablerestrictoutboundnetworkaccess) | bool | Enable/disable restricting outbound network access. |
 | [`enableStreamingIngest`](#parameter-enablestreamingingest) | bool | Enable/disable streaming ingest. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/disable usage telemetry for module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`engineType`](#parameter-enginetype) | string | The engine type of the Kusto Cluster. |
 | [`languageExtensions`](#parameter-languageextensions) | array | List of the language extensions of the Kusto Cluster. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -1687,7 +1687,7 @@ Enable/disable streaming ingest.
 
 ### Parameter: `enableTelemetry`
 
-Enable/disable usage telemetry for module.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

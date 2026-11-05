@@ -487,7 +487,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
                   targetDataStoreCopySettings: []
                 }
               ]
-              name: 'Default'
+              name: 'Default_OperationalStore'
               objectType: 'AzureRetentionRule'
             }
             {
@@ -767,7 +767,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
                     "targetDataStoreCopySettings": []
                   }
                 ],
-                "name": "Default",
+                "name": "Default_OperationalStore",
                 "objectType": "AzureRetentionRule"
               },
               {
@@ -1049,7 +1049,7 @@ param backupPolicies = [
               targetDataStoreCopySettings: []
             }
           ]
-          name: 'Default'
+          name: 'Default_OperationalStore'
           objectType: 'AzureRetentionRule'
         }
         {

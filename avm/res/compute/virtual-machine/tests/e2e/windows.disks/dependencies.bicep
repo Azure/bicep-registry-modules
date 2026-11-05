@@ -59,7 +59,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -77,7 +77,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2025-05-01' = {
+  resource key 'keys@2026-02-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -160,7 +160,7 @@ resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_D2s_v6'
+      vmSize: 'Standard_D4ads_v5'
     }
     osProfile: {
       adminUsername: adminUsername
@@ -168,6 +168,7 @@ resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
       computerName: take(osDiskVMName, 15)
     }
     storageProfile: {
+      diskControllerType: 'SCSI'
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'

@@ -44,7 +44,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-05-01' existing = {
   name: storageAccountName
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: keyVaultName
 }
 
@@ -118,7 +118,7 @@ resource selfSignedCertificateGeneration 'Microsoft.Resources/deploymentScripts@
 }
 
 //TODO: this needs to be updated to use the AVM module when it is available
-resource sslCertSecret 'Microsoft.KeyVault/vaults/secrets@2024-04-01-preview' = if (!empty(appGatewayCertificateData)) {
+resource sslCertSecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = if (!empty(appGatewayCertificateData)) {
   parent: keyVault
   name: appGatewayCertificateKeyName
   tags: tags

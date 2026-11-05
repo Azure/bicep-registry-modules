@@ -89,3 +89,6 @@ output name string = schema.name
 
 @description('The resource group the integration account schema was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location of the integration account schema.')
+output location string = schema.location

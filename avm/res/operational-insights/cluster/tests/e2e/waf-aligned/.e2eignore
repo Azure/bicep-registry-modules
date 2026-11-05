@@ -1,0 +1,3 @@
+Temporarily skipped after repeated Azure Log Analytics cluster provisioning timeouts, followed by provider-rejected deletion while the cluster remained Creating. See https://github.com/Azure/bicep-registry-modules/actions/runs/38540661047.
+
+Re-enable when the provisioning/deletion blocker is resolved and a separately approved validation can confirm successful provisioning and normal cleanup.

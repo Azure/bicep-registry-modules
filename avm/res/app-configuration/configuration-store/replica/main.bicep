@@ -52,3 +52,6 @@ output name string = replica.name
 
 @description('The resource ID of the replica that was deployed.')
 output resourceId string = replica.id
+
+@description('The location of the replica.')
+output location string = replica.location

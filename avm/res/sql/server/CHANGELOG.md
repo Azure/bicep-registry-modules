@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
+## 0.22.2
+
+### Changes
+
+- Updated Key Vault API references to `2026-02-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.22.1
 
 ### Changes

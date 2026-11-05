@@ -2,6 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/synapse/workspace/CHANGELOG.md).
 
+## 0.16.0
+
+### Changes
+
+- Updated `Microsoft.KeyVault/vaults`, `Microsoft.KeyVault/vaults/accessPolicies`, and `Microsoft.KeyVault/vaults/keys` API versions from `2024-11-01` to `2026-02-01`.
+- Added bounded customer-managed-key activation and verification when `encryptionActivateWorkspace` is enabled, using a dedicated deployment-script identity with Contributor access only to the workspace key.
+- Added safe field-specific diagnostics for unexpected workspace-key responses without changing activation validation.
+- Accepted workspace-key response IDs with exactly one omitted leading slash while preserving full resource ID matching.
+- Added the resource-derived location output to the embedded SQL Pool module.
+
+### Breaking Changes
+
+- Renamed the workspace output `resourceID` to `resourceId`. Update Bicep consumers from `.outputs.resourceID` to `.outputs.resourceId`; a case-only compatibility alias cannot be declared.
+
 ## 0.15.0
 
 ### Changes

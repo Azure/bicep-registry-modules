@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "17551000749832731491"
+      "version": "0.48.1.52935",
+      "templateHash": "13605526594689657205"
     },
     "name": "Container Registries Tokens",
     "description": "Deploys an Azure Container Registry (ACR) Token."

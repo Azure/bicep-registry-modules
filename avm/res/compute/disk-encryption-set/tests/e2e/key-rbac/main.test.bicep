@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using Key Vault with the Role Based Access Control (RBAC) permission model'
-metadata description = 'This instance uses a Key Vault with the Role Based Access Control (RBAC) permission model. The option to add the permissions on the key via the module is enabled.'
+metadata description = 'This instance creates key-scoped RBAC permissions with the module helper and waits for data-plane access before testing the module with key permissions enabled.'
 
 // ========== //
 // Parameters //
@@ -34,7 +34,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: resourceLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
+module nestedDependencies '../max/dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
@@ -42,6 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
+    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForKeyPermissionsPropagation'
   }
 }
 

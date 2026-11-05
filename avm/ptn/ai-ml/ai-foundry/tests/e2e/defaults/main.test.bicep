@@ -23,7 +23,7 @@ param namePrefix string = '#_namePrefix_#'
 // Setting max length to 12 to stay within bounds of baseName length constraints.
 // Setting min length to 12 to prevent min-char warnings on the test deployment.
 // These warnings cannot be disabled due to AVM processes not able to parse the # characer.
-var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12), 12)
+var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12, '0'), 12)
 
 // ============ //
 // Dependencies //

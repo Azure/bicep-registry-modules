@@ -63,10 +63,6 @@ module storage 'br/public:avm/res/storage/storage-account:0.15.0' = {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
     }
-    secretsExportConfiguration: {
-      keyVaultResourceId: keyVaultResourceId
-      accessKey1: 'ciStorageAccessKey1'
-    }
     fileServices: {
       shares: shares
     }
@@ -98,6 +94,16 @@ module storage 'br/public:avm/res/storage/storage-account:0.15.0' = {
     tags: tags
   }
 }
+
+module storageAccessKeySecret 'storage-key-secret.bicep' = {
+  name: '${take(uniqueString(deployment().name, location), 4)}-ci-storage-key-secret'
+  params: {
+    storageAccountResourceId: storage.outputs.resourceId
+    keyVaultResourceId: keyVaultResourceId
+    enableTelemetry: enableTelemetry
+  }
+}
+
 module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   name: '${take(uniqueString(deployment().name, location),4)}-storagePrivateDnsZone-deployment'
   params: {

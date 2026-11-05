@@ -42,11 +42,9 @@ Describe 'Validate Deployment' {
         It 'Check Azure Elastic SAN' {
 
             $expectedRoleAssignments = @(
-                @{ RoleDefinitionName = 'Owner' }
-                @{ RoleDefinitionName = 'Contributor' }
                 @{ RoleDefinitionName = 'Reader' }
-                @{ RoleDefinitionName = 'Role Based Access Control Administrator' }
-                @{ RoleDefinitionName = 'User Access Administrator' }
+                @{ RoleDefinitionName = 'Contributor' }
+                @{ RoleDefinitionName = 'Monitoring Reader' }
                 @{ RoleDefinitionName = 'Elastic SAN Network Admin' }
                 @{ RoleDefinitionName = 'Elastic SAN Owner' }
                 @{ RoleDefinitionName = 'Elastic SAN Reader' }

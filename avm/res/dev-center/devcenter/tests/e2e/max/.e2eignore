@@ -1,0 +1,5 @@
+This fixture requires Microsoft Dev Box definitions and an attached Dev Box network connection. Its network connection returned NotAcceptable with tenant-failed state: https://github.com/Azure/bicep-registry-modules/actions/runs/39298613891/job/118219834545. The same CI tenant's Dev Box validation explicitly returned TenantNotOnboardedToLegacy: https://github.com/Azure/bicep-registry-modules/actions/runs/39298613891/job/118219638777.
+
+No documented self-service tenant setting overrides this new-resource eligibility rejection. Dev Box is closing down, not yet retired; current product/subscription eligibility determines new-resource availability: https://learn.microsoft.com/en-us/azure/dev-box/dev-box-retirement-guide.
+
+Re-enable when the required Dev Box resources are available to the test tenant. Defaults and non-Dev-Box coverage remain enabled. The separate image-builder capacity failure is not the reason for this exclusion.

@@ -20,8 +20,8 @@ param bastionResourceId string = ''
 @description('Optional. If set, the spoke virtual network will be peered with the hub virtual network and egres traffic will be routed through the network appliance. Default is empty.')
 param networkApplianceIpAddress string = ''
 
-@description('Optional. Tags related to the Azure Container Apps deployment. Default is empty.')
-param tags object = {}
+@description('Optional. Tags related to the Azure Container Apps deployment. Null or omitted tags use an empty object.')
+param tags object?
 
 @description('Optional. The name of the environment (e.g. "dev", "test", "prod", "uat", "dr", "qa"). Up to 8 characters long. Default is "test".')
 @maxLength(8)
@@ -116,7 +116,7 @@ param deployZoneRedundantResources bool = true
 ])
 param exposeContainerAppsWith string = 'applicationGateway'
 
-@description('Optional. Deploy sample application to the container apps environment. Default is false.')
+@description('Optional. Deploy the sample application after importing, signing with a non-exportable Key Vault key, and strictly verifying its immutable private-registry image with Notation. Uses a self-signed sample publisher certificate; production publishers must configure their own trusted signing pipeline. Legacy Docker Content Trust cannot be enabled on new registries: https://learn.microsoft.com/azure/container-registry/container-registry-content-trust-deprecation. Default is false.')
 param deploySampleApplication bool = false
 
 @description('Optional. DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus. Default is "false".')
@@ -155,7 +155,7 @@ module spokeResourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
     name: naming.outputs.resourcesNames.resourceGroup
     location: location
     enableTelemetry: enableTelemetry
-    tags: tags
+    tags: tags ?? {}
   }
 }
 
@@ -165,7 +165,7 @@ module spoke 'modules/spoke/deploy.spoke.bicep' = {
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     //subscriptionId: subscriptionId
     hubVNetId: hubVirtualNetworkResourceId
@@ -194,7 +194,7 @@ module supportingServices 'modules/supporting-services/deploy.supporting-service
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     spokePrivateEndpointSubnetResourceId: spoke.outputs.spokePrivateEndpointsSubnetResourceId
     spokeVNetResourceId: spoke.outputs.spokeVNetId
@@ -211,7 +211,7 @@ module containerAppsEnvironment 'modules/container-apps-environment/deploy.aca-e
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     hubVNetId: hubVirtualNetworkResourceId
     spokeVNetName: spoke.outputs.spokeVNetName
@@ -230,11 +230,16 @@ module sampleApplication 'modules/sample-application/deploy.sample-application.b
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     containerAppsEnvironmentResourceId: containerAppsEnvironment.outputs.containerAppsEnvironmentId
     workloadProfileName: containerAppsEnvironment.outputs.workloadProfileNames[0]
     containerRegistryUserAssignedIdentityId: supportingServices.outputs.containerRegistryUserAssignedIdentityId
+    containerRegistryName: supportingServices.outputs.containerRegistryName
+    containerRegistryLoginServer: supportingServices.outputs.containerRegistryLoginServer
+    keyVaultName: supportingServices.outputs.keyVaultName
+    storageAccountName: supportingServices.outputs.storageAccountName
+    deploymentSubnetResourceId: spoke.outputs.deploymentSubnetResourceId
   }
 }
 
@@ -244,7 +249,7 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
   params: {
     resourcesNames: naming.outputs.resourcesNames
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     applicationGatewayCertificateKeyName: applicationGatewayCertificateKeyName
     applicationGatewayFqdn: applicationGatewayFqdn
@@ -339,6 +344,9 @@ output keyVaultName string = supportingServices.outputs.keyVaultName
 
 @description('The keyvault URI endpoint.')
 output keyVaultUri string = '${supportingServices.outputs.keyVaultName}.${az.environment().suffixes.keyvaultDns}'
+
+@description('The sample image digest, public publisher certificate and scoped signing identity. Empty when the sample is disabled. Consuming deployments must strictly verify the exact digest before submission; ACA does not enforce an admission policy for unrelated deployment paths.')
+output sampleImageVerification object = deploySampleApplication ? sampleApplication.outputs.imageVerification : {}
 
 // Application Gateway
 @description('The resource ID of the Azure Application Gateway.')
