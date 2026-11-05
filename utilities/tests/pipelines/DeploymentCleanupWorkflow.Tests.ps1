@@ -209,6 +209,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 '${{ inputs.modulePath }}'                                          = 'avm/res/retry-test/widget'
                 '${{ inputs.customLocation }}'                                      = 'swedencentral'
                 '${{ inputs.removeDeployment }}'                                    = 'true'
+                '${{ inputs.dependencyPreparationParameter }}'                      = ''
                 '${{ steps.replace-tokens.outputs.resourceLocation }}'              = ''
                 '${{ steps.get-test-subscription.outputs.subscriptionId }}'         = $subscriptionId
                 '${{ steps.deploy_step.outputs.remainingDeploymentNames }}'         = $Outputs.remainingDeploymentNames ?? ''

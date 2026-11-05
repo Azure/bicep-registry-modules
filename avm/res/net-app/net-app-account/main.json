@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5431974650619118186"
+      "templateHash": "14859451251536897560"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
@@ -1054,6 +1054,17 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
+          }
+        },
+        "securityStyle": {
+          "type": "string",
+          "allowedValues": [
+            "ntfs",
+            "unix"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Defines the security style of the Volume."
           }
         },
         "throughputMibps": {
@@ -2482,7 +2493,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "15810480234228243994"
+              "templateHash": "17939348354838510505"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -2674,6 +2685,17 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
+                  }
+                },
+                "securityStyle": {
+                  "type": "string",
+                  "allowedValues": [
+                    "ntfs",
+                    "unix"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Defines the security style of the Volume."
                   }
                 },
                 "throughputMibps": {

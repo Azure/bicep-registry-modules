@@ -7,6 +7,7 @@ Describe 'CI parameter workflow integration' {
 
     BeforeAll {
         . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeploymentWithRetry.ps1')
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Invoke-TemplateDeploymentWithPreparation.ps1')
         . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Invoke-ModuleDeploymentCleanup.ps1')
         $workflows = @{}
         foreach ($workflowName in @('avm.template.module', 'avm.template.module.preview', 'avm.template.module.publish')) {
@@ -39,7 +40,7 @@ Describe 'CI parameter workflow integration' {
         }
 
         function Get-TestStepScript {
-            param([string] $StepName, [string] $TemplatePath, [hashtable] $Outputs = @{})
+            param([string] $StepName, [string] $TemplatePath, [hashtable] $Outputs = @{}, [string] $PreparationParameter = '')
 
             $script = ($action.runs.steps | Where-Object { $_.name -eq $StepName }).with.inlineScript
             # Keep mocks in place instead of loading the real Azure deployment functions.
@@ -56,6 +57,7 @@ Describe 'CI parameter workflow integration' {
             $script = $script.Replace('${{ inputs.customLocation }}', '')
             $script = $script.Replace('${{ steps.replace-tokens.outputs.resourceLocation }}', '')
             $script = $script.Replace('${{ inputs.removeDeployment }}', 'true')
+            $script = $script.Replace('${{ inputs.dependencyPreparationParameter }}', $PreparationParameter)
             foreach ($name in @('deploymentNames', 'remainingDeploymentNames', 'preflightRejectedDeploymentNames', 'pendingDeletionDeploymentIds', 'deploymentAttempts')) {
                 $script = $script.Replace(('${{ steps.deploy_step.outputs.' + $name + ' }}'), ($Outputs[$name] ?? ''))
             }
@@ -154,6 +156,53 @@ output configuredParameters object = {
             $step.with.inlineScript | Should -Not -Match '\$\{\{\s*inputs\.github(Secrets|Variables)'
             $step.with.inlineScript | Should -Not -Match 'GITHUB_ENV'
         }
+    }
+
+    It 'Enables runner-side dependency preparation only for the NetApp CMK scenario' {
+        $deployment = $deploymentWorkflow.jobs.job_module_deploy_validation
+        $step = $deployment.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
+
+        $action.inputs.dependencyPreparationParameter.default | Should -Be ''
+        $step.with.dependencyPreparationParameter | Should -Be '${{ inputs.modulePath == ''avm/res/net-app/net-app-account'' && fromJson(inputs.testCase).name == ''cmk-uami'' && ''dependenciesOnly'' || '''' }}'
+    }
+
+    It 'Prepares dependencies on the runner and retains both deployment roots for cleanup' {
+        $template = Get-Content $templatePath -Raw | ConvertFrom-Json -AsHashtable
+        $template.parameters.dependenciesOnly = @{ type = 'bool'; defaultValue = $false }
+        $template | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $templatePath
+        New-Item -Path $env:GITHUB_OUTPUT -ItemType File | Out-Null
+        Mock Start-Sleep {}
+        Mock Invoke-TemplateDeploymentWithRetry {
+            $name = $TemplateInput.AdditionalParameters.dependenciesOnly ? 'dependencies' : 'account'
+            @{
+                deploymentNames = @($name)
+                remainingDeploymentNames = @($name)
+                preflightRejectedDeploymentNames = @()
+                pendingDeletionDeploymentIds = @()
+                deploymentAttempts = 1
+                deploymentOutput = @{}
+                resourceLocation = 'eastus'
+            }
+        }
+
+        $messages = @(. (Get-TestStepScript -StepName 'Deploy template file' -TemplatePath $templatePath -PreparationParameter 'dependenciesOnly') 4>&1)
+        $outputs = @{}
+        foreach ($line in Get-Content $env:GITHUB_OUTPUT) {
+            $name, $value = $line.Split('=', 2)
+            $outputs[$name] = $value
+        }
+
+        Should -Invoke Invoke-TemplateDeploymentWithRetry -Times 1 -Exactly -ParameterFilter {
+            $TemplateInput.AdditionalParameters.dependenciesOnly -eq $true -and -not $RemoveDeployment
+        }
+        Should -Invoke Invoke-TemplateDeploymentWithRetry -Times 1 -Exactly -ParameterFilter {
+            $TemplateInput.AdditionalParameters.dependenciesOnly -eq $false -and $RemoveDeployment
+        }
+        Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+        @($outputs.deploymentNames | ConvertFrom-Json) | Should -Be @('dependencies', 'account')
+        @($outputs.remainingDeploymentNames | ConvertFrom-Json) | Should -Be @('dependencies', 'account')
+        $outputs.deploymentAttempts | Should -Be '2'
+        ($messages | Out-String) | Should -Not -Match 'secret-value|nested-secret-value|variable-value'
     }
 
     It 'Warns about legacy vault support without exposing the vault name or values' {

@@ -293,6 +293,7 @@ List of volumes to create in the capacity pool.
 | [`networkFeatures`](#parameter-volumesnetworkfeatures) | string | Network feature for the volume. |
 | [`protocolTypes`](#parameter-volumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-volumesroleassignments) | array | Array of role assignments to create. |
+| [`securityStyle`](#parameter-volumessecuritystyle) | string | Defines the security style of the Volume. |
 | [`serviceLevel`](#parameter-volumesservicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`smbAccessBasedEnumeration`](#parameter-volumessmbaccessbasedenumeration) | string | Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`smbContinuouslyAvailable`](#parameter-volumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
@@ -853,6 +854,20 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
+  ]
+  ```
+
+### Parameter: `volumes.securityStyle`
+
+Defines the security style of the Volume.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ntfs'
+    'unix'
   ]
   ```
 

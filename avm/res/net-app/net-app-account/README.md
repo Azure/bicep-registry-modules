@@ -366,6 +366,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 roleDefinitionIdOrName: 'Reader'
               }
             ]
+            securityStyle: 'unix'
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
           }
@@ -559,6 +560,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                   "roleDefinitionIdOrName": "Reader"
                 }
               ],
+              "securityStyle": "unix",
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400
             },
@@ -752,6 +754,7 @@ param capacityPools = [
             roleDefinitionIdOrName: 'Reader'
           }
         ]
+        securityStyle: 'unix'
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
       }
@@ -1784,6 +1787,7 @@ List of volumes to create in the capacity pool.
 | [`networkFeatures`](#parameter-capacitypoolsvolumesnetworkfeatures) | string | Network feature for the volume. |
 | [`protocolTypes`](#parameter-capacitypoolsvolumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-capacitypoolsvolumesroleassignments) | array | Array of role assignments to create. |
+| [`securityStyle`](#parameter-capacitypoolsvolumessecuritystyle) | string | Defines the security style of the Volume. |
 | [`serviceLevel`](#parameter-capacitypoolsvolumesservicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`smbAccessBasedEnumeration`](#parameter-capacitypoolsvolumessmbaccessbasedenumeration) | string | Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`smbContinuouslyAvailable`](#parameter-capacitypoolsvolumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
@@ -2344,6 +2348,20 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
+  ]
+  ```
+
+### Parameter: `capacityPools.volumes.securityStyle`
+
+Defines the security style of the Volume.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ntfs'
+    'unix'
   ]
   ```
 
