@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "15415534570389463212"
+      "templateHash": "9363350999420381505"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -76,6 +76,27 @@
         "description": "The type for a private endpoint output."
       }
     },
+    "childResourceOutputType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the child resource."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource ID of the child resource."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a child resource output."
+      }
+    },
     "auditSettingsType": {
       "type": "object",
       "properties": {
@@ -100,7 +121,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies whether audit events are sent to Azure Monitor."
+            "description": "Optional. Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, the server's `diagnosticSettings` must be configured with the `SQLSecurityAuditEvents` log category (included in the `allLogs` category group)."
           }
         },
         "isDevopsAuditEnabled": {
@@ -154,13 +175,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Specifies the identifier key of the auditing storage account."
-          }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         }
       },
@@ -259,14 +273,14 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Required. The name of the Elastic Pool."
+            "description": "Required. The name of the database."
           }
         },
         "tags": {
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Sql/servers/databases@2023-08-01#properties/tags"
+              "source": "Microsoft.Sql/servers/databases@2025-01-01#properties/tags"
             },
             "description": "Optional. Tags of the resource."
           },
@@ -587,11 +601,14 @@
             "description": "Optional. The long term backup retention policy for the database."
           }
         },
-        "enableTelemetry": {
-          "type": "bool",
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
+            "description": "Optional. Array of role assignments to create on the database."
           }
         }
       },
@@ -613,7 +630,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Sql/servers/elasticPools@2023-08-01#properties/tags"
+              "source": "Microsoft.Sql/servers/elasticPools@2025-01-01#properties/tags"
             },
             "description": "Optional. Tags of the resource."
           },
@@ -719,18 +736,21 @@
             "description": "Optional. Array of role assignments to create."
           }
         },
+        "diagnosticSettings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingMetricsOnlyType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The diagnostic settings of the elastic pool."
+          }
+        },
         "zoneRedundant": {
           "type": "bool",
           "nullable": true,
           "metadata": {
             "description": "Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones."
-          }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         }
       },
@@ -774,13 +794,6 @@
           "metadata": {
             "description": "Optional. Specifies whether to create a role assignment for the storage account."
           }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
-          }
         }
       },
       "metadata": {
@@ -809,13 +822,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
-          }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         }
       },
@@ -851,13 +857,6 @@
           "metadata": {
             "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'."
           }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
-          }
         }
       },
       "metadata": {
@@ -885,13 +884,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Allow creating a firewall rule before the virtual network has vnet service endpoint enabled."
-          }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         }
       },
@@ -960,7 +952,7 @@
           }
         },
         "storageAccountAccessKey": {
-          "type": "string",
+          "type": "securestring",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specifies the identifier key of the Threat Detection audit storage account."
@@ -971,13 +963,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs."
-          }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         }
       },
@@ -1045,13 +1030,6 @@
           "metadata": {
             "description": "Required. Databases secondary type on partner server."
           }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
-          }
         }
       },
       "metadata": {
@@ -1081,7 +1059,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1123,7 +1101,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1164,7 +1142,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1193,7 +1171,7 @@
       "metadata": {
         "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1237,7 +1215,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1404,7 +1382,96 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
+        }
+      }
+    },
+    "diagnosticSettingMetricsOnlyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of diagnostic setting."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1441,7 +1508,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1476,13 +1543,6 @@
             "description": "Optional. Yearly retention in ISO 8601 duration format."
           }
         },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
-          }
-        },
         "timeBasedImmutability": {
           "type": "string",
           "allowedValues": [
@@ -1502,7 +1562,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked."
+            "description": "Optional. The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Defaults to `Unlocked` if time-based immutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked."
           }
         }
       },
@@ -1537,7 +1597,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1558,7 +1618,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1733,7 +1793,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1753,7 +1813,7 @@
         "targetServer": {
           "type": "string",
           "metadata": {
-            "description": "Required. The target partner server where the read-only endpoint points to."
+            "description": "Required. The target partner server where the read-only endpoint points to. Can be either the resource ID of the partner server (recommended, required if the partner server is in a different resource group or subscription) or the name of a partner server in the same resource group."
           }
         }
       },
@@ -1781,7 +1841,7 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Grace period before failover with data loss is attempted for the read-write endpoint."
+            "description": "Conditional. Grace period before failover with data loss is attempted for the read-write endpoint. Required if `failoverPolicy` is `Automatic`."
           }
         }
       },
@@ -1897,7 +1957,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1913,7 +1973,7 @@
       "metadata": {
         "description": "A map of the exported secrets",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1932,13 +1992,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Point-in-time retention in days."
-          }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         }
       },
@@ -2048,7 +2101,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The resource ID of a user assigned identity to be used by default. Required if \"userAssignedIdentities\" is not empty."
+        "description": "Conditional. The resource ID of a user assigned identity to be used by default. Required if more than one user-assigned identity is provided in `managedIdentities.userAssignedResourceIds`. If exactly one user-assigned identity is provided, it is used by default."
       }
     },
     "lock": {
@@ -2172,13 +2225,11 @@
       "type": "string",
       "defaultValue": "1.2",
       "allowedValues": [
-        "1.0",
-        "1.1",
         "1.2",
         "1.3"
       ],
       "metadata": {
-        "description": "Optional. Minimal TLS version allowed."
+        "description": "Optional. Minimal TLS version allowed. TLS 1.0 and 1.1 are retired for Azure SQL Database."
       }
     },
     "isIPv6Enabled": {
@@ -2204,13 +2255,12 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "defaultValue": "",
       "allowedValues": [
-        "",
-        "Enabled",
         "Disabled",
+        "Enabled",
         "SecuredByPerimeter"
       ],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and neither firewall rules nor virtual network rules are set."
       }
@@ -2252,7 +2302,18 @@
       "$ref": "#/definitions/vulnerabilityAssessmentType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The vulnerability assessment configuration."
+        "description": "Optional. The vulnerability assessment configuration (classic configuration, requires a storage account). Cannot be combined with `expressVulnerabilityAssessmentState` set to `Enabled`."
+      }
+    },
+    "expressVulnerabilityAssessmentState": {
+      "type": "string",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The state of the SQL vulnerability assessment express configuration, which does not require a storage account and is the recommended configuration. Requires Microsoft Defender for SQL to be enabled (e.g., via `securityAlertPolicies`). Cannot be combined with `vulnerabilityAssessmentsObj` (classic configuration)."
       }
     },
     "auditSettings": {
@@ -2261,7 +2322,17 @@
         "state": "Enabled"
       },
       "metadata": {
-        "description": "Optional. The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object."
+        "description": "Optional. The audit settings configuration. To disable auditing, set `state` to `Disabled`. If set to an empty object, the audit settings are not deployed (i.e., any existing configuration remains unchanged)."
+      }
+    },
+    "diagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the server. As a logical SQL server does not support diagnostic settings itself, they are applied to its `master` database. Required to route server-level audit logs (category `SQLSecurityAuditEvents`) to a Log Analytics workspace or Event Hub if `auditSettings.isAzureMonitorTargetEnabled` is `true`."
       }
     },
     "secretsExportConfiguration": {
@@ -2293,6 +2364,7 @@
     "$fxv#0": "46d3xbcp.res.31e070f",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "primaryUserAssignedIdentityId": "[if(not(empty(parameters('primaryUserAssignedIdentityResourceId'))), parameters('primaryUserAssignedIdentityResourceId'), if(equals(length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())), 1), parameters('managedIdentities').userAssignedResourceIds[0], if(greater(length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())), 1), fail('The ''primaryUserAssignedIdentityResourceId'' parameter is required if more than one user-assigned identity is provided.'), null())))]",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -2310,7 +2382,8 @@
       "SQL Server Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437')]",
       "SqlDb Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '189207d4-bb67-4208-a635-b06afe8b2c57')]"
     },
-    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]",
+    "isHSMManagedCMK": "[equals(toLower(coalesce(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), '')), toLower('managedHSMs'))]",
+    "hsmKeyUri": "[format('https://{0}{1}/keys/{2}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/')), replace(environment().suffixes.keyvaultDns, '.vault.', '.managedhsm.'), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), ''))]",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
@@ -2360,16 +2433,16 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLogin": "[if(and(empty(parameters('administratorLogin')), empty(parameters('administrators'))), fail('Either the ''administratorLogin'' (SQL authentication) or the ''administrators'' (Microsoft Entra authentication) parameter must be provided.'), parameters('administratorLogin'))]",
         "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
-        "administrators": "[union(createObject('administratorType', 'ActiveDirectory'), coalesce(parameters('administrators'), createObject()))]",
+        "administrators": "[if(not(empty(parameters('administrators'))), union(createObject('administratorType', 'ActiveDirectory'), parameters('administrators')), null())]",
         "federatedClientId": "[parameters('federatedClientId')]",
         "isIPv6Enabled": "[parameters('isIPv6Enabled')]",
-        "keyId": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUri, format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))), null())]",
+        "keyId": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('{0}/{1}', variables('hsmKeyUri'), parameters('customerManagedKey').keyVersion)), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUri, variables('hsmKeyUri')), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))), null())]",
         "version": "12.0",
         "minimalTlsVersion": "[parameters('minimalTlsVersion')]",
-        "primaryUserAssignedIdentityId": "[parameters('primaryUserAssignedIdentityResourceId')]",
-        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(and(not(empty(parameters('privateEndpoints'))), empty(parameters('firewallRules'))), empty(parameters('virtualNetworkRules'))), 'Disabled', null()))]",
+        "primaryUserAssignedIdentityId": "[variables('primaryUserAssignedIdentityId')]",
+        "publicNetworkAccess": "[coalesce(parameters('publicNetworkAccess'), if(and(and(not(empty(parameters('privateEndpoints'))), empty(parameters('firewallRules'))), empty(parameters('virtualNetworkRules'))), 'Disabled', null()))]",
         "restrictOutboundNetworkAccess": "[parameters('restrictOutboundNetworkAccess')]"
       },
       "dependsOn": [
@@ -2428,10 +2501,72 @@
         "name": "server_outbound_firewall_rules",
         "count": "[length(coalesce(parameters('outboundFirewallRules'), createArray()))]"
       },
-      "condition": "[not(equals(parameters('outboundFirewallRules'), null()))]",
       "type": "Microsoft.Sql/servers/outboundFirewallRules",
       "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('outboundFirewallRules'), createArray())[copyIndex()])]",
+      "dependsOn": [
+        "server"
+      ]
+    },
+    "server_sqlVulnerabilityAssessment": {
+      "condition": "[not(equals(parameters('expressVulnerabilityAssessmentState'), null()))]",
+      "type": "Microsoft.Sql/servers/sqlVulnerabilityAssessments",
+      "apiVersion": "2025-01-01",
+      "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+      "properties": {
+        "state": "[parameters('expressVulnerabilityAssessmentState')]"
+      },
+      "dependsOn": [
+        "server",
+        "server_securityAlertPolicies"
+      ]
+    },
+    "masterDatabase": {
+      "existing": true,
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2025-01-01",
+      "name": "[format('{0}/{1}', parameters('name'), 'master')]",
+      "dependsOn": [
+        "server"
+      ]
+    },
+    "server_diagnosticSettings": {
+      "copy": {
+        "name": "server_diagnosticSettings",
+        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[resourceId('Microsoft.Sql/servers/databases', parameters('name'), 'master')]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "metrics",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
+            "input": {
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
+              "timeGrain": null
+            }
+          },
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          }
+        ],
+        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
       "dependsOn": [
         "server"
       ]
@@ -2576,6 +2711,9 @@
           "backupLongTermRetentionPolicy": {
             "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'backupLongTermRetentionPolicy')]"
           },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
           }
@@ -2588,7 +2726,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7822195020058646192"
+              "templateHash": "17437556163071419284"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -2653,13 +2791,6 @@
                   "metadata": {
                     "description": "Optional. Point-in-time retention in days."
                   }
-                },
-                "enableTelemetry": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable/Disable usage telemetry for module."
-                  }
                 }
               },
               "metadata": {
@@ -2698,13 +2829,6 @@
                     "description": "Optional. Yearly retention in ISO 8601 duration format."
                   }
                 },
-                "enableTelemetry": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable/Disable usage telemetry for module."
-                  }
-                },
                 "timeBasedImmutability": {
                   "type": "string",
                   "allowedValues": [
@@ -2724,7 +2848,7 @@
                   ],
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked."
+                    "description": "Optional. The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Defaults to `Unlocked` if time-based immutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked."
                   }
                 }
               },
@@ -2773,7 +2897,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -2895,7 +3019,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -2932,7 +3056,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -2953,7 +3077,82 @@
               "metadata": {
                 "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             }
@@ -3312,13 +3511,46 @@
               "metadata": {
                 "description": "Optional. The customer managed key definition for database TDE."
               }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
             }
           },
           "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
             "$fxv#0": "46d3xbcp.res.3254c50",
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+              "SQL DB Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9b7fa17d-e63e-47b0-bb0a-15c516ac86ec')]",
+              "SQL Security Manager": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '056cd41c-7e88-42e1-933e-88ba6a50c9c3')]",
+              "SQL Server Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437')]",
+              "SqlDb Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '189207d4-bb67-4208-a635-b06afe8b2c57')]"
+            },
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-            "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]",
+            "isHSMManagedCMK": "[equals(toLower(coalesce(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), '')), toLower('managedHSMs'))]",
+            "hsmKeyUri": "[format('https://{0}{1}/keys/{2}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/')), replace(environment().suffixes.keyvaultDns, '.vault.', '.managedhsm.'), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), ''))]",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -3382,7 +3614,7 @@
                 "collation": "[parameters('collation')]",
                 "createMode": "[parameters('createMode')]",
                 "elasticPoolId": "[parameters('elasticPoolResourceId')]",
-                "encryptionProtector": "[if(not(empty(parameters('customerManagedKey'))), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUri, format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))), null())]",
+                "encryptionProtector": "[if(not(empty(parameters('customerManagedKey'))), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('{0}/{1}', variables('hsmKeyUri'), parameters('customerManagedKey').keyVersion)), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUri, variables('hsmKeyUri')), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))), null())]",
                 "encryptionProtectorAutoRotation": "[tryGet(parameters('customerManagedKey'), 'autoRotationEnabled')]",
                 "federatedClientId": "[parameters('federatedClientId')]",
                 "freeLimitExhaustionBehavior": "[parameters('freeLimitExhaustionBehavior')]",
@@ -3464,6 +3696,28 @@
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
                 "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+              },
+              "dependsOn": [
+                "database"
+              ]
+            },
+            "database_roleAssignments": {
+              "copy": {
+                "name": "database_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "database"
@@ -3654,7 +3908,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "10272308555566155293"
+                      "templateHash": "14994640932125934509"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3719,7 +3973,7 @@
                       ],
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked."
+                        "description": "Optional. The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Defaults to `Unlocked` if time-based immutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked."
                       }
                     },
                     "enableTelemetry": {
@@ -3777,7 +4031,7 @@
                         "weekOfYear": "[parameters('weekOfYear')]",
                         "yearlyRetention": "[parameters('yearlyRetention')]",
                         "timeBasedImmutability": "[parameters('timeBasedImmutability')]",
-                        "timeBasedImmutabilityMode": "[if(equals(parameters('timeBasedImmutability'), 'Enabled'), coalesce(parameters('timeBasedImmutabilityMode'), 'Locked'), null())]"
+                        "timeBasedImmutabilityMode": "[if(equals(parameters('timeBasedImmutability'), 'Enabled'), coalesce(parameters('timeBasedImmutabilityMode'), 'Unlocked'), null())]"
                       }
                     }
                   },
@@ -3911,6 +4165,12 @@
           "zoneRedundant": {
             "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'zoneRedundant')]"
           },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "diagnosticSettings": {
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'diagnosticSettings')]"
+          },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
           }
@@ -3923,7 +4183,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "18396524707997357554"
+              "templateHash": "8943316982774391300"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool."
@@ -4014,6 +4274,95 @@
                 "description": "The elastic pool SKU."
               }
             },
+            "diagnosticSettingMetricsOnlyType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of diagnostic setting."
+                  }
+                },
+                "metricCategories": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                        }
+                      },
+                      "enabled": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                  }
+                },
+                "logAnalyticsDestinationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AzureDiagnostics",
+                    "Dedicated"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                  }
+                },
+                "workspaceResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "storageAccountResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "eventHubAuthorizationRuleResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                  }
+                },
+                "eventHubName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "marketplacePartnerResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
+                }
+              }
+            },
             "lockType": {
               "type": "object",
               "properties": {
@@ -4047,7 +4396,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -4122,7 +4471,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             }
@@ -4144,7 +4493,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Sql/servers/elasticPools@2023-08-01#properties/tags"
+                  "source": "Microsoft.Sql/servers/elasticPools@2025-01-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -4272,6 +4621,16 @@
                 "description": "Optional. Array of role assignments to create."
               }
             },
+            "diagnosticSettings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/diagnosticSettingMetricsOnlyType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The diagnostic settings of the service."
+              }
+            },
             "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
@@ -4368,6 +4727,38 @@
                 "elasticPool"
               ]
             },
+            "elasticPool_diagnosticSettings": {
+              "copy": {
+                "name": "elasticPool_diagnosticSettings",
+                "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+              },
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[resourceId('Microsoft.Sql/servers/elasticPools', parameters('serverName'), parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "metrics",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "input": {
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "timeGrain": null
+                    }
+                  }
+                ],
+                "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+                "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+                "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+                "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+                "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+                "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+              },
+              "dependsOn": [
+                "elasticPool"
+              ]
+            },
             "elasticPool_roleAssignments": {
               "copy": {
                 "name": "elasticPool_roleAssignments",
@@ -4376,7 +4767,7 @@
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[resourceId('Microsoft.Sql/servers/elasticPools', parameters('serverName'), parameters('name'))]",
-              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Sql/servers', parameters('serverName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Sql/servers/elasticPools', parameters('serverName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
                 "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
@@ -5645,9 +6036,7 @@
           "serverName": {
             "value": "[parameters('name')]"
           },
-          "name": {
-            "value": "[parameters('vulnerabilityAssessmentsObj').name]"
-          },
+          "name": "[if(equals(parameters('expressVulnerabilityAssessmentState'), 'Enabled'), createObject('value', fail('The classic vulnerability assessment configuration (''vulnerabilityAssessmentsObj'') cannot be combined with the express configuration (''expressVulnerabilityAssessmentState'' set to ''Enabled'').')), createObject('value', parameters('vulnerabilityAssessmentsObj').name))]",
           "recurringScans": {
             "value": "[tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScans')]"
           },
@@ -5672,7 +6061,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3943743294635385406"
+              "templateHash": "4555930571340612162"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment."
@@ -5745,7 +6134,7 @@
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Use Access Key to access the storage account. The storage account cannot be behind a firewall or virtual network. If an access key is not used, the SQL Server system assigned managed identity must be assigned the Storage Blob Data Contributor role on the storage account."
+                "description": "Optional. Use Access Key to access the storage account. The storage account cannot be behind a firewall or virtual network. If an access key is not used, the SQL Server managed identity (system-assigned, or the primary user-assigned identity if no system-assigned identity is configured) must be assigned the Storage Blob Data Contributor role on the storage account."
               }
             },
             "createStorageRoleAssignment": {
@@ -5800,7 +6189,7 @@
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "storageContainerPath": "[format('https://{0}.blob.{1}/vulnerability-assessment/', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage)]",
-                "storageAccountAccessKey": "[if(parameters('useStorageAccountAccessKey'), listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, null())]",
+                "storageAccountAccessKey": "[if(parameters('useStorageAccountAccessKey'), listKeys(parameters('storageAccountResourceId'), '2025-08-01').keys[0].value, null())]",
                 "recurringScans": "[parameters('recurringScans')]"
               }
             },
@@ -5808,7 +6197,7 @@
               "condition": "[and(not(parameters('useStorageAccountAccessKey')), parameters('createStorageRoleAssignment'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-sbdc-rbac', parameters('serverName'))]",
+              "name": "[format('{0}-sbdc-rbac', uniqueString(deployment().name, parameters('serverName')))]",
               "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
               "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
               "properties": {
@@ -5820,9 +6209,7 @@
                   "storageAccountName": {
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
-                  "managedInstanceIdentityPrincipalId": {
-                    "value": "[reference('server', '2025-01-01', 'full').identity.principalId]"
-                  }
+                  "managedIdentityPrincipalId": "[if(not(empty(if(contains(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'type'), ''), 'SystemAssigned'), reference('server', '2025-01-01', 'full').identity.principalId, tryGet(tryGet(tryGet(filter(items(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'userAssignedIdentities'), createObject())), lambda('identity', equals(toLower(lambdaVariables('identity').key), toLower(coalesce(tryGet(reference('server'), 'primaryUserAssignedIdentityId'), ''))))), 0), 'value'), 'principalId')))), if(contains(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'type'), ''), 'SystemAssigned'), createObject('value', reference('server', '2025-01-01', 'full').identity.principalId), createObject('value', tryGet(tryGet(tryGet(filter(items(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'userAssignedIdentities'), createObject())), lambda('identity', equals(toLower(lambdaVariables('identity').key), toLower(coalesce(tryGet(reference('server'), 'primaryUserAssignedIdentityId'), ''))))), 0), 'value'), 'principalId'))), createObject('value', fail('The SQL server must have a system-assigned or a primary user-assigned identity if the storage account access key is not used.')))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -5831,14 +6218,14 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "11487617708760308645"
+                      "templateHash": "10703090835804108277"
                     }
                   },
                   "parameters": {
                     "storageAccountName": {
                       "type": "string"
                     },
-                    "managedInstanceIdentityPrincipalId": {
+                    "managedIdentityPrincipalId": {
                       "type": "string"
                     }
                   },
@@ -5847,10 +6234,10 @@
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
                       "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-                      "name": "[guid(format('{0}-{1}-Storage-Blob-Data-Contributor', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedInstanceIdentityPrincipalId')))]",
+                      "name": "[guid(format('{0}-{1}-Storage-Blob-Data-Contributor', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedIdentityPrincipalId')))]",
                       "properties": {
                         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-                        "principalId": "[parameters('managedInstanceIdentityPrincipalId')]",
+                        "principalId": "[parameters('managedIdentityPrincipalId')]",
                         "principalType": "ServicePrincipal"
                       }
                     }
@@ -6065,7 +6452,7 @@
           "serverKeyType": {
             "value": "AzureKeyVault"
           },
-          "uri": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), createObject('value', format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion)), createObject('value', format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion))), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), createObject('value', reference('cMKKeyVault::cMKKey').keyUri), createObject('value', format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName))), if(not(variables('isHSMManagedCMK')), createObject('value', reference('cMKKeyVault::cMKKey').keyUriWithVersion), createObject('value', fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))))]",
+          "uri": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), createObject('value', format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion)), createObject('value', format('{0}/{1}', variables('hsmKeyUri'), parameters('customerManagedKey').keyVersion))), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), createObject('value', reference('cMKKeyVault::cMKKey').keyUri), createObject('value', variables('hsmKeyUri'))), if(not(variables('isHSMManagedCMK')), createObject('value', reference('cMKKeyVault::cMKKey').keyUriWithVersion), createObject('value', fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.'))))), createObject('value', null()))]",
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
           }
@@ -6208,7 +6595,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "sqlServerName": {
+          "serverName": {
             "value": "[parameters('name')]"
           },
           "serverKeyName": {
@@ -6231,16 +6618,16 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16846337031868277873"
+              "templateHash": "4460606536620676236"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector."
           },
           "parameters": {
-            "sqlServerName": {
+            "serverName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the sql server. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent SQL server. Required if the template is used in a standalone deployment."
               }
             },
             "serverKeyName": {
@@ -6303,7 +6690,7 @@
             {
               "type": "Microsoft.Sql/servers/encryptionProtector",
               "apiVersion": "2025-01-01",
-              "name": "[format('{0}/{1}', parameters('sqlServerName'), 'current')]",
+              "name": "[format('{0}/{1}', parameters('serverName'), 'current')]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
                 "autoRotationEnabled": "[parameters('autoRotationEnabled')]",
@@ -6324,7 +6711,7 @@
               "metadata": {
                 "description": "The resource ID of the encryption protector."
               },
-              "value": "[resourceId('Microsoft.Sql/servers/encryptionProtector', parameters('sqlServerName'), 'current')]"
+              "value": "[resourceId('Microsoft.Sql/servers/encryptionProtector', parameters('serverName'), 'current')]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -6397,7 +6784,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "12925585819649971906"
+              "templateHash": "17862310359846417645"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -6444,7 +6831,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Optional. Specifies whether audit events are sent to Azure Monitor."
+                "description": "Optional. Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, a diagnostic setting with the `SQLSecurityAuditEvents` log category must be configured on the server's `master` database."
               }
             },
             "isDevopsAuditEnabled": {
@@ -6484,7 +6871,7 @@
             },
             "storageAccountResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A blob storage to hold the auditing storage account."
               }
@@ -6541,7 +6928,7 @@
                 "isStorageSecondaryKeyInUse": "[parameters('isStorageSecondaryKeyInUse')]",
                 "queueDelayMs": "[parameters('queueDelayMs')]",
                 "retentionDays": "[parameters('retentionDays')]",
-                "storageAccountAccessKey": "[if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('isManagedIdentityInUse'))), listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, null())]",
+                "storageAccountAccessKey": "[if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('isManagedIdentityInUse'))), listKeys(parameters('storageAccountResourceId'), '2025-08-01').keys[0].value, null())]",
                 "storageAccountSubscriptionId": "[if(not(empty(parameters('storageAccountResourceId'))), split(parameters('storageAccountResourceId'), '/')[2], null())]",
                 "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), format('https://{0}.blob.{1}', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage), null())]"
               }
@@ -6562,7 +6949,7 @@
                   "storageAccountName": {
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
-                  "managedIdentityPrincipalId": "[if(equals(reference('server', '2025-01-01', 'full').identity.type, 'UserAssigned'), createObject('value', filter(items(reference('server', '2025-01-01', 'full').identity.userAssignedIdentities), lambda('identity', equals(lambdaVariables('identity').key, reference('server').primaryUserAssignedIdentityId)))[0].value.principalId), createObject('value', reference('server', '2025-01-01', 'full').identity.principalId))]"
+                  "managedIdentityPrincipalId": "[if(not(empty(if(contains(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'type'), ''), 'SystemAssigned'), reference('server', '2025-01-01', 'full').identity.principalId, tryGet(tryGet(tryGet(filter(items(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'userAssignedIdentities'), createObject())), lambda('identity', equals(toLower(lambdaVariables('identity').key), toLower(coalesce(tryGet(reference('server'), 'primaryUserAssignedIdentityId'), ''))))), 0), 'value'), 'principalId')))), if(contains(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'type'), ''), 'SystemAssigned'), createObject('value', reference('server', '2025-01-01', 'full').identity.principalId), createObject('value', tryGet(tryGet(tryGet(filter(items(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'userAssignedIdentities'), createObject())), lambda('identity', equals(toLower(lambdaVariables('identity').key), toLower(coalesce(tryGet(reference('server'), 'primaryUserAssignedIdentityId'), ''))))), 0), 'value'), 'principalId'))), createObject('value', fail('The SQL server must have a system-assigned or a primary user-assigned identity to use a managed identity for auditing.')))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -6648,7 +7035,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSecretName'), 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), tryGet(parameters('databases'), 0, 'name'), ''), parameters('administratorLogin'), parameters('administratorLoginPassword')))), createArray()))]"
+            "value": "[union(if(and(or(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSecretName')), empty(parameters('administratorLoginPassword'))), fail('The ''administratorLoginPassword'' parameter must be provided to export the ''sqlAdminPasswordSecretName'' or ''sqlAzureConnectionStringSecretName'' secrets.'), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSecretName'), 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), tryGet(parameters('databases'), 0, 'name'), ''), parameters('administratorLogin'), parameters('administratorLoginPassword')))), createArray()))]"
           }
         },
         "template": {
@@ -6659,7 +7046,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10615204754408994326"
+              "templateHash": "5850146413070472516"
             }
           },
           "definitions": {
@@ -6711,7 +7098,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             }
@@ -6828,7 +7215,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "14639222289876912597"
+              "templateHash": "7025131273077865416"
             },
             "name": "Azure SQL Server failover group",
             "description": "This module deploys Azure SQL Server failover group."
@@ -6850,7 +7237,7 @@
                 "targetServer": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. The target partner server where the read-only endpoint points to."
+                    "description": "Required. The target partner server where the read-only endpoint points to. Can be either the resource ID of the partner server (recommended, required if the partner server is in a different resource group or subscription) or the name of a partner server in the same resource group."
                   }
                 }
               },
@@ -6876,7 +7263,7 @@
                   "type": "int",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Grace period before failover with data loss is attempted for the read-write endpoint."
+                    "description": "Conditional. Grace period before failover with data loss is attempted for the read-write endpoint. Required if `failoverPolicy` is `Automatic`."
                   }
                 }
               },
@@ -7009,8 +7396,8 @@
                     }
                   }
                 ],
-                "readOnlyEndpoint": "[if(not(empty(parameters('readOnlyEndpoint'))), createObject('failoverPolicy', parameters('readOnlyEndpoint').failoverPolicy, 'targetServer', resourceId(resourceGroup().name, 'Microsoft.Sql/servers', parameters('readOnlyEndpoint').targetServer)), null())]",
-                "readWriteEndpoint": "[parameters('readWriteEndpoint')]",
+                "readOnlyEndpoint": "[if(not(empty(parameters('readOnlyEndpoint'))), createObject('failoverPolicy', parameters('readOnlyEndpoint').failoverPolicy, 'targetServer', if(contains(parameters('readOnlyEndpoint').targetServer, '/'), parameters('readOnlyEndpoint').targetServer, resourceId(resourceGroup().name, 'Microsoft.Sql/servers', parameters('readOnlyEndpoint').targetServer))), null())]",
+                "readWriteEndpoint": "[if(and(equals(parameters('readWriteEndpoint').failoverPolicy, 'Automatic'), equals(tryGet(parameters('readWriteEndpoint'), 'failoverWithDataLossGracePeriodMinutes'), null())), fail('The ''failoverWithDataLossGracePeriodMinutes'' property is required if the read-write endpoint ''failoverPolicy'' is set to ''Automatic''.'), parameters('readWriteEndpoint'))]",
                 "secondaryType": "[parameters('secondaryType')]"
               }
             }
@@ -7113,6 +7500,38 @@
           "groupId": "[tryGet(tryGet(reference(format('server_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
           "customDnsConfigs": "[reference(format('server_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
           "networkInterfaceResourceIds": "[reference(format('server_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
+        }
+      }
+    },
+    "databases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/childResourceOutputType"
+      },
+      "metadata": {
+        "description": "The databases of the SQL server."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('databases'), createArray()))]",
+        "input": {
+          "name": "[reference(format('server_databases[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('server_databases[{0}]', copyIndex())).outputs.resourceId.value]"
+        }
+      }
+    },
+    "elasticPools": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/childResourceOutputType"
+      },
+      "metadata": {
+        "description": "The elastic pools of the SQL server."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('elasticPools'), createArray()))]",
+        "input": {
+          "name": "[reference(format('server_elasticPools[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('server_elasticPools[{0}]', copyIndex())).outputs.resourceId.value]"
         }
       }
     }

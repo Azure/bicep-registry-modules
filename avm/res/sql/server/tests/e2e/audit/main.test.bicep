@@ -24,6 +24,9 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. A timestamp used to make globally unique test resources distinct between deployments.')
+param baseTime string = utcNow('u')
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -39,7 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}audstore${serviceShort}'
+    storageAccountName: 'dep${namePrefix}audstore${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
     location: resourceLocation
   }
 }
@@ -54,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
       location: resourceLocation
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
