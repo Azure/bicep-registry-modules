@@ -47,15 +47,11 @@ module nestedDependencies 'dependencies.bicep' = {
   ]
 }
 
-resource additionalMg 'Microsoft.Management/managementGroups@2023-04-01' = {
-  scope: tenant()
-  name: '${uniqueString(deployment().name)}-additional-mg'
-  properties: {
-    details: {
-      parent: {
-        id: managementGroup().id
-      }
-    }
+module additionalMg 'br/public:avm/res/management/management-group:0.1.2' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-additionalManagementGroup'
+  params: {
+    name: '${uniqueString(deployment().name)}-additional-mg'
+    parentId: managementGroup().name
   }
 }
 
@@ -78,7 +74,7 @@ module testDeployment '../../../mg-scope/main.bicep' = {
     }
     location: resourceLocation
     additionalManagementGroupsIDsToAssignRbacTo: [
-      additionalMg.name
+      additionalMg.outputs.name
     ]
     additionalSubscriptionIDsToAssignRbacTo: [
       subscriptionId

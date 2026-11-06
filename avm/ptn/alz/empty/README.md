@@ -127,7 +127,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module empty 'br/public:avm/ptn/alz/empty:<version>' = {
   params: {
     // Required parameters
-    managementGroupName: 'mg-test-alzempmax'
+    managementGroupName: '<managementGroupName>'
     // Non-required parameters
     createOrUpdateManagementGroup: true
     managementGroupCustomPolicyDefinitions: '<managementGroupCustomPolicyDefinitions>'
@@ -217,7 +217,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
   "parameters": {
     // Required parameters
     "managementGroupName": {
-      "value": "mg-test-alzempmax"
+      "value": "<managementGroupName>"
     },
     // Non-required parameters
     "createOrUpdateManagementGroup": {
@@ -325,7 +325,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
 using 'br/public:avm/ptn/alz/empty:<version>'
 
 // Required parameters
-param managementGroupName = 'mg-test-alzempmax'
+param managementGroupName = '<managementGroupName>'
 // Non-required parameters
 param createOrUpdateManagementGroup = true
 param managementGroupCustomPolicyDefinitions = '<managementGroupCustomPolicyDefinitions>'

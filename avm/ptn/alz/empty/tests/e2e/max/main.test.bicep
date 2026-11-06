@@ -20,16 +20,21 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-resource additionalTestManagementGroup 'Microsoft.Management/managementGroups@2023-04-01' = {
-  scope: tenant()
-  name: 'mg-${namePrefix}-test-${serviceShort}-max-additional'
-  properties: {
+module testManagementGroup 'br/public:avm/res/management/management-group:0.1.2' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-managementGroup'
+  params: {
+    name: 'mg-${namePrefix}-test-${serviceShort}'
+    displayName: 'AVM ALZ PTN Empty Max Test'
+    parentId: managementGroup().name
+  }
+}
+
+module additionalTestManagementGroup 'br/public:avm/res/management/management-group:0.1.2' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-additionalManagementGroup'
+  params: {
+    name: 'mg-${namePrefix}-test-${serviceShort}-max-additional'
     displayName: 'Additional Test Management Group - ALZ PTN Empty Max Test'
-    details: {
-      parent: {
-        id: managementGroup().id
-      }
-    }
+    parentId: managementGroup().name
   }
 }
 // ============== //
@@ -231,7 +236,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       createOrUpdateManagementGroup: true
-      managementGroupName: 'mg-${namePrefix}-test-${serviceShort}'
+      managementGroupName: testManagementGroup.outputs.name
       managementGroupParentId: managementGroup().name
       managementGroupDisplayName: 'AVM ALZ PTN Empty Max Test'
       managementGroupRoleAssignments: managementGroupRoleAssignments
@@ -269,7 +274,7 @@ module testDeployment '../../../main.bicep' = [
             '/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
           ]
           additionalManagementGroupsIDsToAssignRbacTo: [
-            additionalTestManagementGroup.name
+            additionalTestManagementGroup.outputs.name
           ]
         }
         {
