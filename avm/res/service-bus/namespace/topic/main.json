@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "14245372971628139488"
+      "version": "0.48.1.52935",
+      "templateHash": "18206367392392521157"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic."
@@ -499,6 +499,18 @@
         "description": "Required. Name of the Service Bus Topic."
       }
     },
+    "namespaceSkuName": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Optional. The SKU name of the parent Service Bus Namespace. If not provided, the SKU is read from the existing namespace at deployment time. Providing it allows what-if to evaluate the Premium-only properties `enableExpress` and `maxMessageSizeInKilobytes`."
+      }
+    },
     "maxSizeInMegabytes": {
       "type": "int",
       "defaultValue": 1024,
@@ -682,7 +694,7 @@
       "type": "Microsoft.ServiceBus/namespaces/topics",
       "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
-      "properties": "[union(createObject('autoDeleteOnIdle', parameters('autoDeleteOnIdle'), 'defaultMessageTimeToLive', parameters('defaultMessageTimeToLive'), 'duplicateDetectionHistoryTimeWindow', parameters('duplicateDetectionHistoryTimeWindow'), 'enableBatchedOperations', parameters('enableBatchedOperations'), 'enablePartitioning', parameters('enablePartitioning'), 'requiresDuplicateDetection', parameters('requiresDuplicateDetection'), 'status', parameters('status'), 'supportOrdering', parameters('supportOrdering'), 'maxSizeInMegabytes', parameters('maxSizeInMegabytes')), if(equals(reference('namespace', '2024-01-01', 'full').sku.name, 'Premium'), createObject('enableExpress', parameters('enableExpress'), 'maxMessageSizeInKilobytes', parameters('maxMessageSizeInKilobytes')), createObject()))]",
+      "properties": "[union(createObject('autoDeleteOnIdle', parameters('autoDeleteOnIdle'), 'defaultMessageTimeToLive', parameters('defaultMessageTimeToLive'), 'duplicateDetectionHistoryTimeWindow', parameters('duplicateDetectionHistoryTimeWindow'), 'enableBatchedOperations', parameters('enableBatchedOperations'), 'enablePartitioning', parameters('enablePartitioning'), 'requiresDuplicateDetection', parameters('requiresDuplicateDetection'), 'status', parameters('status'), 'supportOrdering', parameters('supportOrdering'), 'maxSizeInMegabytes', parameters('maxSizeInMegabytes')), if(equals(coalesce(parameters('namespaceSkuName'), reference('namespace', '2024-01-01', 'full').sku.name), 'Premium'), createObject('enableExpress', parameters('enableExpress'), 'maxMessageSizeInKilobytes', parameters('maxMessageSizeInKilobytes')), createObject()))]",
       "dependsOn": [
         "namespace"
       ]
@@ -759,8 +771,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "17999232906924038498"
+              "version": "0.48.1.52935",
+              "templateHash": "13063251815295654191"
             },
             "name": "Service Bus Namespace Topic Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
@@ -946,8 +958,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "2740648982109013302"
+              "version": "0.48.1.52935",
+              "templateHash": "14753954985711325687"
             },
             "name": "Service Bus Namespace Topic Subscription",
             "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -1242,9 +1254,9 @@
             },
             "duplicateDetectionHistoryTimeWindow": {
               "type": "string",
-              "defaultValue": "PT10M",
+              "nullable": true,
               "metadata": {
-                "description": "Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes."
+                "description": "Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. Not set by default, as the service does not persist this property on subscriptions and setting it causes what-if to report a change on every run."
               }
             },
             "enableBatchedOperations": {
@@ -1440,8 +1452,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "13257050455721514365"
+                      "version": "0.48.1.52935",
+                      "templateHash": "12194936570480248273"
                     },
                     "name": "Service Bus Namespace Topic Subscription Rule",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
