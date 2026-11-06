@@ -61,7 +61,10 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module empty 'br/public:avm/ptn/alz/empty:<version>' = {
   params: {
+    // Required parameters
     managementGroupName: 'mg-test-alzempmin'
+    // Non-required parameters
+    managementGroupParentId: '<managementGroupParentId>'
   }
 }
 ```
@@ -78,8 +81,13 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "managementGroupName": {
       "value": "mg-test-alzempmin"
+    },
+    // Non-required parameters
+    "managementGroupParentId": {
+      "value": "<managementGroupParentId>"
     }
   }
 }
@@ -95,7 +103,10 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/alz/empty:<version>'
 
+// Required parameters
 param managementGroupName = 'mg-test-alzempmin'
+// Non-required parameters
+param managementGroupParentId = '<managementGroupParentId>'
 ```
 
 </details>
@@ -129,6 +140,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
     managementGroupExcludedPolicyAssignments: [
       'allowed-vm-skus-root'
     ]
+    managementGroupParentId: '<managementGroupParentId>'
     managementGroupPolicyAssignments: [
       {
         definitionVersion: '1.*.*'
@@ -233,6 +245,9 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
         "allowed-vm-skus-root"
       ]
     },
+    "managementGroupParentId": {
+      "value": "<managementGroupParentId>"
+    },
     "managementGroupPolicyAssignments": {
       "value": [
         {
@@ -323,6 +338,7 @@ param managementGroupDoNotEnforcePolicyAssignments = [
 param managementGroupExcludedPolicyAssignments = [
   'allowed-vm-skus-root'
 ]
+param managementGroupParentId = '<managementGroupParentId>'
 param managementGroupPolicyAssignments = [
   {
     definitionVersion: '1.*.*'

@@ -20,6 +20,13 @@ param namePrefix string = '#_namePrefix_#'
 resource additionalMg 'Microsoft.Management/managementGroups@2023-04-01' = {
   scope: tenant()
   name: '${uniqueString(deployment().name)}-additional-mg'
+  properties: {
+    details: {
+      parent: {
+        id: managementGroup().id
+      }
+    }
+  }
 }
 
 // ============== //

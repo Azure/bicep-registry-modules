@@ -20,11 +20,6 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-resource tenantRootMgExisting 'Microsoft.Management/managementGroups@2023-04-01' existing = {
-  scope: tenant()
-  name: tenant().tenantId
-}
-
 resource additionalTestManagementGroup 'Microsoft.Management/managementGroups@2023-04-01' = {
   scope: tenant()
   name: 'mg-${namePrefix}-test-${serviceShort}-max-additional'
@@ -32,7 +27,7 @@ resource additionalTestManagementGroup 'Microsoft.Management/managementGroups@20
     displayName: 'Additional Test Management Group - ALZ PTN Empty Max Test'
     details: {
       parent: {
-        id: tenantRootMgExisting.id
+        id: managementGroup().id
       }
     }
   }
@@ -237,6 +232,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       createOrUpdateManagementGroup: true
       managementGroupName: 'mg-${namePrefix}-test-${serviceShort}'
+      managementGroupParentId: managementGroup().name
       managementGroupDisplayName: 'AVM ALZ PTN Empty Max Test'
       managementGroupRoleAssignments: managementGroupRoleAssignments
       managementGroupCustomRoleDefinitions: unionedCustomRbacRoleDefs
