@@ -48,7 +48,7 @@ jobs:
     steps:
       - name: "Prepare module checks"
         id: initialize
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@ff00fff10582fc206757e3ea33647b6023a4e33e
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@9a7922e2ae785d5f65b60809baad20ea83ca8063
         with:
           authoringSource: ${{ inputs.authoringSource || 'gallery' }}
           authoringRef: ${{ inputs.authoringRef || '' }}
@@ -65,7 +65,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@ff00fff10582fc206757e3ea33647b6023a4e33e
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@9a7922e2ae785d5f65b60809baad20ea83ca8063
     with:
       modulePath: ${{ matrix.modulePath }}
       moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
