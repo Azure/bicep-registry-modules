@@ -26,6 +26,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       managementGroupName: 'mg-${namePrefix}-test-${serviceShort}'
+      managementGroupParentId: managementGroup().name
     }
   }
 ]
