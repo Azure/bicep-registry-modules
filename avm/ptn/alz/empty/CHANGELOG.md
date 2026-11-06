@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/alz/empty/CHANGELOG.md).
 
+## 0.3.7
+
+### Changes
+
+- Refreshed the compiled template with Bicep 0.48.1. No changes to module behavior.
+
+### Breaking Changes
+
+- None
+
 ## 0.3.6
 
 ### Changes
