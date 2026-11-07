@@ -53,9 +53,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
 
 var enableReferencedModulesTelemetry = false
 
-// default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind (unless V2 where accessTier is not supported so null is supplied), 'TransactionOptimized' otherwise
+// Provisioned v2 shares (SSD and HDD) do not use access tiers. Keep the existing defaults for other accounts.
 var defaultShareAccessTier = storageAccount.kind == 'FileStorage'
-  ? (startsWith(storageAccount.sku.name, 'PremiumV2_') ? null : 'Premium')
+  ? ((startsWith(storageAccount.sku.name, 'PremiumV2_') || startsWith(storageAccount.sku.name, 'StandardV2_'))
+      ? null
+      : 'Premium')
   : 'TransactionOptimized'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' existing = {
@@ -168,7 +170,7 @@ type fileShareType = {
   @description('Required. The name of the file share.')
   name: string
 
-  @description('Optional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool.')
+  @description('Optional. Access tier for the share. Defaults to Premium for FileStorage accounts with Premium_LRS or Premium_ZRS, and is omitted by default for provisioned v2 accounts (PremiumV2_* and StandardV2_*). GpV2 accounts can choose between TransactionOptimized (default), Hot, and Cool.')
   accessTier: null | 'Premium' | 'Hot' | 'Cool' | 'TransactionOptimized'
 
   @description('Optional. The authentication protocol that is used for the file share. Can only be specified when creating a share.')
