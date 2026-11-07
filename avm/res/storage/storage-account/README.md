@@ -65,8 +65,9 @@ The following section provides usage examples for the module, which were used to
 - [Deploying with a NFS File Share](#example-12-deploying-with-a-nfs-file-share)
 - [Using object replication](#example-13-using-object-replication)
 - [Using premium file shares](#example-14-using-premium-file-shares)
-- [Deploying as Storage Account version 1](#example-15-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-16-waf-aligned)
+- [Using standard provisioned v2 file shares](#example-15-using-standard-provisioned-v2-file-shares)
+- [Deploying as Storage Account version 1](#example-16-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-17-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
@@ -3138,7 +3139,130 @@ param skuName = 'PremiumV2_LRS'
 </details>
 <p>
 
-### Example 15: _Deploying as Storage Account version 1_
+### Example 15: _Using standard provisioned v2 file shares_
+
+This instance deploys FileStorage accounts with StandardV2_ZRS and StandardV2_LRS SKUs and file shares without an explicit access tier.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/standard-file-share]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'ssasv2zrs'
+    // Non-required parameters
+    allowBlobPublicAccess: false
+    azureFilesIdentityBasedAuthentication: {
+      directoryServiceOptions: 'AADKERB'
+    }
+    fileServices: {
+      shares: [
+        {
+          name: 'profiles'
+        }
+      ]
+    }
+    kind: 'FileStorage'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
+    skuName: 'StandardV2_ZRS'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssasv2zrs"
+    },
+    // Non-required parameters
+    "allowBlobPublicAccess": {
+      "value": false
+    },
+    "azureFilesIdentityBasedAuthentication": {
+      "value": {
+        "directoryServiceOptions": "AADKERB"
+      }
+    },
+    "fileServices": {
+      "value": {
+        "shares": [
+          {
+            "name": "profiles"
+          }
+        ]
+      }
+    },
+    "kind": {
+      "value": "FileStorage"
+    },
+    "networkAcls": {
+      "value": {
+        "bypass": "AzureServices",
+        "defaultAction": "Deny"
+      }
+    },
+    "skuName": {
+      "value": "StandardV2_ZRS"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssasv2zrs'
+// Non-required parameters
+param allowBlobPublicAccess = false
+param azureFilesIdentityBasedAuthentication = {
+  directoryServiceOptions: 'AADKERB'
+}
+param fileServices = {
+  shares: [
+    {
+      name: 'profiles'
+    }
+  ]
+}
+param kind = 'FileStorage'
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+}
+param skuName = 'StandardV2_ZRS'
+```
+
+</details>
+<p>
+
+### Example 16: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -3203,7 +3327,7 @@ param kind = 'Storage'
 </details>
 <p>
 
-### Example 16: _WAF-aligned_
+### Example 17: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -5218,7 +5342,7 @@ File shares to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessTier`](#parameter-fileservicessharesaccesstier) | string | Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool. |
+| [`accessTier`](#parameter-fileservicessharesaccesstier) | string | Access tier for the share. Defaults to Premium for FileStorage accounts with Premium_LRS or Premium_ZRS, and is omitted by default for provisioned v2 accounts (PremiumV2_* and StandardV2_*). GpV2 accounts can choose between TransactionOptimized (default), Hot, and Cool. |
 | [`enabledProtocols`](#parameter-fileservicessharesenabledprotocols) | string | The authentication protocol that is used for the file share. Can only be specified when creating a share. |
 | [`provisionedBandwidthMibps`](#parameter-fileservicessharesprovisionedbandwidthmibps) | int | The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340. |
 | [`provisionedIops`](#parameter-fileservicessharesprovisionediops) | int | The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400. |
@@ -5235,7 +5359,7 @@ The name of the file share.
 
 ### Parameter: `fileServices.shares.accessTier`
 
-Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool.
+Access tier for the share. Defaults to Premium for FileStorage accounts with Premium_LRS or Premium_ZRS, and is omitted by default for provisioned v2 accounts (PremiumV2_* and StandardV2_*). GpV2 accounts can choose between TransactionOptimized (default), Hot, and Cool.
 
 - Required: No
 - Type: string
