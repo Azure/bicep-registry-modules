@@ -21,6 +21,8 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         foreach ($root in $roots) {
             foreach ($file in Get-ChildItem (Join-Path $RepoRootPath $root 'tests' 'e2e') -Filter 'main.test.bicep' -Recurse) {
                 $output = Join-Path $TestDrive "$($compiled.Count).json"
+                $diagnostics = bicep restore $file.FullName 2>&1
+                if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
                 $diagnostics = bicep build $file.FullName --no-restore --outfile $output 2>&1
                 if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
                 $key = [IO.Path]::GetRelativePath($RepoRootPath, $file.FullName).Replace('\', '/')
@@ -31,6 +33,8 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $environment = Get-Content (Join-Path $assetRoot 'environment.json') -Raw | ConvertFrom-Json -AsHashtable
         foreach ($file in @('foundation.bicep', 'hciHostGalleryBuilder.bicep', 'test-key-vault.bicep')) {
             $output = Join-Path $TestDrive "$file.json"
+            $diagnostics = bicep restore (Join-Path $assetRoot $file) 2>&1
+            if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
             $diagnostics = bicep build (Join-Path $assetRoot $file) --no-restore --outfile $output 2>&1
             if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
             $compiled[$file] = Get-Content $output -Raw | ConvertFrom-Json -AsHashtable

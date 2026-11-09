@@ -16,3 +16,6 @@ updates:
       - Azure-Bicep-Registery-Reviewers
     cooldown:
       default-days: 7
+    ignore:
+      - dependency-name: "Azure/azure-verified-modules-tools"
+      - dependency-name: "Azure/azure-verified-modules-tools/*"

@@ -407,6 +407,8 @@ runs:
             GitHubVariables     = $env:AVM_CI_VARIABLES
             GitHubSecrets       = $env:AVM_CI_SECRETS
             KeyVaultName        = $env:CI_KEY_VAULT_NAME
+            ModulePath          = '${{ inputs.modulePath }}'
+            ModuleBillingScopes = $env:VALIDATE_MODULE_BILLING_SCOPES
           }
           $ciParameters = Get-CIParameterMap @ciParameterInput
           $overrideInput = @{

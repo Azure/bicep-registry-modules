@@ -26,7 +26,8 @@ Describe 'Test subscription reservation configuration' {
     }
 
     It 'Requires the map to be present rather than silently removing reservations' {
-        Remove-Item -LiteralPath $mapPath
+        if ($IsWindows) { (Get-Item -LiteralPath $mapPath -Force).Attributes = 'Hidden' }
+        Remove-Item -LiteralPath $mapPath -Force
         { Get-TestSubscriptionTag -RepoRootPath $TestDrive -ModulePath 'avm/res/azure-stack-hci/cluster' } |
             Should -Throw '*require a file named exactly*'
     }

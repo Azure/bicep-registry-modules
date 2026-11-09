@@ -80,7 +80,8 @@ Describe 'Register-RequiredSubscriptionResourceProvider' {
     }
 
     It 'Logs an absent root map without contacting Azure or creating a file' {
-        Remove-Item -LiteralPath $manifestPath
+        if ($IsWindows) { (Get-Item -LiteralPath $manifestPath -Force).Attributes = 'Hidden' }
+        Remove-Item -LiteralPath $manifestPath -Force
 
         $messages = @(Register-RequiredSubscriptionResourceProvider @functionInput 4>&1)
 
@@ -116,7 +117,7 @@ Describe 'Register-RequiredSubscriptionResourceProvider' {
     }
 
     It 'Does not read a nested manifest or an underscore filename' {
-        Remove-Item -LiteralPath $manifestPath
+        Remove-Item -LiteralPath $manifestPath -Force
         $nestedRoot = Join-Path $testRoot 'avm' 'res' 'example' 'module'
         $null = New-Item -Path $nestedRoot -ItemType Directory -Force
         Set-Content -LiteralPath (Join-Path $nestedRoot '.required-resource-providers.json') -Value '{invalid'
@@ -255,7 +256,7 @@ Describe 'Register-RequiredSubscriptionResourceProvider' {
     }
 
     It 'Rejects a directory with the manifest name' {
-        Remove-Item -LiteralPath $manifestPath
+        Remove-Item -LiteralPath $manifestPath -Force
         $null = New-Item -Path $manifestPath -ItemType Directory
 
         { Register-RequiredSubscriptionResourceProvider @functionInput } | Should -Throw '*file named exactly*'
@@ -263,7 +264,7 @@ Describe 'Register-RequiredSubscriptionResourceProvider' {
     }
 
     It 'Rejects incorrectly cased manifest filenames' {
-        Remove-Item -LiteralPath $manifestPath
+        Remove-Item -LiteralPath $manifestPath -Force
         Set-Content -LiteralPath (Join-Path $testRoot '.REQUIRED-RESOURCE-PROVIDERS.json') -Value '{}'
 
         { Register-RequiredSubscriptionResourceProvider @functionInput } | Should -Throw '*file named exactly*'
