@@ -34,7 +34,7 @@ permissions: {}
 
 jobs:
   initialize:
-    name: "[AVM] Initialize module checks"
+    name: "Initialize module checks"
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -46,9 +46,9 @@ jobs:
       workflowInput: ${{ steps.initialize.outputs.workflowInput }}
       authoringArtifact: ${{ steps.initialize.outputs.authoringArtifact }}
     steps:
-      - name: "[AVM] Prepare module checks"
+      - name: "Prepare module checks"
         id: initialize
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@93f9ca0264ea8b3fa33f200cdbef315c8b4a2565
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@8bca18987ce8853e844f4e95f8cc309162ee7b40
         with:
           authoringSource: ${{ inputs.authoringSource || 'gallery' }}
           authoringRef: ${{ inputs.authoringRef || '' }}
@@ -56,7 +56,7 @@ jobs:
           deploymentValidation: ${{ inputs.runE2E && 'true' || 'false' }}
 
   check:
-    name: "[AVM] ${{ matrix.modulePath }}"
+    name: "${{ matrix.modulePath }}"
     needs: initialize
     if: needs.initialize.outputs.hasModules == 'true'
     permissions:
@@ -65,7 +65,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@93f9ca0264ea8b3fa33f200cdbef315c8b4a2565
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@8bca18987ce8853e844f4e95f8cc309162ee7b40
     with:
       modulePath: ${{ matrix.modulePath }}
       moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
