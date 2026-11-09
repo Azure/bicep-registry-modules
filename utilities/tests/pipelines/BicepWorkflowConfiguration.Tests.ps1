@@ -4,42 +4,46 @@
 )
 
 Describe 'Coordinated tools dependency updates' {
-    It 'keeps the experimental callers on one immutable merged tools commit' {
+    It 'keeps every caller tools reference on the v0.40.0 merged commit without pinning Avm.Authoring' {
+        $expectedToolsSha = '8bca18987ce8853e844f4e95f8cc309162ee7b40'
         $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
-        $callers = @{
-            'pr-check.yml' = 'bicep-pr-check.yml'
-            'release.yml' = 'bicep-release.yml'
+        $expectedReferences = @{
+            'pr-check.yml' = @(
+                "Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@$expectedToolsSha"
+                "Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@$expectedToolsSha"
+            )
+            'release.yml' = @(
+                "Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@$expectedToolsSha"
+            )
         }
-        $uses = @(
-            foreach ($caller in $callers.GetEnumerator()) {
-                $workflow = Get-Content -LiteralPath (Join-Path $workflowRoot $caller.Key) -Raw | ConvertFrom-Yaml
-                $dispatchInputs = $workflow.on.workflow_dispatch.inputs
-                $dispatchInputs.authoringSource.type | Should -BeExactly 'choice'
-                $dispatchInputs.authoringSource.options | Should -Be @('gallery', 'repo')
-                $dispatchInputs.authoringSource.default | Should -BeExactly 'gallery'
-                $dispatchInputs.authoringSource.required | Should -BeTrue
-                $dispatchInputs.authoringRef.type | Should -BeExactly 'string'
-                $dispatchInputs.authoringRef.required | Should -BeFalse
+        foreach ($file in $expectedReferences.Keys) {
+            $workflowPath = Join-Path $workflowRoot $file
+            $content = Get-Content -LiteralPath $workflowPath -Raw
+            $workflow = $content | ConvertFrom-Yaml
+            $dispatchInputs = $workflow.on.workflow_dispatch.inputs
+            $dispatchInputs.authoringSource.type | Should -BeExactly 'choice'
+            $dispatchInputs.authoringSource.options | Should -Be @('gallery', 'repo')
+            $dispatchInputs.authoringSource.default | Should -BeExactly 'gallery'
+            $dispatchInputs.authoringSource.required | Should -BeTrue
+            $dispatchInputs.authoringRef.type | Should -BeExactly 'string'
+            $dispatchInputs.authoringRef.required | Should -BeFalse
+            $dispatchInputs.authoringRef.ContainsKey('default') | Should -BeFalse
 
-                @($workflow.jobs.Keys) | Should -HaveCount 1
-                $job = $workflow.jobs.Values | Select-Object -First 1
-                $job.uses | Should -MatchExactly (
-                    '^Azure/azure-verified-modules-tools/\.github/workflows/' +
-                    [regex]::Escape($caller.Value) +
-                    '@[0-9a-f]{40}$'
-                )
-                $job.ContainsKey('with') | Should -BeTrue
-                @($job.with.Keys | Sort-Object) | Should -Be @('authoringRef', 'authoringSource')
-                $job.with.authoringSource | Should -BeExactly ('$' + '{{ inputs.authoringSource || ''gallery'' }}')
-                $job.with.authoringRef | Should -BeExactly ('$' + '{{ inputs.authoringRef || ' + "''" + ' }}')
-                $job.ContainsKey('steps') | Should -BeFalse
-                $job.ContainsKey('strategy') | Should -BeFalse
-                $job.uses
+            $authoringWith = if ($file -eq 'pr-check.yml') {
+                ($workflow.jobs.initialize.steps | Where-Object id -eq 'initialize').with
             }
-        )
-        $toolsRef = ($uses[0] -split '@')[-1]
-        $toolsRef | Should -MatchExactly '^[0-9a-f]{40}$'
-        @($uses | ForEach-Object { ($_ -split '@')[-1] } | Select-Object -Unique) | Should -Be @($toolsRef)
+            else {
+                $workflow.jobs.release.with
+            }
+            $authoringWith.authoringSource | Should -BeExactly ('$' + '{{ inputs.authoringSource || ''gallery'' }}')
+            $authoringWith.authoringRef | Should -BeExactly ('$' + '{{ inputs.authoringRef || ' + "''" + ' }}')
+
+            $references = @(
+                [regex]::Matches($content, '(?m)^\s*uses:\s*(Azure/azure-verified-modules-tools/[^\s]+)') |
+                    ForEach-Object { $_.Groups[1].Value }
+            )
+            @($references | Sort-Object) | Should -Be @($expectedReferences[$file] | Sort-Object)
+        }
     }
 
     It 'prevents automatic uses-only changes from diverging from tools-ref inputs' {

@@ -26,7 +26,7 @@ jobs:
     name: "Module release [EXPERIMENTAL]"
     permissions:
       contents: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@7379a19fe3ca4e97a602a6bc1d78a61be09d31e7
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@8bca18987ce8853e844f4e95f8cc309162ee7b40
     with:
       authoringSource: ${{ inputs.authoringSource || 'gallery' }}
       authoringRef: ${{ inputs.authoringRef || '' }}
