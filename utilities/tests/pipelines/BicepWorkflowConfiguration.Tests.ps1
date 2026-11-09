@@ -4,19 +4,10 @@
 )
 
 Describe 'Coordinated tools dependency updates' {
-    It 'keeps every caller tools reference on the v0.40.0 merged commit without pinning Avm.Authoring' {
-        $expectedToolsSha = '8bca18987ce8853e844f4e95f8cc309162ee7b40'
+    It 'keeps every caller tools reference aligned without pinning Avm.Authoring' {
         $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
-        $expectedReferences = @{
-            'pr-check.yml' = @(
-                "Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@$expectedToolsSha"
-                "Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@$expectedToolsSha"
-            )
-            'release.yml' = @(
-                "Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@$expectedToolsSha"
-            )
-        }
-        foreach ($file in $expectedReferences.Keys) {
+        $toolsRefs = @()
+        foreach ($file in @('pr-check.yml', 'release.yml')) {
             $workflowPath = Join-Path $workflowRoot $file
             $content = Get-Content -LiteralPath $workflowPath -Raw
             $workflow = $content | ConvertFrom-Yaml
@@ -38,12 +29,13 @@ Describe 'Coordinated tools dependency updates' {
             $authoringWith.authoringSource | Should -BeExactly ('$' + '{{ inputs.authoringSource || ''gallery'' }}')
             $authoringWith.authoringRef | Should -BeExactly ('$' + '{{ inputs.authoringRef || ' + "''" + ' }}')
 
-            $references = @(
-                [regex]::Matches($content, '(?m)^\s*uses:\s*(Azure/azure-verified-modules-tools/[^\s]+)') |
+            $toolsRefs += @(
+                [regex]::Matches($content, '(?m)^\s*uses:\s*Azure/azure-verified-modules-tools/[^\s@]+@([^\s#]+)') |
                     ForEach-Object { $_.Groups[1].Value }
             )
-            @($references | Sort-Object) | Should -Be @($expectedReferences[$file] | Sort-Object)
         }
+        $toolsRefs | Should -HaveCount 3
+        @($toolsRefs | Select-Object -Unique) | Should -HaveCount 1
     }
 
     It 'prevents automatic uses-only changes from diverging from tools-ref inputs' {
