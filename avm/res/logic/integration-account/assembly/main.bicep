@@ -81,4 +81,4 @@ output name string = assembly.name
 output resourceGroupName string = resourceGroup().name
 
 @description('The location of the integration account assembly.')
-output location string = assembly.location
+output location string = assembly.?location ?? location

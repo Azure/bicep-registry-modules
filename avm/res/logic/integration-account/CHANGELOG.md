@@ -7,7 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Marked assembly content as secure when forwarding it to the assembly child module.
-- Added resource-derived `location` outputs to the six published child modules to meet the existing repository validation convention.
+- Added `location` outputs to the six published child modules to meet the existing repository validation convention, falling back to the configured location when child GET responses omit it.
 
 ### Breaking Changes
 

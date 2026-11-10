@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "10790259053081037107"
+      "templateHash": "10498848423716798682"
     },
     "name": "Integration Account Assemblies",
     "description": "This module deploys an Integration Account Assembly."
@@ -149,7 +149,7 @@
       "metadata": {
         "description": "The location of the integration account assembly."
       },
-      "value": "[reference('assembly', '2019-05-01', 'full').location]"
+      "value": "[coalesce(tryGet(reference('assembly', '2019-05-01', 'full'), 'location'), parameters('location'))]"
     }
   }
 }

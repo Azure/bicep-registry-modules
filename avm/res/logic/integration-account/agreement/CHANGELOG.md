@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added the resource-derived `location` output to match the existing repository convention.
+- Added a `location` output with a fallback to the configured location when the child GET response omits it, matching the existing repository convention.
 
 ### Breaking Changes
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "12907110512832306805"
+      "templateHash": "5107592336531128412"
     },
     "name": "Integration Account Partners",
     "description": "This module deploys an Integration Account Partner."
@@ -147,7 +147,7 @@
       "metadata": {
         "description": "The location of the integration account partner."
       },
-      "value": "[reference('partner', '2019-05-01', 'full').location]"
+      "value": "[coalesce(tryGet(reference('partner', '2019-05-01', 'full'), 'location'), parameters('location'))]"
     }
   }
 }

@@ -91,4 +91,4 @@ output name string = schema.name
 output resourceGroupName string = resourceGroup().name
 
 @description('The location of the integration account schema.')
-output location string = schema.location
+output location string = schema.?location ?? location

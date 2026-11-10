@@ -89,4 +89,4 @@ output name string = map.name
 output resourceGroupName string = resourceGroup().name
 
 @description('The location of the integration account map.')
-output location string = map.location
+output location string = map.?location ?? location
