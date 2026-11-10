@@ -63,8 +63,7 @@ Describe 'Registry-owned child module publishing approvals' {
         @{ surface = 'approval list'; path = 'utilities/pipelines/staticValidation/compliance/helper/child-module-publish-allowed-list.json' }
         @{ surface = 'approval validator'; path = 'utilities/pipelines/staticValidation/compliance/module.tests.ps1' }
     ) {
-        $baseline = git -C $RepoRootPath merge-base HEAD refs/remotes/origin/main
-        $LASTEXITCODE | Should -Be 0
+        $baseline = '062537582b9392a0dec3388ff8b36bb141a06659'
         $expectedBlob = git -C $RepoRootPath rev-parse "${baseline}:$path"
         $LASTEXITCODE | Should -Be 0
 

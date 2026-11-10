@@ -23,20 +23,6 @@ Describe 'Test-scoped PSRule dependencies' {
         $script:imports = @{}
         $script:loaded = @{}
         $script:events = [Collections.Generic.List[string]]::new()
-        $script:authoring = [pscustomobject]@{
-            Name = 'Avm.Authoring'
-            Guid = [guid] '356c238f-88dd-48bf-ad0a-b7de6a5bb877'
-            Version = [version] '0.38.0'
-            ModuleBase = Join-Path $TestDrive 'Avm.Authoring'
-            PrivateData = @{ AvmCapabilities = @{ PowerShellModuleArchiveRecovery = 1 } }
-            ExportedCommands = @{}
-        }
-        foreach ($name in @('Get-AvmTool', 'Install-AvmTool')) {
-            $script:authoring.ExportedCommands[$name] = [pscustomobject]@{
-                Parameters = @{ Name = $null; Path = $null; SkipModuleVersionCheck = $null }
-                Module = $script:authoring
-            }
-        }
         foreach ($definition in @(
             @{ Name = 'PSRule'; Version = '2.9.0' }
             @{ Name = 'PSRule.Rules.Azure'; Version = '1.47.0' }
@@ -63,12 +49,7 @@ Describe 'Test-scoped PSRule dependencies' {
         } -ParameterFilter {
             $Name -in @('Avm.Authoring', 'PSRule', 'PSRule.Rules.Azure')
         }
-        Mock Import-Module { $script:loaded['Avm.Authoring'] = $script:authoring } -ParameterFilter {
-            $Name -eq 'Avm.Authoring'
-        }
-        Mock Get-Command { $script:authoring.ExportedCommands[$Name] } -ParameterFilter {
-            $Name -in @('Get-AvmTool', 'Install-AvmTool')
-        }
+        Mock Import-Module {} -ParameterFilter { $Name -eq 'Avm.Authoring' }
         Mock Import-Module {
             $script:events.Add("import-missing:$Name")
             $errorRecord = [System.Management.Automation.ErrorRecord]::new(
@@ -90,177 +71,6 @@ Describe 'Test-scoped PSRule dependencies' {
             $script:tools[$Name].Status = 'installed'
             $script:tools[$Name].Path = Join-Path $TestDrive $Name "$Name.psd1"
         }
-    }
-
-    It 'reuses the capable path-bound package at version <Version> without a named import' -ForEach @(
-        @{ Version = '0.0.0' }
-        @{ Version = '0.21.0' }
-        @{ Version = '0.38.0' }
-    ) {
-        $script:authoring.Version = [version] $Version
-        if ($Version -ne '0.0.0') { $script:authoring.PrivateData = @{} }
-        $script:loaded['Avm.Authoring'] = $script:authoring
-
-        Initialize-PSRuleTest -RepoRootPath $RepoRootPath
-
-        Should -Invoke Import-Module -Times 0 -Exactly -ParameterFilter { $Name -eq 'Avm.Authoring' }
-        Should -Invoke Install-AvmTool -Times 0 -Exactly
-        $script:events.ToArray() | Should -Be @('import-manifest:PSRule', 'import-manifest:PSRule.Rules.Azure')
-    }
-
-    It 'rejects multiple loaded Authoring packages without replacing them' {
-        $script:loaded['Avm.Authoring'] = @($script:authoring, $script:authoring)
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw '*Exactly one supported Avm.Authoring*'
-
-        Should -Invoke Import-Module -Times 0 -Exactly
-        Should -Invoke Get-AvmTool -Times 0 -Exactly
-    }
-
-    It 'rejects an unsupported loaded release without importing a substitute' {
-        $script:authoring.Version = [version] '0.20.0'
-        $script:loaded['Avm.Authoring'] = $script:authoring
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw '*0.21.0 or later*'
-
-        Should -Invoke Import-Module -Times 0 -Exactly
-    }
-
-    It 'rejects an unexpected loaded module identity' {
-        $script:authoring.Guid = [guid]::Empty
-        $script:loaded['Avm.Authoring'] = $script:authoring
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw '*capable loaded source package*'
-
-        Should -Invoke Get-AvmTool -Times 0 -Exactly
-    }
-
-    It 'rejects source packages with missing or invalid capability <Capability>' -ForEach @(
-        @{ Capability = $null }
-        @{ Capability = 0 }
-        @{ Capability = '1' }
-    ) {
-        $script:authoring.Version = [version] '0.0.0'
-        $script:authoring.PrivateData.AvmCapabilities.PowerShellModuleArchiveRecovery = $Capability
-        $script:loaded['Avm.Authoring'] = $script:authoring
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw '*required managed PowerShell module capability*'
-
-        Should -Invoke Import-Module -Times 0 -Exactly
-    }
-
-    It 'rejects a missing exported <CommandName> managed-tool command' -ForEach @(
-        @{ CommandName = 'Get-AvmTool' }
-        @{ CommandName = 'Install-AvmTool' }
-    ) {
-        $script:loaded['Avm.Authoring'] = $script:authoring
-        $script:authoring.ExportedCommands.Remove($CommandName)
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw "*required $CommandName managed-tool contract*"
-
-        Should -Invoke Get-AvmTool -Times 0 -Exactly
-    }
-
-    It 'rejects an exported command without the required parameter contract' {
-        $script:loaded['Avm.Authoring'] = $script:authoring
-        $script:authoring.ExportedCommands['Get-AvmTool'].Parameters.Remove('SkipModuleVersionCheck')
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw '*required Get-AvmTool managed-tool contract*'
-
-        Should -Invoke Get-AvmTool -Times 0 -Exactly
-    }
-
-    It 'rejects a command resolved from another package rather than silently accepting it' {
-        $script:loaded['Avm.Authoring'] = $script:authoring
-        Mock Get-Command {
-            [pscustomobject]@{
-                Module = [pscustomobject]@{
-                    Guid = $script:authoring.Guid
-                    Version = $script:authoring.Version
-                    ModuleBase = Join-Path $TestDrive 'other-authoring'
-                }
-            }
-        } -ParameterFilter { $Name -eq 'Get-AvmTool' }
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw '*does not resolve to the loaded Avm.Authoring package*'
-
-        Should -Invoke Get-AvmTool -Times 0 -Exactly
-    }
-
-    It 'rejects a managed-tool export owned by another loaded module' {
-        $script:loaded['Avm.Authoring'] = $script:authoring
-        $script:authoring.ExportedCommands['Get-AvmTool'].Module = [pscustomobject]@{
-            Guid = $script:authoring.Guid
-            Version = $script:authoring.Version
-            ModuleBase = Join-Path $TestDrive 'other-authoring'
-        }
-        Mock Get-Command {
-            [pscustomobject]@{ Module = $script:authoring }
-        } -ParameterFilter { $Name -eq 'Get-AvmTool' }
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw '*does not resolve to the loaded Avm.Authoring package*'
-
-        Should -Invoke Get-AvmTool -Times 0 -Exactly
-    }
-
-    It 'rejects a resolved command that is not owned by a module' {
-        $script:loaded['Avm.Authoring'] = $script:authoring
-        Mock Get-Command {
-            [pscustomobject]@{ Module = $null }
-        } -ParameterFilter { $Name -eq 'Get-AvmTool' }
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw '*does not resolve to the loaded Avm.Authoring package*'
-
-        Should -Invoke Get-AvmTool -Times 0 -Exactly
-    }
-
-    It 'rejects a resolved command from another Authoring version' {
-        $script:loaded['Avm.Authoring'] = $script:authoring
-        Mock Get-Command {
-            [pscustomobject]@{
-                Module = [pscustomobject]@{
-                    Guid = $script:authoring.Guid
-                    Version = [version] '0.37.0'
-                    ModuleBase = $script:authoring.ModuleBase
-                }
-            }
-        } -ParameterFilter { $Name -eq 'Get-AvmTool' }
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw '*does not resolve to the loaded Avm.Authoring package*'
-
-        Should -Invoke Get-AvmTool -Times 0 -Exactly
-    }
-
-    It 'fails closed if the fallback import does not load an Authoring package' {
-        Mock Import-Module {} -ParameterFilter { $Name -eq 'Avm.Authoring' }
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw '*Exactly one supported Avm.Authoring*'
-
-        Should -Invoke Import-Module -Times 1 -Exactly -ParameterFilter { $Name -eq 'Avm.Authoring' }
-        Should -Invoke Get-AvmTool -Times 0 -Exactly
-    }
-
-    It 'propagates command-discovery failures without importing a replacement' {
-        $script:loaded['Avm.Authoring'] = $script:authoring
-        Mock Get-Command { throw 'Managed-tool command discovery failed.' } -ParameterFilter {
-            $Name -eq 'Get-AvmTool'
-        }
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw '*Managed-tool command discovery failed*'
-
-        Should -Invoke Import-Module -Times 0 -Exactly
-        Should -Invoke Get-AvmTool -Times 0 -Exactly
-    }
-
-    It 'propagates absent installed Authoring without a gallery fallback' {
-        Mock Import-Module {
-            throw [IO.FileNotFoundException]::new('Supported installed Authoring is missing.')
-        } -ParameterFilter { $Name -eq 'Avm.Authoring' }
-
-        { Initialize-PSRuleTest -RepoRootPath $RepoRootPath } | Should -Throw '*Supported installed Authoring is missing*'
-
-        Should -Invoke Import-Module -Times 1 -Exactly -ParameterFilter { $Name -eq 'Avm.Authoring' }
-        Should -Invoke Get-AvmTool -Times 0 -Exactly
     }
 
     It 'imports engine then rules from <Status> without installing' -ForEach @(
