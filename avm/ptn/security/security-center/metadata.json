@@ -5,5 +5,5 @@
   "telemetryIdPrefix": "46d3xbcp.ptn.8191344",
   "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.security-securitycenter"],
   "canonicalType": "security/security-center",
-  "owners": ["@Azure/azure-landing-zone-owners"]
+  "owners": ["jtracey93"]
 }
