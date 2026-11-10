@@ -96,4 +96,4 @@ output name string = agreement.name
 output resourceGroupName string = resourceGroup().name
 
 @description('The location of the integration account agreement.')
-output location string = location
+output location string = agreement.?location ?? location
