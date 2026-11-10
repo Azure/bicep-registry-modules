@@ -242,28 +242,36 @@ module testDeployment '../../../main.bicep' = [
         {
           description: 'TestStringDescription'
           name: 'TestString'
+          // This literal exercises string serialization and contains no secret.
+          #disable-next-line use-secure-value-for-secure-inputs
           value: '\'TestString\''
         }
         {
           description: 'TestIntegerDescription'
           name: 'TestInteger'
+          // This literal exercises integer serialization and contains no secret.
+          #disable-next-line use-secure-value-for-secure-inputs
           value: '500'
         }
         {
           description: 'TestBooleanDescription'
           name: 'TestBoolean'
+          // This literal exercises boolean serialization and contains no secret.
+          #disable-next-line use-secure-value-for-secure-inputs
           value: 'false'
         }
         {
           description: 'TestDateTimeDescription'
           isEncrypted: false
           name: 'TestDateTime'
+          // This fixed timestamp exercises date serialization and contains no secret.
+          #disable-next-line use-secure-value-for-secure-inputs
           value: '\'\\/Date(1637934042656)\\/\''
         }
         {
           description: 'TestEncryptedDescription'
           name: 'TestEncryptedVariable'
-          value: '\'TestEncryptedValue\''
+          value: '\'${password}\''
         }
       ]
       webhooks: [

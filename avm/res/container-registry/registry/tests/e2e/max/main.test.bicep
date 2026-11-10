@@ -225,6 +225,8 @@ module testDeployment '../../../main.bicep' = [
       webhooks: [
         {
           name: '${namePrefix}acrx001webhook'
+          // This public example URL has no credentials or secret query parameters.
+          #disable-next-line use-secure-value-for-secure-inputs
           serviceUri: 'https://www.contoso.com/webhook'
         }
       ]

@@ -157,7 +157,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       caches: [
         {
-          connectionString: 'connectionstringtest'
+          connectionString: customSecret
           name: 'westeurope'
           useFromLocation: 'westeurope'
         }

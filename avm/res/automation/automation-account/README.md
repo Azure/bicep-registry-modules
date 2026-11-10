@@ -408,7 +408,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       {
         description: 'TestEncryptedDescription'
         name: 'TestEncryptedVariable'
-        value: '\'TestEncryptedValue\''
+        value: '<value>'
       }
     ]
     webhooks: [
@@ -684,7 +684,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         {
           "description": "TestEncryptedDescription",
           "name": "TestEncryptedVariable",
-          "value": "\"TestEncryptedValue\""
+          "value": "<value>"
         }
       ]
     },
@@ -920,7 +920,7 @@ param variables = [
   {
     description: 'TestEncryptedDescription'
     name: 'TestEncryptedVariable'
-    value: '\'TestEncryptedValue\''
+    value: '<value>'
   }
 ]
 param webhooks = [
@@ -1077,7 +1077,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       {
         description: 'TestEncryptedDescription'
         name: 'TestEncryptedVariable'
-        value: '\'TestEncryptedValue\''
+        value: '<value>'
       }
     ]
   }
@@ -1247,7 +1247,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         {
           "description": "TestEncryptedDescription",
           "name": "TestEncryptedVariable",
-          "value": "\"TestEncryptedValue\""
+          "value": "<value>"
         }
       ]
     }
@@ -1389,7 +1389,7 @@ param variables = [
   {
     description: 'TestEncryptedDescription'
     name: 'TestEncryptedVariable'
-    value: '\'TestEncryptedValue\''
+    value: '<value>'
   }
 ]
 ```

@@ -281,6 +281,8 @@ module testDeployment '../../../main.bicep' = [
             exp: 1725109032
             nbf: 10000
           }
+          // This content-type label is non-secret metadata, not the secret value.
+          #disable-next-line use-secure-value-for-secure-inputs
           contentType: 'Something'
           name: 'secretName'
           roleAssignments: [

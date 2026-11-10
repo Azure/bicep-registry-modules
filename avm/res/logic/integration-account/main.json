@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "16869460008624666470"
+      "version": "0.48.1.52935",
+      "templateHash": "14343960211414950010"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -304,7 +304,7 @@
           }
         },
         "content": {
-          "type": "string",
+          "type": "securestring",
           "metadata": {
             "description": "Required. The assembly content."
           }
@@ -999,8 +999,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "9150275448899157583"
+              "version": "0.48.1.52935",
+              "templateHash": "8552584247611324754"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys an Integration Account Partner."
@@ -1198,8 +1198,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "13764922380151911313"
+              "version": "0.48.1.52935",
+              "templateHash": "2882856314939695966"
             },
             "name": "Integration Account Schemas",
             "description": "This module deploys an Integration Account Schema."
@@ -1423,8 +1423,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "10022079303329624741"
+              "version": "0.48.1.52935",
+              "templateHash": "3174431627590517037"
             },
             "name": "Integration Account Maps",
             "description": "This module deploys an Integration Account Map."
@@ -1644,8 +1644,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "9856063483367444375"
+              "version": "0.48.1.52935",
+              "templateHash": "12558010180248043140"
             },
             "name": "Integration Account Assemblies",
             "description": "This module deploys an Integration Account Assembly."
@@ -1836,8 +1836,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "2070355690699208101"
+              "version": "0.48.1.52935",
+              "templateHash": "5907449398679782543"
             },
             "name": "Integration Account Certificates",
             "description": "This module deploys an Integration Account Certificate."
@@ -2037,8 +2037,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "9691666196958825207"
+              "version": "0.48.1.52935",
+              "templateHash": "859172797174826572"
             },
             "name": "Integration Account Agreements",
             "description": "This module deploys an Integration Account Agreement."

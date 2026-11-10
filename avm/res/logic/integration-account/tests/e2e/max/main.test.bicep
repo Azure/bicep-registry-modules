@@ -151,6 +151,8 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'assembly1'
           assemblyName: 'name1'
+          // This checked-in sample assembly is public test data, not a secret.
+          #disable-next-line use-secure-value-for-secure-inputs
           content: loadTextContent('assembly-content.txt')
         }
       ]

@@ -451,7 +451,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     caches: [
       {
-        connectionString: 'connectionstringtest'
+        connectionString: '<connectionString>'
         name: 'westeurope'
         useFromLocation: 'westeurope'
       }
@@ -797,7 +797,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               'max-test'
               'test'
             ]
-            value: 'workspace-secret-value'
+            value: '<value>'
           }
         ]
         policies: [
@@ -1044,7 +1044,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "caches": {
       "value": [
         {
-          "connectionString": "connectionstringtest",
+          "connectionString": "<connectionString>",
           "name": "westeurope",
           "useFromLocation": "westeurope"
         }
@@ -1428,7 +1428,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
                 "max-test",
                 "test"
               ],
-              "value": "workspace-secret-value"
+              "value": "<value>"
             }
           ],
           "policies": [
@@ -1657,7 +1657,7 @@ param backends = [
 ]
 param caches = [
   {
-    connectionString: 'connectionstringtest'
+    connectionString: '<connectionString>'
     name: 'westeurope'
     useFromLocation: 'westeurope'
   }
@@ -2003,7 +2003,7 @@ param workspaces = [
           'max-test'
           'test'
         ]
-        value: 'workspace-secret-value'
+        value: '<value>'
       }
     ]
     policies: [
@@ -2224,7 +2224,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     caches: [
       {
-        connectionString: 'connectionstringtest'
+        connectionString: '<connectionString>'
         name: 'westeurope'
         useFromLocation: 'westeurope'
       }
@@ -2498,7 +2498,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "caches": {
       "value": [
         {
-          "connectionString": "connectionstringtest",
+          "connectionString": "<connectionString>",
           "name": "westeurope",
           "useFromLocation": "westeurope"
         }
@@ -2786,7 +2786,7 @@ param backends = [
 ]
 param caches = [
   {
-    connectionString: 'connectionstringtest'
+    connectionString: '<connectionString>'
     name: 'westeurope'
     useFromLocation: 'westeurope'
   }
@@ -3076,7 +3076,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     caches: [
       {
-        connectionString: 'connectionstringtest'
+        connectionString: '<connectionString>'
         name: 'westeurope'
         useFromLocation: 'westeurope'
       }
@@ -3311,7 +3311,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "caches": {
       "value": [
         {
-          "connectionString": "connectionstringtest",
+          "connectionString": "<connectionString>",
           "name": "westeurope",
           "useFromLocation": "westeurope"
         }
@@ -3556,7 +3556,7 @@ param backends = [
 ]
 param caches = [
   {
-    connectionString: 'connectionstringtest'
+    connectionString: '<connectionString>'
     name: 'westeurope'
     useFromLocation: 'westeurope'
   }

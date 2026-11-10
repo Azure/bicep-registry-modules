@@ -1173,6 +1173,28 @@ function Build-OrderedJSONObject {
     return $jsonExample
 }
 
+function Remove-BicepDiagnosticDirectives {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string] $BicepParamBlock
+    )
+
+    # As with inline-comment removal below, match literals before removing syntax.
+    # Triple-quoted strings and comments can contain lines that look like directives.
+    $pattern = @'
+'''[\s\S]*?'''|'(?:\\.|[^'\\\r\n])*'|//[^\r\n]*|/\*[\s\S]*?\*/|(?<directive>^[\t ]*#disable-next-line\b[^\r\n]*(?:\r?\n|$))
+'@
+    return [regex]::Replace($BicepParamBlock, $pattern, {
+            param($match)
+            if ($match.Groups['directive'].Success) {
+                return ''
+            }
+            return $match.Value
+        }, [System.Text.RegularExpressions.RegexOptions]::Multiline)
+}
+
 <#
 .SYNOPSIS
 Convert the given Bicep parameter block to JSON parameter block
@@ -1215,6 +1237,9 @@ function ConvertTo-FormattedJSONParameterObject {
         # Case: No mandatory parameters
         return @{}
     }
+
+    # Diagnostic directives belong to the test source, not the generated usage example.
+    $BicepParamBlock = Remove-BicepDiagnosticDirectives -BicepParamBlock $BicepParamBlock
 
     # [1/4] Detect top level params for later processing
     $bicepParamBlockArray = $BicepParamBlock -split '\n'
