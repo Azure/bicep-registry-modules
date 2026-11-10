@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/product/CHANGELOG.md).
 
+## 0.2.4
+
+### Changes
+
+- Recompiled the template with Bicep version `0.48.1.52935`
+
+### Breaking Changes
+
+- None
+
 ## 0.2.3
 
 ### Changes
