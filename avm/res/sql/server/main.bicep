@@ -387,6 +387,9 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
       zoneRedundant: elasticPool.?zoneRedundant
       enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      server_encryptionProtector
+    ]
   }
 ]
 

@@ -16,6 +16,8 @@ Describe 'Kusto fixture regional SKU eligibility' {
         @{ fixture = 'waf-aligned'; diskEncryption = $true; doubleEncryption = $true; privateNetwork = $true }
         @{ fixture = 'max'; diskEncryption = $true; doubleEncryption = $true; privateNetwork = $false }
         @{ fixture = 'pe'; diskEncryption = $false; doubleEncryption = $false; privateNetwork = $true }
+        @{ fixture = 'cmk-sami'; diskEncryption = $false; doubleEncryption = $false; privateNetwork = $false }
+        @{ fixture = 'cmk-uami'; diskEncryption = $false; doubleEncryption = $false; privateNetwork = $false }
     ) {
         BeforeAll {
             $path = Join-Path $PSScriptRoot '..' 'e2e' $fixture 'main.test.bicep'
@@ -57,7 +59,7 @@ Describe 'Kusto fixture regional SKU eligibility' {
             @($inputs.Keys | Where-Object { $_ -match 'ignore|skip' }) | Should -HaveCount 0
         }
 
-        It 'Preserves disk and double encryption with the existing user-assigned identity' {
+        It 'Preserves encryption settings and the configured identity' {
             foreach ($setting in @(
                 @{ name = 'enableDiskEncryption'; expected = $diskEncryption }
                 @{ name = 'enableDoubleEncryption'; expected = $doubleEncryption }
@@ -70,6 +72,18 @@ Describe 'Kusto fixture regional SKU eligibility' {
             if ($diskEncryption) {
                 $inputs.managedIdentities.value.userAssignedResourceIds | Should -HaveCount 1
                 $inputs.managedIdentities.value.userAssignedResourceIds[0] | Should -Match 'managedIdentityResourceId'
+            }
+            if ($fixture -like 'cmk-*') {
+                $inputs.customerManagedKey.value.keyName | Should -Not -BeNullOrEmpty
+                $inputs.customerManagedKey.value.keyVaultResourceId | Should -Not -BeNullOrEmpty
+                if ($fixture -eq 'cmk-sami') {
+                    $inputs.managedIdentities.value.systemAssigned | Should -BeTrue
+                    $inputs.customerManagedKey.value.Contains('userAssignedIdentityResourceId') | Should -BeFalse
+                } else {
+                    $inputs.managedIdentities.value.userAssignedResourceIds | Should -HaveCount 1
+                    $inputs.customerManagedKey.value.userAssignedIdentityResourceId |
+                        Should -BeExactly $inputs.managedIdentities.value.userAssignedResourceIds[0]
+                }
             }
         }
 

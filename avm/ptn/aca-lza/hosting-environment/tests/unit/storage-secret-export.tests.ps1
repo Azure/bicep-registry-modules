@@ -20,6 +20,17 @@ Describe 'ACA storage secret export compatibility' {
         $secretCall = $secretCalls[0]
         $storageTemplate = $storageCall.properties.template
         $secretTemplate = $secretCall.properties.template
+        $compiledHelpers = @{}
+        foreach ($helper in @(
+            @{ name = 'root'; path = 'main.bicep' }
+            @{ name = 'certificate'; path = 'modules\application-gateway\app-gateway-cert.bicep' }
+        )) {
+            $outputPath = Join-Path $TestDrive "$($helper.name).json"
+            $sourcePath = Join-Path $PSScriptRoot '..' '..' $helper.path
+            $diagnostics = bicep build $sourcePath --no-restore --outfile $outputPath 2>&1
+            if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+            $compiledHelpers[$helper.name] = Get-Content $outputPath -Raw | ConvertFrom-Json -AsHashtable -Depth 100
+        }
     }
 
     It 'Exports the same first storage key with the unchanged listKeys API and secret name' {
@@ -124,13 +135,18 @@ Describe 'ACA storage secret export compatibility' {
         $secretTemplate.resources.avmTelemetry.name | Should -Match "replace\('0\.1\.1', '\.', '-'\)"
     }
 
-    It 'Preserves storage network, share, diagnostic and tag inputs' {
+    It 'Allows only the deployment subnet and trusted services while preserving private endpoints and other storage inputs' {
         $parameters = $storageCall.properties.parameters
         $parameters.kind.value | Should -BeExactly 'StorageV2'
         $parameters.skuName.value | Should -BeExactly 'Standard_ZRS'
-        $parameters.publicNetworkAccess.value | Should -BeExactly 'Disabled'
+        $parameters.publicNetworkAccess.value | Should -BeExactly 'Enabled'
+        $parameters.allowSharedKeyAccess.value | Should -BeTrue
         $parameters.networkAcls.value.bypass | Should -BeExactly 'AzureServices'
         $parameters.networkAcls.value.defaultAction | Should -BeExactly 'Deny'
+        $parameters.networkAcls.value.virtualNetworkRules | Should -HaveCount 1
+        $parameters.networkAcls.value.virtualNetworkRules[0].id | Should -BeExactly "[parameters('deploymentSubnetResourceId')]"
+        $parameters.networkAcls.value.virtualNetworkRules[0].action | Should -BeExactly 'Allow'
+        @($parameters.networkAcls.value.Keys | Sort-Object) | Should -Be @('bypass', 'defaultAction', 'virtualNetworkRules')
         $parameters.fileServices.value.shares | Should -BeExactly "[variables('shares')]"
         $parameters.privateEndpoints.value.Count | Should -Be 1
         $parameters.privateEndpoints.value[0].service | Should -BeExactly 'file'
@@ -144,7 +160,7 @@ Describe 'ACA storage secret export compatibility' {
 
     It 'Preserves the helper public inputs and outputs without exposing export internals' {
         @($template.parameters.Keys | Sort-Object) | Should -Be @(
-            'diagnosticSettingsName', 'diagnosticWorkspaceId', 'enableTelemetry', 'hubVNetResourceId',
+            'deploymentSubnetResourceId', 'diagnosticSettingsName', 'diagnosticWorkspaceId', 'enableTelemetry', 'hubVNetResourceId',
             'keyVaultResourceId', 'location', 'spokePrivateEndpointSubnetResourceId', 'spokeVNetResourceId',
             'storageAccountName', 'storagePrivateEndpointName', 'storageShares', 'tags'
         )
@@ -153,5 +169,41 @@ Describe 'ACA storage secret export compatibility' {
         )
         $template.outputs.containerAppsEnvironmentStorage.value | Should -BeExactly "[variables('storageShare')]"
         $template.variables.storageShare | Should -BeExactly 'smbfileshare'
+    }
+
+    It 'Forwards the actual deployment subnet through both supporting-services callers' {
+        $root = $compiledHelpers.root
+        $rootResources = $root.resources -is [Collections.IDictionary] ? @($root.resources.Values) : @($root.resources)
+        $supporting = @($rootResources | Where-Object { $_.name -match 'deploy-supportingServices-' })
+        $supporting | Should -HaveCount 1
+        $supporting[0].properties.parameters.deploymentSubnetResourceId.value |
+            Should -Match '\.outputs\.deploymentSubnetResourceId\.value\]$'
+        $supportingTemplate = $supporting[0].properties.template
+        $calls = $supportingTemplate.resources -is [Collections.IDictionary] ?
+            @($supportingTemplate.resources.Values) : @($supportingTemplate.resources)
+        $storageWrapper = @($calls | Where-Object { $_.name -match "format\('storage-" })
+        $storageWrapper | Should -HaveCount 1
+        $storageWrapper[0].properties.parameters.deploymentSubnetResourceId.value |
+            Should -BeExactly "[parameters('deploymentSubnetResourceId')]"
+    }
+
+    It 'Waits for the existing Key Vault writer and storage roles before generating the certificate' {
+        $certificate = $compiledHelpers.certificate
+        $certificateResources = $certificate.resources -is [Collections.IDictionary] ?
+            @($certificate.resources.Values) : @($certificate.resources)
+        $scripts = @($certificateResources | Where-Object type -EQ 'Microsoft.Resources/deploymentScripts')
+        $scripts | Should -HaveCount 1
+        $dependencies = $scripts[0].dependsOn -join ';'
+        $roles = @($certificateResources | Where-Object type -EQ 'Microsoft.Authorization/roleAssignments')
+        $roles | Should -HaveCount 3
+        foreach ($expected in @(
+            @{ id = '00482a5a-887f-4fb3-b363-3b7fe8e74483'; symbol = 'selfSignedCertManagedIdentityRoleAssignment' }
+            @{ id = '69566ab7-960f-475b-8e7c-b3118f30c6bd'; symbol = 'storageRoleAssignment' }
+        )) {
+            $role = @($roles | Where-Object { $_.properties.roleDefinitionId -match $expected.id })
+            $role | Should -HaveCount 1
+            $roleName = $role[0].name.TrimStart('[').TrimEnd(']')
+            $dependencies | Should -Match ([regex]::Escape($roleName) + '|' + $expected.symbol)
+        }
     }
 }

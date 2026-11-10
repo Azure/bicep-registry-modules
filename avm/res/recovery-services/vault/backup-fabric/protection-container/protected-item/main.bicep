@@ -86,4 +86,4 @@ output resourceId string = protectedItem.id
 output name string = protectedItem.name
 
 @description('The location of the protected item.')
-output location string = protectedItem.location
+output location string = protectedItem.?location ?? location

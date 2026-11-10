@@ -38,6 +38,22 @@ Describe 'Private analytical workspace Databricks verification' {
         if (-not $privateEndpointStatements.Count) { throw 'Expected the real private endpoint assertions.' }
         $privateEndpointAssertions = [scriptblock]::Create(
             ($privateEndpointStatements.Extent.Text -join [Environment]::NewLine))
+        $configuredProperties = @(
+            'CustomPrivateSubnetNameType', 'CustomPrivateSubnetNameValue',
+            'CustomPublicSubnetNameType', 'CustomPublicSubnetNameValue',
+            'CustomVirtualNetworkIdType', 'CustomVirtualNetworkIdValue',
+            'EnableNoPublicIP', 'EnableNoPublicIPType',
+            'PrepareEncryption', 'PrepareEncryptionType',
+            'RequireInfrastructureEncryption', 'RequireInfrastructureEncryptionType',
+            'VnetAddressPrefixType', 'VnetAddressPrefixValue'
+        )
+        $configuredStatements = @($helper[0].Body.FindAll({
+                    param($node)
+                    $node -is [System.Management.Automation.Language.PipelineAst] -and
+                    $node.Extent.Text -match ('^\$adb\.(' + ($configuredProperties -join '|') + ')\s+\|')
+                }, $true))
+        if ($configuredStatements.Count -lt 7) { throw 'Expected all configured Databricks value assertions.' }
+        $configuredAssertions = [scriptblock]::Create($configuredStatements.Extent.Text -join [Environment]::NewLine)
         $compiledPath = Join-Path $TestDrive 'private-analytical-workspace.json'
         $diagnostics = bicep build (Join-Path $modulePath 'main.bicep') --no-restore --outfile $compiledPath 2>&1
         if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
@@ -58,6 +74,37 @@ Describe 'Private analytical workspace Databricks verification' {
         $workspaceParameters.prepareEncryption.value | Should -BeTrue
         @($workspaceParameters.Keys | Where-Object { $_ -match '^(customerManagedKey|encryption)' }).Count |
             Should -Be 0
+    }
+
+    It 'Checks the real configured values for <scenario> without optional type metadata' -ForEach @(
+        @{ scenario = 'value-only response'; propertyName = ''; invalidValue = $null; accepted = $true }
+        @{ scenario = 'wrong private subnet'; propertyName = 'CustomPrivateSubnetNameValue'; invalidValue = 'other'; accepted = $false }
+        @{ scenario = 'wrong public subnet'; propertyName = 'CustomPublicSubnetNameValue'; invalidValue = 'other'; accepted = $false }
+        @{ scenario = 'wrong VNet'; propertyName = 'CustomVirtualNetworkIdValue'; invalidValue = 'other'; accepted = $false }
+        @{ scenario = 'public IP enabled'; propertyName = 'EnableNoPublicIP'; invalidValue = $false; accepted = $false }
+        @{ scenario = 'encryption preparation disabled'; propertyName = 'PrepareEncryption'; invalidValue = $false; accepted = $false }
+        @{ scenario = 'unexpected infrastructure encryption'; propertyName = 'RequireInfrastructureEncryption'; invalidValue = $true; accepted = $false }
+        @{ scenario = 'wrong address prefix'; propertyName = 'VnetAddressPrefixValue'; invalidValue = '10.140'; accepted = $false }
+    ) {
+        Set-StrictMode -Version 3.0
+        $PrivateSubnetName = 'private-subnet'
+        $PublicSubnetName = 'public-subnet'
+        $VirtualNetworkResourceId = 'virtual-network-id'
+        $adb = [pscustomobject]@{
+            CustomPrivateSubnetNameValue = $PrivateSubnetName
+            CustomPublicSubnetNameValue = $PublicSubnetName
+            CustomVirtualNetworkIdValue = $VirtualNetworkResourceId
+            EnableNoPublicIP = $true
+            PrepareEncryption = $true
+            RequireInfrastructureEncryption = $false
+            VnetAddressPrefixValue = '10.139'
+        }
+        if ($propertyName) { $adb.$propertyName = $invalidValue }
+        if ($accepted) {
+            { . $configuredAssertions } | Should -Not -Throw
+        } else {
+            { . $configuredAssertions } | Should -Throw
+        }
     }
 
     It 'Leaves managed-VNet public-IP naming unset for the VNet-injected no-public-IP workspace' {

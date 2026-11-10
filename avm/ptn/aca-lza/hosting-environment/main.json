@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "13381984748126204571"
+      "templateHash": "5340847728378816548"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework"
@@ -1085,7 +1085,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.48.1.52935",
-              "templateHash": "7007387119052176942"
+              "templateHash": "7939395887114241123"
             }
           },
           "parameters": {
@@ -1569,7 +1569,7 @@
                   "addressPrefixes": {
                     "value": "[parameters('spokeVNetAddressPrefixes')]"
                   },
-                  "subnets": "[if(not(equals(parameters('vmJumpboxOSType'), 'none')), createObject('value', concat(if(not(empty(parameters('spokeApplicationGatewaySubnetAddressPrefix'))), concat(createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[0].deploymentName), '2025-04-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, null()), 'delegation', 'Microsoft.App/environments'), createObject('name', parameters('deploymentSubnetName'), 'addressPrefix', parameters('deploymentSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[3].deploymentName), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.ContainerInstance/containerGroups'), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[2].deploymentName), '2025-04-01').outputs.resourceId.value)), createArray(createObject('name', parameters('spokeApplicationGatewaySubnetName'), 'addressPrefix', parameters('spokeApplicationGatewaySubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[1].deploymentName), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.Network/applicationGateways'))), createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[0].deploymentName), '2025-04-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, null()), 'delegation', 'Microsoft.App/environments'), createObject('name', parameters('deploymentSubnetName'), 'addressPrefix', parameters('deploymentSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[3].deploymentName), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.ContainerInstance/containerGroups'), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[2].deploymentName), '2025-04-01').outputs.resourceId.value))), createArray(createObject('name', parameters('vmSubnetName'), 'addressPrefix', parameters('vmJumpBoxSubnetAddressPrefix'))))), if(not(empty(parameters('spokeApplicationGatewaySubnetAddressPrefix'))), createObject('value', concat(createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[0].deploymentName), '2025-04-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, null()), 'delegation', 'Microsoft.App/environments'), createObject('name', parameters('deploymentSubnetName'), 'addressPrefix', parameters('deploymentSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[3].deploymentName), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.ContainerInstance/containerGroups'), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[2].deploymentName), '2025-04-01').outputs.resourceId.value)), createArray(createObject('name', parameters('spokeApplicationGatewaySubnetName'), 'addressPrefix', parameters('spokeApplicationGatewaySubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[1].deploymentName), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.Network/applicationGateways')))), createObject('value', createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[0].deploymentName), '2025-04-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, null()), 'delegation', 'Microsoft.App/environments'), createObject('name', parameters('deploymentSubnetName'), 'addressPrefix', parameters('deploymentSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[3].deploymentName), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.ContainerInstance/containerGroups'), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[2].deploymentName), '2025-04-01').outputs.resourceId.value)))))]",
+                  "subnets": "[if(not(equals(parameters('vmJumpboxOSType'), 'none')), createObject('value', concat(if(not(empty(parameters('spokeApplicationGatewaySubnetAddressPrefix'))), concat(createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[0].deploymentName), '2025-04-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, null()), 'delegation', 'Microsoft.App/environments'), createObject('name', parameters('deploymentSubnetName'), 'addressPrefix', parameters('deploymentSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[3].deploymentName), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.ContainerInstance/containerGroups', 'serviceEndpoints', createArray(createObject('service', 'Microsoft.Storage'))), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[2].deploymentName), '2025-04-01').outputs.resourceId.value)), createArray(createObject('name', parameters('spokeApplicationGatewaySubnetName'), 'addressPrefix', parameters('spokeApplicationGatewaySubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[1].deploymentName), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.Network/applicationGateways'))), createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[0].deploymentName), '2025-04-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, null()), 'delegation', 'Microsoft.App/environments'), createObject('name', parameters('deploymentSubnetName'), 'addressPrefix', parameters('deploymentSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[3].deploymentName), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.ContainerInstance/containerGroups', 'serviceEndpoints', createArray(createObject('service', 'Microsoft.Storage'))), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[2].deploymentName), '2025-04-01').outputs.resourceId.value))), createArray(createObject('name', parameters('vmSubnetName'), 'addressPrefix', parameters('vmJumpBoxSubnetAddressPrefix'))))), if(not(empty(parameters('spokeApplicationGatewaySubnetAddressPrefix'))), createObject('value', concat(createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[0].deploymentName), '2025-04-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, null()), 'delegation', 'Microsoft.App/environments'), createObject('name', parameters('deploymentSubnetName'), 'addressPrefix', parameters('deploymentSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[3].deploymentName), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.ContainerInstance/containerGroups', 'serviceEndpoints', createArray(createObject('service', 'Microsoft.Storage'))), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[2].deploymentName), '2025-04-01').outputs.resourceId.value)), createArray(createObject('name', parameters('spokeApplicationGatewaySubnetName'), 'addressPrefix', parameters('spokeApplicationGatewaySubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[1].deploymentName), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.Network/applicationGateways')))), createObject('value', createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[0].deploymentName), '2025-04-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, null()), 'delegation', 'Microsoft.App/environments'), createObject('name', parameters('deploymentSubnetName'), 'addressPrefix', parameters('deploymentSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[3].deploymentName), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.ContainerInstance/containerGroups', 'serviceEndpoints', createArray(createObject('service', 'Microsoft.Storage'))), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', variables('nsgConfigurations')[2].deploymentName), '2025-04-01').outputs.resourceId.value)))))]",
                   "peerings": "[if(not(empty(parameters('hubVNetId'))), createObject('value', createArray(createObject('allowForwardedTraffic', true(), 'allowGatewayTransit', false(), 'allowVirtualNetworkAccess', true(), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringEnabled', true(), 'remotePeeringName', 'spokeToHub', 'remoteVirtualNetworkResourceId', parameters('hubVNetId'), 'useRemoteGateways', false()))), createObject('value', null()))]"
                 },
                 "template": {
@@ -17591,6 +17591,9 @@
           "spokePrivateEndpointSubnetResourceId": {
             "value": "[reference('spoke').outputs.spokePrivateEndpointsSubnetResourceId.value]"
           },
+          "deploymentSubnetResourceId": {
+            "value": "[reference('spoke').outputs.deploymentSubnetResourceId.value]"
+          },
           "spokeVNetResourceId": {
             "value": "[reference('spoke').outputs.spokeVNetId.value]"
           },
@@ -17614,7 +17617,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.48.1.52935",
-              "templateHash": "15549061372385537071"
+              "templateHash": "3157087265501308837"
             }
           },
           "parameters": {
@@ -17659,6 +17662,12 @@
               "type": "string",
               "metadata": {
                 "description": "The resource id of the existing subnet in the spoke virtual network to which the private endpoint will be connected."
+              }
+            },
+            "deploymentSubnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the deployment-script subnet."
               }
             },
             "logAnalyticsWorkspaceId": {
@@ -31670,6 +31679,9 @@
                   "spokePrivateEndpointSubnetResourceId": {
                     "value": "[parameters('spokePrivateEndpointSubnetResourceId')]"
                   },
+                  "deploymentSubnetResourceId": {
+                    "value": "[parameters('deploymentSubnetResourceId')]"
+                  },
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('logAnalyticsWorkspaceId')]"
                   }
@@ -31681,7 +31693,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.48.1.52935",
-                      "templateHash": "10883200140385727713"
+                      "templateHash": "1704845376799907341"
                     }
                   },
                   "parameters": {
@@ -31733,6 +31745,12 @@
                       "type": "string",
                       "metadata": {
                         "description": "The resource id of the subnet in the VNet to which the private endpoint will be connected."
+                      }
+                    },
+                    "deploymentSubnetResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the deployment-script subnet."
                       }
                     },
                     "storagePrivateEndpointName": {
@@ -31795,12 +31813,21 @@
                             "value": "[parameters('storageAccountName')]"
                           },
                           "publicNetworkAccess": {
-                            "value": "Disabled"
+                            "value": "Enabled"
+                          },
+                          "allowSharedKeyAccess": {
+                            "value": true
                           },
                           "networkAcls": {
                             "value": {
                               "bypass": "AzureServices",
-                              "defaultAction": "Deny"
+                              "defaultAction": "Deny",
+                              "virtualNetworkRules": [
+                                {
+                                  "id": "[parameters('deploymentSubnetResourceId')]",
+                                  "action": "Allow"
+                                }
+                              ]
                             }
                           },
                           "fileServices": {
@@ -48193,7 +48220,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.48.1.52935",
-              "templateHash": "14253936802294921109"
+              "templateHash": "11050105129036835853"
             }
           },
           "parameters": {
@@ -48823,7 +48850,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.48.1.52935",
-                      "templateHash": "13234966255371518635"
+                      "templateHash": "9666317755170386255"
                     }
                   },
                   "parameters": {
@@ -48953,7 +48980,9 @@
                       },
                       "dependsOn": [
                         "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), 'Microsoft.Authorization/roleAssignments', guid(subscription().id, resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), parameters('appGatewayUserAssignedIdentityPrincipalId'), 'KeyVaultSecretUser'))]",
-                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location'))))]"
+                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location'))))]",
+                        "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), 'Microsoft.Authorization/roleAssignments', guid(resourceGroup().id, parameters('keyVaultName'), 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location'))))))]",
+                        "[extensionResourceId(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), 'Microsoft.Authorization/roleAssignments', guid(resourceGroup().id, parameters('storageAccountName'), 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location'))))))]"
                       ]
                     },
                     {

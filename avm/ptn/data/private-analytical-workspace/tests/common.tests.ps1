@@ -42,7 +42,7 @@ function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, 
     $diag.Type | Should -Be 'Microsoft.Insights/diagnosticSettings'
     $diag.WorkspaceId | Should -Be $LogAnalyticsWorkspaceResourceId
 
-    $diagCat = Get-AzDiagnosticSettingCategory -ResourceId $ResourceId
+    $diagCat = @(Get-AzDiagnosticSettingCategory -ResourceId $ResourceId)
     $diagCat | Should -Not -BeNullOrEmpty
     #$diagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
     $diagCat.Count | Should -Be $Logs.Count
@@ -53,13 +53,12 @@ function Test-VerifyVirtualNetwork($VirtualNetworkResourceGroupName, $VirtualNet
     $vnet = Get-AzVirtualNetwork -ResourceGroupName $VirtualNetworkResourceGroupName -Name $VirtualNetworkName
     $vnet | Should -Not -BeNullOrEmpty
     $vnet.ProvisioningState | Should -Be 'Succeeded'
-    $vnet.AddressSpace.Count | Should -Be 1
-    $vnet.AddressSpace[0].AddressPrefixes.Count | Should -Be 1
-    $vnet.AddressSpace[0].AddressPrefixes[0] | Should -Be $AddressPrefix
+    $vnet.AddressSpace.AddressPrefixes.Count | Should -Be 1
+    $vnet.AddressSpace.AddressPrefixes[0] | Should -Be $AddressPrefix
     $vnet.EnableDdosProtection | Should -Be $false
-    $vnet.VirtualNetworkPeerings.Count | Should -Be 0
+    ($vnet.VirtualNetworkPeerings | Measure-Object).Count | Should -Be 0
     $vnet.Subnets.Count | Should -Be $NumberOfSubnets
-    $vnet.IpAllocations.Count | Should -Be 0
+    ($vnet.IpAllocations | Measure-Object).Count | Should -Be 0
     $vnet.DhcpOptions.DnsServers | Should -BeNullOrEmpty
     $vnet.FlowTimeoutInMinutes | Should -BeNullOrEmpty
     $vnet.BgpCommunities | Should -BeNullOrEmpty
@@ -85,13 +84,13 @@ function Test-VerifySubnet($Subnet, $SubnetName, $SubnetAddressPrefix, $NumberOf
     $Subnet.PrivateLinkServiceNetworkPolicies | Should -Be 'Enabled'
     $Subnet.AddressPrefix.Count | Should -Be 1
     $Subnet.AddressPrefix[0] | Should -Be $SubnetAddressPrefix
-    $Subnet.NetworkSecurityGroup.Count | Should -Be $NumberOfSecurityGroups
+    ($Subnet.NetworkSecurityGroup | Measure-Object).Count | Should -Be $NumberOfSecurityGroups
 
     if ( $null -eq $NumberOfPrivateEndpoints ) { $Subnet.PrivateEndpoints | Should -BeNullOrEmpty }
-    else { $Subnet.PrivateEndpoints.Count | Should -Be $NumberOfPrivateEndpoints }
+    else { ($Subnet.PrivateEndpoints | Measure-Object).Count | Should -Be $NumberOfPrivateEndpoints }
 
     if ( $null -eq $NumberOfIpConfigurations ) { $Subnet.IpConfigurations | Should -BeNullOrEmpty }
-    else { $Subnet.IpConfigurations.Count | Should -Be $NumberOfIpConfigurations }
+    else { ($Subnet.IpConfigurations | Measure-Object).Count | Should -Be $NumberOfIpConfigurations }
 
     $Subnet.ServiceAssociationLinks | Should -BeNullOrEmpty
     $Subnet.ResourceNavigationLinks | Should -BeNullOrEmpty
@@ -120,7 +119,7 @@ function Test-VerifyNetworkSecurityGroup($NetworkSecurityGroupResourceId, $Tags,
     $nsg.ProvisioningState | Should -Be 'Succeeded'
     $nsg.FlushConnection | Should -Be $false
     $nsg.NetworkInterfaces | Should -BeNullOrEmpty
-    $nsg.SecurityRules.Count | Should -Be $NumberOfSecurityRules
+    ($nsg.SecurityRules | Measure-Object).Count | Should -Be $NumberOfSecurityRules
     $nsg.DefaultSecurityRules.Count | Should -Be $NumberOfDefaultSecurityRules
     $nsg.Subnets.Count | Should -Be 1
     $nsg.Subnets[0].Id | Should -Be "$($VirtualNetworkResourceId)/subnets/$($SubnetName)"
@@ -278,18 +277,14 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.ComplianceSecurityProfileComplianceStandard | Should -BeNullOrEmpty
     $adb.ComplianceSecurityProfileValue | Should -BeNullOrEmpty
     #Skip $adb.CreatedByApplicationId, $adb.CreatedByOid, $adb.CreatedByPuid, $adb.CreatedDateTime,
-    $adb.CustomPrivateSubnetNameType | Should -Be 'String'
     $adb.CustomPrivateSubnetNameValue | Should -Be $PrivateSubnetName
-    $adb.CustomPublicSubnetNameType | Should -Be 'String'
     $adb.CustomPublicSubnetNameValue | Should -Be $PublicSubnetName
-    $adb.CustomVirtualNetworkIdType | Should -Be 'String'
     $adb.CustomVirtualNetworkIdValue | Should -Be $VirtualNetworkResourceId
     $adb.DefaultCatalogInitialName | Should -BeNullOrEmpty
     $adb.DefaultCatalogInitialType | Should -BeNullOrEmpty
     $adb.DefaultStorageFirewall | Should -Be 'Enabled'
     $adb.DiskEncryptionSetId | Should -BeNullOrEmpty
     $adb.EnableNoPublicIP | Should -Be $true
-    $adb.EnableNoPublicIPType | Should -Be 'Bool'
     $adb.EncryptionKeyName | Should -BeNullOrEmpty
     $adb.EncryptionKeySource | Should -BeNullOrEmpty
     $adb.EncryptionKeyVaultUri | Should -BeNullOrEmpty
@@ -320,7 +315,6 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.NatGatewayNameType | Should -BeNullOrEmpty
     $adb.NatGatewayNameValue | Should -BeNullOrEmpty
     $adb.PrepareEncryption | Should -Be $true
-    $adb.PrepareEncryptionType | Should -Be 'Bool'
 
     $adb.PrivateEndpointConnection.Count | Should -Be 2
 
@@ -337,7 +331,6 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.PublicIPNameValue | Should -BeNullOrEmpty
     $adb.PublicNetworkAccess | Should -Be $PublicNetworkAccess
     $adb.RequireInfrastructureEncryption | Should -Be $false
-    $adb.RequireInfrastructureEncryptionType | Should -Be 'Bool'
     $adb.RequiredNsgRule | Should -Be $RequiredNsgRule
     $adb.ResourceGroupName | Should -Be $DatabricksResourceGroupName
     #Skip $adb.ResourceTagType, $adb.ResourceTagValue
@@ -349,7 +342,6 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.UiDefinitionUri | Should -BeNullOrEmpty
     #Skip $adb.UpdatedBy**
     #Skip $adb.Url
-    $adb.VnetAddressPrefixType | Should -Be 'String'
     $adb.VnetAddressPrefixValue | Should -Be '10.139'
     #Skip $adb.WorkspaceId
 

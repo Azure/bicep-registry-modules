@@ -30,7 +30,8 @@ Describe 'Virtual machine fixture compatibility' {
         @{ scenario = 'windows.zrsdisks'; zone = 2 }
     ) {
         It 'Uses the compatible CI VM size' {
-            $fixtures[$scenario].Parameters.vmSize.value | Should -Be 'Standard_D4ads_v5'
+            $expectedSize = $scenario -eq 'windows.disks' ? 'Standard_E2s_v3' : 'Standard_D4ads_v5'
+            $fixtures[$scenario].Parameters.vmSize.value | Should -Be $expectedSize
         }
 
         It 'Uses the SCSI disk controller' {
@@ -41,11 +42,17 @@ Describe 'Virtual machine fixture compatibility' {
             $fixtures[$scenario].Parameters.availabilityZone.value | Should -Be $zone
         }
 
-        It 'Lets CI choose the resource location' {
-            $fixtures[$scenario].Template.parameters.resourceLocation.defaultValue | Should -Be '[deployment().location]'
+        It 'Uses the intended resource location' {
             $resourceGroups = @($fixtures[$scenario].Resources | Where-Object type -EQ 'Microsoft.Resources/resourceGroups')
             $resourceGroups.Count | Should -Be 1
-            $resourceGroups[0].location | Should -Be "[parameters('resourceLocation')]"
+            if ($scenario -eq 'windows.disks') {
+                $fixtures[$scenario].Template.parameters.ContainsKey('resourceLocation') | Should -BeFalse
+                $fixtures[$scenario].Template.variables.enforcedLocation | Should -Be 'germanywestcentral'
+                $resourceGroups[0].location | Should -Be "[variables('enforcedLocation')]"
+            } else {
+                $fixtures[$scenario].Template.parameters.resourceLocation.defaultValue | Should -Be '[deployment().location]'
+                $resourceGroups[0].location | Should -Be "[parameters('resourceLocation')]"
+            }
         }
     }
 
@@ -92,7 +99,7 @@ Describe 'Virtual machine fixture compatibility' {
         $registration.registrationInfoToken | Should -Match 'outputs\.registrationInfoToken\.value'
     }
 
-    It 'Creates the source OS disk on a compatible SCSI VM' {
+    It 'Creates the source OS disk on the original VM without forcing SCSI on its NVMe-only size' {
         $dependencies = @($fixtures['windows.disks'].Resources | Where-Object {
                 $_.type -eq 'Microsoft.Resources/deployments' -and $_.properties.parameters.ContainsKey('osDiskVMName')
             })
@@ -101,7 +108,7 @@ Describe 'Virtual machine fixture compatibility' {
         $resources = $resources -is [System.Collections.IDictionary] ? @($resources.Values) : @($resources)
         $sourceVMs = @($resources | Where-Object type -EQ 'Microsoft.Compute/virtualMachines')
         $sourceVMs.Count | Should -Be 1
-        $sourceVMs[0].properties.hardwareProfile.vmSize | Should -Be 'Standard_D4ads_v5'
-        $sourceVMs[0].properties.storageProfile.diskControllerType | Should -Be 'SCSI'
+        $sourceVMs[0].properties.hardwareProfile.vmSize | Should -Be 'Standard_D2s_v6'
+        $sourceVMs[0].properties.storageProfile.ContainsKey('diskControllerType') | Should -BeFalse
     }
 }

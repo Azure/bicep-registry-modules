@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "14331873294938538291"
+      "templateHash": "8979887592582072044"
     },
     "name": "Integration Account Schemas",
     "description": "This module deploys an Integration Account Schema."
@@ -176,7 +176,7 @@
       "metadata": {
         "description": "The location of the integration account schema."
       },
-      "value": "[reference('schema', '2019-05-01', 'full').location]"
+      "value": "[coalesce(tryGet(reference('schema', '2019-05-01', 'full'), 'location'), parameters('location'))]"
     }
   }
 }

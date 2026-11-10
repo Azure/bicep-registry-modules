@@ -114,6 +114,8 @@ resource selfSignedCertificateGeneration 'Microsoft.Resources/deploymentScripts@
   }
   dependsOn: [
     keyvaultSecretUserRoleAssignment
+    selfSignedCertManagedIdentityRoleAssignment
+    storageRoleAssignment
   ]
 }
 

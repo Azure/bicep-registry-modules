@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "6595108345352269698"
+      "templateHash": "7334149452667815865"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -1000,7 +1000,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.48.1.52935",
-              "templateHash": "12907110512832306805"
+              "templateHash": "5107592336531128412"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys an Integration Account Partner."
@@ -1141,7 +1141,7 @@
               "metadata": {
                 "description": "The location of the integration account partner."
               },
-              "value": "[reference('partner', '2019-05-01', 'full').location]"
+              "value": "[coalesce(tryGet(reference('partner', '2019-05-01', 'full'), 'location'), parameters('location'))]"
             }
           }
         }
@@ -1206,7 +1206,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.48.1.52935",
-              "templateHash": "14331873294938538291"
+              "templateHash": "8979887592582072044"
             },
             "name": "Integration Account Schemas",
             "description": "This module deploys an Integration Account Schema."
@@ -1376,7 +1376,7 @@
               "metadata": {
                 "description": "The location of the integration account schema."
               },
-              "value": "[reference('schema', '2019-05-01', 'full').location]"
+              "value": "[coalesce(tryGet(reference('schema', '2019-05-01', 'full'), 'location'), parameters('location'))]"
             }
           }
         }
@@ -1438,7 +1438,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.48.1.52935",
-              "templateHash": "17611150403470890414"
+              "templateHash": "16250238734765116691"
             },
             "name": "Integration Account Maps",
             "description": "This module deploys an Integration Account Map."
@@ -1607,7 +1607,7 @@
               "metadata": {
                 "description": "The location of the integration account map."
               },
-              "value": "[reference('map', '2019-05-01', 'full').location]"
+              "value": "[coalesce(tryGet(reference('map', '2019-05-01', 'full'), 'location'), parameters('location'))]"
             }
           }
         }
@@ -1666,7 +1666,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.48.1.52935",
-              "templateHash": "10790259053081037107"
+              "templateHash": "10498848423716798682"
             },
             "name": "Integration Account Assemblies",
             "description": "This module deploys an Integration Account Assembly."
@@ -1809,7 +1809,7 @@
               "metadata": {
                 "description": "The location of the integration account assembly."
               },
-              "value": "[reference('assembly', '2019-05-01', 'full').location]"
+              "value": "[coalesce(tryGet(reference('assembly', '2019-05-01', 'full'), 'location'), parameters('location'))]"
             }
           }
         }
@@ -1865,7 +1865,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.48.1.52935",
-              "templateHash": "17937765213808768333"
+              "templateHash": "4015856033757826624"
             },
             "name": "Integration Account Certificates",
             "description": "This module deploys an Integration Account Certificate."
@@ -2005,7 +2005,7 @@
               "metadata": {
                 "description": "The location of the integration account certificate."
               },
-              "value": "[reference('certificate', '2019-05-01', 'full').location]"
+              "value": "[coalesce(tryGet(reference('certificate', '2019-05-01', 'full'), 'location'), parameters('location'))]"
             }
           }
         }

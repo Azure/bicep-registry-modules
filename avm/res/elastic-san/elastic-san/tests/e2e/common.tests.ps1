@@ -182,12 +182,12 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnec
                 $PrivateEndpoints[$i].resourceId | Should -Be $item.properties.privateEndpoint.id
                 $PrivateEndpoints[$i].groupId | Should -Be $GroupIds[$i]
 
-                # TODO: Some PEPs don't have customDnsConfig some do. Need to check why
-                if ( $PrivateEndpoints[$i].customDnsConfig ) {
-                    $PrivateEndpoints[$i].customDnsConfig | Should -Not -BeNullOrEmpty
-                    $PrivateEndpoints[$i].customDnsConfig.fqdn | Should -Not -BeNullOrEmpty
-                    $PrivateEndpoints[$i].customDnsConfig.ipAddresses | Should -Not -BeNullOrEmpty
-                    $PrivateEndpoints[$i].customDnsConfig.ipAddresses[0] | Should -Not -BeNullOrEmpty
+                foreach ($dnsConfig in $PrivateEndpoints[$i].customDnsConfigs) {
+                    if ($null -ne $dnsConfig.fqdn) {
+                        $dnsConfig.fqdn | Should -Not -BeNullOrEmpty
+                    }
+                    $dnsConfig.ipAddresses | Should -Not -BeNullOrEmpty
+                    $dnsConfig.ipAddresses[0] | Should -Not -BeNullOrEmpty
                 }
 
                 $PrivateEndpoints[$i].networkInterfaceResourceIds | Should -Not -BeNullOrEmpty
@@ -350,7 +350,7 @@ function Test-VerifyElasticSANVolumeGroup($ResourceId, $ElasticSanName, $Resourc
     $vg.Type | Should -Be 'Microsoft.ElasticSan/elasticSans/volumeGroups'
 }
 
-function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $AvailabilityZone, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount, $GroupIds, $ExpectedRoleAssignments, $LogAnalyticsWorkspaceResourceId, $Lock) {
+function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location, $Tags, $AvailabilityZone, $BaseSizeTiB, $ExtendedCapacitySizeTiB, $PublicNetworkAccess, $SkuName, $VolumeGroupCount, $GroupIds, $ExpectedRoleAssignments, $LogAnalyticsWorkspaceResourceId, $Lock, $MetricCategoryName = 'AllMetrics') {
 
     $esan = Get-AzElasticSan -ResourceGroupName $ResourceGroupName -Name $Name
     $esan | Should -Not -BeNullOrEmpty
@@ -396,13 +396,7 @@ function Test-VerifyElasticSAN($ResourceId, $ResourceGroupName, $Name, $Location
     Test-VerifyRoleAssignment -ResourceId $esan.Id -ExpectedRoleAssignments $ExpectedRoleAssignments
 
     if ($LogAnalyticsWorkspaceResourceId) {
-        $metricCategoryName = $null
-        if ($TestOutput -and $TestOutput.ContainsKey('metricCategoryName')) {
-            $metricCategoryName = $TestOutput.metricCategoryName
-        } else {
-            $metricCategoryName = 'AllMetrics'
-        }
-        Test-VerifyDiagSettings -ResourceId $esan.Id -DiagName 'customSetting' -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -MetricCategoryName $metricCategoryName
+        Test-VerifyDiagSettings -ResourceId $esan.Id -DiagName 'customSetting' -LogAnalyticsWorkspaceResourceId $LogAnalyticsWorkspaceResourceId -MetricCategoryName $MetricCategoryName
     }
 
     return $esan

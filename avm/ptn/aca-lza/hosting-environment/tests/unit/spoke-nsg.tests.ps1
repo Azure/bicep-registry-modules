@@ -202,8 +202,22 @@ Describe 'ACA spoke NSG semantic preservation' {
             @($afterCalls | Where-Object { -not $_.condition }).Count | Should -Be ([int](-not $gateway))
         }
 
-        It 'Preserves subnet identities, NSG output bindings, routes and delegations including optional VMs' {
-            ConvertTo-CanonicalJson $evaluated.afterSubnets.value |
+        It 'Preserves subnet configuration except the deployment-only Storage service endpoint' {
+            $deploymentSubnets = @($evaluated.afterSubnets.value | Where-Object name -EQ $bindings.deploymentSubnetName)
+            $deploymentSubnets | Should -HaveCount 1
+            $deploymentSubnets[0].serviceEndpoints | Should -HaveCount 1
+            ConvertTo-CanonicalJson $deploymentSubnets[0].serviceEndpoints |
+                Should -BeExactly (ConvertTo-CanonicalJson @(@{ service = 'Microsoft.Storage' }))
+            $otherwiseUnchanged = @($evaluated.afterSubnets.value | ForEach-Object {
+                    $subnet = $_.Clone()
+                    if ($subnet.name -eq $bindings.deploymentSubnetName) {
+                        $subnet.Remove('serviceEndpoints')
+                    } else {
+                        $subnet.Contains('serviceEndpoints') | Should -BeFalse
+                    }
+                    $subnet
+                })
+            ConvertTo-CanonicalJson $otherwiseUnchanged |
                 Should -BeExactly (ConvertTo-CanonicalJson $evaluated.beforeSubnets.value)
             @($evaluated.afterSubnets.value) | Should -HaveCount (3 + [int]$gateway + [int]($os -ne 'none'))
             @($evaluated.afterSubnets.value | Where-Object delegation -EQ 'Microsoft.Network/applicationGateways') |

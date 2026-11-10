@@ -66,6 +66,7 @@ Describe 'Validate Deployment' {
                 -GroupIds $null `
                 -ExpectedRoleAssignments $expectedRoleAssignments `
                 -LogAnalyticsWorkspaceResourceId $TestInputData.DeploymentOutputs.logAnalyticsWorkspaceResourceId.Value `
+                -MetricCategoryName $TestInputData.DeploymentOutputs.metricCategoryName.Value `
                 -Locks $false
         }
 

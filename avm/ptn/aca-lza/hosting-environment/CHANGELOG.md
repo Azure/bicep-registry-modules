@@ -12,6 +12,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated Key Vault API references to `2026-02-01`.
 - Updated the Key Vault module dependency to `0.14.2`.
 - Moved the storage-key export to the Key Vault secret module `0.1.1` without changing its name or value.
+- Allowed deployment-script storage access from its subnet and trusted Azure services, with shared-key access for file-share mounting and a default-deny firewall.
+- Ordered self-signed certificate generation after its existing Key Vault and storage role assignments.
 
 ### Breaking Changes
 

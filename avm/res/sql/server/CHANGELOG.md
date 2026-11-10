@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated Key Vault API references to `2026-02-01`.
+- Fixed elastic-pool deployment ordering so server encryption protection is configured first.
 
 ### Breaking Changes
 

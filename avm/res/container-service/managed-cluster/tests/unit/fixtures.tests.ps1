@@ -22,6 +22,36 @@ BeforeAll {
     }
 }
 
+Describe 'Default fixture compatibility' {
+    BeforeAll {
+        $fixture = Get-AksFixture -Name 'defaults'
+        $parameters = $fixture.TestModule.properties.parameters
+        $pools = @($parameters.primaryAgentPoolProfiles.value)
+        $clusterResources = $fixture.TestModule.properties.template.resources
+        $clusterResources = $clusterResources -is [System.Collections.IDictionary] ? @($clusterResources.Values) : @($clusterResources)
+        $cluster = @($clusterResources | Where-Object type -EQ 'Microsoft.ContainerService/managedClusters')[0]
+    }
+
+    It 'Uses the original zonal system-pool size and node count' {
+        $pools.Count | Should -Be 1
+        $pools[0].vmSize | Should -Be 'Standard_DS4_v2'
+        $pools[0].count | Should -Be 3
+        $pools[0].mode | Should -Be 'System'
+    }
+
+    It 'Preserves the module default zone and OS disk settings' {
+        $pools[0].ContainsKey('availabilityZones') | Should -BeFalse
+        $pools[0].ContainsKey('osDiskType') | Should -BeFalse
+        $cluster.properties.agentPoolProfiles | Should -Match 'createArray\(1, 2, 3\)'
+    }
+
+    It 'Keeps sequential initial and idempotency deployments' {
+        $fixture.TestModule.copy.mode | Should -Be 'serial'
+        $fixture.TestModule.copy.batchSize | Should -Be 1
+        $fixture.TestModule.copy.count | Should -Be "[length(createArray('init', 'idem'))]"
+    }
+}
+
 Describe 'Kubenet fixture compatibility' {
     BeforeAll {
         $fixture = Get-AksFixture -Name 'kubenet'

@@ -197,6 +197,7 @@ module supportingServices 'modules/supporting-services/deploy.supporting-service
     tags: tags ?? {}
     enableTelemetry: enableTelemetry
     spokePrivateEndpointSubnetResourceId: spoke.outputs.spokePrivateEndpointsSubnetResourceId
+    deploymentSubnetResourceId: spoke.outputs.deploymentSubnetResourceId
     spokeVNetResourceId: spoke.outputs.spokeVNetId
     hubVNetResourceId: hubVirtualNetworkResourceId
     logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId

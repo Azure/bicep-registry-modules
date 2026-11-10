@@ -78,4 +78,4 @@ output name string = partner.name
 output resourceGroupName string = resourceGroup().name
 
 @description('The location of the integration account partner.')
-output location string = partner.location
+output location string = partner.?location ?? location

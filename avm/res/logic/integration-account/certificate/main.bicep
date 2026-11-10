@@ -76,4 +76,4 @@ output name string = certificate.name
 output resourceGroupName string = resourceGroup().name
 
 @description('The location of the integration account certificate.')
-output location string = certificate.location
+output location string = certificate.?location ?? location

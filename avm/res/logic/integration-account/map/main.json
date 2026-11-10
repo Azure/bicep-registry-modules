@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "17611150403470890414"
+      "templateHash": "16250238734765116691"
     },
     "name": "Integration Account Maps",
     "description": "This module deploys an Integration Account Map."
@@ -175,7 +175,7 @@
       "metadata": {
         "description": "The location of the integration account map."
       },
-      "value": "[reference('map', '2019-05-01', 'full').location]"
+      "value": "[coalesce(tryGet(reference('map', '2019-05-01', 'full'), 'location'), parameters('location'))]"
     }
   }
 }
