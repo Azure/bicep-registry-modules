@@ -2,15 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/synapse/workspace/CHANGELOG.md).
 
-## 0.15.1
+## 0.16.0
 
 ### Changes
 
-- Fixed Big Data Pool inputs: require `nodeSize` before deployment and safely use the child module default when `nodeSizeFamily` is omitted or null.
+- Fixed Big Data Pool forwarding so omitted or null `nodeSizeFamily` uses the child module default, `MemoryOptimized`.
+- Regenerated child templates with the pinned Bicep compiler to satisfy generated-template parity.
 
 ### Breaking Changes
 
-- None
+- Renamed the workspace output `resourceID` to the required AVM name `resourceId`. Update Bicep callers to `.outputs.resourceId` and case-sensitive queries to `resourceId`; ARM does not allow both case-only names as compatibility aliases.
+- Made `bigDataPools[*].nodeSize` required, matching the child module. Callers must provide a valid node size; omitting it previously failed during deployment.
 
 ## 0.15.0
 

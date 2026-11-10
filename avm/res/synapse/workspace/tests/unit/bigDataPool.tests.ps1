@@ -44,7 +44,7 @@ module workspace '$relativeModulePath' = {
         $poolParameters.nodeSize.value | Should -BeExactly "[coalesce(parameters('bigDataPools'), createArray())[copyIndex()].nodeSize]"
     }
 
-    It 'compiles a pool with <scenario> nodeSizeFamily' -TestCases @(
+    It 'compiles a canonical resourceId caller with <scenario> nodeSizeFamily' -TestCases @(
         @{ scenario = 'omitted'; setting = '' }
         @{ scenario = 'null'; setting = 'nodeSizeFamily: null' }
         @{ scenario = 'explicit'; setting = "nodeSizeFamily: 'MemoryOptimized'" }
@@ -69,6 +69,8 @@ module workspace '$relativeModulePath' = {
     ]
   }
 }
+
+output workspaceResourceId string = workspace.outputs.resourceId
 "@
         $result = Build-ViaRPC -BicepFilePath $fixture -PassThru -ErrorAction Stop
         $result[$fixture] | Should -Not -BeNullOrEmpty
