@@ -153,7 +153,7 @@ function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetNam
     $pep | Should -Not -BeNullOrEmpty
     $pep.ProvisioningState | Should -Be 'Succeeded'
     $pep.Subnet.Id | Should -Be "$($virtualNetworkResourceId)/subnets/$($SubnetName)"
-    $pep.NetworkInterfaces.Count | Should -Be 1
+    @($pep.NetworkInterfaces).Count | Should -Be 1
     $pep.PrivateLinkServiceConnections.ProvisioningState | Should -Be 'Succeeded'
 
     if ( $null -eq $ServiceId ) {
@@ -163,7 +163,7 @@ function Test-VerifyPrivateEndpoint($Name, $ResourceGroupName, $Tags, $SubnetNam
         $pep.PrivateLinkServiceConnections.PrivateLinkServiceId | Should -Be $ServiceId
     }
 
-    $pep.PrivateLinkServiceConnections.GroupIds.Count | Should -Be 1
+    @($pep.PrivateLinkServiceConnections.GroupIds).Count | Should -Be 1
     $pep.PrivateLinkServiceConnections.GroupIds | Should -Be $GroupId
     $pep.PrivateLinkServiceConnections.PrivateLinkServiceConnectionState.Status | Should -Be 'Approved'
 
