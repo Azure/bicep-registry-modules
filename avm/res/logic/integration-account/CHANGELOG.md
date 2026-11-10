@@ -2,11 +2,12 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/logic/integration-account/CHANGELOG.md).
 
-## 0.2.1
+## 0.3.0
 
 ### Changes
 
 - Marked assembly content as secure when forwarding it to the assembly child module.
+- Added resource-derived `location` outputs to the six published child modules to meet the existing repository validation convention.
 
 ### Breaking Changes
 

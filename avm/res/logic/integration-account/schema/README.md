@@ -156,6 +156,7 @@ The target namespace of the schema.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the integration account schema. |
 | `name` | string | The name of the integration account schema. |
 | `resourceGroupName` | string | The resource group the integration account schema was deployed into. |
 | `resourceId` | string | The resource ID of the integration account schema. |

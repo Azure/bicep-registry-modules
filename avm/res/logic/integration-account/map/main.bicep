@@ -87,3 +87,6 @@ output name string = map.name
 
 @description('The resource group the integration account map was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location of the integration account map.')
+output location string = map.location
