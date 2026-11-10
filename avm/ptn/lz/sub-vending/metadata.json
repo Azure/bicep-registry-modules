@@ -5,5 +5,5 @@
   "telemetryIdPrefix": "46d3xbcp.ptn.9680f42",
   "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.lz-subvending"],
   "canonicalType": "lz/sub-vending",
-  "owners": ["yeddlapurishivasai", "akshayrohilla"]
+  "owners": ["@Azure/azure-landing-zone-owners"]
 }

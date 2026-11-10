@@ -5,5 +5,5 @@
   "telemetryIdPrefix": "46d3xbcp.ptn.ae60b19",
   "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.alz-ama"],
   "canonicalType": "alz/ama",
-  "owners": ["yeddlapurishivasai", "akshayrohilla"]
+  "owners": ["@Azure/azure-landing-zone-owners"]
 }
