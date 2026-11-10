@@ -194,7 +194,7 @@ type forwardingRuleType = {
   targetDnsServers: targetDnsServerType[]
 
   @description('Optional. Metadata attached to the forwarding rule.')
-  metadata: string?
+  metadata: object?
 }
 
 @export()
