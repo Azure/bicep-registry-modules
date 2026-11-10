@@ -328,6 +328,10 @@ module app_config 'config/main.bicep' = [
       applicationInsightResourceId: config.?applicationInsightResourceId
       storageAccountResourceId: config.?storageAccountResourceId
       storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication
+      // Only this mixed-object forwarding is exempt: ordinary fields need not be secrets.
+      // configType protects credential inputs; the child secures the overlapping config shapes.
+      // SecureBoundaries.Tests.ps1 checks both contracts, including decorator-removal controls.
+      #disable-next-line use-secure-value-for-secure-inputs
       properties: config.?properties
       currentAppSettings: config.?retainCurrentAppSettings ?? true && config.name == 'appsettings'
         ? list('${app.id}/config/appsettings', '2023-12-01').properties

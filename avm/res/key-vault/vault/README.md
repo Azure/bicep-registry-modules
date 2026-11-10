@@ -184,6 +184,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvec002"
     },
+    // Non-required parameters
     "enablePurgeProtection": {
       "value": false
     },
@@ -504,7 +505,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           exp: 1725109032
           nbf: 10000
         }
-        contentType: 'Something'
+        contentType: '<contentType>'
         name: 'secretName'
         roleAssignments: [
           {
@@ -552,6 +553,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvmax002"
     },
+    // Non-required parameters
     "accessPolicies": {
       "value": [
         {
@@ -778,7 +780,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             "exp": 1725109032,
             "nbf": 10000
           },
-          "contentType": "Something",
+          "contentType": "<contentType>",
           "name": "secretName",
           "roleAssignments": [
             {
@@ -1033,7 +1035,7 @@ param secrets = [
       exp: 1725109032
       nbf: 10000
     }
-    contentType: 'Something'
+    contentType: '<contentType>'
     name: 'secretName'
     roleAssignments: [
       {
@@ -1138,6 +1140,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvrsa002"
     },
+    // Non-required parameters
     "enablePurgeProtection": {
       "value": false
     },
@@ -1321,7 +1324,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           exp: 1702648632
           nbf: 10000
         }
-        contentType: 'Something'
+        contentType: '<contentType>'
         name: 'secretName'
         value: 'secretValue'
       }
@@ -1352,6 +1355,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvwaf002"
     },
+    // Non-required parameters
     "diagnosticSettings": {
       "value": [
         {
@@ -1433,7 +1437,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             "exp": 1702648632,
             "nbf": 10000
           },
-          "contentType": "Something",
+          "contentType": "<contentType>",
           "name": "secretName",
           "value": "secretValue"
         }
@@ -1534,7 +1538,7 @@ param secrets = [
       exp: 1702648632
       nbf: 10000
     }
-    contentType: 'Something'
+    contentType: '<contentType>'
     name: 'secretName'
     value: 'secretValue'
   }

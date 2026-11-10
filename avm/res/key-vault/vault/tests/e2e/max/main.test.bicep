@@ -20,6 +20,12 @@ param serviceShort string = 'kvvmax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+// This default is a public content-type label, not a secret value.
+@description('Optional. The content-type label for the test secret.')
+@secure()
+#disable-next-line secure-parameter-default
+param secretContentType string = 'Something'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -281,9 +287,7 @@ module testDeployment '../../../main.bicep' = [
             exp: 1725109032
             nbf: 10000
           }
-          // This content-type label is non-secret metadata, not the secret value.
-          #disable-next-line use-secure-value-for-secure-inputs
-          contentType: 'Something'
+          contentType: secretContentType
           name: 'secretName'
           roleAssignments: [
             {

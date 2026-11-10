@@ -387,23 +387,23 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       {
         description: 'TestStringDescription'
         name: 'TestString'
-        value: '\'TestString\''
+        value: '<value>'
       }
       {
         description: 'TestIntegerDescription'
         name: 'TestInteger'
-        value: '500'
+        value: '<value>'
       }
       {
         description: 'TestBooleanDescription'
         name: 'TestBoolean'
-        value: 'false'
+        value: '<value>'
       }
       {
         description: 'TestDateTimeDescription'
         isEncrypted: false
         name: 'TestDateTime'
-        value: '\'\\/Date(1637934042656)\\/\''
+        value: '<value>'
       }
       {
         description: 'TestEncryptedDescription'
@@ -663,23 +663,23 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         {
           "description": "TestStringDescription",
           "name": "TestString",
-          "value": "\"TestString\""
+          "value": "<value>"
         },
         {
           "description": "TestIntegerDescription",
           "name": "TestInteger",
-          "value": "500"
+          "value": "<value>"
         },
         {
           "description": "TestBooleanDescription",
           "name": "TestBoolean",
-          "value": "false"
+          "value": "<value>"
         },
         {
           "description": "TestDateTimeDescription",
           "isEncrypted": false,
           "name": "TestDateTime",
-          "value": "\"\\/Date(1637934042656)\\/\""
+          "value": "<value>"
         },
         {
           "description": "TestEncryptedDescription",
@@ -899,23 +899,23 @@ param variables = [
   {
     description: 'TestStringDescription'
     name: 'TestString'
-    value: '\'TestString\''
+    value: '<value>'
   }
   {
     description: 'TestIntegerDescription'
     name: 'TestInteger'
-    value: '500'
+    value: '<value>'
   }
   {
     description: 'TestBooleanDescription'
     name: 'TestBoolean'
-    value: 'false'
+    value: '<value>'
   }
   {
     description: 'TestDateTimeDescription'
     isEncrypted: false
     name: 'TestDateTime'
-    value: '\'\\/Date(1637934042656)\\/\''
+    value: '<value>'
   }
   {
     description: 'TestEncryptedDescription'
@@ -1057,22 +1057,22 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       {
         description: 'TestStringDescription'
         name: 'TestString'
-        value: '\'TestString\''
+        value: '<value>'
       }
       {
         description: 'TestIntegerDescription'
         name: 'TestInteger'
-        value: '500'
+        value: '<value>'
       }
       {
         description: 'TestBooleanDescription'
         name: 'TestBoolean'
-        value: 'false'
+        value: '<value>'
       }
       {
         description: 'TestDateTimeDescription'
         name: 'TestDateTime'
-        value: '\'\\/Date(1637934042656)\\/\''
+        value: '<value>'
       }
       {
         description: 'TestEncryptedDescription'
@@ -1227,22 +1227,22 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         {
           "description": "TestStringDescription",
           "name": "TestString",
-          "value": "\"TestString\""
+          "value": "<value>"
         },
         {
           "description": "TestIntegerDescription",
           "name": "TestInteger",
-          "value": "500"
+          "value": "<value>"
         },
         {
           "description": "TestBooleanDescription",
           "name": "TestBoolean",
-          "value": "false"
+          "value": "<value>"
         },
         {
           "description": "TestDateTimeDescription",
           "name": "TestDateTime",
-          "value": "\"\\/Date(1637934042656)\\/\""
+          "value": "<value>"
         },
         {
           "description": "TestEncryptedDescription",
@@ -1369,22 +1369,22 @@ param variables = [
   {
     description: 'TestStringDescription'
     name: 'TestString'
-    value: '\'TestString\''
+    value: '<value>'
   }
   {
     description: 'TestIntegerDescription'
     name: 'TestInteger'
-    value: '500'
+    value: '<value>'
   }
   {
     description: 'TestBooleanDescription'
     name: 'TestBoolean'
-    value: 'false'
+    value: '<value>'
   }
   {
     description: 'TestDateTimeDescription'
     name: 'TestDateTime'
-    value: '\'\\/Date(1637934042656)\\/\''
+    value: '<value>'
   }
   {
     description: 'TestEncryptedDescription'

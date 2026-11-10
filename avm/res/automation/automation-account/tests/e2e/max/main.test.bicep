@@ -21,6 +21,17 @@ param serviceShort string = 'aamax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// These defaults are public serialized test data, not credentials. Keep each type's exact representation.
+@description('Optional. Public fixtures for the string, integer, boolean and date variable serialization cases.')
+@secure()
+#disable-next-line secure-parameter-default
+param variableValues object = {
+  stringValue: '\'TestString\''
+  integerValue: '500'
+  booleanValue: 'false'
+  dateTimeValue: '\'\\/Date(1637934042656)\\/\''
+}
+
 @description('Optional. The password to leverage for the login.')
 @secure()
 param password string = newGuid()
@@ -242,31 +253,23 @@ module testDeployment '../../../main.bicep' = [
         {
           description: 'TestStringDescription'
           name: 'TestString'
-          // This literal exercises string serialization and contains no secret.
-          #disable-next-line use-secure-value-for-secure-inputs
-          value: '\'TestString\''
+          value: variableValues.stringValue
         }
         {
           description: 'TestIntegerDescription'
           name: 'TestInteger'
-          // This literal exercises integer serialization and contains no secret.
-          #disable-next-line use-secure-value-for-secure-inputs
-          value: '500'
+          value: variableValues.integerValue
         }
         {
           description: 'TestBooleanDescription'
           name: 'TestBoolean'
-          // This literal exercises boolean serialization and contains no secret.
-          #disable-next-line use-secure-value-for-secure-inputs
-          value: 'false'
+          value: variableValues.booleanValue
         }
         {
           description: 'TestDateTimeDescription'
           isEncrypted: false
           name: 'TestDateTime'
-          // This fixed timestamp exercises date serialization and contains no secret.
-          #disable-next-line use-secure-value-for-secure-inputs
-          value: '\'\\/Date(1637934042656)\\/\''
+          value: variableValues.dateTimeValue
         }
         {
           description: 'TestEncryptedDescription'

@@ -381,7 +381,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     webhooks: [
       {
         name: 'acrx001webhook'
-        serviceUri: 'https://www.contoso.com/webhook'
+        serviceUri: '<serviceUri>'
       }
     ]
   }
@@ -602,7 +602,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       "value": [
         {
           "name": "acrx001webhook",
-          "serviceUri": "https://www.contoso.com/webhook"
+          "serviceUri": "<serviceUri>"
         }
       ]
     }
@@ -773,7 +773,7 @@ param trustPolicyStatus = 'disabled'
 param webhooks = [
   {
     name: 'acrx001webhook'
-    serviceUri: 'https://www.contoso.com/webhook'
+    serviceUri: '<serviceUri>'
   }
 ]
 ```
