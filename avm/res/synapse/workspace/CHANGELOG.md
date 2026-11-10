@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/synapse/workspace/CHANGELOG.md).
 
+## 0.15.1
+
+### Changes
+
+- Fixed Big Data Pool inputs: require `nodeSize` before deployment and safely use the child module default when `nodeSizeFamily` is omitted or null.
+
+### Breaking Changes
+
+- None
+
 ## 0.15.0
 
 ### Changes

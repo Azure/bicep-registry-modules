@@ -381,7 +381,7 @@ module workspace_bigDataPools 'big-data-pool/main.bicep' = [
       libraryRequirements: bigDataPool.?libraryRequirements
       nodeCount: bigDataPool.?nodeCount
       nodeSize: bigDataPool.nodeSize
-      nodeSizeFamily: bigDataPool.nodeSizeFamily
+      nodeSizeFamily: bigDataPool.?nodeSizeFamily
       sessionLevelPackagesEnabled: bigDataPool.?sessionLevelPackagesEnabled
       sparkConfigProperties: bigDataPool.?sparkConfigProperties
       defaultSparkLogFolder: bigDataPool.?defaultSparkLogFolder
@@ -602,11 +602,11 @@ type bigDataPoolType = {
   @description('Required. The name of the Big Data Pool.')
   name: string
 
-  @description('Optional. The node size family of the pool.')
+  @description('Optional. The node size family of the pool. Defaults to MemoryOptimized.')
   nodeSizeFamily: string?
 
-  @description('Optional. The node size of the pool.')
-  nodeSize: string?
+  @description('Required. The node size of the pool.')
+  nodeSize: string
 
   @description('Optional. The auto scale configuration.')
   autoScale: autoScaleType?

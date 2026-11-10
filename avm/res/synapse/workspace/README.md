@@ -102,7 +102,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       {
         name: 'depbdp02'
         nodeSize: 'Small'
-        nodeSizeFamily: 'MemoryOptimized'
       }
     ]
     tags: {
@@ -163,8 +162,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         },
         {
           "name": "depbdp02",
-          "nodeSize": "Small",
-          "nodeSizeFamily": "MemoryOptimized"
+          "nodeSize": "Small"
         }
       ]
     },
@@ -218,7 +216,6 @@ param bigDataPools = [
   {
     name: 'depbdp02'
     nodeSize: 'Small'
-    nodeSizeFamily: 'MemoryOptimized'
   }
 ]
 param tags = {
@@ -1898,6 +1895,7 @@ List of Big Data Pools to be created in the workspace.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-bigdatapoolsname) | string | The name of the Big Data Pool. |
+| [`nodeSize`](#parameter-bigdatapoolsnodesize) | string | The node size of the pool. |
 
 **Optional parameters**
 
@@ -1915,8 +1913,7 @@ List of Big Data Pools to be created in the workspace.
 | [`libraryRequirements`](#parameter-bigdatapoolslibraryrequirements) |  | Library version requirements. |
 | [`lock`](#parameter-bigdatapoolslock) | object | The lock settings of the service. |
 | [`nodeCount`](#parameter-bigdatapoolsnodecount) | int | The number of nodes in the Big Data pool if Auto-scaling is disabled. |
-| [`nodeSize`](#parameter-bigdatapoolsnodesize) | string | The node size of the pool. |
-| [`nodeSizeFamily`](#parameter-bigdatapoolsnodesizefamily) | string | The node size family of the pool. |
+| [`nodeSizeFamily`](#parameter-bigdatapoolsnodesizefamily) | string | The node size family of the pool. Defaults to MemoryOptimized. |
 | [`roleAssignments`](#parameter-bigdatapoolsroleassignments) | array | Array of role assignments to create. |
 | [`sessionLevelPackagesEnabled`](#parameter-bigdatapoolssessionlevelpackagesenabled) | bool | Enable or disable session level packages. |
 | [`sparkConfigProperties`](#parameter-bigdatapoolssparkconfigproperties) |  | The Spark configuration properties. |
@@ -1927,6 +1924,13 @@ List of Big Data Pools to be created in the workspace.
 ### Parameter: `bigDataPools.name`
 
 The name of the Big Data Pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `bigDataPools.nodeSize`
+
+The node size of the pool.
 
 - Required: Yes
 - Type: string
@@ -2191,16 +2195,9 @@ The number of nodes in the Big Data pool if Auto-scaling is disabled.
 - Required: No
 - Type: int
 
-### Parameter: `bigDataPools.nodeSize`
-
-The node size of the pool.
-
-- Required: No
-- Type: string
-
 ### Parameter: `bigDataPools.nodeSizeFamily`
 
-The node size family of the pool.
+The node size family of the pool. Defaults to MemoryOptimized.
 
 - Required: No
 - Type: string
