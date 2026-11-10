@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "10507486449586808729"
+      "templateHash": "617944873802473189"
     },
     "name": "Integration Account Agreements",
     "description": "This module deploys an Integration Account Agreement."
@@ -184,7 +184,7 @@
       "metadata": {
         "description": "The location of the integration account agreement."
       },
-      "value": "[reference('agreement', '2019-05-01', 'full').location]"
+      "value": "[parameters('location')]"
     }
   }
 }
