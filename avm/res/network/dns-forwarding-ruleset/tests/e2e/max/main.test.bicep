@@ -68,6 +68,10 @@ module testDeployment '../../../main.bicep' = [
           name: 'rule1'
           forwardingRuleState: 'Enabled'
           domainName: 'contoso.'
+          metadata: {
+            Environment: 'Non-Prod'
+            Description: 'Forward contoso queries'
+          }
           targetDnsServers: [
             {
               ipAddress: '192.168.0.1'
