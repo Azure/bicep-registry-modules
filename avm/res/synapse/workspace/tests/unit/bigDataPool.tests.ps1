@@ -35,7 +35,7 @@ module workspace '$relativeModulePath' = {
 "@
         $result = Build-ViaRPC -BicepFilePath $fixture -PassThru -ErrorAction SilentlyContinue -ErrorVariable compileErrors
         $result.ContainsKey($fixture) | Should -BeFalse
-        ($compileErrors | Out-String) | Should -Match 'missing the following required properties: "nodeSize"'
+        ($compileErrors.Exception.Message -join "`n") | Should -Match 'missing the following required properties: "nodeSize"'
     }
 
     It 'safely defaults an omitted or null nodeSizeFamily while preserving explicit values' {
