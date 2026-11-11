@@ -56,7 +56,9 @@ module nestedDependencies 'dependencies.bicep' = {
     sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
-    backupManagementServiceApplicationObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : backupManagementService!.id
+    backupManagementServiceApplicationObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : backupManagementService!.id
     waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
   }
