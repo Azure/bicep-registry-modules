@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "6593819036085578496"
+      "version": "0.48.1.52935",
+      "templateHash": "7470549391990030006"
     },
     "name": "Synapse Workspaces Big Data Pools",
     "description": "This module deploys a Synapse Workspaces Big Data Pool."
@@ -836,8 +836,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "3076115678830674315"
+              "version": "0.48.1.52935",
+              "templateHash": "16791189001939776552"
             }
           },
           "definitions": {
@@ -1865,8 +1865,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "3076115678830674315"
+              "version": "0.48.1.52935",
+              "templateHash": "16791189001939776552"
             }
           },
           "definitions": {

@@ -214,3 +214,6 @@ output resourceId string = sqlPool.id
 
 @description('The resource group of the deployed SQL Pool.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location the resource was deployed into.')
+output location string = sqlPool.location
