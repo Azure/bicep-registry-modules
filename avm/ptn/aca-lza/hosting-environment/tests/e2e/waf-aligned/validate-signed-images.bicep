@@ -65,6 +65,7 @@ module verification 'br/public:avm/res/resources/deployment-script:0.5.2' = {
       sampleVerification.deploymentSubnetResourceId
     ]
     storageAccountResourceId: resourceId(
+      subscription().subscriptionId,
       resourceGroupName,
       'Microsoft.Storage/storageAccounts',
       sampleVerification.storageAccountName
