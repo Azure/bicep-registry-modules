@@ -19,8 +19,8 @@ Describe 'Captured Application Gateway regional capacity' -Tag 'ApplicationGatew
         )
         $record.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('Display text is not retry evidence.')
         $inputParameters = @{
-            ErrorRecord = $record
-            SubscriptionId = '11111111-1111-1111-1111-111111111111'
+            ErrorRecord      = $record
+            SubscriptionId   = '11111111-1111-1111-1111-111111111111'
             ResourceLocation = 'swedencentral'
         }
     }
@@ -49,8 +49,8 @@ Describe 'Captured Application Gateway regional capacity' -Tag 'ApplicationGatew
         $leaf.target = $resource.target.ToUpperInvariant()
         $record.Exception | Add-Member -NotePropertyName Response -NotePropertyValue @{ StatusCode = $status }
         $inputParameters.ErrorResponse = @{ error = @{
-                code = 'DeploymentFailed'
-                target = "/subscriptions/$($inputParameters.SubscriptionId)/providers/Microsoft.Resources/deployments/root"
+                code    = 'DeploymentFailed'
+                target  = "/subscriptions/$($inputParameters.SubscriptionId)/providers/Microsoft.Resources/deployments/root"
                 details = @($response)
             }
         }
