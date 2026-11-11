@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/synapse/workspace/big-data-pool/CHANGELOG.md).
 
+## 0.2.1
+
+### Changes
+
+- Regenerated the ARM template with the pinned Bicep compiler to satisfy generated-template parity; resource behavior is unchanged.
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes
