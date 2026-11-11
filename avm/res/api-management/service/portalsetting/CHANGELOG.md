@@ -2,15 +2,15 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/portalsetting/CHANGELOG.md).
 
-## 0.1.3
+## 0.2.0
 
 ### Changes
 
-- Added `portalSettingPropertiesType` to secure the delegation validation key while keeping the other portal settings inspectable.
+- Added an open `portalSettingPropertiesType` to secure only the delegation validation key. Other properties remain unconstrained and are forwarded unchanged, as with the previous native `object` contract.
 
 ### Breaking Changes
 
-- None
+- `properties.validationKey`, when provided, must now be a string or `null`. The previous native `object` contract did not validate this field. Callers relying on another value type must pass the base64-encoded key as a string.
 
 ## 0.1.2
 

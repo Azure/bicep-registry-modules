@@ -7480,52 +7480,19 @@ The configuration for the [Desired State Configuration] extension. Must at least
   }
   ```
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enabled`](#parameter-extensiondscconfigenabled) | bool | Whether the extension is deployed. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoUpgradeMinorVersion`](#parameter-extensiondscconfigautoupgrademinorversion) | bool | Indicates whether the extension should use a newer minor version if one is available at deployment time. Defaults to `true`. |
-| [`enableAutomaticUpgrade`](#parameter-extensiondscconfigenableautomaticupgrade) | bool | Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`. |
-| [`name`](#parameter-extensiondscconfigname) | string | The name of the extension. Defaults to `DesiredStateConfiguration`. |
+| [`>Any_other_property<`](#parameter-extensiondscconfig>any_other_property<) |  | Other DSC configuration properties. Only the properties used by the extension are forwarded. |
 | [`protectedSettings`](#parameter-extensiondscconfigprotectedsettings) | secureObject | Any object that contains the extension specific protected settings. |
-| [`settings`](#parameter-extensiondscconfigsettings) | object | Any object that contains the extension specific settings. |
-| [`supressFailures`](#parameter-extensiondscconfigsupressfailures) | bool | Indicates whether failures stemming from the extension will be suppressed. Defaults to `false`. |
-| [`tags`](#parameter-extensiondscconfigtags) | object | Tags of the resource. |
-| [`typeHandlerVersion`](#parameter-extensiondscconfigtypehandlerversion) | string | The version of the script handler. |
 
-### Parameter: `extensionDSCConfig.enabled`
+### Parameter: `extensionDSCConfig.>Any_other_property<`
 
-Whether the extension is deployed.
+Other DSC configuration properties. Only the properties used by the extension are forwarded.
 
 - Required: Yes
-- Type: bool
-
-### Parameter: `extensionDSCConfig.autoUpgradeMinorVersion`
-
-Indicates whether the extension should use a newer minor version if one is available at deployment time. Defaults to `true`.
-
-- Required: No
-- Type: bool
-
-### Parameter: `extensionDSCConfig.enableAutomaticUpgrade`
-
-Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`.
-
-- Required: No
-- Type: bool
-
-### Parameter: `extensionDSCConfig.name`
-
-The name of the extension. Defaults to `DesiredStateConfiguration`.
-
-- Required: No
-- Type: string
+- Type: 
 
 ### Parameter: `extensionDSCConfig.protectedSettings`
 
@@ -7533,34 +7500,6 @@ Any object that contains the extension specific protected settings.
 
 - Required: No
 - Type: secureObject
-
-### Parameter: `extensionDSCConfig.settings`
-
-Any object that contains the extension specific settings.
-
-- Required: No
-- Type: object
-
-### Parameter: `extensionDSCConfig.supressFailures`
-
-Indicates whether failures stemming from the extension will be suppressed. Defaults to `false`.
-
-- Required: No
-- Type: bool
-
-### Parameter: `extensionDSCConfig.tags`
-
-Tags of the resource.
-
-- Required: No
-- Type: object
-
-### Parameter: `extensionDSCConfig.typeHandlerVersion`
-
-The version of the script handler.
-
-- Required: No
-- Type: string
 
 ### Parameter: `extensionGuestConfigurationExtension`
 

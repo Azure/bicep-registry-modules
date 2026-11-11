@@ -711,44 +711,25 @@ A list of flux configurations.
 - Required: No
 - Type: array
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kustomizations`](#parameter-fluxconfigurationskustomizations) | object | Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster. |
-| [`namespace`](#parameter-fluxconfigurationsnamespace) | string | The namespace to which this configuration is installed to. |
-| [`scope`](#parameter-fluxconfigurationsscope) | string | Scope at which the configuration will be installed. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-fluxconfigurations>any_other_property<) |  | Other caller properties, including the Flux configuration name. Only the properties used by the referenced Flux module are forwarded. |
 | [`bucket`](#parameter-fluxconfigurationsbucket) | object | Parameters to reconcile to the Bucket source kind type. |
 | [`configurationProtectedSettings`](#parameter-fluxconfigurationsconfigurationprotectedsettings) | secureObject | Key-value pairs of protected configuration settings for the configuration. |
 | [`gitRepository`](#parameter-fluxconfigurationsgitrepository) | object | Parameters to reconcile to the GitRepository source kind type. |
-| [`name`](#parameter-fluxconfigurationsname) | string | The name of the Flux configuration. |
+| [`kustomizations`](#parameter-fluxconfigurationskustomizations) | object | Kustomizations used to reconcile the artifact pulled by the source type on the cluster. Required by the referenced Flux module when deployed. |
+| [`namespace`](#parameter-fluxconfigurationsnamespace) | string | The namespace to which this configuration is installed to. Required by the referenced Flux module when deployed. |
+| [`scope`](#parameter-fluxconfigurationsscope) | string | Scope at which the configuration will be installed. Required by the referenced Flux module when deployed. |
 | [`suspend`](#parameter-fluxconfigurationssuspend) | bool | Whether this configuration should suspend its reconciliation of its kustomizations and sources. |
 
-### Parameter: `fluxConfigurations.kustomizations`
+### Parameter: `fluxConfigurations.>Any_other_property<`
 
-Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster.
-
-- Required: Yes
-- Type: object
-
-### Parameter: `fluxConfigurations.namespace`
-
-The namespace to which this configuration is installed to.
+Other caller properties, including the Flux configuration name. Only the properties used by the referenced Flux module are forwarded.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `fluxConfigurations.scope`
-
-Scope at which the configuration will be installed.
-
-- Required: Yes
-- Type: string
+- Type: 
 
 ### Parameter: `fluxConfigurations.bucket`
 
@@ -771,9 +752,23 @@ Parameters to reconcile to the GitRepository source kind type.
 - Required: No
 - Type: object
 
-### Parameter: `fluxConfigurations.name`
+### Parameter: `fluxConfigurations.kustomizations`
 
-The name of the Flux configuration.
+Kustomizations used to reconcile the artifact pulled by the source type on the cluster. Required by the referenced Flux module when deployed.
+
+- Required: No
+- Type: object
+
+### Parameter: `fluxConfigurations.namespace`
+
+The namespace to which this configuration is installed to. Required by the referenced Flux module when deployed.
+
+- Required: No
+- Type: string
+
+### Parameter: `fluxConfigurations.scope`
+
+Scope at which the configuration will be installed. Required by the referenced Flux module when deployed.
 
 - Required: No
 - Type: string

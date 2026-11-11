@@ -59,39 +59,14 @@ output name string = portalSetting.name
 output resourceGroupName string = resourceGroup().name
 
 @export()
-@description('The properties for sign-in, sign-up, or delegation portal settings.')
+@description('Portal setting properties. Only the delegation validation key is constrained; other properties are forwarded unchanged.')
 type portalSettingPropertiesType = {
-  @description('Optional. Redirect anonymous users to the sign-in page, or allow users to sign up on the developer portal.')
-  enabled: bool?
-
-  @description('Optional. Terms of service contract properties for sign-up settings.')
-  termsOfService: {
-    @description('Optional. Ask the user for consent to the terms of service.')
-    consentRequired: bool?
-
-    @description('Optional. Display terms of service during sign-up.')
-    enabled: bool?
-
-    @description('Optional. Terms of service text.')
-    text: string?
-  }?
-
-  @description('Optional. Subscription delegation settings.')
-  subscriptions: {
-    @description('Optional. Enable or disable delegation for subscriptions.')
-    enabled: bool?
-  }?
-
-  @description('Optional. The delegation URL.')
-  url: string?
-
-  @description('Optional. User registration delegation settings.')
-  userRegistration: {
-    @description('Optional. Enable or disable delegation for user registration.')
-    enabled: bool?
-  }?
-
   @secure()
   @description('Optional. A base64-encoded validation key to validate that a request comes from Azure API Management.')
   validationKey: string?
+
+  @description('Optional. Other portal setting properties, including sign-in and sign-up settings.')
+  // The native properties type is an open object; Bicep cannot add a secure leaf to it.
+  #disable-next-line no-explicit-any
+  *: any
 }

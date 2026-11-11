@@ -42,7 +42,7 @@ param schedules array = []
 @description('Optional. List of jobSchedules to be created in the automation account.')
 param jobSchedules array = []
 
-@description('Optional. List of variables to be created in the automation account.')
+@description('Optional. List of variables to be created in the automation account. Each entry supplies name and value; description and isEncrypted are optional and retain the child module defaults.')
 param variables variableType[] = []
 
 @description('Optional. List of webhooks to be created in the automation account.')
@@ -666,18 +666,13 @@ type credentialType = {
 @export()
 @description('The type of an Automation Account variable.')
 type variableType = {
-  @description('Required. The name of the variable.')
-  name: string
-
   @description('Required. The value of the variable. For security best practices, this value is always passed as a secure string as it could contain an encrypted value when the "isEncrypted" property is set to true.')
   @secure()
   value: string
 
-  @description('Optional. The description of the variable.')
-  description: string?
-
-  @description('Optional. If the variable should be encrypted. For security reasons encryption of variables should be enabled. Defaults to `true`.')
-  isEncrypted: bool?
+  @description('Optional. Other variable properties, including name, description, and isEncrypted. Only the properties used by the variable child module are forwarded.')
+  #disable-next-line no-explicit-any // Keep ordinary siblings as unconstrained as the previous array contract.
+  *: any
 }
 
 import { solutionPlanType } from 'br/public:avm/res/operations-management/solution:0.3.1'

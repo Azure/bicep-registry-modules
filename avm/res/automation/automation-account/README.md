@@ -1433,7 +1433,7 @@ param variables = [
 | [`skuName`](#parameter-skuname) | string | SKU name of the account. |
 | [`sourceControlConfigurations`](#parameter-sourcecontrolconfigurations) | array | The source control configurations. |
 | [`tags`](#parameter-tags) | object | Tags of the Automation Account resource. |
-| [`variables`](#parameter-variables) | array | List of variables to be created in the automation account. |
+| [`variables`](#parameter-variables) | array | List of variables to be created in the automation account. Each entry supplies name and value; description and isEncrypted are optional and retain the child module defaults. |
 | [`webhooks`](#parameter-webhooks) | array | List of webhooks to be created in the automation account. |
 
 ### Parameter: `name`
@@ -2749,7 +2749,7 @@ Tags of the Automation Account resource.
 
 ### Parameter: `variables`
 
-List of variables to be created in the automation account.
+List of variables to be created in the automation account. Each entry supplies name and value; description and isEncrypted are optional and retain the child module defaults.
 
 - Required: No
 - Type: array
@@ -2759,22 +2759,13 @@ List of variables to be created in the automation account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-variablesname) | string | The name of the variable. |
 | [`value`](#parameter-variablesvalue) | securestring | The value of the variable. For security best practices, this value is always passed as a secure string as it could contain an encrypted value when the "isEncrypted" property is set to true. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#parameter-variablesdescription) | string | The description of the variable. |
-| [`isEncrypted`](#parameter-variablesisencrypted) | bool | If the variable should be encrypted. For security reasons encryption of variables should be enabled. Defaults to `true`. |
-
-### Parameter: `variables.name`
-
-The name of the variable.
-
-- Required: Yes
-- Type: string
+| [`>Any_other_property<`](#parameter-variables>any_other_property<) |  | Other variable properties, including name, description, and isEncrypted. Only the properties used by the variable child module are forwarded. |
 
 ### Parameter: `variables.value`
 
@@ -2783,19 +2774,12 @@ The value of the variable. For security best practices, this value is always pas
 - Required: Yes
 - Type: securestring
 
-### Parameter: `variables.description`
+### Parameter: `variables.>Any_other_property<`
 
-The description of the variable.
+Other variable properties, including name, description, and isEncrypted. Only the properties used by the variable child module are forwarded.
 
-- Required: No
-- Type: string
-
-### Parameter: `variables.isEncrypted`
-
-If the variable should be encrypted. For security reasons encryption of variables should be enabled. Defaults to `true`.
-
-- Required: No
-- Type: bool
+- Required: Yes
+- Type: 
 
 ### Parameter: `webhooks`
 

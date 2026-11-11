@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "18069163752230382367"
+      "templateHash": "7081845310633049625"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -111,31 +111,16 @@
     "variableType": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the variable."
-          }
-        },
         "value": {
           "type": "securestring",
           "metadata": {
             "description": "Required. The value of the variable. For security best practices, this value is always passed as a secure string as it could contain an encrypted value when the \"isEncrypted\" property is set to true."
           }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The description of the variable."
-          }
-        },
-        "isEncrypted": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. If the variable should be encrypted. For security reasons encryption of variables should be enabled. Defaults to `true`."
-          }
+        }
+      },
+      "additionalProperties": {
+        "metadata": {
+          "description": "Optional. Other variable properties, including name, description, and isEncrypted. Only the properties used by the variable child module are forwarded."
         }
       },
       "metadata": {
@@ -1050,7 +1035,7 @@
       },
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. List of variables to be created in the automation account."
+        "description": "Optional. List of variables to be created in the automation account. Each entry supplies name and value; description and isEncrypted are optional and retain the child module defaults."
       }
     },
     "webhooks": {

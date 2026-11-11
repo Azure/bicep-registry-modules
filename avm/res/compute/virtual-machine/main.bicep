@@ -1495,35 +1495,15 @@ type nicConfigurationOutputType = {
 }
 
 @export()
-@description('The type of a \'DesiredStateConfiguration\' extension.')
+@description('DSC configuration. Only protected settings are constrained; other caller properties retain the open object contract.')
 type extensionDSCConfigType = {
-  @description('Required. Whether the extension is deployed.')
-  enabled: bool
-
-  @description('Optional. The name of the extension. Defaults to `DesiredStateConfiguration`.')
-  name: string?
-
-  @description('Optional. The version of the script handler.')
-  typeHandlerVersion: string?
-
-  @description('Optional. Indicates whether the extension should use a newer minor version if one is available at deployment time. Defaults to `true`.')
-  autoUpgradeMinorVersion: bool?
-
-  @description('Optional. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available. Defaults to `false`.')
-  enableAutomaticUpgrade: bool?
-
-  @description('Optional. Any object that contains the extension specific settings.')
-  settings: object?
-
   @description('Optional. Any object that contains the extension specific protected settings.')
   @secure()
   protectedSettings: object?
 
-  @description('Optional. Indicates whether failures stemming from the extension will be suppressed. Defaults to `false`.')
-  supressFailures: bool?
-
-  @description('Optional. Tags of the resource.')
-  tags: resourceInput<'Microsoft.Compute/virtualMachines/extensions@2024-11-01'>.tags?
+  @description('Optional. Other DSC configuration properties. Only the properties used by the extension are forwarded.')
+  #disable-next-line no-explicit-any // The previous object contract did not constrain ordinary siblings.
+  *: any
 }
 
 @export()
