@@ -438,7 +438,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     ]
     roleAssignments: [
       {
-        name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
@@ -834,7 +833,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     "roleAssignments": {
       "value": [
         {
-          "name": "1f98c16b-ea00-4686-8b81-05353b594ea3",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
@@ -1214,7 +1212,6 @@ param partners = [
 ]
 param roleAssignments = [
   {
-    name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Reader'
