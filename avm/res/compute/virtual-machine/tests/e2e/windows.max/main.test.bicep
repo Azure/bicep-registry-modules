@@ -168,7 +168,6 @@ module testDeployment '../../../main.bicep' = [
           enableIPForwarding: true
           roleAssignments: [
             {
-              name: '95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7'
               roleDefinitionIdOrName: 'Reader'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
