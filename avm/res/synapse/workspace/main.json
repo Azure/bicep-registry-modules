@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "2905971390161424735"
+      "templateHash": "4739461661383003030"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace."
@@ -150,14 +150,13 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The node size family of the pool."
+            "description": "Optional. The node size family of the pool. Defaults to MemoryOptimized."
           }
         },
         "nodeSize": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The node size of the pool."
+            "description": "Required. The node size of the pool."
           }
         },
         "autoScale": {
@@ -2419,7 +2418,7 @@
             "value": "[coalesce(parameters('bigDataPools'), createArray())[copyIndex()].nodeSize]"
           },
           "nodeSizeFamily": {
-            "value": "[coalesce(parameters('bigDataPools'), createArray())[copyIndex()].nodeSizeFamily]"
+            "value": "[coalesce(tryGet(coalesce(parameters('bigDataPools'), createArray())[copyIndex()], 'nodeSizeFamily'), 'MemoryOptimized')]"
           },
           "sessionLevelPackagesEnabled": {
             "value": "[tryGet(coalesce(parameters('bigDataPools'), createArray())[copyIndex()], 'sessionLevelPackagesEnabled')]"

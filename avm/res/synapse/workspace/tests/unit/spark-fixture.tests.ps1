@@ -35,7 +35,7 @@ Describe 'Synapse Spark library fixture' {
 
     It 'Keeps a separate pool without libraries' {
         $script:synapsePools[1].Contains('libraryRequirements') | Should -BeFalse
-        $script:synapsePools[1].nodeSizeFamily | Should -BeExactly 'MemoryOptimized'
+        $script:synapsePools[1].nodeSizeFamily | Should -BeNullOrEmpty
         $script:synapsePools[1].nodeSize | Should -BeExactly 'Small'
     }
 

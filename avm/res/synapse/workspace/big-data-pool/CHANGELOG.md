@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Regenerated ARM template artifacts with Bicep 0.48.1 without changing resource configuration.
+- Regenerated ARM template artifacts with pinned Bicep 0.48.1 to satisfy generated-template parity without changing resource behavior.
 
 ### Breaking Changes
 
