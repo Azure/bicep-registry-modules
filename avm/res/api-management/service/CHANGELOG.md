@@ -10,11 +10,12 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Marked primary and secondary subscription keys as secure in service and workspace subscription types, matching their child modules. Keys remain optional.
 - Marked workspace named values as secure through the imported workspace type, matching the named-value child module.
 - Secured the generated named-value fallback, workspace logger credentials, and portal-setting validation keys at their module boundaries.
+- Added the optional secondary delegation validation key to both portal-setting boundaries and supplied independent primary and secondary keys in the max test.
 - Kept the portal-setting child's ordinary properties open instead of duplicating its provider schema, and propagated the child's minor version change.
 
 ### Breaking Changes
 
-- The independently published `portalsetting` child now requires `properties.validationKey` to be a string or `null` when provided; its previous native object type did not constrain that field. The parent service's delegation type already uses an optional string, so this does not add a new restriction to the parent's `portalsettings` input.
+- The independently published `portalsetting` child now requires `properties.validationKey` and `properties.validationSecondaryKey` to be strings or `null` when provided; its previous native object type did not constrain these fields. The parent service's delegation type already used an optional string for the primary key and now accepts an optional secondary key, so existing parent inputs are unaffected.
 
 ## 0.15.0
 

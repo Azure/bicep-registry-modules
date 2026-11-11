@@ -59,11 +59,15 @@ output name string = portalSetting.name
 output resourceGroupName string = resourceGroup().name
 
 @export()
-@description('Portal setting properties. Only the delegation validation key is constrained; other properties are forwarded unchanged.')
+@description('Portal setting properties. Only the delegation validation keys are constrained; other properties are forwarded unchanged.')
 type portalSettingPropertiesType = {
   @secure()
   @description('Optional. A base64-encoded validation key to validate that a request comes from Azure API Management.')
   validationKey: string?
+
+  @secure()
+  @description('Optional. A base64-encoded secondary validation key to validate that a request comes from Azure API Management.')
+  validationSecondaryKey: string?
 
   @description('Optional. Other portal setting properties, including sign-in and sign-up settings.')
   // The native properties type is an open object; Bicep cannot add a secure leaf to it.

@@ -28,6 +28,10 @@ param customSecret string = newGuid()
 @secure()
 param delegationValidationKey string = base64(replace('${newGuid()}${newGuid()}', '-', ''))
 
+@description('Optional. The base64-encoded 64-byte secondary delegation validation key.')
+@secure()
+param delegationValidationSecondaryKey string = base64(replace('${newGuid()}${newGuid()}', '-', ''))
+
 // Enforcing location due to limited availability of the APIM Worskpace Gateway SKU in certain regions.
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'germanywestcentral'
@@ -318,6 +322,7 @@ module testDeployment '../../../main.bicep' = [
               enabled: false
             }
             validationKey: delegationValidationKey
+            validationSecondaryKey: delegationValidationSecondaryKey
           }
         }
         {

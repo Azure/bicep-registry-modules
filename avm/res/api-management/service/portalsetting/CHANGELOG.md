@@ -6,11 +6,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added an open `portalSettingPropertiesType` to secure only the delegation validation key. Other properties remain unconstrained and are forwarded unchanged, as with the previous native `object` contract.
+- Added an open `portalSettingPropertiesType` to secure only the primary and secondary delegation validation keys. Other properties remain unconstrained and are forwarded unchanged, as with the previous native `object` contract.
 
 ### Breaking Changes
 
-- `properties.validationKey`, when provided, must now be a string or `null`. The previous native `object` contract did not validate this field. Callers relying on another value type must pass the base64-encoded key as a string.
+- `properties.validationKey` and `properties.validationSecondaryKey`, when provided, must now be strings or `null`. The previous native `object` contract did not validate these fields. Callers relying on another value type must pass each base64-encoded key as a string.
 
 ## 0.1.2
 

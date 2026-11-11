@@ -1440,5 +1440,9 @@ type delegationPropertiesType = {
     @secure()
     @description('Optional. A base64-encoded validation key to validate, that a request is coming from Azure API Management.')
     validationKey: string?
+
+    @secure()
+    @description('Optional. A base64-encoded secondary validation key to validate that a request comes from Azure API Management.')
+    validationSecondaryKey: string?
   }
 }

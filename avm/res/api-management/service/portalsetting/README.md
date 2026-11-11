@@ -70,15 +70,8 @@ Portal setting properties.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-properties>any_other_property<) |  | Other portal setting properties, including sign-in and sign-up settings. |
 | [`validationKey`](#parameter-propertiesvalidationkey) | securestring | A base64-encoded validation key to validate that a request comes from Azure API Management. |
-
-### Parameter: `properties.>Any_other_property<`
-
-Other portal setting properties, including sign-in and sign-up settings.
-
-- Required: Yes
-- Type: 
+| [`validationSecondaryKey`](#parameter-propertiesvalidationsecondarykey) | securestring | A base64-encoded secondary validation key to validate that a request comes from Azure API Management. |
 
 ### Parameter: `properties.validationKey`
 
@@ -86,6 +79,26 @@ A base64-encoded validation key to validate that a request comes from Azure API 
 
 - Required: No
 - Type: securestring
+
+### Parameter: `properties.validationSecondaryKey`
+
+A base64-encoded secondary validation key to validate that a request comes from Azure API Management.
+
+- Required: No
+- Type: securestring
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-properties>any_other_property<) |  | Other portal setting properties, including sign-in and sign-up settings. |
+
+### Parameter: `properties.>Any_other_property<`
+
+Other portal setting properties, including sign-in and sign-up settings.
+
+- Required: Yes
+- Type: 
 
 ### Parameter: `apiManagementServiceName`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "2138008576017839728"
+      "templateHash": "7636806925325584964"
     },
     "name": "API Management Service Portal Settings",
     "description": "This module deploys an API Management Service Portal Setting."
@@ -21,6 +21,13 @@
           "metadata": {
             "description": "Optional. A base64-encoded validation key to validate that a request comes from Azure API Management."
           }
+        },
+        "validationSecondaryKey": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A base64-encoded secondary validation key to validate that a request comes from Azure API Management."
+          }
         }
       },
       "additionalProperties": {
@@ -30,7 +37,7 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "Portal setting properties. Only the delegation validation key is constrained; other properties are forwarded unchanged."
+        "description": "Portal setting properties. Only the delegation validation keys are constrained; other properties are forwarded unchanged."
       }
     }
   },
