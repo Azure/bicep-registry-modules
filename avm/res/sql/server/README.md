@@ -1334,8 +1334,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         availabilityZone: -1
         backupLongTermRetentionPolicy: {
           monthlyRetention: 'P6M'
-          timeBasedImmutability: 'Enabled'
-          timeBasedImmutabilityMode: 'Locked'
+          timeBasedImmutability: 'Disabled'
         }
         backupShortTermRetentionPolicy: {
           retentionDays: 14
@@ -1540,8 +1539,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "availabilityZone": -1,
           "backupLongTermRetentionPolicy": {
             "monthlyRetention": "P6M",
-            "timeBasedImmutability": "Enabled",
-            "timeBasedImmutabilityMode": "Locked"
+            "timeBasedImmutability": "Disabled"
           },
           "backupShortTermRetentionPolicy": {
             "retentionDays": 14
@@ -1764,8 +1762,7 @@ param databases = [
     availabilityZone: -1
     backupLongTermRetentionPolicy: {
       monthlyRetention: 'P6M'
-      timeBasedImmutability: 'Enabled'
-      timeBasedImmutabilityMode: 'Locked'
+      timeBasedImmutability: 'Disabled'
     }
     backupShortTermRetentionPolicy: {
       retentionDays: 14

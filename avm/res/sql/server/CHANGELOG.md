@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
+## 0.22.2
+
+### Changes
+
+- Disabled LTR backup immutability in the max deployment test to allow SQL server cleanup while retaining long-term retention policy coverage.
+
+### Breaking Changes
+
+- None
+
 ## 0.22.1
 
 ### Changes
