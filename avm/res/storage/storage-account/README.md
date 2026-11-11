@@ -1560,7 +1560,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     requireInfrastructureEncryption: true
     roleAssignments: [
       {
-        name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
@@ -2128,7 +2127,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "30b99723-a3d8-4e31-8872-b80c960d62bd",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
@@ -2666,7 +2664,6 @@ param queueServices = {
 param requireInfrastructureEncryption = true
 param roleAssignments = [
   {
-    name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Reader'

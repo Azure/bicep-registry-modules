@@ -164,7 +164,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     }
     roleAssignments: [
       {
-        name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -282,7 +281,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     "roleAssignments": {
       "value": [
         {
-          "name": "97fc1da9-bfe4-409d-b17a-da9a82fad0d0",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -374,7 +372,6 @@ param networkConfiguration = {
 }
 param roleAssignments = [
   {
-    name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

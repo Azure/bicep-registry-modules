@@ -580,7 +580,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
-        name: 'bd0f41e3-8e3e-4cd3-b028-edd61608bd9f'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
@@ -834,7 +833,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "bd0f41e3-8e3e-4cd3-b028-edd61608bd9f",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
@@ -1064,7 +1062,6 @@ param privateEndpoints = [
 param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
-    name: 'bd0f41e3-8e3e-4cd3-b028-edd61608bd9f'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Reader'

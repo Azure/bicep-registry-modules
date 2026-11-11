@@ -1451,7 +1451,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     restrictOutboundNetworkAccess: 'Disabled'
     roleAssignments: [
       {
-        name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1677,7 +1676,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1881,7 +1879,6 @@ param privateEndpoints = [
 param restrictOutboundNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
-    name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
