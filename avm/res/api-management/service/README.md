@@ -532,6 +532,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           subscriptions: {
             enabled: false
           }
+          url: 'https://contoso.com/delegation'
           userRegistration: {
             enabled: false
           }
@@ -1145,6 +1146,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "subscriptions": {
               "enabled": false
             },
+            "url": "https://contoso.com/delegation",
             "userRegistration": {
               "enabled": false
             },
@@ -1738,6 +1740,7 @@ param portalsettings = [
       subscriptions: {
         enabled: false
       }
+      url: 'https://contoso.com/delegation'
       userRegistration: {
         enabled: false
       }

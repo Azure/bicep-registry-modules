@@ -24,6 +24,10 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param customSecret string = newGuid()
 
+@description('Optional. The base64-encoded 64-byte delegation validation key.')
+@secure()
+param delegationValidationKey string = base64(replace('${newGuid()}${newGuid()}', '-', ''))
+
 // Enforcing location due to limited availability of the APIM Worskpace Gateway SKU in certain regions.
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'germanywestcentral'
@@ -306,13 +310,14 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'delegation'
           properties: {
+            url: 'https://contoso.com/delegation'
             subscriptions: {
               enabled: false
             }
             userRegistration: {
               enabled: false
             }
-            validationKey: base64(customSecret)
+            validationKey: delegationValidationKey
           }
         }
         {
