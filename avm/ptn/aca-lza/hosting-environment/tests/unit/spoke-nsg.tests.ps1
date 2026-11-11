@@ -207,7 +207,7 @@ Describe 'ACA spoke NSG semantic preservation' {
             $deploymentSubnets | Should -HaveCount 1
             $deploymentSubnets[0].serviceEndpoints | Should -HaveCount 1
             ConvertTo-CanonicalJson $deploymentSubnets[0].serviceEndpoints |
-                Should -BeExactly (ConvertTo-CanonicalJson @(@{ service = 'Microsoft.Storage' }))
+                Should -BeExactly (ConvertTo-CanonicalJson @('Microsoft.Storage'))
             $otherwiseUnchanged = @($evaluated.afterSubnets.value | ForEach-Object {
                     $subnet = $_.Clone()
                     if ($subnet.name -eq $bindings.deploymentSubnetName) {

@@ -131,11 +131,7 @@ var defaultSubnets = [
     addressPrefix: deploymentSubnetAddressPrefix
     networkSecurityGroupResourceId: networkSecurityGroups[3].outputs.resourceId
     delegation: 'Microsoft.ContainerInstance/containerGroups'
-    serviceEndpoints: [
-      {
-        service: 'Microsoft.Storage'
-      }
-    ]
+    serviceEndpoints: ['Microsoft.Storage']
   }
   {
     name: spokePrivateEndpointsSubnetName
