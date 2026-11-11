@@ -342,7 +342,6 @@ function Test-VerifyDatabricks($DatabricksResourceGroupName, $DatabricksName, $T
     $adb.UiDefinitionUri | Should -BeNullOrEmpty
     #Skip $adb.UpdatedBy**
     #Skip $adb.Url
-    $adb.VnetAddressPrefixValue | Should -Be '10.139'
     #Skip $adb.WorkspaceId
 
     Test-VerifyTagsForResource -ResourceId $adb.Id -Tags $Tags

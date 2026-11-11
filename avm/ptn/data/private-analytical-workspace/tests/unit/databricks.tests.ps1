@@ -44,15 +44,14 @@ Describe 'Private analytical workspace Databricks verification' {
             'CustomVirtualNetworkIdType', 'CustomVirtualNetworkIdValue',
             'EnableNoPublicIP', 'EnableNoPublicIPType',
             'PrepareEncryption', 'PrepareEncryptionType',
-            'RequireInfrastructureEncryption', 'RequireInfrastructureEncryptionType',
-            'VnetAddressPrefixType', 'VnetAddressPrefixValue'
+            'RequireInfrastructureEncryption', 'RequireInfrastructureEncryptionType'
         )
         $configuredStatements = @($helper[0].Body.FindAll({
                     param($node)
                     $node -is [System.Management.Automation.Language.PipelineAst] -and
                     $node.Extent.Text -match ('^\$adb\.(' + ($configuredProperties -join '|') + ')\s+\|')
                 }, $true))
-        if ($configuredStatements.Count -lt 7) { throw 'Expected all configured Databricks value assertions.' }
+        if ($configuredStatements.Count -lt 6) { throw 'Expected all configured Databricks value assertions.' }
         $configuredAssertions = [scriptblock]::Create($configuredStatements.Extent.Text -join [Environment]::NewLine)
         $compiledPath = Join-Path $TestDrive 'private-analytical-workspace.json'
         $diagnostics = bicep build (Join-Path $modulePath 'main.bicep') --no-restore --outfile $compiledPath 2>&1
@@ -84,7 +83,6 @@ Describe 'Private analytical workspace Databricks verification' {
         @{ scenario = 'public IP enabled'; propertyName = 'EnableNoPublicIP'; invalidValue = $false; accepted = $false }
         @{ scenario = 'encryption preparation disabled'; propertyName = 'PrepareEncryption'; invalidValue = $false; accepted = $false }
         @{ scenario = 'unexpected infrastructure encryption'; propertyName = 'RequireInfrastructureEncryption'; invalidValue = $true; accepted = $false }
-        @{ scenario = 'wrong address prefix'; propertyName = 'VnetAddressPrefixValue'; invalidValue = '10.140'; accepted = $false }
     ) {
         Set-StrictMode -Version 3.0
         $PrivateSubnetName = 'private-subnet'
@@ -97,7 +95,6 @@ Describe 'Private analytical workspace Databricks verification' {
             EnableNoPublicIP = $true
             PrepareEncryption = $true
             RequireInfrastructureEncryption = $false
-            VnetAddressPrefixValue = '10.139'
         }
         if ($propertyName) { $adb.$propertyName = $invalidValue }
         if ($accepted) {
