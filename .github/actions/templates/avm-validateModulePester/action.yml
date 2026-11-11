@@ -36,9 +36,11 @@ runs:
   steps:
     - name: "Build Bicep test files"
       shell: pwsh
+      env:
+        MODULE_PATH: ${{ inputs.modulePath }}
       run: |
-        $modulePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
-        Get-ChildItem -Path $modulePath -Filter '*.test.bicep' -File -Recurse | ForEach-Object {
+        $modulePath = Join-Path $env:GITHUB_WORKSPACE $env:MODULE_PATH
+        Get-ChildItem -LiteralPath $modulePath -Filter '*.test.bicep' -File -Recurse -ErrorAction Stop | ForEach-Object {
           Write-Output "Building $($_.FullName)"
           bicep build $_.FullName --stdout | Out-Null
           if ($LASTEXITCODE -ne 0) {
