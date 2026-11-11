@@ -34,6 +34,18 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: "Build Bicep test files"
+      shell: pwsh
+      run: |
+        $modulePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
+        Get-ChildItem -Path $modulePath -Filter '*.test.bicep' -File -Recurse | ForEach-Object {
+          Write-Output "Building $($_.FullName)"
+          bicep build $_.FullName --stdout | Out-Null
+          if ($LASTEXITCODE -ne 0) {
+            throw "Bicep build failed for $($_.FullName) with exit code $LASTEXITCODE"
+          }
+        }
+
     # [Module Pester Test] task(s)
     #-----------------------------
     - name: "Run Pester tests"
