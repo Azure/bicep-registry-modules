@@ -12,7 +12,9 @@
   "Microsoft.Cdn/profiles/afdEndpoints": ["name"],
   "Microsoft.CognitiveServices/accounts": ["properties.customSubDomainName"],
   "Microsoft.Communication/communicationServices": ["name"],
-  "Microsoft.ContainerInstance/containerGroups": ["properties.ipAddress.dnsNameLabel"],
+  "Microsoft.ContainerInstance/containerGroups": [
+    "properties.ipAddress.dnsNameLabel"
+  ],
   "Microsoft.ContainerRegistry/registries": ["name"],
   "Microsoft.DataFactory/factories": ["name"],
   "Microsoft.DataLakeAnalytics/accounts": ["name"],
@@ -41,8 +43,13 @@
   "Microsoft.LoadTestService/loadtests": ["name"],
   "Microsoft.MachineLearningServices/registries": ["name"],
   "Microsoft.Network/frontDoors": ["name"],
-  "Microsoft.Network/publicIPAddresses": ["properties.dnsSettings.domainNameLabel"],
-  "Microsoft.Network/trafficmanagerprofiles": ["name", "properties.dnsConfig.relativeName"],
+  "Microsoft.Network/publicIPAddresses": [
+    "properties.dnsSettings.domainNameLabel"
+  ],
+  "Microsoft.Network/trafficmanagerprofiles": [
+    "name",
+    "properties.dnsConfig.relativeName"
+  ],
   "Microsoft.NotificationHubs/namespaces": ["name"],
   "Microsoft.Purview/accounts": ["name"],
   "Microsoft.Relay/namespaces": ["name"],
