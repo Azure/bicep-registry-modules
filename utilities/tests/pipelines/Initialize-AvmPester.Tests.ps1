@@ -289,18 +289,18 @@ Describe 'Pester entry-point initialization' {
         $workflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'platform.on-pull-request-check-metadata.yml') -Raw)
         $namingWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'platform.on-pull-request-check-e2e-names.yml') -Raw)
         $script:scripts = @{
-            'full static validation' = ($action.runs.steps | Where-Object id -EQ 'pester_run_step').run.Replace('${{ inputs.modulePath }}', 'avm/res/example/module').Replace('${{ inputs.moduleTestFilePath }}', 'utilities/pipelines/staticValidation/compliance/module.tests.ps1')
-            'post-deployment tests'  = ($deploymentAction.runs.steps | Where-Object id -EQ 'pester_run_step').run
-            'standalone metadata'    = ($workflow.jobs.job_check_metadata.steps | Where-Object shell -EQ 'pwsh').run
-            'offline naming tests'   = ($namingWorkflow.jobs.job_check_names.steps | Where-Object name -EQ 'Test naming helper and validator').run
-            'local module tests'     = Get-Content -LiteralPath (Join-Path $RepoRootPath 'utilities' 'tools' 'Test-ModuleLocally.ps1') -Raw
-            'CI utility tests'       = Get-Content -LiteralPath (Join-Path $RepoRootPath 'utilities' 'tests' 'Test-CI.ps1') -Raw
+            'full static validation'     = ($action.runs.steps | Where-Object id -EQ 'pester_run_step').run.Replace('${{ inputs.modulePath }}', 'avm/res/example/module').Replace('${{ inputs.moduleTestFilePath }}', 'utilities/pipelines/staticValidation/compliance/module.tests.ps1')
+            'post-deployment validation' = ($deploymentAction.runs.steps | Where-Object id -EQ 'pester_run_step').run
+            'standalone metadata'        = ($workflow.jobs.job_check_metadata.steps | Where-Object shell -EQ 'pwsh').run
+            'offline naming tests'       = ($namingWorkflow.jobs.job_check_names.steps | Where-Object name -EQ 'Test naming helper and validator').run
+            'local module tests'         = Get-Content -LiteralPath (Join-Path $RepoRootPath 'utilities' 'tools' 'Test-ModuleLocally.ps1') -Raw
+            'CI utility tests'           = Get-Content -LiteralPath (Join-Path $RepoRootPath 'utilities' 'tests' 'Test-CI.ps1') -Raw
         }
     }
 
     It 'initializes the shared engine before any Pester command in <EntryPoint>' -ForEach @(
         @{ EntryPoint = 'full static validation'; PesterCommandCount = 2 }
-        @{ EntryPoint = 'post-deployment tests'; PesterCommandCount = 2 }
+        @{ EntryPoint = 'post-deployment validation'; PesterCommandCount = 2 }
         @{ EntryPoint = 'standalone metadata'; PesterCommandCount = 2 }
         @{ EntryPoint = 'offline naming tests'; PesterCommandCount = 1 }
         @{ EntryPoint = 'local module tests'; PesterCommandCount = 2 }

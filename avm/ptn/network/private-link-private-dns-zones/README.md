@@ -564,6 +564,7 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink.purview.azure.com'
     'privatelink.purviewstudio.azure.com'
     'privatelink.queue.core.windows.net'
+    'privatelink.redis.azure.net'
     'privatelink.redis.cache.windows.net'
     'privatelink.redisenterprise.cache.azure.net'
     'privatelink.search.windows.net'

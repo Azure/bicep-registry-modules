@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "6887240269148825497"
+      "version": "0.43.8.12551",
+      "templateHash": "12232221711143519984"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool"
@@ -731,10 +731,11 @@
       "allowedValues": [
         "BreadthFirst",
         "DepthFirst",
+        "MultiplePersistent",
         "Persistent"
       ],
       "metadata": {
-        "description": "Optional. Type of load balancer algorithm."
+        "description": "Optional. Type of load balancer algorithm. Use MultiplePersistent with a Personal host pool to allow multiple personal desktops per user."
       }
     },
     "maxSessionLimit": {

@@ -1,10 +1,26 @@
 ---
-name: 'AVM-Update-module-to-latest-API-versions'
-description: 'Analyze Azure Verified Module (AVM) Bicep files for ARM API version updates and create implementation plans.'
+name: "AVM-Update-module-to-latest-API-versions"
+description: "Analyze Azure Verified Module (AVM) Bicep files for ARM API version updates and create implementation plans."
 argument-hint: Provide the name of the module you want to update
 agent: agent
 model: Auto (copilot)
-tools: ['search', 'runCommands', 'runTasks', 'usages', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests', 'Azure MCP/documentation', 'search']
+tools:
+  [
+    "search",
+    "runCommands",
+    "runTasks",
+    "usages",
+    "problems",
+    "changes",
+    "testFailure",
+    "openSimpleBrowser",
+    "fetch",
+    "githubRepo",
+    "todos",
+    "runTests",
+    "Azure MCP/documentation",
+    "search",
+  ]
 ---
 
 # Analyze ARM API Version Updates for Resource Module
@@ -76,9 +92,9 @@ Here is a ReAct-style Thought–Action–Observation execution flow that you MUS
 
 ### 5.1. Summary Table (MANDATORY)
 
-| Resource Name | Resource Type | Current API | Latest API | Status | Complexity | Breaking Changes |
-|---------------|---------------|-------------|------------|--------|------------|------------------|
-| `storageAccount` | `Microsoft.Storage/storageAccounts` | `2023-01-01` | `2023-05-01` | 🔄 Update Available | Low | None |
+| Resource Name    | Resource Type                       | Current API  | Latest API   | Status              | Complexity | Breaking Changes |
+| ---------------- | ----------------------------------- | ------------ | ------------ | ------------------- | ---------- | ---------------- |
+| `storageAccount` | `Microsoft.Storage/storageAccounts` | `2023-01-01` | `2023-05-01` | 🔄 Update Available | Low        | None             |
 
 ### 5.2. Status Icons
 
@@ -100,18 +116,21 @@ For each resource requiring an update, provide the following details:
 - **Change Type**: {Non-breaking | Potentially Breaking | Breaking}
 
 **Schema Changes:**
+
 - ➕ **New**: List specific new properties with their types and descriptions.
 - 🔄 **Modified**: List specific properties with changed types, constraints, or allowed values.
 - ➖ **Removed**: List specific removed or deprecated properties.
 - ⚠️ **Behavioral**: Note specific changes in default values or resource behavior.
 
 **Implementation Plan:**
+
 1. **Module Updates**: Detail specific required changes to parameters, variables, and outputs.
 2. **Test Updates**: Specify which e2e test scenarios need modification (defaults/max/waf-aligned).
 3. **Documentation**: Note specific required updates for the README file.
 4. **Validation**: Mention any PSRule or linter considerations.
 
 **Risk Assessment:**
+
 - **Breaking Risk**: {Low | Medium | High} - with specific justification
 - **Migration Effort**: {Low | Medium | High} - with time estimate if possible
 - **Testing Complexity**: {Low | Medium | High} - with specific test scenarios needed
@@ -141,6 +160,7 @@ For each resource requiring an update, provide the following details:
 > If any of the above conditions are met, the analysis is considered incomplete and must be redone.
 
 ## 7. Constraints
+
 - ⚠️ **No File Modifications**: This is a planning task only. Do not edit any files.
 - ⚠️ **AVM Compliance**: All recommendations must align with AVM specifications.
 - ⚠️ **Stable Versions Only**: Prioritize stable API versions unless a preview is explicitly required.

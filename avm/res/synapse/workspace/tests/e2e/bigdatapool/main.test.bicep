@@ -80,7 +80,6 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: 'dep${namePrefix}bdp02'
-          nodeSizeFamily: 'MemoryOptimized'
           nodeSize: 'Small'
         }
       ]

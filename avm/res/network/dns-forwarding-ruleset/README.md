@@ -141,6 +141,10 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
       {
         domainName: 'contoso.'
         forwardingRuleState: 'Enabled'
+        metadata: {
+          Description: 'Forward contoso queries'
+          Environment: 'Non-Prod'
+        }
         name: 'rule1'
         targetDnsServers: [
           {
@@ -216,6 +220,10 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
         {
           "domainName": "contoso.",
           "forwardingRuleState": "Enabled",
+          "metadata": {
+            "Description": "Forward contoso queries",
+            "Environment": "Non-Prod"
+          },
           "name": "rule1",
           "targetDnsServers": [
             {
@@ -295,6 +303,10 @@ param forwardingRules = [
   {
     domainName: 'contoso.'
     forwardingRuleState: 'Enabled'
+    metadata: {
+      Description: 'Forward contoso queries'
+      Environment: 'Non-Prod'
+    }
     name: 'rule1'
     targetDnsServers: [
       {
@@ -514,7 +526,7 @@ Array of forwarding rules.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`forwardingRuleState`](#parameter-forwardingrulesforwardingrulestate) | string | The state of the forwarding rule. |
-| [`metadata`](#parameter-forwardingrulesmetadata) | string | Metadata attached to the forwarding rule. |
+| [`metadata`](#parameter-forwardingrulesmetadata) | object | Metadata attached to the forwarding rule. |
 
 ### Parameter: `forwardingRules.domainName`
 
@@ -577,7 +589,7 @@ The state of the forwarding rule.
 Metadata attached to the forwarding rule.
 
 - Required: No
-- Type: string
+- Type: object
 
 ### Parameter: `location`
 

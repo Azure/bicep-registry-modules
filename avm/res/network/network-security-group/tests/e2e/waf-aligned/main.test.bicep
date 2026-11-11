@@ -26,9 +26,18 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+  }
 }
 
 // ============== //
@@ -42,6 +51,11 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      diagnosticSettings: [
+        {
+          workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
       securityRules: [
         {
           name: 'deny-hop-outbound'

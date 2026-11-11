@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2985905385016374187"
+      "templateHash": "9240729161960833490"
     },
     "name": "Network Security Groups",
-    "description": "This module deploys a Network security Group (NSG)."
+    "description": "This module deploys a Network Security Group (NSG)."
   },
   "definitions": {
     "securityRuleType": {
@@ -45,7 +45,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
+                "description": "Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
               }
             },
             "destinationAddressPrefixes": {
@@ -100,7 +100,7 @@
               "minValue": 100,
               "maxValue": 4096,
               "metadata": {
-                "description": "Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+                "description": "Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
               }
             },
             "protocol": {
@@ -403,14 +403,14 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the built-in roles will be deployed."
+        "description": "Optional. Array of Security Rules to deploy to the Network Security Group. When not provided, an NSG including only the default security rules will be deployed. Note: The provided rules replace all custom security rules of the Network Security Group on each deployment, including rules added outside of this module."
       }
     },
     "flushConnection": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. When enabled, flows created from Network Security Group connections will be re-evaluated when rules are updates. Initial enablement will trigger re-evaluation. Network Security Group connection flushing is not available in all regions."
+        "description": "Optional. When enabled, flows created from Network Security Group connections will be re-evaluated when rules are updated. Initial enablement will trigger re-evaluation. Note: Network Security Group connection flushing is not available in all regions and the deployment fails if it is enabled in a region that does not support it."
       }
     },
     "diagnosticSettings": {
@@ -444,7 +444,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/networkSecurityGroups@2025-05-01#properties/tags"
+          "source": "Microsoft.Network/networkSecurityGroups@2025-09-01#properties/tags"
         },
         "description": "Optional. Tags of the NSG resource."
       },
@@ -481,7 +481,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -500,7 +500,7 @@
     },
     "networkSecurityGroup": {
       "type": "Microsoft.Network/networkSecurityGroups",
-      "apiVersion": "2025-05-01",
+      "apiVersion": "2025-09-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -630,7 +630,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('networkSecurityGroup', '2025-05-01', 'full').location]"
+      "value": "[reference('networkSecurityGroup', '2025-09-01', 'full').location]"
     }
   }
 }

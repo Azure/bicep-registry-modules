@@ -37,8 +37,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/firewall-policy:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using explicit proxy](#example-2-using-explicit-proxy)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -94,7 +95,94 @@ param name = 'nfpmin001'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using explicit proxy_
+
+This instance enables explicit HTTP/HTTPS proxy without DNS proxy or PAC file hosting.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/explicit-proxy]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
+  params: {
+    // Required parameters
+    name: 'nfpexp001'
+    // Non-required parameters
+    explicitProxy: {
+      enableExplicitProxy: true
+      enablePacFile: false
+      httpPort: 8080
+    }
+    location: '<location>'
+    tier: 'Standard'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nfpexp001"
+    },
+    // Non-required parameters
+    "explicitProxy": {
+      "value": {
+        "enableExplicitProxy": true,
+        "enablePacFile": false,
+        "httpPort": 8080
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tier": {
+      "value": "Standard"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/firewall-policy:<version>'
+
+// Required parameters
+param name = 'nfpexp001'
+// Non-required parameters
+param explicitProxy = {
+  enableExplicitProxy: true
+  enablePacFile: false
+  httpPort: 8080
+}
+param location = '<location>'
+param tier = 'Standard'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -433,7 +521,7 @@ param tier = 'Premium'
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -665,6 +753,7 @@ param threatIntelMode = 'Deny'
 | [`defaultWorkspaceResourceId`](#parameter-defaultworkspaceresourceid) | string | Default Log Analytics Resource ID for Firewall Policy Insights. |
 | [`enableProxy`](#parameter-enableproxy) | bool | Enable DNS Proxy on Firewalls attached to the Firewall Policy. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`explicitProxy`](#parameter-explicitproxy) | object | Explicit HTTP/HTTPS proxy settings for Standard or Premium policies. Configured independently of DNS proxy settings. |
 | [`fqdns`](#parameter-fqdns) | array | List of FQDNs for the ThreatIntel Allowlist. |
 | [`insightsIsEnabled`](#parameter-insightsisenabled) | bool | A flag to indicate if the insights are enabled on the policy. |
 | [`intrusionDetection`](#parameter-intrusiondetection) | object | The configuration for Intrusion detection. |
@@ -734,6 +823,72 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `explicitProxy`
+
+Explicit HTTP/HTTPS proxy settings for Standard or Premium policies. Configured independently of DNS proxy settings.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableExplicitProxy`](#parameter-explicitproxyenableexplicitproxy) | bool | Enable explicit proxy mode. |
+| [`enablePacFile`](#parameter-explicitproxyenablepacfile) | bool | Enable PAC file hosting. When enabled, provide pacFile and pacFilePort. |
+| [`httpPort`](#parameter-explicitproxyhttpport) | int | The explicit proxy HTTP port, used for both HTTP and HTTPS traffic. |
+| [`httpsPort`](#parameter-explicitproxyhttpsport) | int | The explicit proxy HTTPS port. |
+| [`pacFile`](#parameter-explicitproxypacfile) | securestring | The PAC file URL. May contain a SAS token. |
+| [`pacFilePort`](#parameter-explicitproxypacfileport) | int | The port on which the firewall serves the PAC file. |
+
+### Parameter: `explicitProxy.enableExplicitProxy`
+
+Enable explicit proxy mode.
+
+- Required: No
+- Type: bool
+
+### Parameter: `explicitProxy.enablePacFile`
+
+Enable PAC file hosting. When enabled, provide pacFile and pacFilePort.
+
+- Required: No
+- Type: bool
+
+### Parameter: `explicitProxy.httpPort`
+
+The explicit proxy HTTP port, used for both HTTP and HTTPS traffic.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 64000
+
+### Parameter: `explicitProxy.httpsPort`
+
+The explicit proxy HTTPS port.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 64000
+
+### Parameter: `explicitProxy.pacFile`
+
+The PAC file URL. May contain a SAS token.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `explicitProxy.pacFilePort`
+
+The port on which the firewall serves the PAC file.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 64000
 
 ### Parameter: `fqdns`
 

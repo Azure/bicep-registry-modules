@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/dns-forwarding-ruleset/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+- Fixed forwarding rule metadata to accept an object, matching the child module and Azure API.
+
+### Breaking Changes
+
+- Changed `forwardingRuleType.metadata` from `string?` to `object?`. Pass metadata as an object instead of a string; the previous string type did not match the child module or Azure API.
+
 ## 0.5.4
 
 ### Changes

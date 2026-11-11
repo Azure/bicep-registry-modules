@@ -250,7 +250,7 @@
 {{ end }}{{ if max_value != null }}- MaxValue: {{ max_value }}
 {{ end }}{{ if parameter_info && parameter_info.Example != null }}{{~ example_raw = parameter_info.Example ~}}{{ if (object.typeof example_raw) == "object" }}- Example:
   ```Bicep
-{{ for line in (string.split (compiled_default_text example_raw "  " "") "\n") }}  {{ line }}
+{{ for line in (string.split (compiled_default_text example_raw "    " "") "\n") }}  {{ line }}
 {{ end }}  ```
 {{ else }}{{~ if (object.typeof example_raw) == "array" ~}}{{~ joined = "" ~}}{{~ for line in example_raw ~}}{{~ if for.index > 0 ~}}{{~ joined = joined + "\n" ~}}{{~ end ~}}{{~ joined = joined + line ~}}{{~ end ~}}{{~ example_raw = joined ~}}{{~ end ~}}{{~ if example_raw != "" ~}}{{~ example_lines = string.split (string.replace example_raw "\r\n" "\n") "\n" ~}}{{~ example_text = formatted_example example_raw ~}}{{ if example_lines.size == 1 }}- Example: `{{ string.lstrip example_text }}`
 {{ else }}- Example:

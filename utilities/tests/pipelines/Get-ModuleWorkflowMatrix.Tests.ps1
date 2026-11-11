@@ -33,7 +33,7 @@ Describe 'Get-ModuleWorkflowMatrix' {
             'avm/res/storage/storage-account/blob-service/container/main.bicep'
             'avm/res/storage/storage-account/tests/e2e/defaults/main.test.bicep'
             'avm/res/network/virtual-network/README.md'
-            '.github/workflows/avm.module.yml'
+            '.github/workflows/pr-check.yml'
         ) -RepoRoot $repoRootPath
 
         $result.include.modulePath | Should -Be @('avm/res/storage/storage-account')

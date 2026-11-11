@@ -24,6 +24,12 @@ The JSON-serialized, resolved GitHub Actions secrets context.
 
 .PARAMETER KeyVaultName
 Optional legacy vault supplying CI- secrets for parameters not configured in GitHub.
+
+.PARAMETER ModulePath
+Optional canonical AVM module path used to select the BAMI billing-scope override.
+
+.PARAMETER ModuleBillingScopes
+Optional JSON object containing the verified BAMI billing scope for the canonical module.
 #>
 function Get-CIParameterMap {
 
@@ -44,7 +50,13 @@ function Get-CIParameterMap {
         [string] $GitHubSecrets = '{}',
 
         [Parameter()]
-        [string] $KeyVaultName
+        [string] $KeyVaultName,
+
+        [Parameter()]
+        [string] $ModulePath,
+
+        [Parameter()]
+        [string] $ModuleBillingScopes
     )
 
     . (Join-Path $PSScriptRoot 'ConvertFrom-CIParameterName.ps1')
@@ -166,6 +178,41 @@ function Get-CIParameterMap {
             default {
                 throw "Parameter [$parameterName] has unsupported ARM type [$parameterType] for GitHub CI inputs."
             }
+        }
+    }
+
+    $canonicalBillingModulePath = 'avm/ptn/lz/sub-vending'
+    $normalizedModulePath = ($ModulePath -replace '\\', '/').Trim('/')
+    if ($normalizedModulePath -ceq $canonicalBillingModulePath -and
+        -not [string]::IsNullOrWhiteSpace($ModuleBillingScopes)) {
+        try {
+            $billingScopes = ConvertFrom-Json -InputObject $ModuleBillingScopes -AsHashtable -ErrorAction Stop
+        } catch [System.ArgumentException] {
+            throw 'The validated module billing-scope context must be a valid JSON object.'
+        }
+        if ($billingScopes -isnot [System.Collections.IDictionary]) {
+            throw 'The validated module billing-scope context must be a JSON object.'
+        }
+
+        $billingScopeNames = @($billingScopes.psbase.Keys)
+        if ($billingScopeNames.Count -gt 0 -and
+            ($billingScopeNames.Count -ne 1 -or $billingScopeNames[0] -cne $canonicalBillingModulePath)) {
+            throw 'The validated module billing-scope context must contain only the canonical subscription-vending module path.'
+        }
+        if ($billingScopeNames.Count -eq 1) {
+            $billingScope = $billingScopes[$canonicalBillingModulePath]
+            if ($billingScope -isnot [string] -or
+                [string]::IsNullOrWhiteSpace($billingScope) -or
+                $billingScope -cnotmatch '^/providers/Microsoft\.Billing/billingAccounts/(?:[A-Za-z0-9:_-]+/billingProfiles/[A-Za-z0-9_-]+/invoiceSections/[A-Za-z0-9_-]+|[^/\s]+/enrollmentAccounts/[^/\s]+)$') {
+                throw 'The validated subscription-vending billing scope has an invalid format.'
+            }
+            if (-not $TemplateParameters.Contains('subscriptionBillingScope')) {
+                throw 'The validated subscription-vending billing scope requires the subscriptionBillingScope template parameter.'
+            }
+            if ($TemplateParameters['subscriptionBillingScope'].type -cne 'secureString') {
+                throw 'The subscriptionBillingScope template parameter must be secureString.'
+            }
+            $parameters['subscriptionBillingScope'] = ConvertTo-SecureString -String $billingScope -AsPlainText -Force
         }
     }
 
