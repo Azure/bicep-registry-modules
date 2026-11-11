@@ -382,6 +382,34 @@ Describe 'Register-RequiredSubscriptionResourceProvider' {
         Should -Invoke Invoke-RequiredFeatureAzCli -Times 1 -Exactly -ParameterFilter { $ArgumentList[1] -eq 'register' }
     }
 
+    It 'Registers the extension fixture Arc prerequisite from the repository manifest' {
+        Copy-Item -LiteralPath (Join-Path $RepoRootPath '.required-resource-providers.json') -Destination $manifestPath
+        $functionInput.ModulePath = 'avm/res/kubernetes-configuration/extension'
+
+        $result = Register-RequiredSubscriptionResourceProvider @functionInput
+
+        $result.Status | Should -Be 'pass'
+        $result.RegisteredProviders | Should -Be @('Microsoft.Kubernetes')
+        @($script:commands | ForEach-Object { $_.Arguments[0..1] -join ' ' }) | Should -Be @(
+            'account show', 'provider show', 'provider register', 'provider show'
+        )
+        Should -Invoke Invoke-RequiredFeatureAzCli -Times 1 -Exactly -ParameterFilter {
+            $ArgumentList[0..1] -join ' ' -eq 'provider register' -and
+            $ArgumentList[[array]::IndexOf($ArgumentList, '--namespace') + 1] -eq 'Microsoft.Kubernetes'
+        }
+    }
+
+    It 'Does not apply the extension fixture prerequisite to <modulePath>' -ForEach @(
+        @{ modulePath = 'avm/res/kubernetes-configuration/extension/child' }
+        @{ modulePath = 'avm/res/compute/virtual-machine' }
+    ) {
+        Copy-Item -LiteralPath (Join-Path $RepoRootPath '.required-resource-providers.json') -Destination $manifestPath
+        $functionInput.ModulePath = $modulePath
+
+        (Register-RequiredSubscriptionResourceProvider @functionInput).Status | Should -Be 'skipped'
+        Should -Invoke Invoke-RequiredFeatureAzCli -Times 0 -Exactly
+    }
+
     It 'Preserves feature provider refresh and skips the completed provider prerequisite' {
         Set-Content -LiteralPath (Join-Path $testRoot '.required-features.json') -Value '{"avm/res/example/module":["Microsoft.Example/FeatureOne"]}'
         $script:featureReads = 0
