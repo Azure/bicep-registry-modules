@@ -171,8 +171,8 @@ module testDeployment '../../../main.bicep' = [
           }
           backupLongTermRetentionPolicy: {
             monthlyRetention: 'P6M'
-            timeBasedImmutability: 'Enabled'
-            timeBasedImmutabilityMode: 'Locked'
+            // Immutable LTR backups prevent deletion of the disposable test server.
+            timeBasedImmutability: 'Disabled'
           }
           availabilityZone: -1
           lock: {
