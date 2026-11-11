@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "10202696713781034983"
+      "templateHash": "12250580440053906663"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension."
@@ -21,9 +21,8 @@
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/namespace"
             },
-            "description": "Optional. The namespace to which this configuration is installed to. Required by the referenced Flux module when deployed."
-          },
-          "nullable": true
+            "description": "Required. The namespace to which this configuration is installed to."
+          }
         },
         "scope": {
           "type": "string",
@@ -31,9 +30,8 @@
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/scope"
             },
-            "description": "Optional. Scope at which the configuration will be installed. Required by the referenced Flux module when deployed."
-          },
-          "nullable": true
+            "description": "Required. Scope at which the configuration will be installed."
+          }
         },
         "bucket": {
           "type": "object",
@@ -71,9 +69,8 @@
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/kustomizations"
             },
-            "description": "Optional. Kustomizations used to reconcile the artifact pulled by the source type on the cluster. Required by the referenced Flux module when deployed."
-          },
-          "nullable": true
+            "description": "Required. Kustomizations used to reconcile the artifact pulled by the source type on the cluster."
+          }
         },
         "suspend": {
           "type": "bool",
