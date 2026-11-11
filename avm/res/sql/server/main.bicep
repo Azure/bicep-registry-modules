@@ -218,9 +218,11 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empt
   }
 }
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -346,7 +348,6 @@ module server_databases 'database/main.bicep' = [
       sourceResourceId: database.?sourceResourceId
       useFreeLimit: database.?useFreeLimit
       zoneRedundant: database.?zoneRedundant
-
       diagnosticSettings: database.?diagnosticSettings
       backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy
       backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy
@@ -354,6 +355,7 @@ module server_databases 'database/main.bicep' = [
     }
     dependsOn: [
       server_elasticPools // Enables us to add databases to existing elastic pools
+      server_encryptionProtector // To avoid conflicts with encryption
     ]
   }
 ]
@@ -924,7 +926,7 @@ type elasticPoolType = {
   name: string
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Sql/servers/elasticPools@2023-08-01'>.tags?
 
   @description('Optional. The lock settings of the elastic pool.')
   lock: lockType?
@@ -1083,7 +1085,7 @@ type failoverGroupType = {
   name: string
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Sql/servers/failoverGroups@2025-01-01'>.tags?
 
   @description('Required. List of databases in the failover group.')
   databases: string[]

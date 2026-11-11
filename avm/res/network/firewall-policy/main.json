@@ -5,13 +5,70 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "323676687743486880"
+      "version": "0.48.1.52935",
+      "templateHash": "529678919955865443"
     },
     "name": "Firewall Policies",
     "description": "This module deploys a Firewall Policy."
   },
   "definitions": {
+    "explicitProxyType": {
+      "type": "object",
+      "properties": {
+        "enableExplicitProxy": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable explicit proxy mode."
+          }
+        },
+        "enablePacFile": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable PAC file hosting. When enabled, provide pacFile and pacFilePort."
+          }
+        },
+        "httpPort": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 64000,
+          "metadata": {
+            "description": "Optional. The explicit proxy HTTP port, used for both HTTP and HTTPS traffic."
+          }
+        },
+        "httpsPort": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 64000,
+          "metadata": {
+            "description": "Optional. The explicit proxy HTTPS port."
+          }
+        },
+        "pacFile": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The PAC file URL. May contain a SAS token."
+          }
+        },
+        "pacFilePort": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 64000,
+          "metadata": {
+            "description": "Optional. The port on which the firewall serves the PAC file."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The explicit proxy settings for a firewall policy."
+      }
+    },
     "snatType": {
       "type": "object",
       "properties": {
@@ -390,6 +447,13 @@
         "description": "Optional. Enable DNS Proxy on Firewalls attached to the Firewall Policy."
       }
     },
+    "explicitProxy": {
+      "$ref": "#/definitions/explicitProxyType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Explicit HTTP/HTTPS proxy settings for Standard or Premium policies. Configured independently of DNS proxy settings."
+      }
+    },
     "servers": {
       "type": "array",
       "nullable": true,
@@ -538,6 +602,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.69273ae",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', 'UserAssigned', 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -547,14 +612,15 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "enableReferencedModulesTelemetry": false
+    "enableReferencedModulesTelemetry": false,
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.network-firewallpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -580,6 +646,7 @@
       "properties": {
         "basePolicy": "[if(not(empty(parameters('basePolicyResourceId'))), createObject('id', parameters('basePolicyResourceId')), null())]",
         "dnsSettings": "[if(or(parameters('enableProxy'), not(equals(parameters('servers'), null()))), createObject('enableProxy', parameters('enableProxy'), 'servers', coalesce(parameters('servers'), createArray())), null())]",
+        "explicitProxy": "[parameters('explicitProxy')]",
         "insights": "[if(parameters('insightsIsEnabled'), createObject('isEnabled', parameters('insightsIsEnabled'), 'logAnalyticsResources', createObject('defaultWorkspaceId', createObject('id', parameters('defaultWorkspaceResourceId')), 'workspaces', parameters('workspaces')), 'retentionDays', parameters('retentionDays')), null())]",
         "intrusionDetection": "[parameters('intrusionDetection')]",
         "sku": {
@@ -642,7 +709,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-firewallPolicy_ruleCollectionGroups-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-firewallPolicy_ruleCollectionGroups-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location'), parameters('name')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -672,8 +739,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "7773238698603911198"
+              "version": "0.48.1.52935",
+              "templateHash": "12050404253844057860"
             },
             "name": "Firewall Policy Rule Collection Groups",
             "description": "This module deploys a Firewall Policy Rule Collection Group."
@@ -712,12 +779,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.a39a871",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-fwpolicy-rulecollection.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

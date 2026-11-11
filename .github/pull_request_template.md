@@ -17,7 +17,6 @@ Closes #123
 | Pipeline |
 | -------- |
 
-
 ## Type of Change
 
 <!-- Use the checkboxes [x] on the options that are relevant. -->

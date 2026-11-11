@@ -15,6 +15,9 @@ Optional. The status to exlude from removals. Can be multiple. By default, we ex
 .PARAMETER maxDeploymentRetentionInDays
 Optional. The time to keep deployments with a status to exclude. In other words, if a deployment is in a status to exclude, but older than the threshold, it will be deleted.
 
+.PARAMETER WaitForCompletion
+Optional. Confirm every requested record is absent before returning to a caller holding a maintenance lock.
+
 .EXAMPLE
 Clear-SubscriptionDeploymentHistory -subscriptionId '11111111-1111-1111-1111-111111111111'
 
@@ -37,11 +40,17 @@ function Clear-SubscriptionDeploymentHistory {
         [string[]] $DeploymentStatusToExclude = @('running', 'failed'),
 
         [Parameter(Mandatory = $false)]
-        [int] $maxDeploymentRetentionInDays = 14
+        [int] $maxDeploymentRetentionInDays = 14,
+
+        [Parameter()]
+        [switch] $WaitForCompletion
     )
 
     # Load helper functions
     . (Join-Path (Split-Path $PSScriptRoot) 'helper' 'Split-Array.ps1')
+    if ($WaitForCompletion) {
+        . (Join-Path $PSScriptRoot '..' '..' 'e2eValidation' 'resourceRemoval' 'helper' 'Remove-Deployment.ps1')
+    }
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 # Enables web response
     $deploymentThreshold = (Get-Date).AddDays(-1 * $maxDeploymentRetentionInDays)
@@ -61,6 +70,9 @@ function Clear-SubscriptionDeploymentHistory {
 
     if (($response | Get-Member -MemberType 'NoteProperty').Name -notcontains 'value') {
         throw ('Fetching deployments failed with error [{0}]' -f ($response | Out-String))
+    }
+    if ($WaitForCompletion -and $response.value -isnot [array]) {
+        throw 'History maintenance did not receive a deployment array; completion is unconfirmed.'
     }
 
     Write-Verbose ('Found [{0}] deployments in subscription [{1}]' -f $response.value.Count, $subscriptionId) -Verbose
@@ -116,7 +128,16 @@ function Clear-SubscriptionDeploymentHistory {
         }
         if ($PSCmdlet.ShouldProcess(('Removal of [{0}] deployments' -f $requests.Count), 'Request')) {
             $null = Invoke-RestMethod @removeInputObject
+            if ($WaitForCompletion) {
+                foreach ($deployment in $deployments) {
+                    Wait-DeploymentRecordRemoval -DeploymentId "/subscriptions/$subscriptionId/providers/Microsoft.Resources/deployments/$($deployment.name)"
+                }
+            }
+        } elseif ($WaitForCompletion) {
+            throw 'Deployment history removal was not performed; maintenance completion is unconfirmed.'
         }
     }
-    Write-Verbose 'Script execution finished. Note that the removal can take a few minutes to propagate.' -Verbose
+    Write-Verbose ($WaitForCompletion ?
+        'Deployment history removal is confirmed.' :
+        'Script execution finished. Note that the removal can take a few minutes to propagate.') -Verbose
 }

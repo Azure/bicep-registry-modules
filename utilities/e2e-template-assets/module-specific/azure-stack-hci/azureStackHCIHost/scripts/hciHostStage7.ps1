@@ -68,34 +68,6 @@ while (!$allExtensionsReady -and $timer.Elapsed.TotalMinutes -lt 120) {
         $extensions = Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $arcMachine.Name
         if ($extensions.MachineExtensionType -notcontains 'TelemetryAndDiagnostics' -or $extensions.MachineExtensionType -notcontains 'DeviceManagementExtension' -or $extensions.MachineExtensionType -notcontains 'LcmController' -or $extensions.MachineExtensionType -notcontains 'EdgeRemoteSupport') {
             log "Waiting for extensions to be installed on HCI Arc Machine '$($arcMachine.Name)'..."
-
-            # install extensions if not already installed
-            log "Installing any missing extensions on HCI Arc Machine '$($arcMachine.Name)'..."
-            $extensionParams = @{
-                ResourceGroupName = $resourceGroupName
-                MachineName       = $arcMachine.Name
-                Location          = $arcMachine.Location
-                ErrorAction       = 'Continue'
-            }
-
-            # Invoke-AzStackHciArcInitialization seemingly misses installing some extensions some of the time - so we'll install them here if missing
-            If ($extensions.MachineExtensionType -notcontains 'TelemetryAndDiagnostics') {
-                log "Installing TelemetryAndDiagnostics extension on HCI Arc Machine '$($arcMachine.Name)'..."
-                New-AzConnectedMachineExtension -Name 'AzureEdgeTelemetryAndDiagnostics' -Publisher 'Microsoft.AzureStack.Observability' -ExtensionType 'TelemetryAndDiagnostics' -NoWait @extensionParams
-            }
-            If ($extensions.MachineExtensionType -notcontains 'DeviceManagementExtension') {
-                log "Installing DeviceManagementExtension extension on HCI Arc Machine '$($arcMachine.Name)'..."
-                New-AzConnectedMachineExtension -Name 'AzureEdgeDeviceManagement' -Publisher 'Microsoft.Edge' -ExtensionType 'DeviceManagementExtension' -NoWait @extensionParams
-            }
-            If ($extensions.MachineExtensionType -notcontains 'LcmController') {
-                log "Installing LcmController extension on HCI Arc Machine '$($arcMachine.Name)'..."
-                New-AzConnectedMachineExtension -Name 'AzureEdgeLifecycleManager' -Publisher 'Microsoft.AzureStack.Orchestration' -ExtensionType 'LcmController' -NoWait @extensionParams
-            }
-            If ($extensions.MachineExtensionType -notcontains 'EdgeRemoteSupport') {
-                log "Installing EdgeRemoteSupport extension on HCI Arc Machine '$($arcMachine.Name)'..."
-                New-AzConnectedMachineExtension -Name 'AzureEdgeRemoteSupport' -Publisher 'Microsoft.AzureStack.Observability' -ExtensionType 'EdgeRemoteSupport' -NoWait @extensionParams
-            }
-
             $allExtensionsReadyCheck = $false
             continue
         } elseIf (($extensionState = $extensions | Where-Object MachineExtensionType -EQ 'TelemetryAndDiagnostics').ProvisioningState -ne 'Succeeded') {

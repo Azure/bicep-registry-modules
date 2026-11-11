@@ -64,7 +64,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.HybridCompute/machines@2025-01-13'>.tags?
+param tags resourceInput<'Microsoft.HybridCompute/machines@2026-07-15'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -129,9 +129,11 @@ var formattedRoleAssignments = [
   })
 ]
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.hybridcompute-machine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -148,7 +150,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource machine 'Microsoft.HybridCompute/machines@2025-01-13' = {
+resource machine 'Microsoft.HybridCompute/machines@2026-07-15' = {
   name: name
   location: location
   identity: {

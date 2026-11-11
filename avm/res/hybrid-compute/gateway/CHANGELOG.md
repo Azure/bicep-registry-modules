@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/hybrid-compute/gateway/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Updated API version for `Microsoft.HybridCompute/gateways` from `2025-01-13` to `2026-07-15`.
+- Updated the AVM telemetry deployment to API version `2025-04-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes

@@ -40,7 +40,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`corsRules`](#parameter-corsrules) | array | The List of CORS rules. You can include up to five CorsRule elements in the request. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`queues`](#parameter-queues) | array | Queues to create. |
 
@@ -120,7 +120,7 @@ The number of seconds that the client/browser should cache a preflight response.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

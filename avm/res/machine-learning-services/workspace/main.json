@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "5226180612859441598"
+      "version": "0.47.16.16243",
+      "templateHash": "10448947956403217740"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace."
@@ -2121,7 +2121,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
+        "description": "Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured."
       }
     },
     "description": {
@@ -2193,9 +2193,10 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.2273aaa",
     "enableReferencedModulesTelemetry": false,
-    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "formattedUserAssignedIdentities": "[reduce(map(union(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createArray(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')), createArray())), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(or(not(empty(parameters('managedIdentities'))), not(empty(variables('formattedUserAssignedIdentities')))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "AzureML Compute Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e503ece1-11d0-4e8e-8e2c-7a6c3bf38815')]",
       "AzureML Data Scientist": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f6c7c914-8db3-469d-8ca1-694a8f32e121')]",
@@ -2206,14 +2207,15 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
-      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "condition": "[and(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKey'))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2026-02-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -2222,7 +2224,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.machinelearningservices-workspace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -2239,10 +2241,10 @@
       }
     },
     "cMKKeyVault": {
-      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "condition": "[not(empty(parameters('customerManagedKey')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2026-02-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -2251,7 +2253,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
@@ -2300,20 +2302,20 @@
         "copy": [
           {
             "name": "metrics",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
             "input": {
-              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
               "timeGrain": null
             }
           },
           {
             "name": "logs",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
             "input": {
-              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
             }
           }
         ],
@@ -2414,8 +2416,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "14641735167640008838"
+              "version": "0.47.16.16243",
+              "templateHash": "5977078088342713688"
             },
             "name": "Machine Learning Services Workspaces Computes",
             "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
@@ -2568,8 +2570,10 @@
             }
           },
           "variables": {
+            "$fxv#0": "46d3xbcp.res.4a87cb1",
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "machineLearningWorkspace": {
@@ -2582,7 +2586,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.mlservices-workspace-compute.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2710,8 +2714,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "444780993417665314"
+              "version": "0.47.16.16243",
+              "templateHash": "12601683907696755493"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -3465,6 +3469,10 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.a9b5094",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "machineLearningWorkspace": {
               "existing": true,
@@ -3476,7 +3484,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.mlservices-workspace-connection.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3561,8 +3569,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "1502043934721953240"
+              "version": "0.47.16.16243",
+              "templateHash": "3390380406234937570"
             },
             "name": "Machine Learning Services Workspaces Datastores",
             "description": "This module creates a datastore in a Machine Learning Services workspace."
@@ -3597,12 +3605,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.43c99cb",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.mlservices-workspace-datastore.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

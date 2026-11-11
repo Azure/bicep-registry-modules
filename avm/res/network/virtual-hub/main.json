@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "3735214363683093691"
+      "version": "0.47.16.16243",
+      "templateHash": "17900291722167376116"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
@@ -441,6 +441,8 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.res.f97f98e",
+    "telemetryIdPrefix": "[variables('$fxv#0')]",
     "enableReferencedModulesTelemetry": false
   },
   "resources": {
@@ -448,7 +450,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.res.network-virtualhub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -512,7 +514,7 @@
       "condition": "[and(not(empty(parameters('azureFirewallResourceId'))), not(empty(parameters('routingIntent'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-routingIntent', uniqueString(subscription().id, resourceGroup().id, parameters('location')))]",
+      "name": "[format('{0}-routingIntent', uniqueString(subscription().id, resourceGroup().id, parameters('location'), parameters('name')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -541,8 +543,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "1471518964992359820"
+              "version": "0.47.16.16243",
+              "templateHash": "12377599172909381488"
             },
             "name": "Virtual Hub Routing Intent",
             "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID."
@@ -592,12 +594,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.3e9625d",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[take(format('46d3xbcp.res.network-virtualhub-routingintent.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4)), 64)]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -658,7 +664,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-routeTable-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-routeTable-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location'), parameters('name')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -688,8 +694,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "16744792367573945645"
+              "version": "0.47.16.16243",
+              "templateHash": "5573968773372150686"
             },
             "name": "Virtual Hub Route Tables",
             "description": "This module deploys a Virtual Hub Route Table."
@@ -729,12 +735,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.f14a969",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[take(format('46d3xbcp.res.network-virtualhub-hubroutetable.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4)), 64)]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -802,7 +812,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-connection-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-connection-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location'), parameters('name')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -835,8 +845,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "1558261917369879793"
+              "version": "0.47.16.16243",
+              "templateHash": "14723889957598945111"
             },
             "name": "Virtual Hub Virtual Network Connections",
             "description": "This module deploys a Virtual Hub Virtual Network Connection."
@@ -882,12 +892,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.9d361c9",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[take(format('46d3xbcp.res.network-virtualhub-hubvirtualnetwork.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4)), 64)]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -959,7 +973,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-routeMap-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-routeMap-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location'), parameters('name')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -992,8 +1006,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "4667181888475273658"
+              "version": "0.47.16.16243",
+              "templateHash": "15139305068804401074"
             },
             "name": "Virtual Hub Route Maps",
             "description": "This module deploys a Virtual Hub Route Map."
@@ -1049,12 +1063,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.72c4b6e",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[take(format('46d3xbcp.res.network-virtualhubroutemap.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4)), 64)]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

@@ -64,7 +64,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}-${serviceShort}'
+      name: '${namePrefix}-${serviceShort}-${uniqueString(resourceGroup.id)}'
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       subnetResourceId: nestedDependencies.outputs.subnetResourceId

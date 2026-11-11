@@ -1,0 +1,6 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Redis Cache Access Policy",
+  "moduleDescription": "This module deploys an access policy for Redis Cache.",
+  "canonicalType": "Microsoft.Cache/redis/accessPolicies"
+}

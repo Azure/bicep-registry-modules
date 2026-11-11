@@ -55,11 +55,6 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
-    managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
     customerManagedKey: {
       keyName: nestedDependencies.outputs.keyVaultKeyName
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId

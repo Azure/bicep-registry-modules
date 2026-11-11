@@ -13,11 +13,8 @@ param location string = resourceGroup().location
 @description('Optional. A key vault reference to the certificate to use for the custom domain.')
 param certificateKeyVaultProperties certificateKeyVaultPropertiesType?
 
-@allowed(['ServerSSLCertificate', 'ImagePullTrustedCA'])
-@description('Optional. The type of the certificate.')
-param certificateType string?
-
 @description('Optional. The value of the certificate. PFX or PEM blob.')
+@secure()
 param certificateValue string?
 
 @description('Optional. The password of the certificate.')
@@ -25,14 +22,16 @@ param certificateValue string?
 param certificatePassword string?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.App/managedEnvironments/certificates@2025-10-02-preview'>.tags?
+param tags resourceInput<'Microsoft.App/managedEnvironments/certificates@2026-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.app-managedenvironment-certificate.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -49,11 +48,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-preview' existing = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' existing = {
   name: managedEnvironmentName
 }
 
-resource managedEnvironmentCertificate 'Microsoft.App/managedEnvironments/certificates@2025-10-02-preview' = {
+resource managedEnvironmentCertificate 'Microsoft.App/managedEnvironments/certificates@2026-01-01' = {
   parent: managedEnvironment
   location: location
   name: name
@@ -64,7 +63,6 @@ resource managedEnvironmentCertificate 'Microsoft.App/managedEnvironments/certif
           keyVaultUrl: certificateKeyVaultProperties!.keyVaultUrl
         }
       : null
-    certificateType: certificateType
     password: certificatePassword
     value: certificateValue
   }

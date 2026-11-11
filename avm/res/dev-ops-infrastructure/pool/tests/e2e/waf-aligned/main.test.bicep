@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'WAF-aligned'
 metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
@@ -17,6 +19,9 @@ param serviceShort string = 'mdpwaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
+
 @description('Required. Name of the Azure DevOps organization. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDevOpsOrganizationName\'.')
 @secure()
 param azureDevOpsOrganizationName string = ''
@@ -25,10 +30,6 @@ param azureDevOpsOrganizationName string = ''
 @secure()
 param azureDevOpsProjectName string = ''
 
-@description('Required. The object ID of the Entra ID-provided DevOpsInfrastructure principal. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-DevOpsInfrastructureObjectID\'.')
-@secure()
-param devOpsInfrastructureObjectID string = ''
-
 // The Managed DevOps Pools resource is not available in all regions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'uksouth'
@@ -36,6 +37,10 @@ var enforcedLocation = 'uksouth'
 // ============ //
 // Dependencies //
 // ============ //
+resource devOpsInfrastructure 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
+  appId: '31687f79-5e43-4c1e-8c63-d9f4bff5cf8b'
+}
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
@@ -49,7 +54,7 @@ module nestedDependencies 'dependencies.bicep' = {
     devCenterProjectName: 'dep-${namePrefix}-dcp-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    devOpsInfrastructureObjectID: devOpsInfrastructureObjectID
+    devOpsInfrastructureObjectID: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : devOpsInfrastructure!.id
   }
 }
 

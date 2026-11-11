@@ -113,7 +113,7 @@ param consumerGroups string[]?
 param tags resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.tags?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -154,9 +154,11 @@ var formattedRoleAssignments = [
 // Dependencies //
 // ============ //
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.devices-iothub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -206,15 +208,15 @@ resource iotHub 'Microsoft.Devices/IotHubs@2023-06-30' = {
   }
 }
 
-module consumerGroupsModule 'consumergroup/main.bicep' = [
+module consumerGroupsModule 'event-hub-endpoint/consumergroup/main.bicep' = [
   for (consumerGroup, index) in (consumerGroups ?? []): {
-  name: '${deployment().name}-ConsumerGroup-${index}'
-  params: {
-    iotHubName: iotHub.name
-    name: consumerGroup
-    enableTelemetry: enableReferencedModulesTelemetry
+    name: '${deployment().name}-ConsumerGroup-${index}'
+    params: {
+      iotHubName: iotHub.name
+      name: consumerGroup
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
   }
-}
 ]
 
 resource iothub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
@@ -237,14 +239,18 @@ resource iothub_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-0
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -257,6 +263,7 @@ resource iothub_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-0
   }
 ]
 
+@batchSize(1)
 module iothub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-iothub-PrivateEndpoint-${index}'

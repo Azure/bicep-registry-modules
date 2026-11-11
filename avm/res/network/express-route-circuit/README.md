@@ -880,7 +880,7 @@ param tags = {
 | [`allowClassicOperations`](#parameter-allowclassicoperations) | bool | Allow classic operations. You can connect to virtual networks in the classic deployment model by setting allowClassicOperations to true. |
 | [`authorizationNames`](#parameter-authorizationnames) | array | List of names for ExpressRoute circuit authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network/expressRouteCircuits/authorizations`. |
 | [`connections`](#parameter-connections) | array | Array of Global Reach connection configurations for peerings. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableDirectPortRateLimit`](#parameter-enabledirectportratelimit) | bool | Flag denoting rate-limiting status of the ExpressRoute direct-port circuit. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`globalReachEnabled`](#parameter-globalreachenabled) | bool | Flag denoting global reach status. To enable ExpressRoute Global Reach between different geopolitical regions, your circuits must be Premium SKU. |
@@ -1032,7 +1032,7 @@ The IPv6 address space (/125) to carve out customer addresses for global reach.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

@@ -31,9 +31,11 @@ param registrationId string = empty(resourceGroupName)
   ? guid(managedByTenantId, subscription().tenantId, subscription().subscriptionId)
   : guid(managedByTenantId, subscription().tenantId, subscription().subscriptionId, resourceGroupName)
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.managedservices-registrationdef.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, metadataLocation), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, metadataLocation), 0, 4)}'
   location: metadataLocation // Required in current template scope
   properties: {
     mode: 'Incremental'

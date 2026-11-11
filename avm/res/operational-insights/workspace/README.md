@@ -69,7 +69,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwadv001'
     // Non-required parameters
-    dailyQuotaGb: '<dailyQuotaGb>'
+    dailyQuotaGb: '0.25'
     dataExports: [
       {
         destination: {
@@ -373,7 +373,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": "<dailyQuotaGb>"
+      "value": "0.25"
     },
     "dataExports": {
       "value": [
@@ -701,7 +701,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwadv001'
 // Non-required parameters
-param dailyQuotaGb = '<dailyQuotaGb>'
+param dailyQuotaGb = '0.25'
 param dataExports = [
   {
     destination: {
@@ -1241,7 +1241,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwmax001'
     // Non-required parameters
-    dailyQuotaGb: '<dailyQuotaGb>'
+    dailyQuotaGb: '0.5'
     dataSources: [
       {
         eventLogName: 'Application'
@@ -1565,7 +1565,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": "<dailyQuotaGb>"
+      "value": "0.5"
     },
     "dataSources": {
       "value": [
@@ -1921,7 +1921,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwmax001'
 // Non-required parameters
-param dailyQuotaGb = '<dailyQuotaGb>'
+param dailyQuotaGb = '0.5'
 param dataSources = [
   {
     eventLogName: 'Application'
@@ -2784,7 +2784,7 @@ param tags = {
 | [`dataRetention`](#parameter-dataretention) | int | Number of days data will be retained for. |
 | [`dataSources`](#parameter-datasources) | array | LAW data sources to configure. |
 | [`defaultDataCollectionRuleResourceId`](#parameter-defaultdatacollectionruleresourceid) | string | The resource ID of the default Data Collection Rule to use for this workspace. Note: the default DCR is not applicable on workspace creation and the workspace must be listed as a destination in the DCR. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`features`](#parameter-features) | object | The workspace features. |
 | [`forceCmkForQuery`](#parameter-forcecmkforquery) | bool | Indicates whether customer managed storage is mandatory for query management. |
@@ -3084,7 +3084,7 @@ The resource ID of the default Data Collection Rule to use for this workspace. N
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

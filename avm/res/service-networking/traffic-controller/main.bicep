@@ -18,7 +18,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 param lock lockType?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
@@ -66,9 +66,11 @@ var enableReferencedModulesTelemetry = false
 // Resources      //
 // ============== //
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.servicenetworking-trafficcontroller.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -112,14 +114,18 @@ resource trafficController_diagnosticSettings 'Microsoft.Insights/diagnosticSett
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true

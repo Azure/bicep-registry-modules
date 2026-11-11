@@ -2,6 +2,27 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/service-bus/namespace/CHANGELOG.md).
 
+## 0.17.1
+
+### Changes
+
+- Added the customer-managed key's user-assigned identity to the resource's managed identities.
+- Updated the Key Vault API version used for customer-managed key references.
+
+### Breaking Changes
+
+- None
+
+## 0.17.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
 ## 0.16.2
 
 ### Changes

@@ -123,6 +123,7 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.dev.azuresynapse.net'
   'privatelink.sql.azuresynapse.net'
   'privatelink.webpubsub.azure.com'
+  'privatelink.redis.azure.net'
 ]
 
 @description('Optional. An array of Private Link Private DNS Zones to exclude from the deployment. The DNS zone names must match what is provided as the default values or any input to the `privateLinkPrivateDnsZones` parameter e.g. `privatelink.api.azureml.ms` or `privatelink.{regionCode}.backup.windowsazure.com` or `privatelink.{regionName}.azmk8s.io` .')
@@ -354,9 +355,11 @@ var combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink = map(
   }
 )
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.network-privatelinkprivatednszones.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {

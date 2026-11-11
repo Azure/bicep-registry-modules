@@ -285,7 +285,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalRecipients`](#parameter-additionalrecipients) | array | The email recipient value to receive alerts. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`domainConfigurationType`](#parameter-domainconfigurationtype) | string | The value is to provide domain configuration type. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`externalAccess`](#parameter-externalaccess) | string | The value is to enable the Secure LDAP for external services of Azure AD DS Services. |
@@ -350,7 +350,7 @@ The email recipient value to receive alerts.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

@@ -10,9 +10,11 @@ param accessPolicies accessPoliciesType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.keyvault-accesspolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -29,11 +31,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: keyVaultName
 }
 
-resource policies 'Microsoft.KeyVault/vaults/accessPolicies@2024-11-01' = {
+resource policies 'Microsoft.KeyVault/vaults/accessPolicies@2026-02-01' = {
   name: 'add'
   parent: keyVault
   properties: {

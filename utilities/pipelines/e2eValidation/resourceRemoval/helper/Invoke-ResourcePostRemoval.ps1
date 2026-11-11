@@ -14,6 +14,10 @@ Mandatory. The type of the resource to remove
 .PARAMETER PostRemovalRetryLimit
 Optional. Specify the number of times the script should try to repeat the post-removal operation in case of a failure.
 
+.PARAMETER RequireCompleteRemoval
+Optional. Confirm supported soft-deleted resources no longer reserve their names.
+Purge protection, incomplete lookups and exhausted post-removal retries block regional relocation.
+
 .EXAMPLE
 Invoke-ResourcePostRemoval -Type 'Microsoft.KeyVault/vaults' -ResourceId '/subscriptions/.../resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/myVault'
 
@@ -30,9 +34,13 @@ function Invoke-ResourcePostRemoval {
         [string] $Type,
 
         [Parameter(Mandatory = $false)]
-        [int] $PostRemovalRetryLimit = 3
+        [int] $PostRemovalRetryLimit = 3,
+
+        [Parameter()]
+        [switch] $RequireCompleteRemoval
     )
 
+    . (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
     $removalRetryCount = 1
     do {
         try {
@@ -70,12 +78,18 @@ function Invoke-ResourcePostRemoval {
                     $resourceName = Split-Path $ResourceId -Leaf
 
                     $matchingKeyVault = Get-AzKeyVault -InRemovedState | Where-Object { $_.resourceId -eq $ResourceId }
+                    if ($RequireCompleteRemoval -and $matchingKeyVault.EnablePurgeProtection) {
+                        throw "Purge-protected vault [$ResourceId] remains reserved; regional relocation is blocked."
+                    }
                     if ($matchingKeyVault -and -not $matchingKeyVault.EnablePurgeProtection) {
                         Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $resourceName, $Type) -Verbose
                         if ($PSCmdlet.ShouldProcess(('Key Vault with ID [{0}]' -f $matchingKeyVault.Id), 'Purge')) {
                             try {
                                 $null = Remove-AzKeyVault -ResourceId $matchingKeyVault.Id -InRemovedState -Force -Location $matchingKeyVault.Location -ErrorAction 'Stop'
                             } catch {
+                                if ((Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Cancellation' -or $RequireCompleteRemoval) {
+                                    throw
+                                }
                                 if ($_.Exception.Message -like '*DeletedVaultPurge*') {
                                     Write-Warning ('Purge protection for key vault [{0}] enabled. Skipping. Scheduled purge date is [{1}]' -f $resourceName, $matchingKeyVault.ScheduledPurgeDate)
                                 } else {
@@ -90,7 +104,10 @@ function Invoke-ResourcePostRemoval {
                     $resourceGroupName = $ResourceId.Split('/')[4]
                     $resourceName = Split-Path $ResourceId -Leaf
 
-                    $matchingAccount = Get-AzCognitiveServicesAccount -InRemovedState | Where-Object { $_.AccountName -eq $resourceName }
+                    $matchingAccount = Get-AzCognitiveServicesAccount -InRemovedState | Where-Object {
+                        $_.AccountName -eq $resourceName -and
+                        (-not $RequireCompleteRemoval -or $_.Id -eq $ResourceId -or $_.ResourceGroupName -eq $resourceGroupName)
+                    }
                     if ($matchingAccount) {
                         Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $resourceName, $Type) -Verbose
                         if ($PSCmdlet.ShouldProcess(('Cognitive services account with ID [{0}]' -f $matchingAccount.Id), 'Purge')) {
@@ -186,8 +203,38 @@ function Invoke-ResourcePostRemoval {
                 }
                 ### CODE LOCATION: Add custom post-removal operation here
             }
+            if ($RequireCompleteRemoval) {
+                $remaining = switch ($Type) {
+                    'Microsoft.KeyVault/vaults' {
+                        Get-AzKeyVault -InRemovedState -ErrorAction Stop | Where-Object { $_.ResourceId -eq $ResourceId }
+                    }
+                    'Microsoft.CognitiveServices/accounts' {
+                        Get-AzCognitiveServicesAccount -InRemovedState -ErrorAction Stop | Where-Object {
+                            $_.AccountName -eq $resourceName -and
+                            ($_.Id -eq $ResourceId -or $_.ResourceGroupName -eq $resourceGroupName -or
+                            [string]::IsNullOrEmpty($_.ResourceGroupName))
+                        }
+                    }
+                    { $_ -in @('Microsoft.AppConfiguration/configurationStores', 'Microsoft.ApiManagement/service') } {
+                        $response = Invoke-AzRestMethod @getRequestInputObject -ErrorAction Stop
+                        $content = ConvertFrom-Json -InputObject $response.Content -ErrorAction Stop
+                        if ($response.StatusCode -ne 200 -or $content.value -isnot [array] -or $content.nextLink) {
+                            throw "Cannot confirm complete post-removal lookup for [$ResourceId]: HTTP [$($response.StatusCode)]."
+                        }
+                        $idProperty = $Type -eq 'Microsoft.ApiManagement/service' ? 'serviceId' : 'configurationStoreId'
+                        $content.value | Where-Object { $_.properties.$idProperty -eq $ResourceId }
+                    }
+                }
+                if ($remaining) {
+                    throw "Soft-deleted resource [$ResourceId] remains reserved; regional relocation is blocked."
+                }
+            }
             break # Post-removal was successful
         } catch {
+            if ((Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Cancellation' -or
+                ($RequireCompleteRemoval -and $removalRetryCount -ge $PostRemovalRetryLimit)) {
+                throw
+            }
             Write-Warning ('[!] Post-removal operation failed. Reason: [{0}]. Retry [{1}/{2}]' -f $_.Exception.Message, $removalRetryCount, $PostRemovalRetryLimit)
             $removalRetryCount++
         }

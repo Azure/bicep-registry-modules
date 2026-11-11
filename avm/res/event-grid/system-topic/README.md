@@ -873,7 +873,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventSubscriptions`](#parameter-eventsubscriptions) | array | Event subscriptions to deploy. |
 | [`externalResourceRoleAssignments`](#parameter-externalresourceroleassignments) | array | Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). |
@@ -906,7 +906,7 @@ TopicType for the system topic.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

@@ -76,9 +76,6 @@ module testDeployment '../../../main.bicep' = [
       azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
       managedIdentities: {
         systemAssigned: true
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
       }
       customerManagedKey: {
         keyName: nestedHsmDependencies.outputs.primaryKeyName

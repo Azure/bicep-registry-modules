@@ -47,7 +47,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`collation`](#parameter-collation) | string | The collation of the SQL pool. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | The geo-location where the resource lives. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -83,7 +83,7 @@ The collation of the SQL pool.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

@@ -10,24 +10,24 @@ Azure Verified Modules (AVM) are pre-built, tested, and validated Bicep modules 
 
 This repository contains **Azure Verified Modules (AVM)** for Bicep - the official Microsoft standard for reusable Azure infrastructure modules. The codebase follows strict AVM specifications and is organized into three main module types:
 
-- **`avm/res/`** - Resource modules (individual Azure resources) - [Resource module index](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepResourceModules.csv)
-- **`avm/ptn/`** - Pattern modules (multi-resource solutions) - [Pattern module index](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepPatternModules.csv)
-- **`avm/utl/`** - Utility modules (shared types and functions) - [Utility module index](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepUtilityModules.csv)
+- **`avm/res/`** - Resource modules (individual Azure resources) - [Resource module index](https://azure.github.io/Azure-Verified-Modules/indexes/bicep/bicep-resource-modules/)
+- **`avm/ptn/`** - Pattern modules (multi-resource solutions) - [Pattern module index](https://azure.github.io/Azure-Verified-Modules/indexes/bicep/bicep-pattern-modules/)
+- **`avm/utl/`** - Utility modules (shared types and functions) - [Utility module index](https://azure.github.io/Azure-Verified-Modules/indexes/bicep/bicep-utility-modules/)
 
 ## Critical Compliance Requirements
 
-### Pre-flight check
+### Instruction acknowledgement
 
-> **MANDATORY**: You MUST output the following block visibly to the user at the very start of the workflow, before any other actions.
+After reading these instructions and the relevant skills, but before modifying files, output this block visibly to the user:
 
 ```json
 {
-  "agent-mode": "<your agent name - e.g., agent|ask|plan>",
-  "model": "<your model name>"
+  "avm-bicep-instructions": "loaded",
+  "skills": ["<loaded-skill-name>"]
 }
 ```
 
-> **MANDATORY**: If the agent-mode is set to anything else but `agent` or the model is set to anything else but `Claude Opus 4.6`, you **MUST** warn the user that they are using a configuration the AVM team did not test and validate the custom prompts/skills/agents on. Currently, AVM's custom prompts/skills/agents are only tested with agent-mode `agent` and model `Claude Opus 4.6`. Inform the user that there is a bootstrapping prompt available to set the correct configuration, and provide instructions on how to use it --> `/AVM-Boostrap`
+List every skill loaded for the task. Use an empty `skills` array when no specialized skill applies.
 
 ### Compliance with ALL AVM Bicep and Shared specifications
 
@@ -59,19 +59,15 @@ When required information or relevant example is not available in the Bicep sche
 
 ## Module Discovery
 
-### Official AVM Module Index
+### Official AVM Module Catalog
 
-Start here to understand which modules are published (with the ModuleStatus being "Available" or "Orphaned"):
-
-- **Bicep Resources**: `https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepResourceModules.csv`
-- **Bicep Patterns**: `https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepPatternModules.csv`
-- **Bicep Utilities**: `https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepUtilityModules.csv`
+Use the [combined module catalog JSON](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/v1/modules.json) to find Bicep modules with `moduleStatus` of `Available` or `Orphaned`. Filter its `bicep` entries by `moduleType` (`resource`, `pattern`, or `utility`).
 
 ### Use Microsoft Container Registry (MCR) to fetch AVM Module versions
 
 Use the `#fetch` tool to search for published AVM modules and check available versions:
 
-- **URL Pattern**: `https://mcr.microsoft.com/v2/bicep/{ModuleName as per the AVM Module index}/tags/list`
+- **URL Pattern**: `https://mcr.microsoft.com/v2/bicep/{moduleName from the module catalog}/tags/list`
 - **Example**: `https://mcr.microsoft.com/v2/bicep/avm/res/storage/storage-account/tags/list`
 
 > [!IMPORTANT]

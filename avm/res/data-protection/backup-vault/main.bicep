@@ -80,16 +80,24 @@ param backupInstances backupInstanceType[]?
 param featureSettings resourceInput<'Microsoft.DataProtection/backupVaults@2025-07-01'>.properties.featureSettings?
 
 var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  map(
+    union(
+      (managedIdentities.?userAssignedResourceIds ?? []),
+      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
+        ? [customerManagedKey.?userAssignedIdentityResourceId]
+        : [])
+    ),
+    (id) => { '${id}': {} }
+  ),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities)
+var identity = !empty(managedIdentities) || !empty(formattedUserAssignedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : {
@@ -137,14 +145,14 @@ var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?
 
 var enableReferencedModulesTelemetry = false
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey!.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey!.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey!.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
     name: customerManagedKey!.?keyName!
   }
 }
@@ -157,9 +165,11 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.dataprotection-backupvault.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -253,6 +263,7 @@ module backupVault_backupInstances 'backup-instance/main.bicep' = [
       name: backupInstance.name
       friendlyName: backupInstance.?friendlyName
       dataSourceInfo: backupInstance.dataSourceInfo
+      dataSourceSetInfo: backupInstance.?dataSourceSetInfo
       policyInfo: backupInstance.policyInfo
       enableTelemetry: enableReferencedModulesTelemetry
     }
@@ -330,6 +341,9 @@ type backupInstanceType = {
 
   @description('Required. The data source info for the backup instance.')
   dataSourceInfo: dataSourceInfoType
+
+  @description('Optional. The data source set info for the backup instance. Required for some data source types (e.g., AKS).')
+  dataSourceSetInfo: dataSourceInfoType?
 
   @description('Required. The policy info for the backup instance.')
   policyInfo: policyInfoType

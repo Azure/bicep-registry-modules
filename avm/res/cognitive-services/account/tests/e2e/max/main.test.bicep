@@ -67,6 +67,7 @@ module testDeployment '../../../main.bicep' = [
       customSubDomainName: '${namePrefix}x${serviceShort}'
       location: resourceLocation
       allowProjectManagement: false
+      enableDefenderForAI: true
       diagnosticSettings: [
         {
           name: 'customSetting'

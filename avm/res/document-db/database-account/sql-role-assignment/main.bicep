@@ -38,9 +38,11 @@ var formattedScope = replace(replace(scope ?? databaseAccount.id, '/sqlDatabases
 // Resources      //
 // ============== //
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.doctdb-dbacct-sqlroleassignment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -57,11 +59,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 }
 
-resource sqlRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-11-15' = {
+resource sqlRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2026-04-01-preview' = {
   parent: databaseAccount
   name: name ?? guid(formattedRoleDefinition, principalId, formattedScope)
   properties: {

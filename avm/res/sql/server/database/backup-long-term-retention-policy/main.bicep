@@ -19,6 +19,12 @@ param weekOfYear int = 1
 @description('Optional. Yearly retention in ISO 8601 duration format.')
 param yearlyRetention string?
 
+@description('Optional. The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled.')
+param timeBasedImmutability 'Disabled' | 'Enabled' = 'Disabled'
+
+@description('Optional. The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.')
+param timeBasedImmutabilityMode ('Locked' | 'Unlocked')?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -30,9 +36,11 @@ resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   }
 }
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.sql-server-dbbckplongtermretpolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -57,6 +65,8 @@ resource backupLongTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupLo
     weeklyRetention: weeklyRetention
     weekOfYear: weekOfYear
     yearlyRetention: yearlyRetention
+    timeBasedImmutability: timeBasedImmutability
+    timeBasedImmutabilityMode: timeBasedImmutability == 'Enabled' ? (timeBasedImmutabilityMode ?? 'Locked') : null
   }
 }
 

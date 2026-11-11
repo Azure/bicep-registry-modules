@@ -7,6 +7,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
 
     BeforeAll {
         $subscriptionId = $TestInputData.DeploymentOutputs.createdSubId.Value
+        $managementGroupId = $TestInputData.DeploymentOutputs.deploymentManagementGroupId.Value
         $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
         $serviceShort = $TestInputData.DeploymentOutputs.serviceShort.Value
         $location = $TestInputData.DeploymentOutputs.resourceLocation.Value
@@ -40,9 +41,9 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $sub.Tags.serviceShort | Should -Be $serviceShort
         }
 
-        It "Should have a Subscription that is a child of the Management Group with the ID of 'bicep-lz-vending-automation-child'" {
-            $mgAssociation = Get-AzManagementGroupSubscription -SubscriptionId $subscriptionId -GroupId 'bicep-lz-vending-automation-child' -ErrorAction SilentlyContinue
-            $mgAssociation.Id | Should -Be "/providers/Microsoft.Management/managementGroups/bicep-lz-vending-automation-child/subscriptions/$subscriptionId"
+        It "Should have a Subscription that is a child of the Management Group with the ID of '$managementGroupId'" {
+            $mgAssociation = Get-AzManagementGroupSubscription -SubscriptionId $subscriptionId -GroupId $managementGroupId -ErrorAction SilentlyContinue
+            $mgAssociation.Id | Should -Be "/providers/Microsoft.Management/managementGroups/$managementGroupId/subscriptions/$subscriptionId"
         }
 
         It "Should have the 'Microsoft.HybridCompute', 'Microsoft.AVS' resource providers and the 'AzureServicesVm', 'ArcServerPrivateLinkPreview' resource providers features registered" {

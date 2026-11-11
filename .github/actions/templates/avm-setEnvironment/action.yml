@@ -47,7 +47,8 @@ runs:
         $modules = @(
             @{ Name = 'Az.Accounts' },
             @{ Name = 'Az.Resources' },
-            @{ Name = 'powershell-yaml'; Version = '0.4.2'}
+            @{ Name = 'powershell-yaml'; Version = '0.4.2'},
+            @{ Name = 'Avm.Authoring' } # Latest published version; used by the module.tests.ps1 metadata.json validation gate
         )
 
         # Additional PS modules need to be installed for the deployment validation removal step in case it is enabled

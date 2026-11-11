@@ -38,7 +38,7 @@ module testDeployment '../../../main.bicep' = if (enableDeployment) {
       serviceShort: serviceShort
     }
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: managementGroup().name
     virtualNetworkEnabled: true
     virtualNetworkName: 'vnet-${resourceLocation}-ipam-${namePrefix}-${serviceShort}'
     virtualNetworkLocation: resourceLocation
@@ -90,6 +90,7 @@ module testDeployment '../../../main.bicep' = if (enableDeployment) {
 }
 
 output createdSubId string = enableDeployment ? testDeployment.?outputs.?subscriptionId ?? '' : ''
+output deploymentManagementGroupId string = managementGroup().name
 output namePrefix string = namePrefix
 output serviceShort string = serviceShort
 output resourceLocation string = resourceLocation

@@ -346,12 +346,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     managedNetworkSettings: {
       firewallSku: 'Basic'
       isolationMode: 'AllowInternetOutbound'
@@ -410,14 +404,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "location": {
       "value": "<location>"
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": false,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "managedNetworkSettings": {
       "value": {
         "firewallSku": "Basic",
@@ -464,12 +450,6 @@ param customerManagedKey = {
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
 param location = '<location>'
-param managedIdentities = {
-  systemAssigned: false
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 param managedNetworkSettings = {
   firewallSku: 'Basic'
   isolationMode: 'AllowInternetOutbound'
@@ -1460,7 +1440,7 @@ param tags = {
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`datastores`](#parameter-datastores) | array | Datastores to create in the workspace. |
 | [`description`](#parameter-description) | string | The description of this workspace. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`discoveryUrl`](#parameter-discoveryurl) | string | URL for the discovery service to identify regional endpoints for machine learning experimentation services. |
 | [`enableServiceSideCMKEncryption`](#parameter-enableservicesidecmkencryption) | bool | Enable service-side encryption. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -2546,7 +2526,7 @@ The description of this workspace.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

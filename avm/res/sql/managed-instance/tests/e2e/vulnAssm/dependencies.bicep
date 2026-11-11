@@ -16,7 +16,7 @@ param pairedRegionScriptName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the Storage Account to create.')
+@description('Required. The storage account base name. Truncated as needed to append a stable resource-group-specific suffix.')
 param storageAccountName string
 
 var addressPrefix = '10.0.0.0/16'
@@ -60,7 +60,7 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2023-08-01
   ]
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2025-09-01' = {
   name: networkSecurityGroupName
   location: location
   properties: {
@@ -239,7 +239,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-05-0
   }
 }
 
-resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
+resource routeTable 'Microsoft.Network/routeTables@2025-09-01' = {
   name: routeTableName
   location: location
   properties: {
@@ -347,7 +347,7 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-09-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -381,8 +381,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
-  name: storageAccountName
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' = {
+  name: '${take(storageAccountName, 11)}${uniqueString(resourceGroup().id, storageAccountName)}'
   location: location
   kind: 'StorageV2'
   sku: {

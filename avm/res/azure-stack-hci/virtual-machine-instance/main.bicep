@@ -54,9 +54,11 @@ param httpsProxy string?
 // Resources      //
 // ============== //
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.azurestackhci-virtualmachineinstance.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -100,7 +102,7 @@ var formattedRoleAssignments = [
 
 var enableReferencedModulesTelemetry bool = false
 
-module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
+module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.6.0' = {
   name: '${name}-deployment'
   scope: resourceGroup()
   params: {
@@ -111,7 +113,7 @@ module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
   }
 }
 
-resource existingMachine 'Microsoft.HybridCompute/machines@2023-10-03-preview' existing = {
+resource existingMachine 'Microsoft.HybridCompute/machines@2026-07-15' existing = {
   name: name
   dependsOn: [
     hybridCompute

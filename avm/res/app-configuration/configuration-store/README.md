@@ -29,8 +29,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -150,11 +150,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         value: 'valueName'
       }
     ]
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     softDeleteRetentionInDays: 1
   }
 }
@@ -209,13 +204,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         }
       ]
     },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "softDeleteRetentionInDays": {
       "value": 1
     }
@@ -258,11 +246,6 @@ param keyValues = [
     value: 'valueName'
   }
 ]
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 param softDeleteRetentionInDays = 1
 ```
 
@@ -971,7 +954,7 @@ param tags = {
 | [`createMode`](#parameter-createmode) | string | Indicates whether the configuration store need to be recovered. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`dataPlaneProxy`](#parameter-dataplaneproxy) | object | Property specifying the configuration of data plane proxy for Azure Resource Manager (ARM). |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disables all authentication methods other than AAD authentication. |
 | [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Property specifying whether protection against purge is enabled for this configuration store. Defaults to true unless sku is set to Free, since purge protection is not available in Free tier. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1115,7 +1098,7 @@ The data plane proxy authentication mode. This property manages the authenticati
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
@@ -1997,7 +1980,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |

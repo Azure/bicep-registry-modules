@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "8956288048631771620"
+      "version": "0.47.16.16243",
+      "templateHash": "5206926999113875262"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -548,6 +548,46 @@
         "description": "The type for the container app's authentication configuration."
       }
     },
+    "runtimeType": {
+      "type": "object",
+      "properties": {
+        "java": {
+          "type": "object",
+          "properties": {
+            "enableMetrics": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable jmx core metrics for the java app."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Java app configuration."
+          }
+        },
+        "dotnet": {
+          "type": "object",
+          "properties": {
+            "autoConfigureDataProtection": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Auto configure the ASP.NET Core Data Protection feature. When enabled, the data protection keys will be persisted in the Container Apps environment."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. .NET app configuration. Setting this allows preserving .NET stack settings (e.g., when the .NET Development Stack has been enabled via the Azure Portal) across subsequent deployments."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the Container App runtime configuration. Supports both Java and .NET stacks."
+      }
+    },
     "diagnosticSettingMetricsOnlyType": {
       "type": "object",
       "properties": {
@@ -1055,14 +1095,11 @@
       }
     },
     "runtime": {
-      "type": "object",
+      "$ref": "#/definitions/runtimeType",
+      "nullable": true,
       "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/runtime"
-        },
-        "description": "Optional. Runtime configuration for the Container App."
-      },
-      "nullable": true
+        "description": "Optional. Runtime configuration for the Container App. Supports both Java and .NET runtime configuration. Note: The `dotnet` property is accepted by the Azure backend even though it is not part of the GA `2026-01-01` schema."
+      }
     },
     "containers": {
       "type": "array",
@@ -1150,6 +1187,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.b757ba7",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1160,14 +1198,15 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "enableReferencedModulesTelemetry": false
+    "enableReferencedModulesTelemetry": false,
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.app-containerapp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -1327,8 +1366,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "5091965340897189324"
+              "version": "0.47.16.16243",
+              "templateHash": "9107013935602241477"
             },
             "name": "Container App Auth Configs",
             "description": "This module deploys Container App Auth Configs."
@@ -1408,12 +1447,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.6100a34",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.app-containerapp-authconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

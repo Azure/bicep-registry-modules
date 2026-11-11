@@ -42,9 +42,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       databaseAccountOfferType: 'Standard'
       totalThroughputLimit: 4000
-      capabilitiesToAdd: [
-        'EnableServerless'
-      ]
+      capacityMode: 'Serverless'
       failoverLocations: [
         {
           failoverPriority: 0

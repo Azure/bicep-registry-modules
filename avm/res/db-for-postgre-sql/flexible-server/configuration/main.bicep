@@ -16,9 +16,11 @@ param value string?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.dbforpostgresql-flexisrv-config.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -35,11 +37,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview' existing = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-08-01' existing = {
   name: flexibleServerName
 }
 
-resource configuration 'Microsoft.DBforPostgreSQL/flexibleServers/configurations@2026-01-01-preview' = {
+resource configuration 'Microsoft.DBforPostgreSQL/flexibleServers/configurations@2025-08-01' = {
   name: name
   parent: flexibleServer
   properties: {

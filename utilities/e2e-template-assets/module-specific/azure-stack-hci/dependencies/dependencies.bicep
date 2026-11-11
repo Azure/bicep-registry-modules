@@ -7,6 +7,9 @@ param deploymentUserPassword string
 #disable-next-line secure-parameter-default
 param hciHostImageReferenceId string = ''
 
+@description('Optional. Grant the host identity subscription Contributor.')
+param assignSubscriptionContributor bool = true
+
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param localAdminPassword string
@@ -68,6 +71,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
   params: {
     domainOUPath: domainOUPath
     imageReferenceId: hciHostImageReferenceId
+    assignSubscriptionContributor: assignSubscriptionContributor
     hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E48bds_v5'
     localAdminPassword: localAdminPassword
@@ -83,8 +87,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
     userAssignedIdentityName: userAssignedIdentityName
     virtualMachineName: virtualMachineName
     waitDeploymentScriptPrefixName: waitDeploymentScriptPrefixName
-    hciVHDXDownloadURL: ''    // empty - VHDX pre-baked in gallery image
-    hciISODownloadURL: ''     // empty - VHDX pre-baked in gallery image
+    hciVHDXDownloadURL: 'https://azlocalvhds.blob.core.windows.net/images/AzLocal2601.vhdx'
   }
 }
 

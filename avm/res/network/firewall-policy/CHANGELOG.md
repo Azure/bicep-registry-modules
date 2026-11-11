@@ -2,6 +2,28 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/firewall-policy/CHANGELOG.md).
 
+## 0.4.0
+
+### Changes
+
+- Added the optional typed `explicitProxy` settings object, independent of DNS `enableProxy`, with a secure `pacFile` property. Resolves #7580.
+- Added unit coverage and an explicit proxy deployment example.
+
+### Breaking Changes
+
+- None
+
+## 0.3.6
+
+### Changes
+
+- Fixed child module deployment names creation to prevent conflicts when two Firewall Policies are deployed in the same resource group at the same time.
+- Updated API version for `Microsoft.Resources/deployments` to `2025-04-01` for telemetry deployment resource.
+
+### Breaking Changes
+
+- None
+
 ## 0.3.5
 
 ### Changes

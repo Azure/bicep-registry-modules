@@ -1,10 +1,5 @@
 # Relay Namespaces `[Microsoft.Relay/namespaces]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Relay Namespace
 
 You can reference the module as follows:
@@ -933,7 +928,7 @@ param wcfRelays = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Relay Namespace. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hybridConnections`](#parameter-hybridconnections) | array | The hybrid connections to create in the relay namespace. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -974,7 +969,7 @@ Authorization Rules for the Relay Namespace.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

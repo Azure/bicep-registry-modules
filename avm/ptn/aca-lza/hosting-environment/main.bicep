@@ -260,9 +260,11 @@ module applicationGateway 'modules/application-gateway/deploy.app-gateway.bicep'
   }
 }
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.acalza-hostingenvironment.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   location: location
   properties: {
     mode: 'Incremental'

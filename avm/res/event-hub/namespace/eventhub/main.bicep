@@ -127,9 +127,11 @@ var enableReferencedModulesTelemetry = false
 // Resources      //
 // ============== //
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.eventhub-nseventhub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -168,14 +170,18 @@ resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2024-01-01' = {
             : null
         }
       : null
-    ...(!empty(captureDescription) && (captureDescription!.?enabled != false)
+    ...(!empty(captureDescription)
       ? {
           captureDescription: {
-            destination: {
-              name: captureDescription!.destination!.?name
-              identity: captureIdentity
-              properties: captureDescription!.destination!.?properties
-            }
+            ...(!empty(captureDescription!.?destination)
+              ? {
+                  destination: {
+                    name: captureDescription!.destination!.?name
+                    identity: captureIdentity
+                    properties: captureDescription!.destination!.?properties
+                  }
+                }
+              : {})
             enabled: captureDescription!.?enabled ?? true // Assuming that if captureDescription is provided, it's intended to be used
             encoding: captureDescription!.?encoding
             intervalInSeconds: captureDescription!.?intervalInSeconds

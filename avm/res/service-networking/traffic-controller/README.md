@@ -541,7 +541,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`associations`](#parameter-associations) | array | List of Application Gateway for Containers associations. At this time, the number of associations is limited to 1. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`frontends`](#parameter-frontends) | array | List of Application Gateway for Containers frontends. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -587,7 +587,7 @@ The resource ID of the subnet to associate with the Application Gateway for Cont
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

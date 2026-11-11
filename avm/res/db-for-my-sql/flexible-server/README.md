@@ -83,11 +83,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     geoRedundantBackup: 'Disabled'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     storageAutoGrow: 'Enabled'
   }
 }
@@ -136,13 +131,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "geoRedundantBackup": {
       "value": "Disabled"
     },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "storageAutoGrow": {
       "value": "Enabled"
     }
@@ -175,11 +163,6 @@ param customerManagedKey = {
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
 param geoRedundantBackup = 'Disabled'
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 param storageAutoGrow = 'Enabled'
 ```
 
@@ -1345,7 +1328,7 @@ param tags = {
 | [`customerManagedKeyGeo`](#parameter-customermanagedkeygeo) | object | The customer managed key definition to use when geoRedundantBackup is "Enabled". |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`delegatedSubnetResourceId`](#parameter-delegatedsubnetresourceid) | string | Delegated subnet arm resource ID. Used when the desired connectivity mode is "Private Access" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the MySQL flexible server. |
 | [`geoRedundantBackup`](#parameter-georedundantbackup) | string | A value indicating whether Geo-Redundant backup is enabled on the server. If "Enabled" and "cMKKeyName" is not empty, then "geoBackupCMKKeyVaultResourceId" and "cMKUserAssignedIdentityResourceId" are also required. |
@@ -1693,7 +1676,7 @@ Delegated subnet arm resource ID. Used when the desired connectivity mode is "Pr
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

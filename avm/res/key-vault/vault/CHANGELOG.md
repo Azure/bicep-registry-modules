@@ -2,6 +2,36 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/CHANGELOG.md).
 
+## 0.14.2
+
+### Changes
+
+- Update API versions of child-modules to 2026-02-01 before retirement 02/27/2027
+
+### Breaking Changes
+
+- None
+
+## 0.14.1
+
+### Changes
+
+- Update API version to 2026-02-01 before retirement 02/27/2027
+
+### Breaking Changes
+
+- None
+
+## 0.14.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
 ## 0.13.3
 
 ### Changes

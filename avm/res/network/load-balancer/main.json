@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "3762271475261243171"
+      "version": "0.47.16.16243",
+      "templateHash": "14854801809668697102"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer."
@@ -801,7 +801,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
+        "description": "Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured."
       }
     },
     "lock": {
@@ -931,6 +931,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.99a8336",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -939,14 +940,15 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.network-loadbalancer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -1029,20 +1031,20 @@
         "copy": [
           {
             "name": "metrics",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
             "input": {
-              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
               "timeGrain": null
             }
           },
           {
             "name": "logs",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
             "input": {
-              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
             }
           }
         ],
@@ -2331,8 +2333,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "11311343920159398392"
+              "version": "0.47.16.16243",
+              "templateHash": "6872880293251289861"
             },
             "name": "Load Balancer Backend Address Pools",
             "description": "This module deploys a Load Balancer Backend Address Pools."
@@ -2410,12 +2412,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.4ad6614",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-loadbalancer-beaddresspool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2535,8 +2541,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "1715535179803199032"
+              "version": "0.47.16.16243",
+              "templateHash": "899101759019511042"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules."
@@ -2643,12 +2649,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.95857d3",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-loadbalancer-inboundnatrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

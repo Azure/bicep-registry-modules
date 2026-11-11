@@ -607,7 +607,7 @@ param tags = {
 | [`cloudToDevice`](#parameter-cloudtodevice) | object | The IoT hub cloud-to-device messaging properties. |
 | [`comments`](#parameter-comments) | string | IoT hub comments. |
 | [`consumerGroups`](#parameter-consumergroups) | array | The consumer groups to create on the IoT Hub. This is an array of strings where each string is the name of a consumer group. If not specified, no consumer groups will be created. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableDeviceSAS`](#parameter-disabledevicesas) | bool | If true, all device(including Edge devices but excluding modules) scoped SAS keys cannot be used for authentication. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | If true, SAS tokens with Iot hub scoped SAS keys cannot be used for authentication. |
 | [`disableModuleSAS`](#parameter-disablemodulesas) | bool | If true, all module scoped SAS keys cannot be used for authentication. |
@@ -684,7 +684,7 @@ The consumer groups to create on the IoT Hub. This is an array of strings where 
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

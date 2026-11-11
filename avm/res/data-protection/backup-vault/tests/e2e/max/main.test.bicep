@@ -64,6 +64,9 @@ module testDeployment '../../../main.bicep' = {
     immutabilitySettingState: 'Unlocked'
     managedIdentities: {
       systemAssigned: true
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
     }
     backupPolicies: [
       {
@@ -209,6 +212,14 @@ module testDeployment '../../../main.bicep' = {
       {
         name: last(split(nestedDependencies.outputs.storageAccountResourceId, '/'))
         dataSourceInfo: {
+          resourceID: nestedDependencies.outputs.storageAccountResourceId
+          resourceName: last(split(nestedDependencies.outputs.storageAccountResourceId, '/'))
+          resourceType: 'Microsoft.Storage/storageAccounts'
+          resourceUri: nestedDependencies.outputs.storageAccountResourceId
+          resourceLocation: resourceLocation
+          datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+        }
+        dataSourceSetInfo: {
           resourceID: nestedDependencies.outputs.storageAccountResourceId
           resourceName: last(split(nestedDependencies.outputs.storageAccountResourceId, '/'))
           resourceType: 'Microsoft.Storage/storageAccounts'

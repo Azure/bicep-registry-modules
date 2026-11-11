@@ -21,7 +21,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/managedEnvironments/storages` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/storages)</li></ul> |
+| `Microsoft.App/managedEnvironments/storages` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments/storages)</li></ul> |
 
 ## Parameters
 

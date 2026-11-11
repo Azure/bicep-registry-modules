@@ -2551,7 +2551,7 @@ param vpnType = 'RouteBased'
 | [`clientRevokedCertThumbprint`](#parameter-clientrevokedcertthumbprint) | string | Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet. |
 | [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Can be combined with vpnClientAadConfiguration to support both certificate and Entra ID authentication. |
 | [`customRoutes`](#parameter-customroutes) | object | The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableIPSecReplayProtection`](#parameter-disableipsecreplayprotection) | bool | disableIPSecReplayProtection flag. Used for VPN Gateways. |
 | [`domainNameLabel`](#parameter-domainnamelabel) | array | DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com. |
 | [`domainNameLabelScope`](#parameter-domainnamelabelscope) | string | The domain name label scope for the Public IP DNS settings. This property is a preview feature and not available in all regions. If not specified, the property is omitted from the Public IP deployment. |
@@ -2984,7 +2984,7 @@ Number of IP addresses to allocate.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

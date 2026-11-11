@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "16916439012711036434"
+      "version": "0.47.16.16243",
+      "templateHash": "17562203160476159082"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace."
@@ -1593,7 +1593,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
+        "description": "Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured."
       }
     },
     "lock": {
@@ -1716,9 +1716,10 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.903ea4b",
     "enableReferencedModulesTelemetry": false,
-    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "formattedUserAssignedIdentities": "[reduce(map(union(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createArray(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')), createArray())), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(or(not(empty(parameters('managedIdentities'))), not(empty(variables('formattedUserAssignedIdentities')))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Azure Service Bus Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')]",
       "Azure Service Bus Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')]",
@@ -1729,6 +1730,7 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
+    "telemetryIdPrefix": "[variables('$fxv#0')]",
     "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]"
   },
   "resources": {
@@ -1736,7 +1738,7 @@
       "condition": "[and(and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))), and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2025-05-01",
+      "apiVersion": "2026-02-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -1745,7 +1747,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.servicebus-namespace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -1765,7 +1767,7 @@
       "condition": "[and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2025-05-01",
+      "apiVersion": "2026-02-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -1831,20 +1833,20 @@
         "copy": [
           {
             "name": "metrics",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
             "input": {
-              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
               "timeGrain": null
             }
           },
           {
             "name": "logs",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
             "input": {
-              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
             }
           }
         ],
@@ -1914,8 +1916,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "26433215167769491"
+              "version": "0.47.16.16243",
+              "templateHash": "10878686610672873750"
             },
             "name": "Service Bus Namespace Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Authorization Rule."
@@ -1955,12 +1957,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.5235b32",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.servicebus-namespace-authzrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2047,8 +2053,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "4937528906967137991"
+              "version": "0.47.16.16243",
+              "templateHash": "511457452721926550"
             },
             "name": "Service Bus Namespace Disaster Recovery Configs",
             "description": "This module deploys a Service Bus Namespace Disaster Recovery Config"
@@ -2091,12 +2097,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.7890384",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.servicebus-namespace-drconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2181,8 +2191,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "10451680573793001243"
+              "version": "0.47.16.16243",
+              "templateHash": "1005084121195204974"
             },
             "name": "Service Bus Namespace Migration Configuration",
             "description": "This module deploys a Service Bus Namespace Migration Configuration."
@@ -2216,12 +2226,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.d773672",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.servicebus-namespace-migrconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2315,8 +2329,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "7428364314760792745"
+              "version": "0.47.16.16243",
+              "templateHash": "9726868742314408332"
             },
             "name": "Service Bus Namespace Network Rule Sets",
             "description": "This module deploys a ServiceBus Namespace Network Rule Set."
@@ -2391,14 +2405,16 @@
                   "subnet": "[if(contains(parameters('virtualNetworkRules')[copyIndex('networkRules')], 'subnetResourceId'), createObject('id', parameters('virtualNetworkRules')[copyIndex('networkRules')].subnetResourceId), null())]"
                 }
               }
-            ]
+            ],
+            "$fxv#0": "46d3xbcp.res.cf8c79f",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.servicebus-namespace-netruleset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2544,8 +2560,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "8363405205300000590"
+              "version": "0.47.16.16243",
+              "templateHash": "3068405672446595377"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue."
@@ -2844,6 +2860,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
+            "$fxv#0": "46d3xbcp.res.d038859",
             "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Azure Service Bus Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')]",
@@ -2854,14 +2871,15 @@
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-            }
+            },
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.servicebus-namespacequeue.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2981,8 +2999,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "18444698484375791755"
+                      "version": "0.47.16.16243",
+                      "templateHash": "11121966646013549319"
                     },
                     "name": "Service Bus Namespace Queue Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Queue Authorization Rule."
@@ -3026,12 +3044,16 @@
                       }
                     }
                   },
+                  "variables": {
+                    "$fxv#0": "46d3xbcp.res.04ca6ca",
+                    "telemetryIdPrefix": "[variables('$fxv#0')]"
+                  },
                   "resources": [
                     {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.servicebus-namespace-queueauthzrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+                      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -3191,8 +3213,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "2514846922520336078"
+              "version": "0.47.16.16243",
+              "templateHash": "14245372971628139488"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic."
@@ -3823,6 +3845,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
+            "$fxv#0": "46d3xbcp.res.28051fc",
             "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Azure Service Bus Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')]",
@@ -3833,14 +3856,15 @@
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-            }
+            },
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.servicebus-namespacetopic.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3943,8 +3967,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "5953533867613670803"
+                      "version": "0.47.16.16243",
+                      "templateHash": "17999232906924038498"
                     },
                     "name": "Service Bus Namespace Topic Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
@@ -3988,12 +4012,16 @@
                       }
                     }
                   },
+                  "variables": {
+                    "$fxv#0": "46d3xbcp.res.fc0fe40",
+                    "telemetryIdPrefix": "[variables('$fxv#0')]"
+                  },
                   "resources": [
                     {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.servicebus-namespace-topicauthzrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+                      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -4126,8 +4154,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "6533317515632033502"
+                      "version": "0.47.16.16243",
+                      "templateHash": "2740648982109013302"
                     },
                     "name": "Service Bus Namespace Topic Subscription",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -4513,7 +4541,9 @@
                     }
                   },
                   "variables": {
-                    "enableReferencedModulesTelemetry": false
+                    "$fxv#0": "46d3xbcp.res.9b4690c",
+                    "enableReferencedModulesTelemetry": false,
+                    "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
                     "namespace::topic": {
@@ -4526,7 +4556,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.servicebus-namespace-topicsub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+                      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -4618,8 +4648,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "2116154237325061488"
+                              "version": "0.47.16.16243",
+                              "templateHash": "13257050455721514365"
                             },
                             "name": "Service Bus Namespace Topic Subscription Rule",
                             "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
@@ -4879,6 +4909,10 @@
                               }
                             }
                           },
+                          "variables": {
+                            "$fxv#0": "46d3xbcp.res.d20bda8",
+                            "telemetryIdPrefix": "[variables('$fxv#0')]"
+                          },
                           "resources": {
                             "namespace::topic::subscription": {
                               "existing": true,
@@ -4896,7 +4930,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.servicebus-namespace-topicsubrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+                              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {

@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -70,6 +70,14 @@ module testDeployment '../../../main.bicep' = [
       diagnosticSettings: [
         {
           name: 'customSetting'
+          logCategoriesAndGroups: [
+            {
+              category: 'NetworkSecurityGroupEvent'
+            }
+            {
+              category: 'NetworkSecurityGroupRuleCounter'
+            }
+          ]
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
           eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
           storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
@@ -79,11 +87,17 @@ module testDeployment '../../../main.bicep' = [
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
+        notes: 'This is a custom lock note.'
       }
       roleAssignments: [
         {
           name: 'b6d38ee8-4058-42b1-af6a-b8d585cf61ef'
           roleDefinitionIdOrName: 'Owner'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'Network Contributor'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }

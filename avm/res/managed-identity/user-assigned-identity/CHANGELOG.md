@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/managed-identity/user-assigned-identity/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+- Updated nested deployment naming in the `federated-identity-credential` child deployment to include the parent identity name, improving uniqueness and reducing potential deployment name collisions.
+
+### Breaking Changes
+
+- None
+
 ## 0.5.1
 
 ### Changes

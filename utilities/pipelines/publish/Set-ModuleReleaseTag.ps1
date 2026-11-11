@@ -8,6 +8,10 @@ Checks if a module qualifies for a new release (updated and versioned).
 Calculates the target module version based on the version.json file and existing published release tags.
 Creates and pushes the release tag.
 
+Metadata-only edits, including telemetryIdPrefix, do not qualify for a release. To publish a metadata
+change that affects compiled output, include a normal source change with its generated main.json,
+or a version.json release change.
+
 Note: This script only creates the git release tag(s). The actual publishing to the Public Bicep
 Registry (bicep publish, telemetry token replacement, readme-link generation and MCR confirmation) is
 performed by the Azure DevOps OneBranch pipelines that poll these tags. See the AME deploy migration to

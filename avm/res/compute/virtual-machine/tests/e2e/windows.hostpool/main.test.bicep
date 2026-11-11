@@ -58,6 +58,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: take('h${namePrefix}${serviceShort}', 15)
       adminUsername: 'localAdminUser'
+      diskControllerType: 'SCSI'
       managedIdentities: {
         systemAssigned: true
       }

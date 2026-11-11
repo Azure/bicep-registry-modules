@@ -20,6 +20,10 @@ param basePolicyResourceId string?
 @description('Optional. Enable DNS Proxy on Firewalls attached to the Firewall Policy.')
 param enableProxy bool = false
 
+@description('Optional. Explicit HTTP/HTTPS proxy settings for Standard or Premium policies. Configured independently of DNS proxy settings.')
+#disable-next-line secure-secrets-in-params // @secure() is specified in UDT
+param explicitProxy explicitProxyType?
+
 @description('Optional. List of Custom DNS Servers.')
 param servers array?
 
@@ -127,9 +131,11 @@ var formattedRoleAssignments = [
 
 var enableReferencedModulesTelemetry = false
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.network-firewallpolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -163,6 +169,7 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2024-10-01' = {
           servers: servers ?? []
         }
       : null
+    explicitProxy: explicitProxy
     insights: insightsIsEnabled
       ? {
           isEnabled: insightsIsEnabled
@@ -206,7 +213,7 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2024-10-01' = {
 @batchSize(1)
 module firewallPolicy_ruleCollectionGroups 'rule-collection-group/main.bicep' = [
   for (ruleCollectionGroup, index) in (ruleCollectionGroups ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-firewallPolicy_ruleCollectionGroups-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-firewallPolicy_ruleCollectionGroups-${index}'
     params: {
       firewallPolicyName: firewallPolicy.name
       name: ruleCollectionGroup.name
@@ -259,6 +266,35 @@ output location string = firewallPolicy.location
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+@description('The explicit proxy settings for a firewall policy.')
+type explicitProxyType = {
+  @description('Optional. Enable explicit proxy mode.')
+  enableExplicitProxy: bool?
+
+  @description('Optional. Enable PAC file hosting. When enabled, provide pacFile and pacFilePort.')
+  enablePacFile: bool?
+
+  @description('Optional. The explicit proxy HTTP port, used for both HTTP and HTTPS traffic.')
+  @minValue(0)
+  @maxValue(64000)
+  httpPort: int?
+
+  @description('Optional. The explicit proxy HTTPS port.')
+  @minValue(0)
+  @maxValue(64000)
+  httpsPort: int?
+
+  @description('Optional. The PAC file URL. May contain a SAS token.')
+  @secure()
+  pacFile: string?
+
+  @description('Optional. The port on which the firewall serves the PAC file.')
+  @minValue(0)
+  @maxValue(64000)
+  pacFilePort: int?
+}
 
 @export()
 @description('The type for SNAT settings.')

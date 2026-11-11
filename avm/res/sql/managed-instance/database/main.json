@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "14660955563240786925"
+      "version": "0.47.16.16243",
+      "templateHash": "17637500977625375785"
     },
     "name": "SQL Managed Instance Databases",
     "description": "This module deploys a SQL Managed Instance Database."
@@ -372,14 +372,16 @@
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false
+    "$fxv#0": "46d3xbcp.res.c5ddd72",
+    "enableReferencedModulesTelemetry": false,
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.sql-mi-database.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -499,8 +501,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "5490669363293060827"
+              "version": "0.47.16.16243",
+              "templateHash": "10050786793259804881"
             },
             "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -540,12 +542,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.5d29f4a",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-mi-dbbckpshortermretpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -641,8 +647,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "12779066002956645910"
+              "version": "0.47.16.16243",
+              "templateHash": "5729713481220739386"
             },
             "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
@@ -714,12 +720,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.53243b5",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-mi-dbbckplongermretpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
