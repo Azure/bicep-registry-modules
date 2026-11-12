@@ -1,0 +1,132 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.44.1.10279",
+      "templateHash": "504314807523924913"
+    },
+    "name": "AI Gateway API Key",
+    "description": "Configures a gateway-level API key without returning its secret values."
+  },
+  "definitions": {
+    "apiKeyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "$ref": "#/definitions/apiKeyPropertiesType",
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "API key resource configuration."
+      }
+    },
+    "apiKeyPropertiesType": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "nullable": true
+        },
+        "state": {
+          "type": "string",
+          "nullable": true
+        },
+        "expirationDate": {
+          "type": "string",
+          "nullable": true
+        },
+        "primaryKeySecretName": {
+          "type": "string",
+          "nullable": true
+        },
+        "secondaryKeySecretName": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "API key metadata and optional secure input references."
+      }
+    }
+  },
+  "parameters": {
+    "aiGatewayName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Parent gateway name."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. API key resource name."
+      }
+    },
+    "properties": {
+      "$ref": "#/definitions/apiKeyPropertiesType",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. API key properties."
+      }
+    },
+    "secrets": {
+      "type": "secureObject",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Secure values for explicit primary and secondary key references."
+      }
+    }
+  },
+  "resources": {
+    "gateway": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/aigateways",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[parameters('aiGatewayName')]"
+    },
+    "apiKey": {
+      "type": "Microsoft.ApiManagement/aigateways/apiKeys",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[format('{0}/{1}', parameters('aiGatewayName'), parameters('name'))]",
+      "properties": "[union(createObject('displayName', tryGet(parameters('properties'), 'displayName'), 'state', tryGet(parameters('properties'), 'state'), 'expirationDate', tryGet(parameters('properties'), 'expirationDate')), if(equals(tryGet(parameters('properties'), 'primaryKeySecretName'), null()), createObject(), createObject('primaryKey', parameters('secrets')[parameters('properties').primaryKeySecretName])), if(equals(tryGet(parameters('properties'), 'secondaryKeySecretName'), null()), createObject(), createObject('secondaryKey', parameters('secrets')[parameters('properties').secondaryKeySecretName])))]"
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The API key resource ID, not the key value."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/aigateways/apiKeys', parameters('aiGatewayName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The API key resource name."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group name."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

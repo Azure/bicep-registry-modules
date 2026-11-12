@@ -1,0 +1,394 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.44.1.10279",
+      "templateHash": "13909099536842009984"
+    },
+    "name": "AI Gateway Alias",
+    "description": "Creates a client-facing alias with priority and weighted routing."
+  },
+  "definitions": {
+    "aliasType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "$ref": "#/definitions/aliasPropertiesType"
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Alias resource configuration."
+      }
+    },
+    "aliasPropertiesType": {
+      "type": "object",
+      "properties": {
+        "aliasName": {
+          "type": "string",
+          "nullable": true
+        },
+        "displayName": {
+          "type": "string",
+          "nullable": true
+        },
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "routes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/routeType"
+          },
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/policyType"
+          },
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Alias wire properties for the preview backendModels contract."
+      }
+    },
+    "routeType": {
+      "type": "object",
+      "properties": {
+        "providerName": {
+          "type": "string"
+        },
+        "modelName": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 100
+        },
+        "weight": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 100
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Route to a catalog model. Lower priority wins; weight is relative within a priority group."
+      }
+    },
+    "_1.contentSafetyPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "contentSafety"
+          ]
+        },
+        "hateSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+          ],
+          "nullable": true
+        },
+        "selfHarmSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+          ],
+          "nullable": true
+        },
+        "sexualSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+          ],
+          "nullable": true
+        },
+        "violenceSeverity": {
+          "type": "string",
+          "allowedValues": [
+            "High",
+            "Low",
+            "Medium",
+            "None"
+          ],
+          "nullable": true
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Content safety policy thresholds.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "../model-provider/model/main.bicep"
+        }
+      }
+    },
+    "_1.costLimitPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "costLimit"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string",
+          "allowedValues": [
+            "resource",
+            "workspace"
+          ],
+          "nullable": true
+        },
+        "amount": {
+          "type": "int",
+          "minValue": 1
+        },
+        "period": {
+          "type": "string",
+          "allowedValues": [
+            "day",
+            "hour",
+            "month",
+            "week",
+            "year"
+          ]
+        },
+        "counterKey": {
+          "type": "array",
+          "allowedValues": [
+            "identity",
+            "ipAddress"
+          ],
+          "minLength": 1,
+          "maxLength": 2
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Cost limit policy. Amounts are whole USD in this draft.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "../model-provider/model/main.bicep"
+        }
+      }
+    },
+    "_1.ipFilterPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "ipFilter"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "nullable": true
+        },
+        "action": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Deny"
+          ]
+        },
+        "cidrRanges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Inbound caller IP filter policy.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "../model-provider/model/main.bicep"
+        }
+      }
+    },
+    "_1.tokenLimitPolicyType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "tokenLimit"
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "allowedValues": [
+            "resource",
+            "workspace"
+          ],
+          "nullable": true
+        },
+        "count": {
+          "type": "int",
+          "minValue": 1
+        },
+        "period": {
+          "type": "string",
+          "allowedValues": [
+            "day",
+            "hour",
+            "minute"
+          ]
+        },
+        "counterKey": {
+          "type": "array",
+          "allowedValues": [
+            "identity",
+            "ipAddress"
+          ],
+          "minLength": 1,
+          "maxLength": 2
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "description": "Token limit policy with public counter dimensions.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "../model-provider/model/main.bicep"
+        }
+      }
+    },
+    "policyType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type",
+        "mapping": {
+          "tokenLimit": {
+            "$ref": "#/definitions/_1.tokenLimitPolicyType"
+          },
+          "costLimit": {
+            "$ref": "#/definitions/_1.costLimitPolicyType"
+          },
+          "contentSafety": {
+            "$ref": "#/definitions/_1.contentSafetyPolicyType"
+          },
+          "ipFilter": {
+            "$ref": "#/definitions/_1.ipFilterPolicyType"
+          }
+        }
+      },
+      "metadata": {
+        "description": "Typed inline governance policies supported by this draft.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "../model-provider/model/main.bicep"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "aiGatewayName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Parent gateway name."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Parent workspace name."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Alias resource name."
+      }
+    },
+    "properties": {
+      "$ref": "#/definitions/aliasPropertiesType",
+      "metadata": {
+        "description": "Required. Alias routes and policies."
+      }
+    }
+  },
+  "resources": {
+    "workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/aigateways/workspaces",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName'))]"
+    },
+    "alias": {
+      "type": "Microsoft.ApiManagement/aigateways/workspaces/aliases",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[format('{0}/{1}/{2}', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "backendModels",
+            "count": "[length(parameters('properties').routes)]",
+            "input": {
+              "resourceId": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/modelProviders/models', parameters('aiGatewayName'), parameters('workspaceName'), parameters('properties').routes[copyIndex('backendModels')].providerName, parameters('properties').routes[copyIndex('backendModels')].modelName)]",
+              "priority": "[coalesce(tryGet(parameters('properties').routes[copyIndex('backendModels')], 'priority'), 0)]",
+              "weight": "[coalesce(tryGet(parameters('properties').routes[copyIndex('backendModels')], 'weight'), 1)]"
+            }
+          }
+        ],
+        "aliasName": "[coalesce(coalesce(tryGet(parameters('properties'), 'aliasName'), tryGet(parameters('properties'), 'displayName')), parameters('name'))]",
+        "description": "[tryGet(parameters('properties'), 'description')]",
+        "policies": "[tryGet(parameters('properties'), 'policies')]"
+      }
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The alias resource ID."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/aliases', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The alias name."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group name."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+e2e/**/*.test.json
+e2e/dependencies/main.json
+e2e/dependencies/foundry-role-assignment.json
+unit/__pycache__/
