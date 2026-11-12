@@ -99,7 +99,9 @@ Describe 'ACA-LZA actual trust policies with offline Notation 1.3.2' {
             $script:certificates[$Name] = New-OfflineSigningCertificate -Name $Name -Subject $CertificatePolicy.SubjectName
         }
         Mock Get-AzKeyVaultCertificateOperation { @{ Status = 'completed' } }
-        Mock Import-AzContainerRegistryImage {}
+        Mock Import-AzContainerRegistryImage {
+            if ($SourceResourceId) { throw 'Registry has exports disabled.' }
+        }
         Mock Invoke-NotationCommand {
             if ($Arguments[0] -in @('cert', 'policy')) {
                 $result = . $nativeNotationCommand -Executable $Executable -Arguments $Arguments
@@ -218,6 +220,10 @@ Describe 'ACA-LZA actual trust policies with offline Notation 1.3.2' {
         }
         @($script:nativeImports | ForEach-Object { $_.policy.trustPolicies[0].registryScopes[0] } | Select-Object -Unique).Count | Should -Be 4
         @($verified.controls.case) | Should -Be @('Unsigned', 'Tampered', 'Untrusted')
+        Should -Invoke Import-AzContainerRegistryImage -Times 3 -Exactly -ParameterFilter {
+            -not $SourceResourceId -and $SourceRegistryUri -ceq 'mcr.microsoft.com' -and
+            $SourceImage -ceq "azuredocs/containerapps-helloworld@$digest" -and $Mode -ceq 'NoForce'
+        }
         $script:registryCommands.Count | Should -Be 7
         @($script:registryCommands | Where-Object verb -CEQ 'sign').Count | Should -Be 2
         @($script:registryCommands | Where-Object verb -CEQ 'verify').Count | Should -Be 5

@@ -251,6 +251,31 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         } | Should -Throw '*Reached signature blob after manifest validation*'
     }
 
+    It 'Imports the exact public image digest for native controls without exporting from the hardened registry' {
+        $envelope = [byte[]] (0..127)
+        $envelopeDigest = 'sha256:' + [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($envelope)).ToLowerInvariant()
+        $script:signatureManifest.layers[0].digest = $envelopeDigest
+        $script:signatureManifest.config.digest = $signatureDigest
+        Mock Get-TestOciBytes { $envelope }
+        Mock Import-AzContainerRegistryImage {
+            if ($SourceResourceId) { throw 'Registry has exports disabled.' }
+        }
+        Mock Get-NotationRepositoryToken {
+            if ($Repository -cne 'aca-lza/sample') { throw 'Reached negative repository after digest-pinned import.' }
+            'synthetic-repository'
+        }
+
+        {
+            Test-NotationImageVerification @publish -TrustedImage $image -TrustedSignatureDigest $signatureDigest `
+                -TrustedCertificate $publicCertificate.RawData -TrustedSubject $publicCertificate.Subject
+        } | Should -Throw '*Reached negative repository after digest-pinned import*'
+        Should -Invoke Import-AzContainerRegistryImage -Times 1 -Exactly -ParameterFilter {
+            -not $SourceResourceId -and $SourceRegistryUri -ceq 'mcr.microsoft.com' -and
+            $SourceImage -ceq "azuredocs/containerapps-helloworld@$digest" -and
+            $TargetTag -cmatch '^aca-lza/verify-[a-f0-9]+/unsigned:negative$' -and $Mode -ceq 'NoForce'
+        }
+    }
+
     Describe 'ACA-LZA credential-safe native diagnostics' {
         It 'Redacts known credentials, encodings and unlabelled echoes before returning diagnostics' {
             $secret = 'synthetic-refresh+/= %value'

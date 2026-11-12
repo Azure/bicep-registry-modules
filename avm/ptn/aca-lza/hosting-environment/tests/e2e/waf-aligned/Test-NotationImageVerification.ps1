@@ -120,12 +120,12 @@ function Test-NotationImageVerification {
             throw 'The original signature envelope bytes did not match the authoritative OCI descriptor.'
         }
         $suffix = [guid]::NewGuid().ToString('N')
-        $registryId = "/subscriptions/$((Get-AzContext -ErrorAction Stop).Subscription.Id)/resourceGroups/$ResourceGroupName/providers/Microsoft.ContainerRegistry/registries/$RegistryName"
         $checks = @()
         foreach ($case in @('Unsigned', 'Tampered', 'Untrusted')) {
             $repository = "aca-lza/verify-$suffix/$($case.ToLowerInvariant())"
             $null = Import-AzContainerRegistryImage -RegistryName $RegistryName -ResourceGroupName $ResourceGroupName `
-                -SourceResourceId $registryId -SourceImage "$sourceRepository@$digest" -TargetTag "${repository}:negative" -Mode NoForce -ErrorAction Stop
+                -SourceRegistryUri 'mcr.microsoft.com' -SourceImage "azuredocs/containerapps-helloworld@$digest" `
+                -TargetTag "${repository}:negative" -Mode NoForce -ErrorAction Stop
             $token = Get-NotationRepositoryToken -LoginServer $LoginServer -Repository $repository -RegistryCredential $credential
             $target = Invoke-WebRequest -Uri "https://$LoginServer/v2/$repository/manifests/negative" -Headers @{
                 Authorization = "Bearer $token"
