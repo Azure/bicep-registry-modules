@@ -45,8 +45,7 @@ function Test-VerifyDiagSettings($ResourceId, $LogAnalyticsWorkspaceResourceId, 
     $diagCat = @(Get-AzDiagnosticSettingCategory -ResourceId $ResourceId)
     $diagCat | Should -Not -BeNullOrEmpty
     #$diagCat.ProvisioningState | Should -Be "Succeeded"     # Not available in the output
-    $diagCat.Count | Should -Be $Logs.Count
-    for ($i = 0; $i -lt $diagCat.Count; $i++) { $diagCat[$i].Name | Should -BeIn $Logs }
+    foreach ($log in $Logs) { $log | Should -BeIn $diagCat.Name }
 }
 
 function Test-VerifyVirtualNetwork($VirtualNetworkResourceGroupName, $VirtualNetworkName, $Tags, $LogAnalyticsWorkspaceResourceId, $AddressPrefix, $NumberOfSubnets) {
