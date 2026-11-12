@@ -325,7 +325,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     // Required parameters
     name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
-    publisherName: 'az-amorg-x-001'
+    publisherName: '<publisherName>'
     // Non-required parameters
     additionalLocations: [
       {
@@ -908,7 +908,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "apimgmt-noreply@mail.windowsazure.com"
     },
     "publisherName": {
-      "value": "az-amorg-x-001"
+      "value": "<publisherName>"
     },
     // Non-required parameters
     "additionalLocations": {
@@ -1535,7 +1535,7 @@ using 'br/public:avm/res/api-management/service:<version>'
 // Required parameters
 param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
-param publisherName = 'az-amorg-x-001'
+param publisherName = '<publisherName>'
 // Non-required parameters
 param additionalLocations = [
   {

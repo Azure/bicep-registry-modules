@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module with most of its featur
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}#_avmE2eSuffix_#-apimanagement.service-${serviceShort}-rg'
 
 @description('Optional. Location to deploy secondary resources to for APIM additionalLocations.')
 param locationRegion2 string = 'westus'
@@ -18,7 +18,7 @@ param locationRegion2 string = 'westus'
 param serviceShort string = 'apismax'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_##_avmE2eSuffix_#'
+param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. The secret to leverage for authorization server authentication.')
 @secure()
@@ -31,6 +31,8 @@ param delegationValidationKey string = base64(replace('${newGuid()}${newGuid()}'
 @description('Optional. The base64-encoded 64-byte secondary delegation validation key.')
 @secure()
 param delegationValidationSecondaryKey string = base64(replace('${newGuid()}${newGuid()}', '-', ''))
+
+var runNamePrefix = '${namePrefix}#_avmE2eSuffix_#'
 
 // Enforcing location due to limited availability of the APIM Worskpace Gateway SKU in certain regions.
 #disable-next-line no-hardcoded-location
@@ -53,14 +55,14 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     locationRegion1: enforcedLocation
     locationRegion2: locationRegion2
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    publicIPNamePrefix: 'dep-${namePrefix}-pip-${serviceShort}'
-    publicIpDnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, enforcedLocation)}'
-    networkSecurityGroupNamePrefix: 'dep-${namePrefix}-nsg-${serviceShort}'
-    virtualNetworkNamePrefix: 'dep-${namePrefix}-vnet-${serviceShort}'
-    routeTableNamePrefix: 'dep-${namePrefix}-rt-${serviceShort}'
-    applicationInsightsName: 'dep-${namePrefix}-ai-${serviceShort}'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-s-${serviceShort}'
+    managedIdentityName: 'dep-${runNamePrefix}-msi-${serviceShort}'
+    publicIPNamePrefix: 'dep-${runNamePrefix}-pip-${serviceShort}'
+    publicIpDnsLabelPrefix: 'dep-${runNamePrefix}-dnsprefix-${uniqueString(deployment().name, enforcedLocation)}'
+    networkSecurityGroupNamePrefix: 'dep-${runNamePrefix}-nsg-${serviceShort}'
+    virtualNetworkNamePrefix: 'dep-${runNamePrefix}-vnet-${serviceShort}'
+    routeTableNamePrefix: 'dep-${runNamePrefix}-rt-${serviceShort}'
+    applicationInsightsName: 'dep-${runNamePrefix}-ai-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${runNamePrefix}-law-s-${serviceShort}'
   }
 }
 
@@ -70,10 +72,10 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${uniqueString(deployment().name, namePrefix)}'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+    storageAccountName: 'dep${uniqueString(deployment().name, runNamePrefix)}'
+    logAnalyticsWorkspaceName: 'dep-${runNamePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${runNamePrefix}-evh-${serviceShort}'
+    eventHubNamespaceName: 'dep-${runNamePrefix}-evhns-${serviceShort}'
   }
 }
 
@@ -81,7 +83,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-var apimName = '${namePrefix}${serviceShort}001'
+var apimName = '${runNamePrefix}${serviceShort}001'
 var backend1Name = 'backend1'
 var workspace1Name = 'workspace1'
 var workspace1Backend1Name = 'workspace1-backend1'
@@ -110,7 +112,7 @@ module testDeployment '../../../main.bicep' = [
       name: apimName
       location: enforcedLocation
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
-      publisherName: '${namePrefix}-az-amorg-x-001'
+      publisherName: '${runNamePrefix}-az-amorg-x-001'
       additionalLocations: [
         {
           location: locationRegion2
