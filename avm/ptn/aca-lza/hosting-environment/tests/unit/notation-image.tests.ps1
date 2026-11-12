@@ -50,6 +50,12 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         $script:createdSignatureCount = 1
         $script:certificateExists = $true
         $script:releases = [System.Collections.Generic.List[string]]::new()
+        $script:signatureManifest = @{
+            artifactType = 'application/vnd.cncf.notary.signature'
+            config = @{ mediaType = 'application/vnd.oci.empty.v1+json' }
+            subject = @{ digest = $digest }
+            layers = @(@{ mediaType = 'application/cose' })
+        }
         Mock Invoke-NotationCommand {
             $script:commands.Add(@{ arguments = @($Arguments); registryCredential = $RegistryCredential })
             if ($Arguments[0] -ceq 'login') { throw 'Persistent registry login must not be used.' }
@@ -74,6 +80,7 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         Mock Invoke-RestMethod {
             if ($Uri -like '*/oauth2/exchange') { return @{ refresh_token = 'synthetic-refresh' } }
             if ($Uri -like '*/oauth2/token') { return @{ access_token = 'synthetic-repository' } }
+            if ($Uri -like '*/manifests/*') { return $script:signatureManifest }
             if ($Method -ceq 'Patch') {
                 $script:releases.Add($Uri)
                 return @{}
@@ -214,6 +221,20 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         $script:verifyError = 'invalid signature'
         { Publish-VerifiedContainerImage @publish } | Should -Throw '*signature verification rejected*'
         $script:releases.Count | Should -Be 0
+    }
+
+    It 'Reports only signature manifest fields when the trusted COSE shape does not match' {
+        $script:signatureManifest.subject.digest = 'sha256:' + ('c' * 64)
+        $failure = $null
+        try {
+            Test-NotationImageVerification @publish -TrustedImage $image -TrustedSignatureDigest $signatureDigest `
+                -TrustedCertificate $publicCertificate.RawData -TrustedSubject $publicCertificate.Subject
+        } catch {
+            $failure = $_.Exception.Message
+        }
+        $failure | Should -Match 'Actual manifest fields'
+        $failure | Should -Match ('sha256:' + ('c' * 64))
+        $failure | Should -Not -Match 'synthetic-repository'
     }
 
     Describe 'ACA-LZA credential-safe native diagnostics' {

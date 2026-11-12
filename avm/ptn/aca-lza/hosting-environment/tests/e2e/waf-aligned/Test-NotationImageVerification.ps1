@@ -97,14 +97,24 @@ function Test-NotationImageVerification {
         $sourceToken = Get-NotationRepositoryToken -LoginServer $LoginServer -Repository $sourceRepository -RegistryCredential $credential
         $signature = Invoke-RestMethod -Uri "https://$LoginServer/v2/$sourceRepository/manifests/$TrustedSignatureDigest" `
             -Headers @{ Authorization = "Bearer $sourceToken"; Accept = 'application/vnd.oci.image.manifest.v1+json' } -ErrorAction Stop
-        if ($signature.artifactType -cne 'application/vnd.cncf.notary.signature' -or $signature.subject.digest -cne $digest -or
-            $signature.layers.Count -ne 1 -or $signature.layers[0].mediaType -cne 'application/cose') {
-            throw 'The native trusted signature does not match the expected COSE artifact and original image.'
+        $layers = @($signature.layers)
+        $manifestSummary = [ordered]@{
+            artifactType      = [string] $signature.artifactType
+            configMediaType   = [string] $signature.config.mediaType
+            subjectDigest     = [string] $signature.subject.digest
+            layerCount        = $layers.Count
+            layerMediaTypes   = @($layers | Select-Object -First 4 | ForEach-Object { [string] $_.mediaType })
         }
-        $envelope = Get-TestOciBytes -Uri "https://$LoginServer/v2/$sourceRepository/blobs/$($signature.layers[0].digest)" -Token $sourceToken -Directory $Directory
+        $manifestSummaryJson = ConvertTo-Json -InputObject $manifestSummary -Compress -Depth 4
+        if ($manifestSummaryJson.Length -gt 1024) { $manifestSummaryJson = $manifestSummaryJson.Substring(0, 1024) }
+        if ($signature.artifactType -cne 'application/vnd.cncf.notary.signature' -or $signature.subject.digest -cne $digest -or
+            $layers.Count -ne 1 -or $layers[0].mediaType -cne 'application/cose') {
+            throw "The native trusted signature does not match the expected COSE artifact and original image. Actual manifest fields: $manifestSummaryJson"
+        }
+        $envelope = Get-TestOciBytes -Uri "https://$LoginServer/v2/$sourceRepository/blobs/$($layers[0].digest)" -Token $sourceToken -Directory $Directory
         $configuration = Get-TestOciBytes -Uri "https://$LoginServer/v2/$sourceRepository/blobs/$($signature.config.digest)" -Token $sourceToken -Directory $Directory
         $originalEnvelopeDigest = 'sha256:' + [Convert]::ToHexString([System.Security.Cryptography.SHA256]::HashData($envelope)).ToLowerInvariant()
-        if ($originalEnvelopeDigest -cne $signature.layers[0].digest -or $envelope.Length -lt 64) {
+        if ($originalEnvelopeDigest -cne $layers[0].digest -or $envelope.Length -lt 64) {
             throw 'The original signature envelope bytes did not match the authoritative OCI descriptor.'
         }
         $suffix = [guid]::NewGuid().ToString('N')
