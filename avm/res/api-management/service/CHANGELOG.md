@@ -10,7 +10,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Marked primary and secondary subscription keys as secure in service and workspace subscription types, matching their child modules. Keys remain optional.
 - Marked workspace named values as secure through the imported workspace type, matching the named-value child module.
 - Secured the generated named-value fallback, workspace logger credentials, and portal-setting validation keys at their module boundaries.
-- Added the optional secondary delegation validation key to both portal-setting boundaries and supplied independent primary and secondary keys in the max test.
+- Added the optional secondary delegation validation key to both portal-setting boundaries.
 - Kept the portal-setting child's ordinary properties open instead of duplicating its provider schema, and propagated the child's minor version change.
 
 ### Breaking Changes

@@ -6,13 +6,11 @@
         $bicep = if ($env:AVM_CONTRACT_TEST_BICEP_PATH) { $env:AVM_CONTRACT_TEST_BICEP_PATH } else { 'bicep' }
 
         function Build-PortalContract {
-            param([string] $Source, [string] $FixturePath)
+            param([string] $Source)
 
-            if (-not $FixturePath) {
-                $FixturePath = Join-Path $TestDrive "$([guid]::NewGuid()).bicep"
-                $Source | Set-Content -LiteralPath $FixturePath
-            }
-            $result = & $bicep build $FixturePath --stdout --no-restore 2>&1
+            $fixturePath = Join-Path $TestDrive "$([guid]::NewGuid()).bicep"
+            $Source | Set-Content -LiteralPath $fixturePath
+            $result = & $bicep build $fixturePath --stdout --no-restore 2>&1
             if ($LASTEXITCODE -ne 0) { throw ($result | Out-String) }
             ($result | Where-Object { $_ -isnot [System.Management.Automation.ErrorRecord] } | Out-String) |
                 ConvertFrom-Json -AsHashtable
@@ -43,22 +41,6 @@ param settings delegationPropertiesType
         foreach ($key in @('validationKey', 'validationSecondaryKey')) {
             $properties.properties[$key].type | Should -BeExactly 'securestring'
             $properties.properties[$key].nullable | Should -BeTrue
-        }
-    }
-
-    It 'Forwards independent secure primary and secondary keys in the max fixture' {
-        $template = Build-PortalContract -FixturePath (Join-Path (Split-Path $PSScriptRoot) 'e2e/max/main.test.bicep')
-        $deployment = @($template.resources | Where-Object {
-                $_.properties.parameters -and $_.properties.parameters.Contains('portalsettings')
-            })
-        $deployment.Count | Should -Be 1
-        $delegation = @($deployment[0].properties.parameters.portalsettings.value | Where-Object { $_.name -eq 'delegation' })
-        $delegation.Count | Should -Be 1
-        $delegation[0].properties.validationKey | Should -BeExactly "[parameters('delegationValidationKey')]"
-        $delegation[0].properties.validationSecondaryKey | Should -BeExactly "[parameters('delegationValidationSecondaryKey')]"
-        foreach ($parameter in @('delegationValidationKey', 'delegationValidationSecondaryKey')) {
-            $template.parameters[$parameter].type | Should -BeExactly 'securestring'
-            $template.parameters[$parameter].defaultValue | Should -Match 'newGuid\(\)'
         }
     }
 

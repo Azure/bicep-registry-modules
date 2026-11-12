@@ -527,20 +527,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     portalsettings: [
       {
-        name: 'delegation'
-        properties: {
-          subscriptions: {
-            enabled: false
-          }
-          url: 'https://contoso.com/delegation'
-          userRegistration: {
-            enabled: false
-          }
-          validationKey: '<validationKey>'
-          validationSecondaryKey: '<validationSecondaryKey>'
-        }
-      }
-      {
         name: 'signin'
         properties: {
           enabled: false
@@ -1142,20 +1128,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "portalsettings": {
       "value": [
         {
-          "name": "delegation",
-          "properties": {
-            "subscriptions": {
-              "enabled": false
-            },
-            "url": "https://contoso.com/delegation",
-            "userRegistration": {
-              "enabled": false
-            },
-            "validationKey": "<validationKey>",
-            "validationSecondaryKey": "<validationSecondaryKey>"
-          }
-        },
-        {
           "name": "signin",
           "properties": {
             "enabled": false
@@ -1736,20 +1708,6 @@ param policies = [
   }
 ]
 param portalsettings = [
-  {
-    name: 'delegation'
-    properties: {
-      subscriptions: {
-        enabled: false
-      }
-      url: 'https://contoso.com/delegation'
-      userRegistration: {
-        enabled: false
-      }
-      validationKey: '<validationKey>'
-      validationSecondaryKey: '<validationSecondaryKey>'
-    }
-  }
   {
     name: 'signin'
     properties: {
