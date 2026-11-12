@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "6693806942258728182"
+      "templateHash": "10677454301421157639"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -1635,13 +1635,6 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. A base64-encoded validation key to validate, that a request is coming from Azure API Management."
-              }
-            },
-            "validationSecondaryKey": {
-              "type": "securestring",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. A base64-encoded secondary validation key to validate that a request comes from Azure API Management."
               }
             }
           },

@@ -32,16 +32,15 @@ param properties portalSettingPropertiesType
         $type.additionalProperties | Should -Not -BeFalse
     }
 
-    It 'Secures both delegation keys at the parent boundary' {
+    It 'Keeps the parent delegation contract limited to the documented validation key' {
         $template = Build-PortalContract @"
 import { delegationPropertiesType } from '$serviceImport'
 param settings delegationPropertiesType
 "@
         $properties = $template.definitions.delegationPropertiesType.properties.properties
-        foreach ($key in @('validationKey', 'validationSecondaryKey')) {
-            $properties.properties[$key].type | Should -BeExactly 'securestring'
-            $properties.properties[$key].nullable | Should -BeTrue
-        }
+        $properties.properties.validationKey.type | Should -BeExactly 'securestring'
+        $properties.properties.validationKey.nullable | Should -BeTrue
+        $properties.properties.ContainsKey('validationSecondaryKey') | Should -BeFalse
     }
 
     It 'Preserves native generic-object callers without constraining ordinary siblings' {
