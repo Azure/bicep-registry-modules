@@ -496,7 +496,6 @@ module service_namedValues 'named-value/main.bicep' = [
   }
 ]
 
-@batchSize(1)
 module service_portalsettings 'portalsetting/main.bicep' = [
   for (portalsetting, index) in (portalsettings ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-PrtSet-${index}'

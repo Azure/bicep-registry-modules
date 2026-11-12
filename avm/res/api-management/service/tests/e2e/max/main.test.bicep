@@ -18,7 +18,7 @@ param locationRegion2 string = 'westus'
 param serviceShort string = 'apismax'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = '#_namePrefix_##_avmE2eSuffix_#'
 
 @description('Optional. The secret to leverage for authorization server authentication.')
 @secure()
@@ -70,7 +70,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}azsa${serviceShort}01'
+    storageAccountName: 'dep${uniqueString(deployment().name, namePrefix)}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
