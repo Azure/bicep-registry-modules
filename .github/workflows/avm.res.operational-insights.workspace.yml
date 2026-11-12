@@ -5,82 +5,179 @@ on:
     inputs:
       staticValidation:
         type: boolean
-        description: "Execute static validation"
+        description: "Must remain false for this single-case validation"
         required: false
-        default: true
+        default: false
       deploymentValidation:
         type: boolean
-        description: "Execute deployment validation"
+        description: "Must remain true for this single-case validation"
         required: false
         default: true
       removeDeployment:
         type: boolean
-        description: "Remove deployed module"
+        description: "Must remain true for ordinary cleanup"
         required: false
         default: true
       customLocation:
         type: string
-        description: "Default location overwrite (e.g., eastus)"
+        description: "Must remain swedencentral"
         required: false
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/avm.res.operational-insights.workspace.yml"
-      - "avm/res/operational-insights/workspace/**"
-      - "!*/**/README.md"
-      - "!avm/**/metadata.json"
+        default: "swedencentral"
 
-env:
-  modulePath: "avm/res/operational-insights/workspace"
-  workflowPath: ".github/workflows/avm.res.operational-insights.workspace.yml"
+permissions: {}
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: "kv-law-max-${{ github.ref }}"
+  cancel-in-progress: false
 
 jobs:
-  ###########################
-  #   Initialize pipeline   #
-  ###########################
   job_initialize_pipeline:
+    name: "Check the approved workspace max allocation"
     runs-on: ubuntu-latest
-    name: "Initialize pipeline"
-    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
+    environment: avm-validation
+    permissions:
+      contents: read
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
-      - name: "Set input parameters to output variables"
-        id: get-workflow-param
-        uses: ./.github/actions/templates/avm-getWorkflowInput
-        with:
-          workflowPath: "${{ env.workflowPath}}"
-      - name: "Get module test file paths"
-        id: get-module-test-file-paths
-        uses: ./.github/actions/templates/avm-getModuleTestFiles
-        with:
-          modulePath: "${{ env.modulePath }}"
-    outputs:
-      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
-      moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
-      psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
-      modulePath: "${{ env.modulePath }}"
+          persist-credentials: false
+      - name: "Validate source, inputs and allocation"
+        id: validate-allocation
+        shell: pwsh
+        env:
+          APPROVED_SUBSCRIPTION_INDEX: "1"
+          APPROVED_SUBSCRIPTION_KEY: "5ec11af27fa44336332b50ab2557a0ae31db8ea6ef2f9cbb459ffa982fdd15db"
+          APPROVED_SUBSCRIPTION_NAME: "sub-avm-test-002"
+          APPROVED_RESERVED001_KEY: "5cebaf3458463a2f64f6110632ea258b1e90468189bd1fb74d6d8c0d262f037a"
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          INPUT_STATIC_VALIDATION: ${{ toJSON(inputs.staticValidation) }}
+          INPUT_DEPLOYMENT_VALIDATION: ${{ toJSON(inputs.deploymentValidation) }}
+          INPUT_REMOVE_DEPLOYMENT: ${{ toJSON(inputs.removeDeployment) }}
+          INPUT_CUSTOM_LOCATION: ${{ inputs.customLocation }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:GITHUB_REPOSITORY -cne 'Azure/bicep-registry-modules' -or
+              $env:GITHUB_EVENT_NAME -cne 'workflow_dispatch' -or
+              $env:GITHUB_REF -cne 'refs/heads/jaredfholgate-bicep-campaign-handover') {
+            throw 'This caller is restricted to its approved repository, dispatch event and validation branch.'
+          }
 
-  ##############################
-  #   Call reusable workflow   #
-  ##############################
-  call-workflow-passing-data:
-    name: "Run"
-    permissions:
-      id-token: write # For OIDC
-      contents: write # For release tags
+          $candidate = '6e94b993fb58632b7a446269af3ba9a963d7b367'
+          $parent = git rev-parse --verify 'HEAD^'
+          if ($LASTEXITCODE -ne 0 -or $parent -cne $candidate) {
+            throw 'The validation commit must be a direct child of the preserved candidate.'
+          }
+          $head = git rev-parse --verify HEAD
+          if ($LASTEXITCODE -ne 0 -or $head -cne $env:GITHUB_SHA) {
+            throw 'The checked-out commit does not match the dispatched commit.'
+          }
+          $changedFiles = @(git --no-pager diff --name-only $candidate HEAD)
+          if ($LASTEXITCODE -ne 0 -or $changedFiles.Count -ne 1 -or
+              $changedFiles[0] -cne '.github/workflows/avm.res.operational-insights.workspace.yml') {
+            throw 'Only the existing workspace dispatcher may differ from the preserved candidate.'
+          }
+          $status = @(git --no-pager status --porcelain=v1 --untracked-files=normal)
+          if ($LASTEXITCODE -ne 0 -or $status.Count -ne 0) {
+            throw 'The validation checkout must be clean.'
+          }
+
+          if ($env:INPUT_STATIC_VALIDATION -cne 'false' -or
+              $env:INPUT_DEPLOYMENT_VALIDATION -cne 'true' -or
+              $env:INPUT_REMOVE_DEPLOYMENT -cne 'true' -or
+              $env:INPUT_CUSTOM_LOCATION -cne 'swedencentral') {
+            throw 'Only workspace max deployment with ordinary cleanup in swedencentral is approved.'
+          }
+          $tenant = [guid]::Empty
+          if (-not [guid]::TryParseExact($env:VALIDATE_TENANT_ID, 'D', [ref] $tenant) -or
+              $tenant -ne [guid] '39e9d0f2-14b2-4aa1-96e5-798e9872f09f') {
+            throw 'The validation tenant does not match the TEST tenant.'
+          }
+          $approvedIndex = -1
+          if (-not [int]::TryParse($env:APPROVED_SUBSCRIPTION_INDEX, [ref] $approvedIndex) -or
+              $approvedIndex -lt 0 -or
+              $env:APPROVED_SUBSCRIPTION_KEY -cnotmatch '^[0-9a-f]{64}$' -or
+              $env:APPROVED_RESERVED001_KEY -cnotmatch '^[0-9a-f]{64}$' -or
+              [string]::IsNullOrWhiteSpace($env:APPROVED_SUBSCRIPTION_NAME) -or
+              $env:APPROVED_SUBSCRIPTION_NAME -match '\p{C}') {
+            throw 'Allocation approval pins are unset or invalid; do not dispatch before approval.'
+          }
+          if ([string]::IsNullOrWhiteSpace($env:TEST_SUBSCRIPTION_IDS)) {
+            throw 'An explicit current subscription inventory is required; fallback selection is forbidden.'
+          }
+          try {
+            $rawSubscriptions = ConvertFrom-Json -InputObject $env:TEST_SUBSCRIPTION_IDS -NoEnumerate -ErrorAction Stop
+          } catch {
+            throw 'The configured subscription inventory must be valid JSON.'
+          }
+          if ($rawSubscriptions -isnot [array] -or $rawSubscriptions.Count -eq 0) {
+            throw 'The configured subscription inventory must be a non-empty array.'
+          }
+          foreach ($entry in $rawSubscriptions) {
+            if ($entry -isnot [pscustomobject] -or
+                @($entry.PSObject.Properties.Name | Where-Object { $_ -cnotin @('id', 'name', 'tag') }).Count -gt 0) {
+              throw 'Subscription inventory records may contain only id, name and optional tag.'
+            }
+            if ('tag' -cin $entry.PSObject.Properties.Name -and
+                ($entry.tag -isnot [string] -or [string]::IsNullOrWhiteSpace($entry.tag) -or $entry.tag -match '\p{C}')) {
+              throw 'An explicit subscription tag must be a non-empty, single-line string.'
+            }
+          }
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+          $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS)
+          if (@($subscriptions.key | Sort-Object -Unique).Count -ne $subscriptions.Count) {
+            throw 'Duplicate subscription identities are forbidden.'
+          }
+          if ($approvedIndex -ge $subscriptions.Count) {
+            throw 'The approved subscription index is outside the current inventory.'
+          }
+          $subscription = $subscriptions[$approvedIndex]
+          if ($subscription.key -cne $env:APPROVED_SUBSCRIPTION_KEY -or
+              $subscription.name -cne $env:APPROVED_SUBSCRIPTION_NAME) {
+            throw 'The current allocation identity does not match the approval pins.'
+          }
+          $rawSubscription = $rawSubscriptions[$approvedIndex]
+          $tag = if ('tag' -cin $rawSubscription.PSObject.Properties.Name) { $rawSubscription.tag } else { 'General' }
+          if ($tag -cne 'General') {
+            throw 'Only a General test allocation is permitted.'
+          }
+          $excludedKeys = @(
+            $env:APPROVED_RESERVED001_KEY
+            '26c87800d012ca88aa456ebe30cb3fe62dd962a0e5ee2f7581ea3104bcc12008'
+            '43d941edd66c52a8769d2413c06cf3dc17ec356a5bab5728191317fe79dfc075'
+          )
+          if ($subscription.key -cin $excludedKeys -or
+              ($subscription.name -replace '[^a-zA-Z0-9]', '') -match '(?i)reserved0*1$') {
+            throw 'Reserved001 and historically unresolved cluster allocations are excluded.'
+          }
+
+          $testCase = [ordered]@{
+            path = 'tests/e2e/max/main.test.bicep'
+            name = 'max'
+            e2eIgnore = $false
+            subscriptionIndex = $subscription.index
+            subscriptionKey = $subscription.key
+            subscriptionName = $subscription.name
+            concurrencyGroup = "avm-deploy-avm/res/operational-insights/workspace-$($subscription.key)"
+          }
+          "testCase=$($testCase | ConvertTo-Json -Compress)" >> $env:GITHUB_OUTPUT
+    outputs:
+      testCase: ${{ steps.validate-allocation.outputs.testCase }}
+
+  job_module_deploy_validation:
+    name: "Run workspace max"
     needs:
       - job_initialize_pipeline
-    uses: ./.github/workflows/avm.template.module.yml
+    if: ${{ !cancelled() && needs.job_initialize_pipeline.result == 'success' }}
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/avm.template.module.deployment.yml
     with:
-      workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
-      moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
-      psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
-      modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
+      modulePath: "avm/res/operational-insights/workspace"
+      tokenNamePrefix: "gci"
+      workflowInput: '{"staticValidation":"false","deploymentValidation":"true","removeDeployment":"true","customLocation":"swedencentral"}'
+      testCase: ${{ needs.job_initialize_pipeline.outputs.testCase }}
     secrets: inherit
