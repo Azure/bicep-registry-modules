@@ -42,3 +42,16 @@ spec:
     source: Template
     withinPath:
       - avm/res/cdn/profile/
+---
+# Synopsis: Suppress Defender for APIs rule - requires subscription-level Microsoft Defender for Cloud configuration outside module scope.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: SuppressionGroup
+metadata:
+  name: "SuppressDefenderForAPIs"
+spec:
+  rule:
+    - Azure.APIM.DefenderCloud
+  if:
+    type: "."
+    in:
+      - Microsoft.ApiManagement/service
