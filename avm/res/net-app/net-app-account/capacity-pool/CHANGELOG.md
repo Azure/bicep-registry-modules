@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/net-app/net-app-account/capacity-pool/CHANGELOG.md).
 
+## 0.1.3
+
+### Changes
+
+- Fixed the volume input type to allow configuring `securityStyle` as `ntfs` or `unix`.
+
+### Breaking Changes
+
+- None
+
 ## 0.1.2
 
 ### Changes
