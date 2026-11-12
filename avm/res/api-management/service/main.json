@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "6693806942258728182"
+      "templateHash": "8586868752827038991"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -7532,7 +7532,9 @@
     "service_portalsettings": {
       "copy": {
         "name": "service_portalsettings",
-        "count": "[length(coalesce(parameters('portalsettings'), createArray()))]"
+        "count": "[length(coalesce(parameters('portalsettings'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
