@@ -107,7 +107,9 @@ function Test-NotationImageVerification {
         }
         $manifestSummaryJson = ConvertTo-Json -InputObject $manifestSummary -Compress -Depth 4
         if ($manifestSummaryJson.Length -gt 1024) { $manifestSummaryJson = $manifestSummaryJson.Substring(0, 1024) }
-        if ($signature.artifactType -cne 'application/vnd.cncf.notary.signature' -or $signature.subject.digest -cne $digest -or
+        $artifactType = [string] $signature.artifactType
+        if ([string]::IsNullOrWhiteSpace($artifactType)) { $artifactType = [string] $signature.config.mediaType }
+        if ($artifactType -cne 'application/vnd.cncf.notary.signature' -or $signature.subject.digest -cne $digest -or
             $layers.Count -ne 1 -or $layers[0].mediaType -cne 'application/cose') {
             throw "The native trusted signature does not match the expected COSE artifact and original image. Actual manifest fields: $manifestSummaryJson"
         }

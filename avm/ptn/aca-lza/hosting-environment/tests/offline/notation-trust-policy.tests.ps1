@@ -162,9 +162,8 @@ Describe 'ACA-LZA actual trust policies with offline Notation 1.3.2' {
             }
             if ($Uri -ceq "https://registry.example.invalid/v2/aca-lza/sample/manifests/$signatureDigest") {
                 return @{
-                    artifactType = 'application/vnd.cncf.notary.signature'
+                    config = @{ mediaType = 'application/vnd.cncf.notary.signature'; digest = $script:configurationDigest }
                     subject = @{ digest = $digest }
-                    config = @{ digest = $script:configurationDigest }
                     layers = @(@{ digest = $script:envelopeDigest; mediaType = 'application/cose'; size = $script:envelope.Length })
                 }
             }

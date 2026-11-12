@@ -237,6 +237,20 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
         $failure | Should -Not -Match 'synthetic-repository'
     }
 
+    It 'Recognizes legacy OCI Notary signature manifests by their config media type' {
+        $script:signatureManifest = @{
+            config = @{ mediaType = 'application/vnd.cncf.notary.signature'; digest = $signatureDigest }
+            subject = @{ digest = $digest }
+            layers = @(@{ mediaType = 'application/cose' })
+        }
+        Mock Get-TestOciBytes { throw 'Reached signature blob after manifest validation.' }
+
+        {
+            Test-NotationImageVerification @publish -TrustedImage $image -TrustedSignatureDigest $signatureDigest `
+                -TrustedCertificate $publicCertificate.RawData -TrustedSubject $publicCertificate.Subject
+        } | Should -Throw '*Reached signature blob after manifest validation*'
+    }
+
     Describe 'ACA-LZA credential-safe native diagnostics' {
         It 'Redacts known credentials, encodings and unlabelled echoes before returning diagnostics' {
             $secret = 'synthetic-refresh+/= %value'
