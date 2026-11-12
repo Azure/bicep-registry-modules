@@ -1,4 +1,4 @@
-param (
+﻿param (
     [Parameter(Mandatory = $false)]
     [hashtable] $TestInputData = @{}
 )
@@ -10,8 +10,6 @@ Describe 'Deployed VPN client certificate configuration' {
         $response.StatusCode | Should -Be 200
         $gateway = $response.Content | ConvertFrom-Json -AsHashtable
         $configuration = $gateway.properties.vpnClientConfiguration
-        $scenario = $TestInputData.DeploymentOutputs.certificateScenario.Value
-        $scenario | Should -BeIn @('legacy', 'array', 'combined')
         $certificates = Get-Content -LiteralPath (Join-Path $TestInputData.ModuleTestFolderPath 'certificates.json') -Raw | ConvertFrom-Json
     }
 
@@ -24,13 +22,11 @@ Describe 'Deployed VPN client certificate configuration' {
 
     It 'Retains the root before its intermediate with the expected public data' {
         $deployed = @($configuration.vpnClientRootCertificates)
-        $deployed.Count | Should -Be ($scenario -eq 'legacy' ? 1 : 2)
+        $deployed.Count | Should -Be 2
         $deployed[0].name | Should -Be 'RootCert1'
         $deployed[0].properties.publicCertData | Should -Be $certificates.root
-        if ($scenario -ne 'legacy') {
-            $deployed[1].name | Should -Be 'IntermediateCert1'
-            $deployed[1].properties.publicCertData | Should -Be $certificates.intermediate
-        }
+        $deployed[1].name | Should -Be 'IntermediateCert1'
+        $deployed[1].properties.publicCertData | Should -Be $certificates.intermediate
     }
 
     It 'Retains the configured certificate revocation' {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "880494164820381183"
+      "templateHash": "15152420957645433017"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -95,27 +95,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "Configuration for VPN client AAD authentication."
-      }
-    },
-    "vpnClientRootCertificateType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the VPN client root certificate."
-          }
-        },
-        "publicCertData": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The public certificate data of the VPN client root certificate."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Configuration for a VPN client root certificate."
       }
     },
     "ipamPoolPrefixAllocationType": {
@@ -442,6 +421,27 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of a maintenance configuration."
+      }
+    },
+    "vpnClientRootCertificateType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the VPN client root certificate."
+          }
+        },
+        "publicCertData": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The public certificate data of the VPN client root certificate."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Configuration for a VPN client root certificate."
       }
     },
     "diagnosticSettingFullType": {

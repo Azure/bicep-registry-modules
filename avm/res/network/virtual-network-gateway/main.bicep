@@ -42,16 +42,6 @@ type vpnClientAadConfigurationType = {
 }
 
 @export()
-@description('Configuration for a VPN client root certificate.')
-type vpnClientRootCertificateType = {
-  @description('Required. The name of the VPN client root certificate.')
-  name: string
-
-  @description('Required. The public certificate data of the VPN client root certificate.')
-  publicCertData: string
-}
-
-@export()
 @description('Configuration for IPAM Pool Prefix Allocation.')
 type ipamPoolPrefixAllocationType = {
   @description('Optional. Number of IP addresses to allocate.')
@@ -897,4 +887,14 @@ type maintenanceConfigurationType = {
 
   @description('Required. The resource ID of the maintenance configuration to assign to the Virtual Network Gateway.')
   maintenanceConfigurationResourceId: string
+}
+
+@export()
+@description('Configuration for a VPN client root certificate.')
+type vpnClientRootCertificateType = {
+  @description('Required. The name of the VPN client root certificate.')
+  name: string
+
+  @description('Required. The public certificate data of the VPN client root certificate.')
+  publicCertData: string
 }

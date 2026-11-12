@@ -1,4 +1,4 @@
-param (
+﻿param (
     [Parameter()]
     [string] $repoRootPath,
 
@@ -6,90 +6,80 @@ param (
     [string[]] $moduleFolderPaths
 )
 
+BeforeDiscovery {
+    $aad = @{
+        aadTenant              = 'https://login.microsoftonline.com/test'
+        aadAudience            = 'test-audience'
+        aadIssuer              = 'test-issuer'
+        vpnAuthenticationTypes = @('AAD')
+        vpnClientProtocols     = @('OpenVPN')
+    }
+    $explicitCertificate = $aad.Clone()
+    $explicitCertificate.vpnAuthenticationTypes = @('AAD', 'Certificate')
+    $root = @{ name = 'CustomRoot'; publicCertData = 'root-data' }
+    $intermediate = @{ name = 'Intermediate'; publicCertData = 'intermediate-data' }
+    $scenarios = @(
+        @{ name = 'legacy-only'; legacy = 'root-data'; certificates = @(); aad = $aad; names = @('RootCert1'); data = @('root-data'); authentication = @('AAD', 'Certificate') }
+        @{ name = 'array-only'; legacy = ''; certificates = @($root, $intermediate); aad = $aad; names = @('CustomRoot', 'Intermediate'); data = @('root-data', 'intermediate-data'); authentication = @('AAD', 'Certificate') }
+        @{ name = 'combined'; legacy = 'root-data'; certificates = @($intermediate); aad = $aad; names = @('RootCert1', 'Intermediate'); data = @('root-data', 'intermediate-data'); authentication = @('AAD', 'Certificate') }
+        @{ name = 'explicit authentication'; legacy = 'root-data'; certificates = @(); aad = $explicitCertificate; names = @('RootCert1'); data = @('root-data'); authentication = @('AAD', 'Certificate') }
+        @{ name = 'Entra-only'; legacy = ''; certificates = @(); aad = $aad; names = @(); data = @(); authentication = @('AAD') }
+        @{ name = 'non-P2S'; legacy = ''; certificates = @(); aad = $null; names = @(); data = @(); authentication = @() }
+    )
+}
+
 Describe 'VPN client certificate configuration' {
     BeforeAll {
         $moduleRoot = (Get-Item (Join-Path $PSScriptRoot '..' '..')).FullName
         $source = Get-Content -LiteralPath (Join-Path $moduleRoot 'main.bicep') -Raw
+        # Evaluate the module's actual configuration expressions, not a second implementation.
         $expressions = [regex]::Match($source, '(?ms)^var legacyClientRootCertificates = .*?(?=^var builtInRoleNames)').Value
         $expressions | Should -Not -BeNullOrEmpty
-        $certificates = Get-Content -LiteralPath (Join-Path $moduleRoot 'tests' 'e2e' 'p2sEntraCertificate' 'certificates.json') -Raw | ConvertFrom-Json
-        $results = @{}
-        foreach ($scenario in @('none', 'legacy', 'array', 'combined', 'aadOnly', 'alreadyCertificate')) {
-            $legacy = if ($scenario -in @('legacy', 'combined', 'alreadyCertificate')) { "'root-data'" } else { "''" }
-            $additional = if ($scenario -in @('array', 'combined')) {
-                if ($scenario -eq 'array') {
-                    "[{ name: 'CustomRoot', publicCertData: 'root-data' }, { name: 'Intermediate', publicCertData: 'intermediate-data' }]"
-                } else {
-                    "[{ name: 'Intermediate', publicCertData: 'intermediate-data' }]"
-                }
-            } else { '[]' }
-            $aad = if ($scenario -eq 'none') { 'any(null)' } else {
-                $authenticationTypes = if ($scenario -eq 'alreadyCertificate') { "['AAD', 'Certificate']" } else { "['AAD']" }
-                "{ aadTenant: 'https://login.microsoftonline.com/test', aadAudience: 'test-audience', aadIssuer: 'test-issuer', vpnAuthenticationTypes: $authenticationTypes, vpnClientProtocols: ['OpenVPN'] }"
-            }
-            $parameterPath = Join-Path $TestDrive "$scenario.bicepparam"
-            $outputPath = Join-Path $TestDrive "$scenario.json"
-            @"
+    }
+
+    It 'Preserves certificate data, ordering and authentication for <name> inputs' -ForEach $scenarios {
+        @{ legacy = $legacy; certificates = $certificates; aad = $aad } |
+            ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $TestDrive 'inputs.json')
+        $parameterPath = Join-Path $TestDrive 'configuration.bicepparam'
+        $outputPath = Join-Path $TestDrive 'configuration.json'
+        @"
 using none
-var clientRootCertData = $legacy
-var clientRootCertificates = $additional
-var vpnClientAadConfiguration = $aad
+var input = loadJsonContent('inputs.json')
+var clientRootCertData = input.legacy
+var clientRootCertificates = input.certificates
+var vpnClientAadConfiguration = any(input.aad)
 var vpnClientAddressPoolPrefix = '172.16.10.0/24'
 var clientRevokedCertThumbprint = '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
 $expressions
-param result = { configuration: vpnClientConfiguration }
+param configuration = vpnClientConfiguration
 "@ | Set-Content -LiteralPath $parameterPath
-            $diagnostics = bicep build-params $parameterPath --outfile $outputPath 2>&1
-            if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
-            $results[$scenario] = (Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json -AsHashtable).parameters.result.value.configuration
+        $diagnostics = bicep build-params $parameterPath --outfile $outputPath 2>&1
+        if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+        $configuration = (Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json -AsHashtable).parameters.configuration.value
+
+        $deployed = @($configuration.vpnClientRootCertificates | Where-Object { $null -ne $_ })
+        $deployed.Count | Should -Be $names.Count
+        for ($index = 0; $index -lt $names.Count; $index++) {
+            $deployed[$index].name | Should -Be $names[$index]
+            $deployed[$index].properties.publicCertData | Should -Be $data[$index]
         }
-    }
-
-    It 'Preserves the legacy RootCert1 name and public certificate data' {
-        $certs = @($results.legacy.vpnClientRootCertificates)
-        $certs.Count | Should -Be 1
-        $certs[0].name | Should -Be 'RootCert1'
-        $certs[0].properties.publicCertData | Should -Be 'root-data'
-    }
-
-    It 'Accepts multiple named certificates without the legacy input' {
-        $certs = @($results.array.vpnClientRootCertificates)
-        $certs.Count | Should -Be 2
-        $certs[0].name | Should -Be 'CustomRoot'
-        $certs[0].properties.publicCertData | Should -Be 'root-data'
-        $certs[1].name | Should -Be 'Intermediate'
-        $certs[1].properties.publicCertData | Should -Be 'intermediate-data'
-    }
-
-    It 'Places the legacy root before additional intermediates' {
-        $certs = @($results.combined.vpnClientRootCertificates)
-        $certs.Count | Should -Be 2
-        $certs[0].name | Should -Be 'RootCert1'
-        $certs[0].properties.publicCertData | Should -Be 'root-data'
-        $certs[1].name | Should -Be 'Intermediate'
-        $certs[1].properties.publicCertData | Should -Be 'intermediate-data'
-    }
-
-    It 'Enables certificate authentication and revocation for every certificate input configuration' {
-        foreach ($scenario in @('legacy', 'array', 'combined')) {
-            $results[$scenario].vpnAuthenticationTypes | Should -Be @('AAD', 'Certificate')
-            $results[$scenario].vpnClientProtocols | Should -Be @('OpenVPN')
-            $results[$scenario].vpnClientRevokedCertificates[0].properties.thumbprint | Should -Be '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
+        @($configuration.vpnAuthenticationTypes | Where-Object { $null -ne $_ }) | Should -Be $authentication
+        if ($aad) {
+            $configuration.vpnClientProtocols | Should -Be @('OpenVPN')
         }
-    }
-
-    It 'Does not duplicate explicit Certificate authentication' {
-        $results.alreadyCertificate.vpnAuthenticationTypes | Should -Be @('AAD', 'Certificate')
-    }
-
-    It 'Leaves certificate configuration absent for Entra-only and non-P2S gateways' {
-        $results.aadOnly.vpnClientRootCertificates | Should -BeNullOrEmpty
-        $results.aadOnly.vpnClientRevokedCertificates | Should -BeNullOrEmpty
-        $results.aadOnly.vpnAuthenticationTypes | Should -Be @('AAD')
-        $results.none | Should -BeNullOrEmpty
+        if ($names.Count -gt 0) {
+            $configuration.vpnClientRevokedCertificates[0].properties.thumbprint | Should -Be '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
+        }
+        else {
+            $configuration.vpnClientRevokedCertificates | Should -BeNullOrEmpty
+        }
+        if (-not $aad) {
+            $configuration | Should -BeNullOrEmpty
+        }
     }
 
     It 'Uses public-only test certificates with a real root-signed intermediate chain' {
+        $certificates = Get-Content -LiteralPath (Join-Path $moduleRoot 'tests' 'e2e' 'p2sEntraCertificate' 'certificates.json') -Raw | ConvertFrom-Json
         $root = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new([Convert]::FromBase64String($certificates.root))
         $intermediate = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new([Convert]::FromBase64String($certificates.intermediate))
         $chain = [System.Security.Cryptography.X509Certificates.X509Chain]::new()
@@ -104,7 +94,8 @@ param result = { configuration: vpnClientConfiguration }
             $chain.ChainPolicy.VerificationTime = [datetime] '2026-11-04'
             $chain.Build($intermediate) | Should -BeTrue
             $chain.ChainElements.Count | Should -Be 2
-        } finally {
+        }
+        finally {
             $chain.Dispose()
             $intermediate.Dispose()
             $root.Dispose()

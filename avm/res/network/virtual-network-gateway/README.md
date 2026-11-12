@@ -1881,7 +1881,7 @@ param vpnType = 'RouteBased'
 
 ### Example 12: _P2S Entra ID and Certificate Authentication_
 
-This instance deploys Point-to-Site VPN with Entra ID and certificate authentication using a test root and its signed intermediate. The certificateScenario parameter selects legacy-only, array-only, or combined certificate inputs.
+This instance deploys Point-to-Site VPN with Entra ID and certificate authentication, combining the legacy root input with a signed intermediate in the certificate array.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/p2sEntraCertificate]
 
@@ -1903,7 +1903,12 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     // Non-required parameters
     clientRevokedCertThumbprint: '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
     clientRootCertData: '<clientRootCertData>'
-    clientRootCertificates: '<clientRootCertificates>'
+    clientRootCertificates: [
+      {
+        name: 'IntermediateCert1'
+        publicCertData: '<publicCertData>'
+      }
+    ]
     skuName: 'VpnGw2AZ'
     vpnClientAadConfiguration: {
       aadAudience: '11111111-1234-4321-1234-111111111111'
@@ -1958,7 +1963,12 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<clientRootCertData>"
     },
     "clientRootCertificates": {
-      "value": "<clientRootCertificates>"
+      "value": [
+        {
+          "name": "IntermediateCert1",
+          "publicCertData": "<publicCertData>"
+        }
+      ]
     },
     "skuName": {
       "value": "VpnGw2AZ"
@@ -2009,7 +2019,12 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param clientRevokedCertThumbprint = '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
 param clientRootCertData = '<clientRootCertData>'
-param clientRootCertificates = '<clientRootCertificates>'
+param clientRootCertificates = [
+  {
+    name: 'IntermediateCert1'
+    publicCertData: '<publicCertData>'
+  }
+]
 param skuName = 'VpnGw2AZ'
 param vpnClientAadConfiguration = {
   aadAudience: '11111111-1234-4321-1234-111111111111'

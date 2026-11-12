@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'P2S Entra ID and Certificate Authentication'
-metadata description = 'This instance deploys Point-to-Site VPN with Entra ID and certificate authentication using a test root and its signed intermediate. The certificateScenario parameter selects legacy-only, array-only, or combined certificate inputs.'
+metadata description = 'This instance deploys Point-to-Site VPN with Entra ID and certificate authentication, combining the legacy root input with a signed intermediate in the certificate array.'
 
 // ========== //
 // Parameters //
@@ -20,33 +20,7 @@ param serviceShort string = 'nvgp2sec'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The certificate input configuration to test.')
-@allowed([
-  'legacy'
-  'array'
-  'combined'
-])
-param certificateScenario string = 'combined'
-
 var certificates = loadJsonContent('certificates.json')
-var clientRootCertificates = certificateScenario == 'legacy'
-  ? []
-  : concat(
-      certificateScenario == 'array'
-        ? [
-            {
-              name: 'RootCert1'
-              publicCertData: certificates.root
-            }
-          ]
-        : [],
-      [
-        {
-          name: 'IntermediateCert1'
-          publicCertData: certificates.intermediate
-        }
-      ]
-    )
 
 // ============ //
 // Dependencies //
@@ -83,8 +57,13 @@ module testDeployment '../../../main.bicep' = [
         clusterMode: 'activePassiveNoBgp'
       }
       vpnClientAddressPoolPrefix: '172.16.10.0/24'
-      clientRootCertificates: clientRootCertificates
-      clientRootCertData: certificateScenario == 'array' ? '' : certificates.root
+      clientRootCertificates: [
+        {
+          name: 'IntermediateCert1'
+          publicCertData: certificates.intermediate
+        }
+      ]
+      clientRootCertData: certificates.root
       clientRevokedCertThumbprint: '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
       vpnClientAadConfiguration: {
         aadAudience: '11111111-1234-4321-1234-111111111111'
@@ -110,4 +89,3 @@ output name string = testDeployment[0].outputs.name
 output primaryPublicIpAddress string? = testDeployment[0].outputs.?primaryPublicIpAddress
 output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
 output resourceId string = testDeployment[0].outputs.resourceId
-output certificateScenario string = certificateScenario
