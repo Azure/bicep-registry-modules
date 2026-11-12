@@ -32,9 +32,9 @@ Describe 'Default fixture compatibility' {
         $cluster = @($clusterResources | Where-Object type -EQ 'Microsoft.ContainerService/managedClusters')[0]
     }
 
-    It 'Uses the original zonal system-pool size and node count' {
+    It 'Uses the supported zonal system-pool size and preserves the node count' {
         $pools.Count | Should -Be 1
-        $pools[0].vmSize | Should -Be 'Standard_DS4_v2'
+        $pools[0].vmSize | Should -Be 'Standard_D2s_v5'
         $pools[0].count | Should -Be 3
         $pools[0].mode | Should -Be 'System'
     }

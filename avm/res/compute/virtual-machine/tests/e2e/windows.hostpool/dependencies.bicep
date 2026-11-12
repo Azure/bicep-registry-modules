@@ -43,7 +43,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
 resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-10-10' = {
   name: hostPoolName
   // Host pool metadata is unavailable in some VM test regions.
-  location: 'westeurope'
+  location: 'northeurope'
   properties: {
     hostPoolType: 'Personal'
     loadBalancerType: 'BreadthFirst'

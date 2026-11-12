@@ -326,7 +326,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 3
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D2s_v5'
       }
     ]
     // Non-required parameters
@@ -363,7 +363,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 3,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS4_v2"
+          "vmSize": "Standard_D2s_v5"
         }
       ]
     },
@@ -400,7 +400,7 @@ param primaryAgentPoolProfiles = [
     count: 3
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D2s_v5'
   }
 ]
 // Non-required parameters
