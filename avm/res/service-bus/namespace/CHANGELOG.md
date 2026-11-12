@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/service-bus/namespace/CHANGELOG.md).
 
+## 0.18.0
+
+### Changes
+
+- Pass the namespace SKU to the `topic` child module so `what-if` can evaluate Premium-only topic properties instead of reporting every topic as modified.
+- `topic/subscription`: `duplicateDetectionHistoryTimeWindow` is no longer sent by default, as the service does not persist it and `what-if` reported a change on every run.
+
+### Breaking Changes
+
+- None
+
 ## 0.17.1
 
 ### Changes
