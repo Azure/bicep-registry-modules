@@ -38,13 +38,14 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/virtual-machine-scale-set:<version>`.
 
 - [Using only defaults for Linux](#example-1-using-only-defaults-for-linux)
-- [Deploys VMSS with health extension](#example-2-deploys-vmss-with-health-extension)
-- [Using large parameter set for Linux](#example-3-using-large-parameter-set-for-linux)
-- [Using disk encryption set for the VM.](#example-4-using-disk-encryption-set-for-the-vm)
-- [Using only defaults for Windows](#example-5-using-only-defaults-for-windows)
-- [Using large parameter set for Windows](#example-6-using-large-parameter-set-for-windows)
-- [Deploying VMSS in uniform orchestration mode with Windows image.](#example-7-deploying-vmss-in-uniform-orchestration-mode-with-windows-image)
-- [WAF-aligned](#example-8-waf-aligned)
+- [Pinned Gallery Applications with Flexible orchestration](#example-2-pinned-gallery-applications-with-flexible-orchestration)
+- [Deploys VMSS with health extension](#example-3-deploys-vmss-with-health-extension)
+- [Using large parameter set for Linux](#example-4-using-large-parameter-set-for-linux)
+- [Using disk encryption set for the VM.](#example-5-using-disk-encryption-set-for-the-vm)
+- [Using only defaults for Windows](#example-6-using-only-defaults-for-windows)
+- [Using large parameter set for Windows](#example-7-using-large-parameter-set-for-windows)
+- [Deploying VMSS in uniform orchestration mode with Windows image.](#example-8-deploying-vmss-in-uniform-orchestration-mode-with-windows-image)
+- [WAF-aligned](#example-9-waf-aligned)
 
 ### Example 1: _Using only defaults for Linux_
 
@@ -250,7 +251,286 @@ param publicKeys = [
 </details>
 <p>
 
-### Example 2: _Deploys VMSS with health extension_
+### Example 2: _Pinned Gallery Applications with Flexible orchestration_
+
+Assigns two existing Gallery Application Versions to the common Flexible scale set model. The dependencies publish harmless test packages as version 1.0.0; the resource module itself does not publish packages. Existing instances follow platform upgrade behavior. Application order is per VM, not VM rollout order. Failure propagation does not verify end-to-end application health. Manage this array as the complete intended set of application assignments.
+
+For an existing application, the scale set module parameter can be configured as follows. Replace the angle-bracket placeholders with your existing resource names and subscription ID; keep the numeric application version pinned:
+
+```bicep
+galleryApplications: [
+  {
+    packageReferenceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/galleries/<galleryName>/applications/<applicationName>/versions/1.0.0'
+    enableAutomaticUpgrade: false
+    treatFailureAsDeploymentFailure: true
+    order: 1
+  }
+]
+```
+
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux.gallery-applications]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
+  params: {
+    // Required parameters
+    adminPassword: '<adminPassword>'
+    adminUsername: 'scaleSetAdmin'
+    imageReference: {
+      offer: '0001-com-ubuntu-server-jammy'
+      publisher: 'Canonical'
+      sku: '22_04-lts-gen2'
+      version: 'latest'
+    }
+    name: 'cvmsslinapps001'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            properties: {
+              publicIPAddressConfiguration: {
+                name: 'pip-cvmsslinapps'
+              }
+              subnet: {
+                id: '<id>'
+              }
+            }
+          }
+        ]
+        nicSuffix: '-nic01'
+      }
+    ]
+    osDisk: {
+      createOption: 'fromImage'
+      managedDisk: {
+        storageAccountType: 'StandardSSD_LRS'
+      }
+    }
+    osType: 'Linux'
+    skuName: 'Standard_D2s_v5'
+    // Non-required parameters
+    extensionHealthConfig: {
+      enabled: true
+      port: 22
+      protocol: 'tcp'
+    }
+    galleryApplications: [
+      {
+        enableAutomaticUpgrade: false
+        order: 1
+        packageReferenceId: '<packageReferenceId>'
+        tags: 'first-test-application'
+        treatFailureAsDeploymentFailure: true
+      }
+      {
+        enableAutomaticUpgrade: false
+        order: 2
+        packageReferenceId: '<packageReferenceId>'
+        treatFailureAsDeploymentFailure: false
+      }
+    ]
+    location: '<location>'
+    orchestrationMode: 'Flexible'
+    patchAssessmentMode: 'ImageDefault'
+    patchMode: 'ImageDefault'
+    skuCapacity: 1
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "adminUsername": {
+      "value": "scaleSetAdmin"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "0001-com-ubuntu-server-jammy",
+        "publisher": "Canonical",
+        "sku": "22_04-lts-gen2",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmsslinapps001"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "publicIPAddressConfiguration": {
+                  "name": "pip-cvmsslinapps"
+                },
+                "subnet": {
+                  "id": "<id>"
+                }
+              }
+            }
+          ],
+          "nicSuffix": "-nic01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "createOption": "fromImage",
+        "managedDisk": {
+          "storageAccountType": "StandardSSD_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Linux"
+    },
+    "skuName": {
+      "value": "Standard_D2s_v5"
+    },
+    // Non-required parameters
+    "extensionHealthConfig": {
+      "value": {
+        "enabled": true,
+        "port": 22,
+        "protocol": "tcp"
+      }
+    },
+    "galleryApplications": {
+      "value": [
+        {
+          "enableAutomaticUpgrade": false,
+          "order": 1,
+          "packageReferenceId": "<packageReferenceId>",
+          "tags": "first-test-application",
+          "treatFailureAsDeploymentFailure": true
+        },
+        {
+          "enableAutomaticUpgrade": false,
+          "order": 2,
+          "packageReferenceId": "<packageReferenceId>",
+          "treatFailureAsDeploymentFailure": false
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "orchestrationMode": {
+      "value": "Flexible"
+    },
+    "patchAssessmentMode": {
+      "value": "ImageDefault"
+    },
+    "patchMode": {
+      "value": "ImageDefault"
+    },
+    "skuCapacity": {
+      "value": 1
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
+
+// Required parameters
+param adminPassword = '<adminPassword>'
+param adminUsername = 'scaleSetAdmin'
+param imageReference = {
+  offer: '0001-com-ubuntu-server-jammy'
+  publisher: 'Canonical'
+  sku: '22_04-lts-gen2'
+  version: 'latest'
+}
+param name = 'cvmsslinapps001'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        properties: {
+          publicIPAddressConfiguration: {
+            name: 'pip-cvmsslinapps'
+          }
+          subnet: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+    nicSuffix: '-nic01'
+  }
+]
+param osDisk = {
+  createOption: 'fromImage'
+  managedDisk: {
+    storageAccountType: 'StandardSSD_LRS'
+  }
+}
+param osType = 'Linux'
+param skuName = 'Standard_D2s_v5'
+// Non-required parameters
+param extensionHealthConfig = {
+  enabled: true
+  port: 22
+  protocol: 'tcp'
+}
+param galleryApplications = [
+  {
+    enableAutomaticUpgrade: false
+    order: 1
+    packageReferenceId: '<packageReferenceId>'
+    tags: 'first-test-application'
+    treatFailureAsDeploymentFailure: true
+  }
+  {
+    enableAutomaticUpgrade: false
+    order: 2
+    packageReferenceId: '<packageReferenceId>'
+    treatFailureAsDeploymentFailure: false
+  }
+]
+param location = '<location>'
+param orchestrationMode = 'Flexible'
+param patchAssessmentMode = 'ImageDefault'
+param patchMode = 'ImageDefault'
+param skuCapacity = 1
+```
+
+</details>
+<p>
+
+### Example 3: _Deploys VMSS with health extension_
 
 This instance deploys the module with as Linux VMSS with health extension.
 
@@ -471,7 +751,7 @@ param publicKeys = [
 </details>
 <p>
 
-### Example 3: _Using large parameter set for Linux_
+### Example 4: _Using large parameter set for Linux_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1059,7 +1339,7 @@ param vmPriority = 'Regular'
 </details>
 <p>
 
-### Example 4: _Using disk encryption set for the VM._
+### Example 5: _Using disk encryption set for the VM._
 
 This instance deploys the module with disk enryption set.
 
@@ -1330,7 +1610,7 @@ param publicKeys = [
 </details>
 <p>
 
-### Example 5: _Using only defaults for Windows_
+### Example 6: _Using only defaults for Windows_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -1514,7 +1794,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Using large parameter set for Windows_
+### Example 7: _Using large parameter set for Windows_
 
 This instance deploys the module with most of its features enabled.
 
@@ -2076,7 +2356,7 @@ param vmPriority = 'Regular'
 </details>
 <p>
 
-### Example 7: _Deploying VMSS in uniform orchestration mode with Windows image._
+### Example 8: _Deploying VMSS in uniform orchestration mode with Windows image._
 
 This instance deploys the module with the minimum set of required parameters in uniform orchestration mode.
 
@@ -2265,7 +2545,7 @@ param patchMode = 'AutomaticByOS'
 </details>
 <p>
 
-### Example 8: _WAF-aligned_
+### Example 9: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework for Windows.
 
@@ -2782,6 +3062,7 @@ param vmPriority = 'Regular'
 | [`extensionHealthConfig`](#parameter-extensionhealthconfig) | object | Turned on by default. The configuration for the [Application Health Monitoring] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionMonitoringAgentConfig`](#parameter-extensionmonitoringagentconfig) | object | The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionNetworkWatcherAgentConfig`](#parameter-extensionnetworkwatcheragentconfig) | object | The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed. |
+| [`galleryApplications`](#parameter-galleryapplications) | array | Existing Gallery Application Versions to assign to the common scale set model; this parameter does not publish application packages. Existing instances are updated according to the platform upgrade behavior, not by this parameter. Include all intended application assignments when managing this array; omission does not guarantee preservation of applications assigned outside this model. |
 | [`gracePeriod`](#parameter-graceperiod) | string | The amount of time for which automatic repairs are suspended due to a state change on VM. The grace time starts after the state change has completed. This helps avoid premature or accidental repairs. The time duration should be specified in ISO 8601 format. The minimum allowed grace period is 30 minutes (PT30M). The maximum allowed grace period is 90 minutes (PT90M). |
 | [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. This element is only used for images that contain the Windows Server operating system. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -3560,6 +3841,71 @@ The configuration for the [Network Watcher Agent] extension. Must at least conta
       enabled: false
   }
   ```
+
+### Parameter: `galleryApplications`
+
+Existing Gallery Application Versions to assign to the common scale set model; this parameter does not publish application packages. Existing instances are updated according to the platform upgrade behavior, not by this parameter. Include all intended application assignments when managing this array; omission does not guarantee preservation of applications assigned outside this model.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`packageReferenceId`](#parameter-galleryapplicationspackagereferenceid) | string | Resource ID of an existing Gallery Application Version, for example /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{applicationName}/versions/1.0.0. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`configurationReference`](#parameter-galleryapplicationsconfigurationreference) | string | URI of a configuration blob that overrides the application version's default configuration. |
+| [`enableAutomaticUpgrade`](#parameter-galleryapplicationsenableautomaticupgrade) | bool | Whether to automatically upgrade the application when a newer Gallery Application Version becomes available. Set to false to retain the specified version. |
+| [`order`](#parameter-galleryapplicationsorder) | int | Installation order of applications within each VM, not the rollout order of VM instances. |
+| [`tags`](#parameter-galleryapplicationstags) | string | Passthrough string for application-specific context. This is not a resource tags object. |
+| [`treatFailureAsDeploymentFailure`](#parameter-galleryapplicationstreatfailureasdeploymentfailure) | bool | Whether an application install, update, or removal failure should fail deployment. This reports application operation failure, not end-to-end application or network health or continuous drift compliance. |
+
+### Parameter: `galleryApplications.packageReferenceId`
+
+Resource ID of an existing Gallery Application Version, for example /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{applicationName}/versions/1.0.0.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `galleryApplications.configurationReference`
+
+URI of a configuration blob that overrides the application version's default configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `galleryApplications.enableAutomaticUpgrade`
+
+Whether to automatically upgrade the application when a newer Gallery Application Version becomes available. Set to false to retain the specified version.
+
+- Required: No
+- Type: bool
+
+### Parameter: `galleryApplications.order`
+
+Installation order of applications within each VM, not the rollout order of VM instances.
+
+- Required: No
+- Type: int
+
+### Parameter: `galleryApplications.tags`
+
+Passthrough string for application-specific context. This is not a resource tags object.
+
+- Required: No
+- Type: string
+
+### Parameter: `galleryApplications.treatFailureAsDeploymentFailure`
+
+Whether an application install, update, or removal failure should fail deployment. This reports application operation failure, not end-to-end application or network health or continuous drift compliance.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `gracePeriod`
 

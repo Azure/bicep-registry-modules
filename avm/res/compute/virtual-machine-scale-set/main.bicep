@@ -45,6 +45,9 @@ param adminPassword string
 @description('Optional. Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format.')
 param customData string = ''
 
+@description('Optional. Existing Gallery Application Versions to assign to the common scale set model; this parameter does not publish application packages. Existing instances are updated according to the platform upgrade behavior, not by this parameter. Include all intended application assignments when managing this array; omission does not guarantee preservation of applications assigned outside this model.')
+param galleryApplications vmGalleryApplicationType[]?
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -524,6 +527,11 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
       gracePeriod: gracePeriod
     }
     virtualMachineProfile: {
+      applicationProfile: !empty(galleryApplications)
+        ? {
+            galleryApplications: galleryApplications
+          }
+        : null
       osProfile: {
         computerNamePrefix: vmNamePrefix
         adminUsername: adminUsername
@@ -892,6 +900,28 @@ output location string = vmss.location
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+@description('A Gallery Application Version to assign to the common virtual machine scale set model.')
+type vmGalleryApplicationType = {
+  @description('Required. Resource ID of an existing Gallery Application Version, for example /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{applicationName}/versions/1.0.0.')
+  packageReferenceId: string
+
+  @description('Optional. URI of a configuration blob that overrides the application version\'s default configuration.')
+  configurationReference: string?
+
+  @description('Optional. Whether to automatically upgrade the application when a newer Gallery Application Version becomes available. Set to false to retain the specified version.')
+  enableAutomaticUpgrade: bool?
+
+  @description('Optional. Installation order of applications within each VM, not the rollout order of VM instances.')
+  order: int?
+
+  @description('Optional. Passthrough string for application-specific context. This is not a resource tags object.')
+  tags: string?
+
+  @description('Optional. Whether an application install, update, or removal failure should fail deployment. This reports application operation failure, not end-to-end application or network health or continuous drift compliance.')
+  treatFailureAsDeploymentFailure: bool?
+}
 
 @export()
 @description('The type of the health config extension.')
