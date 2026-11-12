@@ -45,6 +45,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`description`](#parameter-description) | string | The description of the runbook. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`runtimeEnvironment`](#parameter-runtimeenvironment) | string | Name of the runtime environment used by the runbook. |
 | [`sasTokenValidityLength`](#parameter-sastokenvaliditylength) | string | SAS token validity length. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the SAS token will be valid for 8 hours. |
 | [`scriptStorageAccountResourceId`](#parameter-scriptstorageaccountresourceid) | string | Resource Id of the runbook storage account. |
 | [`tags`](#parameter-tags) | object | Tags of the Automation Account resource. |
@@ -79,6 +80,7 @@ The type of the runbook.
     'PowerShell'
     'PowerShell72'
     'PowerShellWorkflow'
+    'Python'
     'Python2'
     'Python3'
     'Script'
@@ -115,6 +117,13 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `runtimeEnvironment`
+
+Name of the runtime environment used by the runbook.
+
+- Required: No
+- Type: string
 
 ### Parameter: `sasTokenValidityLength`
 
