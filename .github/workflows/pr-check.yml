@@ -1,36 +1,13 @@
-name: ".Module - PR Check [EXPERIMENTAL]"
+name: ".Module - APIM portal-setting race experiment"
 
 on:
   workflow_dispatch:
-    inputs:
-      modulePaths:
-        type: string
-        description: "Module path or comma-separated module paths"
-        required: true
-      authoringSource:
-        type: choice
-        description: "Where to obtain the Avm.Authoring PowerShell module."
-        required: true
-        default: gallery
-        options:
-          - gallery
-          - repo
-      authoringRef:
-        type: string
-        description: "Avm.Authoring reference: authoringSource=gallery uses a package version (blank = latest); authoringSource=repo uses a tools SHA, tag or branch (blank = latest stable tag)."
-        required: false
-      runE2E:
-        type: boolean
-        description: "Run Azure deployment tests in addition to PR checks and unit tests."
-        default: false
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
 
 permissions: {}
+
+concurrency:
+  group: apim-portal-setting-race-experiment
+  cancel-in-progress: false
 
 jobs:
   initialize:
@@ -40,7 +17,7 @@ jobs:
       contents: read
     outputs:
       hasModules: ${{ steps.initialize.outputs.hasModules }}
-      moduleMatrix: ${{ steps.initialize.outputs.moduleMatrix }}
+      moduleMatrix: ${{ steps.select.outputs.moduleMatrix }}
       baseCommit: ${{ steps.initialize.outputs.baseCommit }}
       targetCommit: ${{ steps.initialize.outputs.targetCommit }}
       workflowInput: ${{ steps.initialize.outputs.workflowInput }}
@@ -50,10 +27,32 @@ jobs:
         id: initialize
         uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@8bca18987ce8853e844f4e95f8cc309162ee7b40
         with:
-          authoringSource: ${{ inputs.authoringSource || 'gallery' }}
-          authoringRef: ${{ inputs.authoringRef || '' }}
-          modulePaths: ${{ inputs.modulePaths || '' }}
-          deploymentValidation: ${{ inputs.runE2E && 'true' || 'false' }}
+          authoringSource: gallery
+          authoringRef: "0.44.0"
+          modulePaths: avm/res/api-management/service
+          deploymentValidation: "true"
+      - name: Select only the max deployment without narrowing static checks
+        id: select
+        shell: pwsh
+        env:
+          MODULE_MATRIX: ${{ steps.initialize.outputs.moduleMatrix }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $matrix = ConvertFrom-Json -InputObject $env:MODULE_MATRIX -AsHashtable
+          $entries = @($matrix.include)
+          if ($entries.Count -ne 1 -or $entries[0].modulePath -cne 'avm/res/api-management/service' -or
+              $entries[0].e2eRoute -cne 'native') {
+            throw 'Expected exactly one native APIM module entry.'
+          }
+          $entry = $entries[0]
+          $tests = @(ConvertFrom-Json -InputObject $entry.moduleTestFilePaths -AsHashtable)
+          $max = @($tests | Where-Object { $_.path -ceq 'tests/e2e/max/main.test.bicep' })
+          if ($max.Count -ne 1 -or $max[0].e2eIgnore) {
+            throw 'Expected exactly one enabled APIM max deployment.'
+          }
+          $entry.moduleTestFilePaths = ConvertTo-Json -InputObject $max -Depth 20 -Compress
+          $value = ConvertTo-Json -InputObject $matrix -Depth 20 -Compress
+          "moduleMatrix=$value" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
   check:
     name: "${{ matrix.modulePath }}"

@@ -24,6 +24,14 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param customSecret string = newGuid()
 
+@description('Optional. The base64-encoded 64-byte delegation validation key.')
+@secure()
+param delegationValidationKey string = base64(replace('${newGuid()}${newGuid()}', '-', ''))
+
+@description('Optional. The base64-encoded 64-byte secondary delegation validation key.')
+@secure()
+param delegationValidationSecondaryKey string = base64(replace('${newGuid()}${newGuid()}', '-', ''))
+
 // Enforcing location due to limited availability of the APIM Worskpace Gateway SKU in certain regions.
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'germanywestcentral'
@@ -304,6 +312,20 @@ module testDeployment '../../../main.bicep' = [
       ]
       portalsettings: [
         {
+          name: 'delegation'
+          properties: {
+            url: 'https://contoso.com/delegation'
+            subscriptions: {
+              enabled: false
+            }
+            userRegistration: {
+              enabled: false
+            }
+            validationKey: delegationValidationKey
+            validationSecondaryKey: delegationValidationSecondaryKey
+          }
+        }
+        {
           name: 'signin'
           properties: {
             enabled: false
@@ -343,13 +365,18 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: '6352c3e3-ac6b-43d5-ac43-1077ff373721'
+          name: guid(resourceGroup.id, apimName, nestedDependencies.outputs.managedIdentityPrincipalId, 'Owner')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(
+            resourceGroup.id,
+            apimName,
+            nestedDependencies.outputs.managedIdentityPrincipalId,
+            'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          )
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -585,13 +612,25 @@ module testDeployment '../../../main.bicep' = [
           ]
           roleAssignments: [
             {
-              name: '832142e9-a3da-4881-9838-c2b8c73ad1e7'
+              name: guid(
+                resourceGroup.id,
+                apimName,
+                workspace1Name,
+                nestedDependencies.outputs.managedIdentityPrincipalId,
+                'Owner'
+              )
               roleDefinitionIdOrName: 'Owner'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
             {
-              name: guid('Custom seed ${namePrefix}${serviceShort}${workspace1Name}')
+              name: guid(
+                resourceGroup.id,
+                apimName,
+                workspace1Name,
+                nestedDependencies.outputs.managedIdentityPrincipalId,
+                'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              )
               roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
