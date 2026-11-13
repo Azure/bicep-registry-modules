@@ -2,11 +2,22 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
-## 0.22.2
+## 0.23.1
 
 ### Changes
 
 - Disabled LTR backup immutability in the max deployment test to allow SQL server cleanup while retaining long-term retention policy coverage.
+- Recompiled `main.json` with Bicep CLI `0.48.1` to align nested template metadata with the CI-pinned compiler.
+
+### Breaking Changes
+
+- None
+
+## 0.23.0
+
+### Changes
+
+- Added parameter `masterDatabaseDiagnosticSettings` to configure diagnostic settings on the server's implicitly created `master` database, which is required to forward server-level audit logs (`SQLSecurityAuditEvents` & `DevOpsOperationsAudit`) to a Log Analytics workspace, Event Hub, Storage Account or partner solution
 
 ### Breaking Changes
 
