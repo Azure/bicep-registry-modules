@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "14817083010992101562"
+      "version": "0.48.1.52935",
+      "templateHash": "7021567439329939953"
     },
     "name": "Storage Account File Share Services",
     "description": "This module deploys a Storage Account File Share Service."
@@ -91,7 +91,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to \"Premium\"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool."
+            "description": "Optional. Access tier for the share. Defaults to Premium for FileStorage accounts with Premium_LRS or Premium_ZRS, and is omitted by default for provisioned v2 accounts (PremiumV2_* and StandardV2_*). GpV2 accounts can choose between TransactionOptimized (default), Hot, and Cool."
           }
         },
         "enabledProtocols": {
@@ -537,7 +537,7 @@
             "value": "[coalesce(parameters('shares'), createArray())[copyIndex()].name]"
           },
           "accessTier": {
-            "value": "[coalesce(tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'accessTier'), if(equals(reference('storageAccount', '2025-06-01', 'full').kind, 'FileStorage'), if(startsWith(reference('storageAccount', '2025-06-01', 'full').sku.name, 'PremiumV2_'), null(), 'Premium'), 'TransactionOptimized'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'accessTier'), if(equals(reference('storageAccount', '2025-06-01', 'full').kind, 'FileStorage'), if(or(startsWith(reference('storageAccount', '2025-06-01', 'full').sku.name, 'PremiumV2_'), startsWith(reference('storageAccount', '2025-06-01', 'full').sku.name, 'StandardV2_')), null(), 'Premium'), 'TransactionOptimized'))]"
           },
           "enabledProtocols": {
             "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'enabledProtocols')]"
@@ -568,8 +568,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "18065154397351399932"
+              "version": "0.48.1.52935",
+              "templateHash": "15257037067325068436"
             },
             "name": "Storage Account File Shares",
             "description": "This module deploys a Storage Account File Share."
