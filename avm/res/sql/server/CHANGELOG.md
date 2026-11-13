@@ -2,12 +2,23 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
-## 0.22.2
+## 0.23.1
 
 ### Changes
 
 - Updated Key Vault API references to `2026-02-01`.
 - Fixed elastic-pool deployment ordering so server encryption protection is configured first.
+- Fixed connection-policy update ordering so private endpoint updates finish first.
+
+### Breaking Changes
+
+- None
+
+## 0.23.0
+
+### Changes
+
+- Added parameter `masterDatabaseDiagnosticSettings` to configure diagnostic settings on the server's implicitly created `master` database, which is required to forward server-level audit logs (`SQLSecurityAuditEvents` & `DevOpsOperationsAudit`) to a Log Analytics workspace, Event Hub, Storage Account or partner solution
 
 ### Breaking Changes
 
