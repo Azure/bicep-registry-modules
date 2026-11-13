@@ -138,7 +138,7 @@ module testDeployment '../../../main.bicep' = [
           }
           readOnlyEndpoint: {
             failoverPolicy: 'Enabled'
-            targetServer: nestedDependencies.outputs.secondaryServerName
+            targetServer: nestedDependencies.outputs.secondaryServerResourceId
           }
           secondaryType: 'Geo'
         }

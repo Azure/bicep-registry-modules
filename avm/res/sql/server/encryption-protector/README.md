@@ -35,7 +35,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`sqlServerName`](#parameter-sqlservername) | string | The name of the sql server. Required if the template is used in a standalone deployment. |
+| [`serverName`](#parameter-servername) | string | The name of the parent SQL server. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -52,9 +52,9 @@ The name of the server key.
 - Required: Yes
 - Type: string
 
-### Parameter: `sqlServerName`
+### Parameter: `serverName`
 
-The name of the sql server. Required if the template is used in a standalone deployment.
+The name of the parent SQL server. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string

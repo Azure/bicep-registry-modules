@@ -70,10 +70,14 @@ resource failoverGroup 'Microsoft.Sql/servers/failoverGroups@2025-01-01' = {
     readOnlyEndpoint: !empty(readOnlyEndpoint)
       ? {
           failoverPolicy: readOnlyEndpoint!.failoverPolicy
-          targetServer: resourceId(resourceGroup().name, 'Microsoft.Sql/servers', readOnlyEndpoint!.targetServer)
+          targetServer: contains(readOnlyEndpoint!.targetServer, '/')
+            ? readOnlyEndpoint!.targetServer
+            : resourceId(resourceGroup().name, 'Microsoft.Sql/servers', readOnlyEndpoint!.targetServer)
         }
       : null
-    readWriteEndpoint: readWriteEndpoint
+    readWriteEndpoint: readWriteEndpoint.failoverPolicy == 'Automatic' && readWriteEndpoint.?failoverWithDataLossGracePeriodMinutes == null
+      ? fail('The \'failoverWithDataLossGracePeriodMinutes\' property is required if the read-write endpoint \'failoverPolicy\' is set to \'Automatic\'.')
+      : readWriteEndpoint
     secondaryType: secondaryType
   }
 }
@@ -97,7 +101,7 @@ type readOnlyEndpointType = {
   @description('Required. Failover policy of the read-only endpoint for the failover group.')
   failoverPolicy: 'Disabled' | 'Enabled'
 
-  @description('Required. The target partner server where the read-only endpoint points to.')
+  @description('Required. The target partner server where the read-only endpoint points to. Can be either the resource ID of the partner server (recommended, required if the partner server is in a different resource group or subscription) or the name of a partner server in the same resource group.')
   targetServer: string
 }
 
@@ -107,6 +111,6 @@ type readWriteEndpointType = {
   @description('Required. Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required.')
   failoverPolicy: 'Automatic' | 'Manual'
 
-  @description('Optional. Grace period before failover with data loss is attempted for the read-write endpoint.')
+  @description('Conditional. Grace period before failover with data loss is attempted for the read-write endpoint. Required if `failoverPolicy` is `Automatic`.')
   failoverWithDataLossGracePeriodMinutes: int?
 }
