@@ -22,7 +22,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated the `tags` types to API version `2025-01-01`
 - Updated `avm-common-types` to version `0.7.0` across the module
 - Updated the child modules `auditing-setting`, `database`, `database/backup-long-term-retention-policy`, `elastic-pool`, `encryption-protector`, `failover-group` and `vulnerability-assessment` (see their changelogs)
-- Updated the WAF-aligned test to disable public network access, use zone-redundant backup storage, send diagnostics/audit logs to Log Analytics and use the express vulnerability assessment configuration
 
 ### Breaking Changes
 
