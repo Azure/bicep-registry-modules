@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "3056908927249054395"
+      "version": "0.48.1.52935",
+      "templateHash": "14296081358509620101"
     },
     "name": "Dev Center Project",
     "description": "This module deploys a Dev Center Project."
@@ -908,8 +908,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "13469021003185731969"
+              "version": "0.48.1.52935",
+              "templateHash": "17745413401955254008"
             },
             "name": "Dev Center Project Environment Type",
             "description": "This module deploys a Dev Center Project Environment Type."
@@ -1327,8 +1327,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "5311192748565553233"
+              "version": "0.48.1.52935",
+              "templateHash": "12643437534035539811"
             },
             "name": "Dev Center Project Catalog",
             "description": "This module deploys a Dev Center Project Catalog."
@@ -1588,8 +1588,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "479064765446785966"
+              "version": "0.48.1.52935",
+              "templateHash": "10412774811304990072"
             },
             "name": "Dev Center Project Pool",
             "description": "This module deploys a Dev Center Project Pool."
@@ -1954,8 +1954,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "15495795524486457812"
+                      "version": "0.48.1.52935",
+                      "templateHash": "10757879831724309451"
                     },
                     "name": "Dev Center Project Pool Schedule",
                     "description": "This module deploys a Dev Center Project Pool Schedule."

@@ -1,0 +1,3 @@
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131891030220

@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/disk-encryption-set/CHANGELOG.md).
 
+## 0.6.2
+
+### Changes
+
+- Updated `Microsoft.KeyVault/vaults` and `Microsoft.KeyVault/vaults/accessPolicies` API versions from `2025-05-01` to `2026-02-01`.
+- Updated `Microsoft.KeyVault/vaults/keys` API versions from `2024-11-01` and `2025-05-01` to `2026-02-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.6.1
 
 ### Changes

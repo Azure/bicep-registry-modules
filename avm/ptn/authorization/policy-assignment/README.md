@@ -136,7 +136,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<version>' = {
   params: {
     // Required parameters
-    name: 'apamgmax001'
+    name: '<name>'
     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
     // Non-required parameters
     additionalManagementGroupsIDsToAssignRbacTo: [
@@ -236,7 +236,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apamgmax001"
+      "value": "<name>"
     },
     "policyDefinitionId": {
       "value": "/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611"
@@ -372,7 +372,7 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
 using 'br/public:avm/ptn/authorization/policy-assignment:<version>'
 
 // Required parameters
-param name = 'apamgmax001'
+param name = '<name>'
 param policyDefinitionId = '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
 // Non-required parameters
 param additionalManagementGroupsIDsToAssignRbacTo = [

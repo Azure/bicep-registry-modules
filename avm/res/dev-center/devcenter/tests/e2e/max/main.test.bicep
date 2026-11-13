@@ -89,12 +89,12 @@ module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builde
     deploymentScriptSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[1].name
     virtualNetworkDeploymentScriptSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[1].properties.addressPrefix
     imageTemplateResourceGroupName: ''
-    assetsStorageAccountName: 'depst${namePrefix}${serviceShort}'
+    assetsStorageAccountName: '${take('depst${namePrefix}${serviceShort}', 11)}${uniqueString(resourceGroup2.id, namePrefix, serviceShort, 'assets')}'
     assetsStorageAccountContainerName: 'dep${namePrefix}assets${serviceShort}'
     storageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-storage'
     waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-wait'
     imageTemplateDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-it'
-    deploymentScriptStorageAccountName: 'depst${namePrefix}${serviceShort}ds'
+    deploymentScriptStorageAccountName: '${take('depst${namePrefix}${serviceShort}ds', 11)}${uniqueString(resourceGroup2.id, namePrefix, serviceShort, 'deploymentScripts')}'
     computeGalleryName: 'dep${namePrefix}gal${serviceShort}'
     computeGalleryImageDefinitionName: 'dep-${namePrefix}-galid-${serviceShort}'
     imageManagedIdentityName: nestedDependencies2.outputs.managedIdentityName

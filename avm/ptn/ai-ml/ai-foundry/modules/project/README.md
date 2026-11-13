@@ -292,7 +292,6 @@ Tags to be applied to the resources.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ## Outputs
 

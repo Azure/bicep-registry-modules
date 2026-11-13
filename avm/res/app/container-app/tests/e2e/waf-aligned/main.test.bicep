@@ -38,7 +38,8 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     managedEnvironmentName: 'dep-${namePrefix}-menv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-  }}
+  }
+}
 
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
@@ -67,7 +68,7 @@ module testDeployment '../../../main.bicep' = [
       ingressAllowInsecure: false
       diagnosticSettings: [
         {
-          metricCategories:[
+          metricCategories: [
             {
               category: 'AllMetrics'
             }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "13339641463105256062"
+      "version": "0.48.1.52935",
+      "templateHash": "6397418906387724421"
     },
     "name": "Azure NetApp Files Snapshot Policy",
     "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -316,6 +316,13 @@
         "description": "The name of the Resource Group the Snapshot was created in."
       },
       "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the snapshot policy."
+      },
+      "value": "[reference('snapshotPolicies', '2025-01-01', 'full').location]"
     }
   }
 }

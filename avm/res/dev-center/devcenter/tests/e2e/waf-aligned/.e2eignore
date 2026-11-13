@@ -1,0 +1,5 @@
+This fixture requires Microsoft Dev Box definitions and an attached Dev Box network connection. The CI tenant's Dev Box validation returned TenantNotOnboardedToLegacy: https://github.com/Azure/bicep-registry-modules/actions/runs/39298613891/job/118219638777. This fixture also refused new-customer creation in its fixed westeurope region: https://github.com/Azure/bicep-registry-modules/actions/runs/39298613891/job/118219834610.
+
+No documented self-service tenant setting overrides the unavailable Dev Box prerequisite. Dev Box is closing down, not yet retired; current product/subscription eligibility determines new-resource availability: https://learn.microsoft.com/en-us/azure/dev-box/dev-box-retirement-guide.
+
+Re-enable when the required Dev Box resources are available to the test tenant. Defaults and non-Dev-Box coverage remain enabled; this is not a general regional or capacity waiver.

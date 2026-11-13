@@ -425,10 +425,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     }
     roleAssignments: [
       {
-        name: '18051111-2a33-4f8e-8b24-441aac1e6562'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -622,10 +621,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "18051111-2a33-4f8e-8b24-441aac1e6562",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -811,10 +809,9 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: '18051111-2a33-4f8e-8b24-441aac1e6562'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -956,7 +953,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -1091,7 +1088,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "principalId": "<principalId>",
@@ -1220,7 +1217,7 @@ param roleAssignments = [
   {
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     principalId: '<principalId>'

@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/search/search-service/CHANGELOG.md).
 
+## 0.13.1
+
+### Changes
+
+- Updated `Microsoft.KeyVault/vaults` and `Microsoft.KeyVault/vaults/secrets` API versions from `2024-11-01` to `2026-02-01`.
+- Serialized private endpoint and shared private link creation to avoid conflicting updates to the search service.
+
+### Breaking Changes
+
+- None
+
 ## 0.13.0
 
 ### Changes

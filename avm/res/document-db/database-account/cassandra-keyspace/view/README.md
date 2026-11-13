@@ -118,6 +118,7 @@ Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the Cassandra view. |
 | `name` | string | The name of the Cassandra view. |
 | `resourceGroupName` | string | The name of the resource group the Cassandra view was created in. |
 | `resourceId` | string | The resource ID of the Cassandra view. |

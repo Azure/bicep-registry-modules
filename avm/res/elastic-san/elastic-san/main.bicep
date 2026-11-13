@@ -192,6 +192,7 @@ resource elasticSan 'Microsoft.ElasticSan/elasticSans@2024-05-01' = {
   }
 }
 
+@sys.batchSize(1)
 module elasticSan_volumeGroups 'volume-group/main.bicep' = [
   for (volumeGroup, index) in (volumeGroups ?? []): {
     name: '${uniqueString(deployment().name, location)}-ElasticSAN-VolumeGroup-${index}'

@@ -393,10 +393,9 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '12093237-f40a-4f36-868f-accbeebf540c'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -576,10 +575,9 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "12093237-f40a-4f36-868f-accbeebf540c",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -737,10 +735,9 @@ param privateEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: '12093237-f40a-4f36-868f-accbeebf540c'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

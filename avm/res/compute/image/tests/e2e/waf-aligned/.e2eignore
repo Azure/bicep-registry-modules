@@ -1,0 +1,2 @@
+Temporarily excluded: after Image Builder accepted the build, the status GET failed with InternalOperationError. The underlying cause is unproven; this is not a confirmed capacity failure.
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131891048918

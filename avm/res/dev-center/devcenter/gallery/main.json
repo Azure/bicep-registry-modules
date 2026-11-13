@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "4709732039012651889"
+      "version": "0.48.1.52935",
+      "templateHash": "10701667409358782985"
     },
     "name": "Dev Center Gallery",
     "description": "This module deploys a Dev Center Gallery."
@@ -114,8 +114,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "3587787511699279642"
+              "version": "0.48.1.52935",
+              "templateHash": "2585559941196702909"
             }
           },
           "parameters": {

@@ -295,7 +295,7 @@ module stopHubTriggers 'br/public:avm/res/resources/deployment-script:0.2.0' = {
 // Linked services
 //------------------------------------------------------------------------------
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-11-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: keyVaultName
 }
 

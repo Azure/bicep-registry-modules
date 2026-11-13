@@ -287,7 +287,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
         name: 'b08c589c-2c79-41bd-8195-d5e62ad12f67'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -608,7 +608,7 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
           "name": "b08c589c-2c79-41bd-8195-d5e62ad12f67",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -899,7 +899,7 @@ param roleAssignments = [
     name: 'b08c589c-2c79-41bd-8195-d5e62ad12f67'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

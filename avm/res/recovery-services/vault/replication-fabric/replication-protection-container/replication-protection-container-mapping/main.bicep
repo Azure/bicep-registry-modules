@@ -35,10 +35,10 @@ param enableTelemetry bool = true
 
 var calcPolicyResourceId = !empty(policyResourceId)
   ? policyResourceId
-  : subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', recoveryVaultName, policyName)
+  : resourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', recoveryVaultName, policyName)
 var calcTargetProtectionContainerResourceId = !empty(targetProtectionContainerResourceId)
   ? targetProtectionContainerResourceId
-  : subscriptionResourceId(
+  : resourceId(
       'Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers',
       recoveryVaultName,
       targetContainerFabricName,
@@ -46,7 +46,7 @@ var calcTargetProtectionContainerResourceId = !empty(targetProtectionContainerRe
     )
 var mappingName = !empty(name)
   ? name
-  : '${sourceProtectionContainerName}-${split(calcTargetProtectionContainerResourceId!, '/')[10]}'
+  : '${sourceProtectionContainerName}-${last(split(calcTargetProtectionContainerResourceId!, '/'))}'
 
 var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
 

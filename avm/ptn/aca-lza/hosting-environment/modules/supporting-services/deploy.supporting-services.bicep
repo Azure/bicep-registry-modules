@@ -27,6 +27,9 @@ param spokeVNetResourceId string
 @description('The resource id of the existing subnet in the spoke virtual network to which the private endpoint will be connected.')
 param spokePrivateEndpointSubnetResourceId string
 
+@description('Required. The resource ID of the deployment-script subnet.')
+param deploymentSubnetResourceId string
+
 @description('Optional. Resource ID of the diagnostic log analytics workspace. If left empty, no diagnostics settings will be defined.')
 param logAnalyticsWorkspaceId string = ''
 
@@ -92,6 +95,7 @@ module storage 'modules/storage.bicep' = {
     keyVaultResourceId: keyVault.outputs.keyVaultResourceId
     spokeVNetResourceId: spokeVNetResourceId
     spokePrivateEndpointSubnetResourceId: spokePrivateEndpointSubnetResourceId
+    deploymentSubnetResourceId: deploymentSubnetResourceId
     diagnosticWorkspaceId: logAnalyticsWorkspaceId
   }
 }

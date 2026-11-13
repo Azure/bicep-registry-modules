@@ -24,11 +24,14 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
+#disable-next-line no-hardcoded-location // The default node pool requires availability-zone support.
+var enforcedLocation = 'swedencentral'
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 @batchSize(1)
@@ -45,7 +48,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'systempool'
           count: 3
-          vmSize: 'Standard_DS4_v2'
+          vmSize: 'Standard_D2s_v5'
           mode: 'System'
         }
       ]
