@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Calculates the module target patch version.
 
