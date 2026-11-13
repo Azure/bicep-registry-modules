@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "1049955440012329769"
+      "version": "0.48.1.52935",
+      "templateHash": "13418409483541197264"
     },
     "name": "Site App Settings",
     "description": "This module deploys a Site App Setting."
@@ -43,14 +43,14 @@
       }
     },
     "properties": {
-      "type": "object",
+      "type": "secureObject",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. The properties of the config. Note: This parameter is highly dependent on the config type, defined by its name."
+        "description": "Optional. The properties of the config. The shape depends on its name. The entire object is secure because config properties can contain secrets."
       }
     },
     "currentAppSettings": {
-      "type": "object",
+      "type": "secureObject",
       "properties": {},
       "additionalProperties": {
         "type": "string",
@@ -60,7 +60,7 @@
       },
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. The current app settings."
+        "description": "Optional. The current app settings. The entire object is secure because retained settings can contain secrets."
       }
     },
     "storageAccountUseIdentityAuthentication": {

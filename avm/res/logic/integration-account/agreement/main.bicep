@@ -94,3 +94,6 @@ output name string = agreement.name
 
 @description('The resource group the integration account agreement was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location of the integration account agreement.')
+output location string = agreement.?location ?? location

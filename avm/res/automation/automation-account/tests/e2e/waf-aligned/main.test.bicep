@@ -17,6 +17,21 @@ param serviceShort string = 'aawaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// These defaults are public serialized test data, not credentials. Keep each type's exact representation.
+@description('Optional. Public fixtures for the string, integer, boolean and date variable serialization cases.')
+@secure()
+#disable-next-line secure-parameter-default
+param variableValues object = {
+  stringValue: '\'TestString\''
+  integerValue: '500'
+  booleanValue: 'false'
+  dateTimeValue: '\'\\/Date(1637934042656)\\/\''
+}
+
+@description('Optional. The value to leverage for the encrypted variable.')
+@secure()
+param encryptedVariableValue string = newGuid()
+
 // Enforce location to avoid restrictions around creating high numbers of automation accounts in too many locations
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'westeurope'
@@ -162,27 +177,27 @@ module testDeployment '../../../main.bicep' = [
         {
           description: 'TestStringDescription'
           name: 'TestString'
-          value: '\'TestString\''
+          value: variableValues.stringValue
         }
         {
           description: 'TestIntegerDescription'
           name: 'TestInteger'
-          value: '500'
+          value: variableValues.integerValue
         }
         {
           description: 'TestBooleanDescription'
           name: 'TestBoolean'
-          value: 'false'
+          value: variableValues.booleanValue
         }
         {
           description: 'TestDateTimeDescription'
           name: 'TestDateTime'
-          value: '\'\\/Date(1637934042656)\\/\''
+          value: variableValues.dateTimeValue
         }
         {
           description: 'TestEncryptedDescription'
           name: 'TestEncryptedVariable'
-          value: '\'TestEncryptedValue\''
+          value: '\'${encryptedVariableValue}\''
         }
       ]
       tags: {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "16869460008624666470"
+      "version": "0.48.1.52935",
+      "templateHash": "16424078761057070225"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -304,7 +304,7 @@
           }
         },
         "content": {
-          "type": "string",
+          "type": "securestring",
           "metadata": {
             "description": "Required. The assembly content."
           }
@@ -999,8 +999,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "9150275448899157583"
+              "version": "0.48.1.52935",
+              "templateHash": "5107592336531128412"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys an Integration Account Partner."
@@ -1135,6 +1135,13 @@
                 "description": "The resource group the integration account partner was deployed into."
               },
               "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location of the integration account partner."
+              },
+              "value": "[coalesce(tryGet(reference('partner', '2019-05-01', 'full'), 'location'), parameters('location'))]"
             }
           }
         }
@@ -1198,8 +1205,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "13764922380151911313"
+              "version": "0.48.1.52935",
+              "templateHash": "8979887592582072044"
             },
             "name": "Integration Account Schemas",
             "description": "This module deploys an Integration Account Schema."
@@ -1363,6 +1370,13 @@
                 "description": "The resource group the integration account schema was deployed into."
               },
               "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location of the integration account schema."
+              },
+              "value": "[coalesce(tryGet(reference('schema', '2019-05-01', 'full'), 'location'), parameters('location'))]"
             }
           }
         }
@@ -1423,8 +1437,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "10022079303329624741"
+              "version": "0.48.1.52935",
+              "templateHash": "16250238734765116691"
             },
             "name": "Integration Account Maps",
             "description": "This module deploys an Integration Account Map."
@@ -1587,6 +1601,13 @@
                 "description": "The resource group the integration account map was deployed into."
               },
               "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location of the integration account map."
+              },
+              "value": "[coalesce(tryGet(reference('map', '2019-05-01', 'full'), 'location'), parameters('location'))]"
             }
           }
         }
@@ -1644,8 +1665,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "9856063483367444375"
+              "version": "0.48.1.52935",
+              "templateHash": "10498848423716798682"
             },
             "name": "Integration Account Assemblies",
             "description": "This module deploys an Integration Account Assembly."
@@ -1782,6 +1803,13 @@
                 "description": "The resource group the integration account assembly was deployed into."
               },
               "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location of the integration account assembly."
+              },
+              "value": "[coalesce(tryGet(reference('assembly', '2019-05-01', 'full'), 'location'), parameters('location'))]"
             }
           }
         }
@@ -1836,8 +1864,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "2070355690699208101"
+              "version": "0.48.1.52935",
+              "templateHash": "4015856033757826624"
             },
             "name": "Integration Account Certificates",
             "description": "This module deploys an Integration Account Certificate."
@@ -1971,6 +1999,13 @@
                 "description": "The resource group the integration account certificate was deployed into."
               },
               "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location of the integration account certificate."
+              },
+              "value": "[coalesce(tryGet(reference('certificate', '2019-05-01', 'full'), 'location'), parameters('location'))]"
             }
           }
         }
@@ -2037,8 +2072,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "9691666196958825207"
+              "version": "0.48.1.52935",
+              "templateHash": "1809727497717131492"
             },
             "name": "Integration Account Agreements",
             "description": "This module deploys an Integration Account Agreement."
@@ -2210,6 +2245,13 @@
                 "description": "The resource group the integration account agreement was deployed into."
               },
               "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location of the integration account agreement."
+              },
+              "value": "[coalesce(tryGet(reference('agreement', '2019-05-01', 'full'), 'location'), parameters('location'))]"
             }
           }
         }

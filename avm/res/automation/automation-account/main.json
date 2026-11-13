@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "16026018928128254529"
+      "version": "0.48.1.52935",
+      "templateHash": "7081845310633049625"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -106,6 +106,26 @@
       },
       "metadata": {
         "__bicep_export!": true
+      }
+    },
+    "variableType": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Required. The value of the variable. For security best practices, this value is always passed as a secure string as it could contain an encrypted value when the \"isEncrypted\" property is set to true."
+          }
+        }
+      },
+      "additionalProperties": {
+        "metadata": {
+          "description": "Optional. Other variable properties, including name, description, and isEncrypted. Only the properties used by the variable child module are forwarded."
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of an Automation Account variable."
       }
     },
     "gallerySolutionType": {
@@ -1010,9 +1030,12 @@
     },
     "variables": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/variableType"
+      },
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. List of variables to be created in the automation account."
+        "description": "Optional. List of variables to be created in the automation account. Each entry supplies name and value; description and isEncrypted are optional and retain the child module defaults."
       }
     },
     "webhooks": {
@@ -1350,8 +1373,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "8212803426032657063"
+              "version": "0.48.1.52935",
+              "templateHash": "11946605719809394394"
             },
             "name": "Automation Account Credential",
             "description": "This module deploys Azure Automation Account Credential."
@@ -1510,8 +1533,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "2861673837947038659"
+              "version": "0.48.1.52935",
+              "templateHash": "7787233398860795840"
             },
             "name": "Automation Account Modules",
             "description": "This module deploys an Azure Automation Account Module."
@@ -1688,8 +1711,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "2479633964515038127"
+              "version": "0.48.1.52935",
+              "templateHash": "16665282749435168125"
             },
             "name": "Automation Account Powershell72 Modules",
             "description": "This module deploys a Powershell72 Module in the Automation Account."
@@ -1863,8 +1886,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "5141850404285509649"
+              "version": "0.48.1.52935",
+              "templateHash": "9330635567168559564"
             },
             "name": "Automation Account Python 3 Packages",
             "description": "This module deploys a Python3 Package in the Automation Account."
@@ -2030,8 +2053,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "2856584312892907601"
+              "version": "0.48.1.52935",
+              "templateHash": "10499508585260343303"
             },
             "name": "Automation Account Python 2 Packages",
             "description": "This module deploys a Python2 Package in the Automation Account."
@@ -2208,8 +2231,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "3070427123485884560"
+              "version": "0.48.1.52935",
+              "templateHash": "5803085766470649155"
             },
             "name": "Automation Account Schedules",
             "description": "This module deploys an Azure Automation Account Schedule."
@@ -2426,8 +2449,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11938995930554317054"
+              "version": "0.48.1.52935",
+              "templateHash": "12467230828090733341"
             },
             "name": "Automation Account Runbooks",
             "description": "This module deploys an Azure Automation Account Runbook."
@@ -2661,8 +2684,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "13608833568972038396"
+              "version": "0.48.1.52935",
+              "templateHash": "4910950713454664043"
             },
             "name": "Automation Account Job Schedules",
             "description": "This module deploys an Azure Automation Account Job Schedule."
@@ -2826,8 +2849,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11130175575463208730"
+              "version": "0.48.1.52935",
+              "templateHash": "9601829168851208375"
             },
             "name": "Automation Account Variables",
             "description": "This module deploys an Azure Automation Account Variable."
@@ -2980,8 +3003,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "7956762809536012649"
+              "version": "0.48.1.52935",
+              "templateHash": "16121364634353921277"
             },
             "name": "Automation Account Webhook",
             "description": "This module deploys an Azure Automation Account Webhook."
@@ -3166,8 +3189,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "15130821332346684314"
+              "version": "0.48.1.52935",
+              "templateHash": "8138644590132343768"
             },
             "name": "Automation Account Source Controls",
             "description": "This module deploys an Azure Automation Account Source Control."
@@ -3365,8 +3388,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11942474690577070877"
+              "version": "0.48.1.52935",
+              "templateHash": "7900335119459271616"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -3680,8 +3703,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "18145839711960548350"
+              "version": "0.48.1.52935",
+              "templateHash": "12366418696344664786"
             },
             "name": "Automation Account Hybrid Runbook Worker Groups",
             "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group."
@@ -3816,8 +3839,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "7542107436877816551"
+                      "version": "0.48.1.52935",
+                      "templateHash": "2790776962511932587"
                     },
                     "name": "Automation Account Hybrid Runbook Worker Group Workers",
                     "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group Worker."

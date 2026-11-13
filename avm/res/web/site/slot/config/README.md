@@ -44,9 +44,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applicationInsightResourceId`](#parameter-applicationinsightresourceid) | string | Resource ID of the application insight to leverage for this resource. |
-| [`currentAppSettings`](#parameter-currentappsettings) | object | The current app settings. |
+| [`currentAppSettings`](#parameter-currentappsettings) | secureObject | The current app settings. The entire object is secure because retained settings can contain secrets. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`properties`](#parameter-properties) | object | The properties of the config. Note: This parameter is highly dependent on the config type, defined by its name. |
+| [`properties`](#parameter-properties) | secureObject | The properties of the config. The shape depends on its name. The entire object is secure because config properties can contain secrets. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions. |
 | [`storageAccountUseIdentityAuthentication`](#parameter-storageaccountuseidentityauthentication) | bool | If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'. |
 
@@ -95,24 +95,11 @@ Resource ID of the application insight to leverage for this resource.
 
 ### Parameter: `currentAppSettings`
 
-The current app settings.
+The current app settings. The entire object is secure because retained settings can contain secrets.
 
 - Required: No
-- Type: object
+- Type: secureObject
 - Default: `{}`
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-currentappsettings>any_other_property<) | string | The key-values pairs of the current app settings. |
-
-### Parameter: `currentAppSettings.>Any_other_property<`
-
-The key-values pairs of the current app settings.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `enableTelemetry`
 
@@ -124,10 +111,10 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `properties`
 
-The properties of the config. Note: This parameter is highly dependent on the config type, defined by its name.
+The properties of the config. The shape depends on its name. The entire object is secure because config properties can contain secrets.
 
 - Required: No
-- Type: object
+- Type: secureObject
 - Default: `{}`
 
 ### Parameter: `storageAccountResourceId`

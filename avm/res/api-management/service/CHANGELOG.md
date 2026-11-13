@@ -2,6 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
+## 0.16.0
+
+### Changes
+
+- Marked cache connection strings as secure in `cacheType` and the cache child module. Named-value references such as `{{cache-connection-string}}` remain supported.
+- Marked primary and secondary subscription keys as secure in service and workspace subscription types, matching their child modules. Keys remain optional.
+- Marked workspace named values as secure through the imported workspace type, matching the named-value child module.
+- Secured the generated named-value fallback, workspace logger credentials, and portal-setting validation keys at their module boundaries.
+- Kept the portal-setting child's ordinary properties open instead of duplicating its provider schema, and propagated the child's minor version change.
+
+### Breaking Changes
+
+- The independently published `portalsetting` child now requires `properties.validationKey` and `properties.validationSecondaryKey` to be strings or `null` when provided; its previous native object type did not constrain these fields. The parent service's delegation type keeps its existing optional string contract for the primary key, so existing parent inputs are unaffected. The child secures a secondary key if supplied through its existing open properties contract; this does not establish Azure support for that undocumented property.
+
 ## 0.15.0
 
 ### Changes

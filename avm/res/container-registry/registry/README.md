@@ -381,7 +381,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     webhooks: [
       {
         name: 'acrx001webhook'
-        serviceUri: 'https://www.contoso.com/webhook'
+        serviceUri: '<serviceUri>'
       }
     ]
   }
@@ -602,7 +602,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       "value": [
         {
           "name": "acrx001webhook",
-          "serviceUri": "https://www.contoso.com/webhook"
+          "serviceUri": "<serviceUri>"
         }
       ]
     }
@@ -773,7 +773,7 @@ param trustPolicyStatus = 'disabled'
 param webhooks = [
   {
     name: 'acrx001webhook'
-    serviceUri: 'https://www.contoso.com/webhook'
+    serviceUri: '<serviceUri>'
   }
 ]
 ```
@@ -2743,7 +2743,7 @@ All webhooks to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`serviceUri`](#parameter-webhooksserviceuri) | string | The service URI for the webhook to post notifications. |
+| [`serviceUri`](#parameter-webhooksserviceuri) | securestring | The service URI for the webhook to post notifications. |
 
 **Optional parameters**
 
@@ -2762,7 +2762,7 @@ All webhooks to create.
 The service URI for the webhook to post notifications.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `webhooks.action`
 

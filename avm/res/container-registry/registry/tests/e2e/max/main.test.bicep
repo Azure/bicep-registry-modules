@@ -20,6 +20,12 @@ param serviceShort string = 'crrmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// This default is a public example URL with no credentials or secret query parameters.
+@description('Optional. The service URI for the test webhook.')
+@secure()
+#disable-next-line secure-parameter-default
+param webhookServiceUri string = 'https://www.contoso.com/webhook'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -225,7 +231,7 @@ module testDeployment '../../../main.bicep' = [
       webhooks: [
         {
           name: '${namePrefix}acrx001webhook'
-          serviceUri: 'https://www.contoso.com/webhook'
+          serviceUri: webhookServiceUri
         }
       ]
       tags: {
