@@ -218,7 +218,7 @@ function Confirm-NotationImage {
         throw 'Image verification requires an immutable SHA256 image reference, not a tag.'
     }
     if ([string]::IsNullOrWhiteSpace($RegistryCredential)) { throw 'Explicit registry credentials are required for image signature verification.' }
-    $result = Invoke-NotationCommand -Executable $Executable -Arguments @('verify', $Image) -RegistryCredential $RegistryCredential
+    $result = Invoke-NotationCommand -Executable $Executable -Arguments @('verify', '--verbose', $Image) -RegistryCredential $RegistryCredential
     if ($result.ExitCode -ne 0) { throw "Image signature verification rejected [$Image]: $($result.Error)" }
     $Image
 }

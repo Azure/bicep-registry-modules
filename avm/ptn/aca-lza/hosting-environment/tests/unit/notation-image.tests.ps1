@@ -118,7 +118,7 @@ Describe 'ACA-LZA real image publication and fail-closed consumption' {
     It 'Returns the exact immutable reference only after successful native verification' {
         Confirm-NotationImage -Executable 'synthetic-notation' -Image $image -RegistryCredential 'synthetic-refresh' | Should -BeExactly $image
         Should -Invoke Invoke-NotationCommand -Times 1 -Exactly -ParameterFilter {
-            ($Arguments -join '|') -ceq "verify|$image" -and $RegistryCredential -ceq 'synthetic-refresh'
+            ($Arguments -join '|') -ceq "verify|--verbose|$image" -and $RegistryCredential -ceq 'synthetic-refresh'
         }
     }
 

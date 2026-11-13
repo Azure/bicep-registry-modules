@@ -266,6 +266,101 @@ Describe 'ACA-LZA actual trust policies with offline Notation 1.3.2' {
         $certificate.Certificate.Subject | Should -Match '(ST|S)=Washington'
     }
 
+    It 'Recognizes the actual native COSE rejection for the <Case> control' -ForEach @(
+        @{ Case = 'Tampered' }
+        @{ Case = 'Untrusted' }
+    ) {
+        $savedExperimental = $env:NOTATION_EXPERIMENTAL
+        $env:NOTATION_EXPERIMENTAL = '1'
+        try {
+            $layout = Join-Path $TestDrive 'native-layout'
+            $blobDirectory = Join-Path $layout 'blobs' 'sha256'
+            $null = New-Item -ItemType Directory -Path $blobDirectory -Force
+            function Add-OfflineLayoutBlob {
+                param([byte[]] $Bytes)
+                $hash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($Bytes)).ToLowerInvariant()
+                [IO.File]::WriteAllBytes((Join-Path $blobDirectory $hash), $Bytes)
+                @{ digest = "sha256:$hash"; size = $Bytes.Length }
+            }
+            function Add-OfflineLayoutJson {
+                param([object] $Value)
+                Add-OfflineLayoutBlob -Bytes ([Text.Encoding]::UTF8.GetBytes(($Value | ConvertTo-Json -Depth 30 -Compress)))
+            }
+            $config = Add-OfflineLayoutJson -Value @{}
+            $config.mediaType = 'application/vnd.oci.empty.v1+json'
+            $artifact = Add-OfflineLayoutJson -Value @{
+                schemaVersion = 2
+                mediaType = 'application/vnd.oci.image.manifest.v1+json'
+                config = $config
+                layers = @()
+            }
+            $artifact.mediaType = 'application/vnd.oci.image.manifest.v1+json'
+            @{ imageLayoutVersion = '1.0.0' } | ConvertTo-Json | Set-Content (Join-Path $layout 'oci-layout')
+            @{ schemaVersion = 2; manifests = @($artifact) } | ConvertTo-Json -Depth 5 |
+                Set-Content (Join-Path $layout 'index.json')
+            $nativeReference = "$layout@$($artifact.digest)"
+            $script:nativeControlImage = "registry.example.invalid/aca-lza/sample@$($artifact.digest)"
+            Mock Invoke-NotationCommand {
+                if ($Arguments[0] -ceq 'verify') {
+                    $Arguments = @($Arguments | Select-Object -SkipLast 1) +
+                        @('--oci-layout', '--scope', 'registry.example.invalid/aca-lza/sample', $nativeReference)
+                }
+                if ($Arguments[0] -cin @('sign', 'verify')) {
+                    return . $nativeNotationCommand -Executable $Executable -Arguments $Arguments -RegistryCredential $RegistryCredential
+                }
+                . $nativeNotationCommand -Executable $Executable -Arguments $Arguments
+            }
+            $generated = Invoke-NotationCommand -Executable $notation -Arguments @('cert', 'generate-test', '--default', 'offline-control')
+            $generated.ExitCode | Should -Be 0 -Because $generated.Error
+            $certificatePath = Get-ChildItem -LiteralPath $env:APPDATA -Recurse -Filter 'offline-control.crt' | Select-Object -First 1
+            $certificate = [Security.Cryptography.X509Certificates.X509Certificate2]::new($certificatePath.FullName)
+            try {
+                Set-NotationTrust -Executable $notation -Directory $env:XDG_CONFIG_HOME -LoginServer 'registry.example.invalid' `
+                    -Repository 'aca-lza/sample' -Certificate $certificate.RawData -Subject $certificate.Subject
+            } finally {
+                $certificate.Dispose()
+            }
+            $signed = Invoke-NotationCommand -Executable $notation -Arguments @('sign', '--oci-layout', '--signature-format', 'cose', $nativeReference) `
+                -RegistryCredential 'offline-refresh'
+            $signed.ExitCode | Should -Be 0 -Because $signed.Error
+            Confirm-NotationImage -Executable $notation -Image $script:nativeControlImage -RegistryCredential 'offline-refresh' |
+                Should -BeExactly $script:nativeControlImage
+
+            $index = Get-Content (Join-Path $layout 'index.json') -Raw | ConvertFrom-Json -AsHashtable
+            if ($Case -ceq 'Tampered') {
+                $signatureDescriptors = @($index.manifests | Where-Object { $_.digest -cne $artifact.digest })
+                $signatureDescriptors.Count | Should -Be 1
+                $descriptor = $signatureDescriptors[0]
+                $manifest = Get-Content (Join-Path $blobDirectory $descriptor.digest.Split(':')[1]) -Raw | ConvertFrom-Json -AsHashtable
+                $envelope = [IO.File]::ReadAllBytes((Join-Path $blobDirectory $manifest.layers[0].digest.Split(':')[1]))
+                $envelope[-1] = $envelope[-1] -bxor 1
+                $modified = Add-OfflineLayoutBlob -Bytes $envelope
+                $manifest.layers[0].digest = $modified.digest
+                $manifest.layers[0].size = $modified.size
+                $changed = Add-OfflineLayoutJson -Value $manifest
+                $descriptor.digest = $changed.digest
+                $descriptor.size = $changed.size
+                $index | ConvertTo-Json -Depth 30 | Set-Content (Join-Path $layout 'index.json')
+            } else {
+                $index.manifests = @($artifact)
+                $index | ConvertTo-Json -Depth 30 | Set-Content (Join-Path $layout 'index.json')
+                $generated = Invoke-NotationCommand -Executable $notation -Arguments @('cert', 'generate-test', 'offline-untrusted')
+                $generated.ExitCode | Should -Be 0 -Because $generated.Error
+                $signed = Invoke-NotationCommand -Executable $notation `
+                    -Arguments @('sign', '--oci-layout', '--signature-format', 'cose', '--key', 'offline-untrusted', $nativeReference) `
+                    -RegistryCredential 'offline-refresh'
+                $signed.ExitCode | Should -Be 0 -Because $signed.Error
+            }
+
+            $rejected = Confirm-TestSignatureRejection -Executable $notation -Image $script:nativeControlImage `
+                -Case $Case -RegistryCredential 'offline-refresh'
+            $rejected.case | Should -BeExactly $Case
+            $rejected.rejected | Should -BeTrue
+        } finally {
+            $env:NOTATION_EXPERIMENTAL = $savedExperimental
+        }
+    }
+
     It 'Rejects a different exact publisher identity before installing policy: <Subject>' -ForEach @(
         @{ Subject = 'CN=other-signer, O=Azure Verified Modules, ST=Washington, C=US' }
         @{ Subject = 'CN=aca-lza-sample, O=Other Publisher, ST=Washington, C=US' }
