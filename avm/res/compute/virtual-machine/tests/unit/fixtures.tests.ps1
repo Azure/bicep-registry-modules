@@ -30,7 +30,7 @@ Describe 'Virtual machine fixture compatibility' {
         @{ scenario = 'windows.zrsdisks'; zone = 2 }
     ) {
         It 'Uses the compatible CI VM size' {
-            $expectedSize = $scenario -eq 'windows.disks' ? 'Standard_E2s_v3' : 'Standard_D4ads_v5'
+            $expectedSize = $scenario -eq 'windows.disks' ? 'Standard_D2s_v5' : 'Standard_D4ads_v5'
             $fixtures[$scenario].Parameters.vmSize.value | Should -Be $expectedSize
         }
 
@@ -45,14 +45,8 @@ Describe 'Virtual machine fixture compatibility' {
         It 'Uses the intended resource location' {
             $resourceGroups = @($fixtures[$scenario].Resources | Where-Object type -EQ 'Microsoft.Resources/resourceGroups')
             $resourceGroups.Count | Should -Be 1
-            if ($scenario -eq 'windows.disks') {
-                $fixtures[$scenario].Template.parameters.ContainsKey('resourceLocation') | Should -BeFalse
-                $fixtures[$scenario].Template.variables.enforcedLocation | Should -Be 'germanywestcentral'
-                $resourceGroups[0].location | Should -Be "[variables('enforcedLocation')]"
-            } else {
-                $fixtures[$scenario].Template.parameters.resourceLocation.defaultValue | Should -Be '[deployment().location]'
-                $resourceGroups[0].location | Should -Be "[parameters('resourceLocation')]"
-            }
+            $fixtures[$scenario].Template.parameters.resourceLocation.defaultValue | Should -Be '[deployment().location]'
+            $resourceGroups[0].location | Should -Be "[parameters('resourceLocation')]"
         }
     }
 
@@ -99,7 +93,7 @@ Describe 'Virtual machine fixture compatibility' {
         $registration.registrationInfoToken | Should -Match 'outputs\.registrationInfoToken\.value'
     }
 
-    It 'Creates the source OS disk on the original VM without forcing SCSI on its NVMe-only size' {
+    It 'Creates the source OS disk on the same SCSI-compatible VM size as the target' {
         $dependencies = @($fixtures['windows.disks'].Resources | Where-Object {
                 $_.type -eq 'Microsoft.Resources/deployments' -and $_.properties.parameters.ContainsKey('osDiskVMName')
             })
@@ -108,7 +102,7 @@ Describe 'Virtual machine fixture compatibility' {
         $resources = $resources -is [System.Collections.IDictionary] ? @($resources.Values) : @($resources)
         $sourceVMs = @($resources | Where-Object type -EQ 'Microsoft.Compute/virtualMachines')
         $sourceVMs.Count | Should -Be 1
-        $sourceVMs[0].properties.hardwareProfile.vmSize | Should -Be 'Standard_D2s_v6'
+        $sourceVMs[0].properties.hardwareProfile.vmSize | Should -Be $fixtures['windows.disks'].Parameters.vmSize.value
         $sourceVMs[0].properties.storageProfile.ContainsKey('diskControllerType') | Should -BeFalse
     }
 }
