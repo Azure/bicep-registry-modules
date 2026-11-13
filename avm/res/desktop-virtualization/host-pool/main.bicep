@@ -41,10 +41,11 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 ])
 param personalDesktopAssignmentType string = ''
 
-@sys.description('Optional. Type of load balancer algorithm.')
+@sys.description('Optional. Type of load balancer algorithm. Use MultiplePersistent with a Personal host pool to allow multiple personal desktops per user.')
 @allowed([
   'BreadthFirst'
   'DepthFirst'
+  'MultiplePersistent'
   'Persistent'
 ])
 param loadBalancerType string = 'BreadthFirst'

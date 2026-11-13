@@ -25,8 +25,7 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
+var resourceSuffix = substring(uniqueString(subscription().id), 0, 4)
 
 // ============ //
 // Dependencies //
@@ -43,8 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${resourceSuffix}'
     serverIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     databaseIdentityName: 'dep-${namePrefix}-dbmsi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
@@ -58,7 +56,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}azsa${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
+    storageAccountName: 'dep${namePrefix}azsa${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
@@ -75,7 +73,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+      name: '${namePrefix}-${serviceShort}-${resourceSuffix}'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -84,15 +82,6 @@ module testDeployment '../../../main.bicep' = [
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       location: enforcedLocation
-      diagnosticSettings: [
-        {
-          name: 'customSetting'
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
       roleAssignments: [
         {
           name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
@@ -129,7 +118,7 @@ module testDeployment '../../../main.bicep' = [
       }
       elasticPools: [
         {
-          name: '${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}-ep-001'
+          name: '${namePrefix}-${serviceShort}-${resourceSuffix}-ep-001'
           sku: {
             name: 'GP_Gen5'
             tier: 'GeneralPurpose'
@@ -157,7 +146,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       databases: [
         {
-          name: '${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}db-001'
+          name: '${namePrefix}-${serviceShort}-${resourceSuffix}db-001'
           collation: 'SQL_Latin1_General_CP1_CI_AS'
           sku: {
             name: 'ElasticPool'
@@ -180,7 +169,7 @@ module testDeployment '../../../main.bicep' = [
               workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
             }
           ]
-          elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}/elasticPools/${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}-ep-001'
+          elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}-${resourceSuffix}/elasticPools/${namePrefix}-${serviceShort}-${resourceSuffix}-ep-001'
           backupShortTermRetentionPolicy: {
             retentionDays: 14
           }
@@ -207,6 +196,15 @@ module testDeployment '../../../main.bicep' = [
             keyVersion: last(split(nestedDependencies.outputs.databaseKeyVaultEncryptionKeyUrl, '/'))
             autoRotationEnabled: true
           }
+        }
+      ]
+      masterDatabaseDiagnosticSettings: [
+        {
+          name: 'customSetting'
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
       customerManagedKey: {

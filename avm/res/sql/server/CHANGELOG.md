@@ -2,13 +2,12 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
-## 0.23.0
+## 0.24.0
 
 ### Changes
 
 - Fixed `roleAssignments` of `elasticPools` not being passed to the `elastic-pool` child module
 - Marked the `storageAccountAccessKey` property of the `securityAlertPolicies` type as `@secure()` to avoid exposing it in the deployment history
-- Added the `diagnosticSettings` parameter, applied to the server's `master` database. Required to route server-level audit logs (`SQLSecurityAuditEvents`) to a Log Analytics workspace or Event Hub
 - Added the `expressVulnerabilityAssessmentState` parameter to configure the express configuration of SQL vulnerability assessment (no storage account required)
 - Added `roleAssignments` support to the `databases` parameter
 - Added `diagnosticSettings` support to the `elasticPools` parameter
@@ -31,6 +30,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - The deployment now fails if more than one user-assigned identity is provided without a `primaryUserAssignedIdentityResourceId`
 - Removed the ignored `enableTelemetry` property from all child resource types (e.g., `databases`, `elasticPools`, `firewallRules`, `auditSettings`)
 - The `timeBasedImmutabilityMode` of the database long-term backup retention policy now defaults to `Unlocked` (instead of `Locked`) if time-based immutability is enabled
+
+## 0.23.0
+
+### Changes
+
+- Added parameter `masterDatabaseDiagnosticSettings` to configure diagnostic settings on the server's implicitly created `master` database, which is required to forward server-level audit logs (`SQLSecurityAuditEvents` & `DevOpsOperationsAudit`) to a Log Analytics workspace, Event Hub, Storage Account or partner solution
+
+### Breaking Changes
+
+- None
 
 ## 0.22.1
 

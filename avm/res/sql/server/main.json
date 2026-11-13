@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "9363350999420381505"
+      "templateHash": "17310107528463349732"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -121,7 +121,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, the server's `diagnosticSettings` must be configured with the `SQLSecurityAuditEvents` log category (included in the `allLogs` category group)."
+            "description": "Optional. Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, the server's `masterDatabaseDiagnosticSettings` must be configured with the `SQLSecurityAuditEvents` log category (included in the `allLogs` category group)."
           }
         },
         "isDevopsAuditEnabled": {
@@ -2325,14 +2325,14 @@
         "description": "Optional. The audit settings configuration. To disable auditing, set `state` to `Disabled`. If set to an empty object, the audit settings are not deployed (i.e., any existing configuration remains unchanged)."
       }
     },
-    "diagnosticSettings": {
+    "masterDatabaseDiagnosticSettings": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/diagnosticSettingFullType"
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The diagnostic settings of the server. As a logical SQL server does not support diagnostic settings itself, they are applied to its `master` database. Required to route server-level audit logs (category `SQLSecurityAuditEvents`) to a Log Analytics workspace or Event Hub if `auditSettings.isAzureMonitorTargetEnabled` is `true`."
+        "description": "Optional. The diagnostic settings of the server's `master` database. Server-level audit logs (i.e., the `SQLSecurityAuditEvents` & `DevOpsOperationsAudit` categories) are emitted by the implicitly created `master` database. Hence, forwarding them to a Log Analytics workspace, Event Hub, Storage Account or partner solution requires a diagnostic setting on that database. If no log categories are specified, all logs are configured by default. Metrics are only configured if explicitly specified, as the `master` database does not emit any."
       }
     },
     "secretsExportConfiguration": {
@@ -2485,6 +2485,56 @@
         "server"
       ]
     },
+    "masterDatabase": {
+      "existing": true,
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2025-01-01",
+      "name": "[format('{0}/{1}', parameters('name'), 'master')]",
+      "dependsOn": [
+        "server"
+      ]
+    },
+    "masterDatabase_diagnosticSettings": {
+      "copy": {
+        "name": "masterDatabase_diagnosticSettings",
+        "count": "[length(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[resourceId('Microsoft.Sql/servers/databases', parameters('name'), 'master')]",
+      "name": "[coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-master-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "metrics",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray()))]",
+            "input": {
+              "category": "[coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray())[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray())[copyIndex('metrics')], 'enabled'), true())]",
+              "timeGrain": null
+            }
+          },
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          }
+        ],
+        "storageAccountId": "[tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
+      "dependsOn": [
+        "server"
+      ]
+    },
     "server_connection_policy": {
       "type": "Microsoft.Sql/servers/connectionPolicies",
       "apiVersion": "2025-01-01",
@@ -2519,56 +2569,6 @@
       "dependsOn": [
         "server",
         "server_securityAlertPolicies"
-      ]
-    },
-    "masterDatabase": {
-      "existing": true,
-      "type": "Microsoft.Sql/servers/databases",
-      "apiVersion": "2025-01-01",
-      "name": "[format('{0}/{1}', parameters('name'), 'master')]",
-      "dependsOn": [
-        "server"
-      ]
-    },
-    "server_diagnosticSettings": {
-      "copy": {
-        "name": "server_diagnosticSettings",
-        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
-      },
-      "type": "Microsoft.Insights/diagnosticSettings",
-      "apiVersion": "2021-05-01-preview",
-      "scope": "[resourceId('Microsoft.Sql/servers/databases', parameters('name'), 'master')]",
-      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
-      "properties": {
-        "copy": [
-          {
-            "name": "metrics",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
-            "input": {
-              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
-              "timeGrain": null
-            }
-          },
-          {
-            "name": "logs",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
-            "input": {
-              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
-              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
-            }
-          }
-        ],
-        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
-        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
-        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
-        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
-        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
-        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
-      },
-      "dependsOn": [
-        "server"
       ]
     },
     "server_databases": {

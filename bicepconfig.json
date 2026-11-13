@@ -13,25 +13,19 @@
       "reassignments": [
         {
           "from": {
-            "include": [
-              "**/mg-scope.*/**"
-            ]
+            "include": ["**/mg-scope.*/**"]
           },
           "to": "mg-scope"
         },
         {
           "from": {
-            "include": [
-              "**/rg-scope.*/**"
-            ]
+            "include": ["**/rg-scope.*/**"]
           },
           "to": "rg-scope"
         },
         {
           "from": {
-            "include": [
-              "**/sub-scope.*/**"
-            ]
+            "include": ["**/sub-scope.*/**"]
           },
           "to": "sub-scope"
         }

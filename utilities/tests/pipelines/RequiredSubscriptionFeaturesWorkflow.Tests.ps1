@@ -69,8 +69,9 @@ function Register-RequiredSubscriptionFeature {
         $steps = @($action.runs.steps)
         $logins = @($steps | Where-Object { $_.uses -like 'azure/login@*' })
         $logins.Count | Should -Be 2
+        $logins[0].if | Should -Be "env.skip_deployment_ci == 'false'"
+        $logins[1].if | Should -Be '${{ (success() || (failure() && inputs.removeDeployment == ''true'' && steps.deploy_step.outputs.deploymentNames != '''')) && env.skip_deployment_ci == ''false'' }}'
         foreach ($login in $logins) {
-            $login.if | Should -Be "env.skip_deployment_ci == 'false'"
             $login.with.'client-id' | Should -Be '${{ env.VALIDATE_CLIENT_ID }}'
             $login.with.'tenant-id' | Should -Be '${{ env.VALIDATE_TENANT_ID }}'
             $login.with.'subscription-id' | Should -Be '${{ steps.get-test-subscription.outputs.subscriptionId }}'

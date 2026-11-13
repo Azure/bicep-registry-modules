@@ -139,8 +139,8 @@ param auditSettings auditSettingsType = {
 }
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
-@description('Optional. The diagnostic settings of the server. As a logical SQL server does not support diagnostic settings itself, they are applied to its `master` database. Required to route server-level audit logs (category `SQLSecurityAuditEvents`) to a Log Analytics workspace or Event Hub if `auditSettings.isAzureMonitorTargetEnabled` is `true`.')
-param diagnosticSettings diagnosticSettingFullType[]?
+@description('Optional. The diagnostic settings of the server\'s `master` database. Server-level audit logs (i.e., the `SQLSecurityAuditEvents` & `DevOpsOperationsAudit` categories) are emitted by the implicitly created `master` database. Hence, forwarding them to a Log Analytics workspace, Event Hub, Storage Account or partner solution requires a diagnostic setting on that database. If no log categories are specified, all logs are configured by default. Metrics are only configured if explicitly specified, as the `master` database does not emit any.')
+param masterDatabaseDiagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
@@ -574,6 +574,43 @@ module server_audit_settings 'auditing-setting/main.bicep' = if (!empty(auditSet
   }
 }
 
+// The `master` database is implicitly created together with the logical server and can therefore not be deployed by this
+// module. It is referenced as an existing resource as it is the scope the server-level audit logs are emitted at.
+resource masterDatabase 'Microsoft.Sql/servers/databases@2025-01-01' existing = {
+  name: 'master'
+  parent: server
+}
+
+resource masterDatabase_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (masterDatabaseDiagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-master-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        // The `master` database does not emit any metrics, hence they are only configured if explicitly requested
+        for group in (diagnosticSetting.?metricCategories ?? []): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: masterDatabase
+  }
+]
+
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
@@ -654,44 +691,6 @@ resource server_sqlVulnerabilityAssessment 'Microsoft.Sql/servers/sqlVulnerabili
     server_securityAlertPolicies
   ]
 }
-
-resource masterDatabase 'Microsoft.Sql/servers/databases@2025-01-01' existing = {
-  name: 'master'
-  parent: server
-}
-
-resource server_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
-  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
-    properties: {
-      storageAccountId: diagnosticSetting.?storageAccountResourceId
-      workspaceId: diagnosticSetting.?workspaceResourceId
-      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
-      eventHubName: diagnosticSetting.?eventHubName
-      metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
-          ? [{ category: 'AllMetrics' }]
-          : [])): {
-          category: group.category
-          enabled: group.?enabled ?? true
-          timeGrain: null
-        }
-      ]
-      logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
-          ? [{ categoryGroup: 'allLogs' }]
-          : [])): {
-          categoryGroup: group.?categoryGroup
-          category: group.?category
-          enabled: group.?enabled ?? true
-        }
-      ]
-      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
-      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
-    }
-    scope: masterDatabase
-  }
-]
 
 @description('The name of the deployed SQL server.')
 output name string = server.name
@@ -802,7 +801,7 @@ type auditSettingsType = {
   @description('Optional. Specifies the Actions-Groups and Actions to audit.')
   auditActionsAndGroups: string[]?
 
-  @description('Optional. Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, the server\'s `diagnosticSettings` must be configured with the `SQLSecurityAuditEvents` log category (included in the `allLogs` category group).')
+  @description('Optional. Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, the server\'s `masterDatabaseDiagnosticSettings` must be configured with the `SQLSecurityAuditEvents` log category (included in the `allLogs` category group).')
   isAzureMonitorTargetEnabled: bool?
 
   @description('Optional. Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor.')

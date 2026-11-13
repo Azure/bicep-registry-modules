@@ -1,7 +1,16 @@
 targetScope = 'subscription'
 
-@description('Optional. Location for the HCI host image resources.')
+@description('Optional. Location for the resource group, gallery, image definition, and managed identity.')
 param location string = 'southeastasia'
+
+@description('Optional. Location for the image template and build VM. Use a new imageTemplateName when changing an existing template location.')
+param buildLocation string = location
+
+@minLength(1)
+@description('Optional. Regions where the image version must be available. The image definition and build locations are always included.')
+param replicationRegions string[] = [
+  location
+]
 
 @description('Optional. Name of the resource group that contains the persistent HCI host image resources.')
 param resourceGroupName string = 'rg-avm-persistent-hci-image'
@@ -21,14 +30,25 @@ param imageVersion string = '26.1.0'
 @description('Optional. Name of the user-assigned managed identity used by Azure VM Image Builder.')
 param imageBuilderIdentityName string = 'id-avm-persistent-hci-image-builder'
 
-@description('Optional. Name of the Azure VM Image Builder template.')
+@description('Optional. Explicit, separately owned empty resource group for image-build staging. The caller creates and tags this group.')
+param stagingResourceGroupName string = ''
+
+@description('Optional. Use the built-in Contributor role at the owned gallery resource group instead of creating a subscription-level custom role.')
+param useScopedContributorRole bool = false
+
+@description('Optional. Name of the Azure VM Image Builder template. Use a new name when changing its build location.')
 param imageTemplateName string = 'hci-host-image-builder'
 
 @description('Optional. Base URI containing this asset and the authoritative HCI host scripts. Pin this URI to the same repository commit as this template.')
 param assetBaseUri string = 'https://raw.githubusercontent.com/Azure/bicep-registry-modules/main/utilities/e2e-template-assets/module-specific/azure-stack-hci'
 
 @description('Optional. Download URL for the Azure Stack HCI VHDX payload baked into the host image.')
-param hciVhdxDownloadUri string = 'https://azlocalvhds.blob.${environment().suffixes.storage}/images/AzLocal2601.vhdx'
+param hciVhdxDownloadUri string = loadJsonContent('environment.json', 'hciVhdxDownloadUri')
+
+@minLength(64)
+@maxLength(64)
+@description('Optional. Expected SHA256 of the downloaded VHDX. Supply the matching digest when overriding hciVhdxDownloadUri.')
+param hciVhdxSha256 string = loadJsonContent('environment.json', 'hciVhdxSha256')
 
 @description('Optional. Source marketplace image used by Azure VM Image Builder.')
 param sourceImage object = {
@@ -74,7 +94,7 @@ module imageAssets 'hciHostGalleryBuilder.assets.bicep' = {
   ]
 }
 
-resource imageBuilderRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
+resource imageBuilderRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = if (!useScopedContributorRole) {
   name: roleDefinitionName
   properties: {
     roleName: 'AVM HCI Image Builder Publisher (${uniqueString(resourceGroupResourceId, galleryName)})'
@@ -104,7 +124,21 @@ module imageBuilderRoleAssignment 'hciHostGalleryBuilder.rbac.bicep' = {
   scope: resourceGroupScope
   params: {
     principalId: imageAssets.outputs.imageBuilderPrincipalId
-    roleDefinitionResourceId: imageBuilderRoleDefinition.id
+    roleDefinitionResourceId: useScopedContributorRole
+      ? subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+      : imageBuilderRoleDefinition!.id
+  }
+}
+
+module stagingRoleAssignment 'hciHostGalleryBuilder.rbac.bicep' = if (!empty(stagingResourceGroupName)) {
+  name: 'hci-host-image-staging-rbac'
+  scope: resourceGroup(stagingResourceGroupName)
+  params: {
+    principalId: imageAssets.outputs.imageBuilderPrincipalId
+    roleDefinitionResourceId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    )
   }
 }
 
@@ -113,19 +147,26 @@ module imageTemplate 'hciHostGalleryBuilder.template.bicep' = {
   scope: resourceGroupScope
   params: {
     assetBaseUri: assetBaseUri
+    buildLocation: buildLocation
     buildTimeoutInMinutes: buildTimeoutInMinutes
     buildVmSize: buildVmSize
     galleryImageDefinitionResourceId: imageAssets.outputs.imageDefinitionResourceId
     hciVhdxDownloadUri: hciVhdxDownloadUri
+    hciVhdxSha256: hciVhdxSha256
     imageBuilderIdentityResourceId: imageAssets.outputs.imageBuilderIdentityResourceId
     imageTemplateName: imageTemplateName
     imageVersion: imageVersion
     location: location
+    replicationRegions: replicationRegions
     sourceImage: sourceImage
     tags: tags
+    stagingResourceGroupResourceId: !empty(stagingResourceGroupName)
+      ? subscriptionResourceId('Microsoft.Resources/resourceGroups', stagingResourceGroupName)
+      : null
   }
   dependsOn: [
     imageBuilderRoleAssignment
+    stagingRoleAssignment
   ]
 }
 

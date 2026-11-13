@@ -38,7 +38,8 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    // Storage account names are globally unique, so the subscription is mixed in to avoid collisions between environments sharing a namePrefix.
+    storageAccountName: 'dep${namePrefix}st${serviceShort}${substring(uniqueString(subscription().id), 0, 4)}'
   }
 }
 

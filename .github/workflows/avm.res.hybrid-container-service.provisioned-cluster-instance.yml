@@ -77,7 +77,7 @@ jobs:
       contents: write # For release tags
     needs:
       - job_initialize_pipeline
-    uses: ./.github/workflows/avm.template.module.yml
+    uses: ./.github/workflows/avm.template.hci.module.yml
     with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"

@@ -48,7 +48,7 @@ resource script 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   }
   properties: {
     azPowerShellVersion: '13.2'
-    scriptContent: loadTextContent('./Initialize-KubernetesDefaultVersion.ps1')
+    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/Initialize-KubernetesVersionReadiness.ps1')
     arguments: '-CustomLocationResourceId ${customLocationResourceId}'
     timeout: 'PT60M'
     retentionInterval: 'PT2H'
@@ -61,3 +61,5 @@ resource logs 'Microsoft.Resources/deploymentScripts/logs@2023-08-01' existing =
 }
 
 output logs string = logs.properties.log
+
+output kubernetesVersion string = script.properties.outputs.kubernetesVersion

@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/insights/scheduled-query-rule/CHANGELOG.md).
 
+## 0.6.1
+
+### Changes
+
+- Added support for kind `SimpleLogAlert`. Only the `SimpleLogAlert`-supported properties (`severity`, `autoMitigate`, `resolveConfiguration`) are applied for this kind.
+- Added `simple-log-alert` and `simple-log-alert-resolve` e2e tests.
+
+### Breaking Changes
+
+- None
+
 ## 0.6.0
 
 ### Changes

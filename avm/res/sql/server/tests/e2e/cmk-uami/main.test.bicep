@@ -20,8 +20,7 @@ param serviceShort string = 'sscmk'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
+var resourceSuffix = substring(uniqueString(subscription().id), 0, 4)
 
 // ============ //
 // Dependencies //
@@ -38,8 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${resourceSuffix}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     databaseIdentityName: 'dep-${namePrefix}-msidb-${serviceShort}'
     location: resourceLocation

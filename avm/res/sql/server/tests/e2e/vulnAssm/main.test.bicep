@@ -24,8 +24,7 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. A timestamp used to make globally unique test resources distinct between deployments.')
-param baseTime string = utcNow('u')
+var resourceSuffix = substring(uniqueString(subscription().id), 0, 4)
 
 // ============ //
 // Dependencies //
@@ -43,7 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}va${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
+    storageAccountName: 'dep${namePrefix}va${serviceShort}${resourceSuffix}'
     location: resourceLocation
   }
 }
@@ -57,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+      name: '${namePrefix}-${serviceShort}-${resourceSuffix}'
       primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password

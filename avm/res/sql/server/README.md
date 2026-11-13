@@ -173,6 +173,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
     auditSettings: {
+      isAzureMonitorTargetEnabled: true
+      isDevopsAuditEnabled: true
       isManagedIdentityInUse: true
       state: 'Enabled'
       storageAccountResourceId: '<storageAccountResourceId>'
@@ -181,6 +183,20 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     managedIdentities: {
       systemAssigned: true
     }
+    masterDatabaseDiagnosticSettings: [
+      {
+        logCategoriesAndGroups: [
+          {
+            category: 'SQLSecurityAuditEvents'
+          }
+          {
+            category: 'DevOpsOperationsAudit'
+          }
+        ]
+        name: 'auditDiagnosticSetting'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
   }
 }
 ```
@@ -210,6 +226,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "auditSettings": {
       "value": {
+        "isAzureMonitorTargetEnabled": true,
+        "isDevopsAuditEnabled": true,
         "isManagedIdentityInUse": true,
         "state": "Enabled",
         "storageAccountResourceId": "<storageAccountResourceId>"
@@ -222,6 +240,22 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": {
         "systemAssigned": true
       }
+    },
+    "masterDatabaseDiagnosticSettings": {
+      "value": [
+        {
+          "logCategoriesAndGroups": [
+            {
+              "category": "SQLSecurityAuditEvents"
+            },
+            {
+              "category": "DevOpsOperationsAudit"
+            }
+          ],
+          "name": "auditDiagnosticSetting",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
     }
   }
 }
@@ -243,6 +277,8 @@ param name = '<name>'
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param auditSettings = {
+  isAzureMonitorTargetEnabled: true
+  isDevopsAuditEnabled: true
   isManagedIdentityInUse: true
   state: 'Enabled'
   storageAccountResourceId: '<storageAccountResourceId>'
@@ -251,6 +287,20 @@ param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
+param masterDatabaseDiagnosticSettings = [
+  {
+    logCategoriesAndGroups: [
+      {
+        category: 'SQLSecurityAuditEvents'
+      }
+      {
+        category: 'DevOpsOperationsAudit'
+      }
+    ]
+    name: 'auditDiagnosticSetting'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 ```
 
 </details>
@@ -1384,15 +1434,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       }
     ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
     elasticPools: [
       {
         availabilityZone: -1
@@ -1439,6 +1480,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         '<serverIdentityResourceId>'
       ]
     }
+    masterDatabaseDiagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     outboundFirewallRules: [
       'www.bing.com'
       'www.microsoft.com'
@@ -1613,17 +1663,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       ]
     },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
     "elasticPools": {
       "value": [
         {
@@ -1679,6 +1718,17 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "<serverIdentityResourceId>"
         ]
       }
+    },
+    "masterDatabaseDiagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
     },
     "outboundFirewallRules": {
       "value": [
@@ -1860,15 +1910,6 @@ param databases = [
     }
   }
 ]
-param diagnosticSettings = [
-  {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    name: 'customSetting'
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
-  }
-]
 param elasticPools = [
   {
     availabilityZone: -1
@@ -1915,6 +1956,15 @@ param managedIdentities = {
     '<serverIdentityResourceId>'
   ]
 }
+param masterDatabaseDiagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param outboundFirewallRules = [
   'www.bing.com'
   'www.microsoft.com'
@@ -2385,12 +2435,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       }
     ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
     elasticPools: [
       {
         availabilityZone: -1
@@ -2411,6 +2455,16 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
+    masterDatabaseDiagnosticSettings: [
+      {
+        logCategoriesAndGroups: [
+          {
+            category: 'SQLSecurityAuditEvents'
+          }
+        ]
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     privateEndpoints: [
       {
@@ -2518,14 +2572,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       ]
     },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "name": "customSetting",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
     "elasticPools": {
       "value": [
         {
@@ -2553,6 +2599,18 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "masterDatabaseDiagnosticSettings": {
+      "value": [
+        {
+          "logCategoriesAndGroups": [
+            {
+              "category": "SQLSecurityAuditEvents"
+            }
+          ],
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
     },
     "primaryUserAssignedIdentityResourceId": {
       "value": "<primaryUserAssignedIdentityResourceId>"
@@ -2661,12 +2719,6 @@ param databases = [
     }
   }
 ]
-param diagnosticSettings = [
-  {
-    name: 'customSetting'
-    workspaceResourceId: '<workspaceResourceId>'
-  }
-]
 param elasticPools = [
   {
     availabilityZone: -1
@@ -2687,6 +2739,16 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param masterDatabaseDiagnosticSettings = [
+  {
+    logCategoriesAndGroups: [
+      {
+        category: 'SQLSecurityAuditEvents'
+      }
+    ]
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param privateEndpoints = [
   {
@@ -2750,7 +2812,6 @@ param tags = {
 | [`connectionPolicy`](#parameter-connectionpolicy) | string | SQL logical server connection policy. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition for server TDE. |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the server. As a logical SQL server does not support diagnostic settings itself, they are applied to its `master` database. Required to route server-level audit logs (category `SQLSecurityAuditEvents`) to a Log Analytics workspace or Event Hub if `auditSettings.isAzureMonitorTargetEnabled` is `true`. |
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`expressVulnerabilityAssessmentState`](#parameter-expressvulnerabilityassessmentstate) | string | The state of the SQL vulnerability assessment express configuration, which does not require a storage account and is the recommended configuration. Requires Microsoft Defender for SQL to be enabled (e.g., via `securityAlertPolicies`). Cannot be combined with `vulnerabilityAssessmentsObj` (classic configuration). |
@@ -2762,6 +2823,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`masterDatabaseDiagnosticSettings`](#parameter-masterdatabasediagnosticsettings) | array | The diagnostic settings of the server's `master` database. Server-level audit logs (i.e., the `SQLSecurityAuditEvents` & `DevOpsOperationsAudit` categories) are emitted by the implicitly created `master` database. Hence, forwarding them to a Log Analytics workspace, Event Hub, Storage Account or partner solution requires a diagnostic setting on that database. If no log categories are specified, all logs are configured by default. Metrics are only configured if explicitly specified, as the `master` database does not emit any. |
 | [`minimalTlsVersion`](#parameter-minimaltlsversion) | string | Minimal TLS version allowed. TLS 1.0 and 1.1 are retired for Azure SQL Database. |
 | [`outboundFirewallRules`](#parameter-outboundfirewallrules) | array | The outbound firewall rules for the server. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
@@ -2899,7 +2961,7 @@ The audit settings configuration. To disable auditing, set `state` to `Disabled`
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`auditActionsAndGroups`](#parameter-auditsettingsauditactionsandgroups) | array | Specifies the Actions-Groups and Actions to audit. |
-| [`isAzureMonitorTargetEnabled`](#parameter-auditsettingsisazuremonitortargetenabled) | bool | Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, the server's `diagnosticSettings` must be configured with the `SQLSecurityAuditEvents` log category (included in the `allLogs` category group). |
+| [`isAzureMonitorTargetEnabled`](#parameter-auditsettingsisazuremonitortargetenabled) | bool | Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, the server's `masterDatabaseDiagnosticSettings` must be configured with the `SQLSecurityAuditEvents` log category (included in the `allLogs` category group). |
 | [`isDevopsAuditEnabled`](#parameter-auditsettingsisdevopsauditenabled) | bool | Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor. |
 | [`isManagedIdentityInUse`](#parameter-auditsettingsismanagedidentityinuse) | bool | Specifies whether Managed Identity is used to access blob storage. |
 | [`isStorageSecondaryKeyInUse`](#parameter-auditsettingsisstoragesecondarykeyinuse) | bool | Specifies whether storageAccountAccessKey value is the storage's secondary key. |
@@ -2918,7 +2980,7 @@ Specifies the Actions-Groups and Actions to audit.
 
 ### Parameter: `auditSettings.isAzureMonitorTargetEnabled`
 
-Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, the server's `diagnosticSettings` must be configured with the `SQLSecurityAuditEvents` log category (included in the `allLogs` category group).
+Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, the server's `masterDatabaseDiagnosticSettings` must be configured with the `SQLSecurityAuditEvents` log category (included in the `allLogs` category group).
 
 - Required: No
 - Type: bool
@@ -3954,152 +4016,6 @@ Whether or not this database is zone redundant, which means the replicas of this
 - Required: No
 - Type: bool
 
-### Parameter: `diagnosticSettings`
-
-The diagnostic settings of the server. As a logical SQL server does not support diagnostic settings itself, they are applied to its `master` database. Required to route server-level audit logs (category `SQLSecurityAuditEvents`) to a Log Analytics workspace or Event Hub if `auditSettings.isAzureMonitorTargetEnabled` is `true`.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-
-### Parameter: `diagnosticSettings.eventHubAuthorizationRuleResourceId`
-
-Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.eventHubName`
-
-Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
-
-A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureDiagnostics'
-    'Dedicated'
-  ]
-  ```
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups`
-
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
-
-Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
-
-Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
-
-Enable or disable the category explicitly. Default is `true`.
-
-- Required: No
-- Type: bool
-
-### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
-
-The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.metricCategories`
-
-The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enabled`](#parameter-diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
-
-### Parameter: `diagnosticSettings.metricCategories.category`
-
-Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `diagnosticSettings.metricCategories.enabled`
-
-Enable or disable the category explicitly. Default is `true`.
-
-- Required: No
-- Type: bool
-
-### Parameter: `diagnosticSettings.name`
-
-The name of the diagnostic setting.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.storageAccountResourceId`
-
-Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.workspaceResourceId`
-
-Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
 ### Parameter: `elasticPools`
 
 The Elastic Pools to create in the server.
@@ -4961,6 +4877,152 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `masterDatabaseDiagnosticSettings`
+
+The diagnostic settings of the server's `master` database. Server-level audit logs (i.e., the `SQLSecurityAuditEvents` & `DevOpsOperationsAudit` categories) are emitted by the implicitly created `master` database. Hence, forwarding them to a Log Analytics workspace, Event Hub, Storage Account or partner solution requires a diagnostic setting on that database. If no log categories are specified, all logs are configured by default. Metrics are only configured if explicitly specified, as the `master` database does not emit any.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-masterdatabasediagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-masterdatabasediagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-masterdatabasediagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-masterdatabasediagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-masterdatabasediagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-masterdatabasediagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-masterdatabasediagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-masterdatabasediagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-masterdatabasediagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `masterDatabaseDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `masterDatabaseDiagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-masterdatabasediagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-masterdatabasediagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-masterdatabasediagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `masterDatabaseDiagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `masterDatabaseDiagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-masterdatabasediagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-masterdatabasediagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `masterDatabaseDiagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `masterDatabaseDiagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
 
 ### Parameter: `minimalTlsVersion`
 
@@ -5848,6 +5910,42 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Notes
+
+### Sending server-level audit logs to Azure Monitor
+
+Server-level auditing is configured via the `auditSettings` parameter. However, the resulting audit events (the `SQLSecurityAuditEvents` and `DevOpsOperationsAudit` log categories) are emitted by the server's `master` database and not by the logical server itself. Sending them to a Log Analytics workspace, Event Hub, Storage Account or partner solution therefore requires an additional diagnostic setting scoped to that `master` database, which can be configured via the `masterDatabaseDiagnosticSettings` parameter.
+
+As the `master` database is implicitly created together with the logical server, it cannot be declared via the `databases` parameter.
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+auditSettings: {
+    state: 'Enabled'
+    isAzureMonitorTargetEnabled: true // Required to forward the audit events to Azure Monitor
+    isDevopsAuditEnabled: true // Optional. Only required for the 'DevOpsOperationsAudit' category
+}
+masterDatabaseDiagnosticSettings: [
+    {
+        workspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+        logCategoriesAndGroups: [
+            {
+                category: 'SQLSecurityAuditEvents'
+            }
+            {
+                category: 'DevOpsOperationsAudit'
+            }
+        ]
+    }
+]
+```
+
+</details>
+<p>
+
+> **Note:** The `master` database does not emit any platform metrics. Metrics are hence only configured if explicitly requested via `metricCategories`.
 
 ### Parameter Usage: `administrators`
 

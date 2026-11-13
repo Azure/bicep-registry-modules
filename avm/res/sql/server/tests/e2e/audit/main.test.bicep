@@ -24,8 +24,7 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. A timestamp used to make globally unique test resources distinct between deployments.')
-param baseTime string = utcNow('u')
+var resourceSuffix = substring(uniqueString(subscription().id), 0, 4)
 
 // ============ //
 // Dependencies //
@@ -42,7 +41,8 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}audstore${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
+    storageAccountName: 'dep${namePrefix}st${serviceShort}${resourceSuffix}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -57,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
+      name: '${namePrefix}${serviceShort}${resourceSuffix}'
       location: resourceLocation
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
@@ -67,8 +67,25 @@ module testDeployment '../../../main.bicep' = [
       auditSettings: {
         state: 'Enabled'
         isManagedIdentityInUse: true
+        isAzureMonitorTargetEnabled: true
+        isDevopsAuditEnabled: true
         storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       }
+      // Required to forward the server-level audit logs to the Log Analytics workspace, as they are emitted by the `master` database
+      masterDatabaseDiagnosticSettings: [
+        {
+          name: 'auditDiagnosticSetting'
+          workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+          logCategoriesAndGroups: [
+            {
+              category: 'SQLSecurityAuditEvents'
+            }
+            {
+              category: 'DevOpsOperationsAudit'
+            }
+          ]
+        }
+      ]
     }
   }
 ]

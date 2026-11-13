@@ -21,10 +21,7 @@ param serviceShort string = 'sqlswaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
-
-var resourceSuffix = substring(uniqueString(baseTime), 0, 3)
+var resourceSuffix = substring(uniqueString(subscription().id), 0, 4)
 
 // ============ //
 // Dependencies //
@@ -41,7 +38,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${resourceSuffix}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
@@ -55,7 +51,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}azsa${serviceShort}${resourceSuffix}'
+    storageAccountName: 'dep${namePrefix}azsa${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
@@ -83,12 +79,6 @@ module testDeployment '../../../main.bicep' = [
       }
       location: enforcedLocation
       expressVulnerabilityAssessmentState: 'Enabled'
-      diagnosticSettings: [
-        {
-          name: 'customSetting'
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
       elasticPools: [
         {
           name: '${namePrefix}-${serviceShort}-ep-001'
@@ -130,6 +120,16 @@ module testDeployment '../../../main.bicep' = [
             monthlyRetention: 'P6M'
           }
           availabilityZone: 1
+        }
+      ]
+      masterDatabaseDiagnosticSettings: [
+        {
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          logCategoriesAndGroups: [
+            {
+              category: 'SQLSecurityAuditEvents'
+            }
+          ]
         }
       ]
       customerManagedKey: {
