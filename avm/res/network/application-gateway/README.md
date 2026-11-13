@@ -2701,6 +2701,11 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: the initial gateway PUT failed with UpdateGatewayInProgress. Scoped activity showed one initial PUT and no idempotency deployment; the underlying cause is unproven and this is not a confirmed capacity failure.
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131901259795
+```
 
 <details>
 
