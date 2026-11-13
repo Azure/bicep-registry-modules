@@ -78,7 +78,7 @@ resource getReplicationRegionScript 'Microsoft.Resources/deploymentScripts@2020-
   properties: {
     azPowerShellVersion: '8.0'
     retentionInterval: 'P1D'
-    arguments: '-Location \\"${location}\\" -ResourceType \\"Microsoft.ContainerRegistry/registries/replications\\"'
+    arguments: '-Location \\"${location}\\" -ResourceType Microsoft.ContainerRegistry/registries/replications'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-ReplicationRegion.ps1')
   }
   dependsOn: [
