@@ -48,7 +48,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    replicationRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
 
@@ -140,8 +140,8 @@ module testDeployment '../../../main.bicep' = [
       quarantinePolicyStatus: 'enabled'
       replications: [
         {
-          location: nestedDependencies.outputs.pairedRegionName
-          name: nestedDependencies.outputs.pairedRegionName
+          location: nestedDependencies.outputs.replicationRegionName
+          name: nestedDependencies.outputs.replicationRegionName
         }
       ]
       roleAssignments: [
