@@ -2512,7 +2512,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: '<osType>'
-    vmSize: 'Standard_E2s_v3'
+    vmSize: 'Standard_D2s_v5'
     // Non-required parameters
     dataDisks: [
       {
@@ -2586,7 +2586,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "<osType>"
     },
     "vmSize": {
-      "value": "Standard_E2s_v3"
+      "value": "Standard_D2s_v5"
     },
     // Non-required parameters
     "dataDisks": {
@@ -2656,7 +2656,7 @@ param osDisk = {
   }
 }
 param osType = '<osType>'
-param vmSize = 'Standard_E2s_v3'
+param vmSize = 'Standard_D2s_v5'
 // Non-required parameters
 param dataDisks = [
   {

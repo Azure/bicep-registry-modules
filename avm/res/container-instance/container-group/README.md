@@ -672,12 +672,12 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           }
           resources: {
             limits: {
-              cpu: 4
-              memoryInGB: '4'
+              cpu: 1
+              memoryInGB: '0.5'
             }
             requests: {
-              cpu: 2
-              memoryInGB: '2'
+              cpu: 1
+              memoryInGB: '0.5'
             }
           }
         }
@@ -696,8 +696,8 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           ]
           resources: {
             requests: {
-              cpu: 2
-              memoryInGB: '2'
+              cpu: 1
+              memoryInGB: '0.5'
             }
           }
         }
@@ -815,12 +815,12 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             },
             "resources": {
               "limits": {
-                "cpu": 4,
-                "memoryInGB": "4"
+                "cpu": 1,
+                "memoryInGB": "0.5"
               },
               "requests": {
-                "cpu": 2,
-                "memoryInGB": "2"
+                "cpu": 1,
+                "memoryInGB": "0.5"
               }
             }
           }
@@ -839,8 +839,8 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
             ],
             "resources": {
               "requests": {
-                "cpu": 2,
-                "memoryInGB": "2"
+                "cpu": 1,
+                "memoryInGB": "0.5"
               }
             }
           }
@@ -970,12 +970,12 @@ param containers = [
       }
       resources: {
         limits: {
-          cpu: 4
-          memoryInGB: '4'
+          cpu: 1
+          memoryInGB: '0.5'
         }
         requests: {
-          cpu: 2
-          memoryInGB: '2'
+          cpu: 1
+          memoryInGB: '0.5'
         }
       }
     }
@@ -994,8 +994,8 @@ param containers = [
       ]
       resources: {
         requests: {
-          cpu: 2
-          memoryInGB: '2'
+          cpu: 1
+          memoryInGB: '0.5'
         }
       }
     }
