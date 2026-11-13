@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/auditing-setting/CHANGELOG.md).
 
+## 0.1.1
+
+### Changes
+
+- Recompiled `main.json` with Bicep CLI `0.48.1` to align nested template metadata with the CI-pinned compiler.
+
+### Breaking Changes
+
+- None
+
 ## 0.1.0
 
 ### Changes
