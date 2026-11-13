@@ -33,7 +33,7 @@ param hostPoolReferences hostPoolReferenceType[]?
 param description string = name
 
 @sys.description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.DesktopVirtualization/scalingPlans@2025-03-01-preview'>.tags?
+param tags resourceInput<'Microsoft.DesktopVirtualization/scalingPlans@2025-10-10'>.tags?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. Array of role assignments to create.')
@@ -152,6 +152,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
+// Retain preview support for the createDelete and scalingMethod schedule properties.
 resource scalingPlan 'Microsoft.DesktopVirtualization/scalingPlans@2025-03-01-preview' = {
   name: name
   location: location

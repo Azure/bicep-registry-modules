@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/desktop-virtualization/scaling-plan/CHANGELOG.md).
 
+## 0.5.1
+
+### Changes
+
+- Updated tags and test dependencies to stable API versions.
+- Retained scaling plan API `2025-03-01-preview` and schedule input type to preserve `createDelete` and `scalingMethod` support.
+
+### Breaking Changes
+
+- None
+
 ## 0.5.0
 
 ### Changes
