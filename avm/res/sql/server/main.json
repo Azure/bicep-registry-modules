@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.48.1.52935",
-      "templateHash": "17024149010844077022"
+      "templateHash": "773592858234368160"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -2420,7 +2420,8 @@
         "connectionType": "[parameters('connectionPolicy')]"
       },
       "dependsOn": [
-        "server"
+        "server",
+        "server_privateEndpoints"
       ]
     },
     "server_outbound_firewall_rules": {

@@ -626,6 +626,10 @@ resource server_connection_policy 'Microsoft.Sql/servers/connectionPolicies@2025
   properties: {
     connectionType: connectionPolicy
   }
+  // Connection policy updates also modify the private endpoints' service proxies.
+  dependsOn: [
+    server_privateEndpoints
+  ]
 }
 
 resource server_outbound_firewall_rules 'Microsoft.Sql/servers/outboundFirewallRules@2025-01-01' = [
