@@ -17,9 +17,12 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-resource additionalMg 'Microsoft.Management/managementGroups@2023-04-01' = {
-  scope: tenant()
-  name: '${uniqueString(deployment().name)}-additional-mg'
+module additionalMg 'br/public:avm/res/management/management-group:0.1.2' = {
+  name: '${uniqueString(deployment().name)}-additionalManagementGroup'
+  params: {
+    name: '${uniqueString(deployment().name)}-additional-mg'
+    parentId: managementGroup().name
+  }
 }
 
 // ============== //
@@ -36,7 +39,7 @@ module testDeployment '../../../mg-scope/main.bicep' = {
       assignedBy: 'Bicep'
     }
     additionalManagementGroupsIDsToAssignRbacTo: [
-      additionalMg.name
+      additionalMg.outputs.name
     ]
     roleDefinitionIds: [
       '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor role
