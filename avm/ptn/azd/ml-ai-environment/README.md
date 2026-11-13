@@ -109,13 +109,13 @@ You can find the full example and the setup of its dependencies in the deploymen
 module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
   params: {
     // Required parameters
-    cognitiveServicesName: 'maemincs001'
+    cognitiveServicesName: '<cognitiveServicesName>'
     hubName: 'maeminhub001'
-    keyVaultName: 'maeminkv01'
+    keyVaultName: '<keyVaultName>'
     openAiConnectionName: 'maeminai001-connection'
     projectName: 'maeminpro001'
     searchConnectionName: 'maeminsearch001-connection'
-    storageAccountName: 'maeminsa001'
+    storageAccountName: '<storageAccountName>'
     userAssignedtName: 'maeminua001'
     // Non-required parameters
     location: '<location>'
@@ -137,13 +137,13 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
   "parameters": {
     // Required parameters
     "cognitiveServicesName": {
-      "value": "maemincs001"
+      "value": "<cognitiveServicesName>"
     },
     "hubName": {
       "value": "maeminhub001"
     },
     "keyVaultName": {
-      "value": "maeminkv01"
+      "value": "<keyVaultName>"
     },
     "openAiConnectionName": {
       "value": "maeminai001-connection"
@@ -155,7 +155,7 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
       "value": "maeminsearch001-connection"
     },
     "storageAccountName": {
-      "value": "maeminsa001"
+      "value": "<storageAccountName>"
     },
     "userAssignedtName": {
       "value": "maeminua001"
@@ -179,13 +179,13 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
 using 'br/public:avm/ptn/azd/ml-ai-environment:<version>'
 
 // Required parameters
-param cognitiveServicesName = 'maemincs001'
+param cognitiveServicesName = '<cognitiveServicesName>'
 param hubName = 'maeminhub001'
-param keyVaultName = 'maeminkv01'
+param keyVaultName = '<keyVaultName>'
 param openAiConnectionName = 'maeminai001-connection'
 param projectName = 'maeminpro001'
 param searchConnectionName = 'maeminsearch001-connection'
-param storageAccountName = 'maeminsa001'
+param storageAccountName = '<storageAccountName>'
 param userAssignedtName = 'maeminua001'
 // Non-required parameters
 param location = '<location>'
@@ -209,13 +209,13 @@ You can find the full example and the setup of its dependencies in the deploymen
 module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
   params: {
     // Required parameters
-    cognitiveServicesName: 'maemaxcs001'
+    cognitiveServicesName: '<cognitiveServicesName>'
     hubName: 'maemaxhub001'
-    keyVaultName: 'maemaxkv002'
+    keyVaultName: '<keyVaultName>'
     openAiConnectionName: 'maemaxai001-connection'
     projectName: 'maemaxpro001'
     searchConnectionName: 'maemaxsearch001-connection'
-    storageAccountName: 'maemaxsta001'
+    storageAccountName: '<storageAccountName>'
     userAssignedtName: 'maemaxua001'
     // Non-required parameters
     applicationInsightsName: 'maemaxappin001'
@@ -233,10 +233,10 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
         }
       }
     ]
-    containerRegistryName: 'maemaxcr001'
+    containerRegistryName: '<containerRegistryName>'
     location: '<location>'
     logAnalyticsName: 'maemaxla001'
-    searchServiceName: 'maemaxsearch001'
+    searchServiceName: '<searchServiceName>'
   }
 }
 ```
@@ -255,13 +255,13 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
   "parameters": {
     // Required parameters
     "cognitiveServicesName": {
-      "value": "maemaxcs001"
+      "value": "<cognitiveServicesName>"
     },
     "hubName": {
       "value": "maemaxhub001"
     },
     "keyVaultName": {
-      "value": "maemaxkv002"
+      "value": "<keyVaultName>"
     },
     "openAiConnectionName": {
       "value": "maemaxai001-connection"
@@ -273,7 +273,7 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
       "value": "maemaxsearch001-connection"
     },
     "storageAccountName": {
-      "value": "maemaxsta001"
+      "value": "<storageAccountName>"
     },
     "userAssignedtName": {
       "value": "maemaxua001"
@@ -299,7 +299,7 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
       ]
     },
     "containerRegistryName": {
-      "value": "maemaxcr001"
+      "value": "<containerRegistryName>"
     },
     "location": {
       "value": "<location>"
@@ -308,7 +308,7 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
       "value": "maemaxla001"
     },
     "searchServiceName": {
-      "value": "maemaxsearch001"
+      "value": "<searchServiceName>"
     }
   }
 }
@@ -325,13 +325,13 @@ module mlAiEnvironment 'br/public:avm/ptn/azd/ml-ai-environment:<version>' = {
 using 'br/public:avm/ptn/azd/ml-ai-environment:<version>'
 
 // Required parameters
-param cognitiveServicesName = 'maemaxcs001'
+param cognitiveServicesName = '<cognitiveServicesName>'
 param hubName = 'maemaxhub001'
-param keyVaultName = 'maemaxkv002'
+param keyVaultName = '<keyVaultName>'
 param openAiConnectionName = 'maemaxai001-connection'
 param projectName = 'maemaxpro001'
 param searchConnectionName = 'maemaxsearch001-connection'
-param storageAccountName = 'maemaxsta001'
+param storageAccountName = '<storageAccountName>'
 param userAssignedtName = 'maemaxua001'
 // Non-required parameters
 param applicationInsightsName = 'maemaxappin001'
@@ -349,10 +349,10 @@ param cognitiveServicesDeployments = [
     }
   }
 ]
-param containerRegistryName = 'maemaxcr001'
+param containerRegistryName = '<containerRegistryName>'
 param location = '<location>'
 param logAnalyticsName = 'maemaxla001'
-param searchServiceName = 'maemaxsearch001'
+param searchServiceName = '<searchServiceName>'
 ```
 
 </details>

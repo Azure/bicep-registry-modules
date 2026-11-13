@@ -93,7 +93,7 @@ The test is skipped because Azure Cache for Redis announced its retirement.
 module redis 'br/public:avm/res/cache/redis:<version>' = {
   params: {
     // Required parameters
-    name: 'crclst001'
+    name: '<name>'
     // Non-required parameters
     availabilityZones: '<availabilityZones>'
     capacity: 3
@@ -119,7 +119,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crclst001"
+      "value": "<name>"
     },
     // Non-required parameters
     "availabilityZones": {
@@ -155,7 +155,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 using 'br/public:avm/res/cache/redis:<version>'
 
 // Required parameters
-param name = 'crclst001'
+param name = '<name>'
 // Non-required parameters
 param availabilityZones = '<availabilityZones>'
 param capacity = 3
@@ -186,7 +186,7 @@ The test is skipped because Azure Cache for Redis announced its retirement.
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
   params: {
-    name: 'crmin001'
+    name: '<name>'
   }
 }
 ```
@@ -204,7 +204,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "crmin001"
+      "value": "<name>"
     }
   }
 }
@@ -220,7 +220,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/cache/redis:<version>'
 
-param name = 'crmin001'
+param name = '<name>'
 ```
 
 </details>
@@ -245,7 +245,7 @@ The test is skipped because Azure Cache for Redis announced its retirement.
 module redis 'br/public:avm/res/cache/redis:<version>' = {
   params: {
     // Required parameters
-    name: 'crentrid001'
+    name: '<name>'
     // Non-required parameters
     accessPolicies: [
       {
@@ -281,7 +281,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crentrid001"
+      "value": "<name>"
     },
     // Non-required parameters
     "accessPolicies": {
@@ -321,7 +321,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 using 'br/public:avm/res/cache/redis:<version>'
 
 // Required parameters
-param name = 'crentrid001'
+param name = '<name>'
 // Non-required parameters
 param accessPolicies = [
   {
@@ -363,7 +363,7 @@ The test is skipped because Azure Cache for Redis announced its retirement.
 module redis 'br/public:avm/res/cache/redis:<version>' = {
   params: {
     // Required parameters
-    name: 'kvref'
+    name: '<name>'
     // Non-required parameters
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -392,7 +392,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "kvref"
+      "value": "<name>"
     },
     // Non-required parameters
     "secretsExportConfiguration": {
@@ -421,7 +421,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 using 'br/public:avm/res/cache/redis:<version>'
 
 // Required parameters
-param name = 'kvref'
+param name = '<name>'
 // Non-required parameters
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -456,7 +456,7 @@ The test is skipped because Azure Cache for Redis announced its retirement.
 module redis 'br/public:avm/res/cache/redis:<version>' = {
   params: {
     // Required parameters
-    name: 'crmax001'
+    name: '<name>'
     // Non-required parameters
     accessPolicies: [
       {
@@ -548,7 +548,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         }
         roleAssignments: [
           {
-            name: '8d6043f5-8a22-447f-bc31-23d23e09de6c'
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -585,7 +585,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     redisVersion: '6'
     roleAssignments: [
       {
-        name: 'f20e5c94-a697-421e-8768-d576399dbd87'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -627,7 +627,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "accessPolicies": {
@@ -743,7 +743,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
           },
           "roleAssignments": [
             {
-              "name": "8d6043f5-8a22-447f-bc31-23d23e09de6c",
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -784,7 +784,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "f20e5c94-a697-421e-8768-d576399dbd87",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -832,7 +832,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 using 'br/public:avm/res/cache/redis:<version>'
 
 // Required parameters
-param name = 'crmax001'
+param name = '<name>'
 // Non-required parameters
 param accessPolicies = [
   {
@@ -924,7 +924,7 @@ param privateEndpoints = [
     }
     roleAssignments: [
       {
-        name: '8d6043f5-8a22-447f-bc31-23d23e09de6c'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -961,7 +961,7 @@ param privateEndpoints = [
 param redisVersion = '6'
 param roleAssignments = [
   {
-    name: 'f20e5c94-a697-421e-8768-d576399dbd87'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -1009,7 +1009,7 @@ The test is skipped because Azure Cache for Redis announced its retirement.
 module redis 'br/public:avm/res/cache/redis:<version>' = {
   params: {
     // Required parameters
-    name: 'crpgeo001'
+    name: '<name>'
     // Non-required parameters
     availabilityZones: []
     capacity: 2
@@ -1043,7 +1043,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crpgeo001"
+      "value": "<name>"
     },
     // Non-required parameters
     "availabilityZones": {
@@ -1095,7 +1095,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 using 'br/public:avm/res/cache/redis:<version>'
 
 // Required parameters
-param name = 'crpgeo001'
+param name = '<name>'
 // Non-required parameters
 param availabilityZones = []
 param capacity = 2
@@ -1135,7 +1135,7 @@ The test is skipped because Azure Cache for Redis announced its retirement.
 module redis 'br/public:avm/res/cache/redis:<version>' = {
   params: {
     // Required parameters
-    name: 'crper001'
+    name: '<name>'
     // Non-required parameters
     availabilityZones: []
     managedIdentities: {
@@ -1172,7 +1172,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crper001"
+      "value": "<name>"
     },
     // Non-required parameters
     "availabilityZones": {
@@ -1219,7 +1219,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 using 'br/public:avm/res/cache/redis:<version>'
 
 // Required parameters
-param name = 'crper001'
+param name = '<name>'
 // Non-required parameters
 param availabilityZones = []
 param managedIdentities = {
@@ -1262,7 +1262,7 @@ The test is skipped because Azure Cache for Redis announced its retirement.
 module redis 'br/public:avm/res/cache/redis:<version>' = {
   params: {
     // Required parameters
-    name: 'crcfg001'
+    name: '<name>'
     // Non-required parameters
     redisConfiguration: {
       'maxfragmentationmemory-reserved': '50'
@@ -1288,7 +1288,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crcfg001"
+      "value": "<name>"
     },
     // Non-required parameters
     "redisConfiguration": {
@@ -1314,7 +1314,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 using 'br/public:avm/res/cache/redis:<version>'
 
 // Required parameters
-param name = 'crcfg001'
+param name = '<name>'
 // Non-required parameters
 param redisConfiguration = {
   'maxfragmentationmemory-reserved': '50'
@@ -1346,7 +1346,7 @@ The test is skipped because Azure Cache for Redis announced its retirement.
 module redis 'br/public:avm/res/cache/redis:<version>' = {
   params: {
     // Required parameters
-    name: 'crwaf001'
+    name: '<name>'
     // Non-required parameters
     availabilityZones: '<availabilityZones>'
     capacity: 2
@@ -1413,7 +1413,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "availabilityZones": {
@@ -1504,7 +1504,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 using 'br/public:avm/res/cache/redis:<version>'
 
 // Required parameters
-param name = 'crwaf001'
+param name = '<name>'
 // Non-required parameters
 param availabilityZones = '<availabilityZones>'
 param capacity = 2

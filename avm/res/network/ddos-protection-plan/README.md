@@ -128,7 +128,7 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
     }
     roleAssignments: [
       {
-        name: '60339368-138d-4667-988a-5431c156f6ff'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -183,7 +183,7 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
     "roleAssignments": {
       "value": [
         {
-          "name": "60339368-138d-4667-988a-5431c156f6ff",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -232,7 +232,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '60339368-138d-4667-988a-5431c156f6ff'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

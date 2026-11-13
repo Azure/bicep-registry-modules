@@ -221,7 +221,7 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
     }
     roleAssignments: [
       {
-        name: 'bf62ed65-07be-48e8-b760-2d59795cd282'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -293,7 +293,7 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "bf62ed65-07be-48e8-b760-2d59795cd282",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -353,7 +353,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'bf62ed65-07be-48e8-b760-2d59795cd282'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

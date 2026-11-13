@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Primary server and Readonly Replication server'
@@ -36,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    primaryServerName: '${namePrefix}${serviceShort}pri001'
+    primaryServerName: uniqueResourceName('${namePrefix}${serviceShort}pri001', resourceGroup.id, 63)
   }
 }
 // ============== //
@@ -49,7 +51,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 63)
       sourceServerResourceId: nestedDependencies.outputs.serverResourceId
       availabilityZone: -1
       skuName: 'Standard_D2s_v3'

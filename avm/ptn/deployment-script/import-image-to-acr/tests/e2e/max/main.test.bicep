@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -32,7 +34,7 @@ module dependencies 'dependencies.bicep' = {
     acrName: 'dep${namePrefix}acr${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 10)}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 6)}'
     keyVaultName: 'dep${namePrefix}kv${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 6)}'
-    managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
+    managedIdentityName: uniqueResourceName('dep-${namePrefix}-mi-${serviceShort}', resourceGroup.id, 128)
   }
 }
 

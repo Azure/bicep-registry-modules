@@ -117,7 +117,7 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
     }
     roleAssignments: [
       {
-        name: 'de4b134c-7087-480d-892f-ce6629720d29'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -182,7 +182,7 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "de4b134c-7087-480d-892f-ce6629720d29",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -243,7 +243,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'de4b134c-7087-480d-892f-ce6629720d29'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

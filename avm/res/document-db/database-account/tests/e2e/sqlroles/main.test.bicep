@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Deploying with a sql role definition and assignment'
@@ -34,7 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    appName: 'dep-${namePrefix}-app-${serviceShort}'
+    appName: uniqueResourceName('dep-${namePrefix}-app-${serviceShort}', resourceGroup.id, 60)
     appServicePlanName: 'dep-${namePrefix}-asp-${serviceShort}'
   }
 }
@@ -43,12 +45,15 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
+var accountName = uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 44)
+var accountResourceId = '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}'
+
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: accountName
       sqlRoleDefinitions: [
         {
           name: guid('optional-role-identifier') // MUST be a guid
@@ -59,7 +64,7 @@ module testDeployment '../../../main.bicep' = [
             'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
           ]
           assignableScopes: [
-            '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}${serviceShort}001'
+            accountResourceId
           ]
           assignments: [
             {
@@ -73,7 +78,7 @@ module testDeployment '../../../main.bicep' = [
             'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
           ]
           assignableScopes: [
-            '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}${serviceShort}001'
+            accountResourceId
           ]
         }
         {
@@ -106,17 +111,17 @@ module testDeployment '../../../main.bicep' = [
       sqlRoleAssignments: [
         {
           principalId: nestedDependencies.outputs.identityPrincipalId
-          roleDefinitionId: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}${serviceShort}001/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
+          roleDefinitionId: '${accountResourceId}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
         }
         {
           principalId: nestedDependencies.outputs.identityPrincipalId
           roleDefinitionId: '00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
-          scope: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}${serviceShort}001/dbs/simple-db'
+          scope: '${accountResourceId}/dbs/simple-db'
         }
         {
           principalId: nestedDependencies.outputs.identityPrincipalId
           roleDefinitionId: 'Cosmos DB Built-in Data Reader'
-          scope: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}${serviceShort}001/dbs/simple-db/colls/container-001'
+          scope: '${accountResourceId}/dbs/simple-db/colls/container-001'
         }
       ]
     }

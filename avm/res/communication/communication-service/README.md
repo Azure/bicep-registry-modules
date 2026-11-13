@@ -56,7 +56,7 @@ module communicationService 'br/public:avm/res/communication/communication-servi
   params: {
     // Required parameters
     dataLocation: 'Germany'
-    name: 'ccsmin001'
+    name: '<name>'
     // Non-required parameters
     location: 'global'
   }
@@ -80,7 +80,7 @@ module communicationService 'br/public:avm/res/communication/communication-servi
       "value": "Germany"
     },
     "name": {
-      "value": "ccsmin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "location": {
@@ -102,7 +102,7 @@ using 'br/public:avm/res/communication/communication-service:<version>'
 
 // Required parameters
 param dataLocation = 'Germany'
-param name = 'ccsmin001'
+param name = '<name>'
 // Non-required parameters
 param location = 'global'
 ```
@@ -126,7 +126,7 @@ module communicationService 'br/public:avm/res/communication/communication-servi
   params: {
     // Required parameters
     dataLocation: 'Germany'
-    name: 'ccsmax001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -160,7 +160,7 @@ module communicationService 'br/public:avm/res/communication/communication-servi
     publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
-        name: '9237b909-e8fb-4bb8-8194-34aae537cee2'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -203,7 +203,7 @@ module communicationService 'br/public:avm/res/communication/communication-servi
       "value": "Germany"
     },
     "name": {
-      "value": "ccsmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -253,7 +253,7 @@ module communicationService 'br/public:avm/res/communication/communication-servi
     "roleAssignments": {
       "value": [
         {
-          "name": "9237b909-e8fb-4bb8-8194-34aae537cee2",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -294,7 +294,7 @@ using 'br/public:avm/res/communication/communication-service:<version>'
 
 // Required parameters
 param dataLocation = 'Germany'
-param name = 'ccsmax001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -328,7 +328,7 @@ param managedIdentities = {
 param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
-    name: '9237b909-e8fb-4bb8-8194-34aae537cee2'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -371,7 +371,7 @@ module communicationService 'br/public:avm/res/communication/communication-servi
   params: {
     // Required parameters
     dataLocation: 'Germany'
-    name: 'ccswaf001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -410,7 +410,7 @@ module communicationService 'br/public:avm/res/communication/communication-servi
       "value": "Germany"
     },
     "name": {
-      "value": "ccswaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -455,7 +455,7 @@ using 'br/public:avm/res/communication/communication-service:<version>'
 
 // Required parameters
 param dataLocation = 'Germany'
-param name = 'ccswaf001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {

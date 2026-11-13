@@ -121,7 +121,7 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
     }
     roleAssignments: [
       {
-        name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -190,7 +190,7 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
     "roleAssignments": {
       "value": [
         {
-          "name": "cbc3932a-1bee-4318-ae76-d70e1ba399c8",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -251,7 +251,7 @@ param oidcIssuerProfile = {
 }
 param roleAssignments = [
   {
-    name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

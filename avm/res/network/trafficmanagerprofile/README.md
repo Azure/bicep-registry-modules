@@ -54,7 +54,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
   params: {
-    name: 'ntmpmin001'
+    name: '<name>'
   }
 }
 ```
@@ -72,7 +72,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "ntmpmin001"
+      "value": "<name>"
     }
   }
 }
@@ -88,7 +88,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 ```bicep-params
 using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
 
-param name = 'ntmpmin001'
+param name = '<name>'
 ```
 
 </details>
@@ -109,7 +109,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
   params: {
     // Required parameters
-    name: 'ntmpmax001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -130,10 +130,10 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    relativeName: 'ntmpmax001-rn'
+    relativeName: '<relativeName>'
     roleAssignments: [
       {
-        name: '76e7bd82-b689-4072-87be-519bfabf733e'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -173,7 +173,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ntmpmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -202,12 +202,12 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       }
     },
     "relativeName": {
-      "value": "ntmpmax001-rn"
+      "value": "<relativeName>"
     },
     "roleAssignments": {
       "value": [
         {
-          "name": "76e7bd82-b689-4072-87be-519bfabf733e",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -247,7 +247,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
 
 // Required parameters
-param name = 'ntmpmax001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -268,10 +268,10 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
-param relativeName = 'ntmpmax001-rn'
+param relativeName = '<relativeName>'
 param roleAssignments = [
   {
-    name: '76e7bd82-b689-4072-87be-519bfabf733e'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -313,7 +313,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
   params: {
     // Required parameters
-    name: 'ntmpwaf001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -381,7 +381,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ntmpwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -455,7 +455,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
 
 // Required parameters
-param name = 'ntmpwaf001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {

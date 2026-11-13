@@ -71,7 +71,7 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'ehnhsmu001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -103,7 +103,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ehnhsmu001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -141,7 +141,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 using 'br/public:avm/res/event-hub/namespace:<version>'
 
 // Required parameters
-param name = 'ehnhsmu001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -175,7 +175,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'ehnenc001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -202,7 +202,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ehnenc001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -233,7 +233,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 using 'br/public:avm/res/event-hub/namespace:<version>'
 
 // Required parameters
-param name = 'ehnenc001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -261,7 +261,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   params: {
-    name: 'ehnmin001'
+    name: '<name>'
   }
 }
 ```
@@ -279,7 +279,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "ehnmin001"
+      "value": "<name>"
     }
   }
 }
@@ -295,7 +295,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/event-hub/namespace:<version>'
 
-param name = 'ehnmin001'
+param name = '<name>'
 ```
 
 </details>
@@ -316,7 +316,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'ehnkv001'
+    name: '<name>'
     // Non-required parameters
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -343,7 +343,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ehnkv001"
+      "value": "<name>"
     },
     // Non-required parameters
     "secretsExportConfiguration": {
@@ -370,7 +370,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 using 'br/public:avm/res/event-hub/namespace:<version>'
 
 // Required parameters
-param name = 'ehnkv001'
+param name = '<name>'
 // Non-required parameters
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -399,7 +399,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'ehnmax001'
+    name: '<name>'
     // Non-required parameters
     authorizationRules: [
       {
@@ -580,7 +580,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
-        name: 'bd0f41e3-8e3e-4cd3-b028-edd61608bd9f'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -623,7 +623,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ehnmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "authorizationRules": {
@@ -834,7 +834,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "bd0f41e3-8e3e-4cd3-b028-edd61608bd9f",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -883,7 +883,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 using 'br/public:avm/res/event-hub/namespace:<version>'
 
 // Required parameters
-param name = 'ehnmax001'
+param name = '<name>'
 // Non-required parameters
 param authorizationRules = [
   {
@@ -1064,7 +1064,7 @@ param privateEndpoints = [
 param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
-    name: 'bd0f41e3-8e3e-4cd3-b028-edd61608bd9f'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -1109,7 +1109,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'ehnwaf001'
+    name: '<name>'
     // Non-required parameters
     authorizationRules: [
       {
@@ -1267,7 +1267,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ehnwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "authorizationRules": {
@@ -1453,7 +1453,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 using 'br/public:avm/res/event-hub/namespace:<version>'
 
 // Required parameters
-param name = 'ehnwaf001'
+param name = '<name>'
 // Non-required parameters
 param authorizationRules = [
   {

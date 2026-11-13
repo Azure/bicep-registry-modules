@@ -357,7 +357,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -644,7 +644,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "73ec30e0-2e25-475f-beec-d90cab332eb7",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -917,7 +917,7 @@ param metadataSchemas = [
 ]
 param roleAssignments = [
   {
-    name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

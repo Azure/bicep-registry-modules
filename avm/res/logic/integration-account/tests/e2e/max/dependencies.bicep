@@ -51,7 +51,7 @@ resource keyVaultKey 'Microsoft.KeyVault/vaults/keys@2024-11-01' = {
 }
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-logicapps-KeyVault-Certificate-Officer-RoleAssignment')
+  name: guid(keyVault.id, 'msi-logicapps-KeyVault-Certificate-Officer-RoleAssignment')
   scope: keyVault
   properties: {
     principalId: logicAppsServiceEnterpriseApplicationObjectId // Logic Apps Service Principal
@@ -64,7 +64,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 resource keyPermissions2 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-logicapps-KeyVault-Administrator-RoleAssignment')
+  name: guid(keyVault.id, 'msi-logicapps-KeyVault-Administrator-RoleAssignment')
   scope: keyVault
   properties: {
     principalId: logicAppsServiceEnterpriseApplicationObjectId // Logic Apps Service Principal

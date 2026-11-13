@@ -717,7 +717,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     provisionNetworkNow: true
     roleAssignments: [
       {
-        name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -929,7 +929,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "roleAssignments": {
       "value": [
         {
-          "name": "f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1103,7 +1103,7 @@ param privateEndpoints = [
 param provisionNetworkNow = true
 param roleAssignments = [
   {
-    name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

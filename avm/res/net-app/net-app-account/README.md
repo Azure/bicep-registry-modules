@@ -425,7 +425,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     }
     roleAssignments: [
       {
-        name: '18051111-2a33-4f8e-8b24-441aac1e6562'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -622,7 +622,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "18051111-2a33-4f8e-8b24-441aac1e6562",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -811,7 +811,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: '18051111-2a33-4f8e-8b24-441aac1e6562'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

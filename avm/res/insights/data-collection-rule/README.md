@@ -1958,7 +1958,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     }
     roleAssignments: [
       {
-        name: '89a4d6fa-defb-4099-9196-173d94b91d67'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -2082,7 +2082,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     "roleAssignments": {
       "value": [
         {
-          "name": "89a4d6fa-defb-4099-9196-173d94b91d67",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -2196,7 +2196,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: '89a4d6fa-defb-4099-9196-173d94b91d67'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

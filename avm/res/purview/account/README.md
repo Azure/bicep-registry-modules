@@ -58,7 +58,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module account 'br/public:avm/res/purview/account:<version>' = {
   params: {
     // Required parameters
-    name: 'pvamin001'
+    name: '<name>'
     // Non-required parameters
     location: '<location>'
   }
@@ -79,7 +79,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "pvamin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "location": {
@@ -100,7 +100,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
 using 'br/public:avm/res/purview/account:<version>'
 
 // Required parameters
-param name = 'pvamin001'
+param name = '<name>'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -123,7 +123,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module account 'br/public:avm/res/purview/account:<version>' = {
   params: {
     // Required parameters
-    name: 'pvaing001'
+    name: '<name>'
     // Non-required parameters
     location: '<location>'
     managedResourcesPublicNetworkAccess: 'Disabled'
@@ -145,7 +145,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "pvaing001"
+      "value": "<name>"
     },
     // Non-required parameters
     "location": {
@@ -169,7 +169,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
 using 'br/public:avm/res/purview/account:<version>'
 
 // Required parameters
-param name = 'pvaing001'
+param name = '<name>'
 // Non-required parameters
 param location = '<location>'
 param managedResourcesPublicNetworkAccess = 'Disabled'
@@ -193,7 +193,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module account 'br/public:avm/res/purview/account:<version>' = {
   params: {
     // Required parameters
-    name: 'pvamax001'
+    name: '<name>'
     // Non-required parameters
     accountPrivateEndpoints: [
       {
@@ -287,7 +287,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
     publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
-        name: '8372742c-408e-4a8a-a748-aca787a0e33e'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -373,7 +373,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "pvamax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "accountPrivateEndpoints": {
@@ -487,7 +487,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "8372742c-408e-4a8a-a748-aca787a0e33e",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -577,7 +577,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
 using 'br/public:avm/res/purview/account:<version>'
 
 // Required parameters
-param name = 'pvamax001'
+param name = '<name>'
 // Non-required parameters
 param accountPrivateEndpoints = [
   {
@@ -671,7 +671,7 @@ param portalPrivateEndpoints = [
 param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
-    name: '8372742c-408e-4a8a-a748-aca787a0e33e'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -759,7 +759,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module account 'br/public:avm/res/purview/account:<version>' = {
   params: {
     // Required parameters
-    name: 'pvawaf001'
+    name: '<name>'
     // Non-required parameters
     accountPrivateEndpoints: [
       {
@@ -860,7 +860,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "pvawaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "accountPrivateEndpoints": {
@@ -979,7 +979,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
 using 'br/public:avm/res/purview/account:<version>'
 
 // Required parameters
-param name = 'pvawaf001'
+param name = '<name>'
 // Non-required parameters
 param accountPrivateEndpoints = [
   {

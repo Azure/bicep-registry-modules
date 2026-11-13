@@ -66,7 +66,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'egnmin001'
+    name: '<name>'
     // Non-required parameters
     location: '<location>'
   }
@@ -87,7 +87,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egnmin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "location": {
@@ -108,7 +108,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 using 'br/public:avm/res/event-grid/namespace:<version>'
 
 // Required parameters
-param name = 'egnmin001'
+param name = '<name>'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -131,7 +131,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'egnmax001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -187,7 +187,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
     ]
     roleAssignments: [
       {
-        name: 'bde32b53-e30c-41d0-a338-c637853fe524'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -334,7 +334,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egnmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -402,7 +402,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "bde32b53-e30c-41d0-a338-c637853fe524",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -551,7 +551,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 using 'br/public:avm/res/event-grid/namespace:<version>'
 
 // Required parameters
-param name = 'egnmax001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -607,7 +607,7 @@ param privateEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: 'bde32b53-e30c-41d0-a338-c637853fe524'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -756,7 +756,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'egnmqttct001'
+    name: '<name>'
     // Non-required parameters
     alternativeAuthenticationNameSources: [
       'ClientCertificateEmail'
@@ -908,7 +908,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egnmqttct001"
+      "value": "<name>"
     },
     // Non-required parameters
     "alternativeAuthenticationNameSources": {
@@ -1086,7 +1086,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 using 'br/public:avm/res/event-grid/namespace:<version>'
 
 // Required parameters
-param name = 'egnmqttct001'
+param name = '<name>'
 // Non-required parameters
 param alternativeAuthenticationNameSources = [
   'ClientCertificateEmail'
@@ -1240,7 +1240,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'egnmqttnt001'
+    name: '<name>'
     // Non-required parameters
     alternativeAuthenticationNameSources: [
       'ClientCertificateEmail'
@@ -1392,7 +1392,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egnmqttnt001"
+      "value": "<name>"
     },
     // Non-required parameters
     "alternativeAuthenticationNameSources": {
@@ -1570,7 +1570,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 using 'br/public:avm/res/event-grid/namespace:<version>'
 
 // Required parameters
-param name = 'egnmqttnt001'
+param name = '<name>'
 // Non-required parameters
 param alternativeAuthenticationNameSources = [
   'ClientCertificateEmail'
@@ -1724,7 +1724,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
   params: {
     // Required parameters
-    name: 'egnwaf001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -1802,7 +1802,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egnwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -1888,7 +1888,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
 using 'br/public:avm/res/event-grid/namespace:<version>'
 
 // Required parameters
-param name = 'egnwaf001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {

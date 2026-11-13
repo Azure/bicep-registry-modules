@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using Customer-Managed-Keys with System-Assigned identity'
@@ -41,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    kustoClusterName: '${namePrefix}${serviceShort}001'
+    kustoClusterName: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 22)
     location: resourceLocation
   }
 }

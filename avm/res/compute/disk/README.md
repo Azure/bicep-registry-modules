@@ -409,7 +409,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
     publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
-        name: '89cc419c-8383-461d-9a70-5cfae4045a8d'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -488,7 +488,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "89cc419c-8383-461d-9a70-5cfae4045a8d",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -545,7 +545,7 @@ param osType = 'Windows'
 param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
-    name: '89cc419c-8383-461d-9a70-5cfae4045a8d'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

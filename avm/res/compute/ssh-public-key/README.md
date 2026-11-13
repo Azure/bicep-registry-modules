@@ -132,7 +132,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
     publicKey: '<publicKey>'
     roleAssignments: [
       {
-        name: '74ec0421-c3f4-46f2-acf0-b519fe6fcf1c'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -193,7 +193,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "74ec0421-c3f4-46f2-acf0-b519fe6fcf1c",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -244,7 +244,7 @@ param lock = {
 param publicKey = '<publicKey>'
 param roleAssignments = [
   {
-    name: '74ec0421-c3f4-46f2-acf0-b519fe6fcf1c'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

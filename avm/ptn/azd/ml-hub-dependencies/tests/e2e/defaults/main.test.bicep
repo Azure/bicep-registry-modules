@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
@@ -42,8 +44,13 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       cognitiveServicesName: '${namePrefix}cog07${serviceShort}'
-      keyVaultName: '${namePrefix}key07${serviceShort}'
-      storageAccountName: '${namePrefix}st07${serviceShort}'
+      cognitiveServicesCustomSubDomainName: uniqueResourceName(
+        '${namePrefix}cog07${serviceShort}',
+        resourceGroup.id,
+        64
+      )
+      keyVaultName: uniqueResourceName('${namePrefix}key07${serviceShort}', resourceGroup.id, 24)
+      storageAccountName: uniqueResourceName('${namePrefix}st07${serviceShort}', resourceGroup.id, 24)
     }
   }
 ]

@@ -30,7 +30,7 @@ module dependencies './dependencies.bicep' = {
   params: {
     lawName: 'dep${namePrefix}law${serviceShort}'
     appInsightsName: 'dep${namePrefix}ai${serviceShort}'
-    userIdentityName: 'dep${namePrefix}uid${serviceShort}'
+    userIdentityName: uniqueResourceName('dep${namePrefix}uid${serviceShort}', resourceGroup.id, 128)
   }
 }
 
@@ -44,6 +44,8 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // ============== //
 // Test Execution //
 // ============== //
+
+var keyVaultName = uniqueResourceName('kv${namePrefix}${serviceShort}', resourceGroup.id, 24)
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -59,8 +61,7 @@ module testDeployment '../../../main.bicep' = [
       // needed for idempotency testing
       overwriteExistingImage: true
       appInsightsConnectionString: dependencies.outputs.appInsightsConnectionString
-      // with 'kv' in the uniqueString the name can start with a number, which is an invalid name for Key Vault
-      keyVaultName: 'kv${uniqueString('${namePrefix}${serviceShort}001', location, resourceGroupName)}'
+      keyVaultName: keyVaultName
       keyVaultRoleAssignments: [
         {
           roleDefinitionIdOrName: 'Key Vault Secrets Officer'
@@ -114,7 +115,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'secretkey1'
           // the Key Vault name needs to be known here. Not using the output of the dependencies to show the usage.
-          keyVaultUrl: 'https://kv${uniqueString('cjob', location, resourceGroupName)}${environment().suffixes.keyvaultDns}/secrets/key1'
+          keyVaultUrl: 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/secrets/key1'
           identity: dependencies.outputs.userIdentityResourceId
         }
       ]
@@ -127,3 +128,4 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'

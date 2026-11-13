@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Creating Azure AI Studio hub resource'
@@ -41,9 +43,9 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     applicationInsightsName: 'dep-${namePrefix}-appI-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
-    secondaryStorageAccountName: 'dep${namePrefix}st${serviceShort}2'
-    aiServicesName: 'dep-${namePrefix}-ai-${serviceShort}'
+    storageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
+    secondaryStorageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}2', resourceGroup.id, 24)
+    aiServicesName: uniqueResourceName('dep-${namePrefix}-ai-${serviceShort}', resourceGroup.id, 64)
     location: enforcedLocation
   }
 }

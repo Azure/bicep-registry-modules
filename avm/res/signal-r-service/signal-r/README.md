@@ -56,7 +56,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
   params: {
-    name: 'srsdrmin-001'
+    name: '<name>'
   }
 }
 ```
@@ -74,7 +74,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "srsdrmin-001"
+      "value": "<name>"
     }
   }
 }
@@ -90,7 +90,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/signal-r-service/signal-r:<version>'
 
-param name = 'srsdrmin-001'
+param name = '<name>'
 ```
 
 </details>
@@ -111,7 +111,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
   params: {
     // Required parameters
-    name: 'srssrmax-001'
+    name: '<name>'
     // Non-required parameters
     capacity: 2
     clientCertEnabled: false
@@ -194,7 +194,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
     ]
     roleAssignments: [
       {
-        name: 'd8c98876-5377-4b49-98ae-41a8b5537761'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -235,7 +235,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "srssrmax-001"
+      "value": "<name>"
     },
     // Non-required parameters
     "capacity": {
@@ -346,7 +346,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "d8c98876-5377-4b49-98ae-41a8b5537761",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -389,7 +389,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
 using 'br/public:avm/res/signal-r-service/signal-r:<version>'
 
 // Required parameters
-param name = 'srssrmax-001'
+param name = '<name>'
 // Non-required parameters
 param capacity = 2
 param clientCertEnabled = false
@@ -472,7 +472,7 @@ param resourceLogConfigurationsToEnable = [
 ]
 param roleAssignments = [
   {
-    name: 'd8c98876-5377-4b49-98ae-41a8b5537761'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -515,7 +515,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
   params: {
     // Required parameters
-    name: 'srssrwaf-001'
+    name: '<name>'
     // Non-required parameters
     capacity: 2
     clientCertEnabled: false
@@ -594,7 +594,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "srssrwaf-001"
+      "value": "<name>"
     },
     // Non-required parameters
     "capacity": {
@@ -693,7 +693,7 @@ module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
 using 'br/public:avm/res/signal-r-service/signal-r:<version>'
 
 // Required parameters
-param name = 'srssrwaf-001'
+param name = '<name>'
 // Non-required parameters
 param capacity = 2
 param clientCertEnabled = false

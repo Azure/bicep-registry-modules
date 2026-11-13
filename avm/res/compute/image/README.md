@@ -143,7 +143,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     osState: 'Generalized'
     roleAssignments: [
       {
-        name: '2dfcdedd-220c-4b6b-b8bd-58e22e0c5434'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -217,7 +217,7 @@ module image 'br/public:avm/res/compute/image:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "2dfcdedd-220c-4b6b-b8bd-58e22e0c5434",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -273,7 +273,7 @@ param location = '<location>'
 param osState = 'Generalized'
 param roleAssignments = [
   {
-    name: '2dfcdedd-220c-4b6b-b8bd-58e22e0c5434'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

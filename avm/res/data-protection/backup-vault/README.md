@@ -556,7 +556,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
     }
     roleAssignments: [
       {
-        name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -844,7 +844,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
     "roleAssignments": {
       "value": [
         {
-          "name": "cbc3932a-1bee-4318-ae76-d70e1ba399c8",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1118,7 +1118,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

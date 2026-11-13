@@ -63,7 +63,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    name: 'esancmk001'
+    name: '<name>'
     // Non-required parameters
     sku: 'Premium_LRS'
     volumeGroups: [
@@ -116,7 +116,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": 2
     },
     "name": {
-      "value": "esancmk001"
+      "value": "<name>"
     },
     // Non-required parameters
     "sku": {
@@ -169,7 +169,7 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param name = 'esancmk001'
+param name = '<name>'
 // Non-required parameters
 param sku = 'Premium_LRS'
 param volumeGroups = [
@@ -222,7 +222,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'esanmin001'
+    name: '<name>'
   }
 }
 ```
@@ -244,7 +244,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "esanmin001"
+      "value": "<name>"
     }
   }
 }
@@ -262,7 +262,7 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'esanmin001'
+param name = '<name>'
 ```
 
 </details>
@@ -284,7 +284,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 3
-    name: 'esanmax001'
+    name: '<name>'
     // Non-required parameters
     baseSizeTiB: 2
     diagnosticSettings: [
@@ -433,7 +433,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": 3
     },
     "name": {
-      "value": "esanmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "baseSizeTiB": {
@@ -594,7 +594,7 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
 // Required parameters
 param availabilityZone = 3
-param name = 'esanmax001'
+param name = '<name>'
 // Non-required parameters
 param baseSizeTiB = 2
 param diagnosticSettings = [
@@ -743,7 +743,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'esanpe001'
+    name: '<name>'
     // Non-required parameters
     sku: 'Premium_ZRS'
     volumeGroups: [
@@ -792,7 +792,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "esanpe001"
+      "value": "<name>"
     },
     // Non-required parameters
     "sku": {
@@ -841,7 +841,7 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'esanpe001'
+param name = '<name>'
 // Non-required parameters
 param sku = 'Premium_ZRS'
 param volumeGroups = [
@@ -890,7 +890,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'esanwaf001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -970,7 +970,7 @@ module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
       "value": 1
     },
     "name": {
-      "value": "esanwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -1056,7 +1056,7 @@ using 'br/public:avm/res/elastic-san/elastic-san:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'esanwaf001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {

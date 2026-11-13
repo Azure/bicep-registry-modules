@@ -8,7 +8,7 @@ param location string
 param tags object = {}
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
-  name: take('stbyor${workloadName}', 24)
+  name: uniqueResourceName('stbyor${workloadName}', resourceGroup().id, 24)
   location: location
   tags: tags
   sku: {
@@ -36,7 +36,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
-  name: take('kvbyor${workloadName}', 24)
+  name: uniqueResourceName('kvbyor${workloadName}', resourceGroup().id, 24)
   location: location
   tags: tags
   properties: {
@@ -60,7 +60,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
 }
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
-  name: take('cosmosbyor${workloadName}', 44)
+  name: uniqueResourceName('cosmosbyor${workloadName}', resourceGroup().id, 44)
   location: location
   tags: tags
   kind: 'GlobalDocumentDB'
@@ -81,7 +81,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
 }
 
 resource aiSearch 'Microsoft.Search/searchServices@2023-11-01' = {
-  name: take('srchbyor${workloadName}', 60)
+  name: uniqueResourceName('srchbyor${workloadName}', resourceGroup().id, 60)
   location: location
   tags: tags
   sku: {
@@ -101,3 +101,4 @@ output storageAccountResourceId string = storageAccount.id
 output keyVaultResourceId string = keyVault.id
 output cosmosDbAccountResourceId string = cosmosDbAccount.id
 output aiSearchResourceId string = aiSearch.id
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'

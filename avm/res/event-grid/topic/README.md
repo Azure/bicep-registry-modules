@@ -58,7 +58,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module topic 'br/public:avm/res/event-grid/topic:<version>' = {
   params: {
     // Required parameters
-    name: 'egtmin001'
+    name: '<name>'
     // Non-required parameters
     eventSubscriptions: [
       {
@@ -116,7 +116,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egtmin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "eventSubscriptions": {
@@ -182,7 +182,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
 using 'br/public:avm/res/event-grid/topic:<version>'
 
 // Required parameters
-param name = 'egtmin001'
+param name = '<name>'
 // Non-required parameters
 param eventSubscriptions = [
   {
@@ -242,7 +242,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module topic 'br/public:avm/res/event-grid/topic:<version>' = {
   params: {
     // Required parameters
-    name: 'egtmax001'
+    name: '<name>'
     // Non-required parameters
     dataResidencyBoundary: 'WithinRegion'
     diagnosticSettings: [
@@ -350,7 +350,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
-        name: 'f80d2f24-53f6-41b3-811f-668b2273dcf8'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -390,7 +390,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egtmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "dataResidencyBoundary": {
@@ -522,7 +522,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "f80d2f24-53f6-41b3-811f-668b2273dcf8",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -562,7 +562,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
 using 'br/public:avm/res/event-grid/topic:<version>'
 
 // Required parameters
-param name = 'egtmax001'
+param name = '<name>'
 // Non-required parameters
 param dataResidencyBoundary = 'WithinRegion'
 param diagnosticSettings = [
@@ -670,7 +670,7 @@ param privateEndpoints = [
 param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
-    name: 'f80d2f24-53f6-41b3-811f-668b2273dcf8'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -712,7 +712,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module topic 'br/public:avm/res/event-grid/topic:<version>' = {
   params: {
     // Required parameters
-    name: 'egtwaf001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -810,7 +810,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egtwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -924,7 +924,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
 using 'br/public:avm/res/event-grid/topic:<version>'
 
 // Required parameters
-param name = 'egtwaf001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {

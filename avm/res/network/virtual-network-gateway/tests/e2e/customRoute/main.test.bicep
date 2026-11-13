@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Custom Routes'
@@ -51,7 +53,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 58)
       gatewayType: 'Vpn'
       virtualNetworkResourceId: nestedDependencies.outputs.vnetMainResourceId
       clusterSettings: {
@@ -75,7 +77,6 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
-
 
 // ======= //
 // Outputs //
@@ -119,5 +120,3 @@ output secondaryDefaultBgpIpAddress string? = testDeployment[0].outputs.?seconda
 
 @description('The secondary public IP address of the main test VPN gateway (if configured for active-active).')
 output secondaryPublicIpAddress string? = testDeployment[0].outputs.?secondaryPublicIpAddress
-
-

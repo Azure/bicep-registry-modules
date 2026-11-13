@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -42,13 +44,14 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       cognitiveServicesName: '${namePrefix}cs08${serviceShort}'
-      keyVaultName: '${namePrefix}kv08${serviceShort}'
-      storageAccountName: '${namePrefix}sa08${serviceShort}'
+      cognitiveServicesCustomSubDomainName: uniqueResourceName('${namePrefix}cs08${serviceShort}', resourceGroup.id, 64)
+      keyVaultName: uniqueResourceName('${namePrefix}kv08${serviceShort}', resourceGroup.id, 24)
+      storageAccountName: uniqueResourceName('${namePrefix}sa08${serviceShort}', resourceGroup.id, 24)
       applicationInsightsDashboardName: '${namePrefix}aid08${serviceShort}'
       applicationInsightsName: '${namePrefix}ai08${serviceShort}'
       logAnalyticsName: '${namePrefix}log08${serviceShort}'
-      containerRegistryName: '${namePrefix}cr08${serviceShort}'
-      searchServiceName: '${namePrefix}sea08${serviceShort}'
+      containerRegistryName: uniqueResourceName('${namePrefix}cr08${serviceShort}', resourceGroup.id, 50)
+      searchServiceName: uniqueResourceName('${namePrefix}sea08${serviceShort}', resourceGroup.id, 60)
     }
   }
 ]

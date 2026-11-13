@@ -156,7 +156,7 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     }
     roleAssignments: [
       {
-        name: '1dcfa9c2-5e95-42d2-bf04-bdecad93abcf'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -258,7 +258,7 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "1dcfa9c2-5e95-42d2-bf04-bdecad93abcf",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -350,7 +350,7 @@ o365Policy: {
 }
 param roleAssignments = [
   {
-    name: '1dcfa9c2-5e95-42d2-bf04-bdecad93abcf'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

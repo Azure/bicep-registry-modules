@@ -50,6 +50,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      keyVaultName: uniqueResourceName('kv${namePrefix}${serviceShort}', resourceGroup.id, 24)
+      managedIdentityName: uniqueResourceName('${namePrefix}${serviceShort}mi', resourceGroup.id, 128)
       location: location
       containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsResourceId
@@ -58,3 +60,4 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'

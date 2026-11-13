@@ -106,8 +106,10 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
   params: {
     // Required parameters
     cognitiveServicesName: 'cog07hubdmin'
-    keyVaultName: 'key07hubdmin'
-    storageAccountName: 'st07hubdmin'
+    keyVaultName: '<keyVaultName>'
+    storageAccountName: '<storageAccountName>'
+    // Non-required parameters
+    cognitiveServicesCustomSubDomainName: '<cognitiveServicesCustomSubDomainName>'
   }
 }
 ```
@@ -129,10 +131,14 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
       "value": "cog07hubdmin"
     },
     "keyVaultName": {
-      "value": "key07hubdmin"
+      "value": "<keyVaultName>"
     },
     "storageAccountName": {
-      "value": "st07hubdmin"
+      "value": "<storageAccountName>"
+    },
+    // Non-required parameters
+    "cognitiveServicesCustomSubDomainName": {
+      "value": "<cognitiveServicesCustomSubDomainName>"
     }
   }
 }
@@ -150,8 +156,10 @@ using 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>'
 
 // Required parameters
 param cognitiveServicesName = 'cog07hubdmin'
-param keyVaultName = 'key07hubdmin'
-param storageAccountName = 'st07hubdmin'
+param keyVaultName = '<keyVaultName>'
+param storageAccountName = '<storageAccountName>'
+// Non-required parameters
+param cognitiveServicesCustomSubDomainName = '<cognitiveServicesCustomSubDomainName>'
 ```
 
 </details>
@@ -173,14 +181,15 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
   params: {
     // Required parameters
     cognitiveServicesName: 'cs08mhdpmax'
-    keyVaultName: 'kv08mhdpmax'
-    storageAccountName: 'sa08mhdpmax'
+    keyVaultName: '<keyVaultName>'
+    storageAccountName: '<storageAccountName>'
     // Non-required parameters
     applicationInsightsDashboardName: 'aid08mhdpmax'
     applicationInsightsName: 'ai08mhdpmax'
-    containerRegistryName: 'cr08mhdpmax'
+    cognitiveServicesCustomSubDomainName: '<cognitiveServicesCustomSubDomainName>'
+    containerRegistryName: '<containerRegistryName>'
     logAnalyticsName: 'log08mhdpmax'
-    searchServiceName: 'sea08mhdpmax'
+    searchServiceName: '<searchServiceName>'
   }
 }
 ```
@@ -202,10 +211,10 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
       "value": "cs08mhdpmax"
     },
     "keyVaultName": {
-      "value": "kv08mhdpmax"
+      "value": "<keyVaultName>"
     },
     "storageAccountName": {
-      "value": "sa08mhdpmax"
+      "value": "<storageAccountName>"
     },
     // Non-required parameters
     "applicationInsightsDashboardName": {
@@ -214,14 +223,17 @@ module mlHubDependencies 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>' =
     "applicationInsightsName": {
       "value": "ai08mhdpmax"
     },
+    "cognitiveServicesCustomSubDomainName": {
+      "value": "<cognitiveServicesCustomSubDomainName>"
+    },
     "containerRegistryName": {
-      "value": "cr08mhdpmax"
+      "value": "<containerRegistryName>"
     },
     "logAnalyticsName": {
       "value": "log08mhdpmax"
     },
     "searchServiceName": {
-      "value": "sea08mhdpmax"
+      "value": "<searchServiceName>"
     }
   }
 }
@@ -239,14 +251,15 @@ using 'br/public:avm/ptn/azd/ml-hub-dependencies:<version>'
 
 // Required parameters
 param cognitiveServicesName = 'cs08mhdpmax'
-param keyVaultName = 'kv08mhdpmax'
-param storageAccountName = 'sa08mhdpmax'
+param keyVaultName = '<keyVaultName>'
+param storageAccountName = '<storageAccountName>'
 // Non-required parameters
 param applicationInsightsDashboardName = 'aid08mhdpmax'
 param applicationInsightsName = 'ai08mhdpmax'
-param containerRegistryName = 'cr08mhdpmax'
+param cognitiveServicesCustomSubDomainName = '<cognitiveServicesCustomSubDomainName>'
+param containerRegistryName = '<containerRegistryName>'
 param logAnalyticsName = 'log08mhdpmax'
-param searchServiceName = 'sea08mhdpmax'
+param searchServiceName = '<searchServiceName>'
 ```
 
 </details>

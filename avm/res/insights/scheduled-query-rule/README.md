@@ -280,7 +280,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     queryTimeRange: 'PT5M'
     roleAssignments: [
       {
-        name: 'fa8868c7-33d3-4cd5-86a5-cbf76261035b'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -411,7 +411,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "roleAssignments": {
       "value": [
         {
-          "name": "fa8868c7-33d3-4cd5-86a5-cbf76261035b",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -520,7 +520,7 @@ param muteActionsDuration = 'PT5M'
 param queryTimeRange = 'PT5M'
 param roleAssignments = [
   {
-    name: 'fa8868c7-33d3-4cd5-86a5-cbf76261035b'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

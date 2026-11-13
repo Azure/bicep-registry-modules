@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'managementGroup'
 metadata name = 'Policy Assignments (Resource Group)'
 metadata description = 'This module deploys a Policy Assignment at a Resource Group scope using common parameters.'
@@ -42,7 +44,11 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kvlt-${serviceShort}'
+    keyVaultName: uniqueResourceName(
+      'dep-${namePrefix}-kvlt-${serviceShort}',
+      subscriptionResourceId('Microsoft.Resources/resourceGroups', resourceGroupName),
+      24
+    )
     location: resourceLocation
   }
   dependsOn: [

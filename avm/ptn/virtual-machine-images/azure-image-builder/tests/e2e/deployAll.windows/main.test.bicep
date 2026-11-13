@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Deploying full solution for Windows'
@@ -24,7 +26,11 @@ param namePrefix string = '#_namePrefix_#'
 //   Template Deployment   //
 /////////////////////////////
 var computeGalleryImageDefinitionName = 'sid-windows'
-var assetsStorageAccountName = 'st${namePrefix}${serviceShort}'
+var assetsStorageAccountName = uniqueResourceName(
+  'st${namePrefix}${serviceShort}',
+  subscriptionResourceId('Microsoft.Resources/resourceGroups', resourceGroupName),
+  24
+)
 var assetsStorageAccountContainerName = 'aibscripts'
 var installPwshScriptName = 'Install-WindowsPowerShell.ps1'
 var initializeSoftwareScriptName = 'Initialize-WindowsSoftware.ps1'

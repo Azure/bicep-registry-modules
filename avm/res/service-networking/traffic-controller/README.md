@@ -161,7 +161,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
     }
     roleAssignments: [
       {
-        name: 'a6931c52-0b79-4fe9-ad3d-72188dfff379'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -256,7 +256,7 @@ module trafficController 'br/public:avm/res/service-networking/traffic-controlle
     "roleAssignments": {
       "value": [
         {
-          "name": "a6931c52-0b79-4fe9-ad3d-72188dfff379",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -341,7 +341,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'a6931c52-0b79-4fe9-ad3d-72188dfff379'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

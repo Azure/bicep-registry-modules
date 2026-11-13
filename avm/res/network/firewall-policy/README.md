@@ -216,7 +216,7 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     }
     roleAssignments: [
       {
-        name: 'c1c7fa14-5a90-4932-8781-fa91318b8858'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -335,7 +335,7 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "c1c7fa14-5a90-4932-8781-fa91318b8858",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -448,7 +448,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: 'c1c7fa14-5a90-4932-8781-fa91318b8858'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

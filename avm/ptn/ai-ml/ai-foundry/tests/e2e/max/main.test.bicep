@@ -24,7 +24,7 @@ param namePrefix string = '#_namePrefix_#'
 // Setting max length to 12 to stay within bounds of baseName length constraints.
 // Setting min length to 12 to prevent min-char warnings on the test deployment.
 // These warnings cannot be disabled due to AVM processes not able to parse the # characer.
-var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12), 12)
+var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12, '0'), 12)
 
 // ============ //
 // Dependencies //
@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
       includeAssociatedResources: true
       privateEndpointSubnetResourceId: dependencies.outputs.subnetPrivateEndpointsResourceId
       aiFoundryConfiguration: {
-        accountName: 'aifcustom${workloadName}'
+        accountName: uniqueResourceName('aifcustom${workloadName}', resourceGroup.id, 64)
         location: enforcedLocation
         sku: 'S0'
         createCapabilityHosts: true
@@ -91,7 +91,7 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       keyVaultConfiguration: {
-        name: 'kvcustom${workloadName}'
+        name: uniqueResourceName('kvcustom${workloadName}', resourceGroup.id, 24)
         privateDnsZoneResourceId: dependencies.outputs.keyVaultDnsZoneResourceId
         roleAssignments: [
           {
@@ -102,7 +102,7 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       storageAccountConfiguration: {
-        name: 'stcustom${workloadName}'
+        name: uniqueResourceName('stcustom${workloadName}', resourceGroup.id, 24)
         blobPrivateDnsZoneResourceId: dependencies.outputs.blobDnsZoneResourceId
         roleAssignments: [
           {
@@ -113,7 +113,7 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       cosmosDbConfiguration: {
-        name: 'cosmoscustom${workloadName}'
+        name: uniqueResourceName('cosmoscustom${workloadName}', resourceGroup.id, 44)
         privateDnsZoneResourceId: dependencies.outputs.documentsDnsZoneResourceId
         enableZoneRedundancy: false
         enableServerless: true
@@ -126,7 +126,7 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       aiSearchConfiguration: {
-        name: 'srchcustom${workloadName}'
+        name: uniqueResourceName('srchcustom${workloadName}', resourceGroup.id, 60)
         sku: 'basic'
         replicaCount: 1
         partitionCount: 1
@@ -165,3 +165,4 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'

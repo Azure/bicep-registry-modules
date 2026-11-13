@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
@@ -29,7 +31,7 @@ module dependencies 'dependencies.bicep' = {
   scope: resourceGroup
   params: {
     acrName: 'dep${namePrefix}acr${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 10)}'
-    managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
+    managedIdentityName: uniqueResourceName('dep-${namePrefix}-mi-${serviceShort}', resourceGroup.id, 128)
   }
 }
 

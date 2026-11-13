@@ -69,7 +69,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwadv001'
     // Non-required parameters
-    dailyQuotaGb: '0.25'
+    dailyQuotaGb: '<dailyQuotaGb>'
     dataExports: [
       {
         destination: {
@@ -373,7 +373,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": "0.25"
+      "value": "<dailyQuotaGb>"
     },
     "dataExports": {
       "value": [
@@ -701,7 +701,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwadv001'
 // Non-required parameters
-param dailyQuotaGb = '0.25'
+param dailyQuotaGb = '<dailyQuotaGb>'
 param dataExports = [
   {
     destination: {
@@ -1241,7 +1241,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwmax001'
     // Non-required parameters
-    dailyQuotaGb: '0.5'
+    dailyQuotaGb: '<dailyQuotaGb>'
     dataSources: [
       {
         eventLogName: 'Application'
@@ -1406,7 +1406,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     }
     roleAssignments: [
       {
-        name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1565,7 +1565,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": "0.5"
+      "value": "<dailyQuotaGb>"
     },
     "dataSources": {
       "value": [
@@ -1758,7 +1758,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "roleAssignments": {
       "value": [
         {
-          "name": "c3d53092-840c-4025-9c02-9bcb7895789c",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1921,7 +1921,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwmax001'
 // Non-required parameters
-param dailyQuotaGb = '0.5'
+param dailyQuotaGb = '<dailyQuotaGb>'
 param dataSources = [
   {
     eventLogName: 'Application'
@@ -2086,7 +2086,7 @@ param replication = {
 }
 param roleAssignments = [
   {
-    name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

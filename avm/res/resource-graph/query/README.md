@@ -126,7 +126,7 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
     queryDescription: 'An example query to list first 5 subscriptions.'
     roleAssignments: [
       {
-        name: '9634350c-b241-4481-8c22-4166891596ab'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -186,7 +186,7 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "9634350c-b241-4481-8c22-4166891596ab",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -236,7 +236,7 @@ param lock = {
 param queryDescription = 'An example query to list first 5 subscriptions.'
 param roleAssignments = [
   {
-    name: '9634350c-b241-4481-8c22-4166891596ab'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

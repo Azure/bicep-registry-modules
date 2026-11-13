@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Linux Web App, using large parameter set'
@@ -38,8 +40,8 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
-    relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    relayNamespaceName: uniqueResourceName('dep-${namePrefix}-ns-${serviceShort}', resourceGroup.id, 50)
+    storageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
   }
@@ -67,7 +69,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 60)
       location: enforcedLocation
       kind: 'app,linux'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId

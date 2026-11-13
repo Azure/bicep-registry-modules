@@ -146,7 +146,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     }
     roleAssignments: [
       {
-        name: '9e0b6b99-ff4b-4c99-a2ce-3a2a1a880874'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -221,7 +221,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     "roleAssignments": {
       "value": [
         {
-          "name": "9e0b6b99-ff4b-4c99-a2ce-3a2a1a880874",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -286,7 +286,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '9e0b6b99-ff4b-4c99-a2ce-3a2a1a880874'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

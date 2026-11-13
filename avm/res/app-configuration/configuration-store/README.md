@@ -61,7 +61,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
   params: {
     // Required parameters
-    name: 'accmin001'
+    name: '<name>'
     // Non-required parameters
     enablePurgeProtection: false
   }
@@ -82,7 +82,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
   "parameters": {
     // Required parameters
     "name": {
-      "value": "accmin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "enablePurgeProtection": {
@@ -103,7 +103,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 using 'br/public:avm/res/app-configuration/configuration-store:<version>'
 
 // Required parameters
-param name = 'accmin001'
+param name = '<name>'
 // Non-required parameters
 param enablePurgeProtection = false
 ```
@@ -126,7 +126,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
   params: {
     // Required parameters
-    name: 'accencr001'
+    name: '<name>'
     // Non-required parameters
     createMode: 'Default'
     customerManagedKey: {
@@ -169,7 +169,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
   "parameters": {
     // Required parameters
     "name": {
-      "value": "accencr001"
+      "value": "<name>"
     },
     // Non-required parameters
     "createMode": {
@@ -222,7 +222,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 using 'br/public:avm/res/app-configuration/configuration-store:<version>'
 
 // Required parameters
-param name = 'accencr001'
+param name = '<name>'
 // Non-required parameters
 param createMode = 'Default'
 param customerManagedKey = {
@@ -267,7 +267,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
   params: {
     // Required parameters
-    name: 'accmax001'
+    name: '<name>'
     // Non-required parameters
     createMode: 'Default'
     diagnosticSettings: [
@@ -292,7 +292,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         name: 'keyName'
         roleAssignments: [
           {
-            name: '56e2c190-b31e-4518-84de-170b8a5c1b24'
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -337,7 +337,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     ]
     roleAssignments: [
       {
-        name: '695044c2-3f1f-4843-970a-bed584b95a9a'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -378,7 +378,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
   "parameters": {
     // Required parameters
     "name": {
-      "value": "accmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "createMode": {
@@ -413,7 +413,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
           "name": "keyName",
           "roleAssignments": [
             {
-              "name": "56e2c190-b31e-4518-84de-170b8a5c1b24",
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -468,7 +468,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     "roleAssignments": {
       "value": [
         {
-          "name": "695044c2-3f1f-4843-970a-bed584b95a9a",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -511,7 +511,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 using 'br/public:avm/res/app-configuration/configuration-store:<version>'
 
 // Required parameters
-param name = 'accmax001'
+param name = '<name>'
 // Non-required parameters
 param createMode = 'Default'
 param diagnosticSettings = [
@@ -536,7 +536,7 @@ param keyValues = [
     name: 'keyName'
     roleAssignments: [
       {
-        name: '56e2c190-b31e-4518-84de-170b8a5c1b24'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -581,7 +581,7 @@ param replicaLocations = [
 ]
 param roleAssignments = [
   {
-    name: '695044c2-3f1f-4843-970a-bed584b95a9a'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -624,7 +624,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
   params: {
     // Required parameters
-    name: 'accpe001'
+    name: '<name>'
     // Non-required parameters
     createMode: 'Default'
     enablePurgeProtection: false
@@ -674,7 +674,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
   "parameters": {
     // Required parameters
     "name": {
-      "value": "accpe001"
+      "value": "<name>"
     },
     // Non-required parameters
     "createMode": {
@@ -730,7 +730,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 using 'br/public:avm/res/app-configuration/configuration-store:<version>'
 
 // Required parameters
-param name = 'accpe001'
+param name = '<name>'
 // Non-required parameters
 param createMode = 'Default'
 param enablePurgeProtection = false
@@ -782,7 +782,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module configurationStore 'br/public:avm/res/app-configuration/configuration-store:<version>' = {
   params: {
     // Required parameters
-    name: 'accwaf001'
+    name: '<name>'
     // Non-required parameters
     createMode: 'Default'
     diagnosticSettings: [
@@ -834,7 +834,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
   "parameters": {
     // Required parameters
     "name": {
-      "value": "accwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "createMode": {
@@ -900,7 +900,7 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
 using 'br/public:avm/res/app-configuration/configuration-store:<version>'
 
 // Required parameters
-param name = 'accwaf001'
+param name = '<name>'
 // Non-required parameters
 param createMode = 'Default'
 param diagnosticSettings = [
