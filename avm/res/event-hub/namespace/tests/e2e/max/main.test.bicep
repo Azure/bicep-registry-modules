@@ -173,6 +173,27 @@ module testDeployment '../../../main.bicep' = [
           retentionDescriptionCleanupPolicy: 'Compact'
           retentionDescriptionTombstoneRetentionTimeInHours: 24
         }
+        {
+          name: '${namePrefix}-az-evh-x-004'
+          captureDescription: {
+            enabled: false
+            destination: {
+              name: 'EventHubArchive.AzureBlockBlob'
+              identity: {
+                userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+              }
+              properties: {
+                archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+                blobContainer: nestedDependencies.outputs.storageAccountContainerName
+                storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              }
+            }
+            intervalInSeconds: 300
+            sizeLimitInBytes: 314572800
+            skipEmptyArchives: true
+            encoding: 'Avro'
+          }
+        }
       ]
       lock: {
         kind: 'CanNotDelete'

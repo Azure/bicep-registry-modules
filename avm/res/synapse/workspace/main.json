@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "10352484192822814662"
+      "version": "0.48.1.52935",
+      "templateHash": "13187600129008269031"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace."
@@ -150,14 +150,13 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The node size family of the pool."
+            "description": "Optional. The node size family of the pool. Defaults to MemoryOptimized."
           }
         },
         "nodeSize": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The node size of the pool."
+            "description": "Required. The node size of the pool."
           }
         },
         "autoScale": {
@@ -1719,8 +1718,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "3433539769180886409"
+              "version": "0.48.1.52935",
+              "templateHash": "14817252053872352187"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime."
@@ -1849,8 +1848,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "5515343214305095179"
+              "version": "0.48.1.52935",
+              "templateHash": "16024501471150173186"
             }
           },
           "parameters": {
@@ -1940,8 +1939,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "3146586038779568110"
+              "version": "0.48.1.52935",
+              "templateHash": "15552678920822145870"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key."
@@ -2080,8 +2079,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "13905759557603166694"
+              "version": "0.48.1.52935",
+              "templateHash": "12674197767388869975"
             },
             "name": "Synapse Workspaces Administrators",
             "description": "This module deploys Synapse Workspaces Administrators."
@@ -2228,8 +2227,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "5840434845366974168"
+              "version": "0.48.1.52935",
+              "templateHash": "8841447038024293267"
             },
             "name": "Synapse Workspaces Firewall Rules",
             "description": "This module deploys Synapse Workspaces Firewall Rules."
@@ -2388,7 +2387,7 @@
             "value": "[coalesce(parameters('bigDataPools'), createArray())[copyIndex()].nodeSize]"
           },
           "nodeSizeFamily": {
-            "value": "[coalesce(parameters('bigDataPools'), createArray())[copyIndex()].nodeSizeFamily]"
+            "value": "[tryGet(coalesce(parameters('bigDataPools'), createArray())[copyIndex()], 'nodeSizeFamily')]"
           },
           "sessionLevelPackagesEnabled": {
             "value": "[tryGet(coalesce(parameters('bigDataPools'), createArray())[copyIndex()], 'sessionLevelPackagesEnabled')]"
@@ -2425,8 +2424,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "6593819036085578496"
+              "version": "0.48.1.52935",
+              "templateHash": "7470549391990030006"
             },
             "name": "Synapse Workspaces Big Data Pools",
             "description": "This module deploys a Synapse Workspaces Big Data Pool."
@@ -3256,8 +3255,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "3076115678830674315"
+                      "version": "0.48.1.52935",
+                      "templateHash": "16791189001939776552"
                     }
                   },
                   "definitions": {
@@ -4285,8 +4284,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "3076115678830674315"
+                      "version": "0.48.1.52935",
+                      "templateHash": "16791189001939776552"
                     }
                   },
                   "definitions": {
@@ -4752,8 +4751,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "14106806905511883056"
+              "version": "0.48.1.52935",
+              "templateHash": "7559622951868434700"
             },
             "name": "Synapse Workspaces SQL Pools",
             "description": "This module deploys a Synapse Workspaces SQL Pool."
@@ -5305,6 +5304,13 @@
                 "description": "The resource group of the deployed SQL Pool."
               },
               "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('sqlPool', '2021-06-01', 'full').location]"
             }
           }
         }
@@ -6072,7 +6078,7 @@
     }
   },
   "outputs": {
-    "resourceID": {
+    "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the deployed Synapse Workspace."

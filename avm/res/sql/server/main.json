@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "15415534570389463212"
+      "version": "0.46.1.21595",
+      "templateHash": "2035853638777257488"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -2264,6 +2264,16 @@
         "description": "Optional. The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object."
       }
     },
+    "masterDatabaseDiagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the server's `master` database. Server-level audit logs (i.e., the `SQLSecurityAuditEvents` & `DevOpsOperationsAudit` categories) are emitted by the implicitly created `master` database. Hence, forwarding them to a Log Analytics workspace, Event Hub, Storage Account or partner solution requires a diagnostic setting on that database. If no log categories are specified, all logs are configured by default. Metrics are only configured if explicitly specified, as the `master` database does not emit any."
+      }
+    },
     "secretsExportConfiguration": {
       "$ref": "#/definitions/secretsExportConfigurationType",
       "nullable": true,
@@ -2407,6 +2417,56 @@
         "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
         "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "server"
+      ]
+    },
+    "masterDatabase": {
+      "existing": true,
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2025-01-01",
+      "name": "[format('{0}/{1}', parameters('name'), 'master')]",
+      "dependsOn": [
+        "server"
+      ]
+    },
+    "masterDatabase_diagnosticSettings": {
+      "copy": {
+        "name": "masterDatabase_diagnosticSettings",
+        "count": "[length(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[resourceId('Microsoft.Sql/servers/databases', parameters('name'), 'master')]",
+      "name": "[coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-master-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "metrics",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray()))]",
+            "input": {
+              "category": "[coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray())[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray())[copyIndex('metrics')], 'enabled'), true())]",
+              "timeGrain": null
+            }
+          },
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          }
+        ],
+        "storageAccountId": "[tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('masterDatabaseDiagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
       },
       "dependsOn": [
         "server"
@@ -2587,8 +2647,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "7822195020058646192"
+              "version": "0.46.1.21595",
+              "templateHash": "10268006839770046376"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -3502,8 +3562,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "6638102118403877124"
+                      "version": "0.46.1.21595",
+                      "templateHash": "8586011130664583871"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -3653,8 +3713,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "10272308555566155293"
+                      "version": "0.46.1.21595",
+                      "templateHash": "11570786308264903788"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3922,8 +3982,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "18396524707997357554"
+              "version": "0.46.1.21595",
+              "templateHash": "7417433961140427341"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool."
@@ -5165,8 +5225,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "9024132313228368973"
+              "version": "0.46.1.21595",
+              "templateHash": "15911107924794196260"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule."
@@ -5306,8 +5366,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "4678038433683668128"
+              "version": "0.46.1.21595",
+              "templateHash": "7754710019050482414"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule."
@@ -5462,8 +5522,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "15447449966364222619"
+              "version": "0.46.1.21595",
+              "templateHash": "13127662227514464893"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy."
@@ -5671,8 +5731,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "3943743294635385406"
+              "version": "0.46.1.21595",
+              "templateHash": "1988664793345896703"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment."
@@ -5830,8 +5890,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "11487617708760308645"
+                      "version": "0.46.1.21595",
+                      "templateHash": "5050202360245030800"
                     }
                   },
                   "parameters": {
@@ -5929,8 +5989,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "7791739841364384823"
+              "version": "0.46.1.21595",
+              "templateHash": "8150566571611885868"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -6077,8 +6137,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "7791739841364384823"
+              "version": "0.46.1.21595",
+              "templateHash": "8150566571611885868"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -6230,8 +6290,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "16846337031868277873"
+              "version": "0.46.1.21595",
+              "templateHash": "8944979836201268001"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector."
@@ -6396,8 +6456,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "12925585819649971906"
+              "version": "0.46.1.21595",
+              "templateHash": "11881388946114267668"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -6570,8 +6630,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "10703090835804108277"
+                      "version": "0.46.1.21595",
+                      "templateHash": "12208539968399339492"
                     }
                   },
                   "parameters": {
@@ -6658,8 +6718,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "10615204754408994326"
+              "version": "0.46.1.21595",
+              "templateHash": "2512845109518164629"
             }
           },
           "definitions": {
@@ -6827,8 +6887,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "14639222289876912597"
+              "version": "0.46.1.21595",
+              "templateHash": "15695390822184113124"
             },
             "name": "Azure SQL Server failover group",
             "description": "This module deploys Azure SQL Server failover group."

@@ -11,10 +11,10 @@ param hsmKeySize int = 4096
 @secure()
 param managedHSMName string
 
-resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
+resource managedHsm 'Microsoft.KeyVault/managedHSMs@2026-02-01' existing = {
   name: managedHSMName
 
-  resource primaryKey 'keys@2025-05-01' = {
+  resource primaryKey 'keys@2026-02-01' = {
     name: primaryHSMKeyName
     properties: {
       keySize: hsmKeySize
@@ -22,7 +22,7 @@ resource managedHsm 'Microsoft.KeyVault/managedHSMs@2025-05-01' existing = {
     }
   }
 
-  resource secondaryKey 'keys@2025-05-01' = if (!empty(secondaryHSMKeyName)) {
+  resource secondaryKey 'keys@2026-02-01' = if (!empty(secondaryHSMKeyName)) {
     name: secondaryHSMKeyName!
     properties: {
       keySize: hsmKeySize

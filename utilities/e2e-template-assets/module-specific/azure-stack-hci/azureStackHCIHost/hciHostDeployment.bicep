@@ -62,6 +62,9 @@ param waitDeploymentScriptPrefixName string
 @description('Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM. When provided, deploys from the gallery image instead of marketplace.')
 param imageReferenceId string = ''
 
+@description('Optional. Grant the host identity subscription Contributor. Disable when providers are already registered and only resource-group access is required.')
+param assignSubscriptionContributor bool = true
+
 // =================================//
 // Deploy Host VM Infrastructure    //
 // =================================//
@@ -84,7 +87,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 // grant identity contributor permissions on the subscription - needed to register resource providers
-module roleAssignment_subscriptionContributor 'modules/subscriptionRoleAssignment.bicep' = {
+module roleAssignment_subscriptionContributor 'modules/subscriptionRoleAssignment.bicep' = if (assignSubscriptionContributor) {
   name: '${uniqueString(deployment().name, location)}-hcihostmi-roleAssignment_subContributor'
   scope: subscription()
   params: {

@@ -193,7 +193,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -333,7 +333,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -469,7 +469,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'
@@ -515,7 +515,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -579,7 +579,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -651,7 +651,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'
@@ -707,7 +707,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -754,7 +754,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -787,7 +787,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'
@@ -818,7 +818,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -859,7 +859,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -890,7 +890,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'
@@ -947,7 +947,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -1070,7 +1070,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -1181,7 +1181,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'
@@ -1257,7 +1257,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -1354,7 +1354,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -1443,7 +1443,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'
@@ -1518,7 +1518,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -1603,7 +1603,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -1692,7 +1692,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'
@@ -1770,7 +1770,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -1841,7 +1841,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -1910,7 +1910,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'
@@ -1965,7 +1965,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -2030,7 +2030,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -2089,7 +2089,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'
@@ -2145,7 +2145,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -2211,7 +2211,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -2263,7 +2263,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'
@@ -2329,7 +2329,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -2409,7 +2409,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -2475,7 +2475,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'
@@ -2507,7 +2507,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -2589,7 +2589,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -2677,7 +2677,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'
@@ -2763,7 +2763,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     subscriptionBillingScope: '<subscriptionBillingScope>'
     subscriptionDisplayName: '<subscriptionDisplayName>'
     subscriptionManagementGroupAssociationEnabled: true
-    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionManagementGroupId: '<subscriptionManagementGroupId>'
     subscriptionTags: {
       namePrefix: '<namePrefix>'
       serviceShort: '<serviceShort>'
@@ -2850,7 +2850,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": true
     },
     "subscriptionManagementGroupId": {
-      "value": "bicep-lz-vending-automation-child"
+      "value": "<subscriptionManagementGroupId>"
     },
     "subscriptionTags": {
       "value": {
@@ -2921,7 +2921,7 @@ param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
 param subscriptionDisplayName = '<subscriptionDisplayName>'
 param subscriptionManagementGroupAssociationEnabled = true
-param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionManagementGroupId = '<subscriptionManagementGroupId>'
 param subscriptionTags = {
   namePrefix: '<namePrefix>'
   serviceShort: '<serviceShort>'

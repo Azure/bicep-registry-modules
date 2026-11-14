@@ -1,0 +1,71 @@
+name: ".Platform - Prepare reserved Azure Local environment"
+
+on:
+  workflow_dispatch:
+    inputs:
+      subscriptionIndex:
+        description: "Original zero-based index of the Azure Local subscription in the configured test pool"
+        type: number
+        required: true
+        default: 0
+      recreate:
+        description: "Destroy and recreate only the idle environment's exact registered owned groups"
+        type: boolean
+        default: false
+
+permissions: {}
+
+jobs:
+  job_select_subscription:
+    name: "Select reserved subscription"
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      testCase: ${{ steps.select.outputs.testCase }}
+      environmentConcurrencyGroup: ${{ steps.select.outputs.environmentConcurrencyGroup }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: "Resolve the explicit reserved pool position"
+        id: select
+        shell: pwsh
+        env:
+          SUBSCRIPTION_INDEX: ${{ inputs.subscriptionIndex }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $index = 0
+          if (-not [int]::TryParse($env:SUBSCRIPTION_INDEX, [ref] $index) -or $index -lt 0) {
+            throw 'The subscription index must be a nonnegative integer from the original pool.'
+          }
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+          $pool = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS `
+            -ModulePath 'avm/res/azure-stack-hci/logical-network' -RepoRootPath $env:GITHUB_WORKSPACE)
+          $selected = @($pool | Where-Object { $_.index -eq $index -and $_.tag -ceq 'Azure Local' })
+          if ($selected.Count -ne 1) { throw 'The selected original pool position is not reserved for Azure Local.' }
+          $key = "avm-hci-$($selected[0].key)"
+          $testCase = @{
+            path = 'maintenance'
+            subscriptionIndex = $selected[0].index
+            subscriptionKey = $selected[0].key
+            environmentConcurrencyGroup = $key
+          }
+          "testCase=$($testCase | ConvertTo-Json -Compress)" >> $env:GITHUB_OUTPUT
+          "environmentConcurrencyGroup=$key" >> $env:GITHUB_OUTPUT
+
+  job_prepare_environment:
+    name: "Prepare reserved Azure Local environment"
+    needs: job_select_subscription
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
+      queue: max
+    uses: ./.github/workflows/avm.template.hci.prepare.yml
+    with:
+      testCase: ${{ needs.job_select_subscription.outputs.testCase }}
+      recreate: ${{ inputs.recreate }}
+    secrets: inherit

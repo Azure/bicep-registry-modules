@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
+## 0.23.0
+
+### Changes
+
+- Added parameter `masterDatabaseDiagnosticSettings` to configure diagnostic settings on the server's implicitly created `master` database, which is required to forward server-level audit logs (`SQLSecurityAuditEvents` & `DevOpsOperationsAudit`) to a Log Analytics workspace, Event Hub, Storage Account or partner solution
+
+### Breaking Changes
+
+- None
+
 ## 0.22.1
 
 ### Changes

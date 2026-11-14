@@ -34,15 +34,15 @@ avm/res/storage/storage-account, avm/res/network/virtual-network
 
 Child module paths are accepted but resolve to their top-level module workflow.
 
-| Input | Default | Purpose |
-| --- | --- | --- |
-| `modulePaths` | Required | One module path or comma-separated module paths. |
-| `staticValidation` | `true` | Run static and PSRule validation. |
-| `deploymentValidation` | `true` | Run deployment validation. |
-| `removeDeployment` | `true` | Remove resources created by deployment validation. |
-| `customLocation` | Empty | Override the default deployment location. |
-| `createReleaseTag` | `false` | Approve and create the next top-level module release tag, including when no publishable diff exists. |
-| `publishOnly` | `false` | Skip validation and only create the release tag. Requires `createReleaseTag`. |
+| Input                  | Default  | Purpose                                                                                              |
+| ---------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| `modulePaths`          | Required | One module path or comma-separated module paths.                                                     |
+| `staticValidation`     | `true`   | Run static and PSRule validation.                                                                    |
+| `deploymentValidation` | `true`   | Run deployment validation.                                                                           |
+| `removeDeployment`     | `true`   | Remove resources created by deployment validation.                                                   |
+| `customLocation`       | Empty    | Override the default deployment location.                                                            |
+| `createReleaseTag`     | `false`  | Approve and create the next top-level module release tag, including when no publishable diff exists. |
+| `publishOnly`          | `false`  | Skip validation and only create the release tag. Requires `createReleaseTag`.                        |
 
 Selecting `createReleaseTag` requires approval through the `publish-approval` environment. Without it, a manual run performs validation only.
 
@@ -50,11 +50,11 @@ Selecting `createReleaseTag` requires approval through the `publish-approval` en
 
 The entry workflow uses separate reusable workflows to enforce distinct permission boundaries:
 
-| Workflow | Used for | Repository permissions |
-| --- | --- | --- |
-| [`avm.template.module.preview.yml`](./avm.template.module.preview.yml) | Automatic validation and release-tag preview. | Read, plus OIDC for deployment validation. |
-| [`avm.template.module.publish.yml`](./avm.template.module.publish.yml) | Manual validation followed by approved tag creation. | Read and OIDC for validation; write only for publishing. |
-| [`avm.template.module.publish-only.yml`](./avm.template.module.publish-only.yml) | Approved tag creation without validation. | Write only; no OIDC or deployment access. |
+| Workflow                                                                         | Used for                                             | Repository permissions                                   |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------- |
+| [`avm.template.module.preview.yml`](./avm.template.module.preview.yml)           | Automatic validation and release-tag preview.        | Read, plus OIDC for deployment validation.               |
+| [`avm.template.module.publish.yml`](./avm.template.module.publish.yml)           | Manual validation followed by approved tag creation. | Read and OIDC for validation; write only for publishing. |
+| [`avm.template.module.publish-only.yml`](./avm.template.module.publish-only.yml) | Approved tag creation without validation.            | Write only; no OIDC or deployment access.                |
 
 These workflows are intentionally separate because GitHub validates permissions for every job in a reusable workflow, including jobs that would be skipped.
 

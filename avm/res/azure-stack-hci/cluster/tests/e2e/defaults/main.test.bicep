@@ -42,9 +42,8 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciHostImageReferenceId string = ''
 
-@description('Optional. The location to deploy resources into. Defaults to southeastasia. Can be overridden via the CI customLocation input when quota is unavailable.')
-#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region is used as default in the AVM testing subscription
-param enforcedLocation string = 'southeastasia'
+@description('Optional. The location to deploy resources into. Defaults to the shared Azure Local environment region. Can be overridden via the CI customLocation input when quota is unavailable.')
+param enforcedLocation string = loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')
 
 resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'

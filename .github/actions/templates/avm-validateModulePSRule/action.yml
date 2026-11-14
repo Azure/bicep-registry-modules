@@ -14,6 +14,9 @@ inputs:
     description: "The path to the test file"
     required: true
     default: ""
+  modulePath:
+    description: "Exact module root used to resolve the test subscription reservation"
+    required: true
   managementGroupId:
     description: "The management group ID to deploy to"
     required: false
@@ -39,6 +42,8 @@ runs:
     # ---------------------------
     - name: "Replace tokens in template file"
       uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+      env:
+        MODULE_PATH: ${{ inputs.modulePath }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -82,6 +87,8 @@ runs:
             $functionInput = @{
               TestSubscriptionIds    = $env:TEST_SUBSCRIPTION_IDS
               FallbackSubscriptionId = $env:VALIDATE_SUBSCRIPTION_ID
+              ModulePath             = $env:MODULE_PATH
+              RepoRootPath           = $env:GITHUB_WORKSPACE
             }
             $ConvertTokensInputs.Tokens['subscriptionId'] = @(Get-TestSubscriptionList @functionInput)[0].id
           }

@@ -481,6 +481,7 @@ Enable database transparent data encryption.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed SQL Pool. |
 | `resourceGroupName` | string | The resource group of the deployed SQL Pool. |
 | `resourceId` | string | The resource ID of the deployed SQL Pool. |

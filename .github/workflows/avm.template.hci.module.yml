@@ -1,0 +1,217 @@
+name: "avm.template.hci.module"
+
+on:
+  workflow_call:
+    inputs:
+      workflowInput:
+        type: string
+        required: true
+      moduleTestFilePaths:
+        type: string
+        required: true
+      psRuleModuleTestFilePaths:
+        type: string
+        required: true
+      modulePath:
+        type: string
+        required: true
+
+permissions: {}
+
+env:
+  ARM_MGMTGROUP_ID: "${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}"
+  TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
+  CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
+
+jobs:
+  job_module_static_validation:
+    name: "Static validation"
+    runs-on: ubuntu-latest
+    if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
+    permissions:
+      contents: read
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run tests"
+        uses: ./.github/actions/templates/avm-validateModulePester
+        with:
+          modulePath: "${{ inputs.modulePath }}"
+
+  job_psrule_must:
+    name: "Must [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Required PSRule"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    strategy:
+      fail-fast: false
+      matrix:
+        testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
+        baseline:
+          - friendlyName: Reliability
+            baselineName: Azure.Pillar.Reliability
+          - friendlyName: Custom Security
+            baselineName: CB.AVM.WAF.Security
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run Required PSRule validation with baseline [${{ matrix.baseline.friendlyName}}] on [${{ matrix.testCases.path }}]"
+        uses: ./.github/actions/templates/avm-validateModulePSRule
+        with:
+          modulePath: "${{ inputs.modulePath }}"
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+          managementGroupId: "${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}"
+          psrulePath: "/utilities/pipelines/staticValidation/psrule"
+          psruleBaseline: ${{ matrix.baseline.baselineName }}
+          softFailure: false
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+
+  job_psrule_opt:
+    name: "Opt [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Optional PSRule"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    strategy:
+      fail-fast: false
+      matrix:
+        testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
+        baseline:
+          - friendlyName: All pillars
+            baselineName: Azure.Default
+          - friendlyName: Security
+            baselineName: Azure.Pillar.Security
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run Optional PSRule validation with baseline [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.path }}]"
+        uses: ./.github/actions/templates/avm-validateModulePSRule
+        with:
+          modulePath: "${{ inputs.modulePath }}"
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+          managementGroupId: "${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}"
+          psrulePath: "/utilities/pipelines/staticValidation/psrule"
+          psruleBaseline: ${{ matrix.baseline.baselineName }}
+          softFailure: true
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+
+  job_initialize_subscription_selection:
+    name: "Initialize subscription selection"
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: (fromJson(inputs.workflowInput)).deploymentValidation == 'true'
+    outputs:
+      deploymentMatrix: ${{ steps.hci-matrix.outputs.deploymentMatrix }}
+      sharedScope: ${{ steps.deployment-matrix.outputs.sharedScope }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Prepare deployment matrix"
+        id: deployment-matrix
+        uses: ./.github/actions/templates/avm-getModuleDeploymentMatrix
+        with:
+          modulePath: ${{ inputs.modulePath }}
+          moduleTestFilePaths: ${{ inputs.moduleTestFilePaths }}
+          displaySubscriptionNames: ${{ vars.VALIDATE_SUBSCRIPTION_IDS != '' || vars.TEST_SUBSCRIPTION_IDS != '' }}
+          expectedSubscriptionTag: "Azure Local"
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+      - name: "Add reserved environment locks"
+        id: hci-matrix
+        shell: pwsh
+        env:
+          DEPLOYMENT_MATRIX: ${{ steps.deployment-matrix.outputs.deploymentMatrix }}
+        run: |
+          $testCases = @(ConvertFrom-Json -InputObject $env:DEPLOYMENT_MATRIX -AsHashtable -ErrorAction Stop)
+          foreach ($testCase in $testCases) {
+            $testCase.environmentConcurrencyGroup = $testCase.e2eIgnore ?
+              "avm-hci-ignored-$($testCase.concurrencyGroup)" : "avm-hci-$($testCase.subscriptionKey)"
+          }
+          Write-Output ("deploymentMatrix={0}" -f (ConvertTo-Json -InputObject $testCases -Depth 10 -Compress)) >> $env:GITHUB_OUTPUT
+
+  job_module_deploy_validation:
+    name: "Deployment validation"
+    permissions:
+      contents: read
+      id-token: write
+    if: |
+      !cancelled() &&
+      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
+      needs.job_initialize_subscription_selection.result == 'success' &&
+      needs.job_module_static_validation.result != 'failure' &&
+      needs.job_psrule_must.result != 'failure'
+    needs:
+      - job_initialize_subscription_selection
+      - job_module_static_validation
+      - job_psrule_must
+    strategy:
+      fail-fast: false
+      matrix:
+        testCases: ${{ fromJson(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}
+    concurrency:
+      group: ${{ needs.job_initialize_subscription_selection.outputs.sharedScope == 'true' && !matrix.testCases.e2eIgnore && format('avm-deploy-{0}-shared', inputs.modulePath) || format('avm-deploy-{0}-run-{1}-{2}-{3}', inputs.modulePath, github.run_id, github.run_attempt, strategy.job-index) }}
+      queue: max
+    uses: ./.github/workflows/avm.template.hci.consumer.yml
+    with:
+      workflowInput: ${{ inputs.workflowInput }}
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ toJSON(matrix.testCases) }}
+    secrets: inherit
+
+  job_publish_module:
+    name: "Publishing"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: avm-publish-${{ inputs.modulePath }}
+      queue: max
+    if: |
+      !cancelled() &&
+      needs.job_module_static_validation.result == 'success' &&
+      needs.job_module_deploy_validation.result == 'success' &&
+      github.ref == 'refs/heads/main' &&
+      github.repository == 'Azure/bicep-registry-modules'
+    needs:
+      - job_module_static_validation
+      - job_module_deploy_validation
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Create module release tag"
+        shell: pwsh
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleReleaseTag.ps1')
+          $functionInput = @{
+            TemplateFilePath = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.modulePath }}/main.bicep"
+            RepoRoot         = $env:GITHUB_WORKSPACE
+          }
+          if ($tagOutputs = Set-ModuleReleaseTag @functionInput -Verbose) {
+            Write-Verbose ("Created release tag(s):`n{0}" -f ($tagOutputs | ConvertTo-Json -Depth 10 | Out-String)) -Verbose
+          }

@@ -1,0 +1,31 @@
+name: ".Platform - Validate Prettier formatting"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-prettier:
+    name: "Validate Prettier formatting"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+
+      - name: "Set up Node.js"
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+
+      - name: "Install npm dependencies"
+        run: npm ci
+
+      - name: "Check formatting"
+        run: npm run prettier:check
