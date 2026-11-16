@@ -15,6 +15,10 @@ on:
         type: string
         description: "Avm.Authoring reference: authoringSource=gallery uses a package version (blank = latest); authoringSource=repo uses a tools SHA, tag or branch (blank = latest stable tag)."
         required: false
+      targetCommit:
+        type: string
+        description: "Manual retry target: full lowercase commit SHA on upstream main (blank = triggering SHA)."
+        required: false
   push:
     branches:
       - main
@@ -26,8 +30,9 @@ jobs:
     name: "Module release"
     permissions:
       contents: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@8bca18987ce8853e844f4e95f8cc309162ee7b40
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@05769553cac6981b689f9ed8feea5a05c8605e50
     with:
       authoringSource: ${{ inputs.authoringSource || 'gallery' }}
       authoringRef: ${{ inputs.authoringRef || '' }}
+      targetCommit: ${{ inputs.targetCommit || '' }}
     secrets: inherit

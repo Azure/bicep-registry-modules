@@ -65,6 +65,16 @@ Describe 'Shared Bicep workflow entry points' {
         $release.jobs.release.name | Should -BeExactly 'Module release'
         $prCheck.name | Should -BeExactly '.Module - PR Check'
     }
+
+    It 'forwards an optional manual target SHA while leaving push targets automatic' {
+        $release = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'release.yml') -Raw |
+            ConvertFrom-Yaml
+
+        $release.on.workflow_dispatch.inputs.targetCommit.type | Should -BeExactly 'string'
+        $release.on.workflow_dispatch.inputs.targetCommit.required | Should -BeFalse
+        $release.on.workflow_dispatch.inputs.targetCommit.ContainsKey('default') | Should -BeFalse
+        $release.jobs.release.with.targetCommit | Should -BeExactly ('$' + '{{ inputs.targetCommit || ' + "''" + ' }}')
+    }
 }
 
 Describe 'Registry-owned child module publishing approvals' {
