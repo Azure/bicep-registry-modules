@@ -24,7 +24,7 @@ Describe 'Coordinated tools dependency updates' {
                 ($workflow.jobs.initialize.steps | Where-Object id -eq 'initialize').with
             }
             else {
-                $workflow.jobs.release.with
+                $workflow.jobs.initialize.with
             }
             $authoringWith.authoringSource | Should -BeExactly ('$' + '{{ inputs.authoringSource || ''gallery'' }}')
             $authoringWith.authoringRef | Should -BeExactly ('$' + '{{ inputs.authoringRef || ' + "''" + ' }}')
@@ -34,7 +34,7 @@ Describe 'Coordinated tools dependency updates' {
                     ForEach-Object { $_.Groups[1].Value }
             )
         }
-        $toolsRefs | Should -HaveCount 3
+        $toolsRefs | Should -HaveCount 4
         @($toolsRefs | Select-Object -Unique) | Should -HaveCount 1
     }
 
@@ -62,7 +62,7 @@ Describe 'Shared Bicep workflow entry points' {
         $release.on.push.ContainsKey('paths') | Should -BeFalse
         $release.on.ContainsKey('workflow_dispatch') | Should -BeTrue
         $release.name | Should -BeExactly '.Module - Release'
-        $release.jobs.release.name | Should -BeExactly 'Module release'
+        $release.jobs.release.name | Should -BeExactly '${{ matrix.modulePath }}'
         $prCheck.name | Should -BeExactly '.Module - PR Check'
     }
 
@@ -74,8 +74,33 @@ Describe 'Shared Bicep workflow entry points' {
             $release.on.workflow_dispatch.inputs[$inputName].type | Should -BeExactly 'string'
             $release.on.workflow_dispatch.inputs[$inputName].required | Should -BeFalse
             $release.on.workflow_dispatch.inputs[$inputName].ContainsKey('default') | Should -BeFalse
-            $release.jobs.release.with[$inputName] | Should -BeExactly ('$' + "{{ inputs.$inputName || '' }}")
+            $release.jobs.initialize.with[$inputName] | Should -BeExactly ('$' + "{{ inputs.$inputName || '' }}")
         }
+    }
+
+    It 'exposes the selected release plan in per-module jobs' {
+        $release = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'release.yml') -Raw |
+            ConvertFrom-Yaml
+        $selector = $release.jobs.initialize
+        $publisher = $release.jobs.release
+
+        $selector.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-release\.yml@'
+        $selector.permissions.contents | Should -BeExactly 'read'
+        $selector.with.initializeOnly | Should -BeTrue
+        $publisher.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-runtime-release\.yml@'
+        $publisher.needs | Should -BeExactly 'initialize'
+        $publisher.if | Should -BeExactly "needs.initialize.outputs.hasModules == 'true'"
+        $publisher.permissions.contents | Should -BeExactly 'write'
+        $publisher.strategy.'fail-fast' | Should -BeFalse
+        $publisher.strategy.matrix | Should -BeExactly '${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}'
+        foreach ($name in @('modulePath', 'plannedTags', 'releaseTagLabel')) {
+            $publisher.with[$name] | Should -BeExactly ('$' + "{{ matrix.$name }}")
+        }
+        foreach ($name in @('targetCommit', 'baseCommit', 'authoringArtifact')) {
+            $publisher.with[$name] | Should -BeExactly ('$' + "{{ needs.initialize.outputs.$name }}")
+        }
+        $publisher.with.pendingRelease | Should -BeTrue
+        $publisher.with.requireChangelog | Should -BeTrue
     }
 }
 
