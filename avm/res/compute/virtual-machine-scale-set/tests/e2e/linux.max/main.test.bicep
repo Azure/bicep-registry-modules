@@ -11,9 +11,8 @@ metadata description = 'This instance deploys the module with most of its featur
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualmachinescalesets-${serviceShort}-rg'
 
-// Capacity constraints for VM type
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'italynorth'
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cvmsslinmax'
@@ -33,19 +32,19 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     storageAccountName: take('dep${namePrefix}sa${serviceShort}01', 24)
-    storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
-    sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    storageUploadDeploymentScriptName: '${take('dep-${namePrefix}-sads-${serviceShort}', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'sads')}'
+    sshDeploymentScriptName: '${take('dep-${namePrefix}-ds-${serviceShort}', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'ds')}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
   }
 }
@@ -54,7 +53,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: take('dep${namePrefix}diasa${serviceShort}01', 24)
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
@@ -71,9 +70,9 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: enforcedLocation
+      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       adminUsername: 'scaleSetAdmin'
       adminPassword: password
@@ -91,7 +90,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Linux'
-      skuName: 'Standard_B12ms'
+      skuName: 'Standard_D4ads_v5'
       availabilityZones: [
         2
       ]
@@ -135,7 +134,7 @@ module testDeployment '../../../main.bicep' = [
       encryptionAtHost: false
       extensionCustomScriptConfig: {
         settings: {
-          commandToExecute: 'bash ${nestedDependencies.outputs.storageAccountCSEFileUrl}'
+          commandToExecute: 'bash ${nestedDependencies.outputs.storageAccountCSEFileName}'
           fileUris: [
             nestedDependencies.outputs.storageAccountCSEFileUrl
           ]
@@ -199,7 +198,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           name: '8abf72f9-e918-4adc-b20b-c783b8799065'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
@@ -212,7 +211,7 @@ module testDeployment '../../../main.bicep' = [
         {
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

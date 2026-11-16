@@ -75,3 +75,6 @@ output name string = backupPolicies.name
 
 @description('The name of the Resource Group the Backup Policy was created in.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location of the backup policy.')
+output location string = backupPolicies.location

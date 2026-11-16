@@ -65,7 +65,7 @@ Describe 'CODEOWNERS governance' {
             '* @Azure/azure-verified-modules-tooling-contributors'
             '/avm/'
             '*avm.core.team.tests.ps1 @Azure/azure-verified-modules-tooling-contributors'
-            '*.e2eignore @Azure/azure-verified-modules-tooling-contributors'
+            '*.e2eignore @Azure/azure-verified-modules-module-owners'
             'metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners'
         )
     }
@@ -108,12 +108,26 @@ Describe 'CODEOWNERS governance' {
 
     It 'Preserves tooling ownership for <Path>' -ForEach @(
         @{ Path = 'avm/res/storage/storage-account/tests/unit/avm.core.team.tests.ps1' }
-        @{ Path = 'avm/res/storage/storage-account/tests/e2e/defaults/.e2eignore' }
         @{ Path = 'utilities/script.ps1' }
         @{ Path = '.github/workflows/platform.toggle-avm-workflows.yml' }
     ) {
         $script:ownershipRules = @(Get-Content -Path (Join-Path $repoRootPath '.github' 'CODEOWNERS'))
         @(Get-TestCodeOwners -Path $Path) | Should -Be @('@Azure/azure-verified-modules-tooling-contributors')
+    }
+
+    It 'Requires module owners as the only approvers for <Path>' -ForEach @(
+        @{ Path = '.e2eignore' }
+        @{ Path = 'avm/res/storage/storage-account/tests/e2e/defaults/.e2eignore' }
+        @{ Path = 'avm/res/storage/storage-account/blob-service/tests/e2e/waf-aligned/.e2eignore' }
+        @{ Path = 'avm/ptn/network/hub-networking/tests/e2e/max/.e2eignore' }
+    ) {
+        $script:ownershipRules = @(Get-Content -Path (Join-Path $repoRootPath '.github' 'CODEOWNERS'))
+        @(Get-TestCodeOwners -Path $Path) | Should -Be @('@Azure/azure-verified-modules-module-owners')
+    }
+
+    It 'Rejects tooling ownership of deployment exclusions' {
+        $script:ownershipRules[3] = '*.e2eignore @Azure/azure-verified-modules-tooling-contributors'
+        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*overrides must take precedence over the ownerless module tree*'
     }
 
     It 'Ignores generation comments, blank lines and harmless whitespace' {
@@ -159,7 +173,7 @@ Describe 'CODEOWNERS governance' {
     }
 
     It 'Rejects duplicate ownership patterns' {
-        $script:ownershipRules += '*.e2eignore @Azure/azure-verified-modules-tooling-contributors'
+        $script:ownershipRules += '*.e2eignore @Azure/azure-verified-modules-module-owners'
         { Invoke-TestCodeOwnersGovernance } | Should -Throw
     }
 

@@ -102,6 +102,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-10-01' = {
         name: 'appGatewaySubnet'
         properties: {
           addressPrefix: '10.0.16.0/24'
+          delegations: [
+            {
+              name: 'Microsoft.Network/applicationGateways'
+              properties: {
+                serviceName: 'Microsoft.Network/applicationGateways'
+              }
+            }
+          ]
         }
       }
       {
@@ -264,7 +272,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2024-10-01' =
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -281,7 +289,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   }
 }
 
-resource keyVaultKey 'Microsoft.KeyVault/vaults/keys@2024-11-01' = {
+resource keyVaultKey 'Microsoft.KeyVault/vaults/keys@2026-02-01' = {
   parent: keyVault
   name: 'encryptionKey'
   properties: {

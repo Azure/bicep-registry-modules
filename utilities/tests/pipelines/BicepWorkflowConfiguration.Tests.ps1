@@ -52,6 +52,33 @@ Describe 'Coordinated tools dependency updates' {
     }
 }
 
+Describe 'Shared Bicep workflow entry points' {
+    It 'enables main pushes and manual releases without experimental workflow names' {
+        $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
+        $release = Get-Content -LiteralPath (Join-Path $workflowRoot 'release.yml') -Raw | ConvertFrom-Yaml
+        $prCheck = Get-Content -LiteralPath (Join-Path $workflowRoot 'pr-check.yml') -Raw | ConvertFrom-Yaml
+
+        $release.on.push.branches | Should -Be @('main')
+        $release.on.push.ContainsKey('paths') | Should -BeFalse
+        $release.on.ContainsKey('workflow_dispatch') | Should -BeTrue
+        $release.name | Should -BeExactly '.Module - Release'
+        $release.jobs.release.name | Should -BeExactly 'Module release'
+        $prCheck.name | Should -BeExactly '.Module - PR Check'
+    }
+
+    It 'forwards optional manual target and base SHAs while leaving push ranges automatic' {
+        $release = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'release.yml') -Raw |
+            ConvertFrom-Yaml
+
+        foreach ($inputName in @('targetCommit', 'baseCommit')) {
+            $release.on.workflow_dispatch.inputs[$inputName].type | Should -BeExactly 'string'
+            $release.on.workflow_dispatch.inputs[$inputName].required | Should -BeFalse
+            $release.on.workflow_dispatch.inputs[$inputName].ContainsKey('default') | Should -BeFalse
+            $release.jobs.release.with[$inputName] | Should -BeExactly ('$' + "{{ inputs.$inputName || '' }}")
+        }
+    }
+}
+
 Describe 'Registry-owned child module publishing approvals' {
     It 'does not introduce a root child module publishing approval file' {
         $configurationPath = Join-Path $RepoRootPath '.avm' 'child-module-publish-allowed-list.json'
