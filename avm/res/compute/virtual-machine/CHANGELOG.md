@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.23.0
+
+### Changes
+
+- Secured only `extensionDSCConfig.protectedSettings` as an object, matching the extension child module. Ordinary sibling properties remain unconstrained and are not marked secure. The disabled default and extension forwarding are unchanged.
+
+### Breaking Changes
+
+- `extensionDSCConfig.protectedSettings`, when provided, must now be an object or `null`. The previous untyped object contract did not validate this field.
+
 ## 0.22.3
 
 ### Changes

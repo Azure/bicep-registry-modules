@@ -1697,7 +1697,7 @@ All assemblies to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`assemblyName`](#parameter-assembliesassemblyname) | string | The assembly name. |
-| [`content`](#parameter-assembliescontent) | string | The assembly content. |
+| [`content`](#parameter-assembliescontent) | securestring | The assembly content. |
 | [`name`](#parameter-assembliesname) | string | The Name of the assembly resource. |
 
 **Optional parameters**
@@ -1721,7 +1721,7 @@ The assembly name.
 The assembly content.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `assemblies.name`
 

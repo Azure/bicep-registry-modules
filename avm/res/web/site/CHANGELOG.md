@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/CHANGELOG.md).
 
+## 0.24.1
+
+### Changes
+
+- Protected the config child-module boundary for configuration properties and retained app settings. The secure-flow linter rules exposed that secure leaves were being forwarded into ordinary object parameters.
+- Protected app-setting and metadata dictionaries, connection strings, and backup/log SAS URLs in the public config contracts. Ordinary config fields remain ordinary; only the two mixed-object forwarding sites are exempt from the reverse-flow rule.
+- Secured the storage-key outputs in the Azure Storage Accounts deployment fixture.
+- Added compile-only regression coverage for site and slot config boundaries, including negative controls.
+
+### Breaking Changes
+
+- None
+
 ## 0.24.0
 
 ### Changes

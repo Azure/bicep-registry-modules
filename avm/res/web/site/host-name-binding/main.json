@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "15185388957861667018"
+      "version": "0.48.1.52935",
+      "templateHash": "13326828460378264885"
     },
     "name": "Web/Function Apps Slot Host Name Bindings",
     "description": "This module deploys a Site Slot Host Name Binding."
@@ -299,8 +299,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "3742347899492518189"
+              "version": "0.48.1.52935",
+              "templateHash": "17247864335123051108"
             },
             "name": "Web/Function Apps Certificates",
             "description": "This module deploys a Web/Function App Certificate."

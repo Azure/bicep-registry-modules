@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - upgraded `Microsoft.App/managedEnvironments/certificates` to `2026-01-01`
+- Added the `location` output.
 
 ### Breaking Changes
 

@@ -66,6 +66,35 @@ Portal setting properties.
 - Required: Yes
 - Type: object
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-properties>any_other_property<) |  | Other portal setting properties, including sign-in and sign-up settings. |
+| [`validationKey`](#parameter-propertiesvalidationkey) | securestring | A base64-encoded validation key to validate that a request comes from Azure API Management. |
+| [`validationSecondaryKey`](#parameter-propertiesvalidationsecondarykey) | securestring | A base64-encoded secondary validation key to validate that a request comes from Azure API Management. |
+
+### Parameter: `properties.>Any_other_property<`
+
+Other portal setting properties, including sign-in and sign-up settings.
+
+- Required: Yes
+- Type: 
+
+### Parameter: `properties.validationKey`
+
+A base64-encoded validation key to validate that a request comes from Azure API Management.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `properties.validationSecondaryKey`
+
+A base64-encoded secondary validation key to validate that a request comes from Azure API Management.
+
+- Required: No
+- Type: securestring
+
 ### Parameter: `apiManagementServiceName`
 
 The name of the parent API Management service. Required if the template is used in a standalone deployment.

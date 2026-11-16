@@ -370,6 +370,10 @@ module slot_config 'config/main.bicep' = [
       name: config.name
       slotName: slot.name
       applicationInsightResourceId: config.?applicationInsightResourceId
+      // Only this mixed-object forwarding is exempt: ordinary fields need not be secrets.
+      // configType protects credential inputs; the child secures the overlapping config shapes.
+      // SecureBoundaries.Tests.ps1 checks both contracts, including decorator-removal controls.
+      #disable-next-line use-secure-value-for-secure-inputs
       properties: config.?properties
       currentAppSettings: config.?retainCurrentAppSettings ?? true && config.name == 'appsettings'
         ? list('${slot.id}/config/appsettings', '2023-12-01').properties
@@ -627,7 +631,9 @@ type appSettingsConfigType = {
   @description('Optional. The retain the current app settings. Defaults to true.')
   retainCurrentAppSettings: bool?
 
-  @description('Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
+  // Callers can supply a whole secure dictionary as well as individual secret setting values.
+  @description('Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. Values can contain secrets.')
+  @secure()
   properties: {
     @description('Required. An app settings key-value pair.')
     *: string
@@ -1233,6 +1239,7 @@ type backupConfigType = {
     enabled: bool?
 
     @description('Optional. SAS URL to the container.')
+    @secure()
     storageAccountUrl: string?
   }
 }
@@ -1262,6 +1269,7 @@ type connectionStringsConfigType = {
         | 'SQLServer')
 
       @description('Required. Value of pair.')
+      @secure()
       value: string
     }?
   }
@@ -1286,6 +1294,7 @@ type logsConfigType = {
         retentionInDays: int?
 
         @description('Optional. SAS url to a azure blob container with read/write/list/delete permissions.')
+        @secure()
         sasUrl: string?
       }?
 
@@ -1295,6 +1304,7 @@ type logsConfigType = {
         level: ('Error' | 'Information' | 'Off' | 'Verbose' | 'Warning')?
 
         @description('Required. SAS URL to an Azure table with add/query/delete permissions.')
+        @secure()
         sasUrl: string
       }?
 
@@ -1328,6 +1338,7 @@ type logsConfigType = {
         retentionInDays: int?
 
         @description('Optional. SAS url to a azure blob container with read/write/list/delete permissions.')
+        @secure()
         sasUrl: string?
       }?
 
@@ -1354,7 +1365,8 @@ type metadataConfigType = {
   @description('Required. The type of config.')
   name: 'metadata'
 
-  @description('Required. The config settings.')
+  @description('Required. The metadata key-value pairs. Values can contain secrets.')
+  @secure()
   properties: {
     @description('Optional. The metadata key value pair.')
     *: string?
@@ -1421,6 +1433,7 @@ type webConfigType = {
       name: string
 
       @description('Required. Value of the pair.')
+      @secure()
       value: string
     }[]?
 
@@ -1536,6 +1549,7 @@ type webConfigType = {
     @description('Optional. Connection strings.')
     connectionStrings: {
       @description('Optional. Connection string value.')
+      @secure()
       connectionString: string?
 
       @description('Optional. Name of connection string.')
@@ -1700,6 +1714,7 @@ type webConfigType = {
       name: string
 
       @description('Required. Pair Value.')
+      @secure()
       value: string
     }[]?
 

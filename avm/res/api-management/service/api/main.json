@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "15714492707759308056"
+      "version": "0.48.1.52935",
+      "templateHash": "9034266517065973124"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API."
@@ -635,8 +635,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "12331554381702803980"
+              "version": "0.48.1.52935",
+              "templateHash": "7324375386577149676"
             },
             "name": "API Management Service APIs Policies",
             "description": "This module deploys an API Management Service API Policy."
@@ -816,8 +816,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "16287713778551546393"
+              "version": "0.48.1.52935",
+              "templateHash": "15197287605949235096"
             },
             "name": "API Management Service API Diagnostics",
             "description": "This module deploys an API Management Service API Diagnostic."
@@ -1095,8 +1095,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "4062427820372709308"
+              "version": "0.48.1.52935",
+              "templateHash": "17137299143410103645"
             },
             "name": "API Management Service APIs Operations",
             "description": "This module deploys an API Management Service API Operation."
@@ -1327,8 +1327,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "18156483199250518837"
+                      "version": "0.48.1.52935",
+                      "templateHash": "1240565792777495920"
                     },
                     "name": "API Management Service API Operation Policies",
                     "description": "This module deploys an API Management Service API Operation Policy."

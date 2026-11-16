@@ -1,14 +1,45 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "15686368176066717645"
+      "version": "0.48.1.52935",
+      "templateHash": "7636806925325584964"
     },
     "name": "API Management Service Portal Settings",
     "description": "This module deploys an API Management Service Portal Setting."
+  },
+  "definitions": {
+    "portalSettingPropertiesType": {
+      "type": "object",
+      "properties": {
+        "validationKey": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A base64-encoded validation key to validate that a request comes from Azure API Management."
+          }
+        },
+        "validationSecondaryKey": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A base64-encoded secondary validation key to validate that a request comes from Azure API Management."
+          }
+        }
+      },
+      "additionalProperties": {
+        "metadata": {
+          "description": "Optional. Other portal setting properties, including sign-in and sign-up settings."
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Portal setting properties. Only the delegation validation keys are constrained; other properties are forwarded unchanged."
+      }
+    }
   },
   "parameters": {
     "apiManagementServiceName": {
@@ -29,11 +60,8 @@
       }
     },
     "properties": {
-      "type": "object",
+      "$ref": "#/definitions/portalSettingPropertiesType",
       "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ApiManagement/service/portalsettings@2024-05-01#properties/properties"
-        },
         "description": "Required. Portal setting properties."
       }
     },
@@ -49,8 +77,14 @@
     "$fxv#0": "46d3xbcp.res.ab98503",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
-  "resources": [
-    {
+  "resources": {
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2024-05-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -70,13 +104,13 @@
         }
       }
     },
-    {
+    "portalSetting": {
       "type": "Microsoft.ApiManagement/service/portalsettings",
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": "[parameters('properties')]"
     }
-  ],
+  },
   "outputs": {
     "resourceId": {
       "type": "string",

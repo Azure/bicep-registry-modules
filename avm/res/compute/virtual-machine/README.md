@@ -7480,6 +7480,27 @@ The configuration for the [Desired State Configuration] extension. Must at least
   }
   ```
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-extensiondscconfig>any_other_property<) |  | Other DSC configuration properties. Only the properties used by the extension are forwarded. |
+| [`protectedSettings`](#parameter-extensiondscconfigprotectedsettings) | secureObject | Any object that contains the extension specific protected settings. |
+
+### Parameter: `extensionDSCConfig.>Any_other_property<`
+
+Other DSC configuration properties. Only the properties used by the extension are forwarded.
+
+- Required: Yes
+- Type: 
+
+### Parameter: `extensionDSCConfig.protectedSettings`
+
+Any object that contains the extension specific protected settings.
+
+- Required: No
+- Type: secureObject
+
 ### Parameter: `extensionGuestConfigurationExtension`
 
 The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identity.

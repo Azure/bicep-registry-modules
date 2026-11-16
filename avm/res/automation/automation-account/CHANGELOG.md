@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/CHANGELOG.md).
 
+## 0.20.0
+
+### Changes
+
+- Typed `variables` with `variableType`, marking `value` as secure to match the variable child module.
+- Left ordinary sibling properties unconstrained, including `name`, `description`, and `isEncrypted`. Only the same properties are forwarded to the variable child module.
+
+### Breaking Changes
+
+- `variables` now requires object entries with a string `value`. The previous untyped array accepted scalar entries, missing values, and non-string values that this contract rejects. The default remains `[]`, and child-module defaults are unchanged.
+
 ## 0.19.3
 
 ### Changes

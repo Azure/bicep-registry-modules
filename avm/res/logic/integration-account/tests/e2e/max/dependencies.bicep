@@ -11,6 +11,15 @@ param keyVaultName string
 @description('Optional. The object ID of the Logic Apps Service Enterprise Application.')
 param logicAppsServiceEnterpriseApplicationObjectId string
 
+var certificateOfficerRoleDefinitionId = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'a4417e6f-fecd-4de8-b567-7b0420556985'
+)
+var administratorRoleDefinitionId = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+)
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
@@ -51,27 +60,21 @@ resource keyVaultKey 'Microsoft.KeyVault/vaults/keys@2024-11-01' = {
 }
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-logicapps-KeyVault-Certificate-Officer-RoleAssignment')
+  name: guid(keyVault.id, logicAppsServiceEnterpriseApplicationObjectId, certificateOfficerRoleDefinitionId)
   scope: keyVault
   properties: {
     principalId: logicAppsServiceEnterpriseApplicationObjectId // Logic Apps Service Principal
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'a4417e6f-fecd-4de8-b567-7b0420556985'
-    ) // Key Vault Certificate Officer
+    roleDefinitionId: certificateOfficerRoleDefinitionId // Key Vault Certificate Officer
     principalType: 'ServicePrincipal'
   }
 }
 
 resource keyPermissions2 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-logicapps-KeyVault-Administrator-RoleAssignment')
+  name: guid(keyVault.id, logicAppsServiceEnterpriseApplicationObjectId, administratorRoleDefinitionId)
   scope: keyVault
   properties: {
     principalId: logicAppsServiceEnterpriseApplicationObjectId // Logic Apps Service Principal
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
-    ) // Key Vault Administrator
+    roleDefinitionId: administratorRoleDefinitionId // Key Vault Administrator
     principalType: 'ServicePrincipal'
   }
 }
