@@ -72,6 +72,19 @@ Describe 'Shared Bicep workflow entry points' {
         $checkout.with.'sparse-checkout' | Should -BeExactly '/.github/workflows/release.yml'
         $checkout.with.'sparse-checkout-cone-mode' | Should -BeFalse
         $checkout.with.'persist-credentials' | Should -BeFalse
+        $prCheckout = $prCheck.jobs.initialize.steps | Where-Object name -eq 'Check out repository for change detection'
+        $prChanges = $prCheck.jobs.initialize.steps | Where-Object id -eq 'changes'
+        $prepare = $prCheck.jobs.initialize.steps | Where-Object id -eq 'initialize'
+        $prChanges.if | Should -BeExactly $prCheckout.if
+        ($prChanges.if -replace '\s+', ' ').Trim() | Should -BeExactly (
+            "github.event_name == 'pull_request' && github.repository == 'Azure/bicep-registry-modules' && " +
+            "(github.event.action != 'labeled' || github.event.label.name == 'PR: Run E2E Tests')"
+        )
+        $prCheckout.with.'fetch-depth' | Should -Be 0
+        $prCheckout.with.'sparse-checkout' | Should -BeExactly '/.github/workflows/pr-check.yml'
+        $prCheckout.with.'sparse-checkout-cone-mode' | Should -BeFalse
+        $prCheckout.with.'persist-credentials' | Should -BeFalse
+        $prepare.if | Should -BeExactly "steps.changes.outputs.hasModules != 'false'"
     }
 
     It 'forwards optional manual target and base SHAs while leaving push ranges automatic' {
@@ -122,15 +135,19 @@ Describe 'Shared Bicep workflow entry points' {
     }
 }
 
-Describe 'Release module change detection' {
+Describe 'Workflow module change detection' {
     BeforeAll {
         $workflow = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'release.yml') -Raw |
             ConvertFrom-Yaml
         $script:run = [scriptblock]::Create(($workflow.jobs.changes.steps | Where-Object id -eq 'changes').run)
+        $prWorkflow = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'pr-check.yml') -Raw |
+            ConvertFrom-Yaml
+        $script:prRun = [scriptblock]::Create(($prWorkflow.jobs.initialize.steps | Where-Object id -eq 'changes').run)
         $script:oldEnvironment = @{
             EVENT_NAME = $env:EVENT_NAME
             BASE_COMMIT = $env:BASE_COMMIT
             TARGET_COMMIT = $env:TARGET_COMMIT
+            HEAD_COMMIT = $env:HEAD_COMMIT
             GITHUB_OUTPUT = $env:GITHUB_OUTPUT
         }
         $script:repository = Join-Path $TestDrive 'release-change-detection'
@@ -160,6 +177,12 @@ Describe 'Release module change detection' {
             git rm --quiet 'avm/module.txt'
             git commit --quiet -m 'module deletion'
             $script:deletion = (git rev-parse HEAD).Trim()
+            $nonModuleTree = (git rev-parse "$($script:nonModule)^{tree}").Trim()
+            $moduleTree = (git rev-parse "$($script:module)^{tree}").Trim()
+            $deletionTree = (git rev-parse "$($script:deletion)^{tree}").Trim()
+            $script:nonModuleMerge = (git commit-tree $nonModuleTree -p $script:base -p $script:nonModule -m 'non-module merge').Trim()
+            $script:moduleMerge = (git commit-tree $moduleTree -p $script:base -p $script:module -m 'module merge').Trim()
+            $script:deletionMerge = (git commit-tree $deletionTree -p $script:module -p $script:deletion -m 'module deletion merge').Trim()
             git sparse-checkout init --no-cone
             git sparse-checkout set --no-cone /README.md
             $LASTEXITCODE | Should -Be 0
@@ -190,20 +213,20 @@ Describe 'Release module change detection' {
 
     It 'skips module initialization for a non-module push' {
         & $script:run
-        Get-Content -LiteralPath $env:GITHUB_OUTPUT | Should -Contain 'hasModules=false'
+        (Get-Content -LiteralPath $env:GITHUB_OUTPUT -Raw).Trim() | Should -BeExactly 'hasModules=false'
     }
 
     It 'detects module changes across a multi-commit push with over 300 files' {
         $env:TARGET_COMMIT = $script:module
         & $script:run
-        Get-Content -LiteralPath $env:GITHUB_OUTPUT | Should -Contain 'hasModules=true'
+        (Get-Content -LiteralPath $env:GITHUB_OUTPUT -Raw).Trim() | Should -BeExactly 'hasModules=true'
     }
 
     It 'detects a module deletion' {
         $env:BASE_COMMIT = $script:module
         $env:TARGET_COMMIT = $script:deletion
         & $script:run
-        Get-Content -LiteralPath $env:GITHUB_OUTPUT | Should -Contain 'hasModules=true'
+        (Get-Content -LiteralPath $env:GITHUB_OUTPUT -Raw).Trim() | Should -BeExactly 'hasModules=true'
     }
 
     It 'allows a manual release without inspecting the push range' {
@@ -211,12 +234,39 @@ Describe 'Release module change detection' {
         $env:BASE_COMMIT = ''
         $env:TARGET_COMMIT = ''
         & $script:run
-        Get-Content -LiteralPath $env:GITHUB_OUTPUT | Should -Contain 'hasModules=true'
+        (Get-Content -LiteralPath $env:GITHUB_OUTPUT -Raw).Trim() | Should -BeExactly 'hasModules=true'
     }
 
     It 'fails rather than skipping a push with an invalid comparison' {
         $env:BASE_COMMIT = $script:deletion
         { & $script:run } | Should -Throw '*available ancestor*'
+    }
+
+    It 'skips module checks for a pull request without module changes' {
+        $env:TARGET_COMMIT = $script:nonModuleMerge
+        $env:HEAD_COMMIT = $script:nonModule
+        & $script:prRun
+        (Get-Content -LiteralPath $env:GITHUB_OUTPUT -Raw).Trim() | Should -BeExactly 'hasModules=false'
+    }
+
+    It 'detects pull request module changes after more than 300 other files' {
+        $env:TARGET_COMMIT = $script:moduleMerge
+        $env:HEAD_COMMIT = $script:module
+        & $script:prRun
+        (Get-Content -LiteralPath $env:GITHUB_OUTPUT -Raw).Trim() | Should -BeExactly 'hasModules=true'
+    }
+
+    It 'detects a pull request module deletion' {
+        $env:TARGET_COMMIT = $script:deletionMerge
+        $env:HEAD_COMMIT = $script:deletion
+        & $script:prRun
+        (Get-Content -LiteralPath $env:GITHUB_OUTPUT -Raw).Trim() | Should -BeExactly 'hasModules=true'
+    }
+
+    It 'fails rather than skipping a pull request with a mismatched head' {
+        $env:TARGET_COMMIT = $script:moduleMerge
+        $env:HEAD_COMMIT = $script:nonModule
+        { & $script:prRun } | Should -Throw '*does not match the pull request head*'
     }
 }
 

@@ -46,8 +46,51 @@ jobs:
       workflowInput: ${{ steps.initialize.outputs.workflowInput }}
       authoringArtifact: ${{ steps.initialize.outputs.authoringArtifact }}
     steps:
+      - name: "Check out repository for change detection"
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.repository == 'Azure/bicep-registry-modules' &&
+          (github.event.action != 'labeled' || github.event.label.name == 'PR: Run E2E Tests')
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          sparse-checkout: /.github/workflows/pr-check.yml
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: "Check for module changes"
+        id: changes
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.repository == 'Azure/bicep-registry-modules' &&
+          (github.event.action != 'labeled' || github.event.label.name == 'PR: Run E2E Tests')
+        shell: pwsh
+        env:
+          TARGET_COMMIT: ${{ github.sha }}
+          HEAD_COMMIT: ${{ github.event.pull_request.head.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:TARGET_COMMIT -cnotmatch '^[0-9a-f]{40}$' -or
+              $env:HEAD_COMMIT -cnotmatch '^[0-9a-f]{40}$') {
+            throw 'The pull request merge and head must be full commit SHAs.'
+          }
+          $history = @(git rev-list --parents -n 1 $env:TARGET_COMMIT --)
+          if ($LASTEXITCODE -ne 0 -or $history.Count -ne 1) {
+            throw 'The pull request merge commit is unavailable.'
+          }
+          $parents = @($history[0] -split ' ')
+          if ($parents.Count -ne 3 -or $parents[0] -cne $env:TARGET_COMMIT -or
+              $parents[1] -cnotmatch '^[0-9a-f]{40}$' -or $parents[2] -cne $env:HEAD_COMMIT) {
+            throw 'The pull request merge commit does not match the pull request head.'
+          }
+          git diff --quiet --no-renames $parents[1] $env:TARGET_COMMIT -- avm
+          if ($LASTEXITCODE -notin @(0, 1)) {
+            throw "Module change detection failed with exit code $LASTEXITCODE."
+          }
+          "hasModules=$(($LASTEXITCODE -eq 1).ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
       - name: "Prepare module checks"
         id: initialize
+        if: steps.changes.outputs.hasModules != 'false'
         uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@987bf24c2d2f22cd063444b86fad80aeb0e9b748
         with:
           authoringSource: ${{ inputs.authoringSource || 'gallery' }}
