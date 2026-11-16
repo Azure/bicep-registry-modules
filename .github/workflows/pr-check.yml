@@ -1,4 +1,4 @@
-name: ".Module - PR Check [EXPERIMENTAL]"
+name: ".Module - PR Check"
 
 on:
   workflow_dispatch:

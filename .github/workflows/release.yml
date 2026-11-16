@@ -1,4 +1,4 @@
-name: ".Module - Release [EXPERIMENTAL]"
+name: ".Module - Release"
 
 on:
   workflow_dispatch:
@@ -15,15 +15,15 @@ on:
         type: string
         description: "Avm.Authoring reference: authoringSource=gallery uses a package version (blank = latest); authoringSource=repo uses a tools SHA, tag or branch (blank = latest stable tag)."
         required: false
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
 
 permissions: {}
 
 jobs:
   release:
-    name: "Module release [EXPERIMENTAL]"
+    name: "Module release"
     permissions:
       contents: write
     uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@8bca18987ce8853e844f4e95f8cc309162ee7b40

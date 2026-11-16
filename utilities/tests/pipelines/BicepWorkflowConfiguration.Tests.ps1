@@ -52,6 +52,21 @@ Describe 'Coordinated tools dependency updates' {
     }
 }
 
+Describe 'Shared Bicep workflow entry points' {
+    It 'enables main pushes and manual releases without experimental workflow names' {
+        $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
+        $release = Get-Content -LiteralPath (Join-Path $workflowRoot 'release.yml') -Raw | ConvertFrom-Yaml
+        $prCheck = Get-Content -LiteralPath (Join-Path $workflowRoot 'pr-check.yml') -Raw | ConvertFrom-Yaml
+
+        $release.on.push.branches | Should -Be @('main')
+        $release.on.push.ContainsKey('paths') | Should -BeFalse
+        $release.on.ContainsKey('workflow_dispatch') | Should -BeTrue
+        $release.name | Should -BeExactly '.Module - Release'
+        $release.jobs.release.name | Should -BeExactly 'Module release'
+        $prCheck.name | Should -BeExactly '.Module - PR Check'
+    }
+}
+
 Describe 'Registry-owned child module publishing approvals' {
     It 'does not introduce a root child module publishing approval file' {
         $configurationPath = Join-Path $RepoRootPath '.avm' 'child-module-publish-allowed-list.json'
