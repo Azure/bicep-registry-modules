@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/ai-ml/ai-foundry/CHANGELOG.md).
 
+## 0.8.0
+
+### Changes
+
+- Made private DNS zone IDs optional, allowing Azure Policy or another external process to manage private DNS zone groups.
+- Added optional custom private endpoint names for Foundry, Key Vault, AI Search, Storage, and Cosmos DB.
+- Added `aiFoundryConfiguration.enablePublicNetworkAccess` to override Foundry public network access.
+
+### Breaking Changes
+
+- Supplying a private endpoint subnet without DNS zone IDs now creates private endpoints and disables public access by default for Foundry and newly created associated resources. Previously, these resources could remain publicly accessible without private endpoints.
+
 ## 0.7.0
 
 ### Changes
