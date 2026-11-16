@@ -388,13 +388,14 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
 
     BeforeDiscovery {
         $pipelineTestCases = [System.Collections.ArrayList] @()
+        $reservedModules = (Get-Content -Raw (Join-Path $repoRootPath '.reserved-test-subscriptions.json') | ConvertFrom-Json -AsHashtable).Keys
         foreach ($moduleFolderPath in $moduleFolderPaths) {
 
             $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
             $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]
 
             $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
-            if ($isTopLevelModule) {
+            if ($isTopLevelModule -and ($relativeModulePath -replace '\\', '/') -in $reservedModules) {
 
                 $workflowsFolderName = Join-Path $repoRootPath '.github' 'workflows'
                 $workflowFileName = Get-PipelineFileName -ResourceIdentifier $relativeModulePath

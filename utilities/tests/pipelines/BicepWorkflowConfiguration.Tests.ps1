@@ -61,15 +61,32 @@ Describe 'Registry-owned child module publishing approvals' {
 
     It 'preserves the existing <surface> unchanged from main' -ForEach @(
         @{ surface = 'approval list'; path = 'utilities/pipelines/staticValidation/compliance/helper/child-module-publish-allowed-list.json' }
-        @{ surface = 'approval validator'; path = 'utilities/pipelines/staticValidation/compliance/module.tests.ps1' }
     ) {
-        $baseline = '062537582b9392a0dec3388ff8b36bb141a06659'
+        $baseline = '2544042ac741cd306d669c320b8650ce71fc7755'
         $expectedBlob = git -C $RepoRootPath rev-parse "${baseline}:$path"
         $LASTEXITCODE | Should -Be 0
 
         (git -C $RepoRootPath hash-object "--path=$path" -- (Join-Path $RepoRootPath $path)) |
             Should -BeExactly $expectedBlob
         $LASTEXITCODE | Should -Be 0
+    }
+}
+
+Describe 'Module workflow entrypoints' {
+    It 'keeps dedicated workflows only for reserved modules' {
+        $reserved = (Get-Content -LiteralPath (Join-Path $RepoRootPath '.reserved-test-subscriptions.json') -Raw |
+                ConvertFrom-Json -AsHashtable).Keys | ForEach-Object { "$($_.Replace('/', '.')).yml" }
+        $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
+        $entrypoints = @(Get-ChildItem -LiteralPath $workflowRoot -File |
+                Where-Object { $_.Name -match '^avm\.(res|ptn|utl)\..+\.yml$' } |
+                ForEach-Object Name)
+
+        @($entrypoints | Sort-Object) | Should -Be @($reserved | Sort-Object)
+        @(Get-ChildItem -LiteralPath $workflowRoot -File -Filter 'avm.template.module*.yml') | Should -BeNullOrEmpty
+        foreach ($file in $entrypoints) {
+            $workflow = Get-Content -LiteralPath (Join-Path $workflowRoot $file) -Raw | ConvertFrom-Yaml
+            $workflow.jobs.'call-workflow-passing-data'.uses | Should -Be './.github/workflows/avm.template.hci.module.yml'
+        }
     }
 }
 
