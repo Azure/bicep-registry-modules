@@ -85,8 +85,9 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Create with Associated Resources](#example-2-create-with-associated-resources)
 - [Bring Your Own Resources](#example-3-bring-your-own-resources)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Private endpoints with externally managed DNS](#example-4-private-endpoints-with-externally-managed-dns)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -476,7 +477,147 @@ param storageAccountConfiguration = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 4: _Private endpoints with externally managed DNS_
+
+Creates private endpoints without DNS zone groups. DNS integration must be managed externally, for example by Azure Policy.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ex.external-dns]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
+  params: {
+    // Required parameters
+    baseName: '<baseName>'
+    // Non-required parameters
+    aiFoundryConfiguration: {
+      enablePublicNetworkAccess: true
+      networking: {
+        privateEndpointName: '<privateEndpointName>'
+      }
+    }
+    aiSearchConfiguration: {
+      privateEndpointName: '<privateEndpointName>'
+      replicaCount: 1
+      sku: 'basic'
+    }
+    cosmosDbConfiguration: {
+      privateEndpointName: '<privateEndpointName>'
+    }
+    includeAssociatedResources: true
+    keyVaultConfiguration: {
+      privateEndpointName: '<privateEndpointName>'
+    }
+    privateEndpointSubnetResourceId: '<privateEndpointSubnetResourceId>'
+    storageAccountConfiguration: {
+      privateEndpointName: '<privateEndpointName>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "baseName": {
+      "value": "<baseName>"
+    },
+    // Non-required parameters
+    "aiFoundryConfiguration": {
+      "value": {
+        "enablePublicNetworkAccess": true,
+        "networking": {
+          "privateEndpointName": "<privateEndpointName>"
+        }
+      }
+    },
+    "aiSearchConfiguration": {
+      "value": {
+        "privateEndpointName": "<privateEndpointName>",
+        "replicaCount": 1,
+        "sku": "basic"
+      }
+    },
+    "cosmosDbConfiguration": {
+      "value": {
+        "privateEndpointName": "<privateEndpointName>"
+      }
+    },
+    "includeAssociatedResources": {
+      "value": true
+    },
+    "keyVaultConfiguration": {
+      "value": {
+        "privateEndpointName": "<privateEndpointName>"
+      }
+    },
+    "privateEndpointSubnetResourceId": {
+      "value": "<privateEndpointSubnetResourceId>"
+    },
+    "storageAccountConfiguration": {
+      "value": {
+        "privateEndpointName": "<privateEndpointName>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
+
+// Required parameters
+param baseName = '<baseName>'
+// Non-required parameters
+param aiFoundryConfiguration = {
+  enablePublicNetworkAccess: true
+  networking: {
+    privateEndpointName: '<privateEndpointName>'
+  }
+}
+param aiSearchConfiguration = {
+  privateEndpointName: '<privateEndpointName>'
+  replicaCount: 1
+  sku: 'basic'
+}
+param cosmosDbConfiguration = {
+  privateEndpointName: '<privateEndpointName>'
+}
+param includeAssociatedResources = true
+param keyVaultConfiguration = {
+  privateEndpointName: '<privateEndpointName>'
+}
+param privateEndpointSubnetResourceId = '<privateEndpointSubnetResourceId>'
+param storageAccountConfiguration = {
+  privateEndpointName: '<privateEndpointName>'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -866,7 +1007,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 Creates an AI Foundry account and project with Standard Agent Services with private networking.
 
@@ -1078,7 +1219,7 @@ param storageAccountConfiguration = {
 | [`keyVaultConfiguration`](#parameter-keyvaultconfiguration) | object | Custom configuration for the Key Vault. |
 | [`location`](#parameter-location) | string | Location for all Resources. Defaults to the location of the resource group. |
 | [`lock`](#parameter-lock) | object | The lock settings of the AI resources. |
-| [`privateEndpointSubnetResourceId`](#parameter-privateendpointsubnetresourceid) | string | The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints. |
+| [`privateEndpointSubnetResourceId`](#parameter-privateendpointsubnetresourceid) | string | The resource ID of the subnet for private endpoints. If provided, private endpoints are created for the AI Foundry account and any newly created associated resources. Private DNS zone groups are created only when their zone resource IDs are provided. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Custom configuration for the Storage Account. |
 | [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. |
 
@@ -1104,6 +1245,7 @@ Custom configuration for the AI Foundry.
 | [`allowProjectManagement`](#parameter-aifoundryconfigurationallowprojectmanagement) | bool | Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true. |
 | [`createCapabilityHosts`](#parameter-aifoundryconfigurationcreatecapabilityhosts) | bool | Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if 'includeAssociatedResources' is true. Defaults to false. |
 | [`disableLocalAuth`](#parameter-aifoundryconfigurationdisablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. Defaults to true. |
+| [`enablePublicNetworkAccess`](#parameter-aifoundryconfigurationenablepublicnetworkaccess) | bool | Whether to enable public network access to the AI Foundry account. Defaults to false when a private endpoint subnet is provided and true otherwise. |
 | [`location`](#parameter-aifoundryconfigurationlocation) | string | The location of the AI Foundry account. Will default to the resource group location if not specified. |
 | [`networking`](#parameter-aifoundryconfigurationnetworking) | object | Values to establish private networking for the AI Foundry account and project. |
 | [`project`](#parameter-aifoundryconfigurationproject) | object | AI Foundry default project. |
@@ -1138,6 +1280,13 @@ Allow only Azure AD authentication. Should be enabled for security reasons. Defa
 - Required: No
 - Type: bool
 
+### Parameter: `aiFoundryConfiguration.enablePublicNetworkAccess`
+
+Whether to enable public network access to the AI Foundry account. Defaults to false when a private endpoint subnet is provided and true otherwise.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `aiFoundryConfiguration.location`
 
 The location of the AI Foundry account. Will default to the resource group location if not specified.
@@ -1152,44 +1301,47 @@ Values to establish private networking for the AI Foundry account and project.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`aiServicesPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingaiservicesprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone for the Azure AI Services account. |
-| [`cognitiveServicesPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingcognitiveservicesprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone for the Azure AI Services account. |
-| [`openAiPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingopenaiprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone for the OpenAI account. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`agentServiceSubnetResourceId`](#parameter-aifoundryconfigurationnetworkingagentservicesubnetresourceid) | string | The Resource ID of the subnet for the Azure AI Services account. This is required if 'createAIAgentService' is true. |
-
-### Parameter: `aiFoundryConfiguration.networking.aiServicesPrivateDnsZoneResourceId`
-
-The Resource ID of the Private DNS Zone for the Azure AI Services account.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `aiFoundryConfiguration.networking.cognitiveServicesPrivateDnsZoneResourceId`
-
-The Resource ID of the Private DNS Zone for the Azure AI Services account.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `aiFoundryConfiguration.networking.openAiPrivateDnsZoneResourceId`
-
-The Resource ID of the Private DNS Zone for the OpenAI account.
-
-- Required: Yes
-- Type: string
+| [`aiServicesPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingaiservicesprivatednszoneresourceid) | string | The resource ID of the AI Services private DNS zone. If omitted, DNS integration must be managed externally. |
+| [`cognitiveServicesPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingcognitiveservicesprivatednszoneresourceid) | string | The resource ID of the Cognitive Services private DNS zone. If omitted, DNS integration must be managed externally. |
+| [`openAiPrivateDnsZoneResourceId`](#parameter-aifoundryconfigurationnetworkingopenaiprivatednszoneresourceid) | string | The resource ID of the OpenAI private DNS zone. If omitted, DNS integration must be managed externally. |
+| [`privateEndpointName`](#parameter-aifoundryconfigurationnetworkingprivateendpointname) | string | The name of the private endpoint. If not provided, the resource module generates a name. |
 
 ### Parameter: `aiFoundryConfiguration.networking.agentServiceSubnetResourceId`
 
 The Resource ID of the subnet for the Azure AI Services account. This is required if 'createAIAgentService' is true.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.networking.aiServicesPrivateDnsZoneResourceId`
+
+The resource ID of the AI Services private DNS zone. If omitted, DNS integration must be managed externally.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.networking.cognitiveServicesPrivateDnsZoneResourceId`
+
+The resource ID of the Cognitive Services private DNS zone. If omitted, DNS integration must be managed externally.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.networking.openAiPrivateDnsZoneResourceId`
+
+The resource ID of the OpenAI private DNS zone. If omitted, DNS integration must be managed externally.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryConfiguration.networking.privateEndpointName`
+
+The name of the private endpoint. If not provided, the resource module generates a name.
 
 - Required: No
 - Type: string
@@ -1508,7 +1660,8 @@ Custom configuration for the AI Search resource.
 | [`existingResourceId`](#parameter-aisearchconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-aisearchconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
 | [`partitionCount`](#parameter-aisearchconfigurationpartitioncount) | int | The number of partitions in the AI Search service. Defaults to 1. |
-| [`privateDnsZoneResourceId`](#parameter-aisearchconfigurationprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
+| [`privateDnsZoneResourceId`](#parameter-aisearchconfigurationprivatednszoneresourceid) | string | The resource ID of the private DNS zone to associate with the private endpoint. If omitted, DNS integration must be managed externally. |
+| [`privateEndpointName`](#parameter-aisearchconfigurationprivateendpointname) | string | The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource. |
 | [`replicaCount`](#parameter-aisearchconfigurationreplicacount) | int | The number of replicas in the AI Search service. Defaults to 3. |
 | [`roleAssignments`](#parameter-aisearchconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 | [`sku`](#parameter-aisearchconfigurationsku) | string | The SKU of the AI Search service. Defaults to 'standard'. |
@@ -1538,7 +1691,14 @@ The number of partitions in the AI Search service. Defaults to 1.
 
 ### Parameter: `aiSearchConfiguration.privateDnsZoneResourceId`
 
-The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided.
+The resource ID of the private DNS zone to associate with the private endpoint. If omitted, DNS integration must be managed externally.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiSearchConfiguration.privateEndpointName`
+
+The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource.
 
 - Required: No
 - Type: string
@@ -1691,7 +1851,8 @@ Custom configuration for the Cosmos DB Account.
 | [`enableZoneRedundancy`](#parameter-cosmosdbconfigurationenablezoneredundancy) | bool | Whether to enable zone redundancy for the Cosmos DB account. Defaults to false. This property is only used for single-region accounts and is ignored when an existingResourceId is provided. |
 | [`existingResourceId`](#parameter-cosmosdbconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-cosmosdbconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
-| [`privateDnsZoneResourceId`](#parameter-cosmosdbconfigurationprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
+| [`privateDnsZoneResourceId`](#parameter-cosmosdbconfigurationprivatednszoneresourceid) | string | The resource ID of the private DNS zone to associate with the private endpoint. If omitted, DNS integration must be managed externally. |
+| [`privateEndpointName`](#parameter-cosmosdbconfigurationprivateendpointname) | string | The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource. |
 | [`roleAssignments`](#parameter-cosmosdbconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
 ### Parameter: `cosmosDbConfiguration.enableServerless`
@@ -1724,7 +1885,14 @@ Name to be used when creating the resource. This is ignored if an existingResour
 
 ### Parameter: `cosmosDbConfiguration.privateDnsZoneResourceId`
 
-The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided.
+The resource ID of the private DNS zone to associate with the private endpoint. If omitted, DNS integration must be managed externally.
+
+- Required: No
+- Type: string
+
+### Parameter: `cosmosDbConfiguration.privateEndpointName`
+
+The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource.
 
 - Required: No
 - Type: string
@@ -1855,7 +2023,8 @@ Custom configuration for the Key Vault.
 | :-- | :-- | :-- |
 | [`existingResourceId`](#parameter-keyvaultconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-keyvaultconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
-| [`privateDnsZoneResourceId`](#parameter-keyvaultconfigurationprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
+| [`privateDnsZoneResourceId`](#parameter-keyvaultconfigurationprivatednszoneresourceid) | string | The resource ID of the private DNS zone to associate with the private endpoint. If omitted, DNS integration must be managed externally. |
+| [`privateEndpointName`](#parameter-keyvaultconfigurationprivateendpointname) | string | The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource. |
 | [`roleAssignments`](#parameter-keyvaultconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
 ### Parameter: `keyVaultConfiguration.existingResourceId`
@@ -1874,7 +2043,14 @@ Name to be used when creating the resource. This is ignored if an existingResour
 
 ### Parameter: `keyVaultConfiguration.privateDnsZoneResourceId`
 
-The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided.
+The resource ID of the private DNS zone to associate with the private endpoint. If omitted, DNS integration must be managed externally.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfiguration.privateEndpointName`
+
+The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource.
 
 - Required: No
 - Type: string
@@ -2030,7 +2206,7 @@ Specify the notes of the lock.
 
 ### Parameter: `privateEndpointSubnetResourceId`
 
-The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints.
+The resource ID of the subnet for private endpoints. If provided, private endpoints are created for the AI Foundry account and any newly created associated resources. Private DNS zone groups are created only when their zone resource IDs are provided.
 
 - Required: No
 - Type: string
@@ -2046,14 +2222,15 @@ Custom configuration for the Storage Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`blobPrivateDnsZoneResourceId`](#parameter-storageaccountconfigurationblobprivatednszoneresourceid) | string | The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
+| [`blobPrivateDnsZoneResourceId`](#parameter-storageaccountconfigurationblobprivatednszoneresourceid) | string | The resource ID of the private DNS zone for the blob endpoint. If omitted, DNS integration must be managed externally. |
 | [`existingResourceId`](#parameter-storageaccountconfigurationexistingresourceid) | string | Resource Id of an existing Storage Account to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-storageaccountconfigurationname) | string | Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided. |
+| [`privateEndpointName`](#parameter-storageaccountconfigurationprivateendpointname) | string | The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource. |
 | [`roleAssignments`](#parameter-storageaccountconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
 
 ### Parameter: `storageAccountConfiguration.blobPrivateDnsZoneResourceId`
 
-The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided.
+The resource ID of the private DNS zone for the blob endpoint. If omitted, DNS integration must be managed externally.
 
 - Required: No
 - Type: string
@@ -2068,6 +2245,13 @@ Resource Id of an existing Storage Account to use instead of creating a new one.
 ### Parameter: `storageAccountConfiguration.name`
 
 Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageAccountConfiguration.privateEndpointName`
+
+The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource.
 
 - Required: No
 - Type: string

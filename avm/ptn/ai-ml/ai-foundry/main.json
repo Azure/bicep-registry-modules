@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "6632607736268892832"
+      "version": "0.49.2.45890",
+      "templateHash": "15640419362833102875"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -29,11 +29,18 @@
             "description": "Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided."
           }
         },
+        "privateEndpointName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource."
+          }
+        },
         "privateDnsZoneResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided."
+            "description": "Optional. The resource ID of the private DNS zone to associate with the private endpoint. If omitted, DNS integration must be managed externally."
           }
         },
         "roleAssignments": {
@@ -69,11 +76,18 @@
             "description": "Optional. Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided."
           }
         },
+        "privateEndpointName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource."
+          }
+        },
         "blobPrivateDnsZoneResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The Resource ID of the DNS zone \"blob\" for the Azure Storage Account. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided."
+            "description": "Optional. The resource ID of the private DNS zone for the blob endpoint. If omitted, DNS integration must be managed externally."
           }
         },
         "roleAssignments": {
@@ -109,11 +123,18 @@
             "description": "Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided."
           }
         },
+        "privateEndpointName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource."
+          }
+        },
         "privateDnsZoneResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided."
+            "description": "Optional. The resource ID of the private DNS zone to associate with the private endpoint. If omitted, DNS integration must be managed externally."
           }
         },
         "roleAssignments": {
@@ -231,6 +252,13 @@
             "description": "Optional. Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true."
           }
         },
+        "enablePublicNetworkAccess": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to enable public network access to the AI Foundry account. Defaults to false when a private endpoint subnet is provided and true otherwise."
+          }
+        },
         "networking": {
           "$ref": "#/definitions/foundryNetworkConfigurationType",
           "nullable": true,
@@ -271,22 +299,32 @@
             "description": "Optional. The Resource ID of the subnet for the Azure AI Services account. This is required if 'createAIAgentService' is true."
           }
         },
+        "privateEndpointName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private endpoint. If not provided, the resource module generates a name."
+          }
+        },
         "cognitiveServicesPrivateDnsZoneResourceId": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The Resource ID of the Private DNS Zone for the Azure AI Services account."
+            "description": "Optional. The resource ID of the Cognitive Services private DNS zone. If omitted, DNS integration must be managed externally."
           }
         },
         "openAiPrivateDnsZoneResourceId": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The Resource ID of the Private DNS Zone for the OpenAI account."
+            "description": "Optional. The resource ID of the OpenAI private DNS zone. If omitted, DNS integration must be managed externally."
           }
         },
         "aiServicesPrivateDnsZoneResourceId": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The Resource ID of the Private DNS Zone for the Azure AI Services account."
+            "description": "Optional. The resource ID of the AI Services private DNS zone. If omitted, DNS integration must be managed externally."
           }
         }
       },
@@ -312,11 +350,18 @@
             "description": "Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided."
           }
         },
+        "privateEndpointName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource."
+          }
+        },
         "privateDnsZoneResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided."
+            "description": "Optional. The resource ID of the private DNS zone to associate with the private endpoint. If omitted, DNS integration must be managed externally."
           }
         },
         "roleAssignments": {
@@ -662,7 +707,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints."
+        "description": "Optional. The resource ID of the subnet for private endpoints. If provided, private endpoints are created for the AI Foundry account and any newly created associated resources. Private DNS zone groups are created only when their zone resource IDs are provided."
       }
     },
     "aiFoundryConfiguration": {
@@ -748,16 +793,24 @@
           "allowProjectManagement": {
             "value": "[coalesce(tryGet(parameters('aiFoundryConfiguration'), 'allowProjectManagement'), true())]"
           },
+          "enablePublicNetworkAccess": {
+            "value": "[tryGet(parameters('aiFoundryConfiguration'), 'enablePublicNetworkAccess')]"
+          },
           "aiModelDeployments": {
             "value": "[parameters('aiModelDeployments')]"
           },
           "privateEndpointSubnetResourceId": {
             "value": "[parameters('privateEndpointSubnetResourceId')]"
           },
+          "privateEndpointName": {
+            "value": "[tryGet(tryGet(parameters('aiFoundryConfiguration'), 'networking'), 'privateEndpointName')]"
+          },
           "agentSubnetResourceId": {
             "value": "[tryGet(tryGet(parameters('aiFoundryConfiguration'), 'networking'), 'agentServiceSubnetResourceId')]"
           },
-          "privateDnsZoneResourceIds": "[if(and(not(empty(parameters('privateEndpointSubnetResourceId'))), not(empty(tryGet(parameters('aiFoundryConfiguration'), 'networking')))), createObject('value', createArray(parameters('aiFoundryConfiguration').networking.cognitiveServicesPrivateDnsZoneResourceId, parameters('aiFoundryConfiguration').networking.openAiPrivateDnsZoneResourceId, parameters('aiFoundryConfiguration').networking.aiServicesPrivateDnsZoneResourceId)), createObject('value', createArray()))]",
+          "privateDnsZoneResourceIds": {
+            "value": "[filter(createArray(coalesce(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'networking'), 'cognitiveServicesPrivateDnsZoneResourceId'), ''), coalesce(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'networking'), 'openAiPrivateDnsZoneResourceId'), ''), coalesce(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'networking'), 'aiServicesPrivateDnsZoneResourceId'), '')), lambda('zoneId', not(empty(lambdaVariables('zoneId')))))]"
+          },
           "roleAssignments": {
             "value": "[tryGet(parameters('aiFoundryConfiguration'), 'roleAssignments')]"
           },
@@ -778,8 +831,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "17515602153742881319"
+              "version": "0.49.2.45890",
+              "templateHash": "3651822376456448009"
             }
           },
           "definitions": {
@@ -1047,7 +1100,14 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'privateDnsZoneResourceIds' to establish private endpoints."
+                "description": "Optional. Resource ID of an existing subnet to use for the private endpoint."
+              }
+            },
+            "privateEndpointName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the private endpoint. If omitted, the resource module generates a name."
               }
             },
             "agentSubnetResourceId": {
@@ -1061,6 +1121,13 @@
               "type": "bool",
               "metadata": {
                 "description": "Required. Allow only Azure AD authentication. Should be enabled for security reasons."
+              }
+            },
+            "enablePublicNetworkAccess": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Whether to enable public network access. Defaults to false when a private endpoint subnet is provided and true otherwise."
               }
             },
             "roleAssignments": {
@@ -1097,7 +1164,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. List of private DNS zone resource IDs to use for the AI Foundry resource. This is required when using private endpoints."
+                "description": "Optional. Private DNS zone resource IDs to associate with the private endpoint. If omitted, DNS integration must be managed externally."
               }
             },
             "enableTelemetry": {
@@ -1128,7 +1195,7 @@
                 }
               }
             ],
-            "privateNetworkingEnabled": "[and(not(empty(variables('privateDnsZoneResourceIdValues'))), not(empty(parameters('privateEndpointSubnetResourceId'))))]"
+            "privateNetworkingEnabled": "[not(empty(parameters('privateEndpointSubnetResourceId')))]"
           },
           "resources": {
             "foundryAccount": {
@@ -1176,7 +1243,7 @@
                   "disableLocalAuth": {
                     "value": "[parameters('disableLocalAuth')]"
                   },
-                  "publicNetworkAccess": "[if(variables('privateNetworkingEnabled'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+                  "publicNetworkAccess": "[if(coalesce(parameters('enablePublicNetworkAccess'), not(variables('privateNetworkingEnabled'))), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
                   "networkAcls": {
                     "value": {
                       "defaultAction": "Allow",
@@ -1184,7 +1251,7 @@
                     }
                   },
                   "networkInjections": "[if(and(variables('privateNetworkingEnabled'), not(empty(parameters('agentSubnetResourceId')))), createObject('value', createObject('scenario', 'agent', 'subnetResourceId', parameters('agentSubnetResourceId'), 'useMicrosoftManagedNetwork', false())), createObject('value', null()))]",
-                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', variables('privateDnsZoneResourceIdValues')), 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('name', parameters('privateEndpointName'), 'privateDnsZoneGroup', if(not(empty(variables('privateDnsZoneResourceIdValues'))), createObject('privateDnsZoneGroupConfigs', variables('privateDnsZoneResourceIdValues')), null()), 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   },
@@ -3722,6 +3789,9 @@
           "privateEndpointSubnetResourceId": {
             "value": "[parameters('privateEndpointSubnetResourceId')]"
           },
+          "privateEndpointName": {
+            "value": "[tryGet(parameters('keyVaultConfiguration'), 'privateEndpointName')]"
+          },
           "privateDnsZoneResourceId": {
             "value": "[tryGet(parameters('keyVaultConfiguration'), 'privateDnsZoneResourceId')]"
           },
@@ -3736,8 +3806,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "6954034207179674914"
+              "version": "0.49.2.45890",
+              "templateHash": "6886045608124217427"
             }
           },
           "definitions": {
@@ -3939,14 +4009,21 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'privateDnsZoneResourceId' to establish private endpoints."
+                "description": "Optional. Resource ID of an existing subnet to use for the private endpoint."
+              }
+            },
+            "privateEndpointName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the private endpoint. If omitted, the resource module generates a name."
               }
             },
             "privateDnsZoneResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The resource ID of the private DNS zone for the Key Vault to establish private endpoints."
+                "description": "Optional. The resource ID of the private DNS zone to associate with the private endpoint."
               }
             },
             "roleAssignments": {
@@ -3982,7 +4059,7 @@
             "existingName": "[__bicep.getResourceName(parameters('existingResourceId'), variables('existingResourceParts'))]",
             "existingSubscriptionId": "[__bicep.getSubscriptionId(variables('existingResourceParts'))]",
             "existingResourceGroupName": "[__bicep.getResourceGroupName(variables('existingResourceParts'))]",
-            "privateNetworkingEnabled": "[and(not(empty(parameters('privateDnsZoneResourceId'))), not(empty(parameters('privateEndpointSubnetResourceId'))))]"
+            "privateNetworkingEnabled": "[not(empty(parameters('privateEndpointSubnetResourceId')))]"
           },
           "resources": {
             "existingKeyVault": {
@@ -4044,7 +4121,7 @@
                   "softDeleteRetentionInDays": {
                     "value": 7
                   },
-                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), 'service', 'vault', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('name', parameters('privateEndpointName'), 'privateDnsZoneGroup', if(not(empty(parameters('privateDnsZoneResourceId'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), null()), 'service', 'vault', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
                   }
@@ -7505,6 +7582,9 @@
           "privateEndpointSubnetResourceId": {
             "value": "[parameters('privateEndpointSubnetResourceId')]"
           },
+          "privateEndpointName": {
+            "value": "[tryGet(parameters('aiSearchConfiguration'), 'privateEndpointName')]"
+          },
           "privateDnsZoneResourceId": {
             "value": "[tryGet(parameters('aiSearchConfiguration'), 'privateDnsZoneResourceId')]"
           },
@@ -7528,8 +7608,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "5036941218626531688"
+              "version": "0.49.2.45890",
+              "templateHash": "5432550011899301851"
             }
           },
           "definitions": {
@@ -7731,14 +7811,21 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'privateDnsZoneResourceId' to establish private endpoints."
+                "description": "Optional. Resource ID of an existing subnet to use for the private endpoint."
+              }
+            },
+            "privateEndpointName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the private endpoint. If omitted, the resource module generates a name."
               }
             },
             "privateDnsZoneResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The resource ID of the private DNS zone for the AI Search resource to establish private endpoints."
+                "description": "Optional. The resource ID of the private DNS zone to associate with the private endpoint."
               }
             },
             "roleAssignments": {
@@ -7795,7 +7882,7 @@
             "existingName": "[__bicep.getResourceName(parameters('existingResourceId'), variables('existingResourceParts'))]",
             "existingSubscriptionId": "[__bicep.getSubscriptionId(variables('existingResourceParts'))]",
             "existingResourceGroupName": "[__bicep.getResourceGroupName(variables('existingResourceParts'))]",
-            "privateNetworkingEnabled": "[and(not(empty(parameters('privateDnsZoneResourceId'))), not(empty(parameters('privateEndpointSubnetResourceId'))))]"
+            "privateNetworkingEnabled": "[not(empty(parameters('privateEndpointSubnetResourceId')))]"
           },
           "resources": {
             "existingSearchService": {
@@ -7852,7 +7939,7 @@
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
                   },
-                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('name', parameters('privateEndpointName'), 'privateDnsZoneGroup', if(not(empty(parameters('privateDnsZoneResourceId'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), null()), 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   }
@@ -9961,6 +10048,9 @@
           "privateEndpointSubnetResourceId": {
             "value": "[parameters('privateEndpointSubnetResourceId')]"
           },
+          "privateEndpointName": {
+            "value": "[tryGet(parameters('storageAccountConfiguration'), 'privateEndpointName')]"
+          },
           "blobPrivateDnsZoneResourceId": {
             "value": "[tryGet(parameters('storageAccountConfiguration'), 'blobPrivateDnsZoneResourceId')]"
           },
@@ -9975,8 +10065,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "5453447899308568482"
+              "version": "0.49.2.45890",
+              "templateHash": "96918682713310841"
             }
           },
           "definitions": {
@@ -10178,14 +10268,21 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'blobPrivateDnsZoneResourceId' to establish private endpoints."
+                "description": "Optional. Resource ID of an existing subnet to use for the private endpoint."
+              }
+            },
+            "privateEndpointName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the private endpoint. If omitted, the resource module generates a name."
               }
             },
             "blobPrivateDnsZoneResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The resource ID of the private DNS zone for the storage account blob service to establish private endpoints."
+                "description": "Optional. The resource ID of the private DNS zone to associate with the blob endpoint."
               }
             },
             "roleAssignments": {
@@ -10221,7 +10318,7 @@
             "existingName": "[__bicep.getResourceName(parameters('existingResourceId'), variables('existingResourceParts'))]",
             "existingSubscriptionId": "[__bicep.getSubscriptionId(variables('existingResourceParts'))]",
             "existingResourceGroupName": "[__bicep.getResourceGroupName(variables('existingResourceParts'))]",
-            "privateNetworkingEnabled": "[and(not(empty(parameters('blobPrivateDnsZoneResourceId'))), not(empty(parameters('privateEndpointSubnetResourceId'))))]"
+            "privateNetworkingEnabled": "[not(empty(parameters('privateEndpointSubnetResourceId')))]"
           },
           "resources": {
             "existingStorageAccount": {
@@ -10289,7 +10386,7 @@
                   "supportsHttpsTrafficOnly": {
                     "value": true
                   },
-                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('blobPrivateDnsZoneResourceId')))), 'service', 'blob', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('name', parameters('privateEndpointName'), 'privateDnsZoneGroup', if(not(empty(parameters('blobPrivateDnsZoneResourceId'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('blobPrivateDnsZoneResourceId')))), null()), 'service', 'blob', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
                   }
@@ -18469,6 +18566,9 @@
           "privateEndpointSubnetResourceId": {
             "value": "[parameters('privateEndpointSubnetResourceId')]"
           },
+          "privateEndpointName": {
+            "value": "[tryGet(parameters('cosmosDbConfiguration'), 'privateEndpointName')]"
+          },
           "privateDnsZoneResourceId": {
             "value": "[tryGet(parameters('cosmosDbConfiguration'), 'privateDnsZoneResourceId')]"
           },
@@ -18489,8 +18589,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11639296185979376043"
+              "version": "0.49.2.45890",
+              "templateHash": "16196667621395426324"
             }
           },
           "definitions": {
@@ -18692,14 +18792,21 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with 'privateDnsZoneResourceId' to establish private endpoints."
+                "description": "Optional. Resource ID of an existing subnet to use for the private endpoint."
+              }
+            },
+            "privateEndpointName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the private endpoint. If omitted, the resource module generates a name."
               }
             },
             "privateDnsZoneResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The resource ID of the private DNS zone for the Cosmos DB to establish private endpoints."
+                "description": "Optional. The resource ID of the private DNS zone to associate with the private endpoint."
               }
             },
             "roleAssignments": {
@@ -18749,7 +18856,7 @@
             "existingName": "[__bicep.getResourceName(parameters('existingResourceId'), variables('existingResourceParts'))]",
             "existingSubscriptionId": "[__bicep.getSubscriptionId(variables('existingResourceParts'))]",
             "existingResourceGroupName": "[__bicep.getResourceGroupName(variables('existingResourceParts'))]",
-            "privateNetworkingEnabled": "[and(not(empty(parameters('privateDnsZoneResourceId'))), not(empty(parameters('privateEndpointSubnetResourceId'))))]"
+            "privateNetworkingEnabled": "[not(empty(parameters('privateEndpointSubnetResourceId')))]"
           },
           "resources": {
             "existingCosmosDb": {
@@ -18806,7 +18913,7 @@
                       "publicNetworkAccess": "[if(variables('privateNetworkingEnabled'), 'Disabled', 'Enabled')]"
                     }
                   },
-                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), 'service', 'Sql', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(variables('privateNetworkingEnabled'), createObject('value', createArray(createObject('name', parameters('privateEndpointName'), 'privateDnsZoneGroup', if(not(empty(parameters('privateDnsZoneResourceId'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), null()), 'service', 'Sql', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray()))]",
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
                   },
@@ -24802,8 +24909,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "14769608498987839423"
+              "version": "0.49.2.45890",
+              "templateHash": "6181666673364330704"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -25169,8 +25276,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "17200224943645191747"
+                      "version": "0.49.2.45890",
+                      "templateHash": "5971058627525918942"
                     }
                   },
                   "parameters": {
@@ -25232,8 +25339,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "13065792564353351624"
+                      "version": "0.49.2.45890",
+                      "templateHash": "10156996244465444117"
                     }
                   },
                   "parameters": {
@@ -25295,8 +25402,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "17642323173492771442"
+                      "version": "0.49.2.45890",
+                      "templateHash": "12624243022235125874"
                     }
                   },
                   "parameters": {
@@ -25372,8 +25479,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "6980253785932858738"
+                      "version": "0.49.2.45890",
+                      "templateHash": "18291014173982404527"
                     }
                   },
                   "parameters": {
@@ -25459,8 +25566,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "7502832477035962053"
+                      "version": "0.49.2.45890",
+                      "templateHash": "1184169920059111992"
                     }
                   },
                   "parameters": {
