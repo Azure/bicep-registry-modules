@@ -275,7 +275,8 @@ Describe 'Module deployment workflow expansion' {
             Test-WorkflowCondition -Expression $publish.if -Context $failed | Should -BeFalse
         }
         $release = $publish.steps | Where-Object name -EQ 'Create module release tag'
-        $release.run | Should -Match 'Set-ModuleReleaseTag @functionInput'
-        $release.run | Should -Match ([regex]::Escape('${{ inputs.modulePath }}/main.bicep'))
+        $release.env.MODULE_PATH | Should -Be '${{ inputs.modulePath }}'
+        $release.run | Should -Match 'Set-AvmBicepReleaseTags'
+        $release.run | Should -Match '-TargetCommit \$env:GITHUB_SHA -PendingRelease -RequireChangelog'
     }
 }

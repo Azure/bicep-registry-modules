@@ -5,7 +5,7 @@ param(
 
 Describe 'CODEOWNERS governance' {
     BeforeAll {
-        $testPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'module.tests.ps1'
+        $testPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'governance.tests.ps1'
         $parseErrors = $null
         $ast = [System.Management.Automation.Language.Parser]::ParseFile($testPath, [ref] $null, [ref] $parseErrors)
         if ($parseErrors.Count -gt 0) {
