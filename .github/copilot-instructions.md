@@ -40,6 +40,8 @@ Install `Avm.Authoring` from Microsoft Artifact Registry (MAR) using the [Bicep 
 
 Run the relevant checks on the pull request. For same-repository pull requests, add the `PR: Run E2E Tests` label when deployment tests are needed. For fork pull requests, coordinate an authorized deployment test run with a maintainer.
 
+The planned shared `Avm.Authoring` script using `gh` will hand off fork pull requests to a same-repository release branch when invoked by an authorized Microsoft FTE, without an extra approval or confirmation prompt. Security-review the fork changes before invoking the script with privileged credentials; existing GitHub branch protections, required reviews and checks still apply. Until the script is implemented and released, coordinate the handoff with a maintainer rather than assuming a command exists.
+
 ### Fallback to Use Quick Starts as a last resort
 
 When required information or relevant example is not available in the Bicep schema or in the Azure Resource Reference when generating new AVM Bicep code, as a last effort, you can refer to the Bicep Quick Starts in the https://github.com/Azure/azure-quickstart-templates repo. Use the `#github/search_code` tool to search for relevant Bicep Quick Starts as examples of how to deploy specific resources.
