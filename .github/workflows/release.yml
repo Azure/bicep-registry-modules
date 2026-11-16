@@ -26,60 +26,14 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "avm/**"
 
 permissions: {}
 
 jobs:
-  changes:
-    name: "Check for module changes"
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    outputs:
-      hasModules: ${{ steps.changes.outputs.hasModules }}
-    steps:
-      - name: "Check out repository"
-        if: github.event_name == 'push'
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-        with:
-          fetch-depth: 0
-          sparse-checkout: /.github/workflows/release.yml
-          sparse-checkout-cone-mode: false
-          persist-credentials: false
-      - name: "Check for module changes"
-        id: changes
-        shell: pwsh
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          BASE_COMMIT: ${{ github.event.before }}
-          TARGET_COMMIT: ${{ github.sha }}
-        run: |
-          $ErrorActionPreference = 'Stop'
-          if ($env:EVENT_NAME -ceq 'workflow_dispatch') {
-            $hasModules = $true
-          } elseif ($env:EVENT_NAME -ceq 'push') {
-            if ($env:BASE_COMMIT -cnotmatch '^[0-9a-f]{40}$' -or
-                $env:TARGET_COMMIT -cnotmatch '^[0-9a-f]{40}$') {
-              throw 'The push base and target must be full commit SHAs.'
-            }
-            git merge-base --is-ancestor $env:BASE_COMMIT $env:TARGET_COMMIT
-            if ($LASTEXITCODE -ne 0) {
-              throw 'The push base must be an available ancestor of the target.'
-            }
-            git diff --quiet --no-renames $env:BASE_COMMIT $env:TARGET_COMMIT -- avm
-            if ($LASTEXITCODE -notin @(0, 1)) {
-              throw "Module change detection failed with exit code $LASTEXITCODE."
-            }
-            $hasModules = $LASTEXITCODE -eq 1
-          } else {
-            throw "Unsupported release event: $env:EVENT_NAME"
-          }
-          "hasModules=$($hasModules.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
-
   initialize:
     name: "Select pending module releases"
-    needs: changes
-    if: needs.changes.outputs.hasModules == 'true'
     permissions:
       contents: write
     uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@987bf24c2d2f22cd063444b86fad80aeb0e9b748
