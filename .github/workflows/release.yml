@@ -30,7 +30,7 @@ jobs:
     name: "Module release"
     permissions:
       contents: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@05769553cac6981b689f9ed8feea5a05c8605e50
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@0fc1e03859c6c850901ca7086ac320a3915e86e7
     with:
       authoringSource: ${{ inputs.authoringSource || 'gallery' }}
       authoringRef: ${{ inputs.authoringRef || '' }}
