@@ -45,7 +45,7 @@ module testDeployment '../../../main.bicep' = [
       includeAssociatedResources: true
       privateEndpointSubnetResourceId: dependencies.outputs.subnetPrivateEndpointsResourceId
       aiFoundryConfiguration: {
-        enablePublicNetworkAccess: true
+        enablePublicNetworkAccess: false
         networking: {
           privateEndpointName: 'pep-${workloadName}-foundry'
         }
