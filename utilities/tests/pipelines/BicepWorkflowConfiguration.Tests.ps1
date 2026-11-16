@@ -66,14 +66,16 @@ Describe 'Shared Bicep workflow entry points' {
         $prCheck.name | Should -BeExactly '.Module - PR Check'
     }
 
-    It 'forwards an optional manual target SHA while leaving push targets automatic' {
+    It 'forwards optional manual target and base SHAs while leaving push ranges automatic' {
         $release = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'release.yml') -Raw |
             ConvertFrom-Yaml
 
-        $release.on.workflow_dispatch.inputs.targetCommit.type | Should -BeExactly 'string'
-        $release.on.workflow_dispatch.inputs.targetCommit.required | Should -BeFalse
-        $release.on.workflow_dispatch.inputs.targetCommit.ContainsKey('default') | Should -BeFalse
-        $release.jobs.release.with.targetCommit | Should -BeExactly ('$' + '{{ inputs.targetCommit || ' + "''" + ' }}')
+        foreach ($inputName in @('targetCommit', 'baseCommit')) {
+            $release.on.workflow_dispatch.inputs[$inputName].type | Should -BeExactly 'string'
+            $release.on.workflow_dispatch.inputs[$inputName].required | Should -BeFalse
+            $release.on.workflow_dispatch.inputs[$inputName].ContainsKey('default') | Should -BeFalse
+            $release.jobs.release.with[$inputName] | Should -BeExactly ('$' + "{{ inputs.$inputName || '' }}")
+        }
     }
 }
 
