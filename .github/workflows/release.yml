@@ -33,7 +33,7 @@ jobs:
   initialize:
     name: "Select pending module releases"
     permissions:
-      contents: read
+      contents: write
     uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@987bf24c2d2f22cd063444b86fad80aeb0e9b748
     with:
       initializeOnly: true

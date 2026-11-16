@@ -85,7 +85,6 @@ Describe 'Shared Bicep workflow entry points' {
         $publisher = $release.jobs.release
 
         $selector.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-release\.yml@'
-        $selector.permissions.contents | Should -BeExactly 'read'
         $selector.with.initializeOnly | Should -BeTrue
         $publisher.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-runtime-release\.yml@'
         $publisher.needs | Should -BeExactly 'initialize'
@@ -101,6 +100,17 @@ Describe 'Shared Bicep workflow entry points' {
         }
         $publisher.with.pendingRelease | Should -BeTrue
         $publisher.with.requireChangelog | Should -BeTrue
+    }
+
+    It 'grants the initialize-only reusable workflow the nested release job permissions' {
+        $release = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'release.yml') -Raw |
+            ConvertFrom-Yaml
+        $selector = $release.jobs.initialize
+
+        $selector.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-release\.yml@'
+        $selector.with.initializeOnly | Should -BeTrue
+        @($selector.permissions.Keys) | Should -Be @('contents')
+        $selector.permissions.contents | Should -BeExactly 'write'
     }
 }
 
