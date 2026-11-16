@@ -140,6 +140,6 @@ For example:
 
 When a user asks to perform a task that falls within the domain of a skill below, read and follow the full instructions from the file path before proceeding to acquire the full instructions from the file path before proceeding.
 
-| Skill                       | Description                                                                                                                                                                                      | File                                                  |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
+| Skill                       | Description                                                                                                                                                           | File                                                  |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
 | avm-child-module-publishing | Publish Bicep child modules to the AVM public registry. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG. | `.github/skills/avm-child-module-publishing/SKILL.md` |
