@@ -39,7 +39,7 @@ module workspace '$relativeModulePath' = {
     }
 
     It 'safely defaults an omitted or null nodeSizeFamily while preserving explicit values' {
-        $poolParameters.nodeSizeFamily.value | Should -BeExactly "[tryGet(coalesce(parameters('bigDataPools'), createArray())[copyIndex()], 'nodeSizeFamily')]"
+        $poolParameters.nodeSizeFamily.value | Should -BeExactly "[coalesce(tryGet(coalesce(parameters('bigDataPools'), createArray())[copyIndex()], 'nodeSizeFamily'), 'MemoryOptimized')]"
         $template.resources.workspace_bigDataPools.properties.template.parameters.nodeSizeFamily.defaultValue | Should -BeExactly 'MemoryOptimized'
         $poolParameters.nodeSize.value | Should -BeExactly "[coalesce(parameters('bigDataPools'), createArray())[copyIndex()].nodeSize]"
     }

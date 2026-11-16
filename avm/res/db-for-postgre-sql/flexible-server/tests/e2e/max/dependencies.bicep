@@ -14,7 +14,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
 }
 
 #disable-next-line use-recent-api-versions
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -33,7 +33,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   }
 
   #disable-next-line use-recent-api-versions
-  resource key 'keys@2023-07-01' = {
+  resource key 'keys@2026-02-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'

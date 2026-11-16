@@ -325,6 +325,12 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encr]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded after the managed Cosmos DB dependency reported ServiceUnavailable/high demand in Norway East. Relocation correctly stopped because the purge-protected CMK vault name remained reserved. Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/38540661047/job/115775175481.
+
+Defaults, WAF-aligned and the other scenarios remain enabled. Re-enable after this encryption scenario provisions and completes normal cleanup successfully in a separately scoped validation. ML customer-managed-key integration coverage is deferred; purge protection and cleanup safeguards must not be weakened.
+```
 
 <details>
 
@@ -720,7 +726,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -932,7 +938,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
           "name": "f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1106,7 +1112,7 @@ param roleAssignments = [
     name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

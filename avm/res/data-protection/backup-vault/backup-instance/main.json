@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "7658876000950188529"
+      "version": "0.48.1.52935",
+      "templateHash": "15835474282865547364"
     },
     "name": "Data Protection Backup Vault Backup Instances",
     "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -220,8 +220,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "13758461221288698628"
+              "version": "0.48.1.52935",
+              "templateHash": "8769260465467719166"
             }
           },
           "parameters": {

@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Child Module for Data Protection Backup Vault - Backup Instance",
   "telemetryIdPrefix": "46d3xbcp.res.a38eed2",
   "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.dataprot-backupvault-backupinst"],
-  "canonicalType": "Microsoft.Authorization/roleAssignments"
+  "canonicalType": "Microsoft.DataProtection/backupVaults/backupInstances"
 }
