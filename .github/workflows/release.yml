@@ -26,6 +26,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "avm/**"
 
 permissions: {}
 

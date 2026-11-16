@@ -59,8 +59,11 @@ Describe 'Shared Bicep workflow entry points' {
         $prCheck = Get-Content -LiteralPath (Join-Path $workflowRoot 'pr-check.yml') -Raw | ConvertFrom-Yaml
 
         $release.on.push.branches | Should -Be @('main')
-        $release.on.push.ContainsKey('paths') | Should -BeFalse
+        $release.on.push.paths | Should -Be @('avm/**')
         $release.on.ContainsKey('workflow_dispatch') | Should -BeTrue
+        $prCheck.on.pull_request.paths | Should -Be @('avm/**')
+        $prCheck.on.pull_request.types | Should -Be @('opened', 'reopened', 'synchronize', 'labeled')
+        $prCheck.on.ContainsKey('workflow_dispatch') | Should -BeTrue
         $release.name | Should -BeExactly '.Module - Release'
         $release.jobs.release.name | Should -BeExactly '${{ matrix.modulePath }}'
         $prCheck.name | Should -BeExactly '.Module - PR Check'

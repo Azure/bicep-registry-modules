@@ -29,6 +29,8 @@ on:
       - reopened
       - synchronize
       - labeled
+    paths:
+      - "avm/**"
 
 permissions: {}
 
