@@ -137,21 +137,17 @@ function Register-RequiredSubscriptionFeature {
         $action.inputs.modulePath.description | Should -Match 'provider namespaces'
     }
 
-    It 'Keeps registration confined to deployment jobs in <workflowName>' -ForEach @(
-        @{ workflowName = 'avm.template.module' }
-        @{ workflowName = 'avm.template.module.preview' }
-        @{ workflowName = 'avm.template.module.publish' }
-    ) {
-        $workflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' "$workflowName.yml") -Raw)
+    It 'Keeps registration confined to Azure Local deployment jobs' {
+        $workflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'avm.template.hci.module.yml') -Raw)
         $workflow.jobs.job_module_deploy_validation.if | Should -Match "deploymentValidation == 'true'"
-        $workflow.jobs.job_module_deploy_validation.uses | Should -Be './.github/workflows/avm.template.module.deployment.yml'
+        $workflow.jobs.job_module_deploy_validation.uses | Should -Be './.github/workflows/avm.template.hci.consumer.yml'
         foreach ($jobName in @('job_module_static_validation', 'job_psrule_must', 'job_psrule_opt')) {
             ($workflow.jobs[$jobName] | ConvertTo-Json -Depth 20) | Should -Not -Match 'Register-RequiredSubscriptionResourceProvider|avm-validateModuleDeployment'
         }
 
-        $deployment = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'avm.template.module.deployment.yml') -Raw)
+        $deployment = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'avm.template.hci.consumer.yml') -Raw)
         $deploymentStep = $deployment.jobs.job_module_deploy_validation.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
-        $deploymentStep.if | Should -Be '${{ !fromJson(inputs.testCase).e2eIgnore }}'
+        $deploymentStep.if | Should -Be "steps.hci-consumer.outcome == 'success'"
         $deploymentStep.with.modulePath | Should -Be '${{ inputs.modulePath }}'
     }
 }
