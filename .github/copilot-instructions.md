@@ -34,12 +34,11 @@ List every skill loaded for the task. Use an empty `skills` array when no specia
 ** ‼️ CRITICAL REQUIREMENTS FOR AVM BICEP MODULES ‼️**: **All changes MUST comply with Azure Verified Modules (AVM) standards, best practices, naming conventions, version management, development guidelines, validation requirements, etc.,described or referenced in these instructions when generating or modifying Bicep code in this repository.** Failure to comply will result in pull request rejections. Before reviewing or generating any Bicep code, always use `#fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt` for the list of all AVM specifications and detailed guidelines. **READ AND ADHERE TO ALL OF THESE SPECIFICATIONS!**
 For additional guidance, follow this logic: if Microsoft Learn (Microsoft Docs) tools `documentation` and `search` are available, you MUST use them to get the most up-to-date information, otherwise use `#fetch` to get documentation from Microsoft Learn (Microsoft Docs).
 
-### Updating README.md Documentation
+### Authoring and generated module files
 
-**🛑 NEVER update README.md documentation or Markdowns directly**: Always run the [utilities/tools/Set-AVMModule.ps1](utilities/tools/Set-AVMModule.ps1) script to update the module README.md and compile the Bicep files.
+Install `Avm.Authoring` from Microsoft Artifact Registry (MAR) using the [Bicep prerequisites](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/prerequisites/). After changing a module, run `avm pre-commit -Ecosystem bicep -Path '<module-path>'` to validate and regenerate its compiled templates and module READMEs. Do not edit generated module README sections or `main.json` directly. Use `avm docs -Ecosystem bicep -Path '<module-path>'` for README-only generation. See the [authoring guide](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/generate-bicep-module-files/) for authored README notes and child modules.
 
-1. When the script is only used for Readme generation, use the `-SkipBuild` switch, unless you are instructed otherwise by the user or other instructions.
-2. In all other cases, when the `main.bicep` file is updated, you need to update the related `main.json` file - which needs to be done via the same script by not using the `-SkipBuild` switch, targeting the explicit path of the `main.bicep` file.
+Run the relevant checks on the pull request. For same-repository pull requests, add the `PR: Run E2E Tests` label when deployment tests are needed. For fork pull requests, coordinate an authorized deployment test run with a maintainer.
 
 ### Fallback to Use Quick Starts as a last resort
 
@@ -93,38 +92,6 @@ You have exactly these two options (do not use any other method or tool to do th
 - `#get_az_resource_type_schema` takes a resource type (e.g. `Microsoft.Storage/storageAccounts`) and an API version (e.g. `2023-01-01`) as input and outputs the schema for that resource type and API version.
 - `#list_avm_metadata` lists up-to-date metadata for all published AVM modules. The return value is a newline-separated list of AVM metadata. Each line includes the module name, description, versions, and documentation URI for a specific module.
 
-## Running PowerShell Scripts (Example)
-
-**🛑 NEVER use the `&` (call) operator to invoke PowerShell scripts.** The `&` operator loads and invokes a script in a single step, which is not permitted.
-
-Instead, always use the **dot-source** (`. `) approach as per the example below.
-
-> Note: This is just an example of how to run any PowerShell script in this repository, and does not mean that this script always needs exactly these parameters.
-
-1. **Dot-source the script** to load its functions into the current session:
-
-   ```powershell
-   . .\utilities\tools\Set-AVMModule.ps1
-   ```
-
-2. **Call the function by name** with any required parameters:
-
-   ```powershell
-   Set-AVMModule -ModuleFolderPath 'avm/res/network/virtual-network' -Recurse
-   ```
-
-> [!IMPORTANT]
->
-> - **Correct** (two-step, dot-source then call):
->   ```powershell
->   . .\utilities\tools\Set-AVMModule.ps1
->   Set-AVMModule -ModuleFolderPath 'avm/res/network/virtual-network'
->   ```
-> - **Wrong** (single-step `&` invocation — **NEVER** do this):
->   ```powershell
->   & .\utilities\tools\Set-AVMModule.ps1 -ModuleFolderPath 'avm/res/network/virtual-network'
->   ```
-
 ## Quality Assurance and Troubleshooting
 
 ### Code Quality
@@ -142,7 +109,7 @@ Instead, always use the **dot-source** (`. `) approach as per the example below.
 2. **Parameter Validation**: Check required parameters and data types in module documentation
 3. **Naming Conflicts**: Use `uniqueString()` for globally unique resource names
 4. **API Version Compatibility**: Verify ARM API versions match module requirements
-5. **Validation Failures**: Run local Pester tests (validation tests) before committing changes
+5. **Validation Failures**: Run local checks with `avm pr-check` and unit tests with `avm test unit` before committing changes.
 
 ### Support Resources
 
@@ -175,4 +142,4 @@ When a user asks to perform a task that falls within the domain of a skill below
 
 | Skill                       | Description                                                                                                                                                                                      | File                                                  |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
-| avm-child-module-publishing | Publish Bicep child modules to the AVM public registry. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list. | `.github/skills/avm-child-module-publishing/SKILL.md` |
+| avm-child-module-publishing | Publish Bicep child modules to the AVM public registry. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG. | `.github/skills/avm-child-module-publishing/SKILL.md` |
