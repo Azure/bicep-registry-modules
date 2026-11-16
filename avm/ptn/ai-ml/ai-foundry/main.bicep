@@ -30,7 +30,7 @@ param lock lockType?
 @description('Optional. Whether to include associated resources: Key Vault, AI Search, Storage Account, and Cosmos DB. If true, these resources will be created. Optionally, existing resources of these types can be supplied in their respective parameters. Defaults to false.')
 param includeAssociatedResources bool = false
 
-@description('Optional. The Resource ID of the subnet to establish Private Endpoint(s). If provided, private endpoints will be created for the AI Foundry account and associated resources when creating those resource. Each resource will also require supplied private DNS zone resource ID(s) to establish those private endpoints.')
+@description('Optional. The resource ID of the subnet for private endpoints. If provided, private endpoints are created for the AI Foundry account and any newly created associated resources. Private DNS zone groups are created only when their zone resource IDs are provided.')
 param privateEndpointSubnetResourceId string?
 
 @description('Optional. Custom configuration for the AI Foundry.')
@@ -92,16 +92,19 @@ module foundryAccount 'modules/account.bicep' = {
     sku: !empty(aiFoundryConfiguration.?sku) ? aiFoundryConfiguration!.sku! : 'S0'
     disableLocalAuth: aiFoundryConfiguration.?disableLocalAuth ?? true
     allowProjectManagement: aiFoundryConfiguration.?allowProjectManagement ?? true
+    enablePublicNetworkAccess: aiFoundryConfiguration.?enablePublicNetworkAccess
     aiModelDeployments: aiModelDeployments
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    privateEndpointName: aiFoundryConfiguration.?networking.?privateEndpointName
     agentSubnetResourceId: aiFoundryConfiguration.?networking.?agentServiceSubnetResourceId
-    privateDnsZoneResourceIds: !empty(privateEndpointSubnetResourceId) && !empty(aiFoundryConfiguration.?networking)
-      ? [
-          aiFoundryConfiguration!.networking!.cognitiveServicesPrivateDnsZoneResourceId!
-          aiFoundryConfiguration!.networking!.openAiPrivateDnsZoneResourceId!
-          aiFoundryConfiguration!.networking!.aiServicesPrivateDnsZoneResourceId!
-        ]
-      : []
+    privateDnsZoneResourceIds: filter(
+      [
+        aiFoundryConfiguration.?networking.?cognitiveServicesPrivateDnsZoneResourceId ?? ''
+        aiFoundryConfiguration.?networking.?openAiPrivateDnsZoneResourceId ?? ''
+        aiFoundryConfiguration.?networking.?aiServicesPrivateDnsZoneResourceId ?? ''
+      ],
+      zoneId => !empty(zoneId)
+    )
     roleAssignments: aiFoundryConfiguration.?roleAssignments
     tags: tags
     enableTelemetry: enableTelemetry
@@ -123,6 +126,7 @@ module keyVault 'modules/keyVault.bicep' = if (includeAssociatedResources) {
     tags: tags
     enableTelemetry: enableTelemetry
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    privateEndpointName: keyVaultConfiguration.?privateEndpointName
     privateDnsZoneResourceId: keyVaultConfiguration.?privateDnsZoneResourceId
     roleAssignments: keyVaultConfiguration.?roleAssignments
   }
@@ -137,6 +141,7 @@ module aiSearch 'modules/aiSearch.bicep' = if (includeAssociatedResources) {
     tags: tags
     enableTelemetry: enableTelemetry
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    privateEndpointName: aiSearchConfiguration.?privateEndpointName
     privateDnsZoneResourceId: aiSearchConfiguration.?privateDnsZoneResourceId
     roleAssignments: aiSearchConfiguration.?roleAssignments
     sku: aiSearchConfiguration.?sku ?? 'standard'
@@ -159,6 +164,7 @@ module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedReso
     tags: tags
     enableTelemetry: enableTelemetry
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    privateEndpointName: storageAccountConfiguration.?privateEndpointName
     blobPrivateDnsZoneResourceId: storageAccountConfiguration.?blobPrivateDnsZoneResourceId
     roleAssignments: concat(
       !empty(storageAccountConfiguration) && !empty(storageAccountConfiguration.?roleAssignments)
@@ -193,6 +199,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
     tags: tags
     enableTelemetry: enableTelemetry
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    privateEndpointName: cosmosDbConfiguration.?privateEndpointName
     privateDnsZoneResourceId: cosmosDbConfiguration.?privateDnsZoneResourceId
     roleAssignments: cosmosDbConfiguration.?roleAssignments
     enableZoneRedundancy: cosmosDbConfiguration.?enableZoneRedundancy ?? false
@@ -278,7 +285,10 @@ type resourceConfigurationType = {
   @description('Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided.')
   name: string?
 
-  @description('Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when \'privateEndpointSubnetResourceId\' is provided.')
+  @description('Optional. The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource.')
+  privateEndpointName: string?
+
+  @description('Optional. The resource ID of the private DNS zone to associate with the private endpoint. If omitted, DNS integration must be managed externally.')
   privateDnsZoneResourceId: string?
 
   @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
@@ -294,7 +304,10 @@ type storageAccountConfigurationType = {
   @description('Optional. Name to be used when creating the Storage Account. This is ignored if an existingResourceId is provided.')
   name: string?
 
-  @description('Optional. The Resource ID of the DNS zone "blob" for the Azure Storage Account. This is required to establish a Private Endpoint and when \'privateEndpointSubnetResourceId\' is provided.')
+  @description('Optional. The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource.')
+  privateEndpointName: string?
+
+  @description('Optional. The resource ID of the private DNS zone for the blob endpoint. If omitted, DNS integration must be managed externally.')
   blobPrivateDnsZoneResourceId: string?
 
   @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
@@ -310,7 +323,10 @@ type aiSearchConfigurationType = {
   @description('Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided.')
   name: string?
 
-  @description('Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when \'privateEndpointSubnetResourceId\' is provided.')
+  @description('Optional. The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource.')
+  privateEndpointName: string?
+
+  @description('Optional. The resource ID of the private DNS zone to associate with the private endpoint. If omitted, DNS integration must be managed externally.')
   privateDnsZoneResourceId: string?
 
   @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
@@ -370,6 +386,9 @@ type foundryConfigurationType = {
   @description('Optional. Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true.')
   allowProjectManagement: bool?
 
+  @description('Optional. Whether to enable public network access to the AI Foundry account. Defaults to false when a private endpoint subnet is provided and true otherwise.')
+  enablePublicNetworkAccess: bool?
+
   @description('Optional. Values to establish private networking for the AI Foundry account and project.')
   networking: foundryNetworkConfigurationType?
 
@@ -386,14 +405,17 @@ type foundryNetworkConfigurationType = {
   @description('Optional. The Resource ID of the subnet for the Azure AI Services account. This is required if \'createAIAgentService\' is true.')
   agentServiceSubnetResourceId: string?
 
-  @description('Required. The Resource ID of the Private DNS Zone for the Azure AI Services account.')
-  cognitiveServicesPrivateDnsZoneResourceId: string
+  @description('Optional. The name of the private endpoint. If not provided, the resource module generates a name.')
+  privateEndpointName: string?
 
-  @description('Required. The Resource ID of the Private DNS Zone for the OpenAI account.')
-  openAiPrivateDnsZoneResourceId: string
+  @description('Optional. The resource ID of the Cognitive Services private DNS zone. If omitted, DNS integration must be managed externally.')
+  cognitiveServicesPrivateDnsZoneResourceId: string?
 
-  @description('Required. The Resource ID of the Private DNS Zone for the Azure AI Services account.')
-  aiServicesPrivateDnsZoneResourceId: string
+  @description('Optional. The resource ID of the OpenAI private DNS zone. If omitted, DNS integration must be managed externally.')
+  openAiPrivateDnsZoneResourceId: string?
+
+  @description('Optional. The resource ID of the AI Services private DNS zone. If omitted, DNS integration must be managed externally.')
+  aiServicesPrivateDnsZoneResourceId: string?
 }
 
 @export()
@@ -405,7 +427,10 @@ type cosmosDbConfigurationType = {
   @description('Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided.')
   name: string?
 
-  @description('Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when \'privateEndpointSubnetResourceId\' is provided.')
+  @description('Optional. The name of the private endpoint. If not provided, the resource module generates a name. Ignored for an existing resource.')
+  privateEndpointName: string?
+
+  @description('Optional. The resource ID of the private DNS zone to associate with the private endpoint. If omitted, DNS integration must be managed externally.')
   privateDnsZoneResourceId: string?
 
   @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')

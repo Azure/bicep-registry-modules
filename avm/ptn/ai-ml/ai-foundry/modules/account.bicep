@@ -30,14 +30,20 @@ param sku string = 'S0'
 @description('Required. Whether to allow project management in AI Foundry. This is required to enable the AI Foundry UI and project management features.')
 param allowProjectManagement bool
 
-@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneResourceIds\' to establish private endpoints.')
+@description('Optional. Resource ID of an existing subnet to use for the private endpoint.')
 param privateEndpointSubnetResourceId string?
+
+@description('Optional. Name of the private endpoint. If omitted, the resource module generates a name.')
+param privateEndpointName string?
 
 @description('Optional. Resource Id of an existing subnet to use for agent connectivity. This is required when using agents with private endpoints.')
 param agentSubnetResourceId string?
 
 @description('Required. Allow only Azure AD authentication. Should be enabled for security reasons.')
 param disableLocalAuth bool
+
+@description('Optional. Whether to enable public network access. Defaults to false when a private endpoint subnet is provided and true otherwise.')
+param enablePublicNetworkAccess bool?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Specifies the role assignments for the AI Foundry resource.')
@@ -51,7 +57,7 @@ import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.1
 @description('Optional. Specifies the OpenAI deployments to create.')
 param aiModelDeployments deploymentType[] = []
 
-@description('Optional. List of private DNS zone resource IDs to use for the AI Foundry resource. This is required when using private endpoints.')
+@description('Optional. Private DNS zone resource IDs to associate with the private endpoint. If omitted, DNS integration must be managed externally.')
 param privateDnsZoneResourceIds string[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -65,7 +71,7 @@ var privateDnsZoneResourceIdValues = [
     privateDnsZoneResourceId: id
   }
 ]
-var privateNetworkingEnabled = !empty(privateDnsZoneResourceIdValues) && !empty(privateEndpointSubnetResourceId)
+var privateNetworkingEnabled = !empty(privateEndpointSubnetResourceId)
 
 module foundryAccount 'br/public:avm/res/cognitive-services/account:0.14.2' = {
   name: take('avm.res.cognitive-services.account.${name}', 64)
@@ -83,7 +89,7 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.14.2' = {
     deployments: aiModelDeployments
     customSubDomainName: name
     disableLocalAuth: disableLocalAuth
-    publicNetworkAccess: privateNetworkingEnabled ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: (enablePublicNetworkAccess ?? !privateNetworkingEnabled) ? 'Enabled' : 'Disabled'
     networkAcls: {
       defaultAction: 'Allow'
       bypass: 'AzureServices'
@@ -99,9 +105,12 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.14.2' = {
     privateEndpoints: privateNetworkingEnabled
       ? [
           {
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: privateDnsZoneResourceIdValues
-            }
+            name: privateEndpointName
+            privateDnsZoneGroup: !empty(privateDnsZoneResourceIdValues)
+              ? {
+                  privateDnsZoneGroupConfigs: privateDnsZoneResourceIdValues
+                }
+              : null
             subnetResourceId: privateEndpointSubnetResourceId!
           }
         ]

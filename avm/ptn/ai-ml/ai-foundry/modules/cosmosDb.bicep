@@ -8,10 +8,13 @@ param location string
 @description('Optional. The full resource ID of an existing Cosmos DB to use instead of creating a new one.')
 param existingResourceId string?
 
-@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneResourceId\' to establish private endpoints.')
+@description('Optional. Resource ID of an existing subnet to use for the private endpoint.')
 param privateEndpointSubnetResourceId string?
 
-@description('Optional. The resource ID of the private DNS zone for the Cosmos DB to establish private endpoints.')
+@description('Optional. Name of the private endpoint. If omitted, the resource module generates a name.')
+param privateEndpointName string?
+
+@description('Optional. The resource ID of the private DNS zone to associate with the private endpoint.')
 param privateDnsZoneResourceId string?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
@@ -42,7 +45,7 @@ resource existingCosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' exi
   scope: resourceGroup(existingSubscriptionId, existingResourceGroupName)
 }
 
-var privateNetworkingEnabled = !empty(privateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
+var privateNetworkingEnabled = !empty(privateEndpointSubnetResourceId)
 
 module cosmosDb 'br/public:avm/res/document-db/database-account:0.19.0' = if (empty(existingResourceId)) {
   name: take('avm.res.document-db.database-account.${name}', 64)
@@ -64,13 +67,16 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.19.0' = if (em
     privateEndpoints: privateNetworkingEnabled
       ? [
           {
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  privateDnsZoneResourceId: privateDnsZoneResourceId!
+            name: privateEndpointName
+            privateDnsZoneGroup: !empty(privateDnsZoneResourceId)
+              ? {
+                  privateDnsZoneGroupConfigs: [
+                    {
+                      privateDnsZoneResourceId: privateDnsZoneResourceId!
+                    }
+                  ]
                 }
-              ]
-            }
+              : null
             service: 'Sql'
             subnetResourceId: privateEndpointSubnetResourceId!
           }

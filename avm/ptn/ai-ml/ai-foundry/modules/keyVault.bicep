@@ -8,10 +8,13 @@ param location string
 @description('Optional. The full resource ID of an existing Key Vault to use instead of creating a new one.')
 param existingResourceId string?
 
-@description('Optional. Resource Id of an existing subnet to use for private connectivity. This is required along with \'privateDnsZoneResourceId\' to establish private endpoints.')
+@description('Optional. Resource ID of an existing subnet to use for the private endpoint.')
 param privateEndpointSubnetResourceId string?
 
-@description('Optional. The resource ID of the private DNS zone for the Key Vault to establish private endpoints.')
+@description('Optional. Name of the private endpoint. If omitted, the resource module generates a name.')
+param privateEndpointName string?
+
+@description('Optional. The resource ID of the private DNS zone to associate with the private endpoint.')
 param privateDnsZoneResourceId string?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
@@ -36,7 +39,7 @@ resource existingKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (
   scope: resourceGroup(existingSubscriptionId, existingResourceGroupName)
 }
 
-var privateNetworkingEnabled = !empty(privateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
+var privateNetworkingEnabled = !empty(privateEndpointSubnetResourceId)
 
 module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = if (empty(existingResourceId)) {
   name: take('avm.res.key-vault.vault.${name}', 64)
@@ -59,13 +62,16 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = if (empty(existingR
     privateEndpoints: privateNetworkingEnabled
       ? [
           {
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  privateDnsZoneResourceId: privateDnsZoneResourceId!
+            name: privateEndpointName
+            privateDnsZoneGroup: !empty(privateDnsZoneResourceId)
+              ? {
+                  privateDnsZoneGroupConfigs: [
+                    {
+                      privateDnsZoneResourceId: privateDnsZoneResourceId!
+                    }
+                  ]
                 }
-              ]
-            }
+              : null
             service: 'vault'
             subnetResourceId: privateEndpointSubnetResourceId!
           }
