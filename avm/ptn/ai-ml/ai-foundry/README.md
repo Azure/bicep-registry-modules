@@ -495,7 +495,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     baseName: '<baseName>'
     // Non-required parameters
     aiFoundryConfiguration: {
-      enablePublicNetworkAccess: true
+      enablePublicNetworkAccess: false
       networking: {
         privateEndpointName: '<privateEndpointName>'
       }
@@ -539,7 +539,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     // Non-required parameters
     "aiFoundryConfiguration": {
       "value": {
-        "enablePublicNetworkAccess": true,
+        "enablePublicNetworkAccess": false,
         "networking": {
           "privateEndpointName": "<privateEndpointName>"
         }
@@ -591,7 +591,7 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 param baseName = '<baseName>'
 // Non-required parameters
 param aiFoundryConfiguration = {
-  enablePublicNetworkAccess: true
+  enablePublicNetworkAccess: false
   networking: {
     privateEndpointName: '<privateEndpointName>'
   }
