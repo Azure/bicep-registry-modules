@@ -52,8 +52,8 @@ Describe 'Required Bicep PR gates' {
         $env:REQUIRED_RESULT = 'skipped'
         { & $e2eGate } | Should -Throw
         $env:REQUIRED_RESULT = 'success'
-        $env:REQUIRED_ERRORS = '["missing defaults"]'
-        { & $e2eGate } | Should -Throw '*missing*'
+        $env:REQUIRED_ERRORS = '["ignored defaults"]'
+        { & $e2eGate } | Should -Throw '*ignored*'
     }
 
     It 'passes without applicable modules but fails closed on initialization errors' {
