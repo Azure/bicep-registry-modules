@@ -1,0 +1,2 @@
+Temporarily excluded: repeated nested-deployment writes under one root correlation failed with DeploymentActive while the first write was still active. The replay source is unproven; this is not a confirmed capacity failure.
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131893831729

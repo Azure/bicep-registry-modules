@@ -86,6 +86,9 @@ function Get-DeploymentTargetResourceListInner {
         [switch] $RequireCompleteRemoval,
 
         [Parameter()]
+        [switch] $FinalCleanup,
+
+        [Parameter()]
         [System.Collections.Generic.List[string]] $ResolvedDeploymentIds = [System.Collections.Generic.List[string]]::new(),
 
         [Parameter()]
@@ -145,9 +148,10 @@ function Get-DeploymentTargetResourceListInner {
                     -SubscriptionId $baseInputObject.SubscriptionId -ResourceGroupName $ResourceGroupName `
                     -ManagementGroupId $ManagementGroupId -DefaultProfile $currentContext -ErrorAction Stop
             }
-            $allowedStates = $DoThrow ? @('Failed') : @('Succeeded', 'Failed')
+            $allowedStates = ($DoThrow -and -not $FinalCleanup) ? @('Failed') : @('Succeeded', 'Failed')
             if ($state.ProvisioningState -isnot [string] -or $state.ProvisioningState -notin $allowedStates) {
-                throw "Deployment [$Name] is [$($state.ProvisioningState)]; cleanup cannot authorize regional relocation."
+                $cleanupPurpose = $FinalCleanup ? 'complete final teardown' : 'regional relocation'
+                throw "Deployment [$Name] is [$($state.ProvisioningState)]; cleanup cannot authorize $cleanupPurpose."
             }
         }
         $op = Get-DeploymentOperationAtScope @baseInputObject -RequireCompleteRemoval:$RequireCompleteRemoval `
@@ -321,6 +325,9 @@ Optional. Require complete terminal-state discovery and collect deployment recor
 Only proven missing preflight attempts or nested preflight rejections may omit a record.
 Other missing or incomplete records block relocation.
 
+.PARAMETER FinalCleanup
+Optional. Allow Succeeded or Failed terminal roots for complete final teardown; retries require Failed roots.
+
 .EXAMPLE
 Get-DeploymentTargetResourceList -name 'KeyVault' -ResourceGroupName 'validation-rg' -scope 'resourcegroup'
 
@@ -367,9 +374,15 @@ function Get-DeploymentTargetResourceList {
         [int] $SearchRetryInterval = 60,
 
         [Parameter()]
-        [switch] $RequireCompleteRemoval
+        [switch] $RequireCompleteRemoval,
+
+        [Parameter()]
+        [switch] $FinalCleanup
     )
 
+    if ($FinalCleanup -and -not $RequireCompleteRemoval) {
+        throw 'Final cleanup confirmation requires complete discovery and removal.'
+    }
     if (@($PreflightRejectedDeploymentNames | Where-Object { $_ -notin $DeploymentNames }).Count -gt 0) {
         throw 'Preflight rejection metadata contains names outside the supplied deployments.'
     }
@@ -398,6 +411,7 @@ function Get-DeploymentTargetResourceList {
                 ResolvedResourceIds    = $resolvedResourceIds
                 ErrorAction            = 'Stop'
                 RequireCompleteRemoval = $RequireCompleteRemoval
+                FinalCleanup           = $FinalCleanup
                 ResolvedDeploymentIds  = $resolvedDeploymentIds
             }
             if (-not [String]::IsNullOrEmpty($resourceGroupName)) {

@@ -1,12 +1,16 @@
 param(
     [string] $repoRootPath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..' '..' '..' '..' '..' '..')),
     [string[]] $moduleFolderPaths,
-    [string] $nativeResultsPath,
-    [string] $consumerResultsPath
+    [string] $nativeResultsPath = $env:NAMING_NATIVE_RESULTS_PATH,
+    [string] $consumerResultsPath = $env:NAMING_CONSUMER_RESULTS_PATH
 )
 
 Describe 'Native Bicep naming functions' {
     BeforeAll {
+        Import-Module Avm.Authoring -ErrorAction Stop
+        $bicepTool = Get-AvmTool -Name bicep -SkipModuleVersionCheck
+        if ($bicepTool.Status -ne 'installed') { throw 'The managed Bicep compiler is not installed.' }
+        $bicepPath = $bicepTool.Path
         $modulePath = Join-Path $repoRootPath 'avm' 'utl' 'general' 'naming'
         $savedEnvironment = @{}
         $cachePath = Join-Path $TestDrive 'cache'
@@ -16,7 +20,7 @@ Describe 'Native Bicep naming functions' {
             [Environment]::SetEnvironmentVariable($variable, $cachePath)
         }
         $outputPath = Join-Path $TestDrive 'evaluated.json'
-        $diagnostics = bicep build-params (Join-Path $PSScriptRoot 'evaluate.bicepparam') --outfile $outputPath 2>&1
+        $diagnostics = & $bicepPath build-params (Join-Path $PSScriptRoot 'evaluate.bicepparam') --outfile $outputPath 2>&1
         if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw "Native evaluation failed or warned: $($diagnostics | Out-String)" }
         if ($nativeResultsPath) { Copy-Item -LiteralPath $outputPath -Destination $nativeResultsPath }
         $evaluated = (Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json -AsHashtable -Depth 100).parameters
@@ -325,14 +329,14 @@ using none
 import { getName } from './source/main.bicep'
 param name = getName('storage_account', { customOverrides: { schema_version: 3, resources: {} } })
 "@ | Set-Content -LiteralPath $invalidPath -Encoding utf8NoBOM
-        $diagnostics = bicep build-params $invalidPath --outfile (Join-Path $TestDrive 'invalid.json') 2>&1
+        $diagnostics = & $bicepPath build-params $invalidPath --outfile (Join-Path $TestDrive 'invalid.json') 2>&1
         $LASTEXITCODE | Should -Not -Be 0
         $diagnostics -join "`n" | Should -Match 'schema_version.*2'
     }
 
     It 'Imports the compiled registry artifact and stays within ARM template limits' {
         $compiledPath = Join-Path $TestDrive 'library.json'
-        $diagnostics = bicep build (Join-Path $modulePath 'main.bicep') --outfile $compiledPath 2>&1
+        $diagnostics = & $bicepPath build (Join-Path $modulePath 'main.bicep') --outfile $compiledPath 2>&1
         if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
         $template = Get-Content -LiteralPath $compiledPath -Raw | ConvertFrom-Json -AsHashtable -Depth 100
         (Get-Item -LiteralPath $compiledPath).Length | Should -BeLessThan 4194304
@@ -358,7 +362,7 @@ import { getName } from './library.json'
 param result = getName('storage_account', { uniqueSeed: 'abcd' })
 "@ | Set-Content -LiteralPath $consumerPath -Encoding utf8NoBOM
         $consumerOutput = Join-Path $TestDrive 'consumer.json'
-        $diagnostics = bicep build-params $consumerPath --outfile $consumerOutput 2>&1
+        $diagnostics = & $bicepPath build-params $consumerPath --outfile $consumerOutput 2>&1
         if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
         $consumer = (Get-Content -LiteralPath $consumerOutput -Raw | ConvertFrom-Json -AsHashtable -Depth 100).parameters.result.value
         $consumer.nameUnique | Should -BeExactly 'stabcd'
@@ -366,7 +370,7 @@ param result = getName('storage_account', { uniqueSeed: 'abcd' })
 
     It 'Budgets the actual importing consumer and three or ten separate nested copies' {
         $libraryPath = Join-Path $TestDrive 'sized-library.json'
-        $diagnostics = bicep build (Join-Path $modulePath 'main.bicep') --outfile $libraryPath 2>&1
+        $diagnostics = & $bicepPath build (Join-Path $modulePath 'main.bicep') --outfile $libraryPath 2>&1
         if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
         $consumerPath = Join-Path $TestDrive 'runtime-consumer.bicep'
         @'
@@ -375,7 +379,7 @@ param identity string
 output result object = getName('storage_account', { uniqueIdentity: identity })
 '@ | Set-Content -LiteralPath $consumerPath -Encoding utf8NoBOM
         $consumerOutput = Join-Path $TestDrive 'runtime-consumer.json'
-        $diagnostics = bicep build $consumerPath --outfile $consumerOutput 2>&1
+        $diagnostics = & $bicepPath build $consumerPath --outfile $consumerOutput 2>&1
         if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
         $consumerBytes = (Get-Item -LiteralPath $consumerOutput).Length
         $consumerBytes | Should -BeLessThan 262144
@@ -395,7 +399,7 @@ module consumer$index './runtime-consumer.bicep' = {
             "param identity string`n$moduleText`noutput results array = [$references]" |
                 Set-Content -LiteralPath $nestedPath -Encoding utf8NoBOM
             $nestedOutput = Join-Path $TestDrive "nested-$count.json"
-            $diagnostics = bicep build $nestedPath --outfile $nestedOutput 2>&1
+            $diagnostics = & $bicepPath build $nestedPath --outfile $nestedOutput 2>&1
             if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
             $nestedSizes["$count"] = (Get-Item -LiteralPath $nestedOutput).Length
             $nestedSizes["$count"] | Should -BeLessThan 4194304

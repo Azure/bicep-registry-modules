@@ -123,6 +123,7 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.dev.azuresynapse.net'
   'privatelink.sql.azuresynapse.net'
   'privatelink.webpubsub.azure.com'
+  'privatelink.redis.azure.net'
 ]
 
 @description('Optional. An array of Private Link Private DNS Zones to exclude from the deployment. The DNS zone names must match what is provided as the default values or any input to the `privateLinkPrivateDnsZones` parameter e.g. `privatelink.api.azureml.ms` or `privatelink.{regionCode}.backup.windowsazure.com` or `privatelink.{regionName}.azmk8s.io` .')

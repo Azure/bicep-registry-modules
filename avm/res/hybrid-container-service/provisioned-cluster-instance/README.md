@@ -16,6 +16,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -190,7 +191,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     }
     enableTelemetry: true
     keyVaultName: '<keyVaultName>'
-    kubernetesVersion: '1.29.4'
+    kubernetesVersion: '<kubernetesVersion>'
     licenseProfile: {
       azureHybridBenefit: 'False'
     }
@@ -289,7 +290,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       "value": "<keyVaultName>"
     },
     "kubernetesVersion": {
-      "value": "1.29.4"
+      "value": "<kubernetesVersion>"
     },
     "licenseProfile": {
       "value": {
@@ -378,7 +379,7 @@ param controlPlane = {
 }
 param enableTelemetry = true
 param keyVaultName = '<keyVaultName>'
-param kubernetesVersion = '1.29.4'
+param kubernetesVersion = '<kubernetesVersion>'
 param licenseProfile = {
   azureHybridBenefit: 'False'
 }
@@ -1340,6 +1341,14 @@ Tags of the resource.
 | `name` | string | The name of the Aks Arc. |
 | `resourceGroupName` | string | The resource group of the Aks Arc. |
 | `resourceId` | string | The ID of the Aks Arc. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/res/kubernetes/connected-cluster:0.3.0` | Remote reference |
 
 ## Data Collection
 

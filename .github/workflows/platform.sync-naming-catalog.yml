@@ -92,6 +92,7 @@ jobs:
           $null = New-Item -Path $env:TEMP -ItemType Directory -Force
           $evidencePath = Join-Path $env:RUNNER_TEMP 'naming-catalog-evidence'
           $null = New-Item -Path $evidencePath -ItemType Directory -Force
+          Import-Module Avm.Authoring -ErrorAction Stop
           function global:git {
             if (@($args | Where-Object { $_ -in @('checkout', 'reset', 'restore', 'clean') }).Count -gt 0) {
               throw 'Qualification must not discard generated or source changes.'
@@ -101,46 +102,51 @@ jobs:
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tools' 'Sync-NamingCatalog.ps1')
           Sync-NamingCatalog -Revision $env:SOURCE_REVISION -ChangeReportPath (Join-Path $evidencePath 'catalog-changes.json')
           Sync-NamingCatalog -Check
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tools' 'Set-AVMModule.ps1')
           $modulePath = Join-Path $env:GITHUB_WORKSPACE 'avm' 'utl' 'general' 'naming'
           $compiledPath = Join-Path $modulePath 'main.json'
-          Remove-Item -LiteralPath $compiledPath
-          Set-AVMModule -ModuleFolderPath $modulePath -SkipFileAndFolderSetup -ForceCacheRefresh
-          if (-not (Test-Path -LiteralPath $compiledPath)) { throw 'The module compiler did not regenerate main.json.' }
+          avm pre-commit -Ecosystem bicep -Path $modulePath
+          if (-not (Test-Path -LiteralPath $compiledPath)) { throw 'The module compiler did not produce main.json.' }
+          $env:NAMING_NATIVE_RESULTS_PATH = Join-Path $evidencePath 'native-results.json'
+          $env:NAMING_CONSUMER_RESULTS_PATH = Join-Path $evidencePath 'consumer-sizes.json'
+          $unitResults = Invoke-AvmTestUnit -Ecosystem bicep -Path $modulePath -Recurse
+          if ($unitResults.Status -cne 'pass' -or $unitResults.RunsPassed -eq 0 -or $unitResults.RunsFailed -ne 0 -or $unitResults.RunsSkipped -ne 0) { throw 'Native naming unit tests failed or did not run.' }
+          foreach ($path in @($env:NAMING_NATIVE_RESULTS_PATH, $env:NAMING_CONSUMER_RESULTS_PATH)) {
+            if (-not (Test-Path -LiteralPath $path)) { throw "Native test evidence is missing: $path" }
+          }
+          Import-Module Pester -ErrorAction Stop
+          Import-Module powershell-yaml -ErrorAction Stop
+          $results = Invoke-Pester -Configuration @{
+            Run = @{ Path = (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tests' 'pipelines' 'NamingCatalog.Tests.ps1'); PassThru = $true }
+            Output = @{ Verbosity = 'Detailed' }
+            TestResult = @{ Enabled = $true; OutputPath = (Join-Path $evidencePath 'qualification.xml'); OutputFormat = 'NUnitXml' }
+          }
+          if ($results.Result -cne 'Passed' -or $results.PassedCount -eq 0 -or $results.SkippedCount -ne 0) { throw 'Offline catalog qualification failed.' }
+          $changedFiles = @(git diff --name-only HEAD)
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect changed files.' }
+          $changedFiles += @(git ls-files --others --exclude-standard)
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect untracked files.' }
+          if (@($changedFiles | Where-Object { $_ -and -not $_.StartsWith('avm/utl/general/naming/') }).Count -gt 0) {
+            throw 'Unexpected changes outside the naming utility; refusing to qualify.'
+          }
           git add -- avm/utl/general/naming
           if ($LASTEXITCODE -ne 0) { throw 'Cannot stage generated files for release-eligibility checks.' }
           git diff --cached --check
           if ($LASTEXITCODE -ne 0) { throw 'Generated changes fail whitespace checks.' }
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Initialize-AvmPester.ps1')
-          Initialize-AvmPester -RepoRootPath $env:GITHUB_WORKSPACE
-          $containers = @(
-            New-PesterContainer -Path (Join-Path $modulePath 'tests' 'unit' 'Naming.Tests.ps1') -Data @{
-              repoRootPath = $env:GITHUB_WORKSPACE
-              moduleFolderPaths = @($modulePath)
-              nativeResultsPath = (Join-Path $evidencePath 'native-results.json')
-              consumerResultsPath = (Join-Path $evidencePath 'consumer-sizes.json')
-            }
-            New-PesterContainer -Path (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tests' 'pipelines' 'NamingCatalog.Tests.ps1') -Data @{ repoRootPath = $env:GITHUB_WORKSPACE }
-            New-PesterContainer -Path (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tests' 'pipelines' 'Set-ModuleReadme.Tests.ps1') -Data @{ repoRootPath = $env:GITHUB_WORKSPACE }
-            New-PesterContainer -Path (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'compliance' 'module.tests.ps1') -Data @{ repoRootPath = $env:GITHUB_WORKSPACE; moduleFolderPaths = @($modulePath) }
-          )
-          $results = Invoke-Pester -Configuration @{
-            Run = @{ Container = $containers; PassThru = $true }
-            Output = @{ Verbosity = 'Detailed' }
-            TestResult = @{ Enabled = $true; OutputPath = (Join-Path $evidencePath 'qualification.xml'); OutputFormat = 'NUnitXml' }
-          }
-          if ($results.Result -cne 'Passed' -or $results.PassedCount -eq 0) { throw 'Offline naming qualification failed.' }
-          git diff --exit-code -- avm/utl/general/naming
-          if ($LASTEXITCODE -ne 0) { throw 'Qualification modified files after they were staged.' }
           $qualifiedTree = git write-tree
           if ($LASTEXITCODE -ne 0) { throw 'Cannot record the qualified tree.' }
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "chore: Sync naming catalog from Terraform $($env:SOURCE_REVISION.Substring(0, 12))"
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot create the local candidate commit.' }
+          avm pr-check -Ecosystem bicep -Path $modulePath
+          $checkedTree = git rev-parse 'HEAD^{tree}'
+          if ($LASTEXITCODE -ne 0 -or $checkedTree -cne $qualifiedTree) { throw 'PR checks changed the qualified tree.' }
+          $remainingChanges = git status --porcelain
+          if ($LASTEXITCODE -ne 0 -or $remainingChanges) { throw 'PR checks left a dirty candidate.' }
           [ordered]@{
             revision = $env:SOURCE_REVISION
             tree = $qualifiedTree
             result = $results.Result
-            passed = $results.PassedCount
-            failed = $results.FailedCount
-            skipped = $results.SkippedCount
+            catalogPassed = $results.PassedCount
+            unitPassed = $unitResults.RunsPassed
           } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidencePath 'qualification.json') -Encoding utf8NoBOM
           'qualified=true' >> $env:GITHUB_OUTPUT
 
@@ -164,27 +170,14 @@ jobs:
           $openReviews = gh api "repos/$env:GITHUB_REPOSITORY/pulls?state=open&per_page=100" --paginate --jq '.[] | select(.head.ref | startswith("automation/naming-catalog-")) | .html_url'
           if ($LASTEXITCODE -ne 0) { throw 'Cannot recheck existing catalog reviews.' }
           if ($openReviews) { throw "A catalog review opened during qualification and is left unchanged: $($openReviews -join ', ')" }
-          $changedFiles = git diff --name-only HEAD
-          if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect generated changes.' }
-          $untrackedFiles = git ls-files --others --exclude-standard
-          if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect newly generated chunks.' }
-          if (@(@($changedFiles) + @($untrackedFiles) | Where-Object { $_ -and -not $_.StartsWith('avm/utl/general/naming/') }).Count -gt 0) {
-            throw 'Unexpected changes outside the naming utility; refusing to commit.'
-          }
-          git switch -c $env:UPDATE_BRANCH
-          if ($LASTEXITCODE -ne 0) { throw 'Cannot create a new update branch.' }
-          git config user.name 'github-actions[bot]'
-          if ($LASTEXITCODE -ne 0) { throw 'Cannot configure the commit author.' }
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          if ($LASTEXITCODE -ne 0) { throw 'Cannot configure the commit email.' }
-          git add -- avm/utl/general/naming
-          if ($LASTEXITCODE -ne 0) { throw 'Cannot stage the catalog update.' }
           $evidencePath = Join-Path $env:RUNNER_TEMP 'naming-catalog-evidence'
           $qualification = Get-Content -LiteralPath (Join-Path $evidencePath 'qualification.json') -Raw | ConvertFrom-Json
-          $candidateTree = git write-tree
+          $candidateTree = git rev-parse 'HEAD^{tree}'
           if ($LASTEXITCODE -ne 0 -or $candidateTree -cne $qualification.tree) { throw 'The proposed update differs from the qualified tree.' }
-          git commit -m "chore: Sync naming catalog from Terraform $($env:SOURCE_REVISION.Substring(0, 12))"
-          if ($LASTEXITCODE -ne 0) { throw 'Cannot commit the catalog update.' }
+          $remainingChanges = git status --porcelain
+          if ($LASTEXITCODE -ne 0 -or $remainingChanges) { throw 'The proposed update is dirty.' }
+          git switch -c $env:UPDATE_BRANCH
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot create a new update branch.' }
           git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin "HEAD:refs/heads/$env:UPDATE_BRANCH"
           if ($LASTEXITCODE -ne 0) { throw 'Cannot push the new branch; no overwrite or retry was attempted.' }
           $body = Get-Content -LiteralPath (Join-Path $env:GITHUB_WORKSPACE '.github' 'pull_request_template.md') -Raw
@@ -201,10 +194,9 @@ jobs:
           if ($changes.entries.Count -gt 100) { $changeSummary += " Showing 100 of $($changes.entries.Count) entries; the artifact contains every change." }
           $changeDetails = $changeTable -join "`n"
           $description = "Synchronizes byte-identical snapshots from https://github.com/Azure/terraform-azure-avm-utl-naming/commit/$env:SOURCE_REVISION and regenerates lossless Bicep chunks and the compact runtime index. No upstream scripts, Azure deployments, registry publication or automatic merging are performed.`n`n$changeSummary`n`n$changeDetails`n`n**Maintainer review required:** inspect potential naming and validation changes, choose the release version, update CHANGELOG.md and qualify any changed Terraform behavior before publishing. Resource-type, variant and length changes are reported because custom templates may use them; descriptive metadata does not rotate derived tokens."
-          $evidence = "Passed before proposing this draft: ``Sync-NamingCatalog -Revision $env:SOURCE_REVISION -ChangeReportPath <evidence>/catalog-changes.json``, ``Sync-NamingCatalog -Check``, ``Set-AVMModule -ModuleFolderPath avm/utl/general/naming -SkipFileAndFolderSetup -ForceCacheRefresh``, ``git diff --cached --check``, and scoped ``Invoke-Pester`` for Naming.Tests.ps1, NamingCatalog.Tests.ps1, Set-ModuleReadme.Tests.ps1 and compliance/module.tests.ps1. Result: $($qualification.passed) passed, $($qualification.failed) failed, $($qualification.skipped) skipped; qualified tree: ``$($qualification.tree)``. Azure validation was not run.`n`nThese checks run explicitly because token-created events do not start ordinary checks automatically; GitHub may require a maintainer to approve subsequent runs. Native results, consumer sizes, the complete change report and test results are retained in this run's artifacts.`n`nRun: $env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
+          $evidence = "Passed before proposing this draft: ``Sync-NamingCatalog -Revision $env:SOURCE_REVISION -ChangeReportPath <evidence>/catalog-changes.json``, ``Sync-NamingCatalog -Check``, ``avm pre-commit -Ecosystem bicep -Path avm/utl/general/naming``, ``Invoke-AvmTestUnit -Ecosystem bicep -Path avm/utl/general/naming -Recurse``, ``Invoke-Pester`` for NamingCatalog.Tests.ps1, ``git diff --cached --check``, and ``avm pr-check -Ecosystem bicep -Path avm/utl/general/naming``. Native: $($qualification.unitPassed) passed; catalog: $($qualification.catalogPassed) passed; qualified tree: ``$($qualification.tree)``. Azure validation was not run.`n`nThese checks run explicitly because token-created events do not start ordinary checks automatically; GitHub may require a maintainer to approve subsequent runs. Native results, consumer sizes, the complete change report and test results are retained in this run's artifacts.`n`nRun: $env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
           $body = $body.Replace('## Description', "## Description`n`n$description").Replace('## Pipeline Reference', "## Pipeline Reference`n`n$evidence")
           $body = $body.Replace("- [ ] I'm sure there are no other open Pull Requests for the same update/change", "- [x] I'm sure there are no other open Pull Requests for the same update/change")
-          $body = $body.Replace('- [ ] I have run `Set-AVMModule` locally to generate the supporting module files.', '- [x] I have run `Set-AVMModule` locally to generate the supporting module files.')
           $bodyPath = Join-Path $env:RUNNER_TEMP 'naming-catalog-review.md'
           $body | Set-Content -LiteralPath $bodyPath -Encoding utf8NoBOM
           gh pr create --repo $env:GITHUB_REPOSITORY --base $env:DEFAULT_BRANCH --head $env:UPDATE_BRANCH --draft --title 'chore: Sync the Bicep naming catalog with Terraform' --body-file $bodyPath

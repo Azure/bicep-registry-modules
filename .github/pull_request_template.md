@@ -10,13 +10,9 @@ Fixes #123
 Closes #123
 -->
 
-## Pipeline Reference
+## PR Checks
 
-<!-- Insert your Pipeline Status Badge below -->
-
-| Pipeline |
-| -------- |
-
+<!-- Review the shared checks on this PR. For same-repository PRs, add the PR: Run E2E Tests label when deployment tests are needed. -->
 
 ## Type of Change
 
@@ -32,7 +28,7 @@ Closes #123
 ## Checklist
 
 - [ ] I'm sure there are no other open Pull Requests for the same update/change
-- [ ] I have run `Set-AVMModule` locally to generate the supporting module files.
+- [ ] I have run `avm pre-commit` locally to generate the supporting module files, if applicable.
 - [ ] My corresponding pipelines / checks run clean and green without any errors or warnings
 - [ ] I have updated the module's CHANGELOG.md file with an entry for the next version
 

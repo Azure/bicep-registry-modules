@@ -59,7 +59,7 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -76,14 +76,14 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
     accessPolicies: []
   }
 
-  resource serverKey 'keys@2024-11-01' = {
+  resource serverKey 'keys@2026-02-01' = {
     name: 'serverKeyEncryptionKey'
     properties: {
       kty: 'RSA'
     }
   }
 
-  resource databaseKey 'keys@2024-11-01' = {
+  resource databaseKey 'keys@2026-02-01' = {
     name: 'databaseKeyEncryptionKey'
     properties: {
       kty: 'RSA'

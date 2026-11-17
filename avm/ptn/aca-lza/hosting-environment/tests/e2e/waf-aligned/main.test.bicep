@@ -19,7 +19,7 @@ param namePrefix string = '#_namePrefix_#'
 param password string = newGuid()
 
 @description('Optional. The location to deploy resources to.')
-var enforcedLocation = 'northeurope'
+var enforcedLocation = 'swedencentral'
 
 // ============ //
 // Dependencies //
@@ -37,7 +37,7 @@ module testDeployment '../../../main.bicep' = {
     }
     environment: 'dev'
     location: enforcedLocation
-    vmSize: 'Standard_B1s'
+    vmSize: 'Standard_D2as_v5'
     storageAccountType: 'Premium_LRS'
     vmAdminPassword: password
     vmAuthenticationType: 'sshPublicKey'
@@ -55,11 +55,26 @@ module testDeployment '../../../main.bicep' = {
     applicationGatewayCertificateKeyName: 'appgwcert'
     deployZoneRedundantResources: true
     exposeContainerAppsWith: 'applicationGateway'
+    deploySampleApplication: true
     enableDdosProtection: true
     acrGeoReplicationLocations: [
-      'westeurope'
+      'northeurope'
     ]
   }
 }
 
+module signatureVerification 'validate-signed-images.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-notation-${serviceShort}'
+  params: {
+    resourceGroupName: testDeployment.outputs.resourceGroupName
+    location: enforcedLocation
+    registryName: testDeployment.outputs.containerRegistryName
+    registryLoginServer: testDeployment.outputs.containerRegistryLoginServer
+    vaultName: testDeployment.outputs.keyVaultName
+    sampleVerification: testDeployment.outputs.sampleImageVerification
+  }
+}
+
 output testDeploymentOutputs object = testDeployment.outputs
+
+output notationVerification object = signatureVerification.outputs.results

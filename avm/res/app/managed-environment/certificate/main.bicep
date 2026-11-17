@@ -78,6 +78,9 @@ output resourceId string = managedEnvironmentCertificate.id
 @description('The resource group the certificate was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
+@description('The location of the certificate.')
+output location string = managedEnvironmentCertificate.location
+
 // =============== //
 //   Definitions   //
 // =============== //

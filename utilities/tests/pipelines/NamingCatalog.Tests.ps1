@@ -4,6 +4,10 @@ param(
 
 Describe 'Terraform naming catalog synchronization' {
     BeforeAll {
+        Import-Module Avm.Authoring -ErrorAction Stop
+        $bicepTool = Get-AvmTool -Name bicep -SkipModuleVersionCheck
+        if ($bicepTool.Status -ne 'installed') { throw 'The managed Bicep compiler is not installed.' }
+        $bicepPath = $bicepTool.Path
         . (Join-Path $repoRootPath 'utilities' 'tools' 'Sync-NamingCatalog.ps1')
         $modulePath = Join-Path $repoRootPath 'avm' 'utl' 'general' 'naming'
         $manifest = Get-Content -LiteralPath (Join-Path $modulePath 'catalog-source.json') -Raw | ConvertFrom-Json -AsHashtable -Depth 100
@@ -40,17 +44,9 @@ Describe 'Terraform naming catalog synchronization' {
         { Sync-NamingCatalog -ModuleFolderPath $modulePath -Check -Revision $manifest.revision } | Should -Throw '*offline*'
     }
 
-    It 'Accepts compiler-qualified import variables without allowing non-camel-case source names' {
-        $compliance = Get-Content -LiteralPath (Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'module.tests.ps1') -Raw
-        $match = [regex]::Match($compliance, '\$variable -cnotmatch ''([^'']+)''')
-        $match.Success | Should -BeTrue
-        $pattern = $match.Groups[1].Value
-        foreach ($name in @('namingCatalog', '$fxv#0', '_1._2', '_12._34', '_1.generatedCatalog')) {
-            $name -cmatch $pattern | Should -BeTrue -Because $name
-        }
-        foreach ($name in @('bad_name', 'BadName', 'bad-name', '1name', '_1.bad_name', '_1.BadName', '_1._bad', '_1._2_name')) {
-            $name -cmatch $pattern | Should -BeFalse -Because $name
-        }
+    It 'Accepts compiler-qualified import variables in native conventions' {
+        $result = Invoke-AvmCheckConvention -Path $modulePath -Ecosystem bicep -SkipModuleVersionCheck
+        @($result.Issues | Where-Object { $_.Code -ceq 'avm.bicep.variable-name' }).Count | Should -Be 0
     }
 
     It 'Recomposes every resource and every envelope property from the on-disk chunks' {
@@ -168,41 +164,6 @@ Describe 'Terraform naming catalog synchronization' {
         $emptyPaths = Add-NamingJsonChunks -Artifacts $artifacts -Stem 'empty' -Items @() -ChunkSize 64
         $emptyPaths.Count | Should -Be 1
         $utf8.GetString($artifacts[$emptyPaths[0]]).Trim() | Should -BeExactly '[]'
-    }
-
-    It 'Preserves compact catalog nulls and nested array shapes in the compliance JSON comparer' {
-        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'ConvertTo-OrderedHashtable.ps1')
-        $normalized = ConvertTo-OrderedHashtable -JSONInputObject '{"values":[null,[],["one"],[2,1,null],{"b":2,"a":1},false,0,"",null]}'
-        $normalized.values.Count | Should -Be 9
-        @($normalized.values | Where-Object { $null -eq $_ }).Count | Should -Be 2
-        $arrays = @($normalized.values | Where-Object { $_ -is [array] })
-        $arrays.Count | Should -Be 3
-        @($arrays | Where-Object Count -EQ 0).Count | Should -Be 1
-        $singleton = @($arrays | Where-Object Count -EQ 1)
-        ConvertTo-Json -InputObject $singleton[0] -Compress | Should -BeExactly '["one"]'
-        $nested = @($arrays | Where-Object Count -EQ 3)
-        ConvertTo-Json -InputObject $nested[0] -Compress | Should -BeExactly '[null,1,2]'
-        $objects = @($normalized.values | Where-Object { $_ -is [Collections.IDictionary] })
-        $objects.Count | Should -Be 1
-        @($objects[0].Keys) -join ',' | Should -BeExactly 'a,b'
-        @($normalized.values | Where-Object { $_ -is [bool] -and -not $_ }).Count | Should -Be 1
-        @($normalized.values | Where-Object { $_ -is [long] -and $_ -eq 0 }).Count | Should -Be 1
-        @($normalized.values | Where-Object { $_ -is [string] -and $_ -ceq '' }).Count | Should -Be 1
-        $json = ConvertTo-Json -InputObject $normalized -Depth 20 -Compress
-        ConvertTo-Json -InputObject (ConvertTo-OrderedHashtable -JSONInputObject $json) -Depth 20 -Compress |
-            Should -BeExactly $json
-        foreach ($json in @('null', '[]', '["one"]', '{"values":[null]}', '{"values":[]}')) {
-            ConvertTo-Json -InputObject (ConvertTo-OrderedHashtable -JSONInputObject $json) -Compress |
-                Should -BeExactly $json
-        }
-        $primitives = ConvertTo-OrderedHashtable -JSONInputObject '{"values":[12,1,2]}'
-        ConvertTo-Json -InputObject $primitives.values -Compress | Should -BeExactly '[1,2,12]'
-        $mixed = ConvertTo-Json -InputObject @{ values = (@($false, 0, '', $true, 1, 'a', '0', -1) * 20) } -Compress
-        $normalized = ConvertTo-OrderedHashtable -JSONInputObject $mixed
-        $normalized.values.Count | Should -Be 160
-        $json = ConvertTo-Json -InputObject $normalized -Depth 20 -Compress
-        ConvertTo-Json -InputObject (ConvertTo-OrderedHashtable -JSONInputObject $json) -Depth 20 -Compress |
-            Should -BeExactly $json
     }
 
     It 'Reports potential naming changes separately from validation and descriptive metadata' {
@@ -404,7 +365,7 @@ var probes = loadJsonContent('./descriptor-probes.json')
 param results = map(probes, probe => map(probe.values, value => matchesDescriptor(value, probe.descriptor)))
 '@ | Set-Content -LiteralPath $parameterPath -Encoding utf8NoBOM
         $outputPath = Join-Path $TestDrive 'descriptor-results.json'
-        $diagnostics = bicep build-params $parameterPath --outfile $outputPath 2>&1
+        $diagnostics = & $bicepPath build-params $parameterPath --outfile $outputPath 2>&1
         if ($LASTEXITCODE -ne 0 -or $diagnostics) { throw ($diagnostics | Out-String) }
         $results = (Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json -AsHashtable -Depth 100).parameters.results.value
         for ($patternIndex = 0; $patternIndex -lt $probes.Count; $patternIndex++) {
@@ -429,16 +390,18 @@ param results = map(probes, probe => map(probe.values, value => matchesDescripto
         $parsed.permissions.Count | Should -Be 0
         @($parsed.jobs.sync.permissions.Keys | Sort-Object) -join ',' | Should -BeExactly 'contents,pull-requests'
         $workflow | Should -Match 'Sync-NamingCatalog -Check'
-        $workflow | Should -Match 'Initialize-AvmPester'
+        $workflow | Should -Match 'avm pre-commit -Ecosystem bicep'
+        $workflow | Should -Match 'Invoke-AvmTestUnit'
+        $workflow | Should -Match 'avm pr-check -Ecosystem bicep'
         $workflow | Should -Match 'Invoke-Pester'
         $workflow | Should -Match '\$results.Result -cne ''Passed'''
         $qualify = $parsed.jobs.sync.steps | Where-Object id -EQ 'qualify'
-        $qualify.run | Should -Match 'Naming.Tests.ps1'
         $qualify.run | Should -Match 'NamingCatalog.Tests.ps1'
-        $qualify.run | Should -Match 'Set-ModuleReadme.Tests.ps1'
-        $qualify.run | Should -Match "'compliance' 'module.tests.ps1'"
-        $qualify.run.IndexOf('Initialize-AvmPester -RepoRootPath') | Should -BeLessThan $qualify.run.IndexOf('New-PesterContainer')
-        $qualify.run.IndexOf('git add --') | Should -BeLessThan $qualify.run.IndexOf('Invoke-Pester')
+        $qualify.run | Should -Not -Match 'Set-AVMModule|Set-ModuleReadme.Tests.ps1|compliance.*module.tests.ps1'
+        $qualify.run.IndexOf('Invoke-Pester') | Should -BeLessThan $qualify.run.IndexOf('git add --')
+        $qualify.run.IndexOf('git add --') | Should -BeLessThan $qualify.run.IndexOf("git -c user.name=")
+        $qualify.run.IndexOf("git -c user.name=") | Should -BeLessThan $qualify.run.IndexOf('avm pr-check')
+        $qualify.run.IndexOf('avm pr-check') | Should -BeLessThan $qualify.run.IndexOf("'qualified=true'")
         $qualify.run.IndexOf("`$results.Result -cne 'Passed'") | Should -BeLessThan $qualify.run.IndexOf("'qualified=true'")
         $qualify.run | Should -Match "function global:git"
         $qualify.run | Should -Match 'qualification.xml'
@@ -447,10 +410,11 @@ param results = map(probes, probe => map(probe.values, value => matchesDescripto
         $propose.if | Should -Match "steps.qualify.outputs.qualified == 'true'"
         $propose.run | Should -Match 'catalog-changes.json'
         $propose.run | Should -Match 'metadataOnlyCount'
-        $propose.run.IndexOf('$candidateTree -cne $qualification.tree') | Should -BeLessThan $propose.run.IndexOf('git commit')
+        $propose.run.IndexOf('$candidateTree -cne $qualification.tree') | Should -BeLessThan $propose.run.IndexOf('push origin')
         $workflow | Should -Match 'actions/upload-artifact@'
         $workflow | Should -Match 'gh pr create.*--draft'
         $workflow | Should -Not -Match 'gh pr merge|--force|terraform apply|az deployment|Publish-ResourceNameRules|workflow_run|pull_request_target'
+        Test-Path -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' 'avm.utl.general.naming.yml') | Should -BeFalse
         foreach ($step in $parsed.jobs.sync.steps | Where-Object { $_.Contains('run') }) {
             $tokens = $null
             $errors = $null
@@ -459,46 +423,14 @@ param results = map(probes, probe => map(probe.values, value => matchesDescripto
         }
     }
 
-    It 'Documents only exported functions even when private helpers have no metadata' {
-        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
-        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Merge-FileWithNewContent.ps1')
-        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-BRMRepositoryName.ps1')
-        $template = @{
-            metadata = @{ name = 'Naming'; description = 'Pure naming functions.' }
-            resources = @{}
-            functions = @(@{
-                    namespace = '__bicep'
-                    members = @{
-                        getName = @{ metadata = @{ '__bicep_export!' = $true; description = "Public naming function.`nSecond line." } }
-                        getCatalog = @{ metadata = @{ '__bicep_export!' = $true } }
-                        hiddenWithDescription = @{ metadata = @{ description = 'Private implementation.' } }
-                        hiddenWithoutMetadata = @{ output = @{ type = 'string'; value = 'internal' } }
-                    }
-                })
-        }
-        $readme = @('# Utility', '', '## Exported functions', '', '## Notes', '', 'Keep these notes.')
-        $result = Set-FunctionsSection -TemplateFileContent $template -ReadMeFileContent $readme
-        $text = $result -join "`n"
-        $text | Should -Match '\| `getName` \| Public naming function.<p>Second line. \|'
-        $text | Should -Match '\| `getCatalog` \|  \|'
-        $text | Should -Not -Match 'hiddenWithDescription|hiddenWithoutMetadata'
-        $text | Should -Match 'Keep these notes.'
-        $initialize = @{
-            ReadMeFilePath = Join-Path $modulePath 'README.md'
-            FullModuleIdentifier = 'general/naming'
-            TemplateFilePath = Join-Path $modulePath 'main.bicep'
-            TemplateFileContent = $template
-        }
-        (Initialize-ReadMe @initialize | ForEach-Object { $_ }) -join "`n" | Should -Match "import \{ getCatalog, getName \} from 'br/public:avm/utl/general/naming:<version>'"
-        $template.resources = @{ resource = @{} }
-        (Initialize-ReadMe @initialize | ForEach-Object { $_ }) -join "`n" | Should -Match "module naming 'br/public:avm/utl/general/naming:<version>'"
-        $generatedReadme = Get-Content -LiteralPath (Join-Path $modulePath 'README.md') -Raw
-        $generatedReadme | Should -Not -Match 'validate and deploy the module successfully|from ''../../../main.bicep'''
-        $generatedReadme | Should -Match "import \{ getName \} from 'br/public:avm/utl/general/naming:<version>'"
-        $generatedReadme | Should -Match '<summary>via Bicep import</summary>'
-        $template.functions[0].members.Remove('getName')
-        $template.functions[0].members.Remove('getCatalog')
-        (Set-FunctionsSection -TemplateFileContent $template -ReadMeFileContent $readme) -join "`n" | Should -BeExactly ($readme -join "`n")
+    It 'Documents exported functions and public imports using the native renderer' {
+        $result = Invoke-AvmDocs -Path $modulePath -Ecosystem bicep -CheckDrift -IncludeRenderedContent -SkipModuleVersionCheck
+        $generatedReadme = @($result.GeneratedReadmes | Where-Object { $_.Path -eq 'README.md' })[0].Content
+        ($generatedReadme -match 'validate and deploy the module successfully|from ''../../../main.bicep''') | Should -BeFalse
+        ($generatedReadme -match "import \{ getCatalog, getName, getNames, getNamesByResourceType \} from 'br/public:avm/utl/general/naming:<version>'") | Should -BeTrue
+        ($generatedReadme -match "import \{ getName \} from 'br/public:avm/utl/general/naming:<version>'") | Should -BeTrue
+        ($generatedReadme -match '<summary>via Bicep import</summary>') | Should -BeTrue
+        ($generatedReadme -match '\| `matchesDescriptor` \|') | Should -BeFalse
     }
 
     It 'Runs the qualification Git guard with the first native executable and rejects destructive arguments' {

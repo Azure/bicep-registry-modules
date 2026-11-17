@@ -11,7 +11,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
         . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
         $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $actionPath -Raw)
-        $environmentNames = @('GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME')
+        $environmentNames = @('GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME', 'AVM_DEPLOYMENT_DATA_FILE', 'AVM_REQUIRE_COMPLETE_REMOVAL')
         $subscriptionId = '11111111-1111-1111-1111-111111111111'
         $resourceGroupId = "/subscriptions/$subscriptionId/resourceGroups/dep-fixture-rg"
         $resourceIds = @(
@@ -19,9 +19,9 @@ Describe 'Deployment submission and cleanup runtime integration' {
             "$resourceGroupId/providers/Microsoft.Compute/diskEncryptionSets/dep-fixture-des"
             "$resourceGroupId/providers/Microsoft.KeyVault/vaults/dep-fixture-kv"
             "$resourceGroupId/providers/Microsoft.KeyVault/vaults/dep-fixture-kv/keys/encryptionKey"
-            "$resourceGroupId/providers/Microsoft.KeyVault/vaults/dep-fixture-kv/providers/Microsoft.Authorization/roleAssignments/kv-reader"
+            "$resourceGroupId/providers/Microsoft.KeyVault/vaults/dep-fixture-kv/providers/Microsoft.Authorization/roleAssignments/33333333-3333-3333-3333-333333333333"
             "$resourceGroupId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-fixture-msi"
-            "$resourceGroupId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-fixture-msi/providers/Microsoft.Authorization/roleAssignments/msi-reader"
+            "$resourceGroupId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-fixture-msi/providers/Microsoft.Authorization/roleAssignments/44444444-4444-4444-4444-444444444444"
             "$resourceGroupId/providers/Microsoft.Network/virtualNetworks/dep-fixture-vnet"
             "$resourceGroupId/providers/Microsoft.Storage/storageAccounts/depfixturestorage"
         )
@@ -215,6 +215,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 '${{ steps.deploy_step.outputs.deploymentNames }}'                  = $Outputs.deploymentNames ?? ''
                 '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}' = $Outputs.preflightRejectedDeploymentNames ?? ''
                 '${{ steps.deploy_step.outputs.pendingDeletionDeploymentIds }}'     = $Outputs.pendingDeletionDeploymentIds ?? ''
+                '${{ steps.deploy_step.outputs.deploymentAttempts }}'               = $Outputs.deploymentAttempts ?? ''
             }
             foreach ($key in $values.Keys) {
                 $stepScript = $stepScript.Replace($key, $values[$key])
@@ -469,11 +470,15 @@ Describe 'Deployment submission and cleanup runtime integration' {
             @{ ActiveKey = @{ SourceVault = @{ Id = $script:fixtureResourceIds[2] } }; Identity = @{ PrincipalId = 'test-des-identity' } }
         }
         Mock Remove-AzKeyVaultAccessPolicy {}
-        Mock Get-AzRoleAssignment {
-            $script:fixtureResourceIds | Where-Object { $_ -like "$Scope/providers/Microsoft.Authorization/roleAssignments/*" } |
-                ForEach-Object { @{ RoleAssignmentId = $_ } }
-        }
-        Mock Remove-AzRoleAssignment { $script:removedIds.Add($InputObject.RoleAssignmentId) }
+        Mock Get-AzRoleAssignment { throw 'Directory token refresh must not be required for cleanup.' }
+        Mock Remove-AzRoleAssignment { throw 'Directory-backed role removal must not be used.' }
+        Mock Invoke-AzRestMethod {
+            $id = $Path.Split('?')[0]
+            $script:fixtureResourceIds | Should -Contain $id
+            $Path | Should -Match '/providers/Microsoft.Authorization/roleAssignments/[0-9a-f-]+\?api-version=2022-04-01$'
+            $script:removedIds.Add($id)
+            @{ StatusCode = 204; Content = '' }
+        } -ParameterFilter { $Method -eq 'DELETE' }
         Mock Get-AzKeyVault { @{ ResourceId = $script:fixtureResourceIds[2]; EnablePurgeProtection = $true } }
         Mock Remove-AzKeyVault { throw 'A purge-protected fixture vault must not be purged.' }
     }
@@ -946,7 +951,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 $cloud | Add-Member -NotePropertyName Body -NotePropertyValue @{ Code = 'DeploymentNotFound'; Message = $message }
                 $cloud | Add-Member -NotePropertyName Request -NotePropertyValue @{
                     Method = [System.Net.Http.HttpMethod]::Get
-                    RequestUri = [uri] "https://management.azure.com$resourceGroupId/providers/Microsoft.Resources/deployments/fixture-dependencies/operations?api-version=2024-11-01"
+                    RequestUri = [uri] "https://management.azure.com$resourceGroupId$($script:readProviderSegment)/deployments/fixture-dependencies/operations?api-version=2024-11-01"
                 }
                 $cloud | Add-Member -NotePropertyName Response -NotePropertyValue @{
                     StatusCode = [System.Net.HttpStatusCode]::NotFound
@@ -1048,6 +1053,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
 
         BeforeEach {
             $script:outcomes = @('RequestTimeout')
+            $script:readProviderSegment = '/providers/Microsoft.Resources'
             $script:statusStates = @('Running', 'Succeeded')
             $script:statusReads = [System.Collections.Generic.List[hashtable]]::new()
             $script:recoveryClock = [datetime]::new(2026, 10, 2, 10, 40, 39, [DateTimeKind]::Utc)
@@ -1165,6 +1171,147 @@ Describe 'Deployment submission and cleanup runtime integration' {
             @($result.DeploymentNames) | Should -Be @($script:attemptNames)
             $script:attemptNames.Count | Should -Be 1
             $script:statusReads.Count | Should -Be 1
+        }
+
+        Context 'Shared status-recovery deadline' -Tag 'RecoveryDeadline' {
+            BeforeEach {
+                $script:deadlineUtc = $script:recoveryClock.AddHours(4)
+            }
+
+            It 'Keeps the one-hour default for direct Wait-TemplateDeployment callers' {
+                Mock Start-Sleep { $script:recoveryClock = $script:recoveryClock.AddHours(1) }
+                { Wait-TemplateDeployment -DeploymentScope subscription -DeploymentName 'direct-wait' } |
+                    Should -Throw '*3600-second recovery window*'
+                $script:statusReads.Count | Should -Be 1
+                $script:recoveryClock | Should -Be $script:deadlineUtc.AddHours(-3)
+                Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+            }
+
+            It 'Rejects a <kind> deadline at the <command> boundary' -ForEach @(
+                foreach ($command in @('Wait-TemplateDeployment', 'New-TemplateDeployment', 'New-TemplateDeploymentInner')) {
+                    foreach ($kind in @('local', 'unspecified', 'null', 'malformed')) {
+                        @{ command = $command; kind = $kind }
+                    }
+                }
+            ) {
+                $callInput = $command -eq 'Wait-TemplateDeployment' ?
+                @{ DeploymentScope = 'subscription'; DeploymentName = 'direct-wait' } : $deploymentInput.Clone()
+                $callInput.RecoveryDeadlineUtc = switch ($kind) {
+                    'local' { [datetime]::SpecifyKind($script:deadlineUtc, [DateTimeKind]::Local) }
+                    'unspecified' { [datetime]::SpecifyKind($script:deadlineUtc, [DateTimeKind]::Unspecified) }
+                    'null' { $null }
+                    'malformed' { 'not-a-deadline' }
+                }
+                { . $command @callInput -ErrorAction Stop } | Should -Throw '*RecoveryDeadlineUtc*'
+                $script:attemptNames.Count | Should -Be 0
+                $script:statusReads.Count | Should -Be 0
+                Should -Invoke Get-AzContext -Times 0 -Exactly
+            }
+
+            It 'Does not read status <seconds> seconds after the deadline' -ForEach @(
+                @{ seconds = 0 }, @{ seconds = 1 }
+            ) {
+                $script:recoveryClock = $script:deadlineUtc.AddSeconds($seconds)
+                $script:statusStates = @('Succeeded')
+                { Wait-TemplateDeployment -DeploymentScope subscription -DeploymentName 'direct-wait' -RecoveryDeadlineUtc $script:deadlineUtc } |
+                    Should -Throw '*recovery deadline*'
+                $script:statusReads.Count | Should -Be 0
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Accepts <state> one tick before the deadline' -ForEach @(
+                @{ state = 'Succeeded' }, @{ state = 'Failed' }
+            ) {
+                $script:recoveryClock = $script:deadlineUtc.AddTicks(-1)
+                $script:statusStates = @($state)
+                $result = Wait-TemplateDeployment -DeploymentScope subscription -DeploymentName 'direct-wait' -RecoveryDeadlineUtc $script:deadlineUtc
+                $result.ProvisioningState | Should -BeExactly $state
+                $script:statusReads.Count | Should -Be 1
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Rejects <state> returned <seconds> seconds after the deadline' -ForEach @(
+                @{ state = 'Succeeded'; seconds = 0 }, @{ state = 'Succeeded'; seconds = 1 }
+                @{ state = 'Failed'; seconds = 0 }, @{ state = 'Failed'; seconds = 1 }
+            ) {
+                $script:recoveryClock = $script:deadlineUtc.AddSeconds(-1)
+                $script:statusStates = @($state)
+                Mock Get-AzDeployment {
+                    $script:recoveryClock = $script:deadlineUtc.AddSeconds($seconds)
+                    Get-TestDeploymentStatus -Name $Name -Scope subscription -Profile $DefaultProfile
+                }
+                { Wait-TemplateDeployment -DeploymentScope subscription -DeploymentName 'direct-wait' -RecoveryDeadlineUtc $script:deadlineUtc } |
+                    Should -Throw '*recovery deadline*'
+                $script:statusReads.Count | Should -Be 1
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+            }
+
+            It 'Clamps the final polling delay to the fractional time remaining' {
+                $script:deadlineUtc = $script:recoveryClock.AddMilliseconds(250)
+                { Wait-TemplateDeployment -DeploymentScope subscription -DeploymentName 'direct-wait' -RecoveryDeadlineUtc $script:deadlineUtc } |
+                    Should -Throw '*recovery deadline*'
+                $script:recoveryClock | Should -Be $script:deadlineUtc
+                $script:statusReads.Count | Should -Be 1
+                Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 0.25 }
+            }
+
+            It 'Keeps the existing <parameter> upper bound' -ForEach @(
+                @{ parameter = 'TimeoutSeconds'; value = 3601 }
+                @{ parameter = 'PollIntervalSeconds'; value = 61 }
+            ) {
+                $waitInput = @{ DeploymentScope = 'subscription'; DeploymentName = 'direct-wait'; RecoveryDeadlineUtc = $script:deadlineUtc }
+                $waitInput[$parameter] = $value
+                { Wait-TemplateDeployment @waitInput } | Should -Throw "*$parameter*"
+                $script:statusReads.Count | Should -Be 0
+            }
+
+            It 'Uses the coordinator deadline from the actual deployment action after an hour' {
+                Mock Start-Sleep { $script:recoveryClock = $script:recoveryClock.AddMinutes(90) }
+                Invoke-TestActionStep -Name 'Deploy template file'
+                $outputs = Get-TestStepOutput
+                ($outputs.deploymentOutput | ConvertFrom-Json).recovered.value | Should -BeExactly 'ready'
+                @($outputs.remainingDeploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+                $script:attemptNames.Count | Should -Be 1
+                $script:statusReads.Count | Should -Be 2
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
+
+            It 'Preserves errors and ownership when <outcome> recovery reaches the supplied deadline' -ForEach @(
+                @{ outcome = 'RequestTimeout'; scope = 'subscription'; original = 'HttpClient.Timeout' }
+                @{ outcome = 'NestedReadNotFound'; scope = 'subscription'; original = 'fixture-dependencies' }
+                @{ outcome = 'Forbidden'; scope = 'managementgroup'; original = 'Original submission diagnostic' }
+            ) {
+                Set-TestTemplateScope -Scope $scope
+                $script:outcomes = @($outcome)
+                $script:readErrorFormat = 'SdkWrapper'
+                $script:readErrorCategory = [System.Management.Automation.ErrorCategory]::ObjectNotFound
+                $script:readErrorMutation = $null
+                $script:selectedContext | Add-Member -NotePropertyName Environment -NotePropertyValue @{
+                    ResourceManagerUrl = 'https://management.azure.com/'
+                }
+                $deploymentInput.RecoveryDeadlineUtc = $script:deadlineUtc
+                Mock Start-Sleep { $script:recoveryClock = $script:deadlineUtc }
+                $result = New-TemplateDeployment @deploymentInput
+                $result.Exception | Should -Match 'recovery deadline'
+                $result.Exception | Should -Match $original
+                $result.ErrorRecord.Exception | Should -BeOfType [System.AggregateException]
+                $result.ErrorRecord.Exception.InnerExceptions[0].Message | Should -Match $original
+                $result.ErrorRecord.Exception.InnerExceptions[1] | Should -BeOfType [System.TimeoutException]
+                if ($outcome -ne 'RequestTimeout') {
+                    $result.ErrorRecord.Exception.Data['OriginalErrorRecord'].ErrorDetails.Message | Should -Match 'fixture-operation'
+                    $result.ErrorRecord.Exception.Data['RecoveryErrorRecord'].Exception | Should -BeOfType [System.TimeoutException]
+                }
+                $result.RetryAllowed | Should -BeFalse
+                $result.FailureQueryAllowed | Should -BeFalse
+                $result.RecoveredFailure | Should -BeFalse
+                $result.DeploymentNames | Should -Be @($script:attemptNames)
+                $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+                $result.ContainsKey('DeploymentOutput') | Should -BeFalse
+                $script:attemptNames.Count | Should -Be 1
+                $script:statusReads.Count | Should -Be 1
+                Should -Invoke Get-ErrorMessageForScope -Times 0 -Exactly
+                Should -Invoke Remove-AzResource -Times 0 -Exactly
+            }
         }
 
         It 'Fails explicitly on <state> without interpreting it as a failed deployment' -ForEach @(
@@ -1327,7 +1474,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
 
         It 'Does not add recovery to <outcome> submission outcomes' -ForEach @(
             @{ outcome = 'NoResult' }, @{ outcome = 'Running' }, @{ outcome = 'MissingState' }
-            @{ outcome = 'Unknown' }, @{ outcome = 'TransportFailure' }, @{ outcome = 'AuthenticationFailure' }
+            @{ outcome = 'Unknown' }, @{ outcome = 'AuthenticationFailure' }
         ) {
             $script:outcomes = @($outcome)
             $result = New-TemplateDeployment @deploymentInput
@@ -1338,6 +1485,20 @@ Describe 'Deployment submission and cleanup runtime integration' {
             Should -Invoke Start-Sleep -Times 0 -Exactly
         }
 
+        It 'Observes the original subscription deployment after a transport failure without replay' {
+            $script:outcomes = @('TransportFailure')
+            $script:statusStates = @('Running', 'Succeeded')
+            $result = New-TemplateDeployment @deploymentInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $result.DeploymentOutput.recovered.value | Should -BeExactly 'ready'
+            @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+            $script:attemptNames.Count | Should -Be 1
+            $script:statusReads.Count | Should -Be 2
+            Should -Invoke New-AzSubscriptionDeployment -Times 1 -Exactly
+            Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+        }
+
         It 'Does not submit or observe under WhatIf' {
             New-TemplateDeployment @deploymentInput -WhatIf
             $script:attemptNames.Count | Should -Be 0
@@ -1346,9 +1507,13 @@ Describe 'Deployment submission and cleanup runtime integration' {
             Should -Invoke Start-Sleep -Times 0 -Exactly
         }
 
-        Context 'Nested deployment read reconciliation' -Tag 'DeploymentReadRecovery' {
+        Context 'Nested deployment read reconciliation for <route>' -Tag 'DeploymentReadRecovery' -ForEach @(
+            @{ route = 'provider-qualified route'; providerSegment = '/providers/Microsoft.Resources' }
+            @{ route = 'legacy SDK route'; providerSegment = '' }
+        ) {
             BeforeEach {
                 $script:outcomes = @('NestedReadNotFound')
+                $script:readProviderSegment = $providerSegment
                 $script:readErrorFormat = 'SdkWrapper'
                 $script:readErrorCategory = [System.Management.Automation.ErrorCategory]::ObjectNotFound
                 $script:readErrorMutation = $null
@@ -1501,6 +1666,8 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 @{ kind = 'HTTP 403' }, @{ kind = 'HTTP 401' }, @{ kind = 'array status' }
                 @{ kind = 'missing request' }, @{ kind = 'POST' }, @{ kind = 'PUT' }, @{ kind = 'DELETE' }
                 @{ kind = 'different subscription' }, @{ kind = 'root operation read' }
+                @{ kind = 'same-name resource group deployment' }, @{ kind = 'missing resource group' }
+                @{ kind = 'deployment status read' }, @{ kind = 'individual operation read' }
                 @{ kind = 'non-deployment resource' }, @{ kind = 'near-match provider' }, @{ kind = 'malformed JSON' }
                 @{ kind = 'duplicate JSON code' }, @{ kind = 'unknown body code' }
                 @{ kind = 'mismatched body message' }, @{ kind = 'contradictory raw message' }
@@ -1523,11 +1690,25 @@ Describe 'Deployment submission and cleanup runtime integration' {
                         'root operation read' {
                             $Cloud.Request.RequestUri = [uri] "https://management.azure.com/subscriptions/$subscriptionId/providers/Microsoft.Resources/deployments/$RootName/operations?api-version=2024-11-01"
                         }
+                        'same-name resource group deployment' {
+                            $Cloud.Request.RequestUri = [uri] $Cloud.Request.RequestUri.AbsoluteUri.Replace('fixture-dependencies', $RootName)
+                            $Cloud.Body.Message = "Deployment '$RootName' could not be found."
+                            $Cloud.Response.Content = $Cloud.Response.Content.Replace('fixture-dependencies', $RootName)
+                        }
+                        'missing resource group' {
+                            $Cloud.Request.RequestUri = [uri] "https://management.azure.com/subscriptions/$subscriptionId/deployments/fixture-dependencies/operations?api-version=2024-11-01"
+                        }
+                        'deployment status read' {
+                            $Cloud.Request.RequestUri = [uri] $Cloud.Request.RequestUri.AbsoluteUri.Replace('/operations?', '?')
+                        }
+                        'individual operation read' {
+                            $Cloud.Request.RequestUri = [uri] $Cloud.Request.RequestUri.AbsoluteUri.Replace('/operations?', '/operations/fixture-operation?')
+                        }
                         'non-deployment resource' {
                             $Cloud.Request.RequestUri = [uri] "https://management.azure.com$resourceGroupId/providers/Microsoft.Compute/images/fixture-dependencies?api-version=2024-11-01"
                         }
                         'near-match provider' {
-                            $Cloud.Request.RequestUri = [uri] $Cloud.Request.RequestUri.AbsoluteUri.Replace('Microsoft.Resources', 'MicrosoftXResources')
+                            $Cloud.Request.RequestUri = [uri] "https://management.azure.com$resourceGroupId/providers/MicrosoftXResources/deployments/fixture-dependencies/operations?api-version=2024-11-01"
                         }
                         'malformed JSON' { $Cloud.Response.Content = '{"error":' }
                         'duplicate JSON code' {

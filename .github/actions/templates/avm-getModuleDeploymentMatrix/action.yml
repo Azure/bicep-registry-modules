@@ -12,6 +12,10 @@ inputs:
     description: "Show friendly names only when the subscription pool comes from variables, not secrets"
     default: "false"
     required: false
+  expectedSubscriptionTag:
+    description: "Accepted subscription tag for active deployments. Reserved pools require their dedicated workflow."
+    default: "General"
+    required: false
 
 outputs:
   deploymentMatrix:
@@ -31,6 +35,7 @@ runs:
         MODULE_PATH: ${{ inputs.modulePath }}
         MODULE_TEST_FILE_PATHS: ${{ inputs.moduleTestFilePaths }}
         DISPLAY_SUBSCRIPTION_NAMES: ${{ inputs.displaySubscriptionNames }}
+        EXPECTED_SUBSCRIPTION_TAG: ${{ inputs.expectedSubscriptionTag }}
       run: |
         . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleDeploymentMatrix.ps1')
 
@@ -42,6 +47,9 @@ runs:
           RandomSeed               = Get-Random -Minimum 0 -Maximum 2147483647
           DisplaySubscriptionNames = $env:DISPLAY_SUBSCRIPTION_NAMES -eq 'true'
           RepoRoot                 = $env:GITHUB_WORKSPACE
+        }
+        if (-not [string]::IsNullOrEmpty($env:EXPECTED_SUBSCRIPTION_TAG)) {
+          $functionInput.ExpectedSubscriptionTag = $env:EXPECTED_SUBSCRIPTION_TAG
         }
         $selection = Get-ModuleDeploymentMatrix @functionInput
         Write-Output ("deploymentMatrix={0}" -f (ConvertTo-Json -InputObject $selection.testCases -Depth 10 -Compress)) >> $env:GITHUB_OUTPUT

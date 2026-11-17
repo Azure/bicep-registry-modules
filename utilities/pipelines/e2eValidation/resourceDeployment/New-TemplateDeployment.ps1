@@ -59,6 +59,10 @@ function Get-TemplateDeployment {
 <#
 .SYNOPSIS
 Observe the original deployment after a request error without submitting it again.
+
+.PARAMETER RecoveryDeadlineUtc
+Optional. Absolute UTC deadline shared by coordinated attempts and recovery paths.
+When supplied, replaces TimeoutSeconds; otherwise the one-hour default is unchanged.
 #>
 function Wait-TemplateDeployment {
     [CmdletBinding()]
@@ -86,12 +90,19 @@ function Wait-TemplateDeployment {
         [string] $ExpectedDeploymentId,
 
         [Parameter()]
+        [guid] $ExpectedCorrelationId,
+
+        [Parameter()]
         [ValidateRange(1, 3600)]
         [int] $TimeoutSeconds = 3600,
 
         [Parameter()]
         [ValidateRange(1, 60)]
-        [int] $PollIntervalSeconds = 15
+        [int] $PollIntervalSeconds = 15,
+
+        [Parameter()]
+        [ValidateScript({ $_.Kind -eq [DateTimeKind]::Utc }, ErrorMessage = 'RecoveryDeadlineUtc must be an absolute UTC datetime.')]
+        [datetime] $RecoveryDeadlineUtc
     )
 
     $context = $DefaultProfile ?? (Get-AzContext -ErrorAction Stop)
@@ -101,7 +112,8 @@ function Wait-TemplateDeployment {
         )) {
         throw "The current Azure context does not match deployment [$DeploymentName]; status recovery cannot continue."
     }
-    $deadline = (Get-Date).ToUniversalTime().AddSeconds($TimeoutSeconds)
+    $deadline = $PSBoundParameters.ContainsKey('RecoveryDeadlineUtc') ?
+    $RecoveryDeadlineUtc : (Get-Date).ToUniversalTime().AddSeconds($TimeoutSeconds)
     $consecutiveTimeouts = 0
     while ((Get-Date).ToUniversalTime() -lt $deadline) {
         try {
@@ -134,7 +146,12 @@ function Wait-TemplateDeployment {
                 )) {
                 throw "Status recovery did not return an unambiguous original deployment [$ExpectedDeploymentId]."
             }
+            if ($PSBoundParameters.ContainsKey('ExpectedCorrelationId') -and
+                [string] $deployment.CorrelationId -ine $ExpectedCorrelationId.ToString('D')) {
+                throw "Status recovery found a replaced deployment operation [$DeploymentName]."
+            }
             if ($deployment.ProvisioningState -is [string] -and $deployment.ProvisioningState -in @('Succeeded', 'Failed')) {
+                if ((Get-Date).ToUniversalTime() -ge $deadline) { break }
                 return $deployment
             }
             if ($deployment.ProvisioningState -isnot [string] -or $deployment.ProvisioningState -notin @('Accepted', 'Running', 'Creating', 'Updating')) {
@@ -145,10 +162,12 @@ function Wait-TemplateDeployment {
 
         $remainingSeconds = ($deadline - (Get-Date).ToUniversalTime()).TotalSeconds
         if ($remainingSeconds -gt 0) {
-            Start-Sleep -Seconds ([Math]::Min($PollIntervalSeconds, $remainingSeconds))
+            Start-Sleep -Seconds ([Math]::Min([double] $PollIntervalSeconds, $remainingSeconds))
         }
     }
-    throw [System.TimeoutException]::new("Status recovery for deployment [$DeploymentName] exceeded the $TimeoutSeconds-second recovery window.")
+    $window = $PSBoundParameters.ContainsKey('RecoveryDeadlineUtc') ?
+    "recovery deadline [$($deadline.ToString('o'))]" : "$TimeoutSeconds-second recovery window"
+    throw [System.TimeoutException]::new("Status recovery for deployment [$DeploymentName] exceeded the $window.")
 }
 
 function Get-NestedDeploymentReadFailure {
@@ -198,7 +217,7 @@ function Get-NestedDeploymentReadFailure {
             if (-not [uri]::TryCreate([string] $exception.Request.RequestUri, [UriKind]::Absolute, [ref] $requestUri) -or
                 $requestUri.Scheme -ne 'https' -or $requestUri.UserInfo -or $requestUri.Fragment -or
                 $requestUri.Query -cnotmatch '^\?api-version=[0-9]{4}-[0-9]{2}-[0-9]{2}$' -or
-                $requestUri.AbsolutePath -notmatch '^/subscriptions/(?<subscription>[0-9a-f-]{36})/resourceGroups/[a-z0-9_.()-]+/providers/Microsoft\.Resources/deployments/(?<name>[a-z0-9_.()-]+)/operations$') { return }
+                $requestUri.AbsolutePath -notmatch '^/subscriptions/(?<subscription>[0-9a-f-]{36})/resourceGroups/[a-z0-9_.()-]+(?:/providers/Microsoft\.Resources)?/deployments/(?<name>[a-z0-9_.()-]+)/operations$') { return }
             $nestedName = $Matches.name
             $nestedSubscription = [guid]::Empty
             if (-not [guid]::TryParse($Matches.subscription, [ref] $nestedSubscription) -or
@@ -512,7 +531,8 @@ Run a template deployment using a given parameter file.
 Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
-After a submitted request times out, observe the same deployment for up to 60 minutes.
+After a submitted request times out, observe the same deployment for up to 60 minutes unless an absolute recovery deadline is supplied.
+Subscription transport failures use the same original-root observation, never an unconfirmed resubmission.
 Structured nested-operation GET 404s during subscription submission observe only the exact original root.
 That recovery never uses legacy replay; confirmed failure still requires coordinated classification and complete cleanup.
 Management-group HTTP 403 submissions use the same observation window and original Azure context.
@@ -550,6 +570,10 @@ Submitted deployments retry only after confirmed failure or preflight rejection.
 
 .PARAMETER AttemptNumber
 Optional. Starting attempt ordinal for deployment names. Coordinated retries supply the global ordinal with RetryLimit=1.
+
+.PARAMETER RecoveryDeadlineUtc
+Optional. Absolute UTC status-recovery deadline, shared across attempts and recovery paths without resetting.
+Coordinated callers supply four hours from coordinator entry. Omission preserves the one-hour recovery default.
 
 .PARAMETER DoNotThrow
 Optional. Do not throw an exception if it failed. Still returns the error message though
@@ -618,7 +642,11 @@ function New-TemplateDeploymentInner {
         [int] $AttemptNumber = 1,
 
         [Parameter(Mandatory = $false)]
-        [string] $RepoRoot
+        [string] $RepoRoot,
+
+        [Parameter()]
+        [ValidateScript({ $_.Kind -eq [DateTimeKind]::Utc }, ErrorMessage = 'RecoveryDeadlineUtc must be an absolute UTC datetime.')]
+        [datetime] $RecoveryDeadlineUtc
     )
 
     begin {
@@ -687,6 +715,10 @@ function New-TemplateDeploymentInner {
         [int]$retryCount = 1
         $usedDeploymentNames = @()
         $preflightRejectedDeploymentNames = @()
+        $recoveryInput = @{}
+        if ($PSBoundParameters.ContainsKey('RecoveryDeadlineUtc')) {
+            $recoveryInput.RecoveryDeadlineUtc = $RecoveryDeadlineUtc
+        }
 
         do {
             # Generate a valid deployment name. Must match ^[-\w\._\(\)]+$
@@ -790,8 +822,10 @@ function New-TemplateDeploymentInner {
             } catch {
                 $deploymentError = $_
                 $errorKind = Get-DeploymentErrorKind -ErrorRecord $deploymentError
+                Write-Verbose "Submission failure kind [$errorKind] for deployment [$deploymentName]." -Verbose
                 $recoveryFailed = $returnedFailure -and -not $returnedFailureDetailsRead
                 $nestedReadRecovery = $false
+                $transportRecovery = $false
                 $authorizationDenied = $false
                 if ($errorKind -eq 'Cancellation') {
                     throw
@@ -834,7 +868,7 @@ function New-TemplateDeploymentInner {
                             throw 'The failed nested operation read does not match the current ARM endpoint.'
                         }
                         $expectedId = Get-DeploymentResourceId -Scope $deploymentScope -Name $deploymentName -SubscriptionId $SubscriptionId
-                        $res = Wait-TemplateDeployment -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
+                        $res = Wait-TemplateDeployment @recoveryInput -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
                             -SubscriptionId $SubscriptionId -DefaultProfile $submissionContext -ExpectedDeploymentId $expectedId
                         if ($res.ProvisioningState -eq 'Succeeded') {
                             $Stoploop = $true
@@ -869,7 +903,7 @@ function New-TemplateDeploymentInner {
                     $deploymentScope -eq 'managementgroup' -and $errorKind -eq 'Forbidden') {
                     Write-Warning "Request for deployment [$deploymentName] returned HTTP 403; observing the original deployment without resubmitting. $($deploymentError.ErrorDetails.Message ?? $deploymentError.Exception.Message)"
                     try {
-                        $res = Wait-TemplateDeployment -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
+                        $res = Wait-TemplateDeployment @recoveryInput -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
                             -ManagementGroupId $ManagementGroupId -DefaultProfile $submissionContext
                         if ($res.ProvisioningState -ne 'Succeeded') {
                             throw "Deployment [$deploymentName] was confirmed Failed during authorization recovery; no retry is safe."
@@ -898,10 +932,18 @@ function New-TemplateDeploymentInner {
                         $recoveryFailed = $true
                     }
                 }
-                if ($submissionStarted -and $null -eq $res -and $errorKind -eq 'Timeout') {
-                    Write-Warning "Request for deployment [$deploymentName] timed out; observing its status without resubmitting. $($deploymentError.Exception.Message)"
+                if ($submissionStarted -and $null -eq $res -and
+                    ($errorKind -eq 'Timeout' -or ($errorKind -eq 'Transport' -and $deploymentScope -eq 'subscription'))) {
+                    $requestErrorKind = $errorKind
+                    $transportRecovery = $requestErrorKind -eq 'Transport'
+                    $recoveryDescription = $requestErrorKind.ToLowerInvariant()
+                    if ($requestErrorKind -eq 'Timeout') {
+                        Write-Warning "Request for deployment [$deploymentName] timed out; observing its status without resubmitting. $($deploymentError.Exception.Message)"
+                    } else {
+                        Write-Warning "Request for deployment [$deploymentName] lost its transport connection; observing only its original status without resubmitting."
+                    }
                     try {
-                        $res = Wait-TemplateDeployment -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
+                        $res = Wait-TemplateDeployment @recoveryInput -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
                             -SubscriptionId $SubscriptionId -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId -DefaultProfile $submissionContext
                     } catch [System.Management.Automation.PipelineStoppedException] {
                         throw
@@ -914,7 +956,9 @@ function New-TemplateDeploymentInner {
                             [System.Exception[]] @($deploymentError.Exception, $_.Exception)
                         )
                         $deploymentError = [System.Management.Automation.ErrorRecord]::new(
-                            $exception, 'DeploymentTimeoutRecoveryFailed', [System.Management.Automation.ErrorCategory]::OperationTimeout, $deploymentName
+                            $exception, "Deployment${requestErrorKind}RecoveryFailed",
+                            ($requestErrorKind -eq 'Timeout' ? [System.Management.Automation.ErrorCategory]::OperationTimeout : [System.Management.Automation.ErrorCategory]::ConnectionError),
+                            $deploymentName
                         )
                         $recoveryFailed = $true
                     }
@@ -928,7 +972,7 @@ function New-TemplateDeploymentInner {
                             $failureDetails = Get-ErrorMessageForScope -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
                                 -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId
                             $exception = [System.InvalidOperationException]::new(
-                                "Deployment [$deploymentName] was confirmed Failed during timeout recovery. Error Message: [$failureDetails]. Original request error: $($deploymentError.Exception.Message)",
+                                "Deployment [$deploymentName] was confirmed Failed during $recoveryDescription recovery. Error Message: [$failureDetails]. Original request error: $($deploymentError.Exception.Message)",
                                 $deploymentError.Exception
                             )
                         } catch [System.Management.Automation.PipelineStoppedException] {
@@ -938,13 +982,13 @@ function New-TemplateDeploymentInner {
                                 throw
                             }
                             $exception = [System.AggregateException]::new(
-                                "Deployment [$deploymentName] was confirmed Failed during timeout recovery, but its failure details could not be read.",
+                                "Deployment [$deploymentName] was confirmed Failed during $recoveryDescription recovery, but its failure details could not be read.",
                                 [System.Exception[]] @($deploymentError.Exception, $_.Exception)
                             )
                             $recoveryFailed = $true
                         }
                         $deploymentError = [System.Management.Automation.ErrorRecord]::new(
-                            $exception, 'DeploymentFailedAfterTimeout', [System.Management.Automation.ErrorCategory]::InvalidResult, $deploymentName
+                            $exception, "DeploymentFailedAfter$requestErrorKind", [System.Management.Automation.ErrorCategory]::InvalidResult, $deploymentName
                         )
                     }
                 }
@@ -956,7 +1000,7 @@ function New-TemplateDeploymentInner {
                 $failedDeploymentMessage = "^(?:\d{2}:\d{2}:\d{2} - )?The deployment '$([regex]::Escape($deploymentName))' failed with error\(s\)\. (?:Showing \d+ out of \d+ error\(s\)\. Status Message: (?:(?!\(Code:)[^\r\n])* )?\(Code: DeploymentFailed\)(?:\s|$)"
                 $confirmedFailure = $res.ProvisioningState -eq 'Failed' -or ($errorKind -eq 'Other' -and $deploymentError.Exception.Message -cmatch $failedDeploymentMessage)
                 $unknownSubmission = $submissionStarted -and -not $preflightRejected -and -not $confirmedFailure
-                $retryAllowed = -not $unknownSubmission -and -not $recoveryFailed -and -not $nestedReadRecovery -and -not $authorizationDenied -and
+                $retryAllowed = -not $unknownSubmission -and -not $recoveryFailed -and -not $nestedReadRecovery -and -not $transportRecovery -and -not $authorizationDenied -and
                 $errorKind -notin @('Timeout', 'Transport', 'Forbidden')
                 if ($retryCount -ge $RetryLimit -or -not $retryAllowed) {
                     if ($DoNotThrow) {
@@ -973,7 +1017,7 @@ function New-TemplateDeploymentInner {
                             RetryAllowed                     = $retryAllowed
                             FailureQueryAllowed              = $submissionStarted -and -not $preflightRejected -and -not $recoveryFailed -and -not $authorizationDenied -and
                             $errorKind -in @('Other', 'Forbidden') -and (($null -eq $res -and -not $submissionReturned) -or $res.ProvisioningState -eq 'Failed')
-                            RecoveredFailure                 = $deploymentError.FullyQualifiedErrorId -in @('DeploymentFailedAfterTimeout', 'DeploymentFailedAfterReadRecovery') -and -not $recoveryFailed
+                            RecoveredFailure                 = $deploymentError.FullyQualifiedErrorId -in @('DeploymentFailedAfterTimeout', 'DeploymentFailedAfterTransport', 'DeploymentFailedAfterReadRecovery') -and -not $recoveryFailed
                         }
                     } else {
                         throw $deploymentError
@@ -1014,7 +1058,9 @@ Run a template deployment using a given parameter file.
 Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
-After a submitted request times out, observe the same deployment for up to 60 minutes.
+After a submitted request times out, observe the same deployment for up to 60 minutes unless an absolute recovery deadline is supplied.
+Subscription transport failures use the same original-root observation and never permit legacy replay.
+Confirmed transport-recovered failure requires coordinated classification and complete cleanup before resubmission.
 Structured nested-operation GET 404s during subscription submission observe only the exact original root.
 That recovery never uses legacy replay; confirmed failure still requires coordinated classification and complete cleanup.
 Management-group HTTP 403 submissions use the same observation window and original Azure context.
@@ -1052,6 +1098,10 @@ Submitted deployments retry only after confirmed failure or preflight rejection.
 
 .PARAMETER AttemptNumber
 Optional. Starting attempt ordinal for deployment names. Coordinated retries supply the global ordinal with RetryLimit=1.
+
+.PARAMETER RecoveryDeadlineUtc
+Optional. Absolute UTC status-recovery deadline, shared across attempts and recovery paths without resetting.
+Coordinated callers supply four hours from coordinator entry. Omission preserves the one-hour recovery default.
 
 .PARAMETER DoNotThrow
 Optional. Do not throw an exception if it failed. Still returns the error message though
@@ -1120,7 +1170,11 @@ function New-TemplateDeployment {
         [int] $AttemptNumber = 1,
 
         [Parameter(Mandatory = $false)]
-        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName,
+
+        [Parameter()]
+        [ValidateScript({ $_.Kind -eq [DateTimeKind]::Utc }, ErrorMessage = 'RecoveryDeadlineUtc must be an absolute UTC datetime.')]
+        [datetime] $RecoveryDeadlineUtc
     )
 
     begin {
@@ -1151,6 +1205,9 @@ function New-TemplateDeployment {
             RetryLimit                 = $RetryLimit
             AttemptNumber              = $AttemptNumber
             RepoRoot                   = $RepoRoot
+        }
+        if ($PSBoundParameters.ContainsKey('RecoveryDeadlineUtc')) {
+            $deploymentInputObject.RecoveryDeadlineUtc = $RecoveryDeadlineUtc
         }
         if ($ParameterFilePath) {
             if ($ParameterFilePath -is [array]) {

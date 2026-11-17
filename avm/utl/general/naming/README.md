@@ -23,7 +23,7 @@ The downstream synchronization workflow reports potential rendering, validation 
 This module is under development at the proposed path in [Azure/Azure-Verified-Modules#3059](https://github.com/Azure/Azure-Verified-Modules/issues/3059); proposal filing does not establish program approval.
 
 
-You can reference the module as follows:
+You can reference the library as follows:
 ```bicep
 import { getCatalog, getName, getNames, getNamesByResourceType } from 'br/public:avm/utl/general/naming:<version>'
 ```
@@ -43,11 +43,9 @@ _None_
 
 ## Usage examples
 
-The following examples show how to import and use this resource-free function library. For a full reference, please review the module's test folder in its repository.
+The following section provides usage examples for the library. For a full reference, please review the library's test folder in its repository.
 
->**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
-
->**Note**: To reference the module, please use the following syntax `br/public:avm/utl/general/naming:<version>`.
+>**Note**: To reference the library, please use the following syntax `br/public:avm/utl/general/naming:<version>`.
 
 - [Exact tokens and numbered instances](#example-1-exact-tokens-and-numbered-instances)
 - [Caller-owned deployment identity](#example-2-caller-owned-deployment-identity)
@@ -56,7 +54,7 @@ The following examples show how to import and use this resource-free function li
 
 Import naming functions without deploying a module. An exact seed follows Terraform naming behavior; instance and uniqueness tokens survive truncation.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+You can find the full example and the setup of its dependencies in the test folder path [/tests/e2e/defaults]
 
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
@@ -94,7 +92,7 @@ output storageName object = storage
 
 Reuse identity and scope for in-place retries. Change freshAttempt deliberately for a separate deployment. No state or randomness is created by this utility.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+You can find the full example and the setup of its dependencies in the test folder path [/tests/e2e/waf-aligned]
 
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text

@@ -26,6 +26,12 @@ function Invoke-ResourceRemoval {
         [Parameter(Mandatory = $true)]
         [string] $Type
     )
+    if (
+        $Type -eq 'Microsoft.Authorization/roleAssignments' -and
+        $ResourceId -notmatch '^/(?:[^?#]+/)?providers/Microsoft\.Authorization/roleAssignments/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+    ) {
+        throw "Invalid role assignment resource ID [$ResourceId]."
+    }
     # Load functions
     . (Join-Path $PSScriptRoot 'Invoke-ResourceLockRemoval.ps1')
 
@@ -119,10 +125,13 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.Authorization/roleAssignments' {
-            $idElem = $ResourceId.Split('/')
-            $scope = $idElem[0..($idElem.Count - 5)] -join '/'
-            $roleAssignmentsOnScope = Get-AzRoleAssignment -Scope $scope
-            $null = $roleAssignmentsOnScope | Where-Object { $_.RoleAssignmentId -eq $ResourceId } | Remove-AzRoleAssignment
+            if ($PSCmdlet.ShouldProcess("Role assignment with ID [$ResourceId]", 'Remove')) {
+                # Role cmdlets resolve principals through Graph, which can require an expired CI assertion.
+                $response = Invoke-AzRestMethod -Method DELETE -Path "$ResourceId`?api-version=2022-04-01" -ErrorAction Stop
+                if ([int] $response.StatusCode -notin @(200, 204, 404)) {
+                    throw "Role assignment removal failed for [$ResourceId] (HTTP $($response.StatusCode)). $($response.Content)"
+                }
+            }
             break
         }
         'Microsoft.Authorization/roleEligibilityScheduleRequests' {
