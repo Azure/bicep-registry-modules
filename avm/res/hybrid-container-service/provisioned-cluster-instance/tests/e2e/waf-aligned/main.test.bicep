@@ -49,7 +49,10 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciHostImageReferenceId string = ''
 
-var enforcedLocation = loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')
+var enforcedLocation = loadJsonContent(
+  '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json',
+  'location'
+)
 
 resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null && preparedHciEnvironment == null) {
   appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'
@@ -94,7 +97,9 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = if (preparedH
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
     servicePrincipalId: arbDeploymentAppId
     servicePrincipalSecret: arbDeploymentServicePrincipalSecret
-    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : hciResourceProvider!.id
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies!.outputs.clusterNodeNames
@@ -193,7 +198,9 @@ module azLocalInit '../init.bicep' = if (preparedHciEnvironment == null) {
   name: '${deployment().name}-azLocalInit'
   scope: resourceGroup
   params: {
-    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment.customLocationResourceId : customLocation!.id
+    customLocationResourceId: preparedHciEnvironment != null
+      ? preparedHciEnvironment.customLocationResourceId
+      : customLocation!.id
   }
 }
 
@@ -202,7 +209,9 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}logicalnetwork'
-    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment.customLocationResourceId : customLocation!.id
+    customLocationResourceId: preparedHciEnvironment != null
+      ? preparedHciEnvironment.customLocationResourceId
+      : customLocation!.id
     vmSwitchName: preparedHciEnvironment != null ? preparedHciEnvironment.vSwitchName : azlocal!.outputs.vSwitchName
     ipAllocationMethod: 'Static'
     addressPrefix: preparedHciEnvironment != null ? '172.20.0.0/24' : '192.168.1.0/24'
@@ -224,7 +233,7 @@ module testKeyVault '../../../../../../../utilities/e2e-template-assets/module-s
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-vault-${serviceShort}'
   scope: resourceGroup
   params: {
-    name: 'dep-${namePrefix}-kv-${serviceShort}'
+    name: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
     location: enforcedLocation
   }
 }
@@ -237,7 +246,9 @@ module testDeployment '../../../main.bicep' = {
   ]
   params: {
     name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 63)
-    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment.customLocationResourceId : customLocation!.id
+    customLocationResourceId: preparedHciEnvironment != null
+      ? preparedHciEnvironment.customLocationResourceId
+      : customLocation!.id
     keyVaultName: preparedHciEnvironment != null ? testKeyVault!.outputs.name : nestedDependencies!.outputs.keyVaultName
     cloudProviderProfile: {
       infraNetworkProfile: {

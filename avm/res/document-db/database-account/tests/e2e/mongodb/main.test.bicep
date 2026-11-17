@@ -1,5 +1,3 @@
-import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
-
 targetScope = 'subscription'
 
 metadata name = 'Mongo Database'
@@ -44,7 +42,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 44)
+      name: '${take('${namePrefix}${serviceShort}001', 30)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
       mongodbDatabases: [
         {
           collections: [

@@ -2,6 +2,8 @@ import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-
 
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'Using large parameter set'
 metadata description = 'This instance deploys the module with most of its features enabled.'
 
@@ -22,9 +24,8 @@ param serviceShort string = 'iamax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. The object ID of the Logic Apps Service Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-logicAppsServiceEnterpriseApplicationObjectId\'.')
-@secure()
-param logicAppsServiceEnterpriseApplicationObjectId string = ''
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
 
 // ============ //
 // Dependencies //
@@ -32,6 +33,10 @@ param logicAppsServiceEnterpriseApplicationObjectId string = ''
 
 // General resources
 // =================
+resource logicAppsService 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
+  appId: '7cd684f4-8a78-49b0-91ec-6a35d38739ba'
+}
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
@@ -43,7 +48,9 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}-01', resourceGroup.id, 24)
-    logicAppsServiceEnterpriseApplicationObjectId: logicAppsServiceEnterpriseApplicationObjectId
+    logicAppsServiceEnterpriseApplicationObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : logicAppsService!.id
   }
 }
 
@@ -408,8 +415,7 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          name: guid(resourceGroup.id, '1f98c16b-ea00-4686-8b81-05353b594ea3')
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
@@ -422,7 +428,7 @@ module testDeployment '../../../main.bicep' = [
         {
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

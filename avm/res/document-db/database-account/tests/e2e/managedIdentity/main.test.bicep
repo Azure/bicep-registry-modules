@@ -1,5 +1,3 @@
-import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
-
 targetScope = 'subscription'
 
 metadata name = 'Deploying with Managed identities'
@@ -44,6 +42,9 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: enforcedLocation
 }
 
+var databaseAccountName = '${take('${namePrefix}-user-mi', 30)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
+var databaseAccountResourceId = '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${databaseAccountName}'
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -52,7 +53,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    name: uniqueResourceName('${namePrefix}-user-mi', resourceGroup.id, 44)
+    name: databaseAccountName
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -61,12 +62,16 @@ module testDeployment '../../../main.bicep' = {
     }
     roleAssignments: [
       {
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
       {
-        name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
+        name: guid(
+          'Custom seed ${namePrefix}${serviceShort}',
+          databaseAccountResourceId,
+          nestedDependencies.outputs.managedIdentityPrincipalId
+        )
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
@@ -74,7 +79,7 @@ module testDeployment '../../../main.bicep' = {
       {
         roleDefinitionIdOrName: subscriptionResourceId(
           'Microsoft.Authorization/roleDefinitions',
-          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
         )
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'

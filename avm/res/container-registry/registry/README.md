@@ -317,7 +317,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -377,7 +377,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         status: 'enabled'
       }
     ]
-    trustPolicyStatus: '<trustPolicyStatus>'
+    trustPolicyStatus: 'disabled'
     webhooks: [
       {
         name: 'acrx001webhook'
@@ -522,7 +522,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
           "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -596,7 +596,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       ]
     },
     "trustPolicyStatus": {
-      "value": "<trustPolicyStatus>"
+      "value": "disabled"
     },
     "webhooks": {
       "value": [
@@ -709,7 +709,7 @@ param roleAssignments = [
     name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -769,7 +769,7 @@ param tokens = [
     status: 'enabled'
   }
 ]
-param trustPolicyStatus = '<trustPolicyStatus>'
+param trustPolicyStatus = 'disabled'
 param webhooks = [
   {
     name: 'acrx001webhook'
@@ -1023,7 +1023,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    trustPolicyStatus: '<trustPolicyStatus>'
+    trustPolicyStatus: 'disabled'
   }
 }
 ```
@@ -1115,7 +1115,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       }
     },
     "trustPolicyStatus": {
-      "value": "<trustPolicyStatus>"
+      "value": "disabled"
     }
   }
 }
@@ -1175,7 +1175,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param trustPolicyStatus = '<trustPolicyStatus>'
+param trustPolicyStatus = 'disabled'
 ```
 
 </details>

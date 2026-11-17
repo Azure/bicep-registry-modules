@@ -898,7 +898,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -1331,7 +1331,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
           "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1742,7 +1742,7 @@ param roleAssignments = [
     name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

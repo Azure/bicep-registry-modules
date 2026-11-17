@@ -202,7 +202,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   params: {
     // Required parameters
-    name: 'dffgit001'
+    name: '<name>'
     // Non-required parameters
     gitConfiguration: '<gitConfiguration>'
     location: '<location>'
@@ -224,7 +224,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dffgit001"
+      "value": "<name>"
     },
     // Non-required parameters
     "gitConfiguration": {
@@ -248,7 +248,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 using 'br/public:avm/res/data-factory/factory:<version>'
 
 // Required parameters
-param name = 'dffgit001'
+param name = '<name>'
 // Non-required parameters
 param gitConfiguration = '<gitConfiguration>'
 param location = '<location>'
@@ -393,10 +393,9 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -576,10 +575,9 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -737,10 +735,9 @@ param privateEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

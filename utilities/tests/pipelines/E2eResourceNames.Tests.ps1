@@ -277,6 +277,21 @@ resource storage 'Microsoft.Storage/storageAccounts@2025-01-01' = {
         $result.Violations.Count | Should -Be 1
     }
 
+    It 'Keeps offline service principal overrides constant across subscriptions' {
+        $source = $storageSource.Replace('__NAME__', "'st`${uniqueString(builtInServicePrincipalObjectId!)}'")
+        $source += "`nparam builtInServicePrincipalObjectId string?"
+        $result = Test-NamingFixture -Source $source
+        $result.CheckedNames | Should -Be 1
+        $result.Violations.Count | Should -Be 1
+
+        $explicitSource = $source.Replace('param builtInServicePrincipalObjectId string?', 'param builtInServicePrincipalObjectId string')
+        $explicit = Test-NamingFixture -Source ($explicitSource + " = 'cccccccc-cccc-cccc-cccc-cccccccccccc'")
+        $result.Violations[0].Name | Should -Be $explicit.Violations[0].Name
+
+        $provided = Test-NamingFixture -Source ($explicitSource + " = 'dddddddd-dddd-dddd-dddd-dddddddddddd'")
+        $result.Violations[0].Name | Should -Not -Be $provided.Violations[0].Name
+    }
+
     It 'Does not treat runtime script placeholders as a source of uniqueness' {
         @'
 param name string

@@ -16,8 +16,6 @@ on:
       - "utilities/pipelines/staticValidation/global-resource-names.json"
       - "utilities/pipelines/sharedScripts/Get-ModuleWorkflowMatrix.ps1"
       - "utilities/pipelines/sharedScripts/Initialize-AvmPester.ps1"
-      - "utilities/pipelines/sharedScripts/Set-EnvironmentOnAgent.ps1"
-      - "utilities/pipelines/sharedScripts/helper/Build-ViaRPC.ps1"
       - "utilities/tests/pipelines/E2eResourceNames.Tests.ps1"
       - "utilities/tests/pipelines/UniqueResourceName.Tests.ps1"
       - ".github/workflows/platform.on-pull-request-check-e2e-names.yml"
@@ -70,15 +68,19 @@ jobs:
           "count=$($testFiles.Count)" >> $env:GITHUB_OUTPUT
           "E2e templates selected: $($testFiles.Count)" >> $env:GITHUB_STEP_SUMMARY
 
+      - name: "Install Avm.Authoring"
+        if: steps.affected.outputs.count != '0'
+        uses: Azure/azure-verified-modules-tools/.github/actions/install-avm-authoring@987bf24c2d2f22cd063444b86fad80aeb0e9b748
+
       - name: "Install validation dependencies"
         if: steps.affected.outputs.count != '0'
         shell: pwsh
         run: |
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')
-          Set-EnvironmentOnAgent -PSModules @(
-            @{ Name = 'Avm.Authoring' }
-            @{ Name = 'PSRule.Rules.Azure'; Version = '1.47.0' }
-          )
+          Import-Module Avm.Authoring -ErrorAction Stop
+          Install-AvmTool -Name bicep -Path $env:GITHUB_WORKSPACE -Confirm:$false
+          $compiler = Get-AvmTool -Name bicep -Path $env:GITHUB_WORKSPACE
+          Split-Path $compiler.Path | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+          Install-Module -Name PSRule.Rules.Azure -RequiredVersion '1.47.0' -Scope CurrentUser -Force -ErrorAction Stop
 
       - name: "Test naming helper and validator"
         if: steps.affected.outputs.count != '0'

@@ -362,10 +362,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
-        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -535,10 +534,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "roleAssignments": {
       "value": [
         {
-          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -678,10 +676,9 @@ param managedIdentities = {
 param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
-    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

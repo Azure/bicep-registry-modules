@@ -49,7 +49,10 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciHostImageReferenceId string = ''
 
-var enforcedLocation = loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')
+var enforcedLocation = loadJsonContent(
+  '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json',
+  'location'
+)
 
 var customLocationName = '${namePrefix}${serviceShort}-location'
 
@@ -208,7 +211,9 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.4.0' = if (preparedH
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : hciResourceProvider!.id
   }
 }
 
@@ -226,7 +231,9 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}1'
     location: enforcedLocation
-    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment.customLocationResourceId : customLocation!.id
+    customLocationResourceId: preparedHciEnvironment != null
+      ? preparedHciEnvironment.customLocationResourceId
+      : customLocation!.id
     diskSizeGB: 4
     dynamic: true
     tags: {

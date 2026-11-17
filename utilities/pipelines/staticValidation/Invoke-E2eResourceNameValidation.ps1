@@ -20,7 +20,12 @@ function Invoke-E2eResourceNameValidation {
     )
 
     $ErrorActionPreference = 'Stop'
-    . (Join-Path $PSScriptRoot '..' 'sharedScripts' 'helper' 'Build-ViaRPC.ps1')
+    Import-Module Avm.Authoring -ErrorAction Stop
+    $repoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.FullName
+    $compiler = Get-AvmTool -Name bicep -Path $repoRootPath -ErrorAction Stop
+    if ($compiler.Status -ne 'installed' -or -not (Test-Path -LiteralPath $compiler.Path -PathType Leaf)) {
+        throw 'The managed Bicep compiler is not installed. Run avm tool install bicep before validating names.'
+    }
     . (Join-Path $PSScriptRoot 'Test-E2eResourceNames.ps1')
 
     $paths = @($TestFilePath | ForEach-Object { (Resolve-Path -LiteralPath $_).Path } | Sort-Object -Unique)
@@ -29,7 +34,6 @@ function Invoke-E2eResourceNameValidation {
     try {
         for ($offset = 0; $offset -lt $paths.Count; $offset += 25) {
             $batch = $paths[$offset..([Math]::Min($offset + 24, $paths.Count - 1))]
-            $compiled = Build-ViaRPC -BicepFilePath $batch -PassThru -ErrorAction Continue
             foreach ($path in $batch) {
                 $result = [pscustomobject]@{
                     TestFilePath = $path
@@ -38,10 +42,10 @@ function Invoke-E2eResourceNameValidation {
                     Error        = $null
                 }
                 try {
-                    if (-not $compiled.ContainsKey($path)) {
-                        throw 'Bicep compilation failed. See the compiler diagnostics above.'
+                    $diagnostics = & $compiler.Path build $path --outfile $templateFile.FullName 2>&1
+                    if ($LASTEXITCODE -ne 0) {
+                        throw "Bicep compilation failed: $($diagnostics | Out-String)"
                     }
-                    $compiled[$path] | Set-Content -LiteralPath $templateFile.FullName
                     $check = Test-E2eResourceNames -TemplateFilePath $templateFile.FullName
                     $result.CheckedNames = $check.CheckedNames
                     $result.Violations = $check.Violations

@@ -1,5 +1,3 @@
-import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
-
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
@@ -43,7 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    replicationRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
 
@@ -71,7 +69,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 50)
+      name: '${take('${namePrefix}${serviceShort}001', 37)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
       location: resourceLocation
       acrAdminUserEnabled: false
       acrSku: 'Premium'
@@ -92,8 +90,8 @@ module testDeployment '../../../main.bicep' = [
       quarantinePolicyStatus: 'enabled'
       replications: [
         {
-          location: nestedDependencies.outputs.pairedRegionName
-          name: nestedDependencies.outputs.pairedRegionName
+          location: nestedDependencies.outputs.replicationRegionName
+          name: nestedDependencies.outputs.replicationRegionName
         }
       ]
       trustPolicyStatus: 'disabled' // Deprecated in 2028. Ref: https://learn.microsoft.com/en-us/azure/container-registry/container-registry-content-trust-deprecation

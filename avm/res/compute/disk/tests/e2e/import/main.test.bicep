@@ -1,5 +1,3 @@
-import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
-
 targetScope = 'subscription'
 
 metadata name = 'Using an imported image'
@@ -42,7 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
-    storageAccountName: uniqueResourceName('dep${namePrefix}sa${serviceShort}01', resourceGroup.id, 24)
+    storageAccountName: '${take('dep${namePrefix}sa${serviceShort}01', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     imageTemplateName: 'dep-${namePrefix}-imgt-${serviceShort}-${uniqueString(uniqueBaseTime)}'
     triggerImageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-triggerImageTemplate'
     copyVhdDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-copyVhdToStorage'

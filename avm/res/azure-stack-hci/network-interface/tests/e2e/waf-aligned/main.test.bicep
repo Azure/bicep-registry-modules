@@ -49,7 +49,10 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciHostImageReferenceId string = ''
 
-var enforcedLocation = loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')
+var enforcedLocation = loadJsonContent(
+  '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json',
+  'location'
+)
 
 resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null && preparedHciEnvironment == null) {
   appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'
@@ -206,7 +209,9 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.4.0' = if (preparedH
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : hciResourceProvider!.id
   }
 }
 
@@ -224,7 +229,9 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.0' 
   params: {
     name: '${namePrefix}${serviceShort}logicalnetwork'
     location: enforcedLocation
-    customLocationId: preparedHciEnvironment != null ? preparedHciEnvironment.customLocationResourceId : customLocation!.id
+    customLocationId: preparedHciEnvironment != null
+      ? preparedHciEnvironment.customLocationResourceId
+      : customLocation!.id
     vmSwitchName: preparedHciEnvironment != null ? preparedHciEnvironment.vSwitchName : 'ConvergedSwitch(management)'
     ipAllocationMethod: 'Static'
     addressPrefix: preparedHciEnvironment != null ? '172.20.0.0/24' : '172.20.0.1/24'
@@ -243,7 +250,9 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}networkinterface'
     location: enforcedLocation
-    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment.customLocationResourceId : customLocation!.id
+    customLocationResourceId: preparedHciEnvironment != null
+      ? preparedHciEnvironment.customLocationResourceId
+      : customLocation!.id
     ipConfigurations: [
       {
         properties: {

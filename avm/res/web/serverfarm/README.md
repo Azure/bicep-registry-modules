@@ -658,10 +658,9 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     perSiteScaling: true
     roleAssignments: [
       {
-        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -738,10 +737,9 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -812,10 +810,9 @@ param lock = {
 param perSiteScaling = true
 param roleAssignments = [
   {
-    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

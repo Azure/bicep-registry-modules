@@ -69,7 +69,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwadv001'
     // Non-required parameters
-    dailyQuotaGb: '<dailyQuotaGb>'
+    dailyQuotaGb: '0.25'
     dataExports: [
       {
         destination: {
@@ -268,7 +268,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -302,7 +302,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -373,7 +373,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": "<dailyQuotaGb>"
+      "value": "0.25"
     },
     "dataExports": {
       "value": [
@@ -598,7 +598,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -632,7 +632,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -701,7 +701,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwadv001'
 // Non-required parameters
-param dailyQuotaGb = '<dailyQuotaGb>'
+param dailyQuotaGb = '0.25'
 param dataExports = [
   {
     destination: {
@@ -900,7 +900,7 @@ param tables = [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -934,7 +934,7 @@ param tables = [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -1241,7 +1241,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwmax001'
     // Non-required parameters
-    dailyQuotaGb: '<dailyQuotaGb>'
+    dailyQuotaGb: '0.5'
     dataSources: [
       {
         eventLogName: 'Application'
@@ -1409,7 +1409,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -1460,7 +1460,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -1494,7 +1494,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -1565,7 +1565,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": "<dailyQuotaGb>"
+      "value": "0.5"
     },
     "dataSources": {
       "value": [
@@ -1761,7 +1761,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1818,7 +1818,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -1852,7 +1852,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -1921,7 +1921,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwmax001'
 // Non-required parameters
-param dailyQuotaGb = '<dailyQuotaGb>'
+param dailyQuotaGb = '0.5'
 param dataSources = [
   {
     eventLogName: 'Application'
@@ -2089,7 +2089,7 @@ param roleAssignments = [
     name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -2140,7 +2140,7 @@ param tables = [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -2174,7 +2174,7 @@ param tables = [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -2793,7 +2793,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
-| [`onboardWorkspaceToSentinel`](#parameter-onboardworkspacetosentinel) | bool | Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions. |
+| [`onboardWorkspaceToSentinel`](#parameter-onboardworkspacetosentinel) | bool | Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions. When enabled, the onboarding API manages this solution instead of a separate gallery deployment. |
 | [`publicNetworkAccessForIngestion`](#parameter-publicnetworkaccessforingestion) | string | The network access type for accessing Log Analytics ingestion. |
 | [`publicNetworkAccessForQuery`](#parameter-publicnetworkaccessforquery) | string | The network access type for accessing Log Analytics query. |
 | [`replication`](#parameter-replication) | object | The workspace replication properties. |
@@ -3481,7 +3481,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `onboardWorkspaceToSentinel`
 
-Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions.
+Onboard the Log Analytics Workspace to Sentinel. Requires 'SecurityInsights' solution to be in gallerySolutions. When enabled, the onboarding API manages this solution instead of a separate gallery deployment.
 
 - Required: No
 - Type: bool

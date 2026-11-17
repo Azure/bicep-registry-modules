@@ -1,5 +1,3 @@
-import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
-
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
@@ -43,7 +41,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: uniqueResourceName('${namePrefix}${serviceShort}002', resourceGroup.id, 60)
+      name: '${take('${namePrefix}${serviceShort}002', 46)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     }
   }
 ]

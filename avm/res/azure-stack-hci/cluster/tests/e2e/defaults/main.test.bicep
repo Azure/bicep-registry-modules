@@ -45,7 +45,10 @@ param arbDeploymentServicePrincipalSecret string = ''
 param hciHostImageReferenceId string = ''
 
 @description('Optional. The location to deploy resources into. Defaults to the shared Azure Local environment region. Can be overridden via the CI customLocation input when quota is unavailable.')
-param enforcedLocation string = loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')
+param enforcedLocation string = loadJsonContent(
+  '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json',
+  'location'
+)
 
 resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
   appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'
@@ -89,98 +92,100 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
 // Therefore, the standard 'idem' iteration is skipped for this module.
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
-    scope: resourceGroup
-    params: {
-      name: nestedDependencies.outputs.clusterName
-      deploymentUser: 'deployUser'
-      deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
-      localAdminUser: 'Administrator'
-      localAdminPassword: arbLocalAdminAndDeploymentUserPass
-      servicePrincipalId: arbDeploymentAppId
-      servicePrincipalSecret: arbDeploymentServicePrincipalSecret
-      hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
-      deploymentSettings: {
-        customLocationName: '${namePrefix}${serviceShort}-location'
-        clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
-        clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
-        defaultGateway: '172.20.0.1'
-        deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
-        dnsServers: ['172.20.0.1']
-        domainFqdn: 'hci.local'
-        domainOUPath: nestedDependencies.outputs.domainOUPath
-        startingIPAddress: '172.20.0.55'
-        endingIPAddress: '172.20.0.65'
-        enableStorageAutoIp: true
-        keyVaultName: nestedDependencies.outputs.keyVaultName
-        networkIntents: [
-          {
-            adapter: [
-              'FABRIC'
-              'FABRIC2'
-            ]
-            name: 'ManagementCompute'
-            overrideAdapterProperty: true
-            adapterPropertyOverrides: {
-              jumboPacket: '9014'
-              networkDirect: 'Disabled'
-              networkDirectTechnology: 'iWARP'
-            }
-            overrideQosPolicy: false
-            qosPolicyOverrides: {
-              bandwidthPercentageSMB: '50'
-              priorityValue8021ActionCluster: '7'
-              priorityValue8021ActionSMB: '3'
-            }
-            overrideVirtualSwitchConfiguration: false
-            virtualSwitchConfigurationOverrides: {
-              enableIov: 'true'
-              loadBalancingAlgorithm: 'Dynamic'
-            }
-            trafficType: [
-              'Management'
-              'Compute'
-            ]
+  scope: resourceGroup
+  params: {
+    name: nestedDependencies.outputs.clusterName
+    deploymentUser: 'deployUser'
+    deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
+    localAdminUser: 'Administrator'
+    localAdminPassword: arbLocalAdminAndDeploymentUserPass
+    servicePrincipalId: arbDeploymentAppId
+    servicePrincipalSecret: arbDeploymentServicePrincipalSecret
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : hciResourceProvider!.id
+    deploymentSettings: {
+      customLocationName: '${namePrefix}${serviceShort}-location'
+      clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
+      clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
+      defaultGateway: '172.20.0.1'
+      deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
+      dnsServers: ['172.20.0.1']
+      domainFqdn: 'hci.local'
+      domainOUPath: nestedDependencies.outputs.domainOUPath
+      startingIPAddress: '172.20.0.55'
+      endingIPAddress: '172.20.0.65'
+      enableStorageAutoIp: true
+      keyVaultName: nestedDependencies.outputs.keyVaultName
+      networkIntents: [
+        {
+          adapter: [
+            'FABRIC'
+            'FABRIC2'
+          ]
+          name: 'ManagementCompute'
+          overrideAdapterProperty: true
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
           }
-          {
-            adapter: [
-              'StorageA'
-              'StorageB'
-            ]
-            name: 'Storage'
-            overrideAdapterProperty: true
-            adapterPropertyOverrides: {
-              jumboPacket: '9014'
-              networkDirect: 'Disabled'
-              networkDirectTechnology: 'iWARP'
-            }
-            overrideQosPolicy: true
-            qosPolicyOverrides: {
-              bandwidthPercentageSMB: '50'
-              priorityValue8021ActionCluster: '7'
-              priorityValue8021ActionSMB: '3'
-            }
-            overrideVirtualSwitchConfiguration: false
-            virtualSwitchConfigurationOverrides: {
-              enableIov: 'true'
-              loadBalancingAlgorithm: 'Dynamic'
-            }
-            trafficType: ['Storage']
+          overrideQosPolicy: false
+          qosPolicyOverrides: {
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
-        ]
-        storageConnectivitySwitchless: false
-        storageNetworks: [
-          {
-            name: 'Storage1Network'
-            adapterName: 'StorageA'
-            vlan: '711'
+          overrideVirtualSwitchConfiguration: false
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
           }
-          {
-            name: 'Storage2Network'
-            adapterName: 'StorageB'
-            vlan: '712'
+          trafficType: [
+            'Management'
+            'Compute'
+          ]
+        }
+        {
+          adapter: [
+            'StorageA'
+            'StorageB'
+          ]
+          name: 'Storage'
+          overrideAdapterProperty: true
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
           }
-        ]
-        subnetMask: '255.255.255.0'
-      }
+          overrideQosPolicy: true
+          qosPolicyOverrides: {
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
+          }
+          overrideVirtualSwitchConfiguration: false
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+          trafficType: ['Storage']
+        }
+      ]
+      storageConnectivitySwitchless: false
+      storageNetworks: [
+        {
+          name: 'Storage1Network'
+          adapterName: 'StorageA'
+          vlan: '711'
+        }
+        {
+          name: 'Storage2Network'
+          adapterName: 'StorageB'
+          vlan: '712'
+        }
+      ]
+      subnetMask: '255.255.255.0'
     }
+  }
 }

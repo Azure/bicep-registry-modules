@@ -438,10 +438,9 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     ]
     roleAssignments: [
       {
-        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -834,10 +833,9 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     "roleAssignments": {
       "value": [
         {
-          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1214,10 +1212,9 @@ param partners = [
 ]
 param roleAssignments = [
   {
-    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

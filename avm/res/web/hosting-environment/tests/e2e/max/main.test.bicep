@@ -62,19 +62,21 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 // Test Execution //
 // ============== //
 
+var hostingEnvironmentName = '${take('${namePrefix}${serviceShort}001', 46)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: hostingEnvironmentName
       location: resourceGroup.location
       kind: 'ASEv3'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         resourceType: 'App Service Environment'
-        hostingEnvironmentName: '${namePrefix}${serviceShort}001'
+        hostingEnvironmentName: hostingEnvironmentName
       }
       lock: {
         kind: 'CanNotDelete'
@@ -82,7 +84,6 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          name: guid(resourceGroup.id, '97fc1da9-bfe4-409d-b17a-da9a82fad0d0')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

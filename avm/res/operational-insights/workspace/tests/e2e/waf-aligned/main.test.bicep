@@ -1,5 +1,3 @@
-import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
-
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
@@ -37,10 +35,10 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    storageAccountName: uniqueResourceName('dep${namePrefix}sa${serviceShort}', resourceGroup.id, 24)
+    storageAccountName: '${take('dep${namePrefix}sa${serviceShort}', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     automationAccountName: 'dep-${namePrefix}-auto-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    replicationRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
 
@@ -207,7 +205,7 @@ module testDeployment '../../../main.bicep' = [
       }
       replication: {
         enabled: true
-        location: nestedDependencies.outputs.pairedRegionName
+        location: nestedDependencies.outputs.replicationRegionName
       }
       tags: {
         'hidden-title': 'This is visible in the resource name'

@@ -13,9 +13,8 @@ metadata description = 'This instance deploys the module in alignment with the b
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualmachinescalesets-${serviceShort}-rg'
 
-// Capacity constraints for VM type
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'italynorth'
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cvmsswinwaf'
@@ -35,18 +34,22 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
+    keyVaultName: 'dep-kv-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     storageAccountName: uniqueResourceName('dep${namePrefix}sa${serviceShort}01', resourceGroup.id, 24)
-    storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
+    // Qualified with the root deployment name (same derivation already used for this file's nested module names)
+    // and location to avoid reusing the same deployment-script/container-group identity across retried root
+    // deployment attempts - whether same-region retries or region-relocated retries - while staying stable across
+    // the init/idem test iterations within a single root deployment attempt.
+    storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}-${uniqueString(deployment().name, resourceLocation)}'
   }
 }
 
@@ -54,7 +57,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: take('dep${namePrefix}diasa${serviceShort}01', 24)
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
@@ -71,9 +74,9 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: enforcedLocation
+      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       adminUsername: 'localAdminUser'
       imageReference: {
@@ -90,7 +93,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      skuName: 'Standard_B12ms'
+      skuName: 'Standard_D4ads_v5'
       adminPassword: password
       diagnosticSettings: [
         {

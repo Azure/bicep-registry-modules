@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "10575943709249028028"
+      "version": "0.49.2.45890",
+      "templateHash": "14315093244682173596"
     },
     "name": "Using large parameter set",
     "description": "This instance deploys the module with most of its features enabled."
@@ -133,8 +133,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "9101370196079482530"
+              "version": "0.49.2.45890",
+              "templateHash": "11271158497146876958"
             }
           },
           "parameters": {
@@ -598,8 +598,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "17286936942965315258"
+              "version": "0.49.2.45890",
+              "templateHash": "10908074280387456075"
             },
             "name": "API Center Services",
             "description": "This module deploys an API Center Service."
@@ -1671,8 +1671,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "244754756955007937"
+                      "version": "0.49.2.45890",
+                      "templateHash": "17202877818245833801"
                     },
                     "name": "API Center Service Metadata Schemas",
                     "description": "This module deploys an API Center Service Metadata Schema."
@@ -1859,8 +1859,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "5440506546912824745"
+                      "version": "0.49.2.45890",
+                      "templateHash": "16643558955805529813"
                     },
                     "name": "API Center Service Workspaces",
                     "description": "This module deploys an API Center Service Workspace."
@@ -2604,8 +2604,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "2113819937584046969"
+                              "version": "0.49.2.45890",
+                              "templateHash": "17302383328262448342"
                             },
                             "name": "API Center Service Workspace Environments",
                             "description": "This module deploys an API Center Service Workspace Environment."
@@ -2854,8 +2854,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "14001660642716308393"
+                              "version": "0.49.2.45890",
+                              "templateHash": "4643194449771164272"
                             },
                             "name": "API Center Service Workspace APIs",
                             "description": "This module deploys an API Center Service Workspace API."
@@ -3339,8 +3339,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.47.16.16243",
-                                      "templateHash": "16207919601685014878"
+                                      "version": "0.49.2.45890",
+                                      "templateHash": "4738095105778742154"
                                     },
                                     "name": "API Center Service Workspace API Versions",
                                     "description": "This module deploys an API Center Service Workspace API Version."
@@ -3507,8 +3507,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.47.16.16243",
-                                              "templateHash": "10161678119252581582"
+                                              "version": "0.49.2.45890",
+                                              "templateHash": "5143052725243794836"
                                             },
                                             "name": "API Center Service Workspace API Version Definitions",
                                             "description": "This module deploys an API Center Service Workspace API Version Definition."
@@ -3714,8 +3714,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.47.16.16243",
-                                      "templateHash": "3062393670156721783"
+                                      "version": "0.49.2.45890",
+                                      "templateHash": "1489907956698829879"
                                     },
                                     "name": "API Center Service Workspace API Deployments",
                                     "description": "This module deploys an API Center Service Workspace API Deployment."
@@ -3968,8 +3968,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "8852908814336592144"
+                              "version": "0.49.2.45890",
+                              "templateHash": "8257736904568968750"
                             },
                             "name": "API Center Service Workspace API Sources",
                             "description": "This module deploys an API Center Service Workspace API Source for importing APIs from external sources like Azure API Management."
@@ -4117,8 +4117,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.47.16.16243",
-                                      "templateHash": "8834957109244747392"
+                                      "version": "0.49.2.45890",
+                                      "templateHash": "5087030720304870010"
                                     }
                                   },
                                   "parameters": {

@@ -286,6 +286,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "subnetResourceId": {
       "value": "<subnetResourceId>"
     },
+    // Non-required parameters
     "administratorLogin": {
       "value": "adminUserName"
     },
@@ -905,6 +906,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "subnetResourceId": {
       "value": "<subnetResourceId>"
     },
+    // Non-required parameters
     "administratorLogin": {
       "value": "adminUserName"
     },

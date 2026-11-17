@@ -5,11 +5,10 @@ param (
 )
 
 BeforeAll {
-    . (Join-Path $repoRootPath 'utilities/pipelines/sharedScripts/helper/Build-ViaRPC.ps1')
-
     $modulePath = Join-Path ($moduleFolderPaths | Sort-Object | Select-Object -First 1) 'main.bicep'
-    $compiled = Build-ViaRPC -BicepFilePath $modulePath -PassThru -ErrorAction Stop
-    $template = $compiled[$modulePath] | ConvertFrom-Json -AsHashtable
+    $compiled = & bicep build $modulePath --stdout
+    if ($LASTEXITCODE -ne 0) { throw "Bicep compilation failed for $modulePath" }
+    $template = $compiled | ConvertFrom-Json -AsHashtable
     $poolParameters = $template.resources.workspace_bigDataPools.properties.parameters
     $relativeModulePath = [System.IO.Path]::GetRelativePath($TestDrive, $modulePath).Replace('\', '/')
 }
@@ -33,13 +32,13 @@ module workspace '$relativeModulePath' = {
   }
 }
 "@
-        $result = Build-ViaRPC -BicepFilePath $fixture -PassThru -ErrorAction SilentlyContinue -ErrorVariable compileErrors
-        $result.ContainsKey($fixture) | Should -BeFalse
-        ($compileErrors.Exception.Message -join "`n") | Should -Match 'missing the following required properties: "nodeSize"'
+        $result = & bicep build $fixture --stdout 2>&1
+        $LASTEXITCODE | Should -Not -Be 0
+        ($result | Out-String) | Should -Match 'missing the following required properties: "nodeSize"'
     }
 
     It 'safely defaults an omitted or null nodeSizeFamily while preserving explicit values' {
-        $poolParameters.nodeSizeFamily.value | Should -BeExactly "[tryGet(coalesce(parameters('bigDataPools'), createArray())[copyIndex()], 'nodeSizeFamily')]"
+        $poolParameters.nodeSizeFamily.value | Should -BeExactly "[coalesce(tryGet(coalesce(parameters('bigDataPools'), createArray())[copyIndex()], 'nodeSizeFamily'), 'MemoryOptimized')]"
         $template.resources.workspace_bigDataPools.properties.template.parameters.nodeSizeFamily.defaultValue | Should -BeExactly 'MemoryOptimized'
         $poolParameters.nodeSize.value | Should -BeExactly "[coalesce(parameters('bigDataPools'), createArray())[copyIndex()].nodeSize]"
     }
@@ -72,7 +71,8 @@ module workspace '$relativeModulePath' = {
 
 output workspaceResourceId string = workspace.outputs.resourceId
 "@
-        $result = Build-ViaRPC -BicepFilePath $fixture -PassThru -ErrorAction Stop
-        $result[$fixture] | Should -Not -BeNullOrEmpty
+        $result = & bicep build $fixture --stdout
+        $LASTEXITCODE | Should -Be 0
+        $result | Should -Not -BeNullOrEmpty
     }
 }

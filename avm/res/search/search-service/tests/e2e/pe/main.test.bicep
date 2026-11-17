@@ -1,5 +1,3 @@
-import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
-
 targetScope = 'subscription'
 
 metadata name = 'Private endpoint-enabled deployment'
@@ -39,8 +37,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
-    storageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
-    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
+    storageAccountName: '${take('dep${namePrefix}st${serviceShort}', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
+    keyVaultName: 'dep-kv-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     privateDnsZoneName: 'privatelink.search.windows.net'
   }
 }
@@ -55,7 +53,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 60)
+      name: '${take('${namePrefix}${serviceShort}001', 46)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
       publicNetworkAccess: 'Disabled'
       privateEndpoints: [
         {

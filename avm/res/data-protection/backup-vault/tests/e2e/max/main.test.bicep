@@ -140,7 +140,7 @@ module testDeployment '../../../main.bicep' = {
           objectType: 'BackupPolicy'
           policyRules: [
             {
-              name: 'Default'
+              name: 'Default_OperationalStore'
               objectType: 'AzureRetentionRule'
               isDefault: true
               lifecycles: [

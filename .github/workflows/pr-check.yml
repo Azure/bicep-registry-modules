@@ -1,4 +1,4 @@
-name: ".Module - PR Check [EXPERIMENTAL]"
+name: ".Module - PR Check"
 
 on:
   workflow_dispatch:
@@ -29,6 +29,8 @@ on:
       - reopened
       - synchronize
       - labeled
+    paths:
+      - "avm/**"
 
 permissions: {}
 
@@ -48,7 +50,7 @@ jobs:
     steps:
       - name: "Prepare module checks"
         id: initialize
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@8bca18987ce8853e844f4e95f8cc309162ee7b40
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@987bf24c2d2f22cd063444b86fad80aeb0e9b748
         with:
           authoringSource: ${{ inputs.authoringSource || 'gallery' }}
           authoringRef: ${{ inputs.authoringRef || '' }}
@@ -65,7 +67,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@8bca18987ce8853e844f4e95f8cc309162ee7b40
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@987bf24c2d2f22cd063444b86fad80aeb0e9b748
     with:
       modulePath: ${{ matrix.modulePath }}
       moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}

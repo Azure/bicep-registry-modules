@@ -41,19 +41,20 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
+var databaseAccountName = '${take('${namePrefix}${serviceShort}001', 30)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
+var databaseAccountResourceId = '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${databaseAccountName}'
+
 // ============== //
 // Test Execution //
 // ============== //
 
-var accountName = uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 44)
-var accountResourceId = '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}'
-
+@batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: accountName
+      name: databaseAccountName
       sqlRoleDefinitions: [
         {
           name: guid('optional-role-identifier') // MUST be a guid
@@ -64,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
             'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
           ]
           assignableScopes: [
-            accountResourceId
+            databaseAccountResourceId
           ]
           assignments: [
             {
@@ -78,7 +79,7 @@ module testDeployment '../../../main.bicep' = [
             'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
           ]
           assignableScopes: [
-            accountResourceId
+            databaseAccountResourceId
           ]
         }
         {
@@ -111,17 +112,17 @@ module testDeployment '../../../main.bicep' = [
       sqlRoleAssignments: [
         {
           principalId: nestedDependencies.outputs.identityPrincipalId
-          roleDefinitionId: '${accountResourceId}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
+          roleDefinitionId: '${databaseAccountResourceId}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
         }
         {
           principalId: nestedDependencies.outputs.identityPrincipalId
           roleDefinitionId: '00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
-          scope: '${accountResourceId}/dbs/simple-db'
+          scope: '${databaseAccountResourceId}/dbs/simple-db'
         }
         {
           principalId: nestedDependencies.outputs.identityPrincipalId
           roleDefinitionId: 'Cosmos DB Built-in Data Reader'
-          scope: '${accountResourceId}/dbs/simple-db/colls/container-001'
+          scope: '${databaseAccountResourceId}/dbs/simple-db/colls/container-001'
         }
       ]
     }

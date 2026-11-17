@@ -42,7 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: uniqueResourceName('dep${namePrefix}cdnstore${serviceShort}', resourceGroup.id, 24)
+    storageAccountName: '${take('dep${namePrefix}cdnstore${serviceShort}', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     location: resourceLocation
   }
 }

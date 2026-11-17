@@ -7,7 +7,7 @@ Uses PSRule's offline ARM expansion, including nested deployments, conditions, l
 No Azure connection is used. Resource-group-scoped names and references to existing resources are excluded.
 Time-based and random defaults are varied between simulated runs; deployment names and CI prefixes remain identical.
 Runtime Key Vault secret payloads are omitted because they cannot be read back as resource properties.
-External fixture IDs and runtime-only DNS/script results use constant offline values. Unknown Key Vault
+External fixture IDs, built-in service principal overrides and runtime-only DNS/script results use constant offline values. Unknown Key Vault
 RBAC reference values are checked in both states, rather than assuming a successful deployment outcome.
 
 .PARAMETER TemplateFilePath
@@ -30,13 +30,14 @@ function Test-E2eResourceNames {
         $template.parameters.namePrefix.defaultValue = 'gci'
     }
     $externalScope = '/subscriptions/33333333-3333-3333-3333-333333333333/resourceGroups/offline-fixtures'
-    $externalResources = @{
-        managedHSMResourceId    = "$externalScope/providers/Microsoft.KeyVault/managedHSMs/offline-hsm"
-        deploymentMSIResourceId = "$externalScope/providers/Microsoft.ManagedIdentity/userAssignedIdentities/offline-identity"
+    $offlineParameters = @{
+        managedHSMResourceId             = "$externalScope/providers/Microsoft.KeyVault/managedHSMs/offline-hsm"
+        deploymentMSIResourceId          = "$externalScope/providers/Microsoft.ManagedIdentity/userAssignedIdentities/offline-identity"
+        builtInServicePrincipalObjectId = 'cccccccc-cccc-cccc-cccc-cccccccccccc'
     }
-    foreach ($parameterName in $externalResources.Keys) {
-        if ($template.parameters -and $template.parameters[$parameterName] -and $template.parameters[$parameterName].defaultValue -eq '') {
-            $template.parameters[$parameterName].defaultValue = $externalResources[$parameterName]
+    foreach ($parameterName in $offlineParameters.Keys) {
+        if ($template.parameters -and $template.parameters[$parameterName] -and $template.parameters[$parameterName].defaultValue -in @('', $null)) {
+            $template.parameters[$parameterName].defaultValue = $offlineParameters[$parameterName]
         }
     }
 
