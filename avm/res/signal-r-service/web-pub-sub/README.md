@@ -55,7 +55,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
   params: {
-    name: 'srswpsmin-001'
+    name: '<name>'
   }
 }
 ```
@@ -73,7 +73,7 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "srswpsmin-001"
+      "value": "<name>"
     }
   }
 }
@@ -89,7 +89,7 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/signal-r-service/web-pub-sub:<version>'
 
-param name = 'srswpsmin-001'
+param name = '<name>'
 ```
 
 </details>
@@ -110,7 +110,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
   params: {
     // Required parameters
-    name: 'srswpsmax-001'
+    name: '<name>'
     // Non-required parameters
     capacity: 2
     clientCertEnabled: false
@@ -177,7 +177,7 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '8e40bf2f-0457-4292-a83a-eedc36d04f6a'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -218,7 +218,7 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "srswpsmax-001"
+      "value": "<name>"
     },
     // Non-required parameters
     "capacity": {
@@ -307,7 +307,7 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "8e40bf2f-0457-4292-a83a-eedc36d04f6a",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -350,7 +350,7 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
 using 'br/public:avm/res/signal-r-service/web-pub-sub:<version>'
 
 // Required parameters
-param name = 'srswpsmax-001'
+param name = '<name>'
 // Non-required parameters
 param capacity = 2
 param clientCertEnabled = false
@@ -417,7 +417,7 @@ param resourceLogConfigurationsToEnable = [
 ]
 param roleAssignments = [
   {
-    name: '8e40bf2f-0457-4292-a83a-eedc36d04f6a'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -460,7 +460,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
   params: {
     // Required parameters
-    name: 'srswpswaf-001'
+    name: '<name>'
     // Non-required parameters
     capacity: 2
     clientCertEnabled: false
@@ -534,7 +534,7 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "srswpswaf-001"
+      "value": "<name>"
     },
     // Non-required parameters
     "capacity": {
@@ -626,7 +626,7 @@ module webPubSub 'br/public:avm/res/signal-r-service/web-pub-sub:<version>' = {
 using 'br/public:avm/res/signal-r-service/web-pub-sub:<version>'
 
 // Required parameters
-param name = 'srswpswaf-001'
+param name = '<name>'
 // Non-required parameters
 param capacity = 2
 param clientCertEnabled = false

@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 extension microsoftGraphV1
@@ -47,7 +49,10 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciHostImageReferenceId string = ''
 
-var enforcedLocation = loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')
+var enforcedLocation = loadJsonContent(
+  '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json',
+  'location'
+)
 
 var customLocationName = '${namePrefix}${serviceShort}-location'
 
@@ -65,9 +70,9 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   scope: resourceGroup
   params: {
     clusterName: '${namePrefix}${serviceShort}001'
-    clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
-    keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    clusterWitnessStorageAccountName: uniqueResourceName('dep${namePrefix}wst${serviceShort}', resourceGroup.id, 24)
+    keyVaultDiagnosticStorageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
     userAssignedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     maintenanceConfigurationAssignmentName: 'dep-${namePrefix}-mca-${serviceShort}'
@@ -195,7 +200,9 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.4.0' = if (preparedH
       ]
       subnetMask: '255.255.255.0'
     }
-    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : hciResourceProvider!.id
   }
 }
 
@@ -215,6 +222,8 @@ module testDeployment '../../../main.bicep' = {
     location: enforcedLocation
     diskSizeGB: 4
     dynamic: false
-    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment.customLocationResourceId : customLocation!.id
+    customLocationResourceId: preparedHciEnvironment != null
+      ? preparedHciEnvironment.customLocationResourceId
+      : customLocation!.id
   }
 }

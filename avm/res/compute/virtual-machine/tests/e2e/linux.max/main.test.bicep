@@ -125,7 +125,7 @@ module testDeployment '../../../main.bicep' = {
               ]
               roleAssignments: [
                 {
-                  name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
+                  name: guid(resourceGroup.id, '696e6067-3ddc-4b71-bf97-9caebeba441a')
                   roleDefinitionIdOrName: 'Reader'
                   principalId: nestedDependencies.outputs.managedIdentityPrincipalId
                   principalType: 'ServicePrincipal'
@@ -165,7 +165,7 @@ module testDeployment '../../../main.bicep' = {
         name: 'nic-test-01'
         roleAssignments: [
           {
-            name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
+            name: guid(resourceGroup.id, 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe')
             roleDefinitionIdOrName: 'Reader'
             principalId: nestedDependencies.outputs.managedIdentityPrincipalId
             principalType: 'ServicePrincipal'
@@ -343,13 +343,13 @@ module testDeployment '../../../main.bicep' = {
     ]
     roleAssignments: [
       {
-        name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
+        name: guid(resourceGroup.id, 'eb01de52-d2be-4272-a7b9-13de6c399e27')
         roleDefinitionIdOrName: 'Reader'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
       {
-        name: guid('Custom seed ${namePrefix}${serviceShort}')
+        name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'

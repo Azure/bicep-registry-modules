@@ -131,7 +131,7 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
     publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
-        name: 'db496446-89ac-4d91-a189-71544de0150a'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -195,7 +195,7 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
     "roleAssignments": {
       "value": [
         {
-          "name": "db496446-89ac-4d91-a189-71544de0150a",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -247,7 +247,7 @@ param lock = {
 param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
-    name: 'db496446-89ac-4d91-a189-71544de0150a'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

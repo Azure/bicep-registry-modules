@@ -67,7 +67,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrmin001'
+    name: '<name>'
     // Non-required parameters
     acrSku: 'Standard'
     location: '<location>'
@@ -89,7 +89,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrmin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrSku": {
@@ -113,7 +113,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrmin001'
+param name = '<name>'
 // Non-required parameters
 param acrSku = 'Standard'
 param location = '<location>'
@@ -229,7 +229,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrmax001'
+    name: '<name>'
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Premium'
@@ -314,7 +314,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     roleAssignmentMode: 'AbacRepositoryPermissions'
     roleAssignments: [
       {
-        name: '37c5bf75-c804-4607-94a9-e7485164f9f7'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
@@ -402,7 +402,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrAdminUserEnabled": {
@@ -519,7 +519,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "37c5bf75-c804-4607-94a9-e7485164f9f7",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
@@ -621,7 +621,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrmax001'
+param name = '<name>'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Premium'
@@ -706,7 +706,7 @@ param replications = [
 param roleAssignmentMode = 'AbacRepositoryPermissions'
 param roleAssignments = [
   {
-    name: '37c5bf75-c804-4607-94a9-e7485164f9f7'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Reader'
@@ -796,7 +796,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrempty001'
+    name: '<name>'
     // Non-required parameters
     acrSku: 'Premium'
     location: '<location>'
@@ -821,7 +821,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrempty001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrSku": {
@@ -854,7 +854,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrempty001'
+param name = '<name>'
 // Non-required parameters
 param acrSku = 'Premium'
 param location = '<location>'
@@ -881,7 +881,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrs001'
+    name: '<name>'
     // Non-required parameters
     acrSku: 'Standard'
     location: '<location>'
@@ -912,7 +912,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrs001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrSku": {
@@ -947,7 +947,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrs001'
+param name = '<name>'
 // Non-required parameters
 param acrSku = 'Standard'
 param location = '<location>'

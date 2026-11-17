@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using restricted network access with empty IP ranges'
@@ -41,7 +43,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}crrempty001'
+      name: uniqueResourceName('${namePrefix}crrempty001', resourceGroup.id, 50)
       location: resourceLocation
       acrSku: 'Premium'
       publicNetworkAccess: 'Disabled'

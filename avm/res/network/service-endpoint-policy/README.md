@@ -117,7 +117,7 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
     }
     roleAssignments: [
       {
-        name: '36fbc5db-13e9-4bda-9594-1b1cc9db2d6d'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -172,7 +172,7 @@ module serviceEndpointPolicy 'br/public:avm/res/network/service-endpoint-policy:
     "roleAssignments": {
       "value": [
         {
-          "name": "36fbc5db-13e9-4bda-9594-1b1cc9db2d6d",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -221,7 +221,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '36fbc5db-13e9-4bda-9594-1b1cc9db2d6d'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

@@ -87,13 +87,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: '049a8b5a-70dc-4749-965c-b009733cf432'
+          name: guid(resourceGroup.id, '049a8b5a-70dc-4749-965c-b009733cf432')
           roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalType: 'ServicePrincipal'

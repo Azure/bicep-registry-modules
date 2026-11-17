@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -43,7 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   params: {
     location: enforcedLocation
-    appName: 'dep-${namePrefix}-app-${serviceShort}'
+    appName: uniqueResourceName('dep-${namePrefix}-app-${serviceShort}', resourceGroup.id, 60)
     appServicePlanName: 'dep-${namePrefix}-apps-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
   }
@@ -60,11 +62,11 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'mc${uniqueString(deployment().name)}-${serviceShort}'
-      containerRegistryName: '${uniqueString(deployment().name, enforcedLocation)}testcontainerregistry${serviceShort}'
+      containerRegistryName: uniqueResourceName('cr${namePrefix}${serviceShort}', resourceGroup.id, 50)
       skuTier: 'Free'
       webApplicationRoutingEnabled: true
       monitoringWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsResourceId
-      keyVaultName: 'kv${uniqueString(deployment().name)}-${serviceShort}'
+      keyVaultName: uniqueResourceName('kv${namePrefix}${serviceShort}', resourceGroup.id, 24)
       location: enforcedLocation
       principalId: nestedDependencies.outputs.identityPrincipalId
       acrSku: 'Basic'

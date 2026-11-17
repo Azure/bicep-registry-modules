@@ -287,19 +287,22 @@ Describe 'Pester entry-point initialization' {
         $action = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'actions' 'templates' 'avm-validateModulePester' 'action.yml') -Raw)
         $deploymentAction = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml') -Raw)
         $workflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'platform.on-pull-request-check-metadata.yml') -Raw)
+        $namingWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'platform.on-pull-request-check-e2e-names.yml') -Raw)
         $script:scripts = @{
-            'full static validation' = ($action.runs.steps | Where-Object id -EQ 'pester_run_step').run
+            'full static validation'     = ($action.runs.steps | Where-Object id -EQ 'pester_run_step').run
             'post-deployment validation' = ($deploymentAction.runs.steps | Where-Object id -EQ 'pester_run_step').run
-            'standalone metadata'    = ($workflow.jobs.job_check_metadata.steps | Where-Object shell -EQ 'pwsh').run
-            'CI utility tests'       = Get-Content -LiteralPath (Join-Path $RepoRootPath 'utilities' 'tests' 'Test-CI.ps1') -Raw
+            'standalone metadata'        = ($workflow.jobs.job_check_metadata.steps | Where-Object shell -EQ 'pwsh').run
+            'offline naming tests'       = ($namingWorkflow.jobs.job_check_names.steps | Where-Object name -EQ 'Test naming helper and validator').run
+            'CI utility tests'           = Get-Content -LiteralPath (Join-Path $RepoRootPath 'utilities' 'tests' 'Test-CI.ps1') -Raw
         }
     }
 
     It 'initializes the shared engine before any Pester command in <EntryPoint>' -ForEach @(
-        @{ EntryPoint = 'full static validation' }
-        @{ EntryPoint = 'post-deployment validation' }
-        @{ EntryPoint = 'standalone metadata' }
-        @{ EntryPoint = 'CI utility tests' }
+        @{ EntryPoint = 'full static validation'; PesterCommandCount = 2 }
+        @{ EntryPoint = 'post-deployment validation'; PesterCommandCount = 2 }
+        @{ EntryPoint = 'standalone metadata'; PesterCommandCount = 2 }
+        @{ EntryPoint = 'offline naming tests'; PesterCommandCount = 1 }
+        @{ EntryPoint = 'CI utility tests'; PesterCommandCount = 2 }
     ) {
         $parseErrors = $null
         $ast = [System.Management.Automation.Language.Parser]::ParseInput($scripts[$EntryPoint], [ref] $null, [ref] $parseErrors)
@@ -315,7 +318,7 @@ Describe 'Pester entry-point initialization' {
         $source.Count | Should -Be 1
         $source[0].Extent.StartOffset | Should -BeLessThan $initializer.Extent.StartOffset
         $pesterCommands = @($commands | Where-Object { $_.GetCommandName() -in @('New-PesterContainer', 'Invoke-Pester') })
-        $pesterCommands.Count | Should -Be 2
+        $pesterCommands.Count | Should -Be $PesterCommandCount
         foreach ($command in $pesterCommands) {
             $initializer.Extent.StartOffset | Should -BeLessThan $command.Extent.StartOffset
         }

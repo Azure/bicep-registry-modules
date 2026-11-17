@@ -937,6 +937,9 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     appServiceConfig: {
       kind: 'app,linux'
     }
+    frontDoorConfig: {
+      endpointName: '<endpointName>'
+    }
     location: '<location>'
     servicePlanConfig: {
       kind: 'linux'
@@ -974,6 +977,11 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "appServiceConfig": {
       "value": {
         "kind": "app,linux"
+      }
+    },
+    "frontDoorConfig": {
+      "value": {
+        "endpointName": "<endpointName>"
       }
     },
     "location": {
@@ -1018,6 +1026,9 @@ param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 // Non-required parameters
 param appServiceConfig = {
   kind: 'app,linux'
+}
+param frontDoorConfig = {
+  endpointName: '<endpointName>'
 }
 param location = '<location>'
 param servicePlanConfig = {

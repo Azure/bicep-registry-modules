@@ -140,7 +140,7 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '83c82ade-1ada-4374-82d0-325f39a44af6'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -214,7 +214,7 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "83c82ade-1ada-4374-82d0-325f39a44af6",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -276,7 +276,7 @@ param outboundEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: '83c82ade-1ada-4374-82d0-325f39a44af6'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

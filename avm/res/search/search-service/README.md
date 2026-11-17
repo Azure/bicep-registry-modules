@@ -115,7 +115,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
   params: {
     // Required parameters
-    name: 'kv-ref'
+    name: '<name>'
     // Non-required parameters
     authOptions: {
       aadOrApiKey: {
@@ -146,7 +146,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "kv-ref"
+      "value": "<name>"
     },
     // Non-required parameters
     "authOptions": {
@@ -181,7 +181,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 using 'br/public:avm/res/search/search-service:<version>'
 
 // Required parameters
-param name = 'kv-ref'
+param name = '<name>'
 // Non-required parameters
 param authOptions = {
   aadOrApiKey: {
@@ -268,7 +268,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     replicaCount: 3
     roleAssignments: [
       {
-        name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
@@ -392,7 +392,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "73ec30e0-2e25-475f-beec-d90cab332eb7",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
@@ -492,7 +492,7 @@ param partitionCount = 2
 param replicaCount = 3
 param roleAssignments = [
   {
-    name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Reader'
@@ -748,7 +748,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
   params: {
     // Required parameters
-    name: 'ssswaf001'
+    name: '<name>'
     // Non-required parameters
     authOptions: {
       aadOrApiKey: {
@@ -812,7 +812,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssswaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "authOptions": {
@@ -896,7 +896,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 using 'br/public:avm/res/search/search-service:<version>'
 
 // Required parameters
-param name = 'ssswaf001'
+param name = '<name>'
 // Non-required parameters
 param authOptions = {
   aadOrApiKey: {

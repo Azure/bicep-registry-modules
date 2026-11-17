@@ -1018,7 +1018,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     publicIPResourceID: '<publicIPResourceID>'
     roleAssignments: [
       {
-        name: '3a8da184-d6d8-4bea-b992-e27cc053ef21'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1210,7 +1210,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "3a8da184-d6d8-4bea-b992-e27cc053ef21",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1384,7 +1384,7 @@ param networkRuleCollections = [
 param publicIPResourceID = '<publicIPResourceID>'
 param roleAssignments = [
   {
-    name: '3a8da184-d6d8-4bea-b992-e27cc053ef21'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using Dedicated Windows hosting'
@@ -27,7 +29,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      functionAppName: '${namePrefix}${serviceShort}001'
+      functionAppName: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 60)
       appServicePlanSkuName: 'B1'
       functionAppKind: 'functionapp'
       functionWorkerRuntime: 'dotnet-isolated'

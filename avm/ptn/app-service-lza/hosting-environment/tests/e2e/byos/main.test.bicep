@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 metadata name = 'Bring Your Own Storage'
 metadata description = 'This instance deploys the module with Azure Files mounted as custom storage (BYOS) on a Linux web app behind Application Gateway.'
 
@@ -32,7 +34,7 @@ module dependencies './dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-dependencies'
   params: {
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    storageAccountName: take('dep${namePrefix}sa${serviceShort}', 24)
+    storageAccountName: uniqueResourceName('dep${namePrefix}sa${serviceShort}', resourceGroup.id, 24)
     fileShareName: 'appdata'
     location: enforcedLocation
   }
@@ -47,7 +49,7 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: take('${namePrefix}${serviceShort}', 10)
+      workloadName: uniqueResourceName('${namePrefix}${serviceShort}', resourceGroup.id, 10)
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'

@@ -171,7 +171,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   params: {
     // Required parameters
-    name: 'kcuencr0001'
+    name: '<name>'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     customerManagedKey: {
@@ -205,7 +205,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "kcuencr0001"
+      "value": "<name>"
     },
     "sku": {
       "value": "Standard_E2ads_v5"
@@ -245,7 +245,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 using 'br/public:avm/res/kusto/cluster:<version>'
 
 // Required parameters
-param name = 'kcuencr0001'
+param name = '<name>'
 param sku = 'Standard_E2ads_v5'
 // Non-required parameters
 param customerManagedKey = {
@@ -281,7 +281,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   params: {
     // Required parameters
-    name: 'kcmin0001'
+    name: '<name>'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     enableDiskEncryption: true
@@ -308,7 +308,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "kcmin0001"
+      "value": "<name>"
     },
     "sku": {
       "value": "Standard_E2ads_v5"
@@ -339,7 +339,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 using 'br/public:avm/res/kusto/cluster:<version>'
 
 // Required parameters
-param name = 'kcmin0001'
+param name = '<name>'
 param sku = 'Standard_E2ads_v5'
 // Non-required parameters
 param enableDiskEncryption = true
@@ -369,7 +369,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   params: {
     // Required parameters
-    name: 'kcmax0001'
+    name: '<name>'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     acceptedAudiences: [
@@ -437,7 +437,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     publicIPType: 'DualStack'
     roleAssignments: [
       {
-        name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -475,7 +475,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "kcmax0001"
+      "value": "<name>"
     },
     "sku": {
       "value": "Standard_E2ads_v5"
@@ -591,7 +591,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "c2a4b728-c3d0-47f5-afbb-ea45c45859de",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -629,7 +629,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 using 'br/public:avm/res/kusto/cluster:<version>'
 
 // Required parameters
-param name = 'kcmax0001'
+param name = '<name>'
 param sku = 'Standard_E2ads_v5'
 // Non-required parameters
 param acceptedAudiences = [
@@ -697,7 +697,7 @@ param managedIdentities = {
 param publicIPType = 'DualStack'
 param roleAssignments = [
   {
-    name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -738,7 +738,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   params: {
     // Required parameters
-    name: 'kcpe0001'
+    name: '<name>'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     enablePublicNetworkAccess: false
@@ -791,7 +791,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "kcpe0001"
+      "value": "<name>"
     },
     "sku": {
       "value": "Standard_E2ads_v5"
@@ -852,7 +852,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 using 'br/public:avm/res/kusto/cluster:<version>'
 
 // Required parameters
-param name = 'kcpe0001'
+param name = '<name>'
 param sku = 'Standard_E2ads_v5'
 // Non-required parameters
 param enablePublicNetworkAccess = false
@@ -907,7 +907,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   params: {
     // Required parameters
-    name: 'kcwaf0001'
+    name: '<name>'
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     autoScaleMax: 10
@@ -946,7 +946,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "kcwaf0001"
+      "value": "<name>"
     },
     "sku": {
       "value": "Standard_E2ads_v5"
@@ -1007,7 +1007,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
 using 'br/public:avm/res/kusto/cluster:<version>'
 
 // Required parameters
-param name = 'kcwaf0001'
+param name = '<name>'
 param sku = 'Standard_E2ads_v5'
 // Non-required parameters
 param autoScaleMax = 10

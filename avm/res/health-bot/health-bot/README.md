@@ -139,7 +139,7 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
     }
     roleAssignments: [
       {
-        name: '9d89b5ea-0d1f-41d8-9297-52529827d712'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -204,7 +204,7 @@ module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "9d89b5ea-0d1f-41d8-9297-52529827d712",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -259,7 +259,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: '9d89b5ea-0d1f-41d8-9297-52529827d712'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

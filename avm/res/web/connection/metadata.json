@@ -4,6 +4,6 @@
   "moduleDescription": "AVM Resource Module for API Connection",
   "telemetryIdPrefix": "46d3xbcp.res.86df30d",
   "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.web-connection"],
-  "canonicalType": "Microsoft.Web/connection",
+  "canonicalType": "Microsoft.Web/connections",
   "owners": ["abhishekaryams", "krbar"]
 }

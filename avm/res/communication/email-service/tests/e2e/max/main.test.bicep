@@ -58,13 +58,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          name: 'bdfa5270-8a55-466d-90d0-b5e96a90fadc'
+          name: guid(resourceGroup.id, 'bdfa5270-8a55-466d-90d0-b5e96a90fadc')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -102,7 +102,7 @@ module testDeployment '../../../main.bicep' = [
           }
           roleAssignments: [
             {
-              name: '1a441bec-9c57-49d1-9a83-b7fd62901413'
+              name: guid(resourceGroup.id, '1a441bec-9c57-49d1-9a83-b7fd62901413')
               roleDefinitionIdOrName: 'Owner'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'

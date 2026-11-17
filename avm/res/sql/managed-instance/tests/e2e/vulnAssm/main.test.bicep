@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'With vulnerability assessment'
@@ -50,7 +52,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
-    storageAccountName: toLower('dep${namePrefix}v${serviceShort}01')
+    storageAccountName: uniqueResourceName(toLower('dep${namePrefix}v${serviceShort}01'), resourceGroup.id, 24)
   }
 }
 

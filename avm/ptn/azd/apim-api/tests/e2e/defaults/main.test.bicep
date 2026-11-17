@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
@@ -36,8 +38,8 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     appServicePlanName: 'dep-${namePrefix}-sp-${serviceShort}'
-    appServiceName: 'dep-${namePrefix}-aps-${serviceShort}'
-    apimServiceName: '${namePrefix}-as-${serviceShort}001'
+    appServiceName: uniqueResourceName('dep-${namePrefix}-aps-${serviceShort}', resourceGroup.id, 60)
+    apimServiceName: uniqueResourceName('${namePrefix}-as-${serviceShort}001', resourceGroup.id, 50)
     publisherName: 'dep-${namePrefix}-pn-x-001'
     applicationInsightsName: 'dep-${namePrefix}-ais-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'

@@ -537,7 +537,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               publicIpNameSuffix: '-pip-01'
               roleAssignments: [
                 {
-                  name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
+                  name: '<name>'
                   principalId: '<principalId>'
                   principalType: 'ServicePrincipal'
                   roleDefinitionIdOrName: 'Reader'
@@ -560,7 +560,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         name: 'nic-test-01'
         roleAssignments: [
           {
-            name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Reader'
@@ -736,7 +736,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     rebootSetting: 'IfRequired'
     roleAssignments: [
       {
-        name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
@@ -840,7 +840,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                 "publicIpNameSuffix": "-pip-01",
                 "roleAssignments": [
                   {
-                    "name": "696e6067-3ddc-4b71-bf97-9caebeba441a",
+                    "name": "<name>",
                     "principalId": "<principalId>",
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "Reader"
@@ -863,7 +863,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "name": "nic-test-01",
           "roleAssignments": [
             {
-              "name": "ff72f58d-a3cf-42fd-9c27-c61906bdddfe",
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Reader"
@@ -1095,7 +1095,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "eb01de52-d2be-4272-a7b9-13de6c399e27",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
@@ -1195,7 +1195,7 @@ param nicConfigurations = [
           publicIpNameSuffix: '-pip-01'
           roleAssignments: [
             {
-              name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
+              name: '<name>'
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: 'Reader'
@@ -1218,7 +1218,7 @@ param nicConfigurations = [
     name: 'nic-test-01'
     roleAssignments: [
       {
-        name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
@@ -1394,7 +1394,7 @@ param publicKeys = [
 param rebootSetting = 'IfRequired'
 param roleAssignments = [
   {
-    name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Reader'
@@ -3278,7 +3278,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               publicIPAddressResourceId: '<publicIPAddressResourceId>'
               roleAssignments: [
                 {
-                  name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
+                  name: '<name>'
                   principalId: '<principalId>'
                   principalType: 'ServicePrincipal'
                   roleDefinitionIdOrName: 'Reader'
@@ -3523,7 +3523,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     rebootSetting: 'IfRequired'
     roleAssignments: [
       {
-        name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
@@ -3623,7 +3623,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                 "publicIPAddressResourceId": "<publicIPAddressResourceId>",
                 "roleAssignments": [
                   {
-                    "name": "e962e7c1-261a-4afd-b5ad-17a640a0b7bc",
+                    "name": "<name>",
                     "principalId": "<principalId>",
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "Reader"
@@ -3930,7 +3930,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "c70e8c48-6945-4607-9695-1098ba5a86ed",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
@@ -4026,7 +4026,7 @@ param nicConfigurations = [
           publicIPAddressResourceId: '<publicIPAddressResourceId>'
           roleAssignments: [
             {
-              name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
+              name: '<name>'
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: 'Reader'
@@ -4271,7 +4271,7 @@ param proximityPlacementGroupResourceId = '<proximityPlacementGroupResourceId>'
 param rebootSetting = 'IfRequired'
 param roleAssignments = [
   {
-    name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Reader'

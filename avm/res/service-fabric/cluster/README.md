@@ -491,7 +491,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '26b52f01-eebc-4056-a516-41541369258c'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -709,7 +709,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "26b52f01-eebc-4056-a516-41541369258c",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -901,7 +901,7 @@ param notifications = [
 ]
 param roleAssignments = [
   {
-    name: '26b52f01-eebc-4056-a516-41541369258c'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

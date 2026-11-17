@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 extension microsoftGraphV1
@@ -56,7 +58,10 @@ param localAdminAndDeploymentUserPass string = newGuid()
 #disable-next-line secure-parameter-default
 param hciHostImageReferenceId string = ''
 
-var enforcedLocation = loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')
+var enforcedLocation = loadJsonContent(
+  '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json',
+  'location'
+)
 
 // ============ //
 // Dependencies //
@@ -79,9 +84,9 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   scope: resourceGroup
   params: {
     clusterName: '${namePrefix}${serviceShort}1'
-    clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
-    keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    clusterWitnessStorageAccountName: uniqueResourceName('dep${namePrefix}wst${serviceShort}', resourceGroup.id, 24)
+    keyVaultDiagnosticStorageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
     userAssignedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     maintenanceConfigurationAssignmentName: 'dep-${namePrefix}-mca-${serviceShort}'
@@ -111,7 +116,9 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.4.0' = if (preparedH
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
     servicePrincipalId: arbDeploymentAppId
     servicePrincipalSecret: arbDeploymentServicePrincipalSecret
-    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : hciResourceProvider!.id
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies!.outputs.clusterNodeNames
@@ -203,7 +210,9 @@ module hciImage 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:0.1
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}marketplaceimage'
-    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment.customLocationResourceId : customLocation!.id
+    customLocationResourceId: preparedHciEnvironment != null
+      ? preparedHciEnvironment.customLocationResourceId
+      : customLocation!.id
     identifier: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -225,7 +234,9 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-hc-${serviceShort}'
-    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment.customLocationResourceId : customLocation!.id
+    customLocationResourceId: preparedHciEnvironment != null
+      ? preparedHciEnvironment.customLocationResourceId
+      : customLocation!.id
     hardwareProfile: {
       memoryMB: 4096
       processors: 2

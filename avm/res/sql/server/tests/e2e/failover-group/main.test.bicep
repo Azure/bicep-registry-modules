@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using failover groups'
@@ -42,7 +44,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, locationSecondary)}-nestedDependencies'
   params: {
-    serverName: '${namePrefix}${serviceShort}002'
+    serverName: uniqueResourceName('${namePrefix}${serviceShort}002', resourceGroup.id, 63)
     location: locationSecondary
   }
 }
@@ -57,7 +59,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, locationPrimary)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 63)
       location: locationPrimary
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
@@ -97,7 +99,7 @@ module testDeployment '../../../main.bicep' = [
       failoverGroups: [
         // Geo failover group with read-write endpoint failover
         {
-          name: '${namePrefix}-${serviceShort}-fg-geo'
+          name: uniqueResourceName('${namePrefix}-${serviceShort}-fg-geo', resourceGroup.id, 63)
           databases: [
             '${namePrefix}-${serviceShort}-db1'
           ]
@@ -111,7 +113,7 @@ module testDeployment '../../../main.bicep' = [
         }
         // Standby failover group
         {
-          name: '${namePrefix}-${serviceShort}-fg-standby'
+          name: uniqueResourceName('${namePrefix}-${serviceShort}-fg-standby', resourceGroup.id, 63)
           databases: [
             '${namePrefix}-${serviceShort}-db2'
           ]
@@ -126,7 +128,7 @@ module testDeployment '../../../main.bicep' = [
         }
         // Geo failover group with read-write AND read-only endpoint failover policy
         {
-          name: '${namePrefix}-${serviceShort}-fg-readonly'
+          name: uniqueResourceName('${namePrefix}-${serviceShort}-fg-readonly', resourceGroup.id, 63)
           databases: [
             '${namePrefix}-${serviceShort}-db3'
           ]

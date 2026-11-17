@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 extension microsoftGraphV1
@@ -42,7 +44,10 @@ param arbDeploymentSPObjectId string = ''
 #disable-next-line secure-parameter-default
 param arbDeploymentServicePrincipalSecret string = ''
 
-var enforcedLocation = loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')
+var enforcedLocation = loadJsonContent(
+  '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json',
+  'location'
+)
 
 resource hciResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null && preparedHciEnvironment == null) {
   appId: '1412d89f-b8a8-4111-b4fd-e82905cbd85d'
@@ -58,9 +63,9 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   scope: resourceGroup
   params: {
     clusterName: '${namePrefix}${serviceShort}01'
-    clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
-    keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    clusterWitnessStorageAccountName: uniqueResourceName('dep${namePrefix}wst${serviceShort}', resourceGroup.id, 24)
+    keyVaultDiagnosticStorageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
     userAssignedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     maintenanceConfigurationAssignmentName: 'dep-${namePrefix}-mca-${serviceShort}'
@@ -89,7 +94,9 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.12' = if (prepared
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
     servicePrincipalId: arbDeploymentAppId
     servicePrincipalSecret: arbDeploymentServicePrincipalSecret
-    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : hciResourceProvider!.id
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies!.outputs.clusterNodeNames
@@ -189,7 +196,9 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}marketplaceimage'
-    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment.customLocationResourceId : customLocation!.id
+    customLocationResourceId: preparedHciEnvironment != null
+      ? preparedHciEnvironment.customLocationResourceId
+      : customLocation!.id
     identifier: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'

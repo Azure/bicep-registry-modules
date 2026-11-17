@@ -70,7 +70,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'dfmshsmu001'
+    name: '<name>'
     skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -105,7 +105,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": -1
     },
     "name": {
-      "value": "dfmshsmu001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2ds_v4"
@@ -150,7 +150,7 @@ using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'dfmshsmu001'
+param name = '<name>'
 param skuName = 'Standard_D2ds_v4'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -185,7 +185,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'dfmsfsmin001'
+    name: '<name>'
     skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -213,7 +213,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": -1
     },
     "name": {
-      "value": "dfmsfsmin001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2ds_v4"
@@ -247,7 +247,7 @@ using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'dfmsfsmin001'
+param name = '<name>'
 param skuName = 'Standard_D2ds_v4'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -275,7 +275,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'dfmsmax001'
+    name: '<name>'
     skuName: 'Standard_D2ads_v5'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -385,7 +385,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     tags: {
       'hidden-title': 'This is visible in the resource name'
       resourceType: 'MySQL Flexible Server'
-      serverName: 'dfmsmax001'
+      serverName: '<serverName>'
     }
     version: '8.0.21'
   }
@@ -409,7 +409,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": 1
     },
     "name": {
-      "value": "dfmsmax001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2ads_v5"
@@ -567,7 +567,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": {
         "hidden-title": "This is visible in the resource name",
         "resourceType": "MySQL Flexible Server",
-        "serverName": "dfmsmax001"
+        "serverName": "<serverName>"
       }
     },
     "version": {
@@ -589,7 +589,7 @@ using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'dfmsmax001'
+param name = '<name>'
 param skuName = 'Standard_D2ads_v5'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -699,7 +699,7 @@ param storageSizeGB = 64
 param tags = {
   'hidden-title': 'This is visible in the resource name'
   resourceType: 'MySQL Flexible Server'
-  serverName: 'dfmsmax001'
+  serverName: '<serverName>'
 }
 param version = '8.0.21'
 ```
@@ -723,7 +723,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'dfmspvt001'
+    name: '<name>'
     skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -792,7 +792,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": -1
     },
     "name": {
-      "value": "dfmspvt001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2ds_v4"
@@ -889,7 +889,7 @@ using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'dfmspvt001'
+param name = '<name>'
 param skuName = 'Standard_D2ds_v4'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -958,7 +958,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'dfmsppe001'
+    name: '<name>'
     skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -1026,7 +1026,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": -1
     },
     "name": {
-      "value": "dfmsppe001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2ds_v4"
@@ -1120,7 +1120,7 @@ using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'dfmsppe001'
+param name = '<name>'
 param skuName = 'Standard_D2ds_v4'
 param tier = 'GeneralPurpose'
 // Non-required parameters
@@ -1188,7 +1188,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'dfmswaf001'
+    name: '<name>'
     skuName: 'Standard_D2ds_v4'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -1223,7 +1223,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": 1
     },
     "name": {
-      "value": "dfmswaf001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "Standard_D2ds_v4"
@@ -1270,7 +1270,7 @@ using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'dfmswaf001'
+param name = '<name>'
 param skuName = 'Standard_D2ds_v4'
 param tier = 'GeneralPurpose'
 // Non-required parameters

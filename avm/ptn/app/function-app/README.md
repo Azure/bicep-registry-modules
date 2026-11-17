@@ -103,7 +103,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
     // Required parameters
-    functionAppName: 'afaded001'
+    functionAppName: '<functionAppName>'
     // Non-required parameters
     appServicePlanSkuName: 'B1'
     functionAppKind: 'functionapp'
@@ -127,7 +127,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   "parameters": {
     // Required parameters
     "functionAppName": {
-      "value": "afaded001"
+      "value": "<functionAppName>"
     },
     // Non-required parameters
     "appServicePlanSkuName": {
@@ -157,7 +157,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
 using 'br/public:avm/ptn/app/function-app:<version>'
 
 // Required parameters
-param functionAppName = 'afaded001'
+param functionAppName = '<functionAppName>'
 // Non-required parameters
 param appServicePlanSkuName = 'B1'
 param functionAppKind = 'functionapp'
@@ -183,7 +183,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
     // Required parameters
-    functionAppName: 'afamax001'
+    functionAppName: '<functionAppName>'
     // Non-required parameters
     applicationInsightsName: 'dep-ai-afamax'
     appServicePlanName: 'afamax-asp'
@@ -247,7 +247,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   "parameters": {
     // Required parameters
     "functionAppName": {
-      "value": "afamax001"
+      "value": "<functionAppName>"
     },
     // Non-required parameters
     "applicationInsightsName": {
@@ -351,7 +351,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
 using 'br/public:avm/ptn/app/function-app:<version>'
 
 // Required parameters
-param functionAppName = 'afamax001'
+param functionAppName = '<functionAppName>'
 // Non-required parameters
 param applicationInsightsName = 'dep-ai-afamax'
 param appServicePlanName = 'afamax-asp'
@@ -416,7 +416,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
-    functionAppName: 'afamin001'
+    functionAppName: '<functionAppName>'
   }
 }
 ```
@@ -434,7 +434,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "functionAppName": {
-      "value": "afamin001"
+      "value": "<functionAppName>"
     }
   }
 }
@@ -450,7 +450,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/app/function-app:<version>'
 
-param functionAppName = 'afamin001'
+param functionAppName = '<functionAppName>'
 ```
 
 </details>

@@ -114,8 +114,10 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     containerImageSource: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
     name: 'acjmin001'
     // Non-required parameters
+    keyVaultName: '<keyVaultName>'
     location: '<location>'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    managedIdentityName: '<managedIdentityName>'
     overwriteExistingImage: true
   }
 }
@@ -141,11 +143,17 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
       "value": "acjmin001"
     },
     // Non-required parameters
+    "keyVaultName": {
+      "value": "<keyVaultName>"
+    },
     "location": {
       "value": "<location>"
     },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    "managedIdentityName": {
+      "value": "<managedIdentityName>"
     },
     "overwriteExistingImage": {
       "value": true
@@ -168,8 +176,10 @@ using 'br/public:avm/ptn/app/container-job-toolkit:<version>'
 param containerImageSource = 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
 param name = 'acjmin001'
 // Non-required parameters
+param keyVaultName = '<keyVaultName>'
 param location = '<location>'
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param managedIdentityName = '<managedIdentityName>'
 param overwriteExistingImage = true
 ```
 
@@ -546,6 +556,7 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     // Non-required parameters
     appInsightsConnectionString: '<appInsightsConnectionString>'
     deployInVnet: true
+    keyVaultName: '<keyVaultName>'
     location: '<location>'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     managedIdentityResourceId: '<managedIdentityResourceId>'
@@ -592,6 +603,9 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     },
     "deployInVnet": {
       "value": true
+    },
+    "keyVaultName": {
+      "value": "<keyVaultName>"
     },
     "location": {
       "value": "<location>"
@@ -644,6 +658,7 @@ param name = 'acjwaf001'
 // Non-required parameters
 param appInsightsConnectionString = '<appInsightsConnectionString>'
 param deployInVnet = true
+param keyVaultName = '<keyVaultName>'
 param location = '<location>'
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param managedIdentityResourceId = '<managedIdentityResourceId>'

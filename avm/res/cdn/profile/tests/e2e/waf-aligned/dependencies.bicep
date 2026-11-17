@@ -40,7 +40,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
 
 // WAF: Reliability - Secondary storage account for failover
 resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
-  name: '${take(storageAccountName, 20)}sec'
+  name: uniqueResourceName('${storageAccountName}sec', resourceGroup().id, 24)
   location: location
   sku: {
     name: 'Standard_LRS' // WAF: Cost Optimization - LRS for secondary
@@ -90,3 +90,4 @@ output managedIdentityResourceId string = managedIdentity.id
 
 @description('The principal ID of the Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'

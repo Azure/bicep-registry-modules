@@ -64,7 +64,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     // Required parameters
     administratorLogin: 'Admin001'
     administratorLoginPassword: '<administratorLoginPassword>'
-    name: 'ddmcdefmin001'
+    name: '<name>'
     nodeCount: 1
     sku: 'M30'
     storage: 32
@@ -92,7 +92,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       "value": "<administratorLoginPassword>"
     },
     "name": {
-      "value": "ddmcdefmin001"
+      "value": "<name>"
     },
     "nodeCount": {
       "value": 1
@@ -120,7 +120,7 @@ using 'br/public:avm/res/document-db/mongo-cluster:<version>'
 // Required parameters
 param administratorLogin = 'Admin001'
 param administratorLoginPassword = '<administratorLoginPassword>'
-param name = 'ddmcdefmin001'
+param name = '<name>'
 param nodeCount = 1
 param sku = 'M30'
 param storage = 32
@@ -146,7 +146,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     // Required parameters
     administratorLogin: 'Admin003'
     administratorLoginPassword: '<administratorLoginPassword>'
-    name: 'ddmcmax002'
+    name: '<name>'
     nodeCount: 2
     sku: 'M30'
     storage: 256
@@ -210,7 +210,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '60395919-cfd3-47bf-8349-775ddebb255e'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -251,7 +251,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       "value": "<administratorLoginPassword>"
     },
     "name": {
-      "value": "ddmcmax002"
+      "value": "<name>"
     },
     "nodeCount": {
       "value": 2
@@ -339,7 +339,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "60395919-cfd3-47bf-8349-775ddebb255e",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -374,7 +374,7 @@ using 'br/public:avm/res/document-db/mongo-cluster:<version>'
 // Required parameters
 param administratorLogin = 'Admin003'
 param administratorLoginPassword = '<administratorLoginPassword>'
-param name = 'ddmcmax002'
+param name = '<name>'
 param nodeCount = 2
 param sku = 'M30'
 param storage = 256
@@ -438,7 +438,7 @@ param privateEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: '60395919-cfd3-47bf-8349-775ddebb255e'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -477,7 +477,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     // Required parameters
     administratorLogin: 'Admin001'
     administratorLoginPassword: '<administratorLoginPassword>'
-    name: 'ddmcdefath001'
+    name: '<name>'
     nodeCount: 1
     sku: 'M10'
     storage: 32
@@ -514,7 +514,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       "value": "<administratorLoginPassword>"
     },
     "name": {
-      "value": "ddmcdefath001"
+      "value": "<name>"
     },
     "nodeCount": {
       "value": 1
@@ -557,7 +557,7 @@ using 'br/public:avm/res/document-db/mongo-cluster:<version>'
 // Required parameters
 param administratorLogin = 'Admin001'
 param administratorLoginPassword = '<administratorLoginPassword>'
-param name = 'ddmcdefath001'
+param name = '<name>'
 param nodeCount = 1
 param sku = 'M10'
 param storage = 32
@@ -592,7 +592,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     // Required parameters
     administratorLogin: 'Admin001'
     administratorLoginPassword: '<administratorLoginPassword>'
-    name: 'ddmcwaf001'
+    name: '<name>'
     nodeCount: 3
     sku: 'M30'
     storage: 256
@@ -627,7 +627,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       "value": "<administratorLoginPassword>"
     },
     "name": {
-      "value": "ddmcwaf001"
+      "value": "<name>"
     },
     "nodeCount": {
       "value": 3
@@ -666,7 +666,7 @@ using 'br/public:avm/res/document-db/mongo-cluster:<version>'
 // Required parameters
 param administratorLogin = 'Admin001'
 param administratorLoginPassword = '<administratorLoginPassword>'
-param name = 'ddmcwaf001'
+param name = '<name>'
 param nodeCount = 3
 param sku = 'M30'
 param storage = 256

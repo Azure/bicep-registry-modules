@@ -72,6 +72,37 @@ Describe 'Shared e2e resource names' {
         $names.hyphenatedName.value | Should -Match '^dep-key-vau[a-z0-9]{13}$'
     }
 
+    It 'Scopes the prepared HCI test vault in <caseName>' -ForEach @(
+        @{ caseName = 'defaults' }
+        @{ caseName = 'max' }
+        @{ caseName = 'waf-aligned' }
+    ) {
+        $sourcePath = Join-Path $repoRootPath 'avm' 'res' 'hybrid-container-service' 'provisioned-cluster-instance' 'tests' 'e2e' $caseName 'main.test.bicep'
+        $source = Get-Content -LiteralPath $sourcePath -Raw
+        $match = [regex]::Match($source, '(?s)module testKeyVault [^\r\n]+\{.*?params:\s*\{\s*name:\s*(?<expression>[^\r\n]+)')
+        $match.Success | Should -BeTrue
+        $expression = $match.Groups['expression'].Value
+        $serviceShort = [regex]::Match($source, "param serviceShort string = '([^']+)'").Groups[1].Value
+        $parameterPath = Join-Path $TestDrive "prepared-$caseName.bicepparam"
+        $outputPath = Join-Path $TestDrive "prepared-$caseName.json"
+        @(
+            'using none'
+            "import { uniqueResourceName } from '$helperPath'"
+            "var namePrefix = 'fixture'"
+            "var serviceShort = '$serviceShort'"
+            "param first = $($expression.Replace('resourceGroup.id', "'$($scopes[0])'"))"
+            "param repeated = $($expression.Replace('resourceGroup.id', "'$($scopes[0])'"))"
+            "param otherSubscription = $($expression.Replace('resourceGroup.id', "'$($scopes[1])'"))"
+        ) -join "`n" | Set-Content -LiteralPath $parameterPath
+        $diagnostics = bicep build-params $parameterPath --no-restore --outfile $outputPath 2>&1
+        if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+        $actual = (Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json).parameters
+        $actual.first.value | Should -Be $actual.repeated.value
+        $actual.first.value | Should -Not -Be $actual.otherSubscription.value
+        $actual.first.value.Length | Should -BeLessOrEqual 24
+        $actual.first.value | Should -Match '^[a-z][a-z0-9-]*[a-z0-9]$'
+    }
+
     It 'Rejects <reason>' -ForEach @(
         @{ reason = 'an empty base name'; arguments = "'', 'scope', 24" }
         @{ reason = 'an empty scope'; arguments = "'base', '', 24" }

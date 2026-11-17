@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using encryption with Customer-Managed-Key'
@@ -52,7 +54,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    name: '${namePrefix}${serviceShort}001'
+    name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 50)
     skuName: 'Premium'
     customerManagedKey: {
       keyName: nestedDependencies.outputs.keyName

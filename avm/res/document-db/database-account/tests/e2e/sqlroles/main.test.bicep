@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Deploying with a sql role definition and assignment'
@@ -34,7 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    appName: 'dep-${namePrefix}-app-${serviceShort}'
+    appName: uniqueResourceName('dep-${namePrefix}-app-${serviceShort}', resourceGroup.id, 60)
     appServicePlanName: 'dep-${namePrefix}-asp-${serviceShort}'
   }
 }

@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using Customer-Managed-Keys with User-Assigned identity'
@@ -46,8 +48,8 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     applicationInsightsName: 'dep-${namePrefix}-appI-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
-    secondaryStorageAccountName: 'dep${namePrefix}st${serviceShort}2'
+    storageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
+    secondaryStorageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}2', resourceGroup.id, 24)
     location: resourceLocation
   }
 }

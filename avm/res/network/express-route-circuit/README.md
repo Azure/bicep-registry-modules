@@ -395,7 +395,7 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
     ]
     roleAssignments: [
       {
-        name: 'd7aa3dfa-6ba6-4ed8-b561-2164fbb1327e'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -532,7 +532,7 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
     "roleAssignments": {
       "value": [
         {
-          "name": "d7aa3dfa-6ba6-4ed8-b561-2164fbb1327e",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -655,7 +655,7 @@ param peerings = [
 ]
 param roleAssignments = [
   {
-    name: 'd7aa3dfa-6ba6-4ed8-b561-2164fbb1327e'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
@@ -42,8 +44,8 @@ module nestedDependencies 'dependencies.bicep' = {
     location: enforcedLocation01
     serverFarmName01: 'dep-${namePrefix}-sf-${serviceShort}01'
     serverFarmName02: 'dep-${namePrefix}-sf-${serviceShort}02'
-    webApp01Name: 'dep-${namePrefix}-wa-${serviceShort}01'
-    webApp02Name: 'dep-${namePrefix}-wa-${serviceShort}02'
+    webApp01Name: uniqueResourceName('dep-${namePrefix}-wa-${serviceShort}01', resourceGroup.id, 60)
+    webApp02Name: uniqueResourceName('dep-${namePrefix}-wa-${serviceShort}02', resourceGroup.id, 60)
     location01: enforcedLocation01
     location02: enforcedLocation02
   }
@@ -72,7 +74,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation01)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 63)
       monitorConfig: {
         protocol: 'https'
         port: 443

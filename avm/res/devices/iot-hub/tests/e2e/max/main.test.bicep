@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
@@ -63,15 +65,14 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 50)
       skuName: 'S1'
       skuCapacity: 2
       allowedFqdnList: [
         'www.bing.com'
         'www.microsoft.com'
       ]
-      authorizationPolicies: [
-      ]
+      authorizationPolicies: []
       cloudToDevice: {
         maxDeliveryCount: 5
         defaultTtlAsIso8601: 'PT1H'

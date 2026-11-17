@@ -396,7 +396,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
     }
     roleAssignments: [
       {
-        name: 'be1bb251-6a44-49f7-8658-d836d0049fc4'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -593,7 +593,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "be1bb251-6a44-49f7-8658-d836d0049fc4",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -780,7 +780,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: 'be1bb251-6a44-49f7-8658-d836d0049fc4'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

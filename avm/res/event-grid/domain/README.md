@@ -59,7 +59,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module domain 'br/public:avm/res/event-grid/domain:<version>' = {
   params: {
     // Required parameters
-    name: 'egdmin001'
+    name: '<name>'
     // Non-required parameters
     location: '<location>'
   }
@@ -80,7 +80,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egdmin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "location": {
@@ -101,7 +101,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
 using 'br/public:avm/res/event-grid/domain:<version>'
 
 // Required parameters
-param name = 'egdmin001'
+param name = '<name>'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -124,7 +124,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module domain 'br/public:avm/res/event-grid/domain:<version>' = {
   params: {
     // Required parameters
-    name: 'egdmax001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -201,7 +201,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '1d2dba39-c8fe-45f9-a3af-6dc15caa95a5'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -244,7 +244,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egdmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -339,7 +339,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "1d2dba39-c8fe-45f9-a3af-6dc15caa95a5",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -384,7 +384,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
 using 'br/public:avm/res/event-grid/domain:<version>'
 
 // Required parameters
-param name = 'egdmax001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -461,7 +461,7 @@ param privateEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: '1d2dba39-c8fe-45f9-a3af-6dc15caa95a5'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -506,7 +506,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module domain 'br/public:avm/res/event-grid/domain:<version>' = {
   params: {
     // Required parameters
-    name: 'egdwaf001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -573,7 +573,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egdwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -654,7 +654,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
 using 'br/public:avm/res/event-grid/domain:<version>'
 
 // Required parameters
-param name = 'egdwaf001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {

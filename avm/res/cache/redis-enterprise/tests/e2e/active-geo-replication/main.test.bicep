@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Active geo-replication'
@@ -35,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    redisClusterName: '${namePrefix}${serviceShort}001'
+    redisClusterName: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 63)
   }
 }
 
@@ -43,13 +45,15 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
+var redisClusterName = uniqueResourceName('${namePrefix}${serviceShort}002', resourceGroup.id, 63)
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}002'
+      name: redisClusterName
       skuName: 'Balanced_B10'
       database: {
         geoReplication: {
@@ -59,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
               id: nestedDependencies.outputs.redisDbResourceId
             }
             {
-              id: '${resourceGroup.id}/providers/Microsoft.Cache/redisEnterprise/${namePrefix}${serviceShort}002/databases/default'
+              id: '${resourceGroup.id}/providers/Microsoft.Cache/redisEnterprise/${redisClusterName}/databases/default'
             }
           ]
         }

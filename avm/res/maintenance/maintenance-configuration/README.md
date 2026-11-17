@@ -145,7 +145,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
     namespace: 'mmcmaxns'
     roleAssignments: [
       {
-        name: 'd78ec5f7-4692-4f43-8c17-7569466bbed5'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -239,7 +239,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
     "roleAssignments": {
       "value": [
         {
-          "name": "d78ec5f7-4692-4f43-8c17-7569466bbed5",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -319,7 +319,7 @@ param maintenanceWindow = {
 param namespace = 'mmcmaxns'
 param roleAssignments = [
   {
-    name: 'd78ec5f7-4692-4f43-8c17-7569466bbed5'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

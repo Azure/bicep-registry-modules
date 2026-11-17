@@ -128,7 +128,7 @@ module applicationSecurityGroup 'br/public:avm/res/network/application-security-
     }
     roleAssignments: [
       {
-        name: 'e9e73878-302e-4e67-a2f8-981ea073bdf7'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -183,7 +183,7 @@ module applicationSecurityGroup 'br/public:avm/res/network/application-security-
     "roleAssignments": {
       "value": [
         {
-          "name": "e9e73878-302e-4e67-a2f8-981ea073bdf7",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -232,7 +232,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'e9e73878-302e-4e67-a2f8-981ea073bdf7'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

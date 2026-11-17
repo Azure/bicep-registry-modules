@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
@@ -36,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    siteName: 'dep-${namePrefix}-fa-${serviceShort}'
+    siteName: uniqueResourceName('dep-${namePrefix}-fa-${serviceShort}', resourceGroup.id, 60)
     serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
     location: resourceLocation
   }

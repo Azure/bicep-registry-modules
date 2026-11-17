@@ -152,7 +152,7 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
     }
     roleAssignments: [
       {
-        name: 'd14a9fe8-2358-434a-a715-3d10978088cc'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -223,7 +223,7 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
     "roleAssignments": {
       "value": [
         {
-          "name": "d14a9fe8-2358-434a-a715-3d10978088cc",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -282,7 +282,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'd14a9fe8-2358-434a-a715-3d10978088cc'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

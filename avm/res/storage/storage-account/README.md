@@ -87,7 +87,7 @@ Azure rejects new legacy BlobStorage accounts with AccountKindNotSupported. The 
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssablob001'
+    name: '<name>'
     // Non-required parameters
     kind: 'BlobStorage'
     skuName: 'Standard_LRS'
@@ -109,7 +109,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssablob001"
+      "value": "<name>"
     },
     // Non-required parameters
     "kind": {
@@ -133,7 +133,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssablob001'
+param name = '<name>'
 // Non-required parameters
 param kind = 'BlobStorage'
 param skuName = 'Standard_LRS'
@@ -157,7 +157,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssablock001'
+    name: '<name>'
     // Non-required parameters
     kind: 'BlockBlobStorage'
     skuName: 'Premium_LRS'
@@ -179,7 +179,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssablock001"
+      "value": "<name>"
     },
     // Non-required parameters
     "kind": {
@@ -203,7 +203,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssablock001'
+param name = '<name>'
 // Non-required parameters
 param kind = 'BlockBlobStorage'
 param skuName = 'Premium_LRS'
@@ -227,7 +227,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssachf001'
+    name: '<name>'
     // Non-required parameters
     allowBlobPublicAccess: false
     blobServices: {
@@ -251,7 +251,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssachf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "allowBlobPublicAccess": {
@@ -277,7 +277,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssachf001'
+param name = '<name>'
 // Non-required parameters
 param allowBlobPublicAccess = false
 param blobServices = {
@@ -307,7 +307,7 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssauhsmu001'
+    name: '<name>'
     // Non-required parameters
     blobServices: {
       containers: [
@@ -340,7 +340,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssauhsmu001"
+      "value": "<name>"
     },
     // Non-required parameters
     "blobServices": {
@@ -375,7 +375,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssauhsmu001'
+param name = '<name>'
 // Non-required parameters
 param blobServices = {
   containers: [
@@ -562,7 +562,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssauacr001'
+    name: '<name>'
     // Non-required parameters
     blobServices: {
       containers: [
@@ -617,7 +617,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssauacr001"
+      "value": "<name>"
     },
     // Non-required parameters
     "blobServices": {
@@ -680,7 +680,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssauacr001'
+param name = '<name>'
 // Non-required parameters
 param blobServices = {
   containers: [
@@ -737,7 +737,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'stamin001'
+    name: '<name>'
     // Non-required parameters
     allowBlobPublicAccess: false
     networkAcls: {
@@ -762,7 +762,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "stamin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "allowBlobPublicAccess": {
@@ -789,7 +789,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'stamin001'
+param name = '<name>'
 // Non-required parameters
 param allowBlobPublicAccess = false
 param networkAcls = {
@@ -828,7 +828,7 @@ This test is skipped in CI because the required Azure Extended Zone is not avail
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssaexzn001'
+    name: '<name>'
     // Non-required parameters
     allowBlobPublicAccess: false
     extendedLocationZone: '<extendedLocationZone>'
@@ -853,7 +853,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssaexzn001"
+      "value": "<name>"
     },
     // Non-required parameters
     "allowBlobPublicAccess": {
@@ -886,7 +886,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssaexzn001'
+param name = '<name>'
 // Non-required parameters
 param allowBlobPublicAccess = false
 param extendedLocationZone = '<extendedLocationZone>'
@@ -913,7 +913,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssaim001'
+    name: '<name>'
     // Non-required parameters
     allowBlobPublicAccess: false
     blobServices: {
@@ -962,7 +962,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssaim001"
+      "value": "<name>"
     },
     // Non-required parameters
     "allowBlobPublicAccess": {
@@ -1017,7 +1017,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssaim001'
+param name = '<name>'
 // Non-required parameters
 param allowBlobPublicAccess = false
 param blobServices = {
@@ -1068,7 +1068,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'kvref'
+    name: '<name>'
     // Non-required parameters
     secretsExportConfiguration: {
       accessKey1Name: 'custom-key1-name'
@@ -1095,7 +1095,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "kvref"
+      "value": "<name>"
     },
     // Non-required parameters
     "secretsExportConfiguration": {
@@ -1122,7 +1122,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'kvref'
+param name = '<name>'
 // Non-required parameters
 param secretsExportConfiguration = {
   accessKey1Name: 'custom-key1-name'
@@ -1151,7 +1151,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssamax001'
+    name: '<name>'
     // Non-required parameters
     allowBlobPublicAccess: false
     blobServices: {
@@ -1294,7 +1294,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           name: 'avdprofiles'
           roleAssignments: [
             {
-              name: 'cff1213b-7877-4425-b67c-bb1de8950dfb'
+              name: '<name>'
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: 'Reader'
@@ -1682,7 +1682,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssamax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "allowBlobPublicAccess": {
@@ -1839,7 +1839,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "name": "avdprofiles",
             "roleAssignments": [
               {
-                "name": "cff1213b-7877-4425-b67c-bb1de8950dfb",
+                "name": "<name>",
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "Reader"
@@ -2255,7 +2255,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssamax001'
+param name = '<name>'
 // Non-required parameters
 param allowBlobPublicAccess = false
 param blobServices = {
@@ -2398,7 +2398,7 @@ param fileServices = {
       name: 'avdprofiles'
       roleAssignments: [
         {
-          name: 'cff1213b-7877-4425-b67c-bb1de8950dfb'
+          name: '<name>'
           principalId: '<principalId>'
           principalType: 'ServicePrincipal'
           roleDefinitionIdOrName: 'Reader'
@@ -2788,7 +2788,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssanfs001'
+    name: '<name>'
     // Non-required parameters
     fileServices: {
       shares: [
@@ -2818,7 +2818,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssanfs001"
+      "value": "<name>"
     },
     // Non-required parameters
     "fileServices": {
@@ -2852,7 +2852,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssanfs001'
+param name = '<name>'
 // Non-required parameters
 param fileServices = {
   shares: [
@@ -2884,7 +2884,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssaobre001'
+    name: '<name>'
     // Non-required parameters
     blobServices: {
       changeFeedEnabled: true
@@ -2931,7 +2931,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssaobre001"
+      "value": "<name>"
     },
     // Non-required parameters
     "blobServices": {
@@ -2982,7 +2982,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssaobre001'
+param name = '<name>'
 // Non-required parameters
 param blobServices = {
   changeFeedEnabled: true
@@ -3031,7 +3031,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssapfs001'
+    name: '<name>'
     // Non-required parameters
     allowBlobPublicAccess: false
     fileServices: {
@@ -3070,7 +3070,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssapfs001"
+      "value": "<name>"
     },
     // Non-required parameters
     "allowBlobPublicAccess": {
@@ -3117,7 +3117,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssapfs001'
+param name = '<name>'
 // Non-required parameters
 param allowBlobPublicAccess = false
 param fileServices = {
@@ -3162,7 +3162,7 @@ Azure no longer permits creating general-purpose-v1 storage accounts. The max an
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssav1001'
+    name: '<name>'
     // Non-required parameters
     kind: 'Storage'
   }
@@ -3183,7 +3183,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssav1001"
+      "value": "<name>"
     },
     // Non-required parameters
     "kind": {
@@ -3204,7 +3204,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssav1001'
+param name = '<name>'
 // Non-required parameters
 param kind = 'Storage'
 ```
@@ -3227,7 +3227,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
-    name: 'ssawaf001'
+    name: '<name>'
     // Non-required parameters
     allowBlobPublicAccess: false
     blobServices: {
@@ -3483,7 +3483,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssawaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "allowBlobPublicAccess": {
@@ -3769,7 +3769,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssawaf001'
+param name = '<name>'
 // Non-required parameters
 param allowBlobPublicAccess = false
 param blobServices = {

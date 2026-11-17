@@ -84,7 +84,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'bounded'
+    name: '<name>'
     // Non-required parameters
     defaultConsistencyLevel: 'BoundedStaleness'
     maxIntervalInSeconds: 600
@@ -113,7 +113,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "bounded"
+      "value": "<name>"
     },
     // Non-required parameters
     "defaultConsistencyLevel": {
@@ -150,7 +150,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'bounded'
+param name = '<name>'
 // Non-required parameters
 param defaultConsistencyLevel = 'BoundedStaleness'
 param maxIntervalInSeconds = 600
@@ -696,7 +696,7 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddamhsm001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -730,7 +730,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddamhsm001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -770,7 +770,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddamhsm001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -806,7 +806,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddaenc001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -840,7 +840,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddaenc001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -880,7 +880,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddaenc001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -915,7 +915,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
-    name: 'dddamin001'
+    name: '<name>'
   }
 }
 ```
@@ -933,7 +933,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "dddamin001"
+      "value": "<name>"
     }
   }
 }
@@ -949,7 +949,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 ```bicep-params
 using 'br/public:avm/res/document-db/database-account:<version>'
 
-param name = 'dddamin001'
+param name = '<name>'
 ```
 
 </details>
@@ -970,7 +970,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddagrm002'
+    name: '<name>'
     // Non-required parameters
     capabilitiesToAdd: [
       'EnableGremlin'
@@ -1043,7 +1043,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddagrm002"
+      "value": "<name>"
     },
     // Non-required parameters
     "capabilitiesToAdd": {
@@ -1120,7 +1120,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddagrm002'
+param name = '<name>'
 // Non-required parameters
 param capabilitiesToAdd = [
   'EnableGremlin'
@@ -1961,7 +1961,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'multi-region'
+    name: '<name>'
     // Non-required parameters
     backupIntervalInMinutes: 300
     backupPolicyType: 'Periodic'
@@ -2004,7 +2004,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "multi-region"
+      "value": "<name>"
     },
     // Non-required parameters
     "backupIntervalInMinutes": {
@@ -2061,7 +2061,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'multi-region'
+param name = '<name>'
 // Non-required parameters
 param backupIntervalInMinutes = 300
 param backupPolicyType = 'Periodic'
@@ -2177,7 +2177,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddapln001'
+    name: '<name>'
     // Non-required parameters
     capacityMode: 'Serverless'
     databaseAccountOfferType: 'Standard'
@@ -2213,7 +2213,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddapln001"
+      "value": "<name>"
     },
     // Non-required parameters
     "capacityMode": {
@@ -2259,7 +2259,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddapln001'
+param name = '<name>'
 // Non-required parameters
 param capacityMode = 'Serverless'
 param databaseAccountOfferType = 'Standard'
@@ -2297,7 +2297,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddapres001'
+    name: '<name>'
     // Non-required parameters
     networkRestrictions: {
       ipRules: [
@@ -2336,7 +2336,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddapres001"
+      "value": "<name>"
     },
     // Non-required parameters
     "networkRestrictions": {
@@ -2379,7 +2379,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddapres001'
+param name = '<name>'
 // Non-required parameters
 param networkRestrictions = {
   ipRules: [
@@ -3431,7 +3431,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddatbl001'
+    name: '<name>'
     // Non-required parameters
     capabilitiesToAdd: [
       'EnableTable'
@@ -3465,7 +3465,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddatbl001"
+      "value": "<name>"
     },
     // Non-required parameters
     "capabilitiesToAdd": {
@@ -3503,7 +3503,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddatbl001'
+param name = '<name>'
 // Non-required parameters
 param capabilitiesToAdd = [
   'EnableTable'

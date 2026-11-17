@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
@@ -42,7 +44,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-kv-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
-    storageAccountName: take('dep${namePrefix}sa${serviceShort}01', 24)
+    storageAccountName: uniqueResourceName('dep${namePrefix}sa${serviceShort}01', resourceGroup.id, 24)
     // Qualified with the root deployment name (same derivation already used for this file's nested module names)
     // and location to avoid reusing the same deployment-script/container-group identity across retried root
     // deployment attempts - whether same-region retries or region-relocated retries - while staying stable across

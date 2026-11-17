@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Windows Managed Instance App Service Plan'
@@ -37,8 +39,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    storageAccountName: uniqueResourceName('dep${namePrefix}sa${serviceShort}01', resourceGroup.id, 24)
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
     bastionName: 'dep-${namePrefix}-bas-${serviceShort}'
     bastionPublicIpName: 'dep-${namePrefix}-pip-${serviceShort}'
     deploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
@@ -132,7 +134,7 @@ module webApp 'br/public:avm/res/web/site:0.22.0' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-webapp-${serviceShort}'
   params: {
-    name: '${namePrefix}${serviceShort}app001'
+    name: uniqueResourceName('${namePrefix}${serviceShort}app001', resourceGroup.id, 60)
     location: enforcedLocation
     kind: 'app'
     serverFarmResourceId: testDeployment[1].outputs.resourceId

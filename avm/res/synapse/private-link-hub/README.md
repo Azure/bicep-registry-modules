@@ -146,7 +146,7 @@ module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '049a8b5a-70dc-4749-965c-b009733cf432'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
@@ -225,7 +225,7 @@ module privateLinkHub 'br/public:avm/res/synapse/private-link-hub:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "049a8b5a-70dc-4749-965c-b009733cf432",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
@@ -296,7 +296,7 @@ param privateEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: '049a8b5a-70dc-4749-965c-b009733cf432'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Reader'

@@ -82,7 +82,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlsadmin'
+    name: '<name>'
     // Non-required parameters
     administrators: {
       azureADOnlyAuthentication: true
@@ -109,7 +109,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlsadmin"
+      "value": "<name>"
     },
     // Non-required parameters
     "administrators": {
@@ -138,7 +138,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sqlsadmin'
+param name = '<name>'
 // Non-required parameters
 param administrators = {
   azureADOnlyAuthentication: true
@@ -167,7 +167,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'ssaud001'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -214,7 +214,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssaud001"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -271,7 +271,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'ssaud001'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
@@ -324,7 +324,7 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sshsmu001'
+    name: '<name>'
     // Non-required parameters
     administrators: {
       azureADOnlyAuthentication: true
@@ -385,7 +385,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sshsmu001"
+      "value": "<name>"
     },
     // Non-required parameters
     "administrators": {
@@ -454,7 +454,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sshsmu001'
+param name = '<name>'
 // Non-required parameters
 param administrators = {
   azureADOnlyAuthentication: true
@@ -517,7 +517,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sscmk001'
+    name: '<name>'
     // Non-required parameters
     administrators: {
       azureADOnlyAuthentication: true
@@ -579,7 +579,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sscmk001"
+      "value": "<name>"
     },
     // Non-required parameters
     "administrators": {
@@ -649,7 +649,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sscmk001'
+param name = '<name>'
 // Non-required parameters
 param administrators = {
   azureADOnlyAuthentication: true
@@ -713,7 +713,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'ssmin001'
+    name: '<name>'
     // Non-required parameters
     administrators: {
       azureADOnlyAuthentication: true
@@ -740,7 +740,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssmin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "administrators": {
@@ -769,7 +769,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'ssmin001'
+param name = '<name>'
 // Non-required parameters
 param administrators = {
   azureADOnlyAuthentication: true
@@ -798,7 +798,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'ssep001'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -842,7 +842,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssep001"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -892,7 +892,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'ssep001'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
@@ -938,7 +938,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'ssfog001'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -980,7 +980,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         databases: [
           'ssfog-db1'
         ]
-        name: 'ssfog-fg-geo'
+        name: '<name>'
         partnerServerResourceIds: [
           '<secondaryServerResourceId>'
         ]
@@ -993,7 +993,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         databases: [
           'ssfog-db2'
         ]
-        name: 'ssfog-fg-standby'
+        name: '<name>'
         partnerServerResourceIds: [
           '<secondaryServerResourceId>'
         ]
@@ -1007,7 +1007,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         databases: [
           'ssfog-db3'
         ]
-        name: 'ssfog-fg-readonly'
+        name: '<name>'
         partnerServerResourceIds: [
           '<secondaryServerResourceId>'
         ]
@@ -1040,7 +1040,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssfog001"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -1090,7 +1090,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "databases": [
             "ssfog-db1"
           ],
-          "name": "ssfog-fg-geo",
+          "name": "<name>",
           "partnerServerResourceIds": [
             "<secondaryServerResourceId>"
           ],
@@ -1103,7 +1103,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "databases": [
             "ssfog-db2"
           ],
-          "name": "ssfog-fg-standby",
+          "name": "<name>",
           "partnerServerResourceIds": [
             "<secondaryServerResourceId>"
           ],
@@ -1117,7 +1117,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "databases": [
             "ssfog-db3"
           ],
-          "name": "ssfog-fg-readonly",
+          "name": "<name>",
           "partnerServerResourceIds": [
             "<secondaryServerResourceId>"
           ],
@@ -1150,7 +1150,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'ssfog001'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
@@ -1192,7 +1192,7 @@ param failoverGroups = [
     databases: [
       'ssfog-db1'
     ]
-    name: 'ssfog-fg-geo'
+    name: '<name>'
     partnerServerResourceIds: [
       '<secondaryServerResourceId>'
     ]
@@ -1205,7 +1205,7 @@ param failoverGroups = [
     databases: [
       'ssfog-db2'
     ]
-    name: 'ssfog-fg-standby'
+    name: '<name>'
     partnerServerResourceIds: [
       '<secondaryServerResourceId>'
     ]
@@ -1219,7 +1219,7 @@ param failoverGroups = [
     databases: [
       'ssfog-db3'
     ]
-    name: 'ssfog-fg-readonly'
+    name: '<name>'
     partnerServerResourceIds: [
       '<secondaryServerResourceId>'
     ]
@@ -1254,7 +1254,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlkvs001'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -1289,7 +1289,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlkvs001"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -1332,7 +1332,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sqlkvs001'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
@@ -1369,7 +1369,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlsmax'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -1575,7 +1575,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlsmax"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -1817,7 +1817,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sqlsmax'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
@@ -2025,7 +2025,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlsec-sec'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -2067,7 +2067,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlsec-sec"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -2117,7 +2117,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sqlsec-sec'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
@@ -2161,7 +2161,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlsvln'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -2217,7 +2217,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlsvln"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -2287,7 +2287,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sqlsvln'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
@@ -2345,7 +2345,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlswaf'
+    name: '<name>'
     // Non-required parameters
     administrators: {
       azureADOnlyAuthentication: true
@@ -2489,7 +2489,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlswaf"
+      "value": "<name>"
     },
     // Non-required parameters
     "administrators": {
@@ -2661,7 +2661,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sqlswaf'
+param name = '<name>'
 // Non-required parameters
 param administrators = {
   azureADOnlyAuthentication: true

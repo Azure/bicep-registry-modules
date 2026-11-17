@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
@@ -42,7 +44,7 @@ module nestedDependencies 'dependencies.bicep' = {
     replicaLocation: replicaLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     replicaVirtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}-replica'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     namePrefix: namePrefix
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'

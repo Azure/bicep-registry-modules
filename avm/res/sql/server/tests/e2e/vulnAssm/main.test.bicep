@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'With vulnerability assessment'
@@ -54,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}-${serviceShort}'
+      name: uniqueResourceName('${namePrefix}-${serviceShort}', resourceGroup.id, 63)
       primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password

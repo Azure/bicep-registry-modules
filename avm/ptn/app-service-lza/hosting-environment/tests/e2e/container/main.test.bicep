@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 metadata name = 'Application Gateway with Linux container and egress lockdown'
 metadata description = 'This instance deploys the module with Application Gateway ingress, Linux container workload, egress lockdown via Azure Firewall UDR, jumpbox VM, and custom diagnostic settings across all resources.'
 
@@ -53,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: take('${namePrefix}${serviceShort}', 10)
+      workloadName: uniqueResourceName('${namePrefix}${serviceShort}', resourceGroup.id, 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'

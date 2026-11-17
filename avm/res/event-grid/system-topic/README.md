@@ -390,7 +390,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     }
     roleAssignments: [
       {
-        name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
@@ -511,7 +511,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "c9beca28-efcf-4d1d-99aa-8f334484a2c2",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
@@ -614,7 +614,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'

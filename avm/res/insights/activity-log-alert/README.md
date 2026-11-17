@@ -257,7 +257,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
     }
     roleAssignments: [
       {
-        name: 'be96d7a9-6596-40c7-9acd-db6acd5cd41b'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -356,7 +356,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
     "roleAssignments": {
       "value": [
         {
-          "name": "be96d7a9-6596-40c7-9acd-db6acd5cd41b",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -447,7 +447,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'be96d7a9-6596-40c7-9acd-db6acd5cd41b'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

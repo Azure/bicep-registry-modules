@@ -221,7 +221,7 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
     }
     roleAssignments: [
       {
-        name: '15e2e690-5c9f-4cbf-9716-94ee73efab8b'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -384,7 +384,7 @@ module dashboard 'br/public:avm/res/portal/dashboard:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "15e2e690-5c9f-4cbf-9716-94ee73efab8b",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -537,7 +537,7 @@ param metadata = {
 }
 param roleAssignments = [
   {
-    name: '15e2e690-5c9f-4cbf-9716-94ee73efab8b'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

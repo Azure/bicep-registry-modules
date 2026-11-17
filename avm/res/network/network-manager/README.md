@@ -264,7 +264,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     ]
     roleAssignments: [
       {
-        name: 'e8472331-308c-4c77-aa31-017279d8e5b6'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -615,7 +615,7 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "e8472331-308c-4c77-aa31-017279d8e5b6",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -958,7 +958,7 @@ param networkManagerScopeAccesses = [
 ]
 param roleAssignments = [
   {
-    name: 'e8472331-308c-4c77-aa31-017279d8e5b6'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

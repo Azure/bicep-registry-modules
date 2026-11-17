@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
@@ -48,7 +50,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // ============== //
 // Test Execution //
 // ============== //
-var resourceName = '${namePrefix}${serviceShort}001'
+var resourceName = uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 64)
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {

@@ -150,7 +150,7 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
     }
     roleAssignments: [
       {
-        name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -260,7 +260,7 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "1f98c16b-ea00-4686-8b81-05353b594ea3",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -364,7 +364,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

@@ -234,7 +234,8 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $environment.location | Should -BeExactly 'australiaeast'
         foreach ($path in @($compiled.Keys | Where-Object { $_ -like '*/main.test.bicep' })) {
             $source = Get-Content (Join-Path $RepoRootPath $path) -Raw
-            $source | Should -Match ([regex]::Escape("loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')"))
+            $source | Should -Match ("loadJsonContent\(\s*'{0}'\s*,\s*'location'\s*\)" -f
+                [regex]::Escape('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json'))
             $template = $compiled[$path]
             if ($template.parameters.Contains('enforcedLocation')) {
                 $location = $template.parameters.enforcedLocation.defaultValue

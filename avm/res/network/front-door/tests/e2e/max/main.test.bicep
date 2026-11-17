@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -57,7 +59,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // ============== //
 // Test Execution //
 // ============== //
-var resourceName = '${namePrefix}${serviceShort}001'
+var resourceName = uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 64)
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -160,13 +162,13 @@ module testDeployment '../../../main.bicep' = [
       sendRecvTimeoutSeconds: 10
       roleAssignments: [
         {
-          name: 'b2c1ef5f-3422-4a49-8e55-7789fe980b64'
+          name: guid(resourceGroup.id, 'b2c1ef5f-3422-4a49-8e55-7789fe980b64')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

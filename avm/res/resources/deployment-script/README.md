@@ -311,7 +311,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     retentionInterval: 'P1D'
     roleAssignments: [
       {
-        name: 'd8eadbae-2c20-4e8f-9a48-4c6d739d0c4a'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -406,7 +406,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     "roleAssignments": {
       "value": [
         {
-          "name": "d8eadbae-2c20-4e8f-9a48-4c6d739d0c4a",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -487,7 +487,7 @@ param managedIdentities = {
 param retentionInterval = 'P1D'
 param roleAssignments = [
   {
-    name: 'd8eadbae-2c20-4e8f-9a48-4c6d739d0c4a'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

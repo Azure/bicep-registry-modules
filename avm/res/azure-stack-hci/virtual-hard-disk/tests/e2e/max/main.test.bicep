@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 extension microsoftGraphV1
@@ -42,7 +44,10 @@ param arbDeploymentSPObjectId string = ''
 #disable-next-line secure-parameter-default
 param arbDeploymentServicePrincipalSecret string = ''
 
-var enforcedLocation = loadJsonContent('../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json', 'location')
+var enforcedLocation = loadJsonContent(
+  '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/environment.json',
+  'location'
+)
 
 var customLocationName = '${namePrefix}${serviceShort}-location'
 
@@ -60,9 +65,9 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   scope: resourceGroup
   params: {
     clusterName: '${namePrefix}${serviceShort}001'
-    clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
-    keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    clusterWitnessStorageAccountName: uniqueResourceName('dep${namePrefix}wst${serviceShort}', resourceGroup.id, 24)
+    keyVaultDiagnosticStorageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}', resourceGroup.id, 24)
     userAssignedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     maintenanceConfigurationAssignmentName: 'dep-${namePrefix}-mca-${serviceShort}'
@@ -200,7 +205,9 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = if (preparedH
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null ? builtInServicePrincipalObjectId! : hciResourceProvider!.id
+    hciResourceProviderObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : hciResourceProvider!.id
   }
 }
 
@@ -227,20 +234,22 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}1'
     location: enforcedLocation
-    customLocationResourceId: preparedHciEnvironment != null ? preparedHciEnvironment.customLocationResourceId : customLocation!.id
+    customLocationResourceId: preparedHciEnvironment != null
+      ? preparedHciEnvironment.customLocationResourceId
+      : customLocation!.id
     diskSizeGB: 4
     dynamic: true
     enableTelemetry: true
     containerId: null
     roleAssignments: [
       {
-        name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
+        name: guid(resourceGroup.id, 'cbc3932a-1bee-4318-ae76-d70e1ba399c8')
         roleDefinitionIdOrName: 'Owner'
         principalId: managedIdentity.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
       {
-        name: guid('Custom seed ${namePrefix}${serviceShort}')
+        name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
         principalId: managedIdentity.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'

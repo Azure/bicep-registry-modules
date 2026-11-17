@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'MQTT Broker with routing to a custom topic'
@@ -36,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    eventGridNamespaceName: '${namePrefix}${serviceShort}001'
+    eventGridNamespaceName: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 50)
     eventGridNamespaceTopicName: 'topic1'
     location: resourceLocation
   }
@@ -52,7 +54,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 50)
       location: resourceLocation
       managedIdentities: {
         userAssignedResourceIds: [
