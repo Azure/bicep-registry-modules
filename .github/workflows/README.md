@@ -1,6 +1,6 @@
 # Module checks and releases
 
-The shared [PR check](./pr-check.yml) discovers affected modules and runs their checks when a PR is opened, reopened or updated. Add the `PR: Run E2E Tests` label when deployment tests are needed for a same-repository PR. Fork PRs do not run deployment tests through this label; coordinate an authorized run with a maintainer.
+The shared [PR check](./pr-check.yml) discovers affected modules and runs static and unit checks. Add `PR: Run E2E Tests` to run the required `defaults` and `waf-aligned` scenarios, and `PR: Run Optional E2E Tests` to run other scenarios. The labels operate independently; use both to run all scenarios. Utility modules are exempt from the required E2E gate. Fork PRs do not run deployment tests through these labels; coordinate an authorized handoff with a maintainer.
 
 The planned shared `Avm.Authoring` script using `gh` will hand off a fork PR to a same-repository release branch. An authorized Microsoft FTE's invocation will authorize the handoff, with no extra approval or confirmation prompt. Security-review the fork changes before invoking the script with privileged credentials. Existing GitHub branch protections, required reviews and checks remain in force. Until the script is implemented and released, coordinate the handoff with a maintainer; no script command is available here yet.
 

@@ -4,9 +4,8 @@
 )
 
 Describe 'Coordinated tools dependency updates' {
-    It 'keeps every caller tools reference aligned without pinning Avm.Authoring' {
+    It 'keeps each caller tools reference aligned without pinning Avm.Authoring' {
         $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
-        $toolsRefs = @()
         foreach ($file in @('pr-check.yml', 'release.yml')) {
             $workflowPath = Join-Path $workflowRoot $file
             $content = Get-Content -LiteralPath $workflowPath -Raw
@@ -29,13 +28,13 @@ Describe 'Coordinated tools dependency updates' {
             $authoringWith.authoringSource | Should -BeExactly ('$' + '{{ inputs.authoringSource || ''gallery'' }}')
             $authoringWith.authoringRef | Should -BeExactly ('$' + '{{ inputs.authoringRef || ' + "''" + ' }}')
 
-            $toolsRefs += @(
+            $toolsRefs = @(
                 [regex]::Matches($content, '(?m)^\s*uses:\s*Azure/azure-verified-modules-tools/[^\s@]+@([^\s#]+)') |
                     ForEach-Object { $_.Groups[1].Value }
             )
+            $toolsRefs | Should -HaveCount $(if ($file -eq 'pr-check.yml') { 4 } else { 2 })
+            @($toolsRefs | Select-Object -Unique) | Should -HaveCount 1
         }
-        $toolsRefs | Should -HaveCount 4
-        @($toolsRefs | Select-Object -Unique) | Should -HaveCount 1
     }
 
     It 'prevents automatic uses-only changes from diverging from tools-ref inputs' {
@@ -61,8 +60,8 @@ Describe 'Shared Bicep workflow entry points' {
         $release.on.push.branches | Should -Be @('main')
         $release.on.push.paths | Should -Be @('avm/**')
         $release.on.ContainsKey('workflow_dispatch') | Should -BeTrue
-        $prCheck.on.pull_request.paths | Should -Be @('avm/**')
-        $prCheck.on.pull_request.types | Should -Be @('opened', 'reopened', 'synchronize', 'labeled')
+        $prCheck.on.pull_request.ContainsKey('paths') | Should -BeFalse
+        $prCheck.on.pull_request.types | Should -Be @('opened', 'reopened', 'synchronize', 'edited', 'labeled', 'unlabeled')
         $prCheck.on.ContainsKey('workflow_dispatch') | Should -BeTrue
         $release.name | Should -BeExactly '.Module - Release'
         $release.jobs.release.name | Should -BeExactly '${{ matrix.modulePath }}'

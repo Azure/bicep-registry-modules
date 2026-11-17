@@ -21,16 +21,16 @@ on:
         required: false
       runE2E:
         type: boolean
-        description: "Run Azure deployment tests in addition to PR checks and unit tests."
+        description: "Run required and optional Azure deployment tests."
         default: false
   pull_request:
     types:
       - opened
       - reopened
       - synchronize
+      - edited
       - labeled
-    paths:
-      - "avm/**"
+      - unlabeled
 
 permissions: {}
 
@@ -47,10 +47,17 @@ jobs:
       targetCommit: ${{ steps.initialize.outputs.targetCommit }}
       workflowInput: ${{ steps.initialize.outputs.workflowInput }}
       authoringArtifact: ${{ steps.initialize.outputs.authoringArtifact }}
+      requiredMatrix: ${{ steps.initialize.outputs.requiredMatrix }}
+      optionalMatrix: ${{ steps.initialize.outputs.optionalMatrix }}
+      hasRequiredModules: ${{ steps.initialize.outputs.hasRequiredModules }}
+      hasOptionalModules: ${{ steps.initialize.outputs.hasOptionalModules }}
+      requiredRequested: ${{ steps.initialize.outputs.requiredRequested }}
+      optionalRequested: ${{ steps.initialize.outputs.optionalRequested }}
+      requiredErrors: ${{ steps.initialize.outputs.requiredErrors }}
     steps:
       - name: "Prepare module checks"
         id: initialize
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@987bf24c2d2f22cd063444b86fad80aeb0e9b748
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@1eb6bd5e61d40dccfff4d47a997f1ff9d03e1fda
         with:
           authoringSource: ${{ inputs.authoringSource || 'gallery' }}
           authoringRef: ${{ inputs.authoringRef || '' }}
@@ -67,14 +74,93 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@987bf24c2d2f22cd063444b86fad80aeb0e9b748
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@1eb6bd5e61d40dccfff4d47a997f1ff9d03e1fda
     with:
       modulePath: ${{ matrix.modulePath }}
       moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
       psRuleModuleTestFilePaths: ${{ matrix.psRuleModuleTestFilePaths }}
-      e2eRoute: ${{ matrix.e2eRoute }}
+      e2eRoute: none
       baseCommit: ${{ needs.initialize.outputs.baseCommit }}
       workflowInput: ${{ needs.initialize.outputs.workflowInput }}
       targetCommit: ${{ needs.initialize.outputs.targetCommit }}
       authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
     secrets: inherit
+
+  required-e2e:
+    name: "Required E2E - ${{ matrix.modulePath }}"
+    needs: initialize
+    if: needs.initialize.outputs.requiredRequested == 'true' && needs.initialize.outputs.hasRequiredModules == 'true' && needs.initialize.outputs.requiredErrors == '[]'
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.initialize.outputs.requiredMatrix) }}
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime-e2e.yml@1eb6bd5e61d40dccfff4d47a997f1ff9d03e1fda
+    with:
+      modulePath: ${{ matrix.modulePath }}
+      moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
+      workflowInput: ${{ needs.initialize.outputs.workflowInput }}
+      targetCommit: ${{ needs.initialize.outputs.targetCommit }}
+      authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
+    secrets: inherit
+
+  optional-e2e:
+    name: "Optional E2E - ${{ matrix.modulePath }}"
+    needs: initialize
+    if: needs.initialize.outputs.optionalRequested == 'true' && needs.initialize.outputs.hasOptionalModules == 'true'
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.initialize.outputs.optionalMatrix) }}
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime-e2e.yml@1eb6bd5e61d40dccfff4d47a997f1ff9d03e1fda
+    with:
+      modulePath: ${{ matrix.modulePath }}
+      moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
+      workflowInput: ${{ needs.initialize.outputs.workflowInput }}
+      targetCommit: ${{ needs.initialize.outputs.targetCommit }}
+      authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
+    secrets: inherit
+
+  static-gate:
+    name: "Bicep static checks"
+    if: always()
+    needs: [initialize, check]
+    runs-on: ubuntu-latest
+    env:
+      INITIALIZE_RESULT: ${{ needs.initialize.result }}
+      HAS_MODULES: ${{ needs.initialize.outputs.hasModules }}
+      CHECK_RESULT: ${{ needs.check.result }}
+    steps:
+      - name: Evaluate static checks
+        shell: pwsh
+        run: |
+          if ($env:INITIALIZE_RESULT -cne 'success') { throw 'Bicep initialization did not succeed.' }
+          if ($env:HAS_MODULES -ceq 'true' -and $env:CHECK_RESULT -cne 'success') {
+            throw 'Bicep static or unit checks did not succeed.'
+          }
+          if ($env:HAS_MODULES -cnotin @('true', 'false')) { throw 'Bicep module selection is invalid.' }
+
+  required-e2e-gate:
+    name: "Bicep required E2E checks"
+    if: always() && (github.event_name == 'pull_request' || inputs.runE2E)
+    needs: [initialize, required-e2e]
+    runs-on: ubuntu-latest
+    env:
+      INITIALIZE_RESULT: ${{ needs.initialize.result }}
+      HAS_REQUIRED_MODULES: ${{ needs.initialize.outputs.hasRequiredModules }}
+      REQUIRED_REQUESTED: ${{ needs.initialize.outputs.requiredRequested }}
+      REQUIRED_ERRORS: ${{ needs.initialize.outputs.requiredErrors }}
+      REQUIRED_RESULT: ${{ needs.required-e2e.result }}
+    steps:
+      - name: Evaluate required E2E checks
+        shell: pwsh
+        run: |
+          if ($env:INITIALIZE_RESULT -cne 'success') { throw 'Bicep initialization did not succeed.' }
+          if ($env:HAS_REQUIRED_MODULES -cnotin @('true', 'false')) { throw 'Required E2E selection is invalid.' }
+          if ($env:HAS_REQUIRED_MODULES -ceq 'false') { return }
+          if ($env:REQUIRED_ERRORS -cne '[]') { throw "Required E2E scenarios are missing or ignored: $env:REQUIRED_ERRORS" }
+          if ($env:REQUIRED_REQUESTED -cne 'true') { throw 'Add the PR: Run E2E Tests label to run required E2E tests.' }
+          if ($env:REQUIRED_RESULT -cne 'success') { throw 'Required E2E tests did not succeed.' }
