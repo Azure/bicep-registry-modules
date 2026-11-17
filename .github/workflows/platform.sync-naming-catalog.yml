@@ -113,7 +113,8 @@ jobs:
           foreach ($path in @($env:NAMING_NATIVE_RESULTS_PATH, $env:NAMING_CONSUMER_RESULTS_PATH)) {
             if (-not (Test-Path -LiteralPath $path)) { throw "Native test evidence is missing: $path" }
           }
-          Import-Module Pester -ErrorAction Stop
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Initialize-AvmPester.ps1')
+          Initialize-AvmPester -RepoRootPath $env:GITHUB_WORKSPACE
           Import-Module powershell-yaml -ErrorAction Stop
           $results = Invoke-Pester -Configuration @{
             Run = @{ Path = (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tests' 'pipelines' 'NamingCatalog.Tests.ps1'); PassThru = $true }
@@ -195,7 +196,7 @@ jobs:
           $changeDetails = $changeTable -join "`n"
           $description = "Synchronizes byte-identical snapshots from https://github.com/Azure/terraform-azure-avm-utl-naming/commit/$env:SOURCE_REVISION and regenerates lossless Bicep chunks and the compact runtime index. No upstream scripts, Azure deployments, registry publication or automatic merging are performed.`n`n$changeSummary`n`n$changeDetails`n`n**Maintainer review required:** inspect potential naming and validation changes, choose the release version, update CHANGELOG.md and qualify any changed Terraform behavior before publishing. Resource-type, variant and length changes are reported because custom templates may use them; descriptive metadata does not rotate derived tokens."
           $evidence = "Passed before proposing this draft: ``Sync-NamingCatalog -Revision $env:SOURCE_REVISION -ChangeReportPath <evidence>/catalog-changes.json``, ``Sync-NamingCatalog -Check``, ``avm pre-commit -Ecosystem bicep -Path avm/utl/general/naming``, ``Invoke-AvmTestUnit -Ecosystem bicep -Path avm/utl/general/naming -Recurse``, ``Invoke-Pester`` for NamingCatalog.Tests.ps1, ``git diff --cached --check``, and ``avm pr-check -Ecosystem bicep -Path avm/utl/general/naming``. Native: $($qualification.unitPassed) passed; catalog: $($qualification.catalogPassed) passed; qualified tree: ``$($qualification.tree)``. Azure validation was not run.`n`nThese checks run explicitly because token-created events do not start ordinary checks automatically; GitHub may require a maintainer to approve subsequent runs. Native results, consumer sizes, the complete change report and test results are retained in this run's artifacts.`n`nRun: $env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
-          $body = $body.Replace('## Description', "## Description`n`n$description").Replace('## Pipeline Reference', "## Pipeline Reference`n`n$evidence")
+          $body = $body.Replace('## Description', "## Description`n`n$description").Replace('## PR Checks', "## PR Checks`n`n$evidence")
           $body = $body.Replace("- [ ] I'm sure there are no other open Pull Requests for the same update/change", "- [x] I'm sure there are no other open Pull Requests for the same update/change")
           $bodyPath = Join-Path $env:RUNNER_TEMP 'naming-catalog-review.md'
           $body | Set-Content -LiteralPath $bodyPath -Encoding utf8NoBOM

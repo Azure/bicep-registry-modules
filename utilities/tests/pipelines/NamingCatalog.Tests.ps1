@@ -397,6 +397,10 @@ param results = map(probes, probe => map(probe.values, value => matchesDescripto
         $workflow | Should -Match '\$results.Result -cne ''Passed'''
         $qualify = $parsed.jobs.sync.steps | Where-Object id -EQ 'qualify'
         $qualify.run | Should -Match 'NamingCatalog.Tests.ps1'
+        $qualify.run | Should -Match 'Initialize-AvmPester.ps1'
+        $qualify.run | Should -Match ([regex]::Escape('Initialize-AvmPester -RepoRootPath $env:GITHUB_WORKSPACE'))
+        $qualify.run.IndexOf('Initialize-AvmPester -RepoRootPath $env:GITHUB_WORKSPACE') | Should -BeLessThan $qualify.run.IndexOf('Invoke-Pester')
+        $qualify.run | Should -Not -Match '(?m)^\s*Import-Module Pester\b'
         $qualify.run | Should -Not -Match 'Set-AVMModule|Set-ModuleReadme.Tests.ps1|compliance.*module.tests.ps1'
         $qualify.run.IndexOf('Invoke-Pester') | Should -BeLessThan $qualify.run.IndexOf('git add --')
         $qualify.run.IndexOf('git add --') | Should -BeLessThan $qualify.run.IndexOf("git -c user.name=")
@@ -421,6 +425,33 @@ param results = map(probes, probe => map(probe.values, value => matchesDescripto
             $null = [Management.Automation.Language.Parser]::ParseInput($step.run, [ref] $tokens, [ref] $errors)
             @($errors).Count | Should -Be 0 -Because $step.name
         }
+    }
+
+    It 'Adds qualification evidence to the real PR template validation section' {
+        Import-Module powershell-yaml -ErrorAction Stop
+        $workflow = Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' 'platform.sync-naming-catalog.yml') -Raw | ConvertFrom-Yaml
+        $propose = $workflow.jobs.sync.steps | Where-Object { $_.run -match 'gh pr create' }
+        $tokens = $null
+        $errors = $null
+        $ast = [Management.Automation.Language.Parser]::ParseInput($propose.run, [ref] $tokens, [ref] $errors)
+        @($errors).Count | Should -Be 0
+        $assignments = @($ast.FindAll({
+                    param($node)
+                    $node -is [Management.Automation.Language.AssignmentStatementAst] -and
+                    $node.Extent.Text.StartsWith('$body = $body.Replace(') -and
+                    ([regex]::Matches($node.Extent.Text, '\.Replace\(')).Count -eq 2
+                }, $true))
+        $assignments.Count | Should -Be 1
+        $body = Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'pull_request_template.md') -Raw
+        $description = 'Catalog description sentinel'
+        $evidence = 'Qualification evidence sentinel'
+        . ([scriptblock]::Create($assignments[0].Extent.Text))
+        $sections = @($body -split '(?m)(?=^## )' | Where-Object { $_ -match '^## PR Checks(?:\r?\n|$)' })
+        $sections.Count | Should -Be 1
+        $sections[0] | Should -Match ([regex]::Escape($evidence))
+        ([regex]::Matches($body, [regex]::Escape($evidence))).Count | Should -Be 1
+        $body | Should -Match ([regex]::Escape($description))
+        $body | Should -Match '## Type of Change'
     }
 
     It 'Documents exported functions and public imports using the native renderer' {
