@@ -84,7 +84,7 @@ Describe 'Shared Bicep workflow entry points' {
         $prCheck = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'pr-check.yml') -Raw |
             ConvertFrom-Yaml
 
-        $prCheck.jobs.check.name | Should -BeExactly 'Module checks - ${{ matrix.modulePath }}'
+        $prCheck.jobs.check.name | Should -BeExactly 'Module checks: ${{ matrix.modulePath }}'
         $prCheck.jobs.check.strategy.matrix | Should -BeExactly '${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}'
         $prCheck.jobs.check.with.e2eRoute | Should -BeExactly '${{ matrix.e2eRoute }}'
         $prCheck.jobs.check.with.moduleTestFilePaths | Should -BeExactly '${{ matrix.moduleTestFilePaths }}'

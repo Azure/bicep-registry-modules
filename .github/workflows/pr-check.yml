@@ -53,7 +53,7 @@ jobs:
     steps:
       - name: "Prepare module checks"
         id: initialize
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@d953ae497c5db7d1032c01261f40d9dcc1a905b3
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@f9aef4c865ac0765f8b0aa9f0aceeb3ec4f1441b
         with:
           authoringSource: ${{ inputs.authoringSource || 'gallery' }}
           authoringRef: ${{ inputs.authoringRef || '' }}
@@ -61,7 +61,7 @@ jobs:
           deploymentValidation: ${{ inputs.runE2E && 'true' || 'false' }}
 
   check:
-    name: "Module checks - ${{ matrix.modulePath }}"
+    name: "Module checks: ${{ matrix.modulePath }}"
     needs: initialize
     if: needs.initialize.outputs.hasModules == 'true'
     permissions:
@@ -70,7 +70,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@d953ae497c5db7d1032c01261f40d9dcc1a905b3
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@f9aef4c865ac0765f8b0aa9f0aceeb3ec4f1441b
     with:
       modulePath: ${{ matrix.modulePath }}
       moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
