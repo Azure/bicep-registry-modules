@@ -32,7 +32,7 @@ Describe 'Coordinated tools dependency updates' {
                 [regex]::Matches($content, '(?m)^\s*uses:\s*Azure/azure-verified-modules-tools/[^\s@]+@([^\s#]+)') |
                     ForEach-Object { $_.Groups[1].Value }
             )
-            $toolsRefs | Should -HaveCount $(if ($file -eq 'pr-check.yml') { 4 } else { 2 })
+            $toolsRefs | Should -HaveCount 2
             @($toolsRefs | Select-Object -Unique) | Should -HaveCount 1
         }
     }
@@ -78,6 +78,24 @@ Describe 'Shared Bicep workflow entry points' {
             $release.on.workflow_dispatch.inputs[$inputName].ContainsKey('default') | Should -BeFalse
             $release.jobs.initialize.with[$inputName] | Should -BeExactly ('$' + "{{ inputs.$inputName || '' }}")
         }
+    }
+
+    It 'runs one module matrix and evaluates its shared result in both gates' {
+        $prCheck = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'pr-check.yml') -Raw |
+            ConvertFrom-Yaml
+
+        $prCheck.jobs.check.name | Should -BeExactly 'Module checks - ${{ matrix.modulePath }}'
+        $prCheck.jobs.check.strategy.matrix | Should -BeExactly '${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}'
+        $prCheck.jobs.check.with.e2eRoute | Should -BeExactly '${{ matrix.e2eRoute }}'
+        $prCheck.jobs.check.with.moduleTestFilePaths | Should -BeExactly '${{ matrix.moduleTestFilePaths }}'
+        $prCheck.jobs.ContainsKey('required-e2e') | Should -BeFalse
+        $prCheck.jobs.ContainsKey('optional-e2e') | Should -BeFalse
+        foreach ($gate in @('static-gate', 'required-e2e-gate')) {
+            $prCheck.jobs[$gate].needs | Should -Be @('initialize', 'check')
+            $prCheck.jobs[$gate].env.CHECK_RESULT | Should -BeExactly '${{ needs.check.result }}'
+        }
+        $prCheck.jobs.'static-gate'.name | Should -BeExactly 'Bicep static & unit checks'
+        $prCheck.jobs.'required-e2e-gate'.name | Should -BeExactly 'Bicep required E2E checks'
     }
 
     It 'exposes the selected release plan in per-module jobs' {

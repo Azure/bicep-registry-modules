@@ -10,7 +10,7 @@ BeforeAll {
     $staticGate = [scriptblock]::Create($workflow.jobs.'static-gate'.steps[0].run)
     $e2eGate = [scriptblock]::Create($workflow.jobs.'required-e2e-gate'.steps[0].run)
     $environmentNames = @('INITIALIZE_RESULT', 'HAS_MODULES', 'CHECK_RESULT', 'HAS_REQUIRED_MODULES',
-        'REQUIRED_REQUESTED', 'REQUIRED_ERRORS', 'REQUIRED_RESULT')
+        'REQUIRED_REQUESTED', 'REQUIRED_ERRORS')
 }
 
 Describe 'Required Bicep PR gates' {
@@ -25,7 +25,6 @@ Describe 'Required Bicep PR gates' {
         $env:HAS_REQUIRED_MODULES = 'true'
         $env:REQUIRED_REQUESTED = 'true'
         $env:REQUIRED_ERRORS = '[]'
-        $env:REQUIRED_RESULT = 'success'
     }
 
     AfterEach {
@@ -49,22 +48,43 @@ Describe 'Required Bicep PR gates' {
         $env:REQUIRED_REQUESTED = 'false'
         { & $e2eGate } | Should -Throw '*PR: Run E2E Tests*'
         $env:REQUIRED_REQUESTED = 'true'
-        $env:REQUIRED_RESULT = 'skipped'
+        $env:CHECK_RESULT = 'skipped'
         { & $e2eGate } | Should -Throw
-        $env:REQUIRED_RESULT = 'success'
+        $env:CHECK_RESULT = 'success'
         $env:REQUIRED_ERRORS = '["ignored defaults"]'
         { & $e2eGate } | Should -Throw '*ignored*'
     }
 
-    It 'passes without applicable modules but fails closed on initialization errors' {
+    It 'fails both gates when a selected optional test or another module check fails' {
+        $env:CHECK_RESULT = 'failure'
+        { & $staticGate } | Should -Throw '*selected E2E*'
+        { & $e2eGate } | Should -Throw '*selected E2E*'
         $env:HAS_REQUIRED_MODULES = 'false'
         $env:REQUIRED_REQUESTED = 'false'
-        $env:REQUIRED_RESULT = 'skipped'
+        { & $e2eGate } | Should -Throw '*selected E2E*'
+    }
+
+    It 'does not require the label when no required scenarios exist' {
+        $env:HAS_REQUIRED_MODULES = 'false'
+        $env:REQUIRED_REQUESTED = 'false'
+        { & $e2eGate } | Should -Not -Throw
+    }
+
+    It 'passes without applicable modules but fails closed on initialization errors' {
+        $env:HAS_MODULES = 'false'
+        $env:HAS_REQUIRED_MODULES = 'false'
+        $env:REQUIRED_REQUESTED = 'false'
+        $env:CHECK_RESULT = 'skipped'
         { & $e2eGate } | Should -Not -Throw
         $env:INITIALIZE_RESULT = 'failure'
         { & $e2eGate } | Should -Throw
         $env:INITIALIZE_RESULT = 'success'
         $env:HAS_REQUIRED_MODULES = ''
         { & $e2eGate } | Should -Throw
+    }
+
+    It 'fails closed for an invalid E2E selection' {
+        $env:REQUIRED_REQUESTED = ''
+        { & $e2eGate } | Should -Throw '*selection is invalid*'
     }
 }
