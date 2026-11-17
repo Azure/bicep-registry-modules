@@ -82,48 +82,33 @@ jobs:
       authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
     secrets: inherit
 
-  static-gate:
-    name: "Bicep static & unit checks"
+  module-gate:
+    name: "Bicep module checks"
     if: always()
     needs: [initialize, check]
     runs-on: ubuntu-latest
     env:
       INITIALIZE_RESULT: ${{ needs.initialize.result }}
       HAS_MODULES: ${{ needs.initialize.outputs.hasModules }}
-      CHECK_RESULT: ${{ needs.check.result }}
-    steps:
-      - name: Evaluate static checks
-        shell: pwsh
-        run: |
-          if ($env:INITIALIZE_RESULT -cne 'success') { throw 'Bicep initialization did not succeed.' }
-          if ($env:HAS_MODULES -ceq 'true' -and $env:CHECK_RESULT -cne 'success') {
-            throw 'Bicep module checks did not succeed (static, unit, or selected E2E tests).'
-          }
-          if ($env:HAS_MODULES -cnotin @('true', 'false')) { throw 'Bicep module selection is invalid.' }
-
-  required-e2e-gate:
-    name: "Bicep required E2E checks"
-    if: always() && (github.event_name == 'pull_request' || inputs.runE2E)
-    needs: [initialize, check]
-    runs-on: ubuntu-latest
-    env:
-      INITIALIZE_RESULT: ${{ needs.initialize.result }}
-      HAS_MODULES: ${{ needs.initialize.outputs.hasModules }}
+      REQUIRE_E2E: ${{ github.event_name == 'pull_request' || inputs.runE2E }}
       HAS_REQUIRED_MODULES: ${{ needs.initialize.outputs.hasRequiredModules }}
       REQUIRED_REQUESTED: ${{ needs.initialize.outputs.requiredRequested }}
       REQUIRED_ERRORS: ${{ needs.initialize.outputs.requiredErrors }}
       CHECK_RESULT: ${{ needs.check.result }}
     steps:
-      - name: Evaluate required E2E checks
+      - name: Evaluate module checks
         shell: pwsh
         run: |
           if ($env:INITIALIZE_RESULT -cne 'success') { throw 'Bicep initialization did not succeed.' }
           if ($env:HAS_MODULES -cnotin @('true', 'false')) { throw 'Bicep module selection is invalid.' }
-          if ($env:HAS_REQUIRED_MODULES -cnotin @('true', 'false')) { throw 'Required E2E selection is invalid.' }
-          if ($env:REQUIRED_REQUESTED -cnotin @('true', 'false')) { throw 'E2E request selection is invalid.' }
-          if ($env:REQUIRED_ERRORS -cne '[]') { throw "Required E2E scenarios are ignored: $env:REQUIRED_ERRORS" }
-          if ($env:HAS_REQUIRED_MODULES -ceq 'true' -and $env:REQUIRED_REQUESTED -cne 'true') {
-            throw 'Add the PR: Run E2E Tests label to run required E2E tests.'
+          if ($env:REQUIRE_E2E -cnotin @('true', 'false')) { throw 'E2E enforcement selection is invalid.' }
+          if ($env:REQUIRE_E2E -ceq 'true') {
+            if ($env:HAS_REQUIRED_MODULES -cnotin @('true', 'false')) { throw 'Required E2E selection is invalid.' }
+            if ($env:REQUIRED_REQUESTED -cnotin @('true', 'false')) { throw 'E2E request selection is invalid.' }
+            if ($env:REQUIRED_ERRORS -cne '[]') { throw "Required E2E scenarios are ignored: $env:REQUIRED_ERRORS" }
+            if ($env:HAS_REQUIRED_MODULES -ceq 'true' -and $env:REQUIRED_REQUESTED -cne 'true') {
+              throw 'Add the PR: Run E2E Tests label to run required E2E tests.'
+            }
           }
           if ($env:HAS_MODULES -ceq 'true' -and $env:CHECK_RESULT -cne 'success') {
             throw 'Bicep module checks did not succeed (static, unit, or selected E2E tests).'

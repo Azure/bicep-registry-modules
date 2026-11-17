@@ -7,13 +7,12 @@ BeforeAll {
     Import-Module powershell-yaml -ErrorAction Stop
     $workflow = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'pr-check.yml') -Raw |
         ConvertFrom-Yaml
-    $staticGate = [scriptblock]::Create($workflow.jobs.'static-gate'.steps[0].run)
-    $e2eGate = [scriptblock]::Create($workflow.jobs.'required-e2e-gate'.steps[0].run)
+    $moduleGate = [scriptblock]::Create($workflow.jobs.'module-gate'.steps[0].run)
     $environmentNames = @('INITIALIZE_RESULT', 'HAS_MODULES', 'CHECK_RESULT', 'HAS_REQUIRED_MODULES',
-        'REQUIRED_REQUESTED', 'REQUIRED_ERRORS')
+        'REQUIRED_REQUESTED', 'REQUIRED_ERRORS', 'REQUIRE_E2E')
 }
 
-Describe 'Required Bicep PR gates' {
+Describe 'Required Bicep PR gate' {
     BeforeEach {
         $savedEnvironment = @{}
         foreach ($name in $environmentNames) {
@@ -25,6 +24,7 @@ Describe 'Required Bicep PR gates' {
         $env:HAS_REQUIRED_MODULES = 'true'
         $env:REQUIRED_REQUESTED = 'true'
         $env:REQUIRED_ERRORS = '[]'
+        $env:REQUIRE_E2E = 'true'
     }
 
     AfterEach {
@@ -33,41 +33,49 @@ Describe 'Required Bicep PR gates' {
         }
     }
 
-    It 'requires static checks to succeed for changed modules' {
-        { & $staticGate } | Should -Not -Throw
+    It 'requires module checks to succeed for changed modules' {
+        { & $moduleGate } | Should -Not -Throw
         $env:CHECK_RESULT = 'skipped'
-        { & $staticGate } | Should -Throw
+        { & $moduleGate } | Should -Throw
         $env:HAS_MODULES = 'false'
-        { & $staticGate } | Should -Not -Throw
+        { & $moduleGate } | Should -Not -Throw
         $env:INITIALIZE_RESULT = 'failure'
-        { & $staticGate } | Should -Throw
+        { & $moduleGate } | Should -Throw
     }
 
     It 'requires requested and successful E2E tests for applicable modules' {
-        { & $e2eGate } | Should -Not -Throw
+        { & $moduleGate } | Should -Not -Throw
         $env:REQUIRED_REQUESTED = 'false'
-        { & $e2eGate } | Should -Throw '*PR: Run E2E Tests*'
+        { & $moduleGate } | Should -Throw '*PR: Run E2E Tests*'
         $env:REQUIRED_REQUESTED = 'true'
         $env:CHECK_RESULT = 'skipped'
-        { & $e2eGate } | Should -Throw
+        { & $moduleGate } | Should -Throw
         $env:CHECK_RESULT = 'success'
         $env:REQUIRED_ERRORS = '["ignored defaults"]'
-        { & $e2eGate } | Should -Throw '*ignored*'
+        { & $moduleGate } | Should -Throw '*ignored*'
     }
 
-    It 'fails both gates when a selected optional test or another module check fails' {
+    It 'fails when a selected optional test or another module check fails' {
         $env:CHECK_RESULT = 'failure'
-        { & $staticGate } | Should -Throw '*selected E2E*'
-        { & $e2eGate } | Should -Throw '*selected E2E*'
+        { & $moduleGate } | Should -Throw '*selected E2E*'
         $env:HAS_REQUIRED_MODULES = 'false'
         $env:REQUIRED_REQUESTED = 'false'
-        { & $e2eGate } | Should -Throw '*selected E2E*'
+        { & $moduleGate } | Should -Throw '*selected E2E*'
     }
 
     It 'does not require the label when no required scenarios exist' {
         $env:HAS_REQUIRED_MODULES = 'false'
         $env:REQUIRED_REQUESTED = 'false'
-        { & $e2eGate } | Should -Not -Throw
+        { & $moduleGate } | Should -Not -Throw
+    }
+
+    It 'allows manual static-only checks without E2E enforcement' {
+        $env:REQUIRE_E2E = 'false'
+        $env:REQUIRED_REQUESTED = 'false'
+        $env:REQUIRED_ERRORS = '["ignored defaults"]'
+        { & $moduleGate } | Should -Not -Throw
+        $env:CHECK_RESULT = 'failure'
+        { & $moduleGate } | Should -Throw '*module checks did not succeed*'
     }
 
     It 'passes without applicable modules but fails closed on initialization errors' {
@@ -75,16 +83,19 @@ Describe 'Required Bicep PR gates' {
         $env:HAS_REQUIRED_MODULES = 'false'
         $env:REQUIRED_REQUESTED = 'false'
         $env:CHECK_RESULT = 'skipped'
-        { & $e2eGate } | Should -Not -Throw
+        { & $moduleGate } | Should -Not -Throw
         $env:INITIALIZE_RESULT = 'failure'
-        { & $e2eGate } | Should -Throw
+        { & $moduleGate } | Should -Throw
         $env:INITIALIZE_RESULT = 'success'
         $env:HAS_REQUIRED_MODULES = ''
-        { & $e2eGate } | Should -Throw
+        { & $moduleGate } | Should -Throw
     }
 
     It 'fails closed for an invalid E2E selection' {
         $env:REQUIRED_REQUESTED = ''
-        { & $e2eGate } | Should -Throw '*selection is invalid*'
+        { & $moduleGate } | Should -Throw '*selection is invalid*'
+        $env:REQUIRED_REQUESTED = 'true'
+        $env:REQUIRE_E2E = ''
+        { & $moduleGate } | Should -Throw '*enforcement selection is invalid*'
     }
 }

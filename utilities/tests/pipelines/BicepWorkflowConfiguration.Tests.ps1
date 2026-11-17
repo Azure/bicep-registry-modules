@@ -80,7 +80,7 @@ Describe 'Shared Bicep workflow entry points' {
         }
     }
 
-    It 'runs one module matrix and evaluates its shared result in both gates' {
+    It 'runs one module matrix and evaluates its result in one gate' {
         $prCheck = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'pr-check.yml') -Raw |
             ConvertFrom-Yaml
 
@@ -90,12 +90,13 @@ Describe 'Shared Bicep workflow entry points' {
         $prCheck.jobs.check.with.moduleTestFilePaths | Should -BeExactly '${{ matrix.moduleTestFilePaths }}'
         $prCheck.jobs.ContainsKey('required-e2e') | Should -BeFalse
         $prCheck.jobs.ContainsKey('optional-e2e') | Should -BeFalse
-        foreach ($gate in @('static-gate', 'required-e2e-gate')) {
-            $prCheck.jobs[$gate].needs | Should -Be @('initialize', 'check')
-            $prCheck.jobs[$gate].env.CHECK_RESULT | Should -BeExactly '${{ needs.check.result }}'
-        }
-        $prCheck.jobs.'static-gate'.name | Should -BeExactly 'Bicep static & unit checks'
-        $prCheck.jobs.'required-e2e-gate'.name | Should -BeExactly 'Bicep required E2E checks'
+        $prCheck.jobs.ContainsKey('static-gate') | Should -BeFalse
+        $prCheck.jobs.ContainsKey('required-e2e-gate') | Should -BeFalse
+        $prCheck.jobs.'module-gate'.name | Should -BeExactly 'Bicep module checks'
+        $prCheck.jobs.'module-gate'.if | Should -BeExactly 'always()'
+        $prCheck.jobs.'module-gate'.needs | Should -Be @('initialize', 'check')
+        $prCheck.jobs.'module-gate'.env.CHECK_RESULT | Should -BeExactly '${{ needs.check.result }}'
+        $prCheck.jobs.'module-gate'.env.REQUIRE_E2E | Should -BeExactly '${{ github.event_name == ''pull_request'' || inputs.runE2E }}'
     }
 
     It 'exposes the selected release plan in per-module jobs' {
