@@ -46,7 +46,7 @@ Describe 'Required Bicep PR gate' {
     It 'requires requested and successful E2E tests for applicable modules' {
         { & $moduleGate } | Should -Not -Throw
         $env:REQUIRED_REQUESTED = 'false'
-        { & $moduleGate } | Should -Throw '*PR: Run E2E Tests*'
+        { & $moduleGate } | Should -Throw '*PR: Run E2E Tests or PR: Run Optional E2E Tests*'
         $env:REQUIRED_REQUESTED = 'true'
         $env:CHECK_RESULT = 'skipped'
         { & $moduleGate } | Should -Throw

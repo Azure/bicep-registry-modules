@@ -12,7 +12,7 @@ Closes #123
 
 ## PR Checks
 
-<!-- Review the shared checks on this PR. For same-repository PRs, add PR: Run E2E Tests for required deployment tests and PR: Run Optional E2E Tests for optional scenarios. -->
+<!-- Review the shared checks on this PR. For same-repository PRs, add PR: Run E2E Tests for required deployment tests or PR: Run Optional E2E Tests for required and optional scenarios. -->
 
 ## Type of Change
 
