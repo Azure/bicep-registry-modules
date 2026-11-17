@@ -92,7 +92,7 @@ Describe 'Shared Bicep workflow entry points' {
         $prCheck.jobs.ContainsKey('optional-e2e') | Should -BeFalse
         $prCheck.jobs.ContainsKey('static-gate') | Should -BeFalse
         $prCheck.jobs.ContainsKey('required-e2e-gate') | Should -BeFalse
-        $prCheck.jobs.'module-gate'.name | Should -BeExactly 'Bicep module checks'
+        $prCheck.jobs.'module-gate'.name | Should -BeExactly 'Report check status'
         $prCheck.jobs.'module-gate'.if | Should -BeExactly 'always()'
         $prCheck.jobs.'module-gate'.needs | Should -Be @('initialize', 'check')
         $prCheck.jobs.'module-gate'.env.CHECK_RESULT | Should -BeExactly '${{ needs.check.result }}'
