@@ -27,7 +27,7 @@ param publicNetworkAccess string?
 ])
 param acrSku string?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -56,20 +56,20 @@ param storageAccountName string?
 @description('Optional. The Azure Container Registry account name to use for the Azure ML Registry. If not specified, a default name will be automatically generated.')
 param acrAccountName string?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.MachineLearningServices/registries@2024-10-01'>.tags?
+param tags resourceInput<'Microsoft.MachineLearningServices/registries@2026-09-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -137,7 +137,7 @@ var enableReferencedModulesTelemetry = false
 var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2026-06-01' = if (enableTelemetry) {
   name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -161,7 +161,7 @@ var resolvedPublicNetworkAccess = !empty(publicNetworkAccess)
   ? any(publicNetworkAccess)
   : (!empty(privateEndpoints) ? 'Disabled' : null)
 
-resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
+resource registry 'Microsoft.MachineLearningServices/registries@2026-09-01' = {
   name: name
   location: location
   tags: tags
@@ -204,7 +204,7 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
   }
 }
 
-module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.2' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-registry-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -291,6 +291,9 @@ output name string = registry.name
 
 @description('The resource ID of the Azure ML registry.')
 output resourceId string = registry.id
+
+@description('The location the resource was deployed into.')
+output location string = registry.location
 
 @description('The name of the Azure ML registry.')
 output resourceGroupName string = resourceGroup().name

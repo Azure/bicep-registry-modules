@@ -1,4 +1,3 @@
-
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults for AML Registry'
@@ -44,4 +43,3 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
-
