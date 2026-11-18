@@ -12,7 +12,7 @@ Closes #123
 
 ## PR Checks
 
-<!-- Review the shared checks on this PR. For same-repository PRs, add PR: Run E2E Tests for required deployment tests or PR: Run Optional E2E Tests for required and optional scenarios. -->
+<!-- E2E deployments are label-gated so PRs can be opened early and cloud tests run only when the changes are ready, reducing cost and feedback time. Add PR: Run Required E2E Tests for required scenarios only, or PR: Run All E2E Tests for required and optional scenarios. Fork PR labels do not grant deployment credentials. -->
 
 ## Type of Change
 
