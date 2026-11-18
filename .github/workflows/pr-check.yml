@@ -111,12 +111,12 @@ jobs:
             if ($env:REQUIRED_REQUESTED -cnotin @('true', 'false')) { throw 'E2E request selection is invalid.' }
             $requiredLabelMissing = $env:HAS_REQUIRED_MODULES -ceq 'true' -and $env:REQUIRED_REQUESTED -cne 'true'
           }
-          Write-Output "requiredLabelMissing=$($requiredLabelMissing.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
           if ($env:REQUIRE_E2E -ceq 'true') {
             if ($env:REQUIRED_ERRORS -cne '[]') { throw "Required E2E scenarios are ignored: $env:REQUIRED_ERRORS" }
           }
+          Write-Output "requiredLabelMissing=$($requiredLabelMissing.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
           if ($requiredLabelMissing) {
-            $labelMessage = 'Add the `PR: Run E2E Tests` label to run required scenarios only, or the `PR: Run Optional E2E Tests` label to run required and optional scenarios.'
+            $labelMessage = 'Add the `PR: Run Required E2E Tests` label to run required scenarios only, or the `PR: Run All E2E Tests` label to run required and optional scenarios.'
             $forkGuidance = 'For pull requests from forks, labels do not grant deployment credentials. Coordinate a handoff with a maintainer to an authorized same-repository release branch before deployment testing.'
             Write-Output '## Bicep E2E tests need a label' >> $env:GITHUB_STEP_SUMMARY
             Write-Output '' >> $env:GITHUB_STEP_SUMMARY
@@ -136,10 +136,10 @@ jobs:
         with:
           script: |
             const marker = '<!-- avm-bicep-required-e2e-label-feedback -->';
-            const requiredLabelName = 'PR: Run E2E Tests';
-            const optionalLabelName = 'PR: Run Optional E2E Tests';
-            const requiredLabel = '`PR: Run E2E Tests`';
-            const optionalLabel = '`PR: Run Optional E2E Tests`';
+            const requiredLabelName = 'PR: Run Required E2E Tests';
+            const allLabelName = 'PR: Run All E2E Tests';
+            const requiredLabel = '`PR: Run Required E2E Tests`';
+            const allLabel = '`PR: Run All E2E Tests`';
             const requiredLabelMissing = process.env.REQUIRED_LABEL_MISSING === 'true';
             const pullRequest = context.payload.pull_request;
             const body = requiredLabelMissing
@@ -148,7 +148,7 @@ jobs:
                   '',
                   '### Required Bicep E2E tests need authorization',
                   '',
-                  `Add ${requiredLabel} to run required scenarios only, or ${optionalLabel} to run required and optional scenarios.`,
+                  `Add ${requiredLabel} to run required scenarios only, or ${allLabel} to run required and optional scenarios.`,
                 ].filter(Boolean).join('\n')
               : [
                   marker,
@@ -166,7 +166,7 @@ jobs:
               });
               const snapshotLabels = new Set((pullRequest.labels || []).map((label) => label.name));
               const liveLabels = new Set(livePullRequest.data.labels.map((label) => label.name));
-              const e2eLabelsAreCurrent = [requiredLabelName, optionalLabelName].every((label) =>
+              const e2eLabelsAreCurrent = [requiredLabelName, allLabelName].every((label) =>
                 snapshotLabels.has(label) === liveLabels.has(label));
 
               if (livePullRequest.data.head.sha !== pullRequest.head.sha || !e2eLabelsAreCurrent) {

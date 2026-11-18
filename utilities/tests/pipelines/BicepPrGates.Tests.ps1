@@ -72,8 +72,8 @@ Describe 'Required Bicep PR gate' {
         $result = Invoke-ModuleGateChildProcess -ScriptPath (Join-Path $TestDrive 'missing-label-gate.ps1') -Script $moduleGate
         $result.ExitCode | Should -Be 1
         $result.Output | Should -Match '::error title=Bicep E2E label required::'
-        $result.Output | Should -Match '`PR: Run E2E Tests`'
-        $result.Output | Should -Match '`PR: Run Optional E2E Tests`'
+        $result.Output | Should -Match '`PR: Run Required E2E Tests`'
+        $result.Output | Should -Match '`PR: Run All E2E Tests`'
         Get-Content -LiteralPath $env:GITHUB_OUTPUT -Raw | Should -Match 'requiredLabelMissing=true'
         $summary = Get-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Raw
         $summary | Should -Match '## Bicep E2E tests need a label'
@@ -90,7 +90,9 @@ Describe 'Required Bicep PR gate' {
         { & $moduleGate } | Should -Throw
         $env:CHECK_RESULT = 'success'
         $env:REQUIRED_ERRORS = '["ignored defaults"]'
+        [IO.File]::WriteAllText($env:GITHUB_OUTPUT, '')
         { & $moduleGate } | Should -Throw '*ignored*'
+        Get-Content -LiteralPath $env:GITHUB_OUTPUT -Raw | Should -BeNullOrEmpty
     }
 
     It 'fails when a selected optional test or another module check fails' {
@@ -166,8 +168,8 @@ Describe 'Required Bicep PR gate' {
         $script | Should -Match 'core\.warning'
         $script | Should -Match 'core\.summary'
         $script.Contains('<!-- avm-bicep-required-e2e-label-feedback -->') | Should -BeTrue
-        $script.Contains('`PR: Run E2E Tests`') | Should -BeTrue
-        $script.Contains('`PR: Run Optional E2E Tests`') | Should -BeTrue
+        $script.Contains('`PR: Run Required E2E Tests`') | Should -BeTrue
+        $script.Contains('`PR: Run All E2E Tests`') | Should -BeTrue
         $script.Contains('to run required scenarios only') | Should -BeTrue
         $script.Contains('to run required and optional scenarios') | Should -BeTrue
         $script.Contains('Required Bicep E2E label requirement resolved') | Should -BeTrue
