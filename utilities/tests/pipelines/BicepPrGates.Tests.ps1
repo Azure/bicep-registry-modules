@@ -175,4 +175,81 @@ Describe 'Required Bicep PR gate' {
         $script.Contains('Required Bicep E2E label requirement resolved') | Should -BeTrue
         $script.Contains('else if (existingComment)') | Should -BeTrue
     }
+
+    It 'explains optional-only E2E selection without changing the merge gate: <Case>' -ForEach @(
+        @{ Case = 'missing label'; Expected = 'create'; Warn = $true }
+        @{ Case = 'required label selects no optional scenarios'; Label = 'PR: Run Required E2E Tests'; Expected = 'create'; Warn = $true }
+        @{ Case = 'all label selects optional scenarios'; Label = 'PR: Run All E2E Tests'; Expected = 'create'; Warn = $true }
+        @{ Case = 'existing bot comment updated'; Existing = $true; Expected = 'update'; Warn = $true }
+        @{ Case = 'human cannot spoof owned comment'; Human = $true; Expected = 'create'; Warn = $true }
+        @{ Case = 'utility exemption remains explicit'; Utility = $true; Expected = 'create' }
+        @{ Case = 'no changed modules creates no comment'; NoModules = $true; Expected = '' }
+        @{ Case = 'stale head cannot post'; Stale = $true; Expected = ''; Warn = $true }
+        @{ Case = 'stale labels cannot post'; ChangedLabel = $true; Expected = ''; Warn = $true }
+        @{ Case = 'denied comments remain visible'; Denied = $true; Expected = ''; Warn = $true }
+    ) {
+        param($Label, $Existing, $Human, $Utility, $NoModules, $Stale, $ChangedLabel, $Denied, $Expected, $Warn)
+        $scenario = @{
+            label = $Label; existing = [bool]$Existing; human = [bool]$Human; utility = [bool]$Utility
+            noModules = [bool]$NoModules; stale = [bool]$Stale; changedLabel = [bool]$ChangedLabel; denied = [bool]$Denied
+        } | ConvertTo-Json -Compress
+        $source = ConvertTo-Json -InputObject $feedbackStep.with.script -Compress
+        $harness = @'
+const scenario = SCENARIO;
+const source = SOURCE;
+const result = { mutations: [], warnings: [], summaries: [] };
+const labels = scenario.label ? [{ name: scenario.label }] : [];
+const context = { repo: { owner: 'Azure', repo: 'bicep-registry-modules' },
+  payload: { pull_request: { number: 42, head: { sha: 'current' }, labels } } };
+process.env.HAS_MODULES = scenario.noModules ? 'false' : 'true';
+process.env.HAS_REQUIRED_MODULES = 'false';
+process.env.REQUIRED_LABEL_MISSING = 'false';
+process.env.MODULE_MATRIX = JSON.stringify({ include: [{ modulePath: scenario.utility ? 'avm/utl/types/test' : 'avm/res/test/resource' }] });
+const core = {
+  warning(message) { result.warnings.push(message); },
+  summary: { addHeading() { return this; }, addRaw(text) { result.summaries.push(text); return this; }, async write() {} }
+};
+const github = { rest: {
+  pulls: { async get() {
+    if (scenario.denied) throw Object.assign(new Error('Denied'), { status: 403 });
+    return { data: { head: { sha: scenario.stale ? 'newer' : 'current' },
+      labels: scenario.changedLabel ? [{ name: 'PR: Run All E2E Tests' }] : labels } };
+  } },
+  issues: {
+    listComments() {},
+    async createComment(params) { result.mutations.push({ operation: 'create', ...params }); },
+    async updateComment(params) { result.mutations.push({ operation: 'update', ...params }); }
+  }
+}, async paginate() {
+  return scenario.existing || scenario.human
+    ? [{ id: 7, user: { login: scenario.human ? 'contributor' : 'github-actions[bot]' }, body: '<!-- avm-bicep-required-e2e-label-feedback -->\nprevious' }] : [];
+} };
+const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+new AsyncFunction('github', 'context', 'core', source)(github, context, core)
+  .then(() => console.log(JSON.stringify(result)))
+  .catch(error => { console.error(error); process.exitCode = 1; });
+'@
+        $path = Join-Path $TestDrive 'bicep-label-feedback.cjs'
+        [IO.File]::WriteAllText($path, $harness.Replace('SCENARIO', $scenario).Replace('SOURCE', $source))
+        $json = & node $path
+        $LASTEXITCODE | Should -Be 0
+        $result = $json | ConvertFrom-Json
+        if ($Expected) {
+            $result.mutations.Count | Should -Be 1
+            $result.mutations[0].operation | Should -BeExactly $Expected
+            $body = $result.mutations[0].body
+            $body | Should -Match '`PR: Run Required E2E Tests`'
+            $body | Should -Match '`PR: Run All E2E Tests`'
+            if ($Utility) {
+                $body | Should -Match 'Utility modules are exempt'
+                $body | Should -Not -Match 'Warning:'
+            }
+            else { $body | Should -Match 'absence does not currently block merging' }
+            if ($Label -eq 'PR: Run All E2E Tests') { $body | Should -Match 'All existing E2E scenarios were selected' }
+            else { $body | Should -Match 'No E2E deployment tests were selected' }
+        }
+        else { $result.mutations.Count | Should -Be 0 }
+        if ($Warn) { $result.warnings.Count | Should -BeGreaterThan 0 }
+        else { $result.warnings.Count | Should -Be 0 }
+    }
 }

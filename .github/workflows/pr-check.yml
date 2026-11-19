@@ -96,6 +96,7 @@ jobs:
       HAS_REQUIRED_MODULES: ${{ needs.initialize.outputs.hasRequiredModules }}
       REQUIRED_REQUESTED: ${{ needs.initialize.outputs.requiredRequested }}
       REQUIRED_ERRORS: ${{ needs.initialize.outputs.requiredErrors }}
+      MODULE_MATRIX: ${{ needs.initialize.outputs.moduleMatrix }}
       CHECK_RESULT: ${{ needs.check.result }}
     steps:
       - name: Evaluate and report check status
@@ -141,8 +142,30 @@ jobs:
             const requiredLabel = '`PR: Run Required E2E Tests`';
             const allLabel = '`PR: Run All E2E Tests`';
             const requiredLabelMissing = process.env.REQUIRED_LABEL_MISSING === 'true';
+            const noRequired = process.env.HAS_MODULES === 'true' && process.env.HAS_REQUIRED_MODULES === 'false';
+            const utilityOnly = noRequired && JSON.parse(process.env.MODULE_MATRIX).include.every((entry) => entry.modulePath.startsWith('avm/utl/'));
             const pullRequest = context.payload.pull_request;
-            const body = requiredLabelMissing
+            const allRequested = (pullRequest.labels || []).some((label) => label.name === allLabelName);
+            const absence = [
+              '### Bicep E2E scenario selection',
+              '',
+              utilityOnly
+                ? 'Only utility modules changed. Utility modules are exempt from the required defaults and waf-aligned scenarios.'
+                : 'Warning: no runnable required `default`/`defaults` or `waf-aligned` scenarios were discovered for the changed modules. Their absence does not currently block merging.',
+              '',
+              allRequested
+                ? 'All existing E2E scenarios were selected. Check the deployment job results; selection does not mean validation passed.'
+                : `No E2E deployment tests were selected. ${requiredLabel} selects no tests here; add ${allLabel} to run any optional scenarios.`,
+              '',
+              `Add ${requiredLabel} to run required scenarios only, or ${allLabel} to run required and optional scenarios.`,
+              '',
+              'Labels cannot run scenarios that do not exist. Open PRs early and add deployment labels when ready to avoid unnecessary cloud cost and runtime.',
+              '',
+              'For fork contributions, labels do not grant deployment credentials. Ask a maintainer for an authorized same-repository release-branch handoff.'
+            ].join('\n');
+            const body = noRequired
+              ? `${marker}\n\n${absence}`
+              : requiredLabelMissing
               ? [
                   marker,
                   '',
@@ -157,6 +180,11 @@ jobs:
                   '',
                   'The required E2E label is now present, or no required E2E scenarios remain. No label action is needed for this run.',
                 ].filter(Boolean).join('\n');
+
+            if (noRequired) {
+              await core.summary.addRaw(absence).write();
+              if (!utilityOnly) core.warning('No required Bicep E2E scenarios found; optional scenarios need "PR: Run All E2E Tests".');
+            }
 
             try {
               const livePullRequest = await github.rest.pulls.get({
@@ -188,7 +216,7 @@ jobs:
               const existingComment = comments.find((comment) =>
                 comment.user?.login === 'github-actions[bot]' && comment.body?.includes(marker));
 
-              if (requiredLabelMissing) {
+              if (requiredLabelMissing || noRequired) {
                 if (existingComment) {
                   await github.rest.issues.updateComment({
                     owner: context.repo.owner,
