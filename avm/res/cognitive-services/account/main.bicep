@@ -552,6 +552,18 @@ resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignmen
   }
 ]
 
+module cognitiveService_keys 'modules/keys.bicep' = if (!disableLocalAuth || contains(secretsExportConfiguration ?? {}, 'accessKey1Name') || contains(secretsExportConfiguration ?? {}, 'accessKey2Name')) {
+  name: '${uniqueString(deployment().name, location)}-cognitiveService-keys'
+  params: {
+    accountName: cognitiveService.name
+  }
+  // Child writes can leave the account in a non-terminal state while listKeys runs.
+  dependsOn: [
+    cognitiveService_deployments
+    cognitiveService_commitmentPlans
+  ]
+}
+
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
@@ -566,7 +578,8 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
         ? [
             {
               name: secretsExportConfiguration!.?accessKey1Name
-              value: cognitiveService.listKeys().key1
+              #disable-next-line BCP318 // This export enables the key module; secure outputs require a direct module reference.
+              value: cognitiveService_keys.outputs.primaryKey
             }
           ]
         : [],
@@ -574,7 +587,8 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
         ? [
             {
               name: secretsExportConfiguration!.?accessKey2Name
-              value: cognitiveService.listKeys().key2
+              #disable-next-line BCP318 // This export enables the key module; secure outputs require a direct module reference.
+              value: cognitiveService_keys.outputs.secondaryKey
             }
           ]
         : []
@@ -622,11 +636,13 @@ output privateEndpoints privateEndpointOutputType[] = [
 
 @secure()
 @description('The primary access key.')
-output primaryKey string? = !disableLocalAuth ? cognitiveService.listKeys().key1 : null
+#disable-next-line BCP318 // Local auth enables the key module; secure outputs require a direct module reference.
+output primaryKey string? = !disableLocalAuth ? cognitiveService_keys.outputs.primaryKey : null
 
 @secure()
 @description('The secondary access key.')
-output secondaryKey string? = !disableLocalAuth ? cognitiveService.listKeys().key2 : null
+#disable-next-line BCP318 // Local auth enables the key module; secure outputs require a direct module reference.
+output secondaryKey string? = !disableLocalAuth ? cognitiveService_keys.outputs.secondaryKey : null
 
 // ================ //
 // Definitions      //
