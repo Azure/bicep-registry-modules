@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/job/CHANGELOG.md).
 
+## 0.8.0
+
+### Changes
+
+- Added the `identitySettings` parameter, so a managed identity's `lifecycle` can be set (for example `None` to keep it platform-only).
+
+### Breaking Changes
+
+- None
+
 ## 0.7.2
 
 ### Changes

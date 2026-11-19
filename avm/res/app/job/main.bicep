@@ -63,6 +63,19 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 })
 param managedIdentities managedIdentityAllType?
 
+@description('Optional. Settings for the managed identities assigned to the Container App Job. Use `lifecycle` to control in which phases of the job an identity is available, for example `None` to let the platform use an identity for Key Vault secret references and image pulls without exposing it to the containers of the job.')
+@metadata({
+  example: '''
+  [
+    {
+      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+      lifecycle: 'None'
+    }
+  ]
+  '''
+})
+param identitySettings resourceInput<'Microsoft.App/jobs@2026-01-01'>.properties.configuration.identitySettings?
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -207,6 +220,7 @@ resource job 'Microsoft.App/jobs@2026-01-01' = {
   properties: {
     environmentId: environmentResourceId
     configuration: {
+      identitySettings: identitySettings
       triggerType: triggerType
       eventTriggerConfig: triggerType == 'Event' ? eventTriggerConfig : null
       manualTriggerConfig: triggerType == 'Manual' ? manualTriggerConfig : null
