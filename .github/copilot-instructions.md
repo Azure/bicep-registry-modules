@@ -102,7 +102,7 @@ You have exactly these two options (do not use any other method or tool to do th
 - ✅ **Use** meaningful parameter and variable names
 - ✅ **Add** proper metadata and descriptions
 - ✅ **Follow** Azure naming conventions and constraints
-- ✅ **Test** with all required test scenarios (defaults/max/waf-aligned)
+- ✅ **Test** the required scenarios for the module class: Bicep resources require `defaults` and `waf-aligned`; patterns and utilities require `defaults`. The `max` scenario is recommended, not mandatory. Preserve existing variant/scope naming, such as `linux.defaults` and `scope.defaults`. Refer to [BCPRMNFR1](https://azure.github.io/Azure-Verified-Modules/spec/BCPRMNFR1) and [SNFR2](https://azure.github.io/Azure-Verified-Modules/spec/SNFR2) for the authoritative requirements.
 - ✅ **Document** any customizations or deviations from examples
 
 ### Common Issues
