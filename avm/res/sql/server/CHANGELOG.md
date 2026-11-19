@@ -31,6 +31,18 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Removed the ignored `enableTelemetry` property from all child resource types (e.g., `databases`, `elasticPools`, `firewallRules`, `auditSettings`)
 - The `timeBasedImmutabilityMode` of the database long-term backup retention policy now defaults to `Unlocked` (instead of `Locked`) if time-based immutability is enabled
 
+## 0.23.1
+
+### Changes
+
+- Updated Key Vault API references to `2026-02-01`.
+- Fixed elastic-pool deployment ordering so server encryption protection is configured first.
+- Fixed connection-policy update ordering so private endpoint updates finish first.
+
+### Breaking Changes
+
+- None
+
 ## 0.23.0
 
 ### Changes

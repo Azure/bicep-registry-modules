@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'Using large parameter set for Linux'
 metadata description = 'This instance deploys the module with most of its features enabled.'
 
@@ -11,9 +13,8 @@ metadata description = 'This instance deploys the module with most of its featur
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${serviceShort}-rg'
 
-// Capacity constraints for VM type
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'germanywestcentral'
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'vmlimax'
@@ -21,9 +22,8 @@ param serviceShort string = 'vmlimax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. The object id of the Backup Management Service Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-BackupManagementServiceEnterpriseApplicationObjectId\'.')
-@secure()
-param backupManagementServiceEnterpriseApplicationObjectId string = ''
+@description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
+param builtInServicePrincipalObjectId string?
 
 // ============ //
 // Dependencies //
@@ -31,28 +31,34 @@ param backupManagementServiceEnterpriseApplicationObjectId string = ''
 
 // General resources
 // =================
+resource backupManagementService 'Microsoft.Graph/servicePrincipals@v1.0' existing = if (builtInServicePrincipalObjectId == null) {
+  appId: '262044b1-e2ce-469f-a196-69ab7ada62d3'
+}
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    keyVaultName: 'dep-kv-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     loadBalancerName: 'dep-${namePrefix}-lb-${serviceShort}'
     recoveryServicesVaultName: 'dep-${namePrefix}-rsv-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
-    sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    storageAccountName: '${take('dep${namePrefix}sa${serviceShort}01', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
+    storageUploadDeploymentScriptName: '${take('dep-${namePrefix}-sads-${serviceShort}', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'sads')}'
+    sshDeploymentScriptName: '${take('dep-${namePrefix}-ds-${serviceShort}', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'ds')}'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
-    backupManagementServiceApplicationObjectId: backupManagementServiceEnterpriseApplicationObjectId
-    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
+    backupManagementServiceApplicationObjectId: builtInServicePrincipalObjectId != null
+      ? builtInServicePrincipalObjectId!
+      : backupManagementService!.id
+    waitDeploymentScriptName: '${take('dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation', 76)}-${uniqueString(deployment().name, resourceLocation, namePrefix, serviceShort, 'waitForBackupRolePropagation')}'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
   }
 }
@@ -61,7 +67,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
@@ -76,12 +82,13 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}'
     computerName: '${namePrefix}linvm1'
-    location: enforcedLocation
+    location: resourceLocation
     adminUsername: 'localAdministrator'
+    diskControllerType: 'SCSI'
     imageReference: {
       publisher: 'Canonical'
       offer: '0001-com-ubuntu-server-focal'
@@ -119,7 +126,7 @@ module testDeployment '../../../main.bicep' = {
               roleAssignments: [
                 {
                   name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
-                  roleDefinitionIdOrName: 'Owner'
+                  roleDefinitionIdOrName: 'Reader'
                   principalId: nestedDependencies.outputs.managedIdentityPrincipalId
                   principalType: 'ServicePrincipal'
                 }
@@ -131,7 +138,7 @@ module testDeployment '../../../main.bicep' = {
                 {
                   roleDefinitionIdOrName: subscriptionResourceId(
                     'Microsoft.Authorization/roleDefinitions',
-                    'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                    '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
                   )
                   principalId: nestedDependencies.outputs.managedIdentityPrincipalId
                   principalType: 'ServicePrincipal'
@@ -159,7 +166,7 @@ module testDeployment '../../../main.bicep' = {
         roleAssignments: [
           {
             name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
             principalId: nestedDependencies.outputs.managedIdentityPrincipalId
             principalType: 'ServicePrincipal'
           }
@@ -171,7 +178,7 @@ module testDeployment '../../../main.bicep' = {
           {
             roleDefinitionIdOrName: subscriptionResourceId(
               'Microsoft.Authorization/roleDefinitions',
-              'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
             )
             principalId: nestedDependencies.outputs.managedIdentityPrincipalId
             principalType: 'ServicePrincipal'
@@ -204,7 +211,7 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v6'
+    vmSize: 'Standard_D4ads_v5'
     availabilityZone: 1
     backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
     backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
@@ -337,7 +344,7 @@ module testDeployment '../../../main.bicep' = {
     roleAssignments: [
       {
         name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
@@ -350,7 +357,7 @@ module testDeployment '../../../main.bicep' = {
       {
         roleDefinitionIdOrName: subscriptionResourceId(
           'Microsoft.Authorization/roleDefinitions',
-          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
         )
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'

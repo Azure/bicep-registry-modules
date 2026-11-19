@@ -325,6 +325,7 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the snapshot policy. |
 | `name` | string | The name of the Backup Policy. |
 | `resourceGroupName` | string | The name of the Resource Group the Snapshot was created in. |
 | `resourceId` | string | The resource IDs of the snapshot Policy created within volume. |

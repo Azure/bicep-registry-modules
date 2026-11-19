@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/dev-center/project/CHANGELOG.md).
 
+## 0.1.3
+
+### Changes
+
+- Regenerated ARM template artifacts with Bicep 0.48.1 without changing resource configuration.
+- Regenerated documentation with the native authoring generator to refresh custom-role placeholders.
+
+### Breaking Changes
+
+- None
+
 ## 0.1.2
 
 ### Changes

@@ -244,16 +244,12 @@ Describe 'Metadata workflow wiring' {
         $script:validationScript | Should -Not -Match "'module.tests.ps1'"
     }
 
-    It 'retains the shared metadata checks in full compliance validation' {
-        $moduleTestPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'module.tests.ps1'
-        Get-Content -LiteralPath $moduleTestPath -Raw |
-            Should -Match ([regex]::Escape(". (Join-Path `$PSScriptRoot 'metadata.tests.ps1')"))
-    }
-
-    It 'does not validate ownership against legacy markers or lagging public index owners' {
-        $moduleTestPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'module.tests.ps1'
-        Get-Content -LiteralPath $moduleTestPath -Raw |
-            Should -Not -Match 'ORPHANED\.md|PrimaryModuleOwnerGHHandle'
+    It 'uses packaged compliance and preserves the separate CODEOWNERS governance test' {
+        $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModulePester' 'action.yml'
+        $action = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $actionPath -Raw)
+        $script = ($action.runs.steps | Where-Object id -EQ 'pester_run_step').run
+        $script | Should -Match 'Invoke-AvmTestUnit.*-IncludeCompliance'
+        $script | Should -Match "'governance.tests.ps1'"
     }
 
     It 'treats a <Result> run with zero failed assertions as failure: <ShouldFail>' -ForEach @(

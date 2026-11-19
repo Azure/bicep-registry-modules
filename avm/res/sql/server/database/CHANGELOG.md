@@ -16,6 +16,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Removed the ignored `enableTelemetry` property from the exported `shortTermBackupRetentionPolicyType` and `longTermBackupRetentionPolicyType` types
 - The `timeBasedImmutabilityMode` of the long-term backup retention policy now defaults to `Unlocked` (instead of `Locked`) if time-based immutability is enabled
 
+## 0.3.2
+
+### Changes
+
+- Updated Key Vault API references to `2026-02-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.3.1
 
 ### Changes
