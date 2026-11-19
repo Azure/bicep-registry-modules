@@ -56,6 +56,21 @@ Describe 'Required Bicep PR gate' {
         }
     }
 
+    It 'keeps PR and release workflows pinned to the same immutable Tools revision' {
+        $releaseWorkflow = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'release.yml') -Raw | ConvertFrom-Yaml
+        $references = @(
+            $workflow.jobs.initialize.steps[0].uses
+            $workflow.jobs.check.uses
+            $releaseWorkflow.jobs.initialize.uses
+            $releaseWorkflow.jobs.release.uses
+        )
+        $pins = @($references | ForEach-Object {
+                $_ | Should -Match '^Azure/azure-verified-modules-tools/.+@[0-9a-f]{40}$'
+                ($_ -split '@')[-1]
+            } | Select-Object -Unique)
+        $pins.Count | Should -Be 1
+    }
+
     It 'requires module checks to succeed for changed modules' {
         { & $moduleGate } | Should -Not -Throw
         $env:CHECK_RESULT = 'skipped'
