@@ -1,0 +1,262 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.44.1.10279",
+      "templateHash": "6106036478624249459"
+    },
+    "name": "AI Gateway Telemetry Exporter",
+    "description": "Configures runtime telemetry with payload capture disabled by default."
+  },
+  "definitions": {
+    "telemetryExporterType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "$ref": "#/definitions/telemetryExporterPropertiesType"
+        }
+      },
+      "additionalProperties": false,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Runtime telemetry exporter configuration."
+      }
+    },
+    "telemetryExporterPropertiesType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "kind",
+        "mapping": {
+          "ApplicationInsights": {
+            "$ref": "#/definitions/applicationInsightsPropertiesType"
+          },
+          "OpenTelemetry": {
+            "$ref": "#/definitions/openTelemetryPropertiesType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Exporter kind selects its destination."
+      }
+    },
+    "applicationInsightsPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "ApplicationInsights"
+          ]
+        },
+        "payloadCapture": {
+          "type": "bool",
+          "nullable": true
+        },
+        "applicationInsights": {
+          "type": "object",
+          "properties": {
+            "connectionStringSecretName": {
+              "type": "string",
+              "nullable": true
+            },
+            "resourceId": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "openTelemetryPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "OpenTelemetry"
+          ]
+        },
+        "payloadCapture": {
+          "type": "bool",
+          "nullable": true
+        },
+        "applicationInsights": {
+          "type": "object",
+          "properties": {
+            "resourceId": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "nullable": true
+        },
+        "openTelemetry": {
+          "type": "object",
+          "properties": {
+            "metricsEndpoint": {
+              "type": "string",
+              "nullable": true
+            },
+            "logsEndpoint": {
+              "type": "string",
+              "nullable": true
+            },
+            "tracesEndpoint": {
+              "type": "string",
+              "nullable": true
+            },
+            "credentials": {
+              "type": "object",
+              "properties": {
+                "managedIdentity": {
+                  "type": "object",
+                  "properties": {
+                    "resource": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "clientId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "nullable": true
+                }
+              },
+              "nullable": true
+            },
+            "managedIdentity": {
+              "type": "object",
+              "properties": {
+                "resource": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "clientId": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "nullable": true
+            },
+            "headers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "secretName": {
+                    "type": "string"
+                  }
+                }
+              },
+              "nullable": true
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "parameters": {
+    "aiGatewayName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Parent gateway name."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Parent workspace name."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Exporter resource name."
+      }
+    },
+    "properties": {
+      "$ref": "#/definitions/telemetryExporterPropertiesType",
+      "metadata": {
+        "description": "Required. Export destination configuration."
+      }
+    },
+    "secrets": {
+      "type": "secureObject",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Secure connection strings and OTLP headers."
+      }
+    }
+  },
+  "variables": {
+    "hasAppInsightsResourceId": "[not(empty(coalesce(tryGet(tryGet(parameters('properties'), 'applicationInsights'), 'resourceId'), '')))]",
+    "resolveAppInsightsFromResourceId": "[and(variables('hasAppInsightsResourceId'), or(and(equals(parameters('properties').kind, 'ApplicationInsights'), equals(tryGet(parameters('properties').applicationInsights, 'connectionStringSecretName'), null())), and(equals(parameters('properties').kind, 'OpenTelemetry'), or(or(equals(tryGet(parameters('properties').openTelemetry, 'metricsEndpoint'), null()), equals(tryGet(parameters('properties').openTelemetry, 'logsEndpoint'), null())), equals(tryGet(parameters('properties').openTelemetry, 'tracesEndpoint'), null())))))]",
+    "appInsightsResourceIdParts": "[if(variables('resolveAppInsightsFromResourceId'), split(parameters('properties').applicationInsights.resourceId, '/'), createArray('', 'subscriptions', subscription().subscriptionId, 'resourceGroups', resourceGroup().name, 'providers', 'Microsoft.Insights', 'components', 'placeholder'))]"
+  },
+  "resources": {
+    "existingAppInsights": {
+      "condition": "[variables('resolveAppInsightsFromResourceId')]",
+      "existing": true,
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "subscriptionId": "[variables('appInsightsResourceIdParts')[2]]",
+      "resourceGroup": "[variables('appInsightsResourceIdParts')[4]]",
+      "name": "[last(variables('appInsightsResourceIdParts'))]"
+    },
+    "workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/aigateways/workspaces",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName'))]"
+    },
+    "exporter": {
+      "type": "Microsoft.ApiManagement/aigateways/workspaces/telemetryExporters",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[format('{0}/{1}/{2}', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]",
+      "properties": "[union(createObject('kind', parameters('properties').kind, 'payloadCapture', coalesce(tryGet(parameters('properties'), 'payloadCapture'), false())), if(equals(parameters('properties').kind, 'ApplicationInsights'), createObject('applicationInsights', createObject('connectionString', if(not(equals(tryGet(parameters('properties').applicationInsights, 'connectionStringSecretName'), null())), parameters('secrets')[parameters('properties').applicationInsights.connectionStringSecretName], reference('existingAppInsights').ConnectionString), 'resourceId', tryGet(parameters('properties').applicationInsights, 'resourceId'))), union(if(not(equals(tryGet(tryGet(parameters('properties'), 'applicationInsights'), 'resourceId'), null())), createObject('applicationInsights', createObject('resourceId', parameters('properties').applicationInsights.resourceId)), createObject()), createObject('openTelemetry', createObject('metricsEndpoint', coalesce(tryGet(parameters('properties').openTelemetry, 'metricsEndpoint'), if(variables('resolveAppInsightsFromResourceId'), coalesce(tryGet(reference('existingAppInsights'), 'OTLPMetricsEndpoint'), tryGet(reference('existingAppInsights'), 'MetricsIngestionEndpoint')), null())), 'logsEndpoint', coalesce(tryGet(parameters('properties').openTelemetry, 'logsEndpoint'), if(variables('resolveAppInsightsFromResourceId'), coalesce(tryGet(reference('existingAppInsights'), 'OTLPLogsEndpoint'), tryGet(reference('existingAppInsights'), 'LogsIngestionEndpoint')), null())), 'tracesEndpoint', coalesce(tryGet(parameters('properties').openTelemetry, 'tracesEndpoint'), if(variables('resolveAppInsightsFromResourceId'), coalesce(tryGet(reference('existingAppInsights'), 'OTLPTracesEndpoint'), tryGet(reference('existingAppInsights'), 'TracesIngestionEndpoint')), null())), 'credentials', if(not(equals(tryGet(parameters('properties').openTelemetry, 'credentials'), null())), parameters('properties').openTelemetry.credentials, if(not(equals(tryGet(parameters('properties').openTelemetry, 'managedIdentity'), null())), createObject('managedIdentity', parameters('properties').openTelemetry.managedIdentity), null())), 'headers', toObject(coalesce(tryGet(parameters('properties').openTelemetry, 'headers'), createArray()), lambda('header', lambdaVariables('header').name), lambda('header', parameters('secrets')[lambdaVariables('header').secretName])))))))]",
+      "dependsOn": [
+        "existingAppInsights"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The exporter resource ID."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/aigateways/workspaces/telemetryExporters', split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[0], split(format('{0}/{1}', parameters('aiGatewayName'), parameters('workspaceName')), '/')[1], parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The exporter name."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group name."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
