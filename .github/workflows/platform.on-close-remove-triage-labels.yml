@@ -1,0 +1,50 @@
+name: .Platform - Remove Triage Labels On Close
+
+on:
+  issues:
+    types:
+      - closed
+  # pull_request_target gives fork PRs a write token. This workflow never checks out code.
+  pull_request_target:
+    types:
+      - closed
+
+permissions: {}
+
+jobs:
+  remove-labels:
+    name: Remove triage labels
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const labelsToRemove = [
+              'Needs: Triage :mag:',
+              'Needs: Immediate Attention :bangbang:',
+              'Status: Response Overdue :triangular_flag_on_post:',
+            ];
+
+            const item = context.payload.issue ?? context.payload.pull_request;
+            const present = item.labels.map((label) => label.name).filter((name) => labelsToRemove.includes(name));
+
+            for (const name of present) {
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: item.number,
+                  name,
+                });
+                core.info(`Removed label '${name}' from #${item.number}.`);
+              } catch (error) {
+                if (error.status === 404) {
+                  core.info(`Label '${name}' was already removed from #${item.number}.`);
+                } else {
+                  throw error;
+                }
+              }
+            }
