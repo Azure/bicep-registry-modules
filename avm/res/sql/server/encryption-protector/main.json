@@ -5,16 +5,16 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16846337031868277873"
+      "templateHash": "4460606536620676236"
     },
     "name": "Azure SQL Server Encryption Protector",
     "description": "This module deploys an Azure SQL Server Encryption Protector."
   },
   "parameters": {
-    "sqlServerName": {
+    "serverName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the sql server. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent SQL server. Required if the template is used in a standalone deployment."
       }
     },
     "serverKeyName": {
@@ -77,7 +77,7 @@
     {
       "type": "Microsoft.Sql/servers/encryptionProtector",
       "apiVersion": "2025-01-01",
-      "name": "[format('{0}/{1}', parameters('sqlServerName'), 'current')]",
+      "name": "[format('{0}/{1}', parameters('serverName'), 'current')]",
       "properties": {
         "serverKeyType": "[parameters('serverKeyType')]",
         "autoRotationEnabled": "[parameters('autoRotationEnabled')]",
@@ -98,7 +98,7 @@
       "metadata": {
         "description": "The resource ID of the encryption protector."
       },
-      "value": "[resourceId('Microsoft.Sql/servers/encryptionProtector', parameters('sqlServerName'), 'current')]"
+      "value": "[resourceId('Microsoft.Sql/servers/encryptionProtector', parameters('serverName'), 'current')]"
     },
     "resourceGroupName": {
       "type": "string",

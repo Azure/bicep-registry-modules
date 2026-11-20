@@ -137,11 +137,11 @@ param tags resourceInput<'Microsoft.Sql/servers/databases@2025-01-01'>.tags?
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the databse.')
 param lock lockType?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -151,17 +151,78 @@ param backupShortTermRetentionPolicy shortTermBackupRetentionPolicyType?
 @description('Optional. The long term backup retention policy to create for the database.')
 param backupLongTermRetentionPolicy longTermBackupRetentionPolicyType?
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition for database TDE.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType[]?
 
 resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   name: serverName
 }
+
+var builtInRoleNames = {
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Log Analytics Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '92aaf0da-9dab-42b6-94a3-d43ce8d16293'
+  )
+  'Log Analytics Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '73c42c96-874c-492b-b04d-ab87d138a893'
+  )
+  'Monitoring Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '749f88d5-cbae-40b8-bcfc-e573ddc772fa'
+  )
+  'Monitoring Metrics Publisher': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '3913510d-42f4-4e42-8a64-420c390055eb'
+  )
+  'Monitoring Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
+  )
+  'Resource Policy Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '36243c78-bf99-498c-9df9-86d9f8d28608'
+  )
+  'SQL DB Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '9b7fa17d-e63e-47b0-bb0a-15c516ac86ec'
+  )
+  'SQL Security Manager': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '056cd41c-7e88-42e1-933e-88ba6a50c9c3'
+  )
+  'SQL Server Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437'
+  )
+  'SqlDb Migration Role': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '189207d4-bb67-4208-a635-b06afe8b2c57'
+  )
+}
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -176,7 +237,10 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+var isHSMManagedCMK = (split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] ?? '') =~ 'managedHSMs'
+
+// Managed HSM key URIs follow the pattern 'https://<hsmName>.managedhsm.<cloudSuffix>/keys/<keyName>'
+var hsmKeyUri = 'https://${last(split(customerManagedKey.?keyVaultResourceId ?? '', '/'))}${replace(environment().suffixes.keyvaultDns, '.vault.', '.managedhsm.')}/keys/${customerManagedKey.?keyName ?? ''}'
 
 var enableReferencedModulesTelemetry = false
 
@@ -231,11 +295,9 @@ resource database 'Microsoft.Sql/servers/databases@2025-01-01' = {
       ? !empty(customerManagedKey.?keyVersion)
           ? (!isHSMManagedCMK
               ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-              : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
+              : '${hsmKeyUri}/${customerManagedKey!.keyVersion!}')
           : (customerManagedKey.?autoRotationEnabled ?? true)
-              ? (!isHSMManagedCMK
-                  ? cMKKeyVault::cMKKey!.properties.keyUri
-                  : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}')
+              ? (!isHSMManagedCMK ? cMKKeyVault::cMKKey!.properties.keyUri : hsmKeyUri)
               : (!isHSMManagedCMK
                   ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
                   : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
@@ -314,6 +376,22 @@ resource database_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
   scope: database
 }
 
+resource database_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(database.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
+    properties: {
+      roleDefinitionId: roleAssignment.roleDefinitionId
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: database
+  }
+]
+
 module database_backupShortTermRetentionPolicy 'backup-short-term-retention-policy/main.bicep' = if (!empty(backupShortTermRetentionPolicy)) {
   name: '${uniqueString(deployment().name, location)}-shBakRetPol'
   params: {
@@ -387,9 +465,6 @@ type shortTermBackupRetentionPolicyType = {
 
   @description('Optional. Point-in-time retention in days.')
   retentionDays: int?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
 }
 
 @export()
@@ -407,12 +482,9 @@ type longTermBackupRetentionPolicyType = {
   @description('Optional. Yearly retention in ISO 8601 duration format.')
   yearlyRetention: string?
 
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
-
   @description('Optional. The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled.')
   timeBasedImmutability: 'Disabled' | 'Enabled'?
 
-  @description('Optional. The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.')
+  @description('Optional. The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Defaults to `Unlocked` if time-based immutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.')
   timeBasedImmutabilityMode: 'Locked' | 'Unlocked'?
 }

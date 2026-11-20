@@ -43,6 +43,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Sql/servers/keys` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/keys)</li></ul> |
 | `Microsoft.Sql/servers/outboundFirewallRules` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_outboundfirewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/outboundFirewallRules)</li></ul> |
 | `Microsoft.Sql/servers/securityAlertPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_securityalertpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/securityAlertPolicies)</li></ul> |
+| `Microsoft.Sql/servers/sqlVulnerabilityAssessments` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_sqlvulnerabilityassessments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/sqlVulnerabilityAssessments)</li></ul> |
 | `Microsoft.Sql/servers/virtualNetworkRules` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_virtualnetworkrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/virtualNetworkRules)</li></ul> |
 | `Microsoft.Sql/servers/vulnerabilityAssessments` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_vulnerabilityassessments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/vulnerabilityAssessments)</li></ul> |
 
@@ -167,7 +168,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'ssaud001'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -214,7 +215,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssaud001"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -271,7 +272,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'ssaud001'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
@@ -1369,7 +1370,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlsmax'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -1385,7 +1386,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         backupLongTermRetentionPolicy: {
           monthlyRetention: 'P6M'
           timeBasedImmutability: 'Enabled'
-          timeBasedImmutabilityMode: 'Locked'
+          timeBasedImmutabilityMode: 'Unlocked'
         }
         backupShortTermRetentionPolicy: {
           retentionDays: 14
@@ -1418,7 +1419,14 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           ]
         }
         maxSizeBytes: 34359738368
-        name: 'sqlsmaxdb-001'
+        name: '<name>'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'SQL DB Contributor'
+          }
+        ]
         sku: {
           capacity: 0
           name: 'ElasticPool'
@@ -1429,11 +1437,17 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     elasticPools: [
       {
         availabilityZone: -1
+        diagnosticSettings: [
+          {
+            name: 'customSetting'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
         lock: {
           kind: 'CanNotDelete'
           name: 'myCustomLockName'
         }
-        name: 'sqlsmax-ep-001'
+        name: '<name>'
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -1575,7 +1589,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlsmax"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -1599,7 +1613,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "backupLongTermRetentionPolicy": {
             "monthlyRetention": "P6M",
             "timeBasedImmutability": "Enabled",
-            "timeBasedImmutabilityMode": "Locked"
+            "timeBasedImmutabilityMode": "Unlocked"
           },
           "backupShortTermRetentionPolicy": {
             "retentionDays": 14
@@ -1632,7 +1646,14 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             ]
           },
           "maxSizeBytes": 34359738368,
-          "name": "sqlsmaxdb-001",
+          "name": "<name>",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "SQL DB Contributor"
+            }
+          ],
           "sku": {
             "capacity": 0,
             "name": "ElasticPool",
@@ -1645,11 +1666,17 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": [
         {
           "availabilityZone": -1,
+          "diagnosticSettings": [
+            {
+              "name": "customSetting",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
           "lock": {
             "kind": "CanNotDelete",
             "name": "myCustomLockName"
           },
-          "name": "sqlsmax-ep-001",
+          "name": "<name>",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
@@ -1817,7 +1844,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sqlsmax'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
@@ -1833,7 +1860,7 @@ param databases = [
     backupLongTermRetentionPolicy: {
       monthlyRetention: 'P6M'
       timeBasedImmutability: 'Enabled'
-      timeBasedImmutabilityMode: 'Locked'
+      timeBasedImmutabilityMode: 'Unlocked'
     }
     backupShortTermRetentionPolicy: {
       retentionDays: 14
@@ -1866,7 +1893,14 @@ param databases = [
       ]
     }
     maxSizeBytes: 34359738368
-    name: 'sqlsmaxdb-001'
+    name: '<name>'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'SQL DB Contributor'
+      }
+    ]
     sku: {
       capacity: 0
       name: 'ElasticPool'
@@ -1877,11 +1911,17 @@ param databases = [
 param elasticPools = [
   {
     availabilityZone: -1
+    diagnosticSettings: [
+      {
+        name: 'customSetting'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    name: 'sqlsmax-ep-001'
+    name: '<name>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -2161,7 +2201,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlsvln'
+    name: '<name>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
@@ -2217,7 +2257,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlsvln"
+      "value": "<name>"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -2287,7 +2327,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sqlsvln'
+param name = '<name>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
@@ -2345,7 +2385,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module server 'br/public:avm/res/sql/server:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlswaf'
+    name: '<name>'
     // Non-required parameters
     administrators: {
       azureADOnlyAuthentication: true
@@ -2384,6 +2424,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         licenseType: 'LicenseIncluded'
         maxSizeBytes: 34359738368
         name: 'sqlswafdb-001'
+        requestedBackupStorageRedundancy: 'Zone'
         sku: {
           capacity: 0
           name: 'ElasticPool'
@@ -2403,6 +2444,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       }
     ]
+    expressVulnerabilityAssessmentState: 'Enabled'
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -2439,6 +2481,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       }
     ]
+    publicNetworkAccess: 'Disabled'
     restrictOutboundNetworkAccess: 'Disabled'
     securityAlertPolicies: [
       {
@@ -2451,25 +2494,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
-    }
-    virtualNetworkRules: [
-      {
-        ignoreMissingVnetServiceEndpoint: true
-        name: 'newVnetRule1'
-        virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
-      }
-    ]
-    vulnerabilityAssessmentsObj: {
-      name: 'default'
-      recurringScans: {
-        emails: [
-          'test1@contoso.com'
-          'test2@contoso.com'
-        ]
-        emailSubscriptionAdmins: true
-        isEnabled: true
-      }
-      storageAccountResourceId: '<storageAccountResourceId>'
     }
   }
 }
@@ -2489,7 +2513,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlswaf"
+      "value": "<name>"
     },
     // Non-required parameters
     "administrators": {
@@ -2536,6 +2560,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "licenseType": "LicenseIncluded",
           "maxSizeBytes": 34359738368,
           "name": "sqlswafdb-001",
+          "requestedBackupStorageRedundancy": "Zone",
           "sku": {
             "capacity": 0,
             "name": "ElasticPool",
@@ -2557,6 +2582,9 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           }
         }
       ]
+    },
+    "expressVulnerabilityAssessmentState": {
+      "value": "Enabled"
     },
     "location": {
       "value": "<location>"
@@ -2604,6 +2632,9 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       ]
     },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
     "restrictOutboundNetworkAccess": {
       "value": "Disabled"
     },
@@ -2622,29 +2653,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "virtualNetworkRules": {
-      "value": [
-        {
-          "ignoreMissingVnetServiceEndpoint": true,
-          "name": "newVnetRule1",
-          "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>"
-        }
-      ]
-    },
-    "vulnerabilityAssessmentsObj": {
-      "value": {
-        "name": "default",
-        "recurringScans": {
-          "emails": [
-            "test1@contoso.com",
-            "test2@contoso.com"
-          ],
-          "emailSubscriptionAdmins": true,
-          "isEnabled": true
-        },
-        "storageAccountResourceId": "<storageAccountResourceId>"
-      }
     }
   }
 }
@@ -2661,7 +2669,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sqlswaf'
+param name = '<name>'
 // Non-required parameters
 param administrators = {
   azureADOnlyAuthentication: true
@@ -2700,6 +2708,7 @@ param databases = [
     licenseType: 'LicenseIncluded'
     maxSizeBytes: 34359738368
     name: 'sqlswafdb-001'
+    requestedBackupStorageRedundancy: 'Zone'
     sku: {
       capacity: 0
       name: 'ElasticPool'
@@ -2719,6 +2728,7 @@ param elasticPools = [
     }
   }
 ]
+param expressVulnerabilityAssessmentState = 'Enabled'
 param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
@@ -2755,6 +2765,7 @@ param privateEndpoints = [
     }
   }
 ]
+param publicNetworkAccess = 'Disabled'
 param restrictOutboundNetworkAccess = 'Disabled'
 param securityAlertPolicies = [
   {
@@ -2767,25 +2778,6 @@ param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
-}
-param virtualNetworkRules = [
-  {
-    ignoreMissingVnetServiceEndpoint: true
-    name: 'newVnetRule1'
-    virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
-  }
-]
-param vulnerabilityAssessmentsObj = {
-  name: 'default'
-  recurringScans: {
-    emails: [
-      'test1@contoso.com'
-      'test2@contoso.com'
-    ]
-    emailSubscriptionAdmins: true
-    isEnabled: true
-  }
-  storageAccountResourceId: '<storageAccountResourceId>'
 }
 ```
 
@@ -2807,18 +2799,19 @@ param vulnerabilityAssessmentsObj = {
 | [`administratorLogin`](#parameter-administratorlogin) | string | The administrator username for the server. Required if no `administrators` object for AAD authentication is provided. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. Required if no `administrators` object for AAD authentication is provided. |
 | [`administrators`](#parameter-administrators) | object | The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided. |
-| [`primaryUserAssignedIdentityResourceId`](#parameter-primaryuserassignedidentityresourceid) | string | The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty. |
+| [`primaryUserAssignedIdentityResourceId`](#parameter-primaryuserassignedidentityresourceid) | string | The resource ID of a user assigned identity to be used by default. Required if more than one user-assigned identity is provided in `managedIdentities.userAssignedResourceIds`. If exactly one user-assigned identity is provided, it is used by default. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object. |
+| [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. To disable auditing, set `state` to `Disabled`. If set to an empty object, the audit settings are not deployed (i.e., any existing configuration remains unchanged). |
 | [`connectionPolicy`](#parameter-connectionpolicy) | string | SQL logical server connection policy. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition for server TDE. |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`expressVulnerabilityAssessmentState`](#parameter-expressvulnerabilityassessmentstate) | string | The state of the SQL vulnerability assessment express configuration, which does not require a storage account and is the recommended configuration. Requires Microsoft Defender for SQL to be enabled (e.g., via `securityAlertPolicies`). Cannot be combined with `vulnerabilityAssessmentsObj` (classic configuration). |
 | [`failoverGroups`](#parameter-failovergroups) | array | The failover groups configuration. |
 | [`federatedClientId`](#parameter-federatedclientid) | string | The Client id used for cross tenant CMK scenario. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the server. |
@@ -2828,7 +2821,7 @@ param vulnerabilityAssessmentsObj = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`masterDatabaseDiagnosticSettings`](#parameter-masterdatabasediagnosticsettings) | array | The diagnostic settings of the server's `master` database. Server-level audit logs (i.e., the `SQLSecurityAuditEvents` & `DevOpsOperationsAudit` categories) are emitted by the implicitly created `master` database. Hence, forwarding them to a Log Analytics workspace, Event Hub, Storage Account or partner solution requires a diagnostic setting on that database. If no log categories are specified, all logs are configured by default. Metrics are only configured if explicitly specified, as the `master` database does not emit any. |
-| [`minimalTlsVersion`](#parameter-minimaltlsversion) | string | Minimal TLS version allowed. |
+| [`minimalTlsVersion`](#parameter-minimaltlsversion) | string | Minimal TLS version allowed. TLS 1.0 and 1.1 are retired for Azure SQL Database. |
 | [`outboundFirewallRules`](#parameter-outboundfirewallrules) | array | The outbound firewall rules for the server. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and neither firewall rules nor virtual network rules are set. |
@@ -2838,7 +2831,7 @@ param vulnerabilityAssessmentsObj = {
 | [`securityAlertPolicies`](#parameter-securityalertpolicies) | array | The security alert policies to create in the server. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkRules`](#parameter-virtualnetworkrules) | array | The virtual network rules to create in the server. |
-| [`vulnerabilityAssessmentsObj`](#parameter-vulnerabilityassessmentsobj) | object | The vulnerability assessment configuration. |
+| [`vulnerabilityAssessmentsObj`](#parameter-vulnerabilityassessmentsobj) | object | The vulnerability assessment configuration (classic configuration, requires a storage account). Cannot be combined with `expressVulnerabilityAssessmentState` set to `Enabled`. |
 
 ### Parameter: `name`
 
@@ -2942,14 +2935,14 @@ Tenant ID of the administrator.
 
 ### Parameter: `primaryUserAssignedIdentityResourceId`
 
-The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.
+The resource ID of a user assigned identity to be used by default. Required if more than one user-assigned identity is provided in `managedIdentities.userAssignedResourceIds`. If exactly one user-assigned identity is provided, it is used by default.
 
 - Required: No
 - Type: string
 
 ### Parameter: `auditSettings`
 
-The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object.
+The audit settings configuration. To disable auditing, set `state` to `Disabled`. If set to an empty object, the audit settings are not deployed (i.e., any existing configuration remains unchanged).
 
 - Required: No
 - Type: object
@@ -2965,8 +2958,7 @@ The audit settings configuration. If you want to disable auditing, set the parma
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`auditActionsAndGroups`](#parameter-auditsettingsauditactionsandgroups) | array | Specifies the Actions-Groups and Actions to audit. |
-| [`enableTelemetry`](#parameter-auditsettingsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`isAzureMonitorTargetEnabled`](#parameter-auditsettingsisazuremonitortargetenabled) | bool | Specifies whether audit events are sent to Azure Monitor. |
+| [`isAzureMonitorTargetEnabled`](#parameter-auditsettingsisazuremonitortargetenabled) | bool | Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, the server's `masterDatabaseDiagnosticSettings` must be configured with the `SQLSecurityAuditEvents` log category (included in the `allLogs` category group). |
 | [`isDevopsAuditEnabled`](#parameter-auditsettingsisdevopsauditenabled) | bool | Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor. |
 | [`isManagedIdentityInUse`](#parameter-auditsettingsismanagedidentityinuse) | bool | Specifies whether Managed Identity is used to access blob storage. |
 | [`isStorageSecondaryKeyInUse`](#parameter-auditsettingsisstoragesecondarykeyinuse) | bool | Specifies whether storageAccountAccessKey value is the storage's secondary key. |
@@ -2983,16 +2975,9 @@ Specifies the Actions-Groups and Actions to audit.
 - Required: No
 - Type: array
 
-### Parameter: `auditSettings.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `auditSettings.isAzureMonitorTargetEnabled`
 
-Specifies whether audit events are sent to Azure Monitor.
+Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, the server's `masterDatabaseDiagnosticSettings` must be configured with the `SQLSecurityAuditEvents` log category (included in the `allLogs` category group).
 
 - Required: No
 - Type: bool
@@ -3145,7 +3130,7 @@ The databases to create in the server.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`availabilityZone`](#parameter-databasesavailabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
-| [`name`](#parameter-databasesname) | string | The name of the Elastic Pool. |
+| [`name`](#parameter-databasesname) | string | The name of the database. |
 
 **Optional parameters**
 
@@ -3160,7 +3145,6 @@ The databases to create in the server.
 | [`customerManagedKey`](#parameter-databasescustomermanagedkey) | object | The customer managed key definition for database TDE. |
 | [`diagnosticSettings`](#parameter-databasesdiagnosticsettings) | array | The diagnostic settings of the service. |
 | [`elasticPoolResourceId`](#parameter-databaseselasticpoolresourceid) | string | The resource identifier of the elastic pool containing this database. |
-| [`enableTelemetry`](#parameter-databasesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`federatedClientId`](#parameter-databasesfederatedclientid) | string | The Client id used for cross tenant per database CMK scenario. |
 | [`freeLimitExhaustionBehavior`](#parameter-databasesfreelimitexhaustionbehavior) | string | Specifies the behavior when monthly free limits are exhausted for the free database. |
 | [`highAvailabilityReplicaCount`](#parameter-databaseshighavailabilityreplicacount) | int | The number of secondary replicas associated with the database that are used to provide high availability. Not applicable to a Hyperscale database within an elastic pool. |
@@ -3181,6 +3165,7 @@ The databases to create in the server.
 | [`requestedBackupStorageRedundancy`](#parameter-databasesrequestedbackupstorageredundancy) | string | The storage account type to be used to store backups for this database. |
 | [`restorableDroppedDatabaseResourceId`](#parameter-databasesrestorabledroppeddatabaseresourceid) | string | The resource identifier of the restorable dropped database associated with create operation of this database. |
 | [`restorePointInTime`](#parameter-databasesrestorepointintime) | string | Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database. |
+| [`roleAssignments`](#parameter-databasesroleassignments) | array | Array of role assignments to create on the database. |
 | [`sampleName`](#parameter-databasessamplename) | string | The name of the sample schema to apply when creating this database. |
 | [`secondaryType`](#parameter-databasessecondarytype) | string | The secondary type of the database if it is a secondary. |
 | [`sku`](#parameter-databasessku) | object | The database SKU. |
@@ -3209,7 +3194,7 @@ If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to
 
 ### Parameter: `databases.name`
 
-The name of the Elastic Pool.
+The name of the database.
 
 - Required: Yes
 - Type: string
@@ -3232,20 +3217,12 @@ The long term backup retention policy for the database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-databasesbackuplongtermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`monthlyRetention`](#parameter-databasesbackuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
 | [`timeBasedImmutability`](#parameter-databasesbackuplongtermretentionpolicytimebasedimmutability) | string | The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled. |
-| [`timeBasedImmutabilityMode`](#parameter-databasesbackuplongtermretentionpolicytimebasedimmutabilitymode) | string | The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked. |
+| [`timeBasedImmutabilityMode`](#parameter-databasesbackuplongtermretentionpolicytimebasedimmutabilitymode) | string | The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Defaults to `Unlocked` if time-based immutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked. |
 | [`weeklyRetention`](#parameter-databasesbackuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-databasesbackuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-databasesbackuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
-
-### Parameter: `databases.backupLongTermRetentionPolicy.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `databases.backupLongTermRetentionPolicy.monthlyRetention`
 
@@ -3270,7 +3247,7 @@ The setting for whether to enable time-based immutability for future backups. Wh
 
 ### Parameter: `databases.backupLongTermRetentionPolicy.timeBasedImmutabilityMode`
 
-The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.
+The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Defaults to `Unlocked` if time-based immutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.
 
 - Required: No
 - Type: string
@@ -3315,7 +3292,6 @@ The short term backup retention policy for the database.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diffBackupIntervalInHours`](#parameter-databasesbackupshorttermretentionpolicydiffbackupintervalinhours) | int | Differential backup interval in hours. For Hyperscale tiers this value will be ignored. |
-| [`enableTelemetry`](#parameter-databasesbackupshorttermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`retentionDays`](#parameter-databasesbackupshorttermretentionpolicyretentiondays) | int | Point-in-time retention in days. |
 
 ### Parameter: `databases.backupShortTermRetentionPolicy.diffBackupIntervalInHours`
@@ -3324,13 +3300,6 @@ Differential backup interval in hours. For Hyperscale tiers this value will be i
 
 - Required: No
 - Type: int
-
-### Parameter: `databases.backupShortTermRetentionPolicy.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `databases.backupShortTermRetentionPolicy.retentionDays`
 
@@ -3585,13 +3554,6 @@ The resource identifier of the elastic pool containing this database.
 - Required: No
 - Type: string
 
-### Parameter: `databases.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `databases.federatedClientId`
 
 The Client id used for cross tenant per database CMK scenario.
@@ -3819,6 +3781,117 @@ Specifies the point in time (ISO8601 format) of the source database that will be
 - Required: No
 - Type: string
 
+### Parameter: `databases.roleAssignments`
+
+Array of role assignments to create on the database.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Log Analytics Contributor'`
+  - `'Log Analytics Reader'`
+  - `'Monitoring Contributor'`
+  - `'Monitoring Metrics Publisher'`
+  - `'Monitoring Reader'`
+  - `'Resource Policy Contributor'`
+  - `'SQL DB Contributor'`
+  - `'SQL Security Manager'`
+  - `'SQL Server Contributor'`
+  - `'SqlDb Migration Role'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-databasesroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-databasesroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-databasesroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-databasesroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-databasesroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-databasesroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-databasesroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-databasesroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `databases.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `databases.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `databases.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `databases.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
 ### Parameter: `databases.sampleName`
 
 The name of the sample schema to apply when creating this database.
@@ -3959,7 +4032,7 @@ The Elastic Pools to create in the server.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoPauseDelay`](#parameter-elasticpoolsautopausedelay) | int | Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled. |
-| [`enableTelemetry`](#parameter-elasticpoolsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`diagnosticSettings`](#parameter-elasticpoolsdiagnosticsettings) | array | The diagnostic settings of the elastic pool. |
 | [`highAvailabilityReplicaCount`](#parameter-elasticpoolshighavailabilityreplicacount) | int | The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools. |
 | [`licenseType`](#parameter-elasticpoolslicensetype) | string | The license type to apply for this elastic pool. |
 | [`lock`](#parameter-elasticpoolslock) | object | The lock settings of the elastic pool. |
@@ -4003,12 +4076,114 @@ Time in minutes after which elastic pool is automatically paused. A value of -1 
 - Required: No
 - Type: int
 
-### Parameter: `elasticPools.enableTelemetry`
+### Parameter: `elasticPools.diagnosticSettings`
 
-Enable/Disable usage telemetry for module.
+The diagnostic settings of the elastic pool.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-elasticpoolsdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-elasticpoolsdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-elasticpoolsdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`marketplacePartnerResourceId`](#parameter-elasticpoolsdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-elasticpoolsdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-elasticpoolsdiagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-elasticpoolsdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-elasticpoolsdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `elasticPools.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `elasticPools.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-elasticpoolsdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-elasticpoolsdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `elasticPools.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `elasticPools.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+
+### Parameter: `elasticPools.diagnosticSettings.name`
+
+The name of diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `elasticPools.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
 
 ### Parameter: `elasticPools.highAvailabilityReplicaCount`
 
@@ -4359,6 +4534,20 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `expressVulnerabilityAssessmentState`
+
+The state of the SQL vulnerability assessment express configuration, which does not require a storage account and is the recommended configuration. Requires Microsoft Defender for SQL to be enabled (e.g., via `securityAlertPolicies`). Cannot be combined with `vulnerabilityAssessmentsObj` (classic configuration).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `failoverGroups`
 
 The failover groups configuration.
@@ -4380,7 +4569,6 @@ The failover groups configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-failovergroupsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`readOnlyEndpoint`](#parameter-failovergroupsreadonlyendpoint) | object | Read-only endpoint of the failover group instance. |
 | [`tags`](#parameter-failovergroupstags) | object | Tags of the resource. |
 
@@ -4418,11 +4606,11 @@ Read-write endpoint of the failover group instance.
 | :-- | :-- | :-- |
 | [`failoverPolicy`](#parameter-failovergroupsreadwriteendpointfailoverpolicy) | string | Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required. |
 
-**Optional parameters**
+**Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`failoverWithDataLossGracePeriodMinutes`](#parameter-failovergroupsreadwriteendpointfailoverwithdatalossgraceperiodminutes) | int | Grace period before failover with data loss is attempted for the read-write endpoint. |
+| [`failoverWithDataLossGracePeriodMinutes`](#parameter-failovergroupsreadwriteendpointfailoverwithdatalossgraceperiodminutes) | int | Grace period before failover with data loss is attempted for the read-write endpoint. Required if `failoverPolicy` is `Automatic`. |
 
 ### Parameter: `failoverGroups.readWriteEndpoint.failoverPolicy`
 
@@ -4440,7 +4628,7 @@ Failover policy of the read-write endpoint for the failover group. If failoverPo
 
 ### Parameter: `failoverGroups.readWriteEndpoint.failoverWithDataLossGracePeriodMinutes`
 
-Grace period before failover with data loss is attempted for the read-write endpoint.
+Grace period before failover with data loss is attempted for the read-write endpoint. Required if `failoverPolicy` is `Automatic`.
 
 - Required: No
 - Type: int
@@ -4459,13 +4647,6 @@ Databases secondary type on partner server.
   ]
   ```
 
-### Parameter: `failoverGroups.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `failoverGroups.readOnlyEndpoint`
 
 Read-only endpoint of the failover group instance.
@@ -4478,7 +4659,7 @@ Read-only endpoint of the failover group instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`failoverPolicy`](#parameter-failovergroupsreadonlyendpointfailoverpolicy) | string | Failover policy of the read-only endpoint for the failover group. |
-| [`targetServer`](#parameter-failovergroupsreadonlyendpointtargetserver) | string | The target partner server where the read-only endpoint points to. |
+| [`targetServer`](#parameter-failovergroupsreadonlyendpointtargetserver) | string | The target partner server where the read-only endpoint points to. Can be either the resource ID of the partner server (recommended, required if the partner server is in a different resource group or subscription) or the name of a partner server in the same resource group. |
 
 ### Parameter: `failoverGroups.readOnlyEndpoint.failoverPolicy`
 
@@ -4496,7 +4677,7 @@ Failover policy of the read-only endpoint for the failover group.
 
 ### Parameter: `failoverGroups.readOnlyEndpoint.targetServer`
 
-The target partner server where the read-only endpoint points to.
+The target partner server where the read-only endpoint points to. Can be either the resource ID of the partner server (recommended, required if the partner server is in a different resource group or subscription) or the name of a partner server in the same resource group.
 
 - Required: Yes
 - Type: string
@@ -4532,7 +4713,6 @@ The firewall rules to create in the server.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-firewallrulesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`endIpAddress`](#parameter-firewallrulesendipaddress) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses. |
 | [`startIpAddress`](#parameter-firewallrulesstartipaddress) | string | The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses. |
 
@@ -4542,13 +4722,6 @@ The name of the firewall rule.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `firewallRules.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `firewallRules.endIpAddress`
 
@@ -4590,17 +4763,9 @@ The keys to configure.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-keysenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`name`](#parameter-keysname) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. |
 | [`serverKeyType`](#parameter-keysserverkeytype) | string | The server key type. |
 | [`uri`](#parameter-keysuri) | string | The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'. |
-
-### Parameter: `keys.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `keys.name`
 
@@ -4858,7 +5023,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `minimalTlsVersion`
 
-Minimal TLS version allowed.
+Minimal TLS version allowed. TLS 1.0 and 1.1 are retired for Azure SQL Database.
 
 - Required: No
 - Type: string
@@ -4866,8 +5031,6 @@ Minimal TLS version allowed.
 - Allowed:
   ```Bicep
   [
-    '1.0'
-    '1.1'
     '1.2'
     '1.3'
   ]
@@ -5305,11 +5468,9 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
     'SecuredByPerimeter'
@@ -5503,10 +5664,9 @@ The security alert policies to create in the server.
 | [`disabledAlerts`](#parameter-securityalertpoliciesdisabledalerts) | array | Alerts to disable. |
 | [`emailAccountAdmins`](#parameter-securityalertpoliciesemailaccountadmins) | bool | Specifies that the alert is sent to the account administrators. |
 | [`emailAddresses`](#parameter-securityalertpoliciesemailaddresses) | array | Specifies an array of email addresses to which the alert is sent. |
-| [`enableTelemetry`](#parameter-securityalertpoliciesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`retentionDays`](#parameter-securityalertpoliciesretentiondays) | int | Specifies the number of days to keep in the Threat Detection audit logs. |
 | [`state`](#parameter-securityalertpoliciesstate) | string | Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database. |
-| [`storageAccountAccessKey`](#parameter-securityalertpoliciesstorageaccountaccesskey) | string | Specifies the identifier key of the Threat Detection audit storage account. |
+| [`storageAccountAccessKey`](#parameter-securityalertpoliciesstorageaccountaccesskey) | securestring | Specifies the identifier key of the Threat Detection audit storage account. |
 | [`storageEndpoint`](#parameter-securityalertpoliciesstorageendpoint) | string | Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs. |
 
 ### Parameter: `securityAlertPolicies.name`
@@ -5548,13 +5708,6 @@ Specifies an array of email addresses to which the alert is sent.
 - Required: No
 - Type: array
 
-### Parameter: `securityAlertPolicies.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `securityAlertPolicies.retentionDays`
 
 Specifies the number of days to keep in the Threat Detection audit logs.
@@ -5581,7 +5734,7 @@ Specifies the state of the policy, whether it is enabled or disabled or a policy
 Specifies the identifier key of the Threat Detection audit storage account.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `securityAlertPolicies.storageEndpoint`
 
@@ -5615,7 +5768,6 @@ The virtual network rules to create in the server.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-virtualnetworkrulesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ignoreMissingVnetServiceEndpoint`](#parameter-virtualnetworkrulesignoremissingvnetserviceendpoint) | bool | Allow creating a firewall rule before the virtual network has vnet service endpoint enabled. |
 
 ### Parameter: `virtualNetworkRules.name`
@@ -5632,13 +5784,6 @@ The resource ID of the virtual network subnet.
 - Required: Yes
 - Type: string
 
-### Parameter: `virtualNetworkRules.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `virtualNetworkRules.ignoreMissingVnetServiceEndpoint`
 
 Allow creating a firewall rule before the virtual network has vnet service endpoint enabled.
@@ -5648,7 +5793,7 @@ Allow creating a firewall rule before the virtual network has vnet service endpo
 
 ### Parameter: `vulnerabilityAssessmentsObj`
 
-The vulnerability assessment configuration.
+The vulnerability assessment configuration (classic configuration, requires a storage account). Cannot be combined with `expressVulnerabilityAssessmentState` set to `Enabled`.
 
 - Required: No
 - Type: object
@@ -5665,7 +5810,6 @@ The vulnerability assessment configuration.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`createStorageRoleAssignment`](#parameter-vulnerabilityassessmentsobjcreatestorageroleassignment) | bool | Specifies whether to create a role assignment for the storage account. |
-| [`enableTelemetry`](#parameter-vulnerabilityassessmentsobjenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`recurringScans`](#parameter-vulnerabilityassessmentsobjrecurringscans) | object | The recurring scans settings. |
 | [`useStorageAccountAccessKey`](#parameter-vulnerabilityassessmentsobjusestorageaccountaccesskey) | bool | Specifies whether to use the storage account access key to access the storage account. |
 
@@ -5686,13 +5830,6 @@ The resource ID of the storage account to store the scan reports.
 ### Parameter: `vulnerabilityAssessmentsObj.createStorageRoleAssignment`
 
 Specifies whether to create a role assignment for the storage account.
-
-- Required: No
-- Type: bool
-
-### Parameter: `vulnerabilityAssessmentsObj.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -5749,6 +5886,8 @@ Specifies whether to use the storage account access key to access the storage ac
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `databases` | array | The databases of the SQL server. |
+| `elasticPools` | array | The elastic pools of the SQL server. |
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `fullyQualifiedDomainName` | string | The fully qualified domain name of the deployed SQL server. |
 | `location` | string | The location the resource was deployed into. |
@@ -5765,9 +5904,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Notes

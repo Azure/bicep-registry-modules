@@ -24,6 +24,8 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+var resourceSuffix = substring(uniqueString(subscription().id), 0, 4)
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -55,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}${resourceSuffix}'
       location: resourceLocation
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password

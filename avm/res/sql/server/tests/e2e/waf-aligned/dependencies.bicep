@@ -26,7 +26,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
         addressPrefix
       ]
     }
-    subnets: map(range(0, 2), i => {
+    subnets: map(range(0, 1), i => {
       name: 'subnet-${i}'
       properties: {
         addressPrefix: cidrSubnet(addressPrefix, 24, i)
@@ -97,9 +97,6 @@ output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created virtual network subnet for a Private Endpoint.')
 output privateEndpointSubnetResourceId string = virtualNetwork.properties.subnets[0].id
-
-@description('The resource ID of the created virtual network subnet for a Service Endpoint.')
-output serviceEndpointSubnetResourceId string = virtualNetwork.properties.subnets[1].id
 
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
