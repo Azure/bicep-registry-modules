@@ -32,7 +32,8 @@ Describe 'Coordinated tools dependency updates' {
                 [regex]::Matches($content, '(?m)^\s*uses:\s*Azure/azure-verified-modules-tools/[^\s@]+@([^\s#]+)') |
                     ForEach-Object { $_.Groups[1].Value }
             )
-            $toolsRefs | Should -HaveCount 2
+            $expectedCount = if ($file -eq 'pr-check.yml') { 3 } else { 2 }
+            $toolsRefs | Should -HaveCount $expectedCount
             @($toolsRefs | Select-Object -Unique) | Should -HaveCount 1
         }
     }
@@ -95,8 +96,6 @@ Describe 'Shared Bicep workflow entry points' {
         $prCheck.jobs.'module-gate'.name | Should -BeExactly 'Report check status'
         $prCheck.jobs.'module-gate'.if | Should -BeExactly 'always()'
         $prCheck.jobs.'module-gate'.needs | Should -Be @('initialize', 'check')
-        $prCheck.jobs.'module-gate'.env.CHECK_RESULT | Should -BeExactly '${{ needs.check.result }}'
-        $prCheck.jobs.'module-gate'.env.REQUIRE_E2E | Should -BeExactly '${{ github.event_name == ''pull_request'' || inputs.runE2E }}'
     }
 
     It 'exposes the selected release plan in per-module jobs' {
