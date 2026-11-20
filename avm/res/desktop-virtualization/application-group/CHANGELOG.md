@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/desktop-virtualization/application-group/CHANGELOG.md).
 
+## 0.4.3
+
+### Changes
+
+- Updated application group and existing host pool references to stable API version `2025-10-10`.
+- Updated all `avm-common-types` imports to `0.7.0` and telemetry deployment API to `2025-04-01`.
+- Updated child application and test dependencies to stable API versions.
+
+### Breaking Changes
+
+- None
+
 ## 0.4.2
 
 ### Changes

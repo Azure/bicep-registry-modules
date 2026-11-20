@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/desktop-virtualization/workspace/CHANGELOG.md).
 
+## 0.9.3
+
+### Changes
+
+- Updated virtual network lookup and virtual network test dependencies to stable API version `2025-09-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.9.2
 
 ### Changes

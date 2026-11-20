@@ -199,7 +199,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
       enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
-        '2020-06-01',
+        '2025-09-01',
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
