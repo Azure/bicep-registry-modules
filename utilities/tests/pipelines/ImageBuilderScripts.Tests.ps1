@@ -319,6 +319,462 @@ Describe 'Image Builder deployment scripts' {
 
             Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Created*image artifacts*' }
         }
+
+        Context 'Recovering a post-submission status read' -Tag 'StatusReadRecovery' {
+            BeforeAll {
+                function Assert-OriginalStatusReadError {
+                    param ([System.Management.Automation.ErrorRecord] $Actual)
+
+                    $Actual | Should -Not -BeNullOrEmpty
+                    [object]::ReferenceEquals($Actual.Exception, $script:lastStatusReadError.Exception) | Should -BeTrue
+                    $Actual.FullyQualifiedErrorId | Should -BeExactly $script:lastStatusReadError.FullyQualifiedErrorId
+                    $Actual.CategoryInfo.ToString() | Should -BeExactly $script:lastStatusReadError.CategoryInfo.ToString()
+                    $Actual.TargetObject | Should -Be $script:lastStatusReadError.TargetObject
+                    $Actual.ErrorDetails.Message | Should -Be $script:lastStatusReadError.ErrorDetails.Message
+                    $Actual.InvocationInfo.PositionMessage | Should -BeExactly $script:lastStatusReadError.InvocationInfo.PositionMessage
+                    $Actual.ScriptStackTrace | Should -BeExactly $script:lastStatusReadError.ScriptStackTrace
+                }
+            }
+
+            BeforeEach {
+                $script:resetException = [System.Net.Http.HttpRequestException]::new(
+                    'An error occurred while sending the request.',
+                    [System.IO.IOException]::new(
+                        'Unable to read data from the transport connection: Connection reset by peer.',
+                        [System.Net.Sockets.SocketException]::new([int] [System.Net.Sockets.SocketError]::ConnectionReset)
+                    )
+                )
+                $script:statusReadException = $script:resetException
+                $script:lastStatusReadError = $null
+                $script:statusReads = [System.Collections.Generic.Queue[scriptblock]]::new()
+                $script:statusReads.Enqueue({ throw $script:statusReadException })
+                $script:statusReads.Enqueue({ $script:imageTemplate.PSObject.Copy() })
+
+                Mock Write-Warning {}
+                Mock Get-AzImageBuilderTemplate {
+                    $script:templateLookupCount++
+                    if ($script:templateLookupCount -eq 1) {
+                        return $script:previousImageTemplate.PSObject.Copy()
+                    }
+                    try {
+                        . ($script:statusReads.Dequeue())
+                    } catch {
+                        $script:lastStatusReadError = $_
+                        throw
+                    }
+                }
+            }
+
+            It 'Recovers the typed connection reset from <case> without resubmission' -ForEach @(
+                @{ case = 'a thrown exception'; failure = { throw $script:statusReadException }; wrapper = [System.Net.Http.HttpRequestException] }
+                @{
+                    case = 'a terminating error record'
+                    failure = {
+                        $record = [System.Management.Automation.ErrorRecord]::new(
+                            $script:statusReadException, 'ImageStatusReadFailed', [System.Management.Automation.ErrorCategory]::ReadError, 'build-template'
+                        )
+                        Write-Error -ErrorRecord $record -ErrorAction Stop
+                    }
+                    wrapper = [System.Net.Http.HttpRequestException]
+                }
+                @{
+                    case = 'a PowerShell method invocation'
+                    failure = { [System.Runtime.ExceptionServices.ExceptionDispatchInfo]::Capture($script:statusReadException).Throw() }
+                    wrapper = [System.Management.Automation.MethodInvocationException]
+                }
+                @{
+                    case = 'nested PowerShell invocation wrappers'
+                    failure = { { param($exception) throw $exception }.Invoke($script:statusReadException) }
+                    wrapper = [System.Management.Automation.MethodInvocationException]
+                }
+            ) {
+                $script:statusReads.Clear()
+                $script:statusReads.Enqueue($failure)
+                $script:statusReads.Enqueue({ $script:imageTemplate.PSObject.Copy() })
+
+                . $startScript @startInput
+
+                $script:lastStatusReadError.Exception.GetType() | Should -Be $wrapper
+                if ($case -eq 'nested PowerShell invocation wrappers') {
+                    $script:lastStatusReadError.Exception.InnerException.GetType() | Should -Be ([System.Management.Automation.RuntimeException])
+                }
+                $script:resetException.InnerException.InnerException.SocketErrorCode | Should -Be ([System.Net.Sockets.SocketError]::ConnectionReset)
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly -ParameterFilter { $NoWait -and $ErrorAction -eq 'Stop' }
+                Should -Invoke Get-AzImageBuilderTemplate -Times 3 -Exactly -ParameterFilter {
+                    $ImageTemplateName -eq 'build-template' -and $ResourceGroupName -eq 'build-rg' -and $ErrorAction -eq 'Stop'
+                }
+                Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+                Should -Invoke Write-Warning -Times 1 -Exactly -ParameterFilter { $Message -like '*Connection reset*build-template*1 of 2*' }
+                Should -Invoke Write-Verbose -Times 1 -Exactly -ParameterFilter { $Message -like 'Created*image artifacts*' }
+            }
+
+            It 'Allows exactly two recovery reads when both are needed' {
+                $script:statusReads.Clear()
+                $script:statusReads.Enqueue({ throw $script:statusReadException })
+                $script:statusReads.Enqueue({ throw $script:statusReadException })
+                $script:statusReads.Enqueue({ $script:imageTemplate.PSObject.Copy() })
+
+                . $startScript @startInput
+
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Get-AzImageBuilderTemplate -Times 4 -Exactly
+                Should -Invoke Start-Sleep -Times 2 -Exactly -ParameterFilter { $Seconds -eq 15 }
+                Should -Invoke Write-Warning -Times 2 -Exactly
+                Should -Invoke Write-Warning -Times 1 -Exactly -ParameterFilter { $Message -like '*1 of 2*' }
+                Should -Invoke Write-Warning -Times 1 -Exactly -ParameterFilter { $Message -like '*2 of 2*' }
+            }
+
+            It 'Exhausts the shared recovery allowance with <case>' -ForEach @(
+                @{ case = 'consecutive resets'; failures = @(1, 2, 3); reads = 3 }
+                @{ case = 'healthy polls between resets'; failures = @(1, 3, 5); reads = 5 }
+            ) {
+                $script:statusReads.Clear()
+                $script:imageTemplate.LastRunStatusRunState = 'Running'
+                for ($read = 1; $read -le $reads; $read++) {
+                    if ($read -in $failures) {
+                        $script:statusReads.Enqueue({ throw $script:statusReadException })
+                    } else {
+                        $script:statusReads.Enqueue({ $script:imageTemplate.PSObject.Copy() })
+                    }
+                }
+                $caught = $null
+
+                try { . $startScript @startInput } catch { $caught = $_ }
+
+                Assert-OriginalStatusReadError $caught
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Get-AzImageBuilderTemplate -Times ($reads + 1) -Exactly
+                Should -Invoke Start-Sleep -Times ($reads - 1) -Exactly -ParameterFilter { $Seconds -eq 15 }
+                Should -Invoke Write-Warning -Times 2 -Exactly
+                Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Created*image artifacts*' }
+            }
+
+            It 'Does not recover <case>' -ForEach @(
+                @{ case = 'a string-only lookalike'; factory = { 'System.Net.Http.HttpRequestException -> System.IO.IOException -> System.Net.Sockets.SocketException (104): Connection reset by peer.' } }
+                @{ case = 'an untyped wrapper'; factory = { [System.Exception]::new('Connection reset by peer.', $script:resetException) } }
+                @{ case = 'an HTTP exception without the transport chain'; factory = { [System.Net.Http.HttpRequestException]::new('Connection reset by peer.') } }
+                @{ case = 'a bare IO exception'; factory = { $script:resetException.InnerException } }
+                @{ case = 'a bare socket exception'; factory = { $script:resetException.InnerException.InnerException } }
+                @{ case = 'a missing IO wrapper'; factory = { [System.Net.Http.HttpRequestException]::new('request', $script:resetException.InnerException.InnerException) } }
+                @{ case = 'an authentication failure'; factory = { [System.Security.Authentication.AuthenticationException]::new('Authentication failed', $script:resetException) } }
+                @{ case = 'an authorization failure'; factory = { [System.UnauthorizedAccessException]::new('Access denied', $script:resetException) } }
+                @{ case = 'a single aggregate failure'; factory = { [System.AggregateException]::new($script:resetException) } }
+                @{
+                    case = 'a mixed aggregate with the reset first'
+                    factory = { [System.AggregateException]::new('Mixed failure', [System.Exception[]] @($script:resetException, [System.UnauthorizedAccessException]::new('Access denied'))) }
+                }
+                @{
+                    case = 'a mixed aggregate with the reset last'
+                    factory = { [System.AggregateException]::new('Mixed failure', [System.Exception[]] @([System.UnauthorizedAccessException]::new('Access denied'), $script:resetException)) }
+                }
+                @{
+                    case = 'an aggregate inside the transport chain'
+                    factory = { [System.Net.Http.HttpRequestException]::new('request', [System.IO.IOException]::new('transport', [System.AggregateException]::new($script:resetException.InnerException.InnerException))) }
+                }
+            ) {
+                $script:statusReadException = . $factory
+                $caught = $null
+
+                try { . $startScript @startInput } catch { $caught = $_ }
+
+                Assert-OriginalStatusReadError $caught
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Get-AzImageBuilderTemplate -Times 2 -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+                Should -Invoke Write-Warning -Times 0 -Exactly
+                Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Created*image artifacts*' }
+            }
+
+            It 'Does not recover a typed <socketError> transport failure' -ForEach @(
+                @{ socketError = [System.Net.Sockets.SocketError]::ConnectionAborted }
+                @{ socketError = [System.Net.Sockets.SocketError]::ConnectionRefused }
+                @{ socketError = [System.Net.Sockets.SocketError]::TimedOut }
+            ) {
+                $script:statusReadException = [System.Net.Http.HttpRequestException]::new(
+                    'Connection reset by peer.',
+                    [System.IO.IOException]::new('Connection reset by peer.', [System.Net.Sockets.SocketException]::new([int] $socketError))
+                )
+                $caught = $null
+
+                try { . $startScript @startInput } catch { $caught = $_ }
+
+                Assert-OriginalStatusReadError $caught
+                Should -Invoke Get-AzImageBuilderTemplate -Times 2 -Exactly
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+                Should -Invoke Write-Warning -Times 0 -Exactly
+            }
+
+            It 'Does not recover HTTP <statusCode> even with an inner connection reset' -ForEach @(
+                @{ statusCode = 401 }
+                @{ statusCode = 403 }
+                @{ statusCode = 429 }
+                @{ statusCode = 500 }
+                @{ statusCode = 503 }
+            ) {
+                $script:statusReadException = [System.Net.Http.HttpRequestException]::new(
+                    'Provider rejected the request', $script:resetException.InnerException, [System.Net.HttpStatusCode] $statusCode
+                )
+                $caught = $null
+
+                try { . $startScript @startInput } catch { $caught = $_ }
+
+                Assert-OriginalStatusReadError $caught
+                Should -Invoke Get-AzImageBuilderTemplate -Times 2 -Exactly
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+                Should -Invoke Write-Warning -Times 0 -Exactly
+            }
+
+            It 'Preserves a structured error record for <case>' -ForEach @(
+                @{ case = 'an unrecoverable read'; recoveries = 0 }
+                @{ case = 'an exhausted connection reset'; recoveries = 2 }
+            ) {
+                $exception = if ($recoveries) { $script:resetException } else { [System.UnauthorizedAccessException]::new('Access denied') }
+                $script:statusReadRecord = [System.Management.Automation.ErrorRecord]::new(
+                    $exception, 'ImageStatusReadFailed', [System.Management.Automation.ErrorCategory]::ReadError, 'build-template'
+                )
+                $script:statusReadRecord.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('Original provider diagnostic')
+                $script:statusReads.Clear()
+                for ($read = 0; $read -le $recoveries; $read++) {
+                    $script:statusReads.Enqueue({ Write-Error -ErrorRecord $script:statusReadRecord -ErrorAction Stop })
+                }
+                $caught = $null
+
+                try { . $startScript @startInput } catch { $caught = $_ }
+
+                Assert-OriginalStatusReadError $caught
+                $caught.ErrorDetails.Message | Should -BeExactly 'Original provider diagnostic'
+                $caught.TargetObject | Should -BeExactly 'build-template'
+                Should -Invoke Get-AzImageBuilderTemplate -Times ($recoveries + 2) -Exactly
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Write-Warning -Times $recoveries -Exactly
+            }
+
+            It 'Does not recover the initial pre-submission GET' {
+                Mock Get-AzImageBuilderTemplate {
+                    try { throw $script:resetException } catch { $script:lastStatusReadError = $_; throw }
+                }
+                $caught = $null
+
+                try { . $startScript @startInput } catch { $caught = $_ }
+
+                Assert-OriginalStatusReadError $caught
+                Should -Invoke Get-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Start-AzImageBuilderTemplate -Times 0 -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+                Should -Invoke Write-Warning -Times 0 -Exactly
+            }
+
+            It 'Does not recover a build-start write with NoWait=<noWait>' -ForEach @(
+                @{ noWait = $false; reads = 1 }
+                @{ noWait = $true; reads = 0 }
+            ) {
+                Mock Start-AzImageBuilderTemplate {
+                    try { throw $script:resetException } catch { $script:lastStatusReadError = $_; throw }
+                }
+                $caught = $null
+
+                try { . $startScript @startInput -NoWait:$noWait } catch { $caught = $_ }
+
+                Assert-OriginalStatusReadError $caught
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Get-AzImageBuilderTemplate -Times $reads -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+                Should -Invoke Write-Warning -Times 0 -Exactly
+            }
+
+            It 'Retains the submitted run identity across a reset and ignores stale success' {
+                $script:previousImageTemplate.LastRunStatusStartTime = $script:clock.AddMinutes(-2)
+                $script:statusReads.Clear()
+                $script:statusReads.Enqueue({
+                    $status = $script:imageTemplate.PSObject.Copy()
+                    $status.LastRunStatusRunState = 'Running'
+                    $status
+                })
+                $script:statusReads.Enqueue({ throw $script:resetException })
+                $script:statusReads.Enqueue({
+                    $status = $script:imageTemplate.PSObject.Copy()
+                    $status.LastRunStatusStartTime = $status.LastRunStatusStartTime.AddMinutes(-1)
+                    $status
+                })
+                $script:statusReads.Enqueue({ $script:imageTemplate.PSObject.Copy() })
+
+                . $startScript @startInput
+
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Get-AzImageBuilderTemplate -Times 5 -Exactly
+                Should -Invoke Start-Sleep -Times 3 -Exactly
+                Should -Invoke Write-Warning -Times 1 -Exactly
+            }
+
+            It 'Rejects a different newer run after recovery' {
+                $script:statusReads.Clear()
+                $script:statusReads.Enqueue({
+                    $status = $script:imageTemplate.PSObject.Copy()
+                    $status.LastRunStatusRunState = 'Running'
+                    $status
+                })
+                $script:statusReads.Enqueue({ throw $script:resetException })
+                $script:statusReads.Enqueue({
+                    $status = $script:imageTemplate.PSObject.Copy()
+                    $status.LastRunStatusStartTime = $status.LastRunStatusStartTime.AddMinutes(1)
+                    $status
+                })
+
+                { . $startScript @startInput } | Should -Throw '*changed while waiting*'
+
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Get-AzImageBuilderTemplate -Times 4 -Exactly
+                Should -Invoke Start-Sleep -Times 2 -Exactly
+                Should -Invoke Write-Warning -Times 1 -Exactly
+                Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Created*image artifacts*' }
+            }
+
+            It 'Rejects <state> with provider diagnostics after recovery' -ForEach @(
+                @{ state = 'Failed' }
+                @{ state = 'Canceled' }
+                @{ state = 'PartiallySucceeded' }
+                @{ state = 'UnexpectedState' }
+            ) {
+                $script:imageTemplate.LastRunStatusRunState = $state
+                $script:imageTemplate.LastRunStatusMessage = 'Original image build diagnostic'
+
+                { . $startScript @startInput } | Should -Throw "*$state*Original image build diagnostic*"
+
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Get-AzImageBuilderTemplate -Times 3 -Exactly
+                Should -Invoke Start-Sleep -Times 1 -Exactly
+                Should -Invoke Write-Warning -Times 1 -Exactly
+                Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Created*image artifacts*' }
+            }
+
+            It 'Rejects <count> returned templates after recovery' -ForEach @(
+                @{ count = 0 }
+                @{ count = 2 }
+            ) {
+                $script:returnedTemplateCount = $count
+                $script:statusReads.Clear()
+                $script:statusReads.Enqueue({ throw $script:resetException })
+                $script:statusReads.Enqueue({
+                    for ($index = 0; $index -lt $script:returnedTemplateCount; $index++) {
+                        $script:imageTemplate.PSObject.Copy()
+                    }
+                })
+
+                { . $startScript @startInput } | Should -Throw '*Expected exactly one image template*'
+
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Get-AzImageBuilderTemplate -Times 3 -Exactly
+                Should -Invoke Write-Warning -Times 1 -Exactly
+            }
+
+            It 'Rejects success returned <seconds> seconds into the wait with recovery=<recover>' -ForEach @(
+                @{ seconds = 660; recover = $false }
+                @{ seconds = 661; recover = $false }
+                @{ seconds = 660; recover = $true }
+                @{ seconds = 661; recover = $true }
+            ) {
+                $script:readCompletionTime = $script:clock.AddSeconds($seconds)
+                $script:statusReads.Clear()
+                if ($recover) {
+                    $script:statusReads.Enqueue({ throw $script:resetException })
+                }
+                $script:statusReads.Enqueue({
+                    $script:clock = $script:readCompletionTime
+                    $script:imageTemplate.PSObject.Copy()
+                })
+
+                { . $startScript @startInput } | Should -Throw '*Timed out after 11 minutes*'
+
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Get-AzImageBuilderTemplate -Times (2 + [int] $recover) -Exactly
+                Should -Invoke Start-Sleep -Times ([int] $recover) -Exactly
+                Should -Invoke Write-Warning -Times ([int] $recover) -Exactly
+                Should -Invoke Write-Verbose -Times 0 -Exactly -ParameterFilter { $Message -like 'Created*image artifacts*' }
+            }
+
+            It 'Accepts a recovered success just before the original deadline' {
+                $script:readCompletionTime = $script:clock.AddSeconds(659)
+                $script:statusReads.Clear()
+                $script:statusReads.Enqueue({ throw $script:resetException })
+                $script:statusReads.Enqueue({
+                    $script:clock = $script:readCompletionTime
+                    $script:imageTemplate.PSObject.Copy()
+                })
+
+                . $startScript @startInput
+
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Get-AzImageBuilderTemplate -Times 3 -Exactly
+                Should -Invoke Write-Warning -Times 1 -Exactly
+            }
+
+            It 'Caps the final sleep to the remaining deadline with recovery=<recover>' -ForEach @(
+                @{ recover = $false }
+                @{ recover = $true }
+            ) {
+                $script:resetNearDeadline = $recover
+                $script:readCompletionTime = $script:clock.AddSeconds(657.5)
+                $script:statusReads.Clear()
+                $script:statusReads.Enqueue({
+                    $script:clock = $script:readCompletionTime
+                    if ($script:resetNearDeadline) { throw $script:resetException }
+                    $status = $script:imageTemplate.PSObject.Copy()
+                    $status.LastRunStatusRunState = 'Running'
+                    $status
+                })
+
+                { . $startScript @startInput } | Should -Throw '*Timed out after 11 minutes*'
+
+                $script:clock | Should -Be ([datetime] '2026-10-06T10:11:00Z')
+                Should -Invoke Get-AzImageBuilderTemplate -Times 2 -Exactly
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 2.5 }
+                Should -Invoke Write-Warning -Times ([int] $recover) -Exactly
+            }
+
+            It 'Does not renew the deadline across two recovery waits' {
+                $script:readCompletionTime = $script:clock.AddSeconds(640)
+                $script:statusReads.Clear()
+                $script:statusReads.Enqueue({
+                    $script:clock = $script:readCompletionTime
+                    throw $script:resetException
+                })
+                $script:statusReads.Enqueue({ throw $script:resetException })
+
+                { . $startScript @startInput } | Should -Throw '*Timed out after 11 minutes*'
+
+                $script:clock | Should -Be ([datetime] '2026-10-06T10:11:00Z')
+                Should -Invoke Get-AzImageBuilderTemplate -Times 3 -Exactly
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Start-Sleep -Times 2 -Exactly
+                Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+                Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 5 }
+                Should -Invoke Write-Warning -Times 2 -Exactly
+            }
+
+            It 'Preserves a reset returned <seconds> seconds into the wait without recovery' -ForEach @(
+                @{ seconds = 660 }
+                @{ seconds = 661 }
+            ) {
+                $script:readCompletionTime = $script:clock.AddSeconds($seconds)
+                $script:statusReads.Clear()
+                $script:statusReads.Enqueue({
+                    $script:clock = $script:readCompletionTime
+                    throw $script:resetException
+                })
+                $caught = $null
+
+                try { . $startScript @startInput } catch { $caught = $_ }
+
+                Assert-OriginalStatusReadError $caught
+                Should -Invoke Get-AzImageBuilderTemplate -Times 2 -Exactly
+                Should -Invoke Start-AzImageBuilderTemplate -Times 1 -Exactly
+                Should -Invoke Start-Sleep -Times 0 -Exactly
+                Should -Invoke Write-Warning -Times 0 -Exactly
+            }
+        }
     }
 
     Context 'Copying an image artifact' {

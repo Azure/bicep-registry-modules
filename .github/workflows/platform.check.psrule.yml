@@ -30,7 +30,7 @@ env:
   PSRuleInputFilePath: "avm/PSRule-output.md"
   psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
   psrulePath: "utilities/pipelines/staticValidation/psrule"
-  ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
+  ARM_MGMTGROUP_ID: "${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}"
   TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
 
 jobs:
@@ -76,72 +76,105 @@ jobs:
       # ---------------------------
       - name: Replace tokens in relevant files
         uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2.0.0
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
         with:
           azPSVersion: "latest"
           inlineScript: |
-            # Grouping task logs
+            $ErrorActionPreference = 'Stop'
             Write-Output '::group::Replace tokens in relevant files'
 
-            # Load used functions
             . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
             . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
 
-            $targetPath = Join-Path $env:GITHUB_WORKSPACE '${{ env.targetPath }}'
-            $psRuleFilterRegex = '${{ env.psRuleFilterRegex }}'
-
+            $targetPath = Join-Path $env:GITHUB_WORKSPACE $env:targetPath
             Write-Verbose ('targetPath [{0}]' -f $targetPath) -Verbose
 
-            # Get target files in target path
-            $targetFileList = @()
-            # Retrieve all relevant test files in targetPath
             $allTestFiles = (Get-ChildItem -Path $targetPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
-            $relevantTestFiles = $allTestFiles | Where-Object { $_ -match $psRuleFilterRegex }
-            # Add all relevant test files and related module template files as they may contain tokens
-            foreach ($relevantTestFile in $relevantTestFiles) {
-              $targetFileList += $relevantTestFile
-              $targetFileList += (Get-LocallyReferencedFileList -FilePath $relevantTestFile)
+            $relevantTestFiles = $allTestFiles | Where-Object { $_ -match $env:psRuleFilterRegex }
+            $baseTokens = @{
+              subscriptionId    = $env:VALIDATE_SUBSCRIPTION_ID
+              managementGroupId = $env:ARM_MGMTGROUP_ID
             }
 
-            $targetFileList = $targetFileList | Sort-Object -Unique
-
-            # Construct Token Function Input
-            $ConvertTokensInputs = @{
-              FilePathList = $targetFileList
-              Tokens       = @{}
-            }
-
-            # Add enforced tokens
-            $ConvertTokensInputs.Tokens += @{
-              subscriptionId    = '${{ secrets.VALIDATE_SUBSCRIPTION_ID }}'
-              managementGroupId = '${{ env.ARM_MGMTGROUP_ID }}'
-            }
-
-            # Add local (source control) tokens
             $tokenMap = @{}
             foreach ($token in (Get-ChildItem env: | Where-Object -Property Name -Like "localToken_*")) {
               $tokenMap += @{ $token.Name.Replace('localToken_','','OrdinalIgnoreCase') = $token.value }
             }
             Write-Verbose ('Using local tokens [{0}]' -f ($tokenMap.Keys -join ', ')) -Verbose
-            $ConvertTokensInputs.Tokens += $tokenMap
+            $baseTokens += $tokenMap
 
-            # Swap 'namePrefix' token if empty and provided as a GitHub secret
-            if([String]::IsNullOrEmpty($ConvertTokensInputs.Tokens['namePrefix'])){
-              Write-Verbose 'Using [namePrefix] token from GitHub' -Verbose
-              $ConvertTokensInputs.Tokens['namePrefix'] = '${{ env.TOKEN_NAMEPREFIX }}'
+            if ([string]::IsNullOrEmpty($baseTokens['namePrefix'])) {
+              $baseTokens['namePrefix'] = $env:TOKEN_NAMEPREFIX
             }
 
-            Write-Verbose "Convert Tokens Input:`n $($ConvertTokensInputs | ConvertTo-Json -Depth 10)" -Verbose
+            # Resolve every module before changing any test or shared dependency.
+            $moduleTokens = @{}
+            $fileInputs = @{}
+            foreach ($relevantTestFile in $relevantTestFiles) {
+              $relativeTestPath = [IO.Path]::GetRelativePath($env:GITHUB_WORKSPACE, $relevantTestFile).Replace('\', '/')
+              if ($relativeTestPath -cnotmatch '^(avm/(?:res|ptn|utl)/.+)/tests/e2e/.+/main\.test\.bicep$') {
+                throw "Cannot determine the module root for PSRule test [$relativeTestPath]."
+              }
+              $modulePath = $Matches[1]
+              if (-not $moduleTokens.ContainsKey($modulePath)) {
+                $tokens = $baseTokens.Clone()
+                if (-not [string]::IsNullOrEmpty($env:TEST_SUBSCRIPTION_IDS) -or
+                    -not [string]::IsNullOrEmpty($env:VALIDATE_SUBSCRIPTION_ID)) {
+                  $subscriptionInput = @{
+                    TestSubscriptionIds    = $env:TEST_SUBSCRIPTION_IDS
+                    FallbackSubscriptionId = $env:VALIDATE_SUBSCRIPTION_ID
+                    ModulePath             = $modulePath
+                    RepoRootPath           = $env:GITHUB_WORKSPACE
+                  }
+                  $tokens['subscriptionId'] = @(Get-TestSubscriptionList @subscriptionInput)[0].id
+                }
+                $moduleTokens[$modulePath] = $tokens
+              }
+              $tokens = $moduleTokens[$modulePath]
+              $targetFileList = @($relevantTestFile) + @(Get-LocallyReferencedFileList -FilePath $relevantTestFile)
+              foreach ($filePath in ($targetFileList | Sort-Object -Unique)) {
+                if ($fileInputs.ContainsKey($filePath)) {
+                  if ($fileInputs[$filePath].Tokens.subscriptionId -cne $tokens.subscriptionId -and
+                      (Get-Content -LiteralPath $filePath -Raw) -match '#_subscriptionId_#') {
+                    throw "Shared PSRule file [$filePath] requires conflicting module subscription tokens."
+                  }
+                } else {
+                  $fileInputs[$filePath] = @{
+                    FilePathList = @($filePath)
+                    Tokens       = $tokens
+                  }
+                }
+              }
+            }
 
-            # Invoke Token Replacement Functionality [For Module]
-            $null = Convert-TokensInFileList @ConvertTokensInputs
+            foreach ($filePath in ($fileInputs.Keys | Sort-Object)) {
+              $convertTokensInputs = $fileInputs[$filePath]
+              if (-not (Convert-TokensInFileList @convertTokensInputs)) {
+                throw "PSRule token replacement failed for [$filePath]."
+              }
+            }
 
             Write-Output '::endgroup::'
 
       # [PSRule validation] task(s)
       #-----------------------------
+      - name: Prepare PSRule packages
+        id: prepare_psrule
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'psrule' 'Initialize-PSRuleRepository.ps1')
+          $repository = Initialize-PSRuleRepository -TemporaryPath $env:RUNNER_TEMP
+          "repository=$repository" >> $env:GITHUB_OUTPUT
+
       - name: Run PSRule analysis
+        if: ${{ steps.prepare_psrule.outcome == 'success' }}
         uses: microsoft/ps-rule@46451b8f5258c41beb5ae69ed7190ccbba84112c # v2.9.0
         with:
+          repository: ${{ steps.prepare_psrule.outputs.repository }}
           modules: "PSRule.Rules.Azure"
           prerelease: true
           baseline: "${{(fromJson(needs.job_init_psrule_pipeline.outputs.workflowInput)).psruleBaseline }}"

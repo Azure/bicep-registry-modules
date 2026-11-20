@@ -1,4 +1,4 @@
-. (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
+﻿. (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
 . (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentOperationAtScope.ps1')
 . (Join-Path $PSScriptRoot '..' '..' 'resourceDeployment' 'New-TemplateDeployment.ps1')
 
@@ -86,6 +86,9 @@ function Get-DeploymentTargetResourceListInner {
         [switch] $RequireCompleteRemoval,
 
         [Parameter()]
+        [switch] $FinalCleanup,
+
+        [Parameter()]
         [System.Collections.Generic.List[string]] $ResolvedDeploymentIds = [System.Collections.Generic.List[string]]::new(),
 
         [Parameter()]
@@ -131,7 +134,7 @@ function Get-DeploymentTargetResourceListInner {
                     $content.error -is [System.Management.Automation.PSCustomObject] -and
                     $content.error.code -is [string] -and $content.error.code -ceq 'DeploymentNotFound' -and
                     ($null -eq $content.error.target -or
-                        ($content.error.target -is [string] -and $content.error.target -ieq $resourceId))) {
+                    ($content.error.target -is [string] -and $content.error.target -ieq $resourceId))) {
                     Write-Verbose "Confirmed no record for preflight-rejected nested deployment [$resourceId]." -Verbose
                     return
                 }
@@ -140,12 +143,15 @@ function Get-DeploymentTargetResourceListInner {
                     throw "Cannot confirm preflight-rejected deployment [$resourceId]: HTTP [$($response.StatusCode)]."
                 }
             }
-            $state = Get-TemplateDeployment -DeploymentScope $Scope -DeploymentName $Name `
-                -SubscriptionId $baseInputObject.SubscriptionId -ResourceGroupName $ResourceGroupName `
-                -ManagementGroupId $ManagementGroupId -DefaultProfile $currentContext
-            $allowedStates = $DoThrow ? @('Failed') : @('Succeeded', 'Failed')
+            $state = Invoke-DeploymentRead -Read {
+                Get-TemplateDeployment -DeploymentScope $Scope -DeploymentName $Name `
+                    -SubscriptionId $baseInputObject.SubscriptionId -ResourceGroupName $ResourceGroupName `
+                    -ManagementGroupId $ManagementGroupId -DefaultProfile $currentContext -ErrorAction Stop
+            }
+            $allowedStates = ($DoThrow -and -not $FinalCleanup) ? @('Failed') : @('Succeeded', 'Failed')
             if ($state.ProvisioningState -isnot [string] -or $state.ProvisioningState -notin $allowedStates) {
-                throw "Deployment [$Name] is [$($state.ProvisioningState)]; cleanup cannot authorize regional relocation."
+                $cleanupPurpose = $FinalCleanup ? 'complete final teardown' : 'regional relocation'
+                throw "Deployment [$Name] is [$($state.ProvisioningState)]; cleanup cannot authorize $cleanupPurpose."
             }
         }
         $op = Get-DeploymentOperationAtScope @baseInputObject -RequireCompleteRemoval:$RequireCompleteRemoval `
@@ -288,8 +294,9 @@ Get all deployments that match a given deployment name in a given scope using a 
 
 .DESCRIPTION
 Get all deployments that match a given deployment name in a given scope using a retry mechanic.
-Only DeploymentNotFound is retried. A preflight-rejected attempt with that response is known not to have been created.
-Other lookup failures, including request timeouts, retain known resources for cleanup before reporting the error.
+Only DeploymentNotFound repeats discovery. A preflight-rejected attempt with that response is known not to have been created.
+Individual status and operation-page reads retry typed request timeouts at most twice.
+Other lookup failures and exhausted read timeouts retain known resources for cleanup before reporting the error.
 Genuine cancellation propagates without further discovery or removal.
 
 .PARAMETER ResourceGroupName
@@ -317,6 +324,9 @@ Optional. Seconds between discovery rounds. Defaults to 60.
 Optional. Require complete terminal-state discovery and collect deployment records for removal.
 Only proven missing preflight attempts or nested preflight rejections may omit a record.
 Other missing or incomplete records block relocation.
+
+.PARAMETER FinalCleanup
+Optional. Allow Succeeded or Failed terminal roots for complete final teardown; retries require Failed roots.
 
 .EXAMPLE
 Get-DeploymentTargetResourceList -name 'KeyVault' -ResourceGroupName 'validation-rg' -scope 'resourcegroup'
@@ -364,9 +374,15 @@ function Get-DeploymentTargetResourceList {
         [int] $SearchRetryInterval = 60,
 
         [Parameter()]
-        [switch] $RequireCompleteRemoval
+        [switch] $RequireCompleteRemoval,
+
+        [Parameter()]
+        [switch] $FinalCleanup
     )
 
+    if ($FinalCleanup -and -not $RequireCompleteRemoval) {
+        throw 'Final cleanup confirmation requires complete discovery and removal.'
+    }
     if (@($PreflightRejectedDeploymentNames | Where-Object { $_ -notin $DeploymentNames }).Count -gt 0) {
         throw 'Preflight rejection metadata contains names outside the supplied deployments.'
     }
@@ -395,6 +411,7 @@ function Get-DeploymentTargetResourceList {
                 ResolvedResourceIds    = $resolvedResourceIds
                 ErrorAction            = 'Stop'
                 RequireCompleteRemoval = $RequireCompleteRemoval
+                FinalCleanup           = $FinalCleanup
                 ResolvedDeploymentIds  = $resolvedDeploymentIds
             }
             if (-not [String]::IsNullOrEmpty($resourceGroupName)) {

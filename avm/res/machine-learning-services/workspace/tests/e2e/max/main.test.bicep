@@ -29,7 +29,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -75,6 +75,9 @@ module testDeployment '../../../main.bicep' = [
       friendlyName: 'Workspace'
       location: resourceLocation
       kind: 'Default'
+      allowRoleAssignmentOnRG: true
+      enableDataIsolation: false
+      v1LegacyMode: false
       associatedApplicationInsightsResourceId: nestedDependencies.outputs.applicationInsightsResourceId
       associatedKeyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
@@ -109,20 +112,19 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      // Currently unable to create both a connection and a private endpoint in the same deployment.
-      // connections: [
-      //   {
-      //     name: 'connection'
-      //     category: 'ApiKey'
-      //     target: 'https://example.com'
-      //     connectionProperties: {
-      //       authType: 'ApiKey'
-      //       credentials: {
-      //         key: 'key'
-      //       }
-      //     }
-      //   }
-      // ]
+      connections: [
+        {
+          name: 'connection'
+          category: 'ApiKey'
+          target: 'https://example.com'
+          connectionProperties: {
+            authType: 'ApiKey'
+            credentials: {
+              key: 'key'
+            }
+          }
+        }
+      ]
       datastores: [
         {
           name: 'datastore'
@@ -156,9 +158,16 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      discoveryUrl: 'http://example.com'
       imageBuildCompute: 'testcompute'
-      ipAllowlist: ['1.2.3.4/32']
+      networkAcls: {
+        defaultAction: 'Deny'
+        ipRules: [
+          {
+            value: '1.2.3.4/32'
+          }
+        ]
+      }
+      publicNetworkAccess: 'Enabled'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -199,7 +208,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
@@ -212,7 +221,7 @@ module testDeployment '../../../main.bicep' = [
         {
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -226,10 +235,12 @@ module testDeployment '../../../main.bicep' = [
       }
       serverlessComputeSettings: {
         serverlessComputeCustomSubnet: nestedDependencies.outputs.subnetResourceId
-        serverlessComputeNoPublicIP: true
+        serverlessComputeNoPublicIP: false
       }
       managedNetworkSettings: {
         isolationMode: 'Disabled'
+        managedNetworkKind: 'V1'
+        enableNetworkMonitor: false
       }
       systemDatastoresAuthMode: 'AccessKey'
       tags: {

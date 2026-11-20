@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Child Module for API Management Service - Named Value",
   "telemetryIdPrefix": "46d3xbcp.res.5af41aa",
   "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.apimgmt-namedvalue"],
-  "canonicalType": "Microsoft.ApiManagement/service/namesValues"
+  "canonicalType": "Microsoft.ApiManagement/service/namedValues"
 }

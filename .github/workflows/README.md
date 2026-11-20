@@ -1,61 +1,17 @@
-# Module Check and Publish Workflow
+# Module checks and releases
 
-> [!WARNING]
-> This workflow is a work in progress to test whether workflow consolidation is possible.
-> It should not be used yet.
+Keep the Tools references in `pr-check.yml` and `release.yml` pinned to the same immutable commit.
 
-The `.Module - Check and Publish [EXPERIMENTAL]` workflow provides a generic way to validate and publish one or more AVM modules. It is implemented by [`avm.module.yml`](./avm.module.yml).
+The shared [PR check](./pr-check.yml) discovers affected modules and runs static and unit checks. E2E deployments are label-gated so developers can open PRs early, then run cloud tests only when the changes are ready, reducing deployment cost and feedback time during development. Add `PR: Run Required E2E Tests` to run existing required scenarios: `defaults` for resource, pattern, and utility modules, plus `waf-aligned` for resource modules. `max` is recommended, not mandatory. Add `PR: Run All E2E Tests` to run required and optional scenarios. Missing required scenarios produce an advisory warning; existing required scenarios must pass. The `Report check status` gate uses the shared Tools `report-check-status` composite action to evaluate results, publish Actions feedback, and manage the sticky PR comment. It requires static, unit, and selected E2E tests to pass. Fork PRs do not run deployment tests through these labels; coordinate an authorized handoff with a maintainer.
 
-## Automatic checks
+When no required scenarios are discovered for changed modules, the run summary and sticky PR comment explain that the Required label selects no deployments and the All label is needed for optional scenarios. The feedback identifies the class-specific requirements and marks missing scenarios as advisory. Selecting tests is not a claim that validation passed.
 
-Pushes to `main` that change files under `avm/`, excluding module `README.md` files, automatically:
+The planned shared `Avm.Authoring` script using `gh` will hand off a fork PR to a same-repository release branch. An authorized Microsoft FTE's invocation will authorize the handoff, with no extra approval or confirmation prompt. Security-review the fork changes before invoking the script with privileged credentials. Existing GitHub branch protections, required reviews and checks remain in force. Until the script is implemented and released, coordinate the handoff with a maintainer; no script command is available here yet.
 
-1. Discover the affected top-level modules.
-1. Run static, PSRule, and deployment validation.
-1. Calculate and log the release tags that would be created.
+The shared [release workflow](./release.yml) runs on pushes to `main` or can be started manually. Both select pending modules whose own compiled template or version changed in the selected commit range, check their changelogs and require approval through `publish-approval` before creating scoped release tags. Unchanged children are not swept into the release. Registry publication is a separate process, so verify the published version after the tag is created.
 
-Automatic runs cannot create tags. The preview path has read-only repository permissions and invokes the release logic with `WhatIf`.
+For a manual retry, run the workflow from `main` and optionally set `targetCommit` to a full lowercase 40-character commit SHA from upstream `main` history. Blank uses the triggering commit. Set `baseCommit` to the original push's `before` SHA to retry the exact range of a multi-commit push; blank uses the target's first parent. The base must be a full lowercase 40-character ancestor SHA. Push runs use their event's before/after range automatically. The selected target is used for checkout, release discovery and tag creation. Within that range, each module's latest remote release tag determines whether changes remain unpublished and the next version. Already-released changes are skipped, and a latest release tag that is not ancestral to the selected target causes the run to fail rather than publish an outdated revision.
 
-The generic workflow runs alongside the existing module-specific workflows during its initial validation period. Generic deployments use the `gci` name prefix, process one module at a time, and use concurrency groups that are isolated from existing workflows.
+Automatic release runs require a released Gallery/MAR `Avm.Authoring` package with `BicepReleaseSelection = 1`; the workflow template pin alone does not supply that runtime. Verify that package is available before merging this workflow update. Until then, manual dispatch can use `authoringSource=repo` and `authoringRef=f94fd57c00d6f64f9ce3a604a38087deedb1e52b`. Repository-source overrides are not supported for push runs.
 
-## Manual runs
-
-Use **Actions** > **.Module - Check and Publish [EXPERIMENTAL]** > **Run workflow**.
-
-`modulePaths` accepts one module path or a comma-separated list:
-
-```text
-avm/res/storage/storage-account
-```
-
-```text
-avm/res/storage/storage-account, avm/res/network/virtual-network
-```
-
-Child module paths are accepted but resolve to their top-level module workflow.
-
-| Input | Default | Purpose |
-| --- | --- | --- |
-| `modulePaths` | Required | One module path or comma-separated module paths. |
-| `staticValidation` | `true` | Run static and PSRule validation. |
-| `deploymentValidation` | `true` | Run deployment validation. |
-| `removeDeployment` | `true` | Remove resources created by deployment validation. |
-| `customLocation` | Empty | Override the default deployment location. |
-| `createReleaseTag` | `false` | Approve and create the next top-level module release tag, including when no publishable diff exists. |
-| `publishOnly` | `false` | Skip validation and only create the release tag. Requires `createReleaseTag`. |
-
-Selecting `createReleaseTag` requires approval through the `publish-approval` environment. Without it, a manual run performs validation only.
-
-## Reusable workflows
-
-The entry workflow uses separate reusable workflows to enforce distinct permission boundaries:
-
-| Workflow | Used for | Repository permissions |
-| --- | --- | --- |
-| [`avm.template.module.preview.yml`](./avm.template.module.preview.yml) | Automatic validation and release-tag preview. | Read, plus OIDC for deployment validation. |
-| [`avm.template.module.publish.yml`](./avm.template.module.publish.yml) | Manual validation followed by approved tag creation. | Read and OIDC for validation; write only for publishing. |
-| [`avm.template.module.publish-only.yml`](./avm.template.module.publish-only.yml) | Approved tag creation without validation. | Write only; no OIDC or deployment access. |
-
-These workflows are intentionally separate because GitHub validates permissions for every job in a reusable workflow, including jobs that would be skipped.
-
-The existing [`avm.template.module.yml`](./avm.template.module.yml) remains unchanged and continues to support the module-specific workflows.
+For local authoring and checks, install `Avm.Authoring` from MAR using the [Bicep prerequisites](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/prerequisites/) and follow the [local validation guide](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/validate-bicep-module-locally/).

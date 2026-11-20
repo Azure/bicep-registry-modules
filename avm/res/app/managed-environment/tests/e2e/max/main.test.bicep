@@ -39,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     certname: 'dep-${namePrefix}-cert-${serviceShort}'
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    storageAccountName: '${take('dep${namePrefix}sa${serviceShort}', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
   }
 }
 
@@ -103,12 +103,16 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(
+            '${resourceGroup.id}/providers/Microsoft.App/managedEnvironments/${namePrefix}${serviceShort}001',
+            nestedDependencies.outputs.managedIdentityPrincipalId,
+            'Custom seed ${namePrefix}${serviceShort}'
+          )
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -116,7 +120,7 @@ module testDeployment '../../../main.bicep' = [
         {
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -184,14 +188,14 @@ module testDeployment '../../../main.bicep' = [
           }
           roleAssignments: [
             {
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
             {
               roleDefinitionIdOrName: subscriptionResourceId(
                 'Microsoft.Authorization/roleDefinitions',
-                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
               )
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "3527870440101863549"
+      "version": "0.48.1.52935",
+      "templateHash": "6192547905789822876"
     },
     "name": "DocumentDB Database Account Cassandra Keyspaces",
     "description": "This module deploys a Cassandra Keyspace within a CosmosDB Account."
@@ -284,8 +284,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "16596329162635800511"
+              "version": "0.48.1.52935",
+              "templateHash": "2772511413152725371"
             },
             "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
             "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
@@ -495,8 +495,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "12836718812769425590"
+              "version": "0.48.1.52935",
+              "templateHash": "11362263095012402045"
             },
             "name": "DocumentDB Database Account Cassandra Keyspaces Views",
             "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
@@ -641,6 +641,13 @@
                 "description": "The name of the resource group the Cassandra view was created in."
               },
               "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location of the Cassandra view."
+              },
+              "value": "[reference('cassandraView', '2026-04-01-preview', 'full').location]"
             }
           }
         }

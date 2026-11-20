@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app-configuration/configuration-store/CHANGELOG.md).
 
+## 0.10.2
+
+### Changes
+
+- Added the replica module's location output and regenerated the parent template.
+
+### Breaking Changes
+
+- None
+
 ## 0.10.1
 
 ### Changes

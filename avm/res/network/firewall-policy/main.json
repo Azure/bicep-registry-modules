@@ -5,13 +5,70 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "15538349071787293885"
+      "version": "0.48.1.52935",
+      "templateHash": "529678919955865443"
     },
     "name": "Firewall Policies",
     "description": "This module deploys a Firewall Policy."
   },
   "definitions": {
+    "explicitProxyType": {
+      "type": "object",
+      "properties": {
+        "enableExplicitProxy": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable explicit proxy mode."
+          }
+        },
+        "enablePacFile": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable PAC file hosting. When enabled, provide pacFile and pacFilePort."
+          }
+        },
+        "httpPort": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 64000,
+          "metadata": {
+            "description": "Optional. The explicit proxy HTTP port, used for both HTTP and HTTPS traffic."
+          }
+        },
+        "httpsPort": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 64000,
+          "metadata": {
+            "description": "Optional. The explicit proxy HTTPS port."
+          }
+        },
+        "pacFile": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The PAC file URL. May contain a SAS token."
+          }
+        },
+        "pacFilePort": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 64000,
+          "metadata": {
+            "description": "Optional. The port on which the firewall serves the PAC file."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The explicit proxy settings for a firewall policy."
+      }
+    },
     "snatType": {
       "type": "object",
       "properties": {
@@ -390,6 +447,13 @@
         "description": "Optional. Enable DNS Proxy on Firewalls attached to the Firewall Policy."
       }
     },
+    "explicitProxy": {
+      "$ref": "#/definitions/explicitProxyType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Explicit HTTP/HTTPS proxy settings for Standard or Premium policies. Configured independently of DNS proxy settings."
+      }
+    },
     "servers": {
       "type": "array",
       "nullable": true,
@@ -582,6 +646,7 @@
       "properties": {
         "basePolicy": "[if(not(empty(parameters('basePolicyResourceId'))), createObject('id', parameters('basePolicyResourceId')), null())]",
         "dnsSettings": "[if(or(parameters('enableProxy'), not(equals(parameters('servers'), null()))), createObject('enableProxy', parameters('enableProxy'), 'servers', coalesce(parameters('servers'), createArray())), null())]",
+        "explicitProxy": "[parameters('explicitProxy')]",
         "insights": "[if(parameters('insightsIsEnabled'), createObject('isEnabled', parameters('insightsIsEnabled'), 'logAnalyticsResources', createObject('defaultWorkspaceId', createObject('id', parameters('defaultWorkspaceResourceId')), 'workspaces', parameters('workspaces')), 'retentionDays', parameters('retentionDays')), null())]",
         "intrusionDetection": "[parameters('intrusionDetection')]",
         "sku": {
@@ -674,8 +739,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "2828384685272299321"
+              "version": "0.48.1.52935",
+              "templateHash": "12050404253844057860"
             },
             "name": "Firewall Policy Rule Collection Groups",
             "description": "This module deploys a Firewall Policy Rule Collection Group."

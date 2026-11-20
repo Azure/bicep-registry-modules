@@ -205,3 +205,18 @@ configuration:
                 > **To indicate this PR needs the core team''s attention, apply the "Needs: Core Team 🧞" label!**
                 >
                 > The core team will only review and approve PRs that have this label applied!
+
+      - description: 'ITA26 - When an issue or PR is closed, remove the "Needs: Triage :mag:", "Needs: Immediate Attention :bangbang:" and "Status: Response Overdue :triangular_flag_on_post:" labels'
+        if:
+          - or:
+              - payloadType: Issues
+              - payloadType: Pull_Request
+          - isAction:
+              action: Closed
+        then:
+          - removeLabel:
+              label: "Needs: Triage :mag:"
+          - removeLabel:
+              label: "Needs: Immediate Attention :bangbang:"
+          - removeLabel:
+              label: "Status: Response Overdue :triangular_flag_on_post:"

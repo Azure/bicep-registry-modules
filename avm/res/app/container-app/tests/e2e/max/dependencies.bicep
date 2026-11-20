@@ -27,7 +27,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -41,7 +41,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   }
 }
 
-resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2025-05-01' = {
+resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   parent: keyVault
   name: keyVaultSecretName
   properties: {
