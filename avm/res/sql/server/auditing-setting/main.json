@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.49.2.45890",
-      "templateHash": "1557182914881536803"
+      "templateHash": "11913398649153512158"
     },
     "name": "Azure SQL Server Audit Settings",
     "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -171,7 +171,7 @@
           "storageAccountName": {
             "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
           },
-          "managedIdentityPrincipalId": "[if(not(empty(if(contains(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'type'), ''), 'SystemAssigned'), reference('server', '2025-01-01', 'full').identity.principalId, tryGet(tryGet(tryGet(filter(items(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'userAssignedIdentities'), createObject())), lambda('identity', equals(toLower(lambdaVariables('identity').key), toLower(coalesce(tryGet(reference('server'), 'primaryUserAssignedIdentityId'), ''))))), 0), 'value'), 'principalId')))), if(contains(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'type'), ''), 'SystemAssigned'), createObject('value', reference('server', '2025-01-01', 'full').identity.principalId), createObject('value', tryGet(tryGet(tryGet(filter(items(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'userAssignedIdentities'), createObject())), lambda('identity', equals(toLower(lambdaVariables('identity').key), toLower(coalesce(tryGet(reference('server'), 'primaryUserAssignedIdentityId'), ''))))), 0), 'value'), 'principalId'))), createObject('value', fail('The SQL server must have a system-assigned or a primary user-assigned identity to use a managed identity for auditing.')))]"
+          "managedIdentityPrincipalId": "[if(not(empty(if(not(empty(tryGet(reference('server'), 'primaryUserAssignedIdentityId'))), tryGet(tryGet(tryGet(filter(items(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'userAssignedIdentities'), createObject())), lambda('identity', equals(toLower(lambdaVariables('identity').key), toLower(coalesce(tryGet(reference('server'), 'primaryUserAssignedIdentityId'), ''))))), 0), 'value'), 'principalId'), if(contains(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'type'), ''), 'SystemAssigned'), reference('server', '2025-01-01', 'full').identity.principalId, null())))), if(not(empty(tryGet(reference('server'), 'primaryUserAssignedIdentityId'))), createObject('value', tryGet(tryGet(tryGet(filter(items(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'userAssignedIdentities'), createObject())), lambda('identity', equals(toLower(lambdaVariables('identity').key), toLower(coalesce(tryGet(reference('server'), 'primaryUserAssignedIdentityId'), ''))))), 0), 'value'), 'principalId')), if(contains(coalesce(tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'type'), ''), 'SystemAssigned'), createObject('value', reference('server', '2025-01-01', 'full').identity.principalId), createObject('value', null()))), createObject('value', fail('The SQL server must have a system-assigned or a primary user-assigned identity to use a managed identity for auditing.')))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

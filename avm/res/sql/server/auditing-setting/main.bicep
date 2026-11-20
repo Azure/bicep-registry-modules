@@ -49,13 +49,13 @@ resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   name: serverName
 }
 
-// Assign SQL Server MSI access to storage account. If the server has a system-assigned identity, it is used. Otherwise, the server's primary user-assigned identity is used.
-var serverIdentityPrincipalId = contains(server.?identity.?type ?? '', 'SystemAssigned')
-  ? server.identity.principalId
-  : filter(
+// SQL auditing uses the primary user-assigned identity when configured, otherwise the system-assigned identity.
+var serverIdentityPrincipalId = !empty(server.properties.?primaryUserAssignedIdentityId)
+  ? filter(
       items(server.?identity.?userAssignedIdentities ?? {}),
       identity => identity.key =~ (server.properties.?primaryUserAssignedIdentityId ?? '')
     )[?0].?value.?principalId
+  : (contains(server.?identity.?type ?? '', 'SystemAssigned') ? server.identity.principalId : null)
 
 module storageAccount_sbdc_rbac 'modules/nested_storageRoleAssignment.bicep' = if (isManagedIdentityInUse && !empty(storageAccountResourceId)) {
   scope: resourceGroup(

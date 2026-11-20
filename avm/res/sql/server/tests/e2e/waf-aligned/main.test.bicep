@@ -21,6 +21,9 @@ param serviceShort string = 'sqlswaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. A unique token for this test run. Reuse it when retrying the same active deployment to keep the Key Vault name unchanged.')
+param vaultRunToken string = newGuid()
+
 var resourceSuffix = substring(uniqueString(subscription().id), 0, 4)
 
 // ============ //
@@ -38,7 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${resourceSuffix}'
+    keyVaultName: '${take('dep-${namePrefix}-kv-${serviceShort}-', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort, vaultRunToken)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: enforcedLocation

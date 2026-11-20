@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- The primary user-assigned identity of the server is now matched case-insensitively when assigning storage permissions, and the deployment fails with a descriptive message if the server has no suitable identity
+- Storage permissions are assigned to the server's primary user-assigned identity when configured, falling back to the system-assigned identity only when no primary is configured. Primary identity resource IDs are matched case-insensitively, and deployment fails with a descriptive message if no suitable identity can be resolved
 - The `storageAccountResourceId` parameter is now nullable
 - Updated the API version used to retrieve the storage account access key
 - Clarified that a diagnostic setting on the `master` database is required to route audit logs to Azure Monitor
