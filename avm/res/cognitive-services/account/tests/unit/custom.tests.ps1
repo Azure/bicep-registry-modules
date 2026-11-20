@@ -103,6 +103,32 @@ Describe 'Cognitive Services account key read ordering' {
         $secrets | Should -Match "listOutputsWithSecureValues\('cognitiveService_keys', '2025-04-01'\)\.secondaryKey"
     }
 
+    It 'Reaches the key read from the model deployment fixture' {
+        $fixturePath = Join-Path $PSScriptRoot '..' 'e2e' 'ai-model-deployment' 'main.test.bicep'
+        $fixtureOutput = Join-Path $TestDrive 'fixture.json'
+        $diagnostics = & $bicep build $fixturePath --outfile $fixtureOutput 2>&1
+        if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+        $fixture = Get-Content -LiteralPath $fixtureOutput -Raw | ConvertFrom-Json -AsHashtable -Depth 100
+        $inputs = $fixture.resources.testDeployment.properties.parameters
+
+        $inputs.Keys | Should -Not -Contain 'secretsExportConfiguration'
+        $inputs.deployments.value | Should -HaveCount 1
+        $inputs.disableLocalAuth.value | Should -BeFalse
+
+        # The key read must be selected for these inputs, and it must wait for the model deployments.
+        $fixtureCondition = Join-Path $TestDrive 'fixture-condition.bicepparam'
+        $fixtureConditionOutput = Join-Path $TestDrive 'fixture-condition.json'
+        $expression = $condition.Groups['condition'].Value.
+            Replace('disableLocalAuth', 'false').
+            Replace('secretsExportConfiguration', 'null')
+        "using none`nparam selected = $expression" | Set-Content -LiteralPath $fixtureCondition
+        $diagnostics = & $bicep build-params $fixtureCondition --outfile $fixtureConditionOutput 2>&1
+        if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
+        (Get-Content -LiteralPath $fixtureConditionOutput -Raw | ConvertFrom-Json -AsHashtable).parameters.selected.value |
+            Should -BeTrue
+        $keyRead.dependsOn | Should -Contain 'cognitiveService_deployments'
+    }
+
     It 'Retains empty child collections, serial model writes, and the private endpoint dependencies' {
         $template.resources.cognitiveService_deployments.copy.count |
             Should -BeExactly "[length(coalesce(parameters('deployments'), createArray()))]"

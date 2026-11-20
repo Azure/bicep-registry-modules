@@ -552,7 +552,10 @@ resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignmen
   }
 ]
 
-module cognitiveService_keys 'modules/keys.bicep' = if (!disableLocalAuth || contains(secretsExportConfiguration ?? {}, 'accessKey1Name') || contains(secretsExportConfiguration ?? {}, 'accessKey2Name')) {
+module cognitiveService_keys 'modules/keys.bicep' = if (!disableLocalAuth || contains(
+  secretsExportConfiguration ?? {},
+  'accessKey1Name'
+) || contains(secretsExportConfiguration ?? {}, 'accessKey2Name')) {
   name: '${uniqueString(deployment().name, location)}-cognitiveService-keys'
   params: {
     accountName: cognitiveService.name
