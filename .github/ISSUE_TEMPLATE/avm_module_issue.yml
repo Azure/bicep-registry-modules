@@ -252,6 +252,7 @@ body:
         - "avm/res/web/serverfarm"
         - "avm/res/web/site"
         - "avm/res/web/static-site"
+        - "avm/utl/general/naming"
         - "avm/utl/types/avm-common-types"
     validations:
       required: true

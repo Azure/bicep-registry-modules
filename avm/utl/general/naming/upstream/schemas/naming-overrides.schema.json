@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Modern naming catalog overrides",
+  "description": "Version-2 bundled manual or customer overlays. Entries may supply any subset of properties; Terraform validates the merged result, cross-field constraints, and RE2 templates.",
+  "type": "object",
+  "required": ["schema_version", "resources"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 2
+    },
+    "resources": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+        "not": {
+          "pattern": "[^a-z0-9_]"
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/resource_entry"
+      }
+    }
+  },
+  "not": {
+    "required": ["overrides"]
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "nullable_string": {
+      "type": ["string", "null"]
+    },
+    "nullable_length": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "string_array": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "resource_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resource_type": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "variant": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "slug": {
+          "type": "string",
+          "description": "An empty string omits the slug. Existing entries can inherit an omitted slug; a merged new entry must have one."
+        },
+        "slug_source": {
+          "enum": ["caf", "derived", "manual"]
+        },
+        "legacy_slug": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "legacy_outputs": {
+          "$ref": "#/$defs/string_array"
+        },
+        "min_length": {
+          "$ref": "#/$defs/nullable_length"
+        },
+        "max_length": {
+          "$ref": "#/$defs/nullable_length"
+        },
+        "scope": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "regex": {
+          "$ref": "#/$defs/nullable_string",
+          "description": "Terraform RE2 pattern or template, or null for unknown validation. JSON Schema checks the type only, not regex or template validity."
+        },
+        "dashes": {
+          "type": "boolean"
+        },
+        "lowercase": {
+          "type": "boolean"
+        },
+        "name_kind": {
+          "enum": ["standard", "uuid", "literal"]
+        },
+        "fixed_name": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "validation_complete": {
+          "type": "boolean"
+        },
+        "validation_notes": {
+          "$ref": "#/$defs/string_array"
+        },
+        "forbidden_prefixes": {
+          "$ref": "#/$defs/string_array"
+        },
+        "forbidden_suffixes": {
+          "$ref": "#/$defs/string_array"
+        },
+        "forbidden_sequences": {
+          "$ref": "#/$defs/string_array"
+        },
+        "reserved_names": {
+          "$ref": "#/$defs/string_array"
+        },
+        "source": {
+          "type": ["object", "null"],
+          "description": "Metadata is replaced as a whole property, not recursively merged."
+        },
+        "override_reason": {
+          "type": "string"
+        },
+        "override_source": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

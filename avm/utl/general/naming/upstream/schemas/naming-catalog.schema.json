@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Generated modern naming catalog",
+  "description": "Version-2 generated catalog with complete entries. Semantic constraints and Terraform RE2 templates are validated separately.",
+  "$ref": "naming-overrides.schema.json",
+  "properties": {
+    "resources": {
+      "additionalProperties": {
+        "required": [
+          "resource_type",
+          "variant",
+          "slug",
+          "slug_source",
+          "legacy_slug",
+          "legacy_outputs",
+          "min_length",
+          "max_length",
+          "scope",
+          "regex",
+          "dashes",
+          "lowercase",
+          "name_kind",
+          "fixed_name",
+          "validation_complete",
+          "validation_notes",
+          "forbidden_prefixes",
+          "forbidden_suffixes",
+          "forbidden_sequences",
+          "reserved_names"
+        ]
+      }
+    }
+  }
+}

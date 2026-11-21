@@ -6,5 +6,7 @@
 *.xml text eol=lf
 *.yml text eol=lf
 *.yaml text eol=lf
+avm/utl/general/naming/upstream/** -text
 README.md text eol=lf
+README.notes.md text eol=lf
 docs/templates/avm-readme-v1.scriban text eol=lf
