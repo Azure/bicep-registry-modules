@@ -55,7 +55,7 @@ jobs:
     steps:
       - name: "Prepare module checks"
         id: initialize
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@b812d3ced27abef3cb3001b968f19f6b12c7ef68
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@6d427179f26a7041717438fe033b11bb16d47449
         with:
           authoringSource: ${{ inputs.authoringSource || 'gallery' }}
           authoringRef: ${{ inputs.authoringRef || '' }}
@@ -72,7 +72,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@b812d3ced27abef3cb3001b968f19f6b12c7ef68
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@6d427179f26a7041717438fe033b11bb16d47449
     with:
       modulePath: ${{ matrix.modulePath }}
       moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
@@ -93,7 +93,7 @@ jobs:
       pull-requests: write
     steps:
       - name: "Evaluate and report check status"
-        uses: Azure/azure-verified-modules-tools/.github/actions/report-check-status@b812d3ced27abef3cb3001b968f19f6b12c7ef68
+        uses: Azure/azure-verified-modules-tools/.github/actions/report-check-status@6d427179f26a7041717438fe033b11bb16d47449
         with:
           ecosystem: bicep
           results: ${{ toJSON(needs) }}
