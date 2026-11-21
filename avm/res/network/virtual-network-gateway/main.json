@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "12993684356148300595"
+      "version": "0.48.1.52935",
+      "templateHash": "15152420957645433017"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -421,6 +421,27 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of a maintenance configuration."
+      }
+    },
+    "vpnClientRootCertificateType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the VPN client root certificate."
+          }
+        },
+        "publicCertData": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The public certificate data of the VPN client root certificate."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Configuration for a VPN client root certificate."
       }
     },
     "diagnosticSettingFullType": {
@@ -924,6 +945,16 @@
         "description": "Optional. Client root certificate data used to authenticate VPN clients. Can be combined with vpnClientAadConfiguration to support both certificate and Entra ID authentication."
       }
     },
+    "clientRootCertificates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/vpnClientRootCertificateType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Additional VPN client root or intermediate certificates. Names must be unique and must not be RootCert1 when clientRootCertData is set."
+      }
+    },
     "clientRevokedCertThumbprint": {
       "type": "string",
       "defaultValue": "",
@@ -1046,6 +1077,16 @@
   "variables": {
     "copy": [
       {
+        "name": "additionalClientRootCertificates",
+        "count": "[length(parameters('clientRootCertificates'))]",
+        "input": {
+          "name": "[parameters('clientRootCertificates')[copyIndex('additionalClientRootCertificates')].name]",
+          "properties": {
+            "publicCertData": "[parameters('clientRootCertificates')[copyIndex('additionalClientRootCertificates')].publicCertData]"
+          }
+        }
+      },
+      {
         "name": "formattedRoleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
@@ -1063,9 +1104,10 @@
     "arrayPipNameVar": "[if(variables('isExpressRoute'), createArray(), if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), createArray(), createArray(variables('secondaryPublicIPNameVar'))), if(not(empty(variables('existingTertiaryPublicIPResourceIdVar'))), createArray(), createArray(variables('tertiaryPublicIPNameVar')))), if(variables('isActiveActive'), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), createArray(), createArray(variables('secondaryPublicIPNameVar')))), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName')))))))]",
     "bgpSettingsVar": "[if(variables('isActiveActive'), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))), createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'secondCustomBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig2', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))))]",
     "ipConfiguration": "[if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), variables('existingSecondaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondaryPublicIPNameVar'))), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))))), 'name', 'vNetGatewayConfig2'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(not(empty(variables('existingTertiaryPublicIPResourceIdVar'))), variables('existingTertiaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('tertiaryPublicIPNameVar')))))), 'name', 'vNetGatewayConfig3')), if(variables('isActiveActive'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), variables('existingSecondaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondaryPublicIPNameVar'))), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig1'))))]",
-    "hasClientRootCertificate": "[not(empty(parameters('clientRootCertData')))]",
+    "legacyClientRootCertificates": "[if(not(empty(parameters('clientRootCertData'))), createArray(createObject('name', 'RootCert1', 'properties', createObject('publicCertData', parameters('clientRootCertData')))), createArray())]",
+    "hasClientRootCertificate": "[or(not(empty(parameters('clientRootCertData'))), not(empty(parameters('clientRootCertificates'))))]",
     "hasVpnClientAadConfiguration": "[not(empty(parameters('vpnClientAadConfiguration')))]",
-    "vpnClientConfiguration": "[if(or(variables('hasClientRootCertificate'), variables('hasVpnClientAadConfiguration')), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'vpnClientRootCertificates', if(variables('hasClientRootCertificate'), createArray(createObject('name', 'RootCert1', 'properties', createObject('publicCertData', parameters('clientRootCertData')))), null()), 'vpnClientRevokedCertificates', if(and(variables('hasClientRootCertificate'), not(empty(parameters('clientRevokedCertThumbprint')))), createArray(createObject('name', 'RevokedCert1', 'properties', createObject('thumbprint', parameters('clientRevokedCertThumbprint')))), null()), 'aadTenant', if(variables('hasVpnClientAadConfiguration'), parameters('vpnClientAadConfiguration').aadTenant, null()), 'aadAudience', if(variables('hasVpnClientAadConfiguration'), parameters('vpnClientAadConfiguration').aadAudience, null()), 'aadIssuer', if(variables('hasVpnClientAadConfiguration'), parameters('vpnClientAadConfiguration').aadIssuer, null()), 'vpnAuthenticationTypes', if(variables('hasVpnClientAadConfiguration'), if(and(variables('hasClientRootCertificate'), not(contains(parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, 'Certificate'))), concat(parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, createArray('Certificate')), parameters('vpnClientAadConfiguration').vpnAuthenticationTypes), null()), 'vpnClientProtocols', if(variables('hasVpnClientAadConfiguration'), parameters('vpnClientAadConfiguration').vpnClientProtocols, null())), null())]",
+    "vpnClientConfiguration": "[if(or(variables('hasClientRootCertificate'), variables('hasVpnClientAadConfiguration')), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'vpnClientRootCertificates', if(variables('hasClientRootCertificate'), concat(variables('legacyClientRootCertificates'), variables('additionalClientRootCertificates')), null()), 'vpnClientRevokedCertificates', if(and(variables('hasClientRootCertificate'), not(empty(parameters('clientRevokedCertThumbprint')))), createArray(createObject('name', 'RevokedCert1', 'properties', createObject('thumbprint', parameters('clientRevokedCertThumbprint')))), null()), 'aadTenant', if(variables('hasVpnClientAadConfiguration'), parameters('vpnClientAadConfiguration').aadTenant, null()), 'aadAudience', if(variables('hasVpnClientAadConfiguration'), parameters('vpnClientAadConfiguration').aadAudience, null()), 'aadIssuer', if(variables('hasVpnClientAadConfiguration'), parameters('vpnClientAadConfiguration').aadIssuer, null()), 'vpnAuthenticationTypes', if(variables('hasVpnClientAadConfiguration'), if(and(variables('hasClientRootCertificate'), not(contains(parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, 'Certificate'))), concat(parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, createArray('Certificate')), parameters('vpnClientAadConfiguration').vpnAuthenticationTypes), null()), 'vpnClientProtocols', if(variables('hasVpnClientAadConfiguration'), parameters('vpnClientAadConfiguration').vpnClientProtocols, null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -2034,8 +2076,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "3518885263387276723"
+              "version": "0.48.1.52935",
+              "templateHash": "10358980953065340455"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule."

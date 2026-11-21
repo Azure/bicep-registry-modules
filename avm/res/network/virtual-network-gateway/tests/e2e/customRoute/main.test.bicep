@@ -76,7 +76,6 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
-
 // ======= //
 // Outputs //
 // ======= //
@@ -119,5 +118,3 @@ output secondaryDefaultBgpIpAddress string? = testDeployment[0].outputs.?seconda
 
 @description('The secondary public IP address of the main test VPN gateway (if configured for active-active).')
 output secondaryPublicIpAddress string? = testDeployment[0].outputs.?secondaryPublicIpAddress
-
-

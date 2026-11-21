@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network-gateway/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- Added support for configuring multiple VPN client root certificates.
+
+### Breaking Changes
+
+- None
+
 ## 0.12.0
 
 ### Changes
