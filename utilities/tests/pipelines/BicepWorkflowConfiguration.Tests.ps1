@@ -23,7 +23,7 @@ Describe 'Coordinated tools dependency updates' {
                 ($workflow.jobs.initialize.steps | Where-Object id -eq 'initialize').with
             }
             else {
-                $workflow.jobs.release.with
+                $workflow.jobs.initialize.with
             }
             $authoringWith.authoringSource | Should -BeExactly ('$' + '{{ inputs.authoringSource || ''gallery'' }}')
             $authoringWith.authoringRef | Should -BeExactly ('$' + '{{ inputs.authoringRef || ' + "''" + ' }}')
@@ -32,7 +32,7 @@ Describe 'Coordinated tools dependency updates' {
                 [regex]::Matches($content, '(?m)^\s*uses:\s*Azure/azure-verified-modules-tools/[^\s@]+@([^\s#]+)') |
                     ForEach-Object { $_.Groups[1].Value }
             )
-            $expectedCount = if ($file -eq 'pr-check.yml') { 3 } else { 1 }
+            $expectedCount = if ($file -eq 'pr-check.yml') { 3 } else { 2 }
             $toolsRefs | Should -HaveCount $expectedCount
             @($toolsRefs | Select-Object -Unique) | Should -HaveCount 1
         }
@@ -65,7 +65,7 @@ Describe 'Shared Bicep workflow entry points' {
         $prCheck.on.pull_request.types | Should -Be @('opened', 'reopened', 'synchronize', 'edited', 'labeled', 'unlabeled')
         $prCheck.on.ContainsKey('workflow_dispatch') | Should -BeTrue
         $release.name | Should -BeExactly '.Module - Release'
-        $release.jobs.release.name | Should -BeExactly 'Release modules'
+        $release.jobs.release.name | Should -BeExactly '${{ matrix.modulePath }}'
         $prCheck.name | Should -BeExactly '.Module - PR Check'
     }
 
@@ -77,7 +77,7 @@ Describe 'Shared Bicep workflow entry points' {
             $release.on.workflow_dispatch.inputs[$inputName].type | Should -BeExactly 'string'
             $release.on.workflow_dispatch.inputs[$inputName].required | Should -BeFalse
             $release.on.workflow_dispatch.inputs[$inputName].ContainsKey('default') | Should -BeFalse
-            $release.jobs.release.with[$inputName] | Should -BeExactly ('$' + "{{ inputs.$inputName || '' }}")
+            $release.jobs.initialize.with[$inputName] | Should -BeExactly ('$' + "{{ inputs.$inputName || '' }}")
         }
     }
 
@@ -98,26 +98,40 @@ Describe 'Shared Bicep workflow entry points' {
         $prCheck.jobs.'module-gate'.needs | Should -Be @('initialize', 'check')
     }
 
-    It 'delegates release selection and tag creation to the shared workflow' {
+    It 'exposes the selected release plan in per-module jobs' {
         $release = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'release.yml') -Raw |
             ConvertFrom-Yaml
+        $selector = $release.jobs.initialize
         $publisher = $release.jobs.release
 
-        @($release.jobs.Keys) | Should -Be @('release')
-        $publisher.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-release\.yml@'
-        $publisher.with.ContainsKey('initializeOnly') | Should -BeFalse
+        $selector.name | Should -BeExactly 'Select pending module releases'
+        $selector.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-release\.yml@'
+        $selector.with.initializeOnly | Should -BeTrue
+        $publisher.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-runtime-release\.yml@'
+        $publisher.needs | Should -BeExactly 'initialize'
+        $publisher.if | Should -BeExactly "needs.initialize.outputs.hasModules == 'true'"
         $publisher.permissions.contents | Should -BeExactly 'write'
-        $publisher.secrets | Should -BeExactly 'inherit'
+        $publisher.strategy.'fail-fast' | Should -BeFalse
+        $publisher.strategy.matrix | Should -BeExactly '${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}'
+        foreach ($name in @('modulePath', 'plannedTags', 'releaseTagLabel')) {
+            $publisher.with[$name] | Should -BeExactly ('$' + "{{ matrix.$name }}")
+        }
+        foreach ($name in @('targetCommit', 'baseCommit', 'authoringArtifact')) {
+            $publisher.with[$name] | Should -BeExactly ('$' + "{{ needs.initialize.outputs.$name }}")
+        }
+        $publisher.with.pendingRelease | Should -BeTrue
+        $publisher.with.requireChangelog | Should -BeTrue
     }
 
-    It 'grants the shared release workflow tag creation permissions' {
+    It 'grants the initialize-only reusable workflow the nested release job permissions' {
         $release = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'release.yml') -Raw |
             ConvertFrom-Yaml
-        $publisher = $release.jobs.release
+        $selector = $release.jobs.initialize
 
-        $publisher.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-release\.yml@'
-        @($publisher.permissions.Keys) | Should -Be @('contents')
-        $publisher.permissions.contents | Should -BeExactly 'write'
+        $selector.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-release\.yml@'
+        $selector.with.initializeOnly | Should -BeTrue
+        @($selector.permissions.Keys) | Should -Be @('contents')
+        $selector.permissions.contents | Should -BeExactly 'write'
     }
 }
 
