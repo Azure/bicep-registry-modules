@@ -4,9 +4,8 @@ function Write-HciEnvironmentProjection {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)] [string] $RepoRootPath,
-        [Parameter(Mandatory)] [string] $ModulePath,
-        [Parameter(Mandatory)] [hashtable] $TestCase,
         [Parameter(Mandatory)] [string] $TestSubscriptionIds,
+        [Parameter(Mandatory)] [ValidatePattern('^[a-f0-9]{64}$')] [string] $SubscriptionKey,
         [Parameter(Mandatory)] [guid] $TenantId,
         [Parameter(Mandatory)] [ValidatePattern('^[a-f0-9]{64}$')] [string] $Owner,
         [Parameter(Mandatory)] [string] $OutputPath,
@@ -28,11 +27,15 @@ function Write-HciEnvironmentProjection {
         throw 'The HCI projection requires a new runner-local file outside the checkout.'
     }
 
-    $subscription = Get-HciTestSubscription -ModulePath $ModulePath -TestSubscriptionIds $TestSubscriptionIds `
-        -SubscriptionIndex $TestCase.subscriptionIndex -SubscriptionKey $TestCase.subscriptionKey -RepoRootPath $repoRoot
-    if ($TestCase.environmentConcurrencyGroup -cne "avm-hci-$($subscription.key)") {
-        throw 'The projection caller did not select the canonical shared-environment lock.'
+    . (Join-Path $repoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+    $reservationPath = 'avm/res/azure-stack-hci/logical-network'
+    $selected = @(Get-TestSubscriptionList -TestSubscriptionIds $TestSubscriptionIds `
+            -ModulePath $reservationPath -RepoRootPath $repoRoot |
+            Where-Object { $_.key -ceq $SubscriptionKey -and $_.tag -ceq 'Azure Local' })
+    if ($selected.Count -ne 1) {
+        throw 'The projection caller did not select exactly one canonical Azure Local subscription.'
     }
+    $subscription = $selected[0]
 
     $parameters = Get-HciEnvironmentParameterMap -GitHubVariables $GitHubVariables `
         -GitHubSecrets $GitHubSecrets -KeyVaultName $KeyVaultName
