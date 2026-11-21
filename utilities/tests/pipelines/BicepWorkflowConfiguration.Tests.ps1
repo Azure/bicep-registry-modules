@@ -104,6 +104,7 @@ Describe 'Shared Bicep workflow entry points' {
         $selector = $release.jobs.initialize
         $publisher = $release.jobs.release
 
+        $selector.name | Should -BeExactly 'Select pending module releases'
         $selector.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-release\.yml@'
         $selector.with.initializeOnly | Should -BeTrue
         $publisher.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-runtime-release\.yml@'
