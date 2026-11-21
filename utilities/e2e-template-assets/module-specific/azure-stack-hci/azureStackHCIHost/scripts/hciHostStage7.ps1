@@ -13,7 +13,11 @@ param(
 
     [Parameter()]
     [String]
-    $userAssignedManagedIdentityClientId
+    $userAssignedManagedIdentityClientId,
+
+    [Parameter()]
+    [String]
+    $ensureEdgeDevices = 'False'
 
 )
 Function log {
@@ -60,12 +64,54 @@ If ($timer.Elapsed.TotalMinutes -gt 60) {
 }
 
 log 'Waiting up to two hours for HCI Arc Machine extensions to be installed...'
+$requiredExtensionTypes = @('TelemetryAndDiagnostics', 'DeviceManagementExtension', 'LcmController', 'EdgeRemoteSupport')
+$edgeDeviceRequestTimes = @{}
+
+# On 24H2 and later images, Arc initialization leaves the node extensions to the edge device resource, which the
+# Azure Stack HCI resource provider reconciles. Create it when no extension arrived, and again when it failed, for
+# example while new role assignments propagate. The cluster module later updates the same resource.
+Function Initialize-EdgeDevice {
+    Param (
+        [Parameter(Mandatory)]
+        [object]$ArcMachine
+    )
+
+    $path = "$($ArcMachine.Id)/providers/Microsoft.AzureStackHCI/edgeDevices/default?api-version=2026-10-01"
+    try {
+        $current = Invoke-AzRestMethod -Method GET -Path $path
+        If ($current.StatusCode -eq 200) {
+            $state = ($current.Content | ConvertFrom-Json).properties.provisioningState
+            If ($state -ne 'Failed') {
+                log "Edge device of HCI Arc Machine '$($ArcMachine.Name)' is in state '$state'"
+                return
+            }
+        }
+        log "Creating the edge device of HCI Arc Machine '$($ArcMachine.Name)'..."
+        $payload = '{"kind":"HCI","properties":{"deviceConfiguration":{"deviceMetadata":"","nicDetails":[]}}}'
+        $response = Invoke-AzRestMethod -Method PUT -Path $path -Payload $payload
+        log "Edge device request for HCI Arc Machine '$($ArcMachine.Name)' returned status code '$($response.StatusCode)'"
+    } catch {
+        log "Edge device request for HCI Arc Machine '$($ArcMachine.Name)' failed, retrying later: $($_.Exception.Message)"
+    }
+}
+
 $timer = [System.Diagnostics.Stopwatch]::StartNew()
 $allExtensionsReady = $false
 while (!$allExtensionsReady -and $timer.Elapsed.TotalMinutes -lt 120) {
     $allExtensionsReadyCheck = $true
     foreach ($arcMachine in $arcMachines) {
         $extensions = Get-AzConnectedMachineExtension -ResourceGroupName $resourceGroupName -MachineName $arcMachine.Name
+        if ($ensureEdgeDevices -eq 'True' -and $timer.Elapsed.TotalMinutes -ge 5) {
+            $presentTypes = @($requiredExtensionTypes | Where-Object { $extensions.MachineExtensionType -contains $_ })
+            $failedTypes = @($extensions | Where-Object { $_.MachineExtensionType -in $requiredExtensionTypes -and $_.ProvisioningState -eq 'Failed' })
+            $requested = $edgeDeviceRequestTimes.ContainsKey($arcMachine.Name)
+            $due = !$requested -or ($timer.Elapsed.TotalMinutes - $edgeDeviceRequestTimes[$arcMachine.Name]) -ge 5
+            # request first only when no extension arrived on its own, then repeat while extensions are missing or failed
+            if ($due -and ($presentTypes.Count -eq 0 -or ($requested -and ($presentTypes.Count -lt $requiredExtensionTypes.Count -or $failedTypes.Count -gt 0)))) {
+                Initialize-EdgeDevice -ArcMachine $arcMachine
+                $edgeDeviceRequestTimes[$arcMachine.Name] = $timer.Elapsed.TotalMinutes
+            }
+        }
         if ($extensions.MachineExtensionType -notcontains 'TelemetryAndDiagnostics' -or $extensions.MachineExtensionType -notcontains 'DeviceManagementExtension' -or $extensions.MachineExtensionType -notcontains 'LcmController' -or $extensions.MachineExtensionType -notcontains 'EdgeRemoteSupport') {
             log "Waiting for extensions to be installed on HCI Arc Machine '$($arcMachine.Name)'..."
             $allExtensionsReadyCheck = $false

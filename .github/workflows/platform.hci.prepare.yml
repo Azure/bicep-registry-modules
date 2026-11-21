@@ -1,17 +1,23 @@
-name: ".Platform - Prepare reserved Azure Local environment"
+name: ".Platform - Manage reserved Azure Local environment"
 
 on:
   workflow_dispatch:
     inputs:
+      operation:
+        description: "Inspect or change the shared Azure Local environment"
+        type: choice
+        required: true
+        default: status
+        options:
+          - status
+          - prepare
+          - teardown
+          - recreate
       subscriptionIndex:
         description: "Original zero-based index of the Azure Local subscription in the configured test pool"
         type: number
         required: true
         default: 0
-      recreate:
-        description: "Destroy and recreate only the idle environment's exact registered owned groups"
-        type: boolean
-        default: false
 
 permissions: {}
 
@@ -55,17 +61,400 @@ jobs:
           "testCase=$($testCase | ConvertTo-Json -Compress)" >> $env:GITHUB_OUTPUT
           "environmentConcurrencyGroup=$key" >> $env:GITHUB_OUTPUT
 
-  job_prepare_environment:
-    name: "Prepare reserved Azure Local environment"
+  job_bootstrap:
+    name: "Bootstrap persistent control store"
+    if: ${{ inputs.operation == 'prepare' || inputs.operation == 'recreate' }}
     needs: job_select_subscription
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
     permissions:
       contents: read
       id-token: write
     concurrency:
       group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
       queue: max
-    uses: ./.github/workflows/avm.template.hci.prepare.yml
-    with:
-      testCase: ${{ needs.job_select_subscription.outputs.testCase }}
-      recreate: ${{ inputs.recreate }}
-    secrets: inherit
+    env:
+      HCI_STAGE: Bootstrap
+    outputs:
+      environmentGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+      environmentState: ${{ steps.lifecycle.outputs.environmentState }}
+      storageAccountResourceId: ${{ steps.lifecycle.outputs.storageAccountResourceId }}
+      storageContainerResourceId: ${{ steps.lifecycle.outputs.storageContainerResourceId }}
+    steps: &preparation-steps
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+        with:
+          removeDeployment: "false"
+      - name: "Install preparation dependencies"
+        shell: pwsh
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')
+          Install-CustomModule -Module @{ Name = 'Az.KeyVault' } -InstalledModule @(Get-Module -ListAvailable)
+      - name: "Resolve the pinned reserved subscription"
+        id: subscription
+        shell: pwsh
+        env:
+          TEST_CASE: ${{ needs.job_select_subscription.outputs.testCase }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          HCI_RUN_IDENTITY: ${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          VALIDATE_CLIENT_ID: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT: ${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
+          HCI_LOG_MASKS: ${{ secrets.HCI_LOG_MASKS }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
+          $testCase = ConvertFrom-Json -InputObject $env:TEST_CASE -AsHashtable
+          $subscription = Get-HciTestSubscription -ModulePath 'avm/res/azure-stack-hci/logical-network' `
+            -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -SubscriptionIndex $testCase.subscriptionIndex `
+            -SubscriptionKey $testCase.subscriptionKey -RepoRootPath $env:GITHUB_WORKSPACE
+          Register-HciLogMask -AdditionalMasks $env:HCI_LOG_MASKS -Value @(
+            [string] $subscription.id, [string] $env:VALIDATE_TENANT_ID, [string] $env:VALIDATE_CLIENT_ID, [string] $env:HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT)
+          "subscriptionId=$($subscription.id)" >> $env:GITHUB_OUTPUT
+          "ownerHash=$(Get-HciEnvironmentKey -Value "$env:HCI_RUN_IDENTITY|avm/res/azure-stack-hci/logical-network|$($testCase.path)")" >> $env:GITHUB_OUTPUT
+      - name: "Log in to the reserved subscription"
+        uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
+        with:
+          client-id: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          subscription-id: ${{ steps.subscription.outputs.subscriptionId }}
+          enable-AzPSSession: true
+      - name: "Inspect the shared environment lease"
+        id: hci-lease-status
+        if: ${{ env.HCI_STAGE != 'Bootstrap' && env.HCI_STAGE != 'Status' }}
+        uses: Azure/azure-verified-modules-tools/.github/actions/azure-local-environment-lease@ed65b1e2c6168c366be694fa13fb8a07c85b1dff
+        with:
+          operation: status
+          storageAccountResourceId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control/providers/Microsoft.Storage/storageAccounts/${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
+          fixtureResourceGroupId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control
+          containerName: hci-operation-receipts
+          blobName: ${{ fromJson(needs.job_select_subscription.outputs.testCase).environmentConcurrencyGroup }}
+          mode: lifecycle
+      - name: "Acquire the shared environment lease"
+        if: ${{ env.HCI_STAGE != 'Bootstrap' && env.HCI_STAGE != 'Status' }}
+        uses: Azure/azure-verified-modules-tools/.github/actions/azure-local-environment-lease@ed65b1e2c6168c366be694fa13fb8a07c85b1dff
+        with:
+          operation: acquire
+          storageAccountResourceId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control/providers/Microsoft.Storage/storageAccounts/${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
+          fixtureResourceGroupId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control
+          containerName: hci-operation-receipts
+          blobName: ${{ fromJson(needs.job_select_subscription.outputs.testCase).environmentConcurrencyGroup }}
+          ownerHash: ${{ steps.subscription.outputs.ownerHash }}
+          expectedGeneration: ${{ steps.hci-lease-status.outputs.fixtureGeneration }}
+          mode: lifecycle
+      - name: "Advance the recorded lifecycle operation"
+        id: lifecycle
+        uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+        env:
+          TEST_CASE: ${{ needs.job_select_subscription.outputs.testCase }}
+          HCI_RECREATE: ${{ inputs.operation == 'recreate' && env.HCI_STAGE == 'Begin' }}
+          HCI_RUN_IDENTITY: ${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          VALIDATE_CLIENT_ID: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
+          HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT: ${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
+          AVM_CI_VARIABLES: ${{ toJSON(vars) }}
+          AVM_CI_SECRETS: ${{ toJSON(secrets) }}
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            $ErrorActionPreference = 'Stop'
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciPreparationStep.ps1')
+            $commit = git rev-parse HEAD
+            if ($LASTEXITCODE -ne 0) { throw 'Cannot identify the checked-out asset revision.' }
+            $result = Invoke-HciPreparationStep -Stage $env:HCI_STAGE -RepoRootPath $env:GITHUB_WORKSPACE `
+              -ModulePath 'avm/res/azure-stack-hci/logical-network' -TestCase (ConvertFrom-Json $env:TEST_CASE -AsHashtable) `
+              -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -TenantId $env:VALIDATE_TENANT_ID -ClientId $env:VALIDATE_CLIENT_ID `
+              -RunIdentity $env:HCI_RUN_IDENTITY -SourceCommit $commit `
+              -GitHubVariables $env:AVM_CI_VARIABLES -GitHubSecrets $env:AVM_CI_SECRETS -KeyVaultName $env:CI_KEY_VAULT_NAME `
+              -ReceiptStorageAccountName $env:HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT `
+              -Recreate:([bool]::Parse($env:HCI_RECREATE)) -Maintenance:$true
+            if ($env:HCI_STAGE -ceq 'Ready') {
+              "Prepared environment ready: host image resolved; $(@($result.OwnedResourceIds).Count) owned resource group(s). Identifiers are omitted from this public summary." >> $env:GITHUB_STEP_SUMMARY
+            } elseif ($env:HCI_STAGE -cin @('Status', 'Bootstrap', 'Teardown')) {
+              "Environment state: $($result.State); image: $($result.ImageState); foundation: $($result.FoundationState); generation: $($result.Generation)." >> $env:GITHUB_STEP_SUMMARY
+            }
+            if ($result -is [System.Collections.IDictionary]) {
+              "environmentGeneration=$($result.Generation)" >> $env:GITHUB_OUTPUT
+              "environmentState=$($result.State)" >> $env:GITHUB_OUTPUT
+              if ($result.StorageAccountResourceId) {
+                "storageAccountResourceId=$($result.StorageAccountResourceId)" >> $env:GITHUB_OUTPUT
+              }
+              if ($result.StorageContainerResourceId) {
+                "storageContainerResourceId=$($result.StorageContainerResourceId)" >> $env:GITHUB_OUTPUT
+              }
+            }
+      - name: "Acquire the lease after bootstrap"
+        if: ${{ env.HCI_STAGE == 'Bootstrap' && success() }}
+        uses: Azure/azure-verified-modules-tools/.github/actions/azure-local-environment-lease@ed65b1e2c6168c366be694fa13fb8a07c85b1dff
+        with:
+          operation: acquire
+          storageAccountResourceId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control/providers/Microsoft.Storage/storageAccounts/${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
+          fixtureResourceGroupId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control
+          containerName: hci-operation-receipts
+          blobName: ${{ fromJson(needs.job_select_subscription.outputs.testCase).environmentConcurrencyGroup }}
+          ownerHash: ${{ steps.subscription.outputs.ownerHash }}
+          expectedGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+          mode: lifecycle
+      - name: "Refresh the lease after generation change"
+        if: ${{ env.HCI_STAGE == 'Begin' && success() }}
+        uses: Azure/azure-verified-modules-tools/.github/actions/azure-local-environment-lease@ed65b1e2c6168c366be694fa13fb8a07c85b1dff
+        with:
+          operation: acquire
+          storageAccountResourceId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control/providers/Microsoft.Storage/storageAccounts/${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
+          fixtureResourceGroupId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control
+          containerName: hci-operation-receipts
+          blobName: ${{ fromJson(needs.job_select_subscription.outputs.testCase).environmentConcurrencyGroup }}
+          ownerHash: ${{ steps.subscription.outputs.ownerHash }}
+          expectedGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+          mode: lifecycle
+          refreshGeneration: "true"
+      - name: "Release the shared environment lease"
+        if: ${{ (env.HCI_STAGE == 'Ready' || env.HCI_STAGE == 'Teardown') && success() }}
+        uses: Azure/azure-verified-modules-tools/.github/actions/azure-local-environment-lease@ed65b1e2c6168c366be694fa13fb8a07c85b1dff
+        with:
+          operation: release
+          storageAccountResourceId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control/providers/Microsoft.Storage/storageAccounts/${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
+          fixtureResourceGroupId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control
+          containerName: hci-operation-receipts
+          blobName: ${{ fromJson(needs.job_select_subscription.outputs.testCase).environmentConcurrencyGroup }}
+          ownerHash: ${{ steps.subscription.outputs.ownerHash }}
+          expectedGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+          mode: lifecycle
+          cleanupConfirmed: "true"
+
+  job_begin:
+    name: "Begin preparation"
+    if: ${{ inputs.operation == 'prepare' || inputs.operation == 'recreate' }}
+    needs:
+      - job_select_subscription
+      - job_bootstrap
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
+      queue: max
+    env:
+      HCI_STAGE: Begin
+    outputs:
+      environmentGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+      environmentState: ${{ steps.lifecycle.outputs.environmentState }}
+      storageAccountResourceId: ${{ steps.lifecycle.outputs.storageAccountResourceId }}
+      storageContainerResourceId: ${{ steps.lifecycle.outputs.storageContainerResourceId }}
+    steps: *preparation-steps
+
+  job_image_wait_1:
+    name: "Observe image build 1"
+    needs:
+      - job_select_subscription
+      - job_begin
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
+      queue: max
+    env:
+      HCI_STAGE: ImageObserve
+    outputs:
+      environmentGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+      environmentState: ${{ steps.lifecycle.outputs.environmentState }}
+    steps: *preparation-steps
+
+  job_image_wait_2:
+    name: "Observe image build 2"
+    needs:
+      - job_select_subscription
+      - job_image_wait_1
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
+      queue: max
+    env:
+      HCI_STAGE: ImageObserve
+    outputs:
+      environmentGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+      environmentState: ${{ steps.lifecycle.outputs.environmentState }}
+    steps: *preparation-steps
+
+  job_image_wait_3:
+    name: "Observe image build 3"
+    needs:
+      - job_select_subscription
+      - job_image_wait_2
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
+      queue: max
+    env:
+      HCI_STAGE: ImageObserve
+    outputs:
+      environmentGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+      environmentState: ${{ steps.lifecycle.outputs.environmentState }}
+    steps: *preparation-steps
+
+  job_foundation_start:
+    name: "Start foundation"
+    needs:
+      - job_select_subscription
+      - job_image_wait_3
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
+      queue: max
+    env:
+      HCI_STAGE: FoundationStart
+    outputs:
+      environmentGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+      environmentState: ${{ steps.lifecycle.outputs.environmentState }}
+    steps: *preparation-steps
+
+  job_foundation_wait_1:
+    name: "Observe foundation 1"
+    needs:
+      - job_select_subscription
+      - job_foundation_start
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
+      queue: max
+    env:
+      HCI_STAGE: FoundationObserve
+    outputs:
+      environmentGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+      environmentState: ${{ steps.lifecycle.outputs.environmentState }}
+    steps: *preparation-steps
+
+  job_foundation_wait_2:
+    name: "Observe foundation 2"
+    needs:
+      - job_select_subscription
+      - job_foundation_wait_1
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
+      queue: max
+    env:
+      HCI_STAGE: FoundationObserve
+    outputs:
+      environmentGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+      environmentState: ${{ steps.lifecycle.outputs.environmentState }}
+    steps: *preparation-steps
+
+  job_foundation_wait_3:
+    name: "Observe foundation 3"
+    needs:
+      - job_select_subscription
+      - job_foundation_wait_2
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
+      queue: max
+    env:
+      HCI_STAGE: FoundationObserve
+    outputs:
+      environmentGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+      environmentState: ${{ steps.lifecycle.outputs.environmentState }}
+    steps: *preparation-steps
+
+  job_ready:
+    name: "Confirm readiness"
+    needs:
+      - job_select_subscription
+      - job_foundation_wait_3
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
+      queue: max
+    env:
+      HCI_STAGE: Ready
+    outputs:
+      environmentGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+      environmentState: ${{ steps.lifecycle.outputs.environmentState }}
+    steps: *preparation-steps
+
+  job_status:
+    name: "Inspect environment"
+    if: ${{ inputs.operation == 'status' }}
+    needs: job_select_subscription
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
+      queue: max
+    env:
+      HCI_STAGE: Status
+    outputs:
+      environmentGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+      environmentState: ${{ steps.lifecycle.outputs.environmentState }}
+    steps: *preparation-steps
+
+  job_teardown:
+    name: "Tear down environment"
+    if: ${{ inputs.operation == 'teardown' }}
+    needs: job_select_subscription
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}
+      queue: max
+    env:
+      HCI_STAGE: Teardown
+    outputs:
+      environmentGeneration: ${{ steps.lifecycle.outputs.environmentGeneration }}
+      environmentState: ${{ steps.lifecycle.outputs.environmentState }}
+    steps: *preparation-steps

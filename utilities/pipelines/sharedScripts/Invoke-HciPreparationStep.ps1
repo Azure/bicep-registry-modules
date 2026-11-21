@@ -1,12 +1,13 @@
 ﻿function Invoke-HciPreparationStep {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory)] [ValidateSet('Begin', 'ImageObserve', 'FoundationStart', 'FoundationObserve', 'Ready')] [string] $Stage,
+        [Parameter(Mandatory)] [ValidateSet('Status', 'Bootstrap', 'Begin', 'ImageObserve', 'FoundationStart', 'FoundationObserve', 'Ready', 'Teardown')] [string] $Stage,
         [Parameter(Mandatory)] [string] $RepoRootPath,
         [Parameter(Mandatory)] [string] $ModulePath,
         [Parameter(Mandatory)] [hashtable] $TestCase,
         [Parameter(Mandatory)] [string] $TestSubscriptionIds,
         [Parameter(Mandatory)] [guid] $TenantId,
+        [guid] $ClientId = [guid]::Empty,
         [Parameter(Mandatory)] [string] $RunIdentity,
         [Parameter(Mandatory)] [string] $SourceCommit,
         [string] $GitHubVariables = '{}',
@@ -36,11 +37,10 @@
     $context = Get-HciEnvironmentContext -RepoRootPath $RepoRootPath -SubscriptionId $subscription.id -TenantId $TenantId `
         -Owner (Get-HciEnvironmentKey -Value "$RunIdentity|$ModulePath|$($TestCase.path)") -HciHostImageReferenceId $externalImageId
     if ($Stage -eq 'Begin') {
-        foreach ($name in @('arbLocalAdminAndDeploymentUserPass', 'arbDeploymentAppId', 'arbDeploymentSPObjectId', 'arbDeploymentServicePrincipalSecret')) {
-            if (-not $parameters.ContainsKey($name) -or $parameters[$name].Length -eq 0) {
-                throw "Required existing CI credential [$name] is missing; preparation has not started."
-            }
+        if (-not $parameters.ContainsKey('arbLocalAdminAndDeploymentUserPass') -or $parameters['arbLocalAdminAndDeploymentUserPass'].Length -eq 0) {
+            throw 'Required existing CI credential [arbLocalAdminAndDeploymentUserPass] is missing; preparation has not started.'
         }
+        $null = Get-HciArbServicePrincipalParameterName -Parameters $parameters
         $providers = @(
             'Microsoft.Compute', 'Microsoft.VirtualMachineImages', 'Microsoft.ManagedIdentity',
             'Microsoft.Network', 'Microsoft.Storage', 'Microsoft.KeyVault', 'Microsoft.Maintenance',
@@ -58,12 +58,24 @@
         }
     }
     switch ($Stage) {
+        'Status' {
+            return Get-HciEnvironmentStatus -Context $context
+        }
+        'Bootstrap' {
+            if ($ClientId -eq [guid]::Empty) {
+                throw 'Bootstrap requires the exact configured workflow client ID.'
+            }
+            return Initialize-HciEnvironmentBootstrap -Context $context -ClientId $ClientId `
+                -StorageAccountName $ReceiptStorageAccountName -Maintenance:$Maintenance
+        }
         'Begin' {
             Start-HciEnvironmentPreparation -Context $context -SourceCommit $SourceCommit -RunIdentity $RunIdentity `
                 -ReceiptStorageAccountName $ReceiptStorageAccountName -Recreate:$Recreate -Maintenance:$Maintenance
+            return Get-HciEnvironmentStatus -Context $context
         }
         'ImageObserve' {
             Wait-HciEnvironmentImage -Context $context -SourceCommit $SourceCommit -RunIdentity $RunIdentity -ReceiptStorageAccountName $ReceiptStorageAccountName
+            return Get-HciEnvironmentStatus -Context $context
         }
         'FoundationStart' {
             if (-not $parameters.builtInServicePrincipalObjectId) {
@@ -74,14 +86,26 @@
                 $parameters.builtInServicePrincipalObjectId = $servicePrincipals[0].Id
             }
             Start-HciEnvironmentFoundation -Context $context -Parameters $parameters
+            return Get-HciEnvironmentStatus -Context $context
         }
         'FoundationObserve' {
             Wait-HciEnvironmentFoundation -Context $context
+            return Get-HciEnvironmentStatus -Context $context
         }
         'Ready' {
             $result = Get-HciEnvironmentReadiness -Context $context -RefreshKubernetes
+            Remove-HciClusterDeploymentAccess -Context $context
             Exit-HciEnvironment -Context $context -Maintenance:$true
+            $status = Get-HciEnvironmentStatus -Context $context
+            $result.State = $status.State
+            $result.Generation = $status.Generation
+            $result.ActiveOwner = $status.ActiveOwner
+            $result.ImageState = $status.ImageState
+            $result.FoundationState = $status.FoundationState
             return $result
+        }
+        'Teardown' {
+            return Stop-HciEnvironment -Context $context -Maintenance:$Maintenance
         }
     }
 }

@@ -297,7 +297,7 @@ Describe 'Test subscription workflow integration' {
         $poolBindings = 0
         $groupBindings = 0
         foreach ($file in @(
-                'avm.template.hci.consumer.yml', 'avm.template.hci.prepare.yml', 'avm.template.hci.module.yml',
+                'avm.template.hci.consumer.yml', 'avm.template.hci.module.yml',
                 'platform.hci.prepare.yml', 'platform.deployment.history.cleanup.yml'
             )) {
             $source = Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' $file) -Raw
@@ -310,7 +310,7 @@ Describe 'Test subscription workflow integration' {
                 $groupBindings++
             }
         }
-        $poolBindings | Should -Be 14
+        $poolBindings | Should -Be 15
         $groupBindings | Should -Be 6
     }
 

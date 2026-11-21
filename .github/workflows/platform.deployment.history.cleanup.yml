@@ -173,6 +173,7 @@ jobs:
         env:
           TEST_CASE: ${{ toJson(matrix.testCase) }}
           TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          HCI_RUN_IDENTITY: ${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}
         run: |
           $ErrorActionPreference = 'Stop'
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
@@ -181,6 +182,7 @@ jobs:
             -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -SubscriptionIndex $testCase.subscriptionIndex `
             -SubscriptionKey $testCase.subscriptionKey -RepoRootPath $env:GITHUB_WORKSPACE
           "subscriptionId=$($subscription.id)" >> $env:GITHUB_OUTPUT
+          "ownerHash=$(Get-HciEnvironmentKey -Value "$env:HCI_RUN_IDENTITY|history|$($subscription.key)")" >> $env:GITHUB_OUTPUT
       - name: "Log in to the reserved subscription"
         uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
         with:
@@ -188,6 +190,73 @@ jobs:
           tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
           subscription-id: ${{ steps.subscription.outputs.subscriptionId }}
           enable-AzPSSession: true
+      - name: "Resolve history lock requirements"
+        id: hci-coordination
+        uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+        env:
+          TEST_CASE: ${{ toJson(matrix.testCase) }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT: ${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
+          AVM_CI_VARIABLES: ${{ toJSON(vars) }}
+          AVM_CI_SECRETS: ${{ toJSON(secrets) }}
+          CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            $ErrorActionPreference = 'Stop'
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciImageReceipt.ps1')
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
+            $testCase = ConvertFrom-Json $env:TEST_CASE -AsHashtable
+            $subscription = Get-HciTestSubscription -ModulePath 'avm/res/azure-stack-hci/cluster' `
+              -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -SubscriptionIndex $testCase.subscriptionIndex `
+              -SubscriptionKey $testCase.subscriptionKey -RepoRootPath $env:GITHUB_WORKSPACE
+            $parameters = Get-HciEnvironmentParameterMap -GitHubVariables $env:AVM_CI_VARIABLES `
+              -GitHubSecrets $env:AVM_CI_SECRETS -KeyVaultName $env:CI_KEY_VAULT_NAME
+            $externalImageId = $parameters.hciHostImageReferenceId
+            if ($externalImageId -is [securestring]) {
+              $externalImageId = ([pscredential]::new('ci', $externalImageId)).GetNetworkCredential().Password
+            }
+            $owner = Get-HciEnvironmentKey -Value "${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}|history|$($subscription.key)"
+            $context = Get-HciEnvironmentContext -RepoRootPath $env:GITHUB_WORKSPACE `
+              -SubscriptionId $subscription.id -TenantId $env:VALIDATE_TENANT_ID -Owner $owner `
+              -HciHostImageReferenceId $externalImageId
+            $registry = Get-HciEnvironmentRegistry -Context $context -AllowNotFound
+            $store = $null
+            if (-not [string]::IsNullOrEmpty($env:HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT)) {
+              $store = Get-HciImageReceiptStore -Context $context `
+                -StorageAccountName $env:HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT -AllowNotFound
+            }
+            if ($null -eq $registry -and $null -eq $store) {
+              "leaseRequired=false" >> $env:GITHUB_OUTPUT
+            } elseif ($null -ne $registry -and $null -ne $store) {
+              "leaseRequired=true" >> $env:GITHUB_OUTPUT
+            } else {
+              throw 'A registered Azure Local fixture and persistent lock store must exist together; run the bootstrap operation first.'
+            }
+      - name: "Inspect the shared environment lease"
+        id: hci-lease-status
+        if: ${{ steps.hci-coordination.outputs.leaseRequired == 'true' }}
+        uses: Azure/azure-verified-modules-tools/.github/actions/azure-local-environment-lease@ed65b1e2c6168c366be694fa13fb8a07c85b1dff
+        with:
+          operation: status
+          storageAccountResourceId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control/providers/Microsoft.Storage/storageAccounts/${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
+          fixtureResourceGroupId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control
+          containerName: hci-operation-receipts
+          blobName: ${{ matrix.testCase.environmentConcurrencyGroup }}
+          mode: consumer
+      - name: "Acquire the shared environment lease"
+        if: ${{ steps.hci-coordination.outputs.leaseRequired == 'true' }}
+        uses: Azure/azure-verified-modules-tools/.github/actions/azure-local-environment-lease@ed65b1e2c6168c366be694fa13fb8a07c85b1dff
+        with:
+          operation: acquire
+          storageAccountResourceId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control/providers/Microsoft.Storage/storageAccounts/${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
+          fixtureResourceGroupId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control
+          containerName: hci-operation-receipts
+          blobName: ${{ matrix.testCase.environmentConcurrencyGroup }}
+          ownerHash: ${{ steps.subscription.outputs.ownerHash }}
+          expectedGeneration: ${{ steps.hci-lease-status.outputs.fixtureGeneration }}
+          mode: consumer
       - name: "Clean history only with confirmed idle ownership"
         uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
         env:
@@ -209,6 +278,19 @@ jobs:
               -TenantId $env:VALIDATE_TENANT_ID -RunIdentity $env:HCI_RUN_IDENTITY `
               -GitHubVariables $env:AVM_CI_VARIABLES -GitHubSecrets $env:AVM_CI_SECRETS `
               -KeyVaultName $env:CI_KEY_VAULT_NAME -MaxDeploymentRetentionInDays ([int]::Parse($env:RETENTION_DAYS))
+      - name: "Release the shared environment lease"
+        if: ${{ success() && steps.hci-coordination.outputs.leaseRequired == 'true' }}
+        uses: Azure/azure-verified-modules-tools/.github/actions/azure-local-environment-lease@ed65b1e2c6168c366be694fa13fb8a07c85b1dff
+        with:
+          operation: release
+          storageAccountResourceId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control/providers/Microsoft.Storage/storageAccounts/${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}
+          fixtureResourceGroupId: /subscriptions/${{ steps.subscription.outputs.subscriptionId }}/resourceGroups/rg-avm-ci-azure-local-control
+          containerName: hci-operation-receipts
+          blobName: ${{ matrix.testCase.environmentConcurrencyGroup }}
+          ownerHash: ${{ steps.subscription.outputs.ownerHash }}
+          expectedGeneration: ${{ steps.hci-lease-status.outputs.fixtureGeneration }}
+          cleanupConfirmed: "true"
+          mode: consumer
 
   job_cleanup_managementGroup_deployments:
     runs-on: ubuntu-latest

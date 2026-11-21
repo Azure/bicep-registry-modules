@@ -139,8 +139,15 @@ function Wait-TemplateDeployment {
         }
 
         if ($null -ne $deployment) {
+            $deploymentId = $deployment.Id
+            if ($DeploymentScope -eq 'resourcegroup' -and $null -eq $deployment.PSObject.Properties['Id'] -and
+                $deployment.ResourceGroupName -is [string] -and $deployment.DeploymentName -is [string]) {
+                # Get-AzResourceGroupDeployment returns no Id; derive it from the verified context and the returned record.
+                $deploymentId = Get-DeploymentResourceId -Scope $DeploymentScope -Name $deployment.DeploymentName `
+                    -SubscriptionId $context.Subscription.Id -ResourceGroupName $deployment.ResourceGroupName
+            }
             if ($ExpectedDeploymentId -and (
-                    $deployment.Id -isnot [string] -or $deployment.Id -ine $ExpectedDeploymentId -or
+                    $deploymentId -isnot [string] -or $deploymentId -ine $ExpectedDeploymentId -or
                     $null -ne $deployment.Error -or
                     ($null -ne $deployment.Outputs -and $deployment.Outputs -isnot [System.Collections.IDictionary])
                 )) {

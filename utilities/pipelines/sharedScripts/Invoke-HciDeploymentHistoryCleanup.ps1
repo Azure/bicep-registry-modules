@@ -37,19 +37,31 @@ function Invoke-HciDeploymentHistoryCleanup {
             }
         }
     } else {
-        if ($registry.tags['avm-state'] -cne 'Idle' -or $registry.tags['avm-active-owner'] -or
+        if ($registry.tags['avm-state'] -ceq 'Down') {
+            if ($registry.tags['avm-active-owner'] -or
+                $registry.tags['avm-image-state'] -cnotin @('None', 'Ready') -or
+                $registry.tags['avm-foundation-state'] -cne 'None') {
+                throw 'Down shared-environment state is incomplete; teardown evidence is preserved.'
+            }
+            foreach ($id in $context.OwnedGroupIds) {
+                if ($null -ne (Get-HciOwnedGroup -Context $context -ResourceId $id -AllowNotFound)) {
+                    throw 'Down shared-environment state still has registered owned groups; teardown evidence is preserved.'
+                }
+            }
+        } elseif ($registry.tags['avm-state'] -cne 'Idle' -or $registry.tags['avm-active-owner'] -or
             $registry.tags['avm-image-state'] -cne 'Ready' -or
             $registry.tags['avm-foundation-state'] -cnotin @('None', 'Provisioned', 'Ready')) {
             throw 'Active or unconfirmed shared-environment state blocks history cleanup; teardown evidence is preserved.'
-        }
-        Set-HciEnvironmentState -Context $context -Acquire -Values @{
-            'avm-state' = 'Preparing'
-            'avm-active-owner' = $context.Owner
+        } else {
+            Set-HciEnvironmentState -Context $context -Acquire -Values @{
+                'avm-state' = 'Preparing'
+                'avm-active-owner' = $context.Owner
+            }
         }
     }
     Clear-SubscriptionDeploymentHistory -SubscriptionId $subscription.id `
         -MaxDeploymentRetentionInDays $MaxDeploymentRetentionInDays -WaitForCompletion
-    if ($null -ne $registry) {
+    if ($null -ne $registry -and $registry.tags['avm-state'] -ceq 'Idle') {
         Exit-HciEnvironment -Context $context -Maintenance:$true
     }
 }

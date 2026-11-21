@@ -403,10 +403,9 @@ Describe 'HCI persistent receipt infrastructure' {
         $account.tags.ContainsKey('avm-contract') | Should -BeFalse
         $container.properties.publicAccess | Should -Be 'None'
         $service.properties.isVersioningEnabled | Should -BeFalse
-        $assignment.scope | Should -BeExactly "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('accountName'), 'default', variables('containerName'))]"
+        $assignment.scope | Should -BeExactly "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), 'default', variables('containerName'))]"
         $assignment.properties.principalType | Should -Be 'ServicePrincipal'
         $template.variables.blobContributorRoleId | Should -Match 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-        $template.variables.accountName | Should -Match 'uniqueString'
-        $template.variables.accountName | Should -Match 'toLower'
+        $template.parameters.storageAccountName.type | Should -Be 'String'
     }
 }

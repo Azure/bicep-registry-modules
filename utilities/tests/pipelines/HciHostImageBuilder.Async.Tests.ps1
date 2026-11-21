@@ -36,7 +36,6 @@ Describe 'HCI image build job handoffs' {
         $script:retryAfter = 15
         $script:includeDifferentLocation = $false
         $script:inputs = @{
-            AssetBaseUri = 'https://example.test/pinned-assets'
             SubscriptionId = '11111111-1111-1111-1111-111111111111'
             ResourceGroupName = 'rg-avm-ci-azure-local-image'
             GalleryName = 'galavmciazurelocal'

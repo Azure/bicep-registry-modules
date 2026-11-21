@@ -9,8 +9,7 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         Import-Module powershell-yaml -ErrorAction Stop
         $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
         $manual = Get-Content (Join-Path $workflowRoot 'platform.hci.prepare.yml') -Raw | ConvertFrom-Yaml
-        $prepare = Get-Content (Join-Path $workflowRoot 'avm.template.hci.prepare.yml') -Raw | ConvertFrom-Yaml
-        $prepareSteps = $prepare.jobs.job_begin.steps
+        $prepareSteps = $manual.jobs.job_begin.steps
         $consumer = Get-Content (Join-Path $workflowRoot 'avm.template.hci.consumer.yml') -Raw | ConvertFrom-Yaml
         $hciModule = Get-Content (Join-Path $workflowRoot 'avm.template.hci.module.yml') -Raw | ConvertFrom-Yaml
         $action = Get-Content (Join-Path $RepoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml') -Raw | ConvertFrom-Yaml
@@ -48,19 +47,25 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $wrapper.uses | Should -Be './.github/workflows/avm.template.hci.consumer.yml'
         @($consumer.jobs.Keys) | Should -Be @('job_module_deploy_validation')
         $consumer.jobs.job_module_deploy_validation.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
-        $manual.jobs.job_prepare_environment.concurrency.group | Should -Be '${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}'
-        $manual.jobs.job_prepare_environment.concurrency.queue | Should -Be 'max'
-        foreach ($job in $prepare.jobs.Values) { $job.Contains('concurrency') | Should -BeFalse }
+        foreach ($name in @(
+                'job_bootstrap', 'job_begin', 'job_image_wait_1', 'job_image_wait_2', 'job_image_wait_3',
+                'job_foundation_start', 'job_foundation_wait_1', 'job_foundation_wait_2',
+                'job_foundation_wait_3', 'job_ready', 'job_status', 'job_teardown'
+            )) {
+            $manual.jobs[$name].concurrency.group | Should -Be '${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}'
+            $manual.jobs[$name].concurrency.queue | Should -Be 'max'
+            $manual.jobs[$name].concurrency.Contains('cancel-in-progress') | Should -BeFalse
+        }
     }
 
-    It 'Defaults recreation off and exposes it only through manual preparation' {
-        $manual.on.workflow_dispatch.inputs.recreate.default | Should -BeFalse
-        $prepare.on.workflow_call.inputs.recreate.default | Should -BeFalse
-        $consumer.jobs.Contains('job_prepare_environment') | Should -BeFalse
-        @($prepare.on.workflow_call.inputs.Keys | Sort-Object) | Should -Be @('recreate', 'testCase')
-        @($manual.jobs.job_prepare_environment.with.Keys | Sort-Object) | Should -Be @('recreate', 'testCase')
-        $invoke = $prepareSteps | Where-Object name -EQ 'Advance the recorded preparation operation'
-        $invoke.env.HCI_RECREATE | Should -Be '${{ inputs.recreate && env.HCI_STAGE == ''Begin'' }}'
+    It 'Exposes lifecycle operations only through the manual workflow' {
+        @($manual.on.Keys) | Should -Be @('workflow_dispatch')
+        $manual.on.workflow_dispatch.inputs.operation.default | Should -Be 'status'
+        @($manual.on.workflow_dispatch.inputs.operation.options) | Should -Be @('status', 'prepare', 'teardown', 'recreate')
+        @($manual.on.workflow_dispatch.inputs.Keys | Sort-Object) | Should -Be @('operation', 'subscriptionIndex')
+        $consumer.jobs.Keys | Should -Not -Contain 'job_prepare_environment'
+        $invoke = $prepareSteps | Where-Object name -EQ 'Advance the recorded lifecycle operation'
+        $invoke.env.HCI_RECREATE | Should -Be '${{ inputs.operation == ''recreate'' && env.HCI_STAGE == ''Begin'' }}'
         $invoke.with.inlineScript | Should -Match ([regex]::Escape('-Maintenance:$true'))
     }
 
@@ -74,25 +79,25 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
                 $env:REMOVE_DEPLOYMENT = $value
                 { . ([scriptblock]::Create($check.run)) } | Should -Throw '*require cleanup*'
             }
-            $env:REMOVE_DEPLOYMENT = 'true'
-            { . ([scriptblock]::Create($check.run)) } | Should -Not -Throw
+            foreach ($value in @('true', 'True', 'TRUE')) {
+                $env:REMOVE_DEPLOYMENT = $value
+                { . ([scriptblock]::Create($check.run)) } | Should -Not -Throw
+            }
         } finally {
             $env:REMOVE_DEPLOYMENT = $saved
         }
     }
 
-    It 'Keeps setup, consumption and reserved module routing in explicit workflows' {
+    It 'Keeps lifecycle setup in one manual workflow and reserved consumption in dedicated wrappers' {
         @(Get-ChildItem $workflowRoot -Filter 'avm.template.hci.*.yml' | Sort-Object Name | ForEach-Object Name) |
-            Should -Be @('avm.template.hci.consumer.yml', 'avm.template.hci.module.yml', 'avm.template.hci.prepare.yml')
-        foreach ($job in $prepare.jobs.Values) {
+            Should -Be @('avm.template.hci.consumer.yml', 'avm.template.hci.module.yml')
+        foreach ($job in $manual.jobs.Values) {
             $job.Contains('uses') | Should -BeFalse
-            $job.Contains('outputs') | Should -BeFalse
         }
     }
 
     It 'Allows shared provisioning only from dedicated manual setup, never from ordinary consumers' {
         @($manual.on.Keys) | Should -Be @('workflow_dispatch')
-        $manual.jobs.job_prepare_environment.uses | Should -Be './.github/workflows/avm.template.hci.prepare.yml'
         foreach ($file in Get-ChildItem $workflowRoot -Filter '*.yml') {
             $workflow = Get-Content $file.FullName -Raw | ConvertFrom-Yaml
             foreach ($job in $workflow.jobs.Values) {
@@ -111,31 +116,48 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
     }
 
     It 'Splits long operations into dedicated hosted-runner jobs with explicit ordered handoffs' {
-        $prepare.jobs.Count | Should -Be 9
-        $prepare.permissions.contents | Should -Be 'read'
-        $prepare.permissions.'id-token' | Should -Be 'write'
-        foreach ($job in $prepare.jobs.Values) {
+        $preparationJobs = @(
+            'job_begin', 'job_image_wait_1', 'job_image_wait_2', 'job_image_wait_3',
+            'job_foundation_start', 'job_foundation_wait_1', 'job_foundation_wait_2',
+            'job_foundation_wait_3', 'job_ready'
+        )
+        foreach ($name in $preparationJobs) {
+            $job = $manual.jobs[$name]
             $job.'timeout-minutes' | Should -Be 330
             $job.'runs-on' | Should -Be 'ubuntu-latest'
             $job.environment | Should -Be 'avm-validation'
+            $job.permissions.contents | Should -Be 'read'
+            $job.permissions.'id-token' | Should -Be 'write'
             ($job.steps | ConvertTo-Json -Depth 20 -Compress) |
                 Should -Be ($prepareSteps | ConvertTo-Json -Depth 20 -Compress)
         }
-        $prepare.jobs.job_begin.env.HCI_STAGE | Should -Be 'Begin'
-        $prepare.jobs.job_begin.Contains('needs') | Should -BeFalse
-        $prepare.jobs.job_image_wait_1.needs | Should -Be 'job_begin'
-        $prepare.jobs.job_foundation_wait_1.needs | Should -Be 'job_foundation_start'
-        $prepare.jobs.job_foundation_start.needs | Should -Be 'job_image_wait_3'
-        $prepare.jobs.job_foundation_start.env.HCI_STAGE | Should -Be 'FoundationStart'
-        $prepare.jobs.job_ready.needs | Should -Be 'job_foundation_wait_3'
-        $prepare.jobs.job_ready.env.HCI_STAGE | Should -Be 'Ready'
+        $manual.jobs.job_begin.env.HCI_STAGE | Should -Be 'Begin'
+        $manual.jobs.job_bootstrap.env.HCI_STAGE | Should -Be 'Bootstrap'
+        $manual.jobs.job_bootstrap.'timeout-minutes' | Should -Be 60
+        $manual.jobs.job_bootstrap.needs | Should -Be 'job_select_subscription'
+        $manual.jobs.job_begin.needs | Should -Contain 'job_select_subscription'
+        $manual.jobs.job_begin.needs | Should -Contain 'job_bootstrap'
+        $manual.jobs.job_image_wait_1.needs | Should -Contain 'job_begin'
+        $manual.jobs.job_foundation_wait_1.needs | Should -Contain 'job_foundation_start'
+        $manual.jobs.job_foundation_start.needs | Should -Contain 'job_image_wait_3'
+        $manual.jobs.job_foundation_start.env.HCI_STAGE | Should -Be 'FoundationStart'
+        $manual.jobs.job_ready.needs | Should -Contain 'job_foundation_wait_3'
+        $manual.jobs.job_ready.env.HCI_STAGE | Should -Be 'Ready'
         foreach ($index in 1..3) {
-            $prepare.jobs["job_image_wait_$index"].env.HCI_STAGE | Should -Be 'ImageObserve'
-            $prepare.jobs["job_foundation_wait_$index"].env.HCI_STAGE | Should -Be 'FoundationObserve'
+            $manual.jobs["job_image_wait_$index"].env.HCI_STAGE | Should -Be 'ImageObserve'
+            $manual.jobs["job_foundation_wait_$index"].env.HCI_STAGE | Should -Be 'FoundationObserve'
             if ($index -gt 1) {
-                $prepare.jobs["job_image_wait_$index"].needs | Should -Be "job_image_wait_$($index - 1)"
-                $prepare.jobs["job_foundation_wait_$index"].needs | Should -Be "job_foundation_wait_$($index - 1)"
+                $manual.jobs["job_image_wait_$index"].needs | Should -Contain "job_image_wait_$($index - 1)"
+                $manual.jobs["job_foundation_wait_$index"].needs | Should -Contain "job_foundation_wait_$($index - 1)"
             }
+        }
+        $manual.jobs.job_status.env.HCI_STAGE | Should -Be 'Status'
+        $manual.jobs.job_status.'timeout-minutes' | Should -Be 30
+        $manual.jobs.job_teardown.env.HCI_STAGE | Should -Be 'Teardown'
+        $manual.jobs.job_teardown.'timeout-minutes' | Should -Be 180
+        foreach ($name in $preparationJobs + @('job_bootstrap', 'job_status', 'job_teardown')) {
+            $manual.jobs[$name].outputs.environmentGeneration | Should -Be '${{ steps.lifecycle.outputs.environmentGeneration }}'
+            $manual.jobs[$name].outputs.environmentState | Should -Be '${{ steps.lifecycle.outputs.environmentState }}'
         }
     }
 
@@ -143,23 +165,98 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $selector = $prepareSteps | Where-Object id -EQ subscription
         $selector.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
         $selector.run | Should -Match ([regex]::Escape("Get-HciTestSubscription -ModulePath 'avm/res/azure-stack-hci/logical-network'"))
-        $invoke = $prepareSteps | Where-Object { $_.name -eq 'Advance the recorded preparation operation' }
+        $invoke = $prepareSteps | Where-Object { $_.name -eq 'Advance the recorded lifecycle operation' }
         $invoke.with.inlineScript | Should -Match ([regex]::Escape('Invoke-HciPreparationStep -Stage $env:HCI_STAGE'))
         $invoke.with.inlineScript | Should -Match ([regex]::Escape("-ModulePath 'avm/res/azure-stack-hci/logical-network'"))
         $invoke.with.inlineScript | Should -Match 'git rev-parse HEAD'
         $invoke.env.HCI_RUN_IDENTITY | Should -Be '${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}'
-        $invoke.env.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT | Should -Be '${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}'
+        $invoke.env.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT | Should -Be '${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}'
         $invoke.env.CI_KEY_VAULT_NAME | Should -Be '${{ vars.CI_KEY_VAULT_NAME }}'
         $invoke.with.inlineScript | Should -Match ([regex]::Escape('-ReceiptStorageAccountName $env:HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT'))
         $invoke.with.inlineScript | Should -Match ([regex]::Escape('-KeyVaultName $env:CI_KEY_VAULT_NAME'))
+        $invoke.id | Should -Be 'lifecycle'
+        $invoke.with.inlineScript | Should -Match '-ClientId \$env:VALIDATE_CLIENT_ID'
+        $invoke.env.VALIDATE_CLIENT_ID | Should -Be '${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}'
+        $invoke.with.inlineScript | Should -Match 'environmentGeneration=\$\(\$result\.Generation\)'
+        $invoke.with.inlineScript | Should -Match 'environmentState=\$\(\$result\.State\)'
+        $invoke.with.inlineScript | Should -Match 'storageAccountResourceId=\$\(\$result\.StorageAccountResourceId\)'
+        $invoke.with.inlineScript | Should -Match 'storageContainerResourceId=\$\(\$result\.StorageContainerResourceId\)'
+        $manual.jobs.job_bootstrap.outputs.storageAccountResourceId | Should -Be '${{ steps.lifecycle.outputs.storageAccountResourceId }}'
+        $manual.jobs.job_bootstrap.outputs.storageContainerResourceId | Should -Be '${{ steps.lifecycle.outputs.storageContainerResourceId }}'
+    }
+
+    It 'Masks the subscription, tenant, client and receipt identifiers before signing in' {
+        $jobSteps = @{ prepare = @($prepareSteps); consumer = @($consumer.jobs.job_module_deploy_validation.steps) }
+        foreach ($steps in $jobSteps.Values) {
+            $resolve = $steps | Where-Object id -EQ subscription
+            $login = $steps | Where-Object { $_.uses -like 'azure/login@*' }
+            [array]::IndexOf($steps, $resolve) | Should -BeLessThan ([array]::IndexOf($steps, $login))
+            $resolve.env.VALIDATE_CLIENT_ID | Should -Be '${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}'
+            $resolve.env.HCI_LOG_MASKS | Should -Be '${{ secrets.HCI_LOG_MASKS }}'
+            $resolve.run | Should -Match '\[string\] \$env:VALIDATE_CLIENT_ID'
+            $resolve.run | Should -Match ([regex]::Escape('Register-HciLogMask -AdditionalMasks $env:HCI_LOG_MASKS'))
+        }
+        $receipt = $prepareSteps | Where-Object id -EQ subscription
+        $receipt.env.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT | Should -Be '${{ vars.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT || secrets.HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT }}'
+        $receipt.run | Should -Match '\[string\] \$env:HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT'
+    }
+
+    It 'Uses the pinned Tools CAS action across lifecycle, consumer and history boundaries' {
+        $actionRef = 'Azure/azure-verified-modules-tools/.github/actions/azure-local-environment-lease@ed65b1e2c6168c366be694fa13fb8a07c85b1dff'
+        $lifecycleLeaseSteps = @($prepareSteps | Where-Object uses -EQ $actionRef)
+        @($lifecycleLeaseSteps.with.operation) | Should -Be @('status', 'acquire', 'acquire', 'acquire', 'release')
+        @($lifecycleLeaseSteps | Where-Object id -EQ 'hci-lease-status') | Should -HaveCount 1
+        ($lifecycleLeaseSteps | Where-Object id -EQ hci-lease-status).if | Should -Match "HCI_STAGE != 'Bootstrap'"
+        ($lifecycleLeaseSteps | Where-Object id -EQ hci-lease-status).if | Should -Match "HCI_STAGE != 'Status'"
+        $postBootstrap = $lifecycleLeaseSteps | Where-Object { $_.if -Match "HCI_STAGE == 'Bootstrap'" }
+        $postBootstrap.with.mode | Should -Be 'lifecycle'
+        $postBootstrap.with.expectedGeneration | Should -Be '${{ steps.lifecycle.outputs.environmentGeneration }}'
+        $lifecycleRefresh = $lifecycleLeaseSteps | Where-Object { $_.with.refreshGeneration -ceq 'true' }
+        $lifecycleRefresh.with.ownerHash | Should -Be '${{ steps.subscription.outputs.ownerHash }}'
+        $lifecycleRefresh.if | Should -Match "HCI_STAGE == 'Begin'"
+        $lifecycleRefresh.with.expectedGeneration | Should -Be '${{ steps.lifecycle.outputs.environmentGeneration }}'
+        $lifecycleRelease = $lifecycleLeaseSteps | Where-Object { $_.with.operation -ceq 'release' }
+        $lifecycleRelease.with.cleanupConfirmed | Should -Be 'true'
+        $lifecycleRelease.with.mode | Should -Be 'lifecycle'
+
+        $consumerSteps = @($consumer.jobs.job_module_deploy_validation.steps)
+        $consumerLease = @($consumerSteps | Where-Object uses -EQ $actionRef)
+        @($consumerLease.with.operation) | Should -Be @('status', 'acquire', 'release')
+        $consumerStatus = $consumerSteps | Where-Object id -EQ 'hci-lease-status'
+        $consumerStatus.with.mode | Should -Be 'consumer'
+        $consumerStatus.if | Should -Be '${{ !fromJson(inputs.testCase).e2eIgnore }}'
+        $consumerLease[1].if | Should -Be '${{ !fromJson(inputs.testCase).e2eIgnore }}'
+        $consumerRelease = $consumerLease[-1]
+        $consumerRelease.with.cleanupConfirmed | Should -Be 'true'
+        $consumerRelease.if | Should -Be '${{ success() && steps.hci-consumer.outcome == ''success'' }}'
+        [array]::IndexOf($consumerSteps, $consumerLease[1]) |
+            Should -BeLessThan ([array]::IndexOf($consumerSteps, ($consumerSteps | Where-Object id -EQ hci-consumer)))
+        [array]::IndexOf($consumerSteps, ($consumerSteps | Where-Object name -EQ 'Release only a successfully cleaned test environment')) |
+            Should -BeLessThan ([array]::IndexOf($consumerSteps, $consumerRelease))
+
+        $history = Get-Content (Join-Path $workflowRoot 'platform.deployment.history.cleanup.yml') -Raw | ConvertFrom-Yaml
+        $historySteps = @($history.jobs.job_cleanup_reserved_deployments.steps)
+        ($historySteps | Where-Object id -EQ hci-coordination) | Should -Not -BeNullOrEmpty
+        @($historySteps | Where-Object uses -EQ $actionRef | ForEach-Object { $_.with.operation }) |
+            Should -Be @('status', 'acquire', 'release')
+        $historyActions = @($historySteps | Where-Object uses -EQ $actionRef)
+        $historyActions[0].if | Should -Match "leaseRequired == 'true'"
+        $historyActions[1].if | Should -Match "leaseRequired == 'true'"
+        $historyRelease = $historySteps[-1]
+        $historyRelease.with.cleanupConfirmed | Should -Be 'true'
+
+        foreach ($steps in @(@($prepareSteps), $consumerSteps, $historySteps)) {
+            ($steps | ConvertTo-Json -Depth 20) | Should -Match 'steps\.subscription\.outputs\.ownerHash'
+        }
     }
 
     It 'Keeps private receipt storage out of generic deployments and HCI consumers' {
         foreach ($workflow in @($consumer, $deployment, $action)) {
-            ($workflow | ConvertTo-Json -Depth 30) | Should -Not -Match 'HCI_IMAGE_RECEIPT|HciImageReceipt|ReceiptStorageAccountName'
+            ($workflow | ConvertTo-Json -Depth 30) | Should -Not -Match 'HciImageReceipt|ReceiptStorageAccountName'
         }
-        @($prepare.on.workflow_call.inputs.Keys | Sort-Object) | Should -Be @('recreate', 'testCase')
-        ($prepare | ConvertTo-Json -Depth 30) | Should -Not -Match 'upload-artifact|storageAccountKey|storageSasToken'
+        ($consumer | ConvertTo-Json -Depth 30) | Should -Match 'HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT'
+        @($manual.on.workflow_dispatch.inputs.Keys | Sort-Object) | Should -Be @('operation', 'subscriptionIndex')
+        ($manual | ConvertTo-Json -Depth 30) | Should -Not -Match 'upload-artifact|storageAccountKey|storageSasToken'
     }
 
     It 'Keeps the complete history inventory on the same canonical pool and identity bundle' {
@@ -311,6 +408,10 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $vault = @($compiled['test-key-vault.bicep'].resources | Where-Object type -EQ 'Microsoft.KeyVault/vaults')
         $vault.Count | Should -Be 1
         $vault[0].properties.enableRbacAuthorization | Should -BeTrue
+        # Key Vault rejects an explicit false; omitting the property leaves purge protection off.
+        $vault[0].properties.Contains('enablePurgeProtection') | Should -BeFalse
+        # A deleted vault keeps its name until purged, and reserved tests have no purge permission.
+        $vault[0].name | Should -Match "uniqueString\(deployment\(\)\.name, resourceGroup\(\)\.id\)"
         $max = $compiled['avm/res/hybrid-container-service/provisioned-cluster-instance/tests/e2e/max/main.test.bicep']
         Get-ParameterExpression $max.resources.testDeployment.properties.parameters.kubernetesVersion | Should -Match 'kubernetesVersion'
         Get-ParameterExpression $max.resources.testDeployment.properties.parameters.kubernetesVersion | Should -Not -Match '1\.29\.4'
@@ -342,5 +443,95 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         Get-ParameterExpression $builder.resources.imageTemplate.properties.parameters.stagingResourceGroupResourceId | Should -Match 'stagingResourceGroupName'
         $builder.resources.stagingRoleAssignment.resourceGroup | Should -Be "[parameters('stagingResourceGroupName')]"
         $foundation.parameters.generation | Should -Not -BeNullOrEmpty
+    }
+
+    It 'Grants the cluster module''s resource-provider roles before the host waits for the node extensions' {
+        $foundation = $compiled['foundation.bicep']
+        Get-ParameterExpression $foundation.resources.dependencies.properties.parameters.hciResourceProviderObjectId |
+            Should -Be "[parameters('builtInServicePrincipalObjectId')]"
+        $hostDeployment = $foundation.resources.dependencies.properties.template.resources.hciHostDeployment
+        Get-ParameterExpression $hostDeployment.properties.parameters.hciResourceProviderObjectId |
+            Should -Be "[parameters('hciResourceProviderObjectId')]"
+        $getResources = { param($Template) $Template.resources -is [System.Collections.IDictionary] ? @($Template.resources.Values) : @($Template.resources) }
+        $hostResources = & $getResources $hostDeployment.properties.template
+        $hostRoleNames = @($hostResources | Where-Object { $_.type -eq 'Microsoft.Authorization/roleAssignments' -and $_.name -match 'hciResourceProviderObjectId' } | ForEach-Object { $_.name })
+        $clusterRoleNames = @(& $getResources $foundation.resources.cluster.properties.template | Where-Object { $_.type -eq 'Microsoft.Authorization/roleAssignments' -and $_.name -match 'hciResourceProviderObjectId' } | ForEach-Object { $_.name })
+        $hostRoleNames.Count | Should -Be 4
+        $hostRoleNames | Sort-Object | Should -Be ($clusterRoleNames | Sort-Object)
+        $stage7 = @($hostResources | Where-Object { $_.type -eq 'Microsoft.Compute/virtualMachines/runCommands' -and $_.name -match 'runCommand7' })
+        $stage7.Count | Should -Be 1
+        foreach ($pattern in @(
+                '^nodeAzureConnectedMachineResourceManagerRolePermissions$'
+                '^nodeAzureStackHCIDeviceManagementRole$'
+                '^nodeReaderRolePermissions$'
+                "^spConnectedMachineResourceManagerRolePermissions$|'ConnectedMachineResourceManagerRolePermissions'"
+            )) {
+            @($stage7[0].dependsOn | Where-Object { $_ -match $pattern }).Count | Should -Be 1
+        }
+        ($stage7[0].properties.parameters | Where-Object name -EQ 'ensureEdgeDevices').value |
+            Should -Be "[string(variables('createHciResourceProviderRoleAssignments'))]"
+    }
+
+    It 'Reads the Arc machine identities only after stage 6 registers the machines' {
+        # ARM reads a resource that reference() names outside the template when the deployment starts, whatever its dependencies.
+        $hostTemplate = $compiled['foundation.bicep'].resources.dependencies.properties.template.resources.hciHostDeployment.properties.template
+        $hostResources = $hostTemplate.resources -is [System.Collections.IDictionary] ? @($hostTemplate.resources.Values) : @($hostTemplate.resources)
+        $reader = @($hostResources | Where-Object { $_.type -eq 'Microsoft.Resources/deployments' -and $_.name -match 'arcMachineIdentities' })
+        $reader.Count | Should -Be 1
+        @($reader[0].dependsOn | Where-Object { $_ -match "'runCommand6'" }).Count | Should -Be 1
+        $nodeRoles = @($hostResources | Where-Object { $_.type -eq 'Microsoft.Authorization/roleAssignments' -and $_.copy -and $_.name -match 'hciResourceProviderObjectId' })
+        $nodeRoles.Count | Should -Be 3
+        foreach ($role in $nodeRoles) {
+            $role.properties.principalId | Should -Match "arcMachineIdentities'.*\.outputs\.principalIds\.value\[copyIndex\(\)\]"
+        }
+        @($hostResources | Where-Object { -not [object]::ReferenceEquals($_, $reader[0]) }) | ConvertTo-Json -Depth 50 |
+            Should -Not -Match "reference\((variables\('arcNodeResourceIds'\)|resourceId\('Microsoft\.HybridCompute/machines')"
+    }
+
+    It 'Gives the cluster resource the same name as its Active Directory name, within 15 characters' {
+        $cluster = $compiled['foundation.bicep'].resources.cluster
+        $cluster.properties.template.parameters.clusterADName.maxLength | Should -Be 15
+        @($cluster.properties.parameters.Keys) | Should -Not -Contain 'clusterADName'
+        $environment.clusterName.Length | Should -BeLessOrEqual 15
+    }
+
+    It 'Keeps the foundation host from installing updates and restarting in a maintenance window' {
+        $dependencies = $compiled['foundation.bicep'].resources.dependencies
+        $dependencies.properties.parameters.enableScheduledPatching.value | Should -BeFalse
+        $hostDeployment = $dependencies.properties.template.resources.hciHostDeployment
+        Get-ParameterExpression $hostDeployment.properties.parameters.enableScheduledPatching |
+            Should -Be "[parameters('enableScheduledPatching')]"
+        $hostResources = $hostDeployment.properties.template.resources
+        $hostResources = $hostResources -is [System.Collections.IDictionary] ? @($hostResources.Values) : @($hostResources)
+        $maintenance = @($hostResources | Where-Object type -Match '^Microsoft\.Maintenance/')
+        $maintenance.Count | Should -Be 2
+        $maintenance | ForEach-Object { $_.condition | Should -Be "[parameters('enableScheduledPatching')]" }
+        $vm = @($hostResources | Where-Object type -EQ 'Microsoft.Compute/virtualMachines')
+        $vm.Count | Should -Be 1
+        $vm[0].properties.osProfile.windowsConfiguration.enableAutomaticUpdates | Should -Be "[parameters('enableScheduledPatching')]"
+        $vm[0].properties.osProfile.windowsConfiguration.patchSettings | Should -Match "parameters\('enableScheduledPatching'\).*'Manual'"
+    }
+
+    It 'Grants the foundation host identity the Arc registration and edge-device roles instead of Owner' {
+        $dependencies = $compiled['foundation.bicep'].resources.dependencies
+        $dependencies.properties.parameters.assignResourceGroupOwner.value | Should -BeFalse
+        $hostDeployment = $dependencies.properties.template.resources.hciHostDeployment
+        Get-ParameterExpression $hostDeployment.properties.parameters.assignResourceGroupOwner |
+            Should -Be "[parameters('assignResourceGroupOwner')]"
+        $hostTemplate = $hostDeployment.properties.template
+        $hostResources = $hostTemplate.resources -is [System.Collections.IDictionary] ? @($hostTemplate.resources.Values) : @($hostTemplate.resources)
+        $identityRoles = @($hostResources | Where-Object {
+                $_.type -eq 'Microsoft.Authorization/roleAssignments' -and $_.properties.principalId -match "userAssignedIdentities'"
+            })
+        $identityRoles.Count | Should -Be 2
+        $owner = @($identityRoles | Where-Object { -not $_.copy })
+        $owner[0].properties.roleDefinitionId | Should -Match '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+        $owner[0].condition | Should -Be "[parameters('assignResourceGroupOwner')]"
+        @($identityRoles | Where-Object { $_.copy })[0].condition | Should -Be "[not(parameters('assignResourceGroupOwner'))]"
+        $hostTemplate.variables.hostIdentityRoleDefinitionIds | Should -Be @(
+            'b64e21ea-ac4e-4cdf-9dc9-5b892992bee7' # Azure Connected Machine Onboarding
+            'cd570a14-e51a-42ad-bac8-bafd67325302' # Azure Connected Machine Resource Administrator
+            '865ae368-6a45-4bd1-8fbf-0d5151f56fc1' # Azure Stack HCI Device Management Role
+        )
     }
 }

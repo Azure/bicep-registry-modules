@@ -25,7 +25,7 @@ param galleryName string = 'galavmpersistenthci'
 param imageDefinitionName string = 'hci-host-image'
 
 @description('Optional. Deterministic gallery image version published by the image build.')
-param imageVersion string = '26.1.0'
+param imageVersion string = loadJsonContent('environment.json', 'imageVersion')
 
 @description('Optional. Name of the user-assigned managed identity used by Azure VM Image Builder.')
 param imageBuilderIdentityName string = 'id-avm-persistent-hci-image-builder'
@@ -38,9 +38,6 @@ param useScopedContributorRole bool = false
 
 @description('Optional. Name of the Azure VM Image Builder template. Use a new name when changing its build location.')
 param imageTemplateName string = 'hci-host-image-builder'
-
-@description('Optional. Base URI containing this asset and the authoritative HCI host scripts. Pin this URI to the same repository commit as this template.')
-param assetBaseUri string = 'https://raw.githubusercontent.com/Azure/bicep-registry-modules/main/utilities/e2e-template-assets/module-specific/azure-stack-hci'
 
 @description('Optional. Download URL for the Azure Stack HCI VHDX payload baked into the host image.')
 param hciVhdxDownloadUri string = loadJsonContent('environment.json', 'hciVhdxDownloadUri')
@@ -146,7 +143,6 @@ module imageTemplate 'hciHostGalleryBuilder.template.bicep' = {
   name: 'hci-host-image-template'
   scope: resourceGroupScope
   params: {
-    assetBaseUri: assetBaseUri
     buildLocation: buildLocation
     buildTimeoutInMinutes: buildTimeoutInMinutes
     buildVmSize: buildVmSize

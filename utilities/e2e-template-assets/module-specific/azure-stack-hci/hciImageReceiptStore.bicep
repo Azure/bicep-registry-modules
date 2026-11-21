@@ -6,7 +6,9 @@ param principalId string
 @description('Required. Client ID of the existing HCI CI workload identity.')
 param clientId string
 
-var accountName = 'sthcircp${uniqueString(toLower(resourceGroup().id), 'hci-image-receipts')}'
+@description('Required. Exact existing CI binding used for the persistent receipt and lock store.')
+param storageAccountName string
+
 var containerName = 'hci-operation-receipts'
 var blobContributorRoleId = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
@@ -14,7 +16,7 @@ var blobContributorRoleId = subscriptionResourceId(
 )
 
 resource receiptAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
-  name: accountName
+  name: storageAccountName
   location: resourceGroup().location
   kind: 'StorageV2'
   sku: {
@@ -88,7 +90,7 @@ resource receiptAccess 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-@description('The separate HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT workflow variable value.')
+@description('The separate HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT workflow value. Store it as an environment secret to keep it out of logs.')
 output storageAccountName string = receiptAccount.name
 
 @description('The exact persistent receipt account resource ID.')

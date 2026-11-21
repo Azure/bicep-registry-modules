@@ -29,6 +29,39 @@ function Get-HciEnvironmentParameterMap {
     Get-CIParameterMap -TemplateParameters $definitions -GitHubVariables $GitHubVariables -GitHubSecrets $GitHubSecrets -KeyVaultName $KeyVaultName
 }
 
+function Get-HciArbServicePrincipalParameterName {
+    # Azure Local 2411.3 and earlier need all three resource-bridge service principal values; later releases need none.
+    [CmdletBinding()]
+    param ([Parameter(Mandatory)] [hashtable] $Parameters)
+
+    $names = @('arbDeploymentAppId', 'arbDeploymentSPObjectId', 'arbDeploymentServicePrincipalSecret')
+    $supplied = @($names | Where-Object { $Parameters.ContainsKey($_) -and $null -ne $Parameters[$_] -and $Parameters[$_].Length -gt 0 })
+    if ($supplied.Count -notin @(0, $names.Count)) {
+        throw "Supply all three resource-bridge service principal parameters [$($names -join ', ')] or none of them. Nothing was started or submitted."
+    }
+    return $supplied
+}
+
+function Register-HciLogMask {
+    # GitHub masks a secret only as its whole value, so each identifier inside a secret is registered on its own.
+    [CmdletBinding()]
+    param (
+        [string[]] $Value = @(),
+        [string] $AdditionalMasks
+    )
+
+    $entries = @($Value) + @(([string] $AdditionalMasks) -split '[\r\n;]')
+    foreach ($entry in $entries) {
+        if ([string]::IsNullOrWhiteSpace($entry)) { continue }
+        $text = $entry.Trim()
+        if ($text.Length -lt 4) {
+            throw 'Every log mask entry must have at least 4 characters; shorter entries would hide unrelated log text.'
+        }
+        @($text, $text.ToLowerInvariant(), $text.ToUpperInvariant()) | Select-Object -Unique |
+            ForEach-Object { Write-Output "::add-mask::$_" }
+    }
+}
+
 function Get-HciTestSubscription {
     [CmdletBinding()]
     param (
@@ -90,6 +123,10 @@ function Get-HciEnvironmentContext {
         if ($config[$name] -isnot [string] -or $config[$name] -cnotmatch '^[a-z][a-z0-9-]{0,63}$') {
             throw "Invalid explicit environment name [$name]."
         }
+    }
+    # Azure Local registers the cluster under its Active Directory name, so the Azure resource must use that same name.
+    if ($config.clusterName.Length -gt 15) {
+        throw 'The cluster name must be at most 15 characters: Azure Local registers the cluster under its Active Directory name.'
     }
     $subscriptionRoot = "/subscriptions/$($SubscriptionId.ToString('D'))"
     $groupIds = @{}
@@ -226,7 +263,7 @@ function Get-HciEnvironmentRegistry {
     $registry = Get-HciOwnedGroup -Context $Context -ResourceId $Context.GroupIds.control -AllowNotFound:$AllowNotFound
     if ($null -ne $registry -and $RequireOwner -and
         ($registry.tags['avm-active-owner'] -cne $Context.Owner -or
-            $registry.tags['avm-state'] -cnotin @('Preparing', 'InUse', 'Recreating'))) {
+            $registry.tags['avm-state'] -cnotin @('Preparing', 'InUse', 'Recreating', 'TearingDown'))) {
         throw 'The environment is owned by another operation or is blocked pending operator investigation.'
     }
     return $registry
@@ -241,8 +278,8 @@ function Set-HciEnvironmentState {
     )
 
     $registry = Get-HciEnvironmentRegistry -Context $Context -RequireOwner:(-not $Acquire)
-    if ($Acquire -and ($registry.tags['avm-state'] -cne 'Idle' -or $registry.tags['avm-active-owner'])) {
-        throw 'The environment is not idle. Unfinished tests, preparation or uncertain cleanup block reuse and recreation.'
+    if ($Acquire -and ($registry.tags['avm-state'] -cnotin @('Idle', 'Down') -or $registry.tags['avm-active-owner'])) {
+        throw 'The environment is not idle or down. Unfinished tests, preparation or uncertain cleanup block reuse and recreation.'
     }
     if (-not $PSCmdlet.ShouldProcess($Context.GroupIds.control, 'Update the environment ownership record')) {
         throw 'The environment ownership update was not performed.'
@@ -268,14 +305,100 @@ function Assert-HciImageReady {
     }
 }
 
+function Initialize-HciEnvironmentBootstrap {
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [Parameter(Mandatory)] [hashtable] $Context,
+        [Parameter(Mandatory)] [guid] $ClientId,
+        [Parameter(Mandatory)] [string] $StorageAccountName,
+        [bool] $Maintenance = $false
+    )
+
+    if (-not $Maintenance) {
+        throw 'Shared Azure Local bootstrap is available only through the dedicated setup workflow [platform.hci.prepare.yml].'
+    }
+    . (Join-Path $PSScriptRoot 'HciImageReceipt.ps1')
+    $identity = Get-HciWorkflowIdentity -TenantId $Context.TenantId -ClientId $ClientId
+    $registry = Get-HciEnvironmentRegistry -Context $Context -AllowNotFound
+    if ($null -eq $registry) {
+        foreach ($id in $Context.OwnedGroupIds) {
+            if ($null -ne (Get-HciArmResource -ResourceId $id -ApiVersion '2024-03-01' -AllowNotFound)) {
+                throw "Unregistered resource group [$id] already exists. Bootstrap will not adopt it."
+            }
+        }
+        $tags = $Context.Tags.Clone()
+        $tags += @{
+            'avm-active-owner' = ''
+            'avm-state' = 'Down'
+            'avm-generation' = [guid]::NewGuid().ToString('N')
+            'avm-image-state' = 'None'
+            'avm-foundation-state' = 'None'
+        }
+        if (-not $PSCmdlet.ShouldProcess($Context.GroupIds.control, 'Create the exact persistent Azure Local control group')) {
+            throw 'The persistent control group was not created.'
+        }
+        $null = New-AzResourceGroup -Name $Context.Config.controlResourceGroupName `
+            -Location $Context.Config.location -Tag $tags -ErrorAction Stop
+    } elseif ($registry.tags['avm-state'] -cnotin @('Idle', 'Down') -or $registry.tags['avm-active-owner']) {
+        throw 'Bootstrap requires an existing idle or down environment with no active owner.'
+    }
+
+    $store = Get-HciImageReceiptStore -Context $Context -StorageAccountName $StorageAccountName `
+        -ExpectedClientId $ClientId -ExpectedPrincipalId $identity.PrincipalId -AllowNotFound -AllowIncomplete
+    $deploymentName = 'avm-ci-azure-local-control-store-v1'
+    $existing = @(Get-AzResourceGroupDeployment -ResourceGroupName $Context.Config.controlResourceGroupName `
+            -Name $deploymentName -ErrorAction SilentlyContinue)
+    if ($existing.Count -gt 1 -or ($existing.Count -eq 1 -and
+            $existing[0].ProvisioningState -cnotin @('Succeeded', 'Failed', 'Canceled'))) {
+        throw 'The persistent store deployment is in progress or uncertain; bootstrap will not submit another deployment.'
+    }
+    $compiled = bicep build (Join-Path $Context.AssetRoot 'hciImageReceiptStore.bicep') --stdout
+    if ($LASTEXITCODE -ne 0) { throw 'The persistent HCI store template did not compile.' }
+    $template = $compiled -join [Environment]::NewLine | ConvertFrom-Json -AsHashtable
+    $parameters = @{
+        storageAccountName = $StorageAccountName
+        principalId = $identity.PrincipalId
+        clientId = $ClientId.ToString('D')
+    }
+    if (-not $PSCmdlet.ShouldProcess($Context.GroupIds.control, 'Create or reconcile the exact persistent HCI receipt and lock store')) {
+        throw 'The persistent HCI store was not deployed.'
+    }
+    $deployment = New-AzResourceGroupDeployment -ResourceGroupName $Context.Config.controlResourceGroupName `
+        -Name $deploymentName -Mode Incremental -TemplateObject $template -TemplateParameterObject $parameters `
+        -ErrorAction Stop
+    if ($deployment.ProvisioningState -cne 'Succeeded') {
+        throw 'The persistent HCI store deployment did not succeed; fixture provisioning is blocked.'
+    }
+    $store = Get-HciImageReceiptStore -Context $Context -StorageAccountName $StorageAccountName `
+        -ExpectedClientId $ClientId -ExpectedPrincipalId $identity.PrincipalId
+    if (-not $store.Complete) { throw 'The persistent HCI store remains incomplete after its exact deployment succeeded.' }
+    $roleAssignmentId = $deployment.Outputs.roleAssignmentResourceId.Value
+    if ($roleAssignmentId -isnot [string] -or
+        $roleAssignmentId -notmatch "^$([regex]::Escape($store.ContainerResourceId))/providers/Microsoft\.Authorization/roleAssignments/[^/]+$") {
+        throw 'The persistent HCI store deployment returned no verifiable container role assignment.'
+    }
+    $roleAssignment = Get-HciArmResource -ResourceId $roleAssignmentId -ApiVersion '2022-04-01'
+    $blobContributorRoleId = "/subscriptions/$($Context.SubscriptionId)/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe"
+    if ($roleAssignment.properties.scope -ine $store.ContainerResourceId -or
+        $roleAssignment.properties.principalId -ine $identity.PrincipalId -or
+        $roleAssignment.properties.roleDefinitionId -ine $blobContributorRoleId) {
+        throw 'The persistent HCI store role assignment does not grant the exact container access to the workflow identity.'
+    }
+    $result = Get-HciEnvironmentStatus -Context $Context
+    $result.StorageAccountResourceId = $store.AccountResourceId
+    $result.StorageContainerResourceId = $store.ContainerResourceId
+    return $result
+}
+
 function Remove-HciOwnedResourceGroup {
     [CmdletBinding(SupportsShouldProcess)]
     param ([Parameter(Mandatory)] [hashtable] $Context)
 
     $registry = Get-HciEnvironmentRegistry -Context $Context -RequireOwner
-    if ($registry.tags['avm-state'] -cne 'Recreating' -or $registry.tags['avm-image-state'] -cnotin @('None', 'Ready') -or
+    if ($registry.tags['avm-state'] -cnotin @('Recreating', 'TearingDown') -or
+        $registry.tags['avm-image-state'] -cnotin @('None', 'Ready') -or
         $registry.tags['avm-foundation-state'] -cnotin @('None', 'Provisioned', 'Ready')) {
-        throw 'Unfinished or uncertain preparation blocks recreation.'
+        throw 'Unfinished or uncertain preparation blocks recreation or teardown.'
     }
     foreach ($id in $Context.OwnedGroupIds) {
         $null = Get-HciOwnedGroup -Context $Context -ResourceId $id
@@ -350,17 +473,26 @@ function Start-HciEnvironmentPreparation {
         }
         $null = New-AzResourceGroup -Name $Context.Config.controlResourceGroupName -Location $Context.Config.location -Tag $tags -ErrorAction Stop
     } else {
-        foreach ($id in $Context.OwnedGroupIds) { $null = Get-HciOwnedGroup -Context $Context -ResourceId $id }
+        $wasDown = $registry.tags['avm-state'] -ceq 'Down'
+        if (-not $wasDown) {
+            foreach ($id in $Context.OwnedGroupIds) { $null = Get-HciOwnedGroup -Context $Context -ResourceId $id }
+        }
         Set-HciEnvironmentState -Context $Context -Acquire -Values @{
             'avm-active-owner' = $Context.Owner
-            'avm-state'        = $Recreate ? 'Recreating' : 'Preparing'
+            'avm-state'        = $Recreate -and -not $wasDown ? 'Recreating' : 'Preparing'
         }
-        if ($Recreate) {
+        if ($Recreate -and -not $wasDown) {
             Remove-HciOwnedResourceGroup -Context $Context
             Set-HciEnvironmentState -Context $Context -Values @{
                 'avm-state'            = 'Preparing'
                 'avm-generation'       = [guid]::NewGuid().ToString('N')
                 'avm-image-state'      = 'None'
+                'avm-foundation-state' = 'None'
+            }
+        } elseif ($wasDown) {
+            Set-HciEnvironmentState -Context $Context -Values @{
+                'avm-generation'       = [guid]::NewGuid().ToString('N')
+                'avm-image-state'      = $Context.ExternalImage ? 'Ready' : 'None'
                 'avm-foundation-state' = 'None'
             }
         }
@@ -395,7 +527,6 @@ function Start-HciEnvironmentPreparation {
     $pending = New-HciImageReceipt -Store $store
     $build = @{
         TemplateFile              = Join-Path $Context.AssetRoot 'hciHostGalleryBuilder.bicep'
-        AssetBaseUri              = "https://raw.githubusercontent.com/Azure/bicep-registry-modules/$SourceCommit/utilities/e2e-template-assets/module-specific/azure-stack-hci"
         SubscriptionId            = $Context.SubscriptionId
         Location                  = $Context.Config.location
         BuildLocation             = $Context.Config.location
@@ -467,7 +598,6 @@ function Wait-HciEnvironmentImage {
     $store = Get-HciImageReceiptContext -Context $Context -SourceCommit $SourceCommit -RunIdentity $RunIdentity -StorageAccountName $ReceiptStorageAccountName
     $receipt = Get-HciImageReceipt -Store $store -Tags $registry.tags
     $build = @{
-        AssetBaseUri             = "https://raw.githubusercontent.com/Azure/bicep-registry-modules/$SourceCommit/utilities/e2e-template-assets/module-specific/azure-stack-hci"
         SubscriptionId           = $Context.SubscriptionId
         Location                 = $Context.Config.location
         BuildLocation            = $Context.Config.location
@@ -519,11 +649,13 @@ function Start-HciEnvironmentFoundation {
     if (Get-HciArmResource -ResourceId $Context.DeploymentResourceId -ApiVersion '2022-09-01' -AllowNotFound) {
         throw 'An unrecorded foundation deployment already exists; it will not be adopted or overwritten.'
     }
-    foreach ($name in @('arbLocalAdminAndDeploymentUserPass', 'arbDeploymentAppId', 'arbDeploymentSPObjectId', 'arbDeploymentServicePrincipalSecret', 'builtInServicePrincipalObjectId')) {
+    $requiredNames = @('arbLocalAdminAndDeploymentUserPass', 'builtInServicePrincipalObjectId')
+    foreach ($name in $requiredNames) {
         if (-not $Parameters.ContainsKey($name) -or $null -eq $Parameters[$name] -or $Parameters[$name].Length -eq 0) {
             throw "Required existing CI identity/credential parameter [$name] is missing. No foundation deployment was submitted."
         }
     }
+    $submittedNames = $requiredNames + @(Get-HciArbServicePrincipalParameterName -Parameters $Parameters)
     $compiled = bicep build (Join-Path $Context.AssetRoot 'foundation.bicep') --stdout
     if ($LASTEXITCODE -ne 0) { throw 'The Azure Local foundation did not compile.' }
     $template = $compiled -join [Environment]::NewLine | ConvertFrom-Json -AsHashtable
@@ -536,7 +668,7 @@ function Start-HciEnvironmentFoundation {
         generation              = $registry.tags['avm-generation']
         hciHostImageReferenceId  = $Context.ImageVersionResourceId
     }
-    foreach ($name in @('arbLocalAdminAndDeploymentUserPass', 'arbDeploymentAppId', 'arbDeploymentSPObjectId', 'arbDeploymentServicePrincipalSecret', 'builtInServicePrincipalObjectId')) {
+    foreach ($name in $submittedNames) {
         $value = $Parameters[$name]
         $values[$name] = $value -is [securestring] ? ([pscredential]::new('ci', $value)).GetNetworkCredential().Password : $value
     }
@@ -704,6 +836,107 @@ function Get-HciEnvironmentReadiness {
     }
     $result.Foundation = $foundation
     return $result
+}
+
+function Remove-HciClusterDeploymentAccess {
+    [CmdletBinding(SupportsShouldProcess)]
+    param ([Parameter(Mandatory)] [hashtable] $Context)
+
+    # The cluster module keeps its deployment identity's grants on the foundation group after the cluster is deployed.
+    $roleDefinitionIds = @(
+        'b24988ac-6180-42a0-ab88-20f7382dd24c' # Contributor
+        'acdd72a7-3385-48ef-bd42-f606fba81ae7' # Reader
+        'f58310d9-a9f6-439a-9e8d-f62e7b41a168' # Role Based Access Control Administrator
+    )
+    $groupId = $Context.GroupIds.foundation
+    $identityId = "$groupId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/temp-$($Context.Config.clusterName)"
+    $identity = Get-HciArmResource -ResourceId $identityId -ApiVersion '2023-01-31' -AllowNotFound
+    if ($null -eq $identity) { return }
+    $principalId = [guid]::Empty
+    if (-not [guid]::TryParse([string] $identity.properties.principalId, [ref] $principalId) -or $principalId -eq [guid]::Empty) {
+        throw 'The cluster deployment identity has no verifiable principal.'
+    }
+    $filter = [uri]::EscapeDataString("principalId eq '$($principalId.ToString('D'))'")
+    $response = Invoke-AzRestMethod -Method GET -ErrorAction Stop `
+        -Path "$groupId/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&`$filter=$filter"
+    $content = ConvertFrom-Json -InputObject $response.Content -AsHashtable -NoEnumerate -ErrorAction Stop
+    if ($response.StatusCode -ne 200 -or $content -isnot [System.Collections.IDictionary] -or
+        $content.value -isnot [array] -or $content.nextLink) {
+        throw 'The cluster deployment identity''s role assignments could not be listed completely.'
+    }
+    foreach ($assignment in $content.value) {
+        $properties = $assignment.properties
+        if ($properties.principalId -ine $principalId.ToString('D') -or $properties.scope -ine $groupId -or
+            ([string] $properties.roleDefinitionId -split '/')[-1] -notin $roleDefinitionIds) {
+            continue
+        }
+        if ($assignment.id -notmatch "^$([regex]::Escape($groupId))/providers/Microsoft\.Authorization/roleAssignments/[0-9a-fA-F-]{36}$") {
+            throw 'A cluster deployment identity role assignment has an unexpected identity.'
+        }
+        if ($PSCmdlet.ShouldProcess($assignment.id, 'Remove the cluster deployment identity''s role assignment')) {
+            $deleted = Invoke-AzRestMethod -Method DELETE -Path "$($assignment.id)?api-version=2022-04-01" -ErrorAction Stop
+            if ($deleted.StatusCode -notin @(200, 202, 204)) {
+                throw 'A role assignment of the cluster deployment identity was not removed.'
+            }
+        }
+    }
+}
+
+function Get-HciEnvironmentStatus {
+    [CmdletBinding()]
+    param ([Parameter(Mandatory)] [hashtable] $Context)
+
+    $registry = Get-HciEnvironmentRegistry -Context $Context -AllowNotFound
+    if ($null -eq $registry) {
+        return @{
+            State = 'Missing'
+            ActiveOwner = ''
+            Generation = ''
+            ImageState = 'None'
+            FoundationState = 'None'
+            ExternalImage = $Context.ExternalImage
+        }
+    }
+    return @{
+        State = [string] $registry.tags['avm-state']
+        ActiveOwner = [string] $registry.tags['avm-active-owner']
+        Generation = [string] $registry.tags['avm-generation']
+        ImageState = [string] $registry.tags['avm-image-state']
+        FoundationState = [string] $registry.tags['avm-foundation-state']
+        ExternalImage = $Context.ExternalImage
+    }
+}
+
+function Stop-HciEnvironment {
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [Parameter(Mandatory)] [hashtable] $Context,
+        [bool] $Maintenance = $false
+    )
+
+    if (-not $Maintenance) {
+        throw 'Shared Azure Local teardown is available only through the dedicated setup workflow [platform.hci.prepare.yml].'
+    }
+    $registry = Get-HciEnvironmentRegistry -Context $Context -AllowNotFound
+    if ($null -eq $registry) { throw 'The reserved environment has not been set up.' }
+    if ($registry.tags['avm-state'] -cne 'Idle' -or $registry.tags['avm-active-owner']) {
+        throw 'Teardown requires an idle environment with no active consumer or lifecycle operation.'
+    }
+    if (-not $PSCmdlet.ShouldProcess($Context.GroupIds.control, 'Acquire the idle environment and tear down its exact registered owned groups')) {
+        throw 'Environment teardown was not performed.'
+    }
+    Set-HciEnvironmentState -Context $Context -Acquire -Values @{
+        'avm-active-owner' = $Context.Owner
+        'avm-state' = 'TearingDown'
+    }
+    Remove-HciOwnedResourceGroup -Context $Context
+    Set-HciEnvironmentState -Context $Context -Values @{
+        'avm-state' = 'Down'
+        'avm-active-owner' = ''
+        'avm-image-state' = $Context.ExternalImage ? 'Ready' : 'None'
+        'avm-foundation-state' = 'None'
+    }
+    return Get-HciEnvironmentStatus -Context $Context
 }
 
 function Enter-HciEnvironmentTest {

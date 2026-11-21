@@ -5,6 +5,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciPreparationStep.ps1')
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciTestConsumer.ps1')
+        . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Write-HciEnvironmentProjection.ps1')
         . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciDeploymentHistoryCleanup.ps1')
         function Get-AzContext {}
         function Get-AzResourceProvider { param ($ProviderNamespace) }
@@ -12,9 +13,13 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         function Invoke-AzRestMethod { param ($Method, $Path, $Payload) }
         function New-AzResourceGroup { param ($Name, $Location, $Tag) }
         function New-AzSubscriptionDeployment { param ($Name, $Location, $TemplateFile, $TemplateParameterObject) }
+        function New-AzResourceGroupDeployment {
+            param ($ResourceGroupName, $Name, $Mode, $TemplateObject, $TemplateParameterObject)
+        }
         function Update-AzTag { param ($ResourceId, $Operation, $Tag) }
         function Get-AzResourceGroupDeployment { param ($ResourceGroupName, $Name, $DefaultProfile) }
         function Get-AzAccessToken { param ([switch] $AsSecureString) }
+        function Get-AzResource { [CmdletBinding()] param ($ResourceGroupName) }
         function Add-Group($Id, $Tags) {
             $script:resources[$Id] = @{
                 id = $Id
@@ -27,7 +32,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             $tags = $context.Tags.Clone()
             $tags += @{
                 'avm-state' = $State
-                'avm-active-owner' = $State -eq 'Idle' ? '' : $context.Owner
+                'avm-active-owner' = $State -cin @('Preparing', 'InUse', 'Recreating', 'TearingDown') ? $context.Owner : ''
                 'avm-image-state' = $ImageState
                 'avm-foundation-state' = $FoundationState
                 'avm-generation' = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
@@ -87,8 +92,17 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
                     containerDeleteRetentionPolicy = @{ enabled = $false }
                 }
             }
-            $id = "$accountId/blobServices/default/containers/hci-operation-receipts"
-            $script:resources[$id] = @{ id = $id; properties = @{ publicAccess = 'None' } }
+            $containerId = "$accountId/blobServices/default/containers/hci-operation-receipts"
+            $script:resources[$containerId] = @{ id = $containerId; properties = @{ publicAccess = 'None' } }
+            $script:receiptRoleAssignmentId = "$containerId/providers/Microsoft.Authorization/roleAssignments/offline-receipt-access"
+            $script:resources[$script:receiptRoleAssignmentId] = @{
+                id = $script:receiptRoleAssignmentId
+                properties = @{
+                    scope = $containerId
+                    principalId = '77777777-7777-7777-7777-777777777777'
+                    roleDefinitionId = '/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+                }
+            }
         }
         function Add-ReadyFoundation {
             $prefix = $context.GroupIds.foundation
@@ -223,6 +237,16 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         $script:hciContext = $context
     }
 
+    It 'Masks each identifier and each extra mask entry in every casing, and rejects entries too short to mask safely' {
+        $masks = @(Register-HciLogMask -Value @('AbCd-1234', '') -AdditionalMasks "Test Subscription;`r`ntenant.example`n `n")
+        $masks | Should -Be @(
+            '::add-mask::AbCd-1234', '::add-mask::abcd-1234', '::add-mask::ABCD-1234'
+            '::add-mask::Test Subscription', '::add-mask::test subscription', '::add-mask::TEST SUBSCRIPTION'
+            '::add-mask::tenant.example', '::add-mask::TENANT.EXAMPLE'
+        )
+        { Register-HciLogMask -AdditionalMasks "valid-entry`nabc" } | Should -Throw '*at least 4 characters*'
+    }
+
     It 'Uses explicit reserved-subscription identities and distinct CI-owned groups' {
         $context.Config.location | Should -BeExactly 'australiaeast'
         $context.OwnedGroupIds.Count | Should -Be 3
@@ -230,8 +254,8 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         $context.ImageVersionResourceId | Should -Not -Match 'persistent'
         $context.Tags.lifecycle | Should -Be 'tenant-persistent'
         $context.GroupIds.Values | Sort-Object -Unique | Should -HaveCount 4
-        $context.Config.hciVhdxDownloadUri | Should -BeExactly 'https://jumpstartprodsg.blob.core.windows.net/jslocal/localbox/prod/AzLocal2601.vhdx'
-        $context.Config.hciVhdxSha256 | Should -BeExactly '3a797826d7e7ae7abc55d1071322ddecc80575c2356fea9e74818ab9f6720a1f'
+        $context.Config.hciVhdxDownloadUri | Should -BeExactly 'https://azlocalvhds.blob.core.windows.net/images/AzLocal2608.vhdx'
+        $context.Config.hciVhdxSha256 | Should -BeExactly 'cd670067f6b07dea2d1a4e7219bf00492de2591557a754a9ed0f13f0b01bfdc5'
     }
 
     It 'Rejects an invalid payload <field> before resource access' -ForEach @(
@@ -309,6 +333,17 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         Should -Invoke New-AzResourceGroup -Times 0 -Exactly
     }
 
+    It 'Rejects a cluster name that Azure Local cannot register under its Active Directory name' {
+        $script:unsupportedConfig = $context.Config.Clone()
+        $script:unsupportedConfig.clusterName = 'a' * 16
+        Mock Get-Content { $script:unsupportedConfig | ConvertTo-Json } -ParameterFilter { $LiteralPath -like '*environment.json' }
+
+        { Get-HciEnvironmentContext @inputObject } | Should -Throw '*cluster name must be at most 15 characters*'
+
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+    }
+
     It 'Accepts a fork-owned tenant and subscription without an upstream publisher identity' {
         $script:current.Subscription.Id = '99999999-9999-9999-9999-999999999999'
         $script:current.Tenant.Id = 'cccccccc-cccc-cccc-cccc-cccccccccccc'
@@ -343,7 +378,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
     }
 
     It 'Rejects mutable image aliases before any resource access' {
-        { Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId ($context.ImageVersionResourceId -replace '26\.1\.0$', 'latest') } |
+        { Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId ($context.ImageVersionResourceId -replace '/versions/[^/]+$', '/versions/latest') } |
             Should -Throw '*immutable*'
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
     }
@@ -403,6 +438,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         @{ state = 'Preparing' }
         @{ state = 'InUse' }
         @{ state = 'Recreating' }
+        @{ state = 'TearingDown' }
     ) {
         Add-Registry -State $state
         $script:resources[$context.GroupIds.control].tags['avm-active-owner'] = 'c' * 64
@@ -428,6 +464,9 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         @{ stage = 'FoundationStart' }
         @{ stage = 'FoundationObserve' }
         @{ stage = 'Ready' }
+        @{ stage = 'Status' }
+        @{ stage = 'Bootstrap' }
+        @{ stage = 'Teardown' }
     ) {
         { Invoke-HciPreparationStep -Stage $stage -RepoRootPath $RepoRootPath `
                 -ModulePath 'avm/res/azure-stack-hci/logical-network' -TestCase @{} -TestSubscriptionIds '[]' `
@@ -435,6 +474,86 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             Should -Throw '*platform.hci.prepare.yml*'
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
         Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+    }
+
+    It 'Bootstraps the exact persistent control store before fixture mutation' {
+        $clientId = [guid] '66666666-6666-6666-6666-666666666666'
+        $principalId = [guid] '77777777-7777-7777-7777-777777777777'
+        $storageAccountName = 'sthcircpabcdefghijklm'
+        Mock Get-HciWorkflowIdentity {
+            @{ ClientId = $clientId.ToString('D'); PrincipalId = $principalId.ToString('D') }
+        }
+        Mock bicep {
+            $global:LASTEXITCODE = 0
+            @{ resources = @() } | ConvertTo-Json
+        }
+        Mock New-AzResourceGroupDeployment {
+            Add-ReceiptStore
+            [pscustomobject] @{
+                ProvisioningState = 'Succeeded'
+                Outputs = @{ roleAssignmentResourceId = @{ value = $script:receiptRoleAssignmentId } }
+            }
+        }
+
+        $status = Initialize-HciEnvironmentBootstrap -Context $context -ClientId $clientId `
+            -StorageAccountName $storageAccountName -Maintenance:$true
+
+        $status.State | Should -Be 'Down'
+        $status.Generation | Should -Match '^[a-f0-9]{32}$'
+        $status.StorageAccountResourceId | Should -Match '/storageAccounts/sthcircpabcdefghijklm$'
+        $status.StorageContainerResourceId | Should -Match '/containers/hci-operation-receipts$'
+        $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -BeNullOrEmpty
+        $script:resources[$context.GroupIds.control].tags['avm-image-state'] | Should -Be 'None'
+        Should -Invoke New-AzResourceGroup -Times 1 -Exactly
+        Should -Invoke New-AzResourceGroupDeployment -Times 1 -Exactly
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+        foreach ($id in $context.OwnedGroupIds) { $script:resources.ContainsKey($id) | Should -BeFalse }
+    }
+
+    It 'Reconciles a validated persistent store idempotently without adopting unrelated resources' {
+        $clientId = [guid] '66666666-6666-6666-6666-666666666666'
+        $principalId = [guid] '77777777-7777-7777-7777-777777777777'
+        Add-Registry -State Down -ImageState None
+        Add-ReceiptStore
+        Mock Get-HciWorkflowIdentity {
+            @{ ClientId = $clientId.ToString('D'); PrincipalId = $principalId.ToString('D') }
+        }
+        Mock bicep {
+            $global:LASTEXITCODE = 0
+            @{ resources = @() } | ConvertTo-Json
+        }
+        Mock New-AzResourceGroupDeployment {
+            [pscustomobject] @{
+                ProvisioningState = 'Succeeded'
+                Outputs = @{ roleAssignmentResourceId = @{ value = $script:receiptRoleAssignmentId } }
+            }
+        }
+
+        $status = Initialize-HciEnvironmentBootstrap -Context $context -ClientId $clientId `
+            -StorageAccountName 'sthcircpabcdefghijklm' -Maintenance:$true
+
+        $status.State | Should -Be 'Down'
+        Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+        Should -Invoke New-AzResourceGroupDeployment -Times 1 -Exactly
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+    }
+
+    It 'Refuses a persistent store bound to another identity' {
+        Add-Registry -State Down -ImageState None
+        Add-ReceiptStore
+        Mock Get-HciWorkflowIdentity {
+            @{ ClientId = '66666666-6666-6666-6666-666666666666'; PrincipalId = '77777777-7777-7777-7777-777777777777' }
+        }
+        $script:resources['/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-avm-ci-azure-local-control/providers/Microsoft.Storage/storageAccounts/sthcircpabcdefghijklm'].tags['avm-ci-principal'] = '88888888-8888-8888-8888-888888888888'
+        Mock New-AzResourceGroupDeployment { throw 'Wrong identity must not be adopted.' }
+
+        { Initialize-HciEnvironmentBootstrap -Context $context `
+                -ClientId ([guid] '66666666-6666-6666-6666-666666666666') `
+                -StorageAccountName 'sthcircpabcdefghijklm' -Maintenance:$true } |
+            Should -Throw '*bound to another CI identity*'
+
+        Should -Invoke New-AzResourceGroupDeployment -Times 0 -Exactly
         Should -Invoke Update-AzTag -Times 0 -Exactly
     }
 
@@ -461,9 +580,6 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
                 SourceCommit        = 'b' * 40
                 GitHubSecrets       = @{
                     CI_ARB_LOCAL_ADMIN_AND_DEPLOYMENT_USER_PASS = 'offline'
-                    CI_ARB_DEPLOYMENT_APP_ID                    = 'offline'
-                    CI_ARB_DEPLOYMENT_SP_OBJECT_ID              = 'offline'
-                    CI_ARB_DEPLOYMENT_SERVICE_PRINCIPAL_SECRET  = 'offline'
                 } | ConvertTo-Json -Compress
                 Recreate            = $false
                 Maintenance         = $true
@@ -495,6 +611,28 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             Should -Invoke New-AzResourceGroup -Times 0 -Exactly
             Should -Invoke New-AzSubscriptionDeployment -Times 0 -Exactly
             Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
+        }
+
+        It 'Rejects a partial resource-bridge service principal before preparation' {
+            Mock Get-AzResourceProvider {
+                [pscustomobject]@{
+                    ProviderNamespace = $ProviderNamespace
+                    RegistrationState = 'Registered'
+                    ResourceTypes     = @([pscustomobject]@{ ResourceTypeName = 'offline-type' })
+                }
+            }
+            Add-Registry -State Idle
+            Add-ReadyImage
+            $beginInput.GitHubSecrets = @{
+                CI_ARB_LOCAL_ADMIN_AND_DEPLOYMENT_USER_PASS = 'offline'
+                CI_ARB_DEPLOYMENT_APP_ID                    = 'offline'
+            } | ConvertTo-Json -Compress
+
+            { Invoke-HciPreparationStep @beginInput } | Should -Throw '*all three resource-bridge service principal parameters*'
+
+            Should -Invoke Get-AzResourceProvider -Times 0 -Exactly
+            Should -Invoke Update-AzTag -Times 0 -Exactly
+            $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -BeExactly 'Idle'
         }
 
         It 'Rejects <case> provider output before preparation' -ForEach @(
@@ -617,6 +755,67 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
     }
 
+    It 'Reports missing and registered state without mutation' {
+        $missing = Get-HciEnvironmentStatus -Context $context
+        $missing.State | Should -Be 'Missing'
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+
+        Add-Registry -State Idle -FoundationState Ready
+        $status = Get-HciEnvironmentStatus -Context $context
+        $status.State | Should -Be 'Idle'
+        $status.Generation | Should -Be 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+        $status.ImageState | Should -Be 'Ready'
+        $status.FoundationState | Should -Be 'Ready'
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+        $script:deleted.Count | Should -Be 0
+    }
+
+    It 'Rotates the generation when <operation> a torn-down external-image environment' -ForEach @(
+        @{ operation = 'prepare'; recreate = $false }
+        @{ operation = 'recreate'; recreate = $true }
+    ) {
+        $external = '/subscriptions/33333333-3333-3333-3333-333333333333/resourceGroups/external/providers/Microsoft.Compute/galleries/external/images/host/versions/1.2.3'
+        $context = Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId $external
+        Add-Registry -State Down -ImageState Ready -FoundationState None
+        foreach ($id in $context.OwnedGroupIds) { $script:resources.Remove($id) }
+        Add-ReadyImage
+
+        Start-HciEnvironmentPreparation -Context $context -SourceCommit ('b' * 40) `
+            -Recreate:$recreate -Maintenance:$true
+
+        $tags = $script:resources[$context.GroupIds.control].tags
+        $tags['avm-state'] | Should -Be 'Preparing'
+        $tags['avm-generation'] | Should -Match '^[a-f0-9]{32}$'
+        $tags['avm-generation'] | Should -Not -Be 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+        $tags['avm-image-state'] | Should -Be 'Ready'
+        $tags['avm-foundation-state'] | Should -Be 'None'
+        foreach ($id in $context.OwnedGroupIds) { $script:resources.ContainsKey($id) | Should -BeTrue }
+        Should -Invoke New-AzResourceGroup -Times 1 -Exactly
+        $script:resources.ContainsKey($external) | Should -BeTrue
+    }
+
+    It 'Tears down only an idle environment and records Down' {
+        Add-Registry -State Idle -FoundationState Ready
+        Add-ReadyImage
+
+        $status = Stop-HciEnvironment -Context $context -Maintenance:$true
+
+        $status.State | Should -Be 'Down'
+        $status.ImageState | Should -Be 'None'
+        $status.FoundationState | Should -Be 'None'
+        $status.Generation | Should -Be 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+        @($script:deleted | Sort-Object) | Should -Be @($context.OwnedGroupIds | Sort-Object)
+        $script:resources.ContainsKey($context.GroupIds.control) | Should -BeTrue
+        Should -Invoke Update-AzTag -Times 2 -Exactly
+    }
+
+    It 'Blocks teardown while the environment is not idle' {
+        Add-Registry -State InUse -FoundationState Ready
+        { Stop-HciEnvironment -Context $context -Maintenance:$true } | Should -Throw '*idle environment*'
+        $script:deleted.Count | Should -Be 0
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+    }
+
     It 'Deletes only registered owned groups on explicit maintenance and leaves external images untouched' {
         $external = '/subscriptions/33333333-3333-3333-3333-333333333333/resourceGroups/external/providers/Microsoft.Compute/galleries/external/images/host/versions/1.2.3'
         $context = Get-HciEnvironmentContext @inputObject -HciHostImageReferenceId $external
@@ -685,6 +884,73 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         }
         { Get-HciEnvironmentReadiness -Context $context } | Should -Throw
         $script:deleted.Count | Should -Be 0
+    }
+
+    It 'Writes a runner-local nonsecret projection from read-only readiness validation' {
+        Add-Registry -State Idle -FoundationState Ready
+        Add-ReadyImage
+        Add-ReadyFoundation
+        $runnerTemp = Join-Path $TestDrive 'projection'
+        $null = New-Item -ItemType Directory -Path $runnerTemp
+        $outputPath = Join-Path $runnerTemp 'azure-local.json'
+        $key = Get-HciEnvironmentKey -Value $context.SubscriptionId
+        $projectionInput = @{
+            RepoRootPath = $RepoRootPath
+            SubscriptionKey = $key
+            TestSubscriptionIds = ConvertTo-Json -InputObject @(@{
+                    id = $context.SubscriptionId
+                    name = 'reserved'
+                    tag = 'Azure Local'
+                }) -Compress
+            TenantId = $context.TenantId
+            Owner = $context.Owner
+            OutputPath = $outputPath
+        }
+
+        $projection = Write-HciEnvironmentProjection @projectionInput
+        $persisted = Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json -AsHashtable
+
+        $projection.schemaVersion | Should -Be 1
+        $persisted | ConvertTo-Json -Depth 10 -Compress | Should -Be ($projection | ConvertTo-Json -Depth 10 -Compress)
+        $persisted.state | Should -Be 'Idle'
+        $persisted.generation | Should -Be 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+        $persisted.customLocationResourceId | Should -Match '/Microsoft.ExtendedLocation/customLocations/'
+        $persisted.vSwitchName | Should -Be 'ConvergedSwitch(ManagementCompute)'
+        $persisted.kubernetesVersion | Should -Be '1.32.6'
+        ($persisted | ConvertTo-Json -Depth 10) | Should -Not -Match 'activeOwner|keyVaultName|credential'
+        Should -Invoke Update-AzTag -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -ne 'GET' }
+    }
+
+    It 'Refuses a projection for a non-idle fixture or an existing output file' {
+        Add-Registry -State Down -FoundationState None -ImageState Ready
+        $runnerTemp = Join-Path $TestDrive 'projection-errors'
+        $null = New-Item -ItemType Directory -Path $runnerTemp
+        $outputPath = Join-Path $runnerTemp 'azure-local.json'
+        $key = Get-HciEnvironmentKey -Value $context.SubscriptionId
+        $projectionInput = @{
+            RepoRootPath = $RepoRootPath
+            SubscriptionKey = $key
+            TestSubscriptionIds = ConvertTo-Json -InputObject @(@{
+                    id = $context.SubscriptionId
+                    name = 'reserved'
+                    tag = 'Azure Local'
+                }) -Compress
+            TenantId = $context.TenantId
+            Owner = $context.Owner
+            OutputPath = $outputPath
+        }
+
+        { Write-HciEnvironmentProjection @projectionInput } | Should -Throw '*not idle and validated*'
+        Test-Path -LiteralPath $outputPath | Should -BeFalse
+
+        $script:resources[$context.GroupIds.control].tags['avm-state'] = 'Idle'
+        $script:resources[$context.GroupIds.control].tags['avm-foundation-state'] = 'Ready'
+        Add-ReadyImage
+        Add-ReadyFoundation
+        Set-Content -LiteralPath $outputPath -Value '{}'
+        { Write-HciEnvironmentProjection @projectionInput } | Should -Throw '*new runner-local file*'
+        Should -Invoke Update-AzTag -Times 0 -Exactly
     }
 
     It 'Keeps cluster-under-test consumers image-only and does not require or return a persistent cluster' {
@@ -1010,6 +1276,7 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             $prepared.kubernetesVersion | Should -Be '1.32.6'
             $data.ParameterOverrides.hciHostImageReferenceId | Should -Be $context.ImageVersionResourceId
             $data.ParameterOverrides.resourceGroupName | Should -Be "dep-avm-hci-$($savedContext.Owner.Substring(0, 20))"
+            $savedContext.TestResourceGroupId | Should -Be "/subscriptions/$($context.SubscriptionId)/resourceGroups/$($data.ParameterOverrides.resourceGroupName)"
             $data.ProtectedResourceIds | Should -Be (@($context.GroupIds.control) + $context.OwnedGroupIds + @($context.ImageVersionResourceId))
             $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'InUse'
             ((Get-Content $dataFile, $contextFile -Raw) -join '') | Should -Not -Match 'credential-not-saved'
@@ -1127,8 +1394,10 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
                 }
                 if ($Method -eq 'POST') {
                     if ($script:resources.ContainsKey($context.GroupIds.control)) {
-                        $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Preparing'
-                        $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -Not -BeNullOrEmpty
+                        if ($script:resources[$context.GroupIds.control].tags['avm-state'] -cne 'Down') {
+                            $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Preparing'
+                            $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -Not -BeNullOrEmpty
+                        }
                     }
                     $script:historyRequested = $true
                     return [pscustomobject] @{ responses = @() }
@@ -1150,6 +1419,19 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Idle'
             $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -BeNullOrEmpty
             Should -Invoke Update-AzTag -Times 2 -Exactly
+            Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Path -like "$($script:historyRecordId)?*" }
+        }
+
+        It 'Cleans history in Down state without reacquiring or deleting fixture ownership' {
+            Add-Registry -State Down -ImageState None -FoundationState None
+            foreach ($id in $context.OwnedGroupIds) { $script:resources.Remove($id) }
+
+            Invoke-HciDeploymentHistoryCleanup @historyInput
+
+            $script:historyRequested | Should -BeTrue
+            $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -Be 'Down'
+            $script:resources[$context.GroupIds.control].tags['avm-active-owner'] | Should -BeNullOrEmpty
+            Should -Invoke Update-AzTag -Times 0 -Exactly
             Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Path -like "$($script:historyRecordId)?*" }
         }
 
@@ -1227,6 +1509,8 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             $payloadObject.properties.parameters.location.value | Should -BeExactly $context.Config.location
             $payloadObject.properties.parameters.hciHostImageReferenceId.value | Should -Be $context.ImageVersionResourceId
             $payloadObject.properties.parameters.generation.value | Should -Be 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+            $payloadObject.properties.parameters.arbDeploymentAppId.value | Should -BeExactly '66666666-6666-6666-6666-666666666666'
+            $payloadObject.properties.parameters.arbDeploymentServicePrincipalSecret.value | Should -BeExactly 'offline-secret-placeholder'
             Add-ReadyFoundation
             $script:resources[$context.DeploymentResourceId].properties.provisioningState = 'Running'
             [pscustomobject] @{ StatusCode = 201; Content = $script:resources[$context.DeploymentResourceId] | ConvertTo-Json -Depth 20 }
@@ -1239,8 +1523,9 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         $tags['avm-foundation-operation'] | Should -Be '44444444-4444-4444-4444-444444444444'
         $deadline = $tags['avm-foundation-deadline']
         Mock Get-AzResourceGroupDeployment {
+            # Matches PSResourceGroupDeployment, which has no Id property.
             [pscustomobject] @{
-                Id = $script:hciContext.DeploymentResourceId
+                ResourceGroupName = $script:hciContext.Config.foundationResourceGroupName
                 DeploymentName = $script:hciContext.Config.deploymentName
                 ProvisioningState = 'Succeeded'
                 CorrelationId = '44444444-4444-4444-4444-444444444444'
@@ -1253,6 +1538,126 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         $tags['avm-foundation-deadline'] | Should -Be $deadline
         Start-HciEnvironmentFoundation -Context $context -Parameters @{}
         Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'PUT' }
+    }
+
+    It 'Submits a foundation without the optional resource-bridge service principal' {
+        Add-Registry
+        Add-ReadyImage
+        Mock bicep {
+            $global:LASTEXITCODE = 0
+            '{"$schema":"https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#","contentVersion":"1.0.0.0","resources":[]}'
+        }
+        Mock Invoke-AzRestMethod {
+            $script:foundationParameters = ($Payload | ConvertFrom-Json -AsHashtable).properties.parameters
+            Add-ReadyFoundation
+            $script:resources[$context.DeploymentResourceId].properties.provisioningState = 'Running'
+            [pscustomobject] @{ StatusCode = 201; Content = $script:resources[$context.DeploymentResourceId] | ConvertTo-Json -Depth 20 }
+        } -ParameterFilter { $Method -eq 'PUT' }
+
+        Start-HciEnvironmentFoundation -Context $context -Parameters @{
+            arbLocalAdminAndDeploymentUserPass = ConvertTo-SecureString 'offline-password-placeholder' -AsPlainText -Force
+            builtInServicePrincipalObjectId    = '88888888-8888-8888-8888-888888888888'
+        }
+
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Method -eq 'PUT' }
+        $script:foundationParameters.arbLocalAdminAndDeploymentUserPass.value | Should -BeExactly 'offline-password-placeholder'
+        @($script:foundationParameters.Keys | Where-Object { $_ -like 'arbDeployment*' }) | Should -BeNullOrEmpty
+    }
+
+    It 'Rejects <case> before submitting a foundation' -ForEach @(
+        @{ case = 'a partial resource-bridge service principal'; name = 'arbDeploymentAppId'; value = $null; expectedError = '*all three resource-bridge service principal parameters*' }
+        @{ case = 'a blank resource-bridge secret'; name = 'arbDeploymentServicePrincipalSecret'; value = [securestring]::new(); expectedError = '*all three resource-bridge service principal parameters*' }
+        @{ case = 'a missing built-in service principal object ID'; name = 'builtInServicePrincipalObjectId'; value = $null; expectedError = '*builtInServicePrincipalObjectId*is missing*' }
+    ) {
+        Add-Registry
+        Add-ReadyImage
+        Mock bicep { throw 'The foundation compiled before its parameters were checked.' }
+        $parameters = @{
+            arbLocalAdminAndDeploymentUserPass  = ConvertTo-SecureString 'offline-password-placeholder' -AsPlainText -Force
+            arbDeploymentAppId                  = '66666666-6666-6666-6666-666666666666'
+            arbDeploymentSPObjectId             = '77777777-7777-7777-7777-777777777777'
+            arbDeploymentServicePrincipalSecret = ConvertTo-SecureString 'offline-secret-placeholder' -AsPlainText -Force
+            builtInServicePrincipalObjectId     = '88888888-8888-8888-8888-888888888888'
+        }
+        $parameters[$name] = $value
+
+        { Start-HciEnvironmentFoundation -Context $context -Parameters $parameters } | Should -Throw $expectedError
+
+        Should -Invoke bicep -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Method -eq 'PUT' }
+    }
+
+    Context 'Cluster deployment identity grants' {
+        BeforeEach {
+            $foundationId = $context.GroupIds.foundation
+            $identityId = "$foundationId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/temp-$($context.Config.clusterName)"
+            $principalId = '55555555-5555-5555-5555-555555555555'
+            $assignmentRoot = "$foundationId/providers/Microsoft.Authorization/roleAssignments"
+            function New-OfflineAssignment([string] $Name, [string] $Role, [string] $Scope = $foundationId) {
+                $id = "$Scope/providers/Microsoft.Authorization/roleAssignments/$Name"
+                $script:resources[$id] = @{
+                    id = $id
+                    properties = @{
+                        principalId = $principalId
+                        scope = $Scope
+                        roleDefinitionId = "/subscriptions/$($context.SubscriptionId)/providers/Microsoft.Authorization/roleDefinitions/$Role"
+                    }
+                }
+                return $script:resources[$id]
+            }
+        }
+
+        It 'Removes only the module identity''s Contributor, Reader and RBAC Administrator grants on the foundation group' {
+            $script:resources[$identityId] = @{ id = $identityId; properties = @{ principalId = $principalId } }
+            $removed = @(
+                New-OfflineAssignment '00000000-0000-0000-0000-00000000c001' 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+                New-OfflineAssignment '00000000-0000-0000-0000-00000000c002' 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                New-OfflineAssignment '00000000-0000-0000-0000-00000000c003' 'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+            )
+            $kept = @(
+                New-OfflineAssignment '00000000-0000-0000-0000-00000000c004' '4633458b-17de-408a-b874-0445c86b69e6'
+                New-OfflineAssignment '00000000-0000-0000-0000-00000000c005' 'b24988ac-6180-42a0-ab88-20f7382dd24c' "/subscriptions/$($context.SubscriptionId)"
+            )
+            $script:resources[$assignmentRoot] = @{ value = @($removed + $kept) }
+
+            Remove-HciClusterDeploymentAccess -Context $context
+
+            @($script:deleted | Sort-Object) | Should -Be @($removed.id | Sort-Object)
+        }
+
+        It 'Changes nothing when the module identity doesn''t exist' {
+            Remove-HciClusterDeploymentAccess -Context $context
+
+            Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Path -like '*/roleAssignments*' }
+            $script:deleted.Count | Should -Be 0
+        }
+
+        It 'Removes nothing when the grants can''t be listed completely (<case>)' -ForEach @(
+            @{ case = 'paged response'; paged = $true }
+            @{ case = 'failed lookup'; paged = $false }
+        ) {
+            $script:resources[$identityId] = @{ id = $identityId; properties = @{ principalId = $principalId } }
+            $assignment = New-OfflineAssignment '00000000-0000-0000-0000-00000000c001' 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            if ($paged) { $script:resources[$assignmentRoot] = @{ value = @($assignment); nextLink = 'https://example.test/next' } }
+
+            { Remove-HciClusterDeploymentAccess -Context $context } | Should -Throw '*could not be listed completely*'
+            $script:deleted.Count | Should -Be 0
+        }
+
+        It 'Removes the grants after readiness and before releasing setup ownership' {
+            $script:order = [System.Collections.Generic.List[string]]::new()
+            Mock Get-HciEnvironmentReadiness { $script:order.Add('readiness'); @{ OwnedResourceIds = @() } }
+            Mock Remove-HciClusterDeploymentAccess { $script:order.Add('remove') }
+            Mock Exit-HciEnvironment { $script:order.Add('release') }
+            $key = Get-HciEnvironmentKey -Value $context.SubscriptionId
+            $pool = ConvertTo-Json -InputObject @(@{ id = $context.SubscriptionId; name = 'offline-reserved'; tag = 'Azure Local' }) -Compress
+
+            $null = Invoke-HciPreparationStep -Stage Ready -RepoRootPath $RepoRootPath -ModulePath 'avm/res/azure-stack-hci/logical-network' `
+                -TestCase @{ path = 'tests/e2e/defaults'; subscriptionIndex = 0; subscriptionKey = $key; environmentConcurrencyGroup = "avm-hci-$key" } `
+                -TestSubscriptionIds $pool -TenantId $context.TenantId -RunIdentity 'offline' -SourceCommit ('b' * 40) -Maintenance:$true
+
+            @($script:order) | Should -Be @('readiness', 'remove', 'release')
+        }
     }
 }
 
@@ -1297,5 +1702,21 @@ Describe 'Persistent resource cleanup guard and exact operation observation' {
                 -ExpectedCorrelationId '33333333-3333-3333-3333-333333333333' } |
             Should -Throw '*replaced deployment operation*'
         Should -Invoke Get-TemplateDeployment -Times 1 -Exactly
+    }
+
+    It 'Rejects a resource-group deployment without an Id from another resource group' {
+        $id = '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/foundation/providers/Microsoft.Resources/deployments/foundation'
+        Mock Get-TemplateDeployment {
+            [pscustomobject] @{
+                ResourceGroupName = 'other'
+                DeploymentName = 'foundation'
+                ProvisioningState = 'Succeeded'
+                CorrelationId = '44444444-4444-4444-4444-444444444444'
+                Outputs = @{}
+            }
+        }
+        { Wait-TemplateDeployment -DeploymentScope resourcegroup -DeploymentName foundation -ResourceGroupName foundation `
+                -ExpectedDeploymentId $id -ExpectedCorrelationId '44444444-4444-4444-4444-444444444444' } |
+            Should -Throw '*unambiguous original deployment*'
     }
 }

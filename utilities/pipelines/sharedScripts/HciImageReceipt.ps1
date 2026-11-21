@@ -2,6 +2,121 @@
     . (Join-Path $PSScriptRoot '..' '..' 'e2e-template-assets' 'module-specific' 'azure-stack-hci' 'HciImageOperation.ps1')
 }
 
+function Get-HciImageReceiptStore {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)] [hashtable] $Context,
+        [Parameter(Mandatory)] [string] $StorageAccountName,
+        [guid] $ExpectedClientId = [guid]::Empty,
+        [guid] $ExpectedPrincipalId = [guid]::Empty,
+        [switch] $AllowNotFound,
+        [switch] $AllowIncomplete
+    )
+
+    if ($StorageAccountName -cnotmatch '^sthcircp[a-z0-9]{13}$') {
+        throw 'Configure the exact HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT binding before reading or creating the persistent store.'
+    }
+    $accountId = "$($Context.GroupIds.control)/providers/Microsoft.Storage/storageAccounts/$StorageAccountName"
+    $containerId = "$accountId/blobServices/default/containers/hci-operation-receipts"
+    $account = Get-HciArmResource -ResourceId $accountId -ApiVersion '2025-06-01' -AllowNotFound:$AllowNotFound
+    if ($null -eq $account) { return $null }
+    $expectedTags = @{
+        lifecycle = 'tenant-persistent'
+        'avm-owner' = 'Azure/bicep-registry-modules'
+        'avm-environment' = 'azure-local'
+        'avm-purpose' = 'image-operation-receipts'
+        'avm-receipt-version' = '1'
+        'avm-tenant' = $Context.TenantId
+        'avm-subscription' = $Context.SubscriptionId
+    }
+    foreach ($entry in $expectedTags.GetEnumerator()) {
+        if ($account.tags[$entry.Key] -cne $entry.Value) {
+            throw 'The configured HCI receipt account has mismatched ownership; it will not be adopted.'
+        }
+    }
+    $clientId = [guid]::Empty
+    $principalId = [guid]::Empty
+    if (-not [guid]::TryParse($account.tags['avm-ci-client'], [ref] $clientId) -or $clientId -eq [guid]::Empty -or
+        -not [guid]::TryParse($account.tags['avm-ci-principal'], [ref] $principalId) -or $principalId -eq [guid]::Empty) {
+        throw 'The HCI receipt account has no valid existing CI identity binding.'
+    }
+    if (($ExpectedClientId -ne [guid]::Empty -and $clientId -ne $ExpectedClientId) -or
+        ($ExpectedPrincipalId -ne [guid]::Empty -and $principalId -ne $ExpectedPrincipalId)) {
+        throw 'The configured HCI receipt account is bound to another CI identity.'
+    }
+    $properties = $account.properties
+    $accountComplete = $account.kind -ceq 'StorageV2' -and $account.sku.name -ceq 'Standard_LRS' -and
+        $account.location -ceq $Context.Config.location -and $properties.provisioningState -ceq 'Succeeded' -and
+        $properties.accessTier -ceq 'Hot' -and $properties.allowCrossTenantReplication -ceq $false -and
+        $properties.defaultToOAuthAuthentication -ceq $true -and
+        $properties.allowBlobPublicAccess -ceq $false -and $properties.allowSharedKeyAccess -ceq $false -and
+        $properties.supportsHttpsTrafficOnly -ceq $true -and $properties.minimumTlsVersion -ceq 'TLS1_2' -and
+        $properties.publicNetworkAccess -ceq 'Enabled' -and
+        $properties.primaryEndpoints.blob -ceq "https://$StorageAccountName.blob.core.windows.net/"
+    if (-not $accountComplete -and -not $AllowIncomplete) {
+        throw 'The configured HCI receipt account does not meet its private, keyless storage contract.'
+    }
+    $service = Get-HciArmResource -ResourceId "$accountId/blobServices/default" -ApiVersion '2025-06-01' -AllowNotFound:$AllowIncomplete
+    $serviceComplete = $null -ne $service -and
+        $service.properties.isVersioningEnabled -ceq $false -and
+        $service.properties.deleteRetentionPolicy.enabled -ceq $false -and
+        $service.properties.containerDeleteRetentionPolicy.enabled -ceq $false
+    if (-not $serviceComplete -and -not $AllowIncomplete) {
+        throw 'The HCI receipt store must not create untracked versioning or soft-delete copies.'
+    }
+    $container = Get-HciArmResource -ResourceId $containerId -ApiVersion '2025-06-01' -AllowNotFound:$AllowIncomplete
+    $containerComplete = $null -ne $container -and $container.properties.publicAccess -ceq 'None'
+    if (-not $containerComplete -and -not $AllowIncomplete) {
+        throw 'The HCI receipt container must prohibit anonymous access.'
+    }
+    return @{
+        Endpoint = "https://$StorageAccountName.blob.core.windows.net/hci-operation-receipts"
+        ClientId = $clientId.ToString('D')
+        PrincipalId = $principalId.ToString('D')
+        AccountResourceId = $accountId
+        ContainerResourceId = $containerId
+        Complete = $accountComplete -and $serviceComplete -and $containerComplete
+    }
+}
+
+function Get-HciWorkflowIdentity {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)] [guid] $TenantId,
+        [Parameter(Mandatory)] [guid] $ClientId
+    )
+
+    $token = $null
+    $encodedClaims = $null
+    try {
+        $token = (Get-AzAccessToken -ResourceUrl 'https://management.azure.com/' -AsSecureString -ErrorAction Stop).Token
+        if ($token -isnot [securestring] -or $token.Length -eq 0) { throw 'Missing Azure Resource Manager token.' }
+        $plainToken = [pscredential]::new('token', $token).GetNetworkCredential().Password
+        $encodedClaims = $plainToken.Split('.')[1].Replace('-', '+').Replace('_', '/')
+        $encodedClaims = $encodedClaims.PadRight($encodedClaims.Length + (4 - $encodedClaims.Length % 4) % 4, '=')
+        $claims = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($encodedClaims)) |
+            ConvertFrom-Json -AsHashtable -ErrorAction Stop
+        $tokenClientId = [guid]::Empty
+        $tokenTenantId = [guid]::Empty
+        $principalId = [guid]::Empty
+        $claimClient = $claims.appid ? $claims.appid : $claims.azp
+        if (-not [guid]::TryParse([string] $claimClient, [ref] $tokenClientId) -or $tokenClientId -ne $ClientId -or
+            -not [guid]::TryParse([string] $claims.tid, [ref] $tokenTenantId) -or $tokenTenantId -ne $TenantId -or
+            -not [guid]::TryParse([string] $claims.oid, [ref] $principalId) -or $principalId -eq [guid]::Empty) {
+            throw 'The authenticated workflow identity does not match the configured client and tenant.'
+        }
+        return @{
+            ClientId = $tokenClientId.ToString('D')
+            PrincipalId = $principalId.ToString('D')
+        }
+    } finally {
+        $plainToken = $null
+        $encodedClaims = $null
+        $claims = $null
+        if ($token -is [securestring]) { $token.Dispose() }
+    }
+}
+
 function Get-HciImageReceiptContext {
     [CmdletBinding()]
     param (
@@ -22,53 +137,10 @@ function Get-HciImageReceiptContext {
     if ($generation -cnotmatch '^[a-f0-9]{32}$' -or $deadline -le [datetimeoffset] (Get-Date)) {
         throw 'The HCI receipt requires the original live generation and unexpired image deadline.'
     }
-    $accountId = "$($Context.GroupIds.control)/providers/Microsoft.Storage/storageAccounts/$StorageAccountName"
-    $containerId = "$accountId/blobServices/default/containers/hci-operation-receipts"
-    $account = Get-HciArmResource -ResourceId $accountId -ApiVersion '2025-06-01'
-    $expectedTags = @{
-        lifecycle = 'tenant-persistent'
-        'avm-owner' = 'Azure/bicep-registry-modules'
-        'avm-environment' = 'azure-local'
-        'avm-purpose' = 'image-operation-receipts'
-        'avm-receipt-version' = '1'
-        'avm-tenant' = $Context.TenantId
-        'avm-subscription' = $Context.SubscriptionId
-    }
-    foreach ($entry in $expectedTags.GetEnumerator()) {
-        if ($account.tags[$entry.Key] -cne $entry.Value) {
-            throw 'The configured HCI receipt account has mismatched ownership; it will not be adopted.'
-        }
-    }
-    foreach ($key in @('avm-ci-client', 'avm-ci-principal')) {
-        $id = [guid]::Empty
-        if (-not [guid]::TryParse($account.tags[$key], [ref] $id) -or $id -eq [guid]::Empty) {
-            throw 'The HCI receipt account has no valid existing CI identity binding.'
-        }
-    }
-    $properties = $account.properties
-    if ($account.kind -cne 'StorageV2' -or $account.sku.name -cne 'Standard_LRS' -or
-        $account.location -cne $Context.Config.location -or $properties.provisioningState -cne 'Succeeded' -or
-        $properties.accessTier -cne 'Hot' -or $properties.allowCrossTenantReplication -cne $false -or
-        $properties.defaultToOAuthAuthentication -cne $true -or
-        $properties.allowBlobPublicAccess -cne $false -or $properties.allowSharedKeyAccess -cne $false -or
-        $properties.supportsHttpsTrafficOnly -cne $true -or $properties.minimumTlsVersion -cne 'TLS1_2' -or
-        $properties.publicNetworkAccess -cne 'Enabled' -or
-        $properties.primaryEndpoints.blob -cne "https://$StorageAccountName.blob.core.windows.net/") {
-        throw 'The configured HCI receipt account does not meet its private, keyless storage contract.'
-    }
-    $service = Get-HciArmResource -ResourceId "$accountId/blobServices/default" -ApiVersion '2025-06-01'
-    if ($service.properties.isVersioningEnabled -cne $false -or
-        $service.properties.deleteRetentionPolicy.enabled -cne $false -or
-        $service.properties.containerDeleteRetentionPolicy.enabled -cne $false) {
-        throw 'The HCI receipt store must not create untracked versioning or soft-delete copies.'
-    }
-    $container = Get-HciArmResource -ResourceId $containerId -ApiVersion '2025-06-01'
-    if ($container.properties.publicAccess -cne 'None') {
-        throw 'The HCI receipt container must prohibit anonymous access.'
-    }
+    $store = Get-HciImageReceiptStore -Context $Context -StorageAccountName $StorageAccountName
     $binding = [ordered] @{
         version = '1'
-        storeResourceId = $containerId
+        storeResourceId = $store.ContainerResourceId
         tenantId = $Context.TenantId
         subscriptionId = $Context.SubscriptionId
         owner = $Context.Owner
@@ -82,10 +154,10 @@ function Get-HciImageReceiptContext {
         requiredRegions = @($Context.Config.location)
     }
     return @{
-        Endpoint = "https://$StorageAccountName.blob.core.windows.net/hci-operation-receipts"
+        Endpoint = $store.Endpoint
         TenantId = $Context.TenantId
-        ClientId = $account.tags['avm-ci-client']
-        PrincipalId = $account.tags['avm-ci-principal']
+        ClientId = $store.ClientId
+        PrincipalId = $store.PrincipalId
         Binding = $binding
         Key = Get-HciEnvironmentKey -Value "$($Context.ImageTemplateResourceId.ToLowerInvariant())|$generation|$($Context.Owner)|$RunIdentity"
     }

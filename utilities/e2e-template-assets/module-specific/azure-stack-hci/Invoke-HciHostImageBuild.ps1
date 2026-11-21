@@ -28,7 +28,7 @@ HciVhdxSha256 before publishing the image.
 
 .PARAMETER HciVhdxSha256
 Expected SHA256 from the payload publisher. The default is pinned from
-https://jumpstartprodsg.blob.core.windows.net/jslocal/localbox/prod/AzLocal2601.sha256.
+https://azlocalvhds.blob.core.windows.net/images/AzLocal2608.sha256.
 Supply the matching digest when overriding HciVhdxDownloadUri.
 
 .PARAMETER Operation
@@ -45,7 +45,7 @@ Recorded Retry-After boundary from the preceding observation job. Observe cannot
 poll before this time or the original receipt's boundary.
 
 .EXAMPLE
-. .\Invoke-HciHostImageBuild.ps1 -AssetBaseUri 'https://example.test/pinned-assets' -BuildLocation australiaeast -ReplicationRegions australiaeast -ImageTemplateName hci-host-image-builder-australiaeast
+. .\Invoke-HciHostImageBuild.ps1 -BuildLocation australiaeast -ReplicationRegions australiaeast -ImageTemplateName hci-host-image-builder-australiaeast
 
 Preserves the default Southeast Asia resources, builds in Australia East, and
 requires completed replicas in both the image-version source and build regions.
@@ -78,22 +78,18 @@ param (
 
     [Parameter()]
     [ValidatePattern('^\d+\.\d+\.\d+$')]
-    [string] $ImageVersion = '26.1.0',
+    [string] $ImageVersion = '26.8.0',
 
     [Parameter()]
     [string] $ImageTemplateName = 'hci-host-image-builder',
 
-    [Parameter(Mandatory)]
-    [ValidatePattern('^https://')]
-    [string] $AssetBaseUri,
-
     [Parameter()]
     [ValidatePattern('^https://')]
-    [string] $HciVhdxDownloadUri = 'https://jumpstartprodsg.blob.core.windows.net/jslocal/localbox/prod/AzLocal2601.vhdx',
+    [string] $HciVhdxDownloadUri = 'https://azlocalvhds.blob.core.windows.net/images/AzLocal2608.vhdx',
 
     [Parameter()]
     [ValidatePattern('\A[0-9a-fA-F]{64}\z')]
-    [string] $HciVhdxSha256 = '3a797826d7e7ae7abc55d1071322ddecc80575c2356fea9e74818ab9f6720a1f',
+    [string] $HciVhdxSha256 = 'cd670067f6b07dea2d1a4e7219bf00492de2591557a754a9ed0f13f0b01bfdc5',
 
     [Parameter()]
     [ValidateRange(1, 960)]
@@ -344,7 +340,6 @@ try {
     } else {
         $deploymentName = "hci-host-image-$($ImageVersion.Replace('.', '-'))"
         $templateParameters = @{
-            assetBaseUri          = $AssetBaseUri
             buildLocation         = $BuildLocation
             buildTimeoutInMinutes = $BuildTimeoutInMinutes
             createResourceGroup   = $CreateResourceGroup

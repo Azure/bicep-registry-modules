@@ -10,6 +10,15 @@ param hciHostImageReferenceId string = ''
 @description('Optional. Grant the host identity subscription Contributor.')
 param assignSubscriptionContributor bool = true
 
+@description('Optional. The object ID of the Azure Stack HCI resource provider service principal. When provided, the host deployment grants the cluster module\'s built-in roles early, so the node extensions can install before the cluster deployment.')
+param hciResourceProviderObjectId string = ''
+
+@description('Optional. Install updates on the host VM in a weekly maintenance window, restarting it if required. Disable for a long-lived host that must not install updates or restart during setup and cluster deployment.')
+param enableScheduledPatching bool = true
+
+@description('Optional. Grant the host identity Owner on the resource group. Disable to grant only the roles that Arc registration and the edge-device request need.')
+param assignResourceGroupOwner bool = true
+
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param localAdminPassword string
@@ -72,6 +81,9 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
     domainOUPath: domainOUPath
     imageReferenceId: hciHostImageReferenceId
     assignSubscriptionContributor: assignSubscriptionContributor
+    hciResourceProviderObjectId: hciResourceProviderObjectId
+    enableScheduledPatching: enableScheduledPatching
+    assignResourceGroupOwner: assignResourceGroupOwner
     hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E48bds_v5'
     localAdminPassword: localAdminPassword
