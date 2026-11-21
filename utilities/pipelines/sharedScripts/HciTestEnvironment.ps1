@@ -384,6 +384,18 @@ function Initialize-HciEnvironmentBootstrap {
         $roleAssignment.properties.roleDefinitionId -ine $blobContributorRoleId) {
         throw 'The persistent HCI store role assignment does not grant the exact container access to the workflow identity.'
     }
+    $readerRoleAssignmentId = $deployment.Outputs.readerRoleAssignmentResourceId.Value
+    if ($readerRoleAssignmentId -isnot [string] -or
+        $readerRoleAssignmentId -notmatch "^$([regex]::Escape($Context.GroupIds.control))/providers/Microsoft\.Authorization/roleAssignments/[^/]+$") {
+        throw 'The persistent HCI store deployment returned no verifiable control-group Reader assignment.'
+    }
+    $readerRoleAssignment = Get-HciArmResource -ResourceId $readerRoleAssignmentId -ApiVersion '2022-04-01'
+    $readerRoleId = "/subscriptions/$($Context.SubscriptionId)/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
+    if ($readerRoleAssignment.properties.scope -ine $Context.GroupIds.control -or
+        $readerRoleAssignment.properties.principalId -ine $identity.PrincipalId -or
+        $readerRoleAssignment.properties.roleDefinitionId -ine $readerRoleId) {
+        throw 'The persistent HCI store Reader assignment does not grant the exact control-group access to the workflow identity.'
+    }
     $result = Get-HciEnvironmentStatus -Context $Context
     $result.StorageAccountResourceId = $store.AccountResourceId
     $result.StorageContainerResourceId = $store.ContainerResourceId

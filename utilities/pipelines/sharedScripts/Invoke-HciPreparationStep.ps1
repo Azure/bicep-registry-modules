@@ -36,18 +36,20 @@
     }
     $context = Get-HciEnvironmentContext -RepoRootPath $RepoRootPath -SubscriptionId $subscription.id -TenantId $TenantId `
         -Owner (Get-HciEnvironmentKey -Value "$RunIdentity|$ModulePath|$($TestCase.path)") -HciHostImageReferenceId $externalImageId
+    $providers = @(
+        'Microsoft.Compute', 'Microsoft.VirtualMachineImages', 'Microsoft.ManagedIdentity',
+        'Microsoft.Network', 'Microsoft.Storage', 'Microsoft.KeyVault', 'Microsoft.Maintenance',
+        'Microsoft.ContainerInstance', 'Microsoft.AzureStackHCI', 'Microsoft.HybridCompute',
+        'Microsoft.GuestConfiguration', 'Microsoft.HybridConnectivity', 'Microsoft.ResourceConnector',
+        'Microsoft.ExtendedLocation', 'Microsoft.KubernetesConfiguration', 'Microsoft.HybridContainerService'
+    )
     if ($Stage -eq 'Begin') {
         if (-not $parameters.ContainsKey('arbLocalAdminAndDeploymentUserPass') -or $parameters['arbLocalAdminAndDeploymentUserPass'].Length -eq 0) {
             throw 'Required existing CI credential [arbLocalAdminAndDeploymentUserPass] is missing; preparation has not started.'
         }
         $null = Get-HciArbServicePrincipalParameterName -Parameters $parameters
-        $providers = @(
-            'Microsoft.Compute', 'Microsoft.VirtualMachineImages', 'Microsoft.ManagedIdentity',
-            'Microsoft.Network', 'Microsoft.Storage', 'Microsoft.KeyVault', 'Microsoft.Maintenance',
-            'Microsoft.ContainerInstance', 'Microsoft.AzureStackHCI', 'Microsoft.HybridCompute',
-            'Microsoft.GuestConfiguration', 'Microsoft.HybridConnectivity', 'Microsoft.ResourceConnector',
-            'Microsoft.ExtendedLocation', 'Microsoft.KubernetesConfiguration', 'Microsoft.HybridContainerService'
-        )
+    }
+    if ($Stage -cin @('Bootstrap', 'Begin')) {
         foreach ($provider in $providers) {
             $record = @(Get-AzResourceProvider -ProviderNamespace $provider -ErrorAction Stop)
             if ($record.Count -eq 0 -or @($record | Where-Object {

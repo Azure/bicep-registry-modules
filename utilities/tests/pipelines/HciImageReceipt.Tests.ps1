@@ -386,11 +386,13 @@ Describe 'HCI persistent receipt infrastructure' {
     }
 
     It 'Creates only the dedicated keyless account, private container, service settings and narrow role' {
-        $template.resources.Count | Should -Be 4
+        $template.resources.Count | Should -Be 5
         $account = $template.resources | Where-Object type -EQ 'Microsoft.Storage/storageAccounts'
         $container = $template.resources | Where-Object type -EQ 'Microsoft.Storage/storageAccounts/blobServices/containers'
         $service = $template.resources | Where-Object type -EQ 'Microsoft.Storage/storageAccounts/blobServices'
         $assignment = $template.resources | Where-Object type -EQ 'Microsoft.Authorization/roleAssignments'
+        $containerAssignment = @($assignment | Where-Object { $null -ne $_.scope })[0]
+        $readerAssignment = @($assignment | Where-Object { $null -eq $_.scope })[0]
         $account.kind | Should -Be 'StorageV2'
         $account.sku.name | Should -Be 'Standard_LRS'
         $account.properties.accessTier | Should -Be 'Hot'
@@ -403,9 +405,11 @@ Describe 'HCI persistent receipt infrastructure' {
         $account.tags.ContainsKey('avm-contract') | Should -BeFalse
         $container.properties.publicAccess | Should -Be 'None'
         $service.properties.isVersioningEnabled | Should -BeFalse
-        $assignment.scope | Should -BeExactly "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), 'default', variables('containerName'))]"
-        $assignment.properties.principalType | Should -Be 'ServicePrincipal'
+        $containerAssignment.scope | Should -BeExactly "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), 'default', variables('containerName'))]"
+        $containerAssignment.properties.principalType | Should -Be 'ServicePrincipal'
+        $readerAssignment.properties.principalType | Should -Be 'ServicePrincipal'
         $template.variables.blobContributorRoleId | Should -Match 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+        $template.variables.readerRoleId | Should -Match 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
         $template.parameters.storageAccountName.type | Should -Be 'String'
     }
 }

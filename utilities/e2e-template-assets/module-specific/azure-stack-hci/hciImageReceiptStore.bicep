@@ -14,6 +14,10 @@ var blobContributorRoleId = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
   'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
 )
+var readerRoleId = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+)
 
 resource receiptAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
   name: storageAccountName
@@ -90,6 +94,15 @@ resource receiptAccess 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+resource receiptReaderAccess 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, principalId, readerRoleId)
+  properties: {
+    principalId: principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: readerRoleId
+  }
+}
+
 @description('The separate HCI_IMAGE_RECEIPT_STORAGE_ACCOUNT workflow value. Store it as an environment secret to keep it out of logs.')
 output storageAccountName string = receiptAccount.name
 
@@ -101,3 +114,6 @@ output containerResourceId string = receiptContainer.id
 
 @description('The container-scoped assignment for the existing CI identity.')
 output roleAssignmentResourceId string = receiptAccess.id
+
+@description('The control-resource-group Reader assignment for the existing CI identity.')
+output readerRoleAssignmentResourceId string = receiptReaderAccess.id

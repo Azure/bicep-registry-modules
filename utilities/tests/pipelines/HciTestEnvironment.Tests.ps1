@@ -103,6 +103,15 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
                     roleDefinitionId = '/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe'
                 }
             }
+            $script:receiptReaderRoleAssignmentId = "$($context.GroupIds.control)/providers/Microsoft.Authorization/roleAssignments/offline-receipt-reader"
+            $script:resources[$script:receiptReaderRoleAssignmentId] = @{
+                id = $script:receiptReaderRoleAssignmentId
+                properties = @{
+                    scope = $context.GroupIds.control
+                    principalId = '77777777-7777-7777-7777-777777777777'
+                    roleDefinitionId = '/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                }
+            }
         }
         function Add-ReadyFoundation {
             $prefix = $context.GroupIds.foundation
@@ -492,7 +501,10 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             Add-ReceiptStore
             [pscustomobject] @{
                 ProvisioningState = 'Succeeded'
-                Outputs = @{ roleAssignmentResourceId = @{ value = $script:receiptRoleAssignmentId } }
+                Outputs = @{
+                    roleAssignmentResourceId = @{ value = $script:receiptRoleAssignmentId }
+                    readerRoleAssignmentResourceId = @{ value = $script:receiptReaderRoleAssignmentId }
+                }
             }
         }
 
@@ -526,7 +538,10 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
         Mock New-AzResourceGroupDeployment {
             [pscustomobject] @{
                 ProvisioningState = 'Succeeded'
-                Outputs = @{ roleAssignmentResourceId = @{ value = $script:receiptRoleAssignmentId } }
+                Outputs = @{
+                    roleAssignmentResourceId = @{ value = $script:receiptRoleAssignmentId }
+                    readerRoleAssignmentResourceId = @{ value = $script:receiptReaderRoleAssignmentId }
+                }
             }
         }
 
@@ -633,6 +648,27 @@ Describe 'Reserved Azure Local environment ownership and readiness' {
             Should -Invoke Get-AzResourceProvider -Times 0 -Exactly
             Should -Invoke Update-AzTag -Times 0 -Exactly
             $script:resources[$context.GroupIds.control].tags['avm-state'] | Should -BeExactly 'Idle'
+        }
+
+        It 'Rejects unregistered fixture providers before bootstrap mutation' {
+            Mock Get-AzResourceProvider {
+                [pscustomobject]@{
+                    ProviderNamespace = $ProviderNamespace
+                    RegistrationState = $ProviderNamespace -ceq 'Microsoft.Storage' ? 'NotRegistered' : 'Registered'
+                }
+            }
+            $bootstrapInput = $beginInput.Clone()
+            $bootstrapInput.Stage = 'Bootstrap'
+            $bootstrapInput.ClientId = [guid] '66666666-6666-6666-6666-666666666666'
+            $bootstrapInput.ReceiptStorageAccountName = 'sthcircpabcdefghijklm'
+            Mock New-AzResourceGroupDeployment { throw 'Bootstrap provider preflight must run before deployment.' }
+
+            { Invoke-HciPreparationStep @bootstrapInput } |
+                Should -Throw '*Required provider*Microsoft.Storage*not registered*'
+
+            Should -Invoke Get-AzResourceProvider -Times 5 -Exactly
+            Should -Invoke New-AzResourceGroup -Times 0 -Exactly
+            Should -Invoke New-AzResourceGroupDeployment -Times 0 -Exactly
         }
 
         It 'Rejects <case> provider output before preparation' -ForEach @(
