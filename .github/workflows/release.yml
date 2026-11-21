@@ -32,36 +32,14 @@ on:
 permissions: {}
 
 jobs:
-  initialize:
-    name: "Select pending module releases"
+  release:
+    name: "Release modules"
     permissions:
       contents: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@87589fc8ff1210595372c616ca85ad907d1c501a
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@545a92dc4fffbbacd756a6eec8007aa42d2b02aa
     with:
-      initializeOnly: true
       authoringSource: ${{ inputs.authoringSource || 'gallery' }}
       authoringRef: ${{ inputs.authoringRef || '' }}
       targetCommit: ${{ inputs.targetCommit || '' }}
       baseCommit: ${{ inputs.baseCommit || '' }}
-    secrets: inherit
-
-  release:
-    name: "${{ matrix.modulePath }}"
-    needs: initialize
-    if: needs.initialize.outputs.hasModules == 'true'
-    permissions:
-      contents: write
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime-release.yml@87589fc8ff1210595372c616ca85ad907d1c501a
-    with:
-      modulePath: ${{ matrix.modulePath }}
-      plannedTags: ${{ matrix.plannedTags }}
-      releaseTagLabel: ${{ matrix.releaseTagLabel }}
-      targetCommit: ${{ needs.initialize.outputs.targetCommit }}
-      baseCommit: ${{ needs.initialize.outputs.baseCommit }}
-      authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
-      pendingRelease: true
-      requireChangelog: true
     secrets: inherit
