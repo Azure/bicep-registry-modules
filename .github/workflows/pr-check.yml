@@ -55,7 +55,7 @@ jobs:
     steps:
       - name: "Prepare module checks"
         id: initialize
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@bb5e5499b5958780452b556f08228cd4abc988e0
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@6c33e99adaf4601d1b9e09cfc68f26636e2bc944
         with:
           authoringSource: ${{ inputs.authoringSource || 'gallery' }}
           authoringRef: ${{ inputs.authoringRef || '' }}
@@ -65,15 +65,16 @@ jobs:
   check:
     name: "Module checks: ${{ matrix.modulePath }}"
     needs: initialize
-    if: needs.initialize.outputs.hasModules == 'true'
+    if: needs.initialize.outputs.hasModules == 'true' && !(github.event_name == 'workflow_dispatch' && github.event.repository.fork)
     permissions:
       contents: read
       id-token: write
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@bb5e5499b5958780452b556f08228cd4abc988e0
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@6c33e99adaf4601d1b9e09cfc68f26636e2bc944
     with:
+      tools-ref: 6c33e99adaf4601d1b9e09cfc68f26636e2bc944
       modulePath: ${{ matrix.modulePath }}
       moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
       psRuleModuleTestFilePaths: ${{ matrix.psRuleModuleTestFilePaths }}
@@ -84,16 +85,49 @@ jobs:
       authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
     secrets: inherit
 
+  check-fork:
+    name: "Fork module checks: ${{ matrix.modulePath }}"
+    needs: initialize
+    if: needs.initialize.outputs.hasModules == 'true' && github.event_name == 'workflow_dispatch' && github.event.repository.fork
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@6c33e99adaf4601d1b9e09cfc68f26636e2bc944
+    with:
+      tools-ref: 6c33e99adaf4601d1b9e09cfc68f26636e2bc944
+      modulePath: ${{ matrix.modulePath }}
+      moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
+      psRuleModuleTestFilePaths: ${{ matrix.psRuleModuleTestFilePaths }}
+      e2eRoute: ${{ matrix.e2eRoute }}
+      baseCommit: ${{ needs.initialize.outputs.baseCommit }}
+      workflowInput: ${{ needs.initialize.outputs.workflowInput }}
+      targetCommit: ${{ needs.initialize.outputs.targetCommit }}
+      authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
+    secrets:
+      ARM_CLIENT_ID_OVERRIDE: ${{ secrets.ARM_CLIENT_ID_OVERRIDE }}
+      ARM_TENANT_ID_OVERRIDE: ${{ secrets.ARM_TENANT_ID_OVERRIDE }}
+      ARM_SUBSCRIPTION_ID_OVERRIDE: ${{ secrets.ARM_SUBSCRIPTION_ID_OVERRIDE }}
+      VALIDATE_SUBSCRIPTION_IDS: ${{ secrets.VALIDATE_SUBSCRIPTION_IDS }}
+      TEST_SUBSCRIPTION_IDS: ${{ secrets.TEST_SUBSCRIPTION_IDS }}
+      VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+      VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
+      VALIDATE_MANAGEMENT_GROUP_ID: ${{ secrets.VALIDATE_MANAGEMENT_GROUP_ID }}
+      ARM_MGMTGROUP_ID: ${{ secrets.ARM_MGMTGROUP_ID }}
+      TOKEN_NAMEPREFIX: ${{ secrets.TOKEN_NAMEPREFIX }}
+
   module-gate:
     name: "Report check status"
     if: always()
-    needs: [initialize, check]
+    needs: [initialize, check, check-fork]
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     steps:
       - name: "Evaluate and report check status"
-        uses: Azure/azure-verified-modules-tools/.github/actions/report-check-status@bb5e5499b5958780452b556f08228cd4abc988e0
+        uses: Azure/azure-verified-modules-tools/.github/actions/report-check-status@6c33e99adaf4601d1b9e09cfc68f26636e2bc944
         with:
           ecosystem: bicep
           results: ${{ toJSON(needs) }}
