@@ -46,7 +46,7 @@ Describe 'Bicep PR check reporter caller contract' {
         $prCheckContent.Contains('pull_request_target') | Should -BeFalse
     }
 
-    It 'pins all PR and release Tools references to one immutable revision' {
+    It 'pins PR, release and workflow support to one immutable Tools revision' {
         $references = @(
             $prCheck.jobs.initialize.steps[0].uses
             $prCheck.jobs.check.uses
@@ -60,5 +60,6 @@ Describe 'Bicep PR check reporter caller contract' {
                 ($_ -split '@')[-1]
             } | Select-Object -Unique)
         $pins | Should -HaveCount 1
+        $prCheck.jobs.check.with.'tools-ref' | Should -BeExactly $pins[0]
     }
 }
