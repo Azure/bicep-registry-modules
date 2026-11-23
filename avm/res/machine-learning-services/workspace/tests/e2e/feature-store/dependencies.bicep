@@ -7,10 +7,10 @@ param keyVaultName string
 @description('Required. The name of the Application Insights instance to create.')
 param applicationInsightsName string
 
-@description('Required. The name of the Storage Account to create.')
+@description('Required. The storage account base name. A stable resource-group-specific suffix is added.')
 param storageAccountName string
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -32,11 +32,13 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
   location: location
   kind: ''
-  properties: {}
+  properties: {
+    Application_Type: 'web'
+  }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
-  name: storageAccountName
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-06-01' = {
+  name: '${take(storageAccountName, 11)}${uniqueString(resourceGroup().id, storageAccountName)}'
   location: location
   sku: {
     name: 'Standard_LRS'

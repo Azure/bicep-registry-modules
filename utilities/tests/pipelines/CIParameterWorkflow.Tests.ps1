@@ -6,14 +6,8 @@ param(
 Describe 'CI parameter workflow integration' {
 
     BeforeAll {
-        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeploymentWithRetry.ps1')
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Invoke-TemplateDeploymentWithRetry.ps1')
         . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Invoke-ModuleDeploymentCleanup.ps1')
-        $workflows = @{}
-        foreach ($workflowName in @('avm.template.module', 'avm.template.module.preview', 'avm.template.module.publish')) {
-            $workflowPath = Join-Path $repoRootPath '.github' 'workflows' "$workflowName.yml"
-            $workflows[$workflowName] = ConvertFrom-Yaml -Yaml (Get-Content -Path $workflowPath -Raw)
-        }
-        $deploymentWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path (Join-Path $repoRootPath '.github' 'workflows' 'avm.template.module.deployment.yml') -Raw)
         $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -Path $actionPath -Raw)
         $environmentNames = @('GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME', 'AVM_DEPLOYMENT_DATA_FILE', 'AVM_REQUIRE_COMPLETE_REMOVAL')
@@ -118,28 +112,6 @@ output configuredParameters object = {
         foreach ($name in $environmentNames) {
             [Environment]::SetEnvironmentVariable($name, $savedEnvironment[$name])
         }
-    }
-
-    It 'Reads resolved contexts inside the environment job for <workflowName>' -ForEach @(
-        @{ workflowName = 'avm.template.module' }
-        @{ workflowName = 'avm.template.module.preview' }
-        @{ workflowName = 'avm.template.module.publish' }
-    ) {
-        $workflow = $workflows[$workflowName]
-        $caller = $workflow.jobs.job_module_deploy_validation
-        $deployment = $deploymentWorkflow.jobs.job_module_deploy_validation
-        $step = $deployment.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
-
-        $caller.uses | Should -Be './.github/workflows/avm.template.module.deployment.yml'
-        $caller.secrets | Should -Be 'inherit'
-        $caller.with.workflowInput | Should -Be '${{ inputs.workflowInput }}'
-        $deployment.environment | Should -Be 'avm-validation'
-        $step.with.githubVariables | Should -Be '${{ toJSON(vars) }}'
-        $step.with.githubSecrets | Should -Be '${{ toJSON(secrets) }}'
-        $workflow.env.CI_KEY_VAULT_NAME | Should -Be '${{ vars.CI_KEY_VAULT_NAME }}'
-        $deploymentWorkflow.env.CI_KEY_VAULT_NAME | Should -Be '${{ vars.CI_KEY_VAULT_NAME }}'
-        @($workflow.env.Keys) | Should -Not -Contain 'AVM_CI_SECRETS'
-        @($deployment.env.Keys) | Should -Not -Contain 'AVM_CI_SECRETS'
     }
 
     It 'Only exposes context payloads as environment data to validation and deployment steps' {

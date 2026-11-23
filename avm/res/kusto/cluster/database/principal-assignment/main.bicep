@@ -38,7 +38,7 @@ param tenantId string = tenant().tenantId
 // Resources      //
 // ============== //
 
-resource cluster 'Microsoft.Kusto/clusters@2024-04-13' existing  = {
+resource cluster 'Microsoft.Kusto/clusters@2024-04-13' existing = {
   name: kustoClusterName
 
   resource database 'databases@2024-04-13' existing = {

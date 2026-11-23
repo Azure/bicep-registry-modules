@@ -2,11 +2,21 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/file-service/CHANGELOG.md).
 
-## 0.2.1
+## 0.2.2
 
 ### Changes
 
 - Fixed file share creation on StandardV2 storage accounts by omitting the default access tier.
+
+### Breaking Changes
+
+- None
+
+## 0.2.1
+
+### Changes
+
+- Regenerated ARM template artifacts with Bicep 0.48.1 without changing resource configuration.
 
 ### Breaking Changes
 

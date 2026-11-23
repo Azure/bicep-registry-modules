@@ -1,4 +1,4 @@
-name: ".Module - Release [EXPERIMENTAL]"
+name: ".Module - Release"
 
 on:
   workflow_dispatch:
@@ -15,19 +15,53 @@ on:
         type: string
         description: "Avm.Authoring reference: authoringSource=gallery uses a package version (blank = latest); authoringSource=repo uses a tools SHA, tag or branch (blank = latest stable tag)."
         required: false
-  # push:
-  #   branches:
-  #     - main
+      targetCommit:
+        type: string
+        description: "Manual retry target: full lowercase commit SHA on upstream main (blank = triggering SHA)."
+        required: false
+      baseCommit:
+        type: string
+        description: "Manual retry comparison base: full lowercase ancestor SHA (blank = target's first parent); use the original push's before SHA for multi-commit retries."
+        required: false
+  push:
+    branches:
+      - main
+    paths:
+      - "avm/**"
 
 permissions: {}
 
 jobs:
-  release:
-    name: "Module release [EXPERIMENTAL]"
+  initialize:
+    name: "Select pending module releases"
     permissions:
       contents: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@7379a19fe3ca4e97a602a6bc1d78a61be09d31e7
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@6c33e99adaf4601d1b9e09cfc68f26636e2bc944
     with:
+      initializeOnly: true
       authoringSource: ${{ inputs.authoringSource || 'gallery' }}
       authoringRef: ${{ inputs.authoringRef || '' }}
+      targetCommit: ${{ inputs.targetCommit || '' }}
+      baseCommit: ${{ inputs.baseCommit || '' }}
+    secrets: inherit
+
+  release:
+    name: "${{ matrix.modulePath }}"
+    needs: initialize
+    if: needs.initialize.outputs.hasModules == 'true'
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime-release.yml@6c33e99adaf4601d1b9e09cfc68f26636e2bc944
+    with:
+      modulePath: ${{ matrix.modulePath }}
+      plannedTags: ${{ matrix.plannedTags }}
+      releaseTagLabel: ${{ matrix.releaseTagLabel }}
+      targetCommit: ${{ needs.initialize.outputs.targetCommit }}
+      baseCommit: ${{ needs.initialize.outputs.baseCommit }}
+      authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
+      pendingRelease: true
+      requireChangelog: true
     secrets: inherit

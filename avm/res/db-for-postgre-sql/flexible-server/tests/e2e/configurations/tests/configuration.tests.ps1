@@ -16,6 +16,9 @@ param (
 Describe 'Static configuration persistence' {
 
     BeforeAll {
+        $repoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent.FullName
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-DeploymentRead.ps1')
+
         $script:serverResourceId = $TestInputData.DeploymentOutputs.serverResourceId.Value
         $script:apiVersion = '2025-08-01'
     }
@@ -27,7 +30,9 @@ Describe 'Static configuration persistence' {
     ) {
         param($name, $value)
 
-        $response = Invoke-AzRestMethod -Method 'GET' -Path ('{0}/configurations/{1}?api-version={2}' -f $serverResourceId, $name, $apiVersion)
+        $response = Invoke-DeploymentRead -Read {
+            Invoke-AzRestMethod -Method 'GET' -Path ('{0}/configurations/{1}?api-version={2}' -f $serverResourceId, $name, $apiVersion) -ErrorAction Stop
+        }
         $response.StatusCode | Should -Be 200 -Because "the configuration [$name] must be retrievable after deployment"
 
         $actualValue = ($response.Content | ConvertFrom-Json).properties.value

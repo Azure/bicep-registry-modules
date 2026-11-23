@@ -292,7 +292,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             name: '9afa4fb3-2157-40db-aebb-039ce73c50ca'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -351,7 +351,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         name: 'd57821b0-52b3-4a42-9799-533a9cdb7eec'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -472,7 +472,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
               "name": "9afa4fb3-2157-40db-aebb-039ce73c50ca",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -533,7 +533,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           "name": "d57821b0-52b3-4a42-9799-533a9cdb7eec",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -642,7 +642,7 @@ param privateEndpoints = [
         name: '9afa4fb3-2157-40db-aebb-039ce73c50ca'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -701,7 +701,7 @@ param roleAssignments = [
     name: 'd57821b0-52b3-4a42-9799-533a9cdb7eec'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

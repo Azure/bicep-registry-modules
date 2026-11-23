@@ -6,7 +6,8 @@
         return ([datetimeoffset] $Value).ToUniversalTime()
     }
     $timestamp = [datetimeoffset]::MinValue
-    if ($Value -isnot [string] -or $Value -notmatch '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,7})?(?:Z|[+-]\d{2}:\d{2})$' -or
+    # Image Builder reports nanosecond precision; .NET rounds the extra digits to its 100 ns tick.
+    if ($Value -isnot [string] -or $Value -notmatch '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$' -or
         -not [datetimeoffset]::TryParse($Value, [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::None, [ref] $timestamp)) {
         throw 'An image build timestamp is missing its valid, absolute time-zone-qualified value.'
     }

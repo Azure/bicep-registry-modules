@@ -26,7 +26,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/secrets)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Storage/storageAccounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts)</li></ul> |
@@ -75,6 +75,10 @@ This instance deploys the module as a Blob Storage account.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/blob]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Azure rejects new legacy BlobStorage accounts with AccountKindNotSupported. The max and waf-aligned scenarios cover StorageV2 accounts and blob containers.
+```
 
 <details>
 
@@ -812,6 +816,10 @@ This instance deploys the module within an Azure Extended Zone.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/extended-location]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+This test is skipped in CI because the required Azure Extended Zone is not available to the CI subscription: deployment job 112203196501 failed with `UnsupportedEdgeZone` because the `losangeles` Extended Zone is not registered/available under the `westus` parent region for this subscription. This is a CI-subscription access/registration prerequisite, not a fixture or module defect, so no fixture-level change can resolve it; the Extended Zone test inputs are preserved unchanged. Re-enable this test once the CI subscription has approved access/registration for the `losangeles` Extended Zone.
+```
 
 <details>
 
@@ -1161,7 +1169,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             {
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               principalId: '<principalId>'
@@ -1290,7 +1298,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               name: 'cff1213b-7877-4425-b67c-bb1de8950dfb'
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               name: '<name>'
@@ -1530,7 +1538,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             {
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               principalId: '<principalId>'
@@ -1553,10 +1561,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     requireInfrastructureEncryption: true
     roleAssignments: [
       {
-        name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -1617,7 +1624,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             {
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               principalId: '<principalId>'
@@ -1637,7 +1644,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             {
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
             }
             {
               principalId: '<principalId>'
@@ -1697,7 +1704,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               {
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Owner"
+                "roleDefinitionIdOrName": "Reader"
               },
               {
                 "principalId": "<principalId>",
@@ -1836,7 +1843,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
                 "name": "cff1213b-7877-4425-b67c-bb1de8950dfb",
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Owner"
+                "roleDefinitionIdOrName": "Reader"
               },
               {
                 "name": "<name>",
@@ -2094,7 +2101,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               {
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Owner"
+                "roleDefinitionIdOrName": "Reader"
               },
               {
                 "principalId": "<principalId>",
@@ -2121,10 +2128,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "30b99723-a3d8-4e31-8872-b80c960d62bd",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -2191,7 +2197,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               {
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Owner"
+                "roleDefinitionIdOrName": "Reader"
               },
               {
                 "principalId": "<principalId>",
@@ -2211,7 +2217,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               {
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Owner"
+                "roleDefinitionIdOrName": "Reader"
               },
               {
                 "principalId": "<principalId>",
@@ -2267,7 +2273,7 @@ param blobServices = {
         {
           principalId: '<principalId>'
           principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
         }
         {
           principalId: '<principalId>'
@@ -2396,7 +2402,7 @@ param fileServices = {
           name: 'cff1213b-7877-4425-b67c-bb1de8950dfb'
           principalId: '<principalId>'
           principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
         }
         {
           name: '<name>'
@@ -2636,7 +2642,7 @@ param queueServices = {
         {
           principalId: '<principalId>'
           principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
         }
         {
           principalId: '<principalId>'
@@ -2659,10 +2665,9 @@ param queueServices = {
 param requireInfrastructureEncryption = true
 param roleAssignments = [
   {
-    name: '30b99723-a3d8-4e31-8872-b80c960d62bd'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -2723,7 +2728,7 @@ param tableServices = {
         {
           principalId: '<principalId>'
           principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
         }
         {
           principalId: '<principalId>'
@@ -2743,7 +2748,7 @@ param tableServices = {
         {
           principalId: '<principalId>'
           principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
         }
         {
           principalId: '<principalId>'
@@ -3268,6 +3273,10 @@ This instance deploys the module as Storage Account version 1.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/v1]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Azure no longer permits creating general-purpose-v1 storage accounts. The max and waf-aligned scenarios cover StorageV2 accounts and blob containers.
+```
 
 <details>
 

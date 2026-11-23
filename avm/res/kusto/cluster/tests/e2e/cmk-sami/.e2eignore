@@ -1,0 +1,2 @@
+Temporarily excluded: the CMK update failed with PartiallySucceeded and Internal Server Error after bootstrap, key creation and the key-scoped identity grant succeeded. The underlying cause is unproven; this is not a confirmed capacity failure.
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131891114125

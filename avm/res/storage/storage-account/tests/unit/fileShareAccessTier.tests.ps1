@@ -5,11 +5,11 @@ param (
 )
 
 BeforeAll {
-    . (Join-Path $repoRootPath 'utilities/pipelines/sharedScripts/helper/Build-ViaRPC.ps1')
-
     $modulePath = Join-Path ($moduleFolderPaths | Sort-Object | Select-Object -First 1) 'main.bicep'
-    $compiled = Build-ViaRPC -BicepFilePath $modulePath -PassThru -ErrorAction Stop
-    $template = $compiled[$modulePath] | ConvertFrom-Json -AsHashtable
+    $compiledPath = Join-Path $TestDrive 'storage-account.json'
+    $diagnostics = bicep build $modulePath --outfile $compiledPath 2>&1
+    $LASTEXITCODE | Should -Be 0 -Because ($diagnostics -join [Environment]::NewLine)
+    $template = Get-Content $compiledPath -Raw | ConvertFrom-Json -AsHashtable
     $fileService = $template.resources.storageAccount_fileServices.properties.template
     $shareDeployment = $fileService.resources.fileServices_shares
     $shareTemplate = $shareDeployment.properties.template
@@ -91,8 +91,10 @@ Describe 'File share access tier defaults' {
 
     It 'covers StandardV2 ZRS and LRS shares without explicit tiers in the deployment example' {
         $fixture = Join-Path (Split-Path $modulePath) 'tests/e2e/standard-file-share/main.test.bicep'
-        $compiledFixture = Build-ViaRPC -BicepFilePath $fixture -PassThru -ErrorAction Stop
-        $fixtureTemplate = $compiledFixture[$fixture] | ConvertFrom-Json -AsHashtable
+        $compiledPath = Join-Path $TestDrive 'standard-file-share.json'
+        $diagnostics = bicep build $fixture --outfile $compiledPath 2>&1
+        $LASTEXITCODE | Should -Be 0 -Because ($diagnostics -join [Environment]::NewLine)
+        $fixtureTemplate = Get-Content $compiledPath -Raw | ConvertFrom-Json -AsHashtable
         $deployments = @($fixtureTemplate.resources.testDeployment, $fixtureTemplate.resources.testDeploymentLrs)
 
         $deployments.properties.parameters.skuName.value | Should -Be @('StandardV2_ZRS', 'StandardV2_LRS')
