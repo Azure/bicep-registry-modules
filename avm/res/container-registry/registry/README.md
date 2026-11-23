@@ -137,7 +137,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrencr001'
+    name: '<name>'
     // Non-required parameters
     acrSku: 'Premium'
     customerManagedKey: {
@@ -165,7 +165,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrencr001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrSku": {
@@ -199,7 +199,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrencr001'
+param name = '<name>'
 // Non-required parameters
 param acrSku = 'Premium'
 param customerManagedKey = {
@@ -317,7 +317,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         name: '37c5bf75-c804-4607-94a9-e7485164f9f7'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -522,7 +522,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
           "name": "37c5bf75-c804-4607-94a9-e7485164f9f7",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -709,7 +709,7 @@ param roleAssignments = [
     name: '37c5bf75-c804-4607-94a9-e7485164f9f7'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -980,7 +980,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrwaf001'
+    name: '<name>'
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Premium'
@@ -1042,7 +1042,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrAdminUserEnabled": {
@@ -1132,7 +1132,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrwaf001'
+param name = '<name>'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Premium'

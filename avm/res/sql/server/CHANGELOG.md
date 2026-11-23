@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
-## 0.23.1
+## 0.23.2
 
 ### Changes
 
@@ -12,6 +12,17 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - None
 
+## 0.23.1
+
+### Changes
+
+- Updated Key Vault API references to `2026-02-01`.
+- Fixed elastic-pool deployment ordering so server encryption protection is configured first.
+- Fixed connection-policy update ordering so private endpoint updates finish first.
+
+### Breaking Changes
+
+- None
 ## 0.23.0
 
 ### Changes

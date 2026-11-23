@@ -210,14 +210,14 @@ var formattedRoleAssignments = [
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -391,6 +391,9 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
       zoneRedundant: elasticPool.?zoneRedundant
       enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      server_encryptionProtector
+    ]
   }
 ]
 
@@ -664,6 +667,10 @@ resource server_connection_policy 'Microsoft.Sql/servers/connectionPolicies@2025
   properties: {
     connectionType: connectionPolicy
   }
+  // Connection policy updates also modify the private endpoints' service proxies.
+  dependsOn: [
+    server_privateEndpoints
+  ]
 }
 
 resource server_outbound_firewall_rules 'Microsoft.Sql/servers/outboundFirewallRules@2025-01-01' = [

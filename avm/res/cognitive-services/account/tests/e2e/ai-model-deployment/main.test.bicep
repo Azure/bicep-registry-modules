@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using `AIServices` with `deployments` in parameter set'
-metadata description = 'This instance deploys the module with the AI model deployment feature.'
+metadata description = 'This instance deploys the module with the AI model deployment feature and local authentication enabled, so that the keys are read after the model deployments.'
 
 // ========== //
 // Parameters //
@@ -48,6 +48,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}002'
       kind: 'AIServices'
       customSubDomainName: '${namePrefix}x${serviceShort}ai'
+      disableLocalAuth: false
       deployments: [
         {
           name: 'text-embedding-3-large'

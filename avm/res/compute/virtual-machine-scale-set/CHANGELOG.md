@@ -12,6 +12,15 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - `extensionDSCConfig.protectedSettings`, when provided, must now be an object or `null`. The previous untyped object contract did not validate this field.
 
+## 0.11.2
+
+### Changes
+
+- Regenerated ARM template artifacts with Bicep 0.48.1 without changing resource configuration.
+
+### Breaking Changes
+
+- None
 ## 0.11.1
 
 ### Changes

@@ -56,7 +56,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
   params: {
     // Required parameters
-    name: 'whemin001'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
   }
 }
@@ -76,7 +76,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
   "parameters": {
     // Required parameters
     "name": {
-      "value": "whemin001"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -96,7 +96,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 using 'br/public:avm/res/web/hosting-environment:<version>'
 
 // Required parameters
-param name = 'whemin001'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 ```
 
@@ -118,7 +118,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
   params: {
     // Required parameters
-    name: 'whemax001'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     clusterSettings: [
@@ -164,7 +164,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     }
     roleAssignments: [
       {
-        name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -183,7 +182,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
-      hostingEnvironmentName: 'whemax001'
+      hostingEnvironmentName: '<hostingEnvironmentName>'
       resourceType: 'App Service Environment'
     }
     upgradePreference: 'Late'
@@ -206,7 +205,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
   "parameters": {
     // Required parameters
     "name": {
-      "value": "whemax001"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -282,7 +281,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     "roleAssignments": {
       "value": [
         {
-          "name": "97fc1da9-bfe4-409d-b17a-da9a82fad0d0",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -303,7 +301,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     "tags": {
       "value": {
         "hidden-title": "This is visible in the resource name",
-        "hostingEnvironmentName": "whemax001",
+        "hostingEnvironmentName": "<hostingEnvironmentName>",
         "resourceType": "App Service Environment"
       }
     },
@@ -328,7 +326,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 using 'br/public:avm/res/web/hosting-environment:<version>'
 
 // Required parameters
-param name = 'whemax001'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param clusterSettings = [
@@ -374,7 +372,6 @@ param networkConfiguration = {
 }
 param roleAssignments = [
   {
-    name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -393,7 +390,7 @@ param roleAssignments = [
 ]
 param tags = {
   'hidden-title': 'This is visible in the resource name'
-  hostingEnvironmentName: 'whemax001'
+  hostingEnvironmentName: '<hostingEnvironmentName>'
   resourceType: 'App Service Environment'
 }
 param upgradePreference = 'Late'
@@ -418,7 +415,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
   params: {
     // Required parameters
-    name: 'whewaf001'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     clusterSettings: [
@@ -459,7 +456,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     }
     tags: {
       'hidden-title': 'This is visible in the resource name'
-      hostingEnvironmentName: 'whewaf001'
+      hostingEnvironmentName: '<hostingEnvironmentName>'
       resourceType: 'App Service Environment'
     }
     upgradePreference: 'Late'
@@ -482,7 +479,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
   "parameters": {
     // Required parameters
     "name": {
-      "value": "whewaf001"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -545,7 +542,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     "tags": {
       "value": {
         "hidden-title": "This is visible in the resource name",
-        "hostingEnvironmentName": "whewaf001",
+        "hostingEnvironmentName": "<hostingEnvironmentName>",
         "resourceType": "App Service Environment"
       }
     },
@@ -570,7 +567,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 using 'br/public:avm/res/web/hosting-environment:<version>'
 
 // Required parameters
-param name = 'whewaf001'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param clusterSettings = [
@@ -611,7 +608,7 @@ param networkConfiguration = {
 }
 param tags = {
   'hidden-title': 'This is visible in the resource name'
-  hostingEnvironmentName: 'whewaf001'
+  hostingEnvironmentName: '<hostingEnvironmentName>'
   resourceType: 'App Service Environment'
 }
 param upgradePreference = 'Late'

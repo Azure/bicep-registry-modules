@@ -13,6 +13,15 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - `variables` now requires object entries with a string `value`. The previous untyped array accepted scalar entries, missing values, and non-string values that this contract rejects. The default remains `[]`, and child-module defaults are unchanged.
 
+## 0.19.4
+
+### Changes
+
+- Fixed webhook creation to wait for runbooks deployed by the module.
+
+### Breaking Changes
+
+- None
 ## 0.19.3
 
 ### Changes
@@ -160,4 +169,3 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - None
-

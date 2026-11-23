@@ -78,6 +78,7 @@ Name of the replica.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the replica. |
 | `name` | string | The name of the replica that was deployed. |
 | `resourceGroupName` | string | The resource group the app configuration was deployed into. |
 | `resourceId` | string | The resource ID of the replica that was deployed. |

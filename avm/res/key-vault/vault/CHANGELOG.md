@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/key-vault/vault/CHANGELOG.md).
 
-## 0.14.3
+## 0.14.4
 
 ### Changes
 
@@ -12,11 +12,12 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - None
 
-## 0.14.2
+## 0.14.3
 
 ### Changes
 
 - Update API versions of child-modules to 2026-02-01 before retirement 02/27/2027
+- Regenerated documentation with the native authoring generator to restore JSON usage-example grouping comments.
 
 ### Breaking Changes
 

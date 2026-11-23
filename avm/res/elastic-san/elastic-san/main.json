@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "17649921427922319273"
+      "version": "0.48.1.52935",
+      "templateHash": "4499227535334235994"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN."
@@ -1072,7 +1072,9 @@
     "elasticSan_volumeGroups": {
       "copy": {
         "name": "elasticSan_volumeGroups",
-        "count": "[length(coalesce(parameters('volumeGroups'), createArray()))]"
+        "count": "[length(coalesce(parameters('volumeGroups'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -1127,8 +1129,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "6227264034845139911"
+              "version": "0.48.1.52935",
+              "templateHash": "12462917259185495216"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group."
@@ -1918,7 +1920,7 @@
               "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults/keys",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -1953,7 +1955,7 @@
               "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -1987,7 +1989,9 @@
             "volumeGroup_volumes": {
               "copy": {
                 "name": "volumeGroup_volumes",
-                "count": "[length(coalesce(parameters('volumes'), createArray()))]"
+                "count": "[length(coalesce(parameters('volumes'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
@@ -2027,8 +2031,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "1530967667235091520"
+                      "version": "0.48.1.52935",
+                      "templateHash": "13818564218435857447"
                     },
                     "name": "Elastic SAN Volumes",
                     "description": "This module deploys an Elastic SAN Volume."
@@ -2227,8 +2231,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "7245068298357676029"
+                              "version": "0.48.1.52935",
+                              "templateHash": "18105873133014794071"
                             },
                             "name": "Elastic SAN Volume Snapshots",
                             "description": "This module deploys an Elastic SAN Volume Snapshot."
@@ -2440,7 +2444,9 @@
             "volumeGroup_privateEndpoints": {
               "copy": {
                 "name": "volumeGroup_privateEndpoints",
-                "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+                "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
@@ -3094,7 +3100,8 @@
                 }
               },
               "dependsOn": [
-                "volumeGroup"
+                "volumeGroup",
+                "volumeGroup_volumes"
               ]
             }
           },

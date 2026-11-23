@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Recompiled the template with Bicep version `0.48.1.52935`
+- Updated Key Vault API references to `2026-02-01`.
 
 ### Breaking Changes
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "3640562514328976531"
+      "version": "0.48.1.52935",
+      "templateHash": "8125190349005076566"
     },
     "name": "Storage Account Queue Services",
     "description": "This module deploys a Storage Account Queue Service."
@@ -470,8 +470,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "3999766979284468901"
+              "version": "0.48.1.52935",
+              "templateHash": "4669669292899078592"
             },
             "name": "Storage Account Queues",
             "description": "This module deploys a Storage Account Queue."

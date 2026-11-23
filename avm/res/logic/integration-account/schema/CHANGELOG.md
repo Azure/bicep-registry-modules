@@ -2,11 +2,11 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/logic/integration-account/schema/CHANGELOG.md).
 
-## 0.2.0
+## 0.1.1
 
 ### Changes
 
-- Added a `location` output with a fallback to the configured location when the child GET response omits it, matching the existing repository convention.
+- Added the resource-derived location output for the integration account schema.
 
 ### Breaking Changes
 

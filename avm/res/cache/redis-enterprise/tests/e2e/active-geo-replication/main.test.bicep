@@ -11,17 +11,14 @@ metadata description = 'This instance deploys the module with active geo-replica
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-cache-redisenterprise-${serviceShort}-rg'
 
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'creagr'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
-
-// Not all regions support zone-redundancy, so hardcoding 2 zone-enabled locations here
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'germanywestcentral'
-#disable-next-line no-hardcoded-location
-var enforcedPairedLocation = 'uksouth'
 
 // ============ //
 // Dependencies //
@@ -31,12 +28,12 @@ var enforcedPairedLocation = 'uksouth'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     redisClusterName: '${namePrefix}${serviceShort}001'
   }
@@ -50,7 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedPairedLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}002'
       skuName: 'Balanced_B10'
