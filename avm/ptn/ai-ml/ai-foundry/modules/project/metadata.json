@@ -1,0 +1,6 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "AI Foundry Project",
+  "moduleDescription": "Creates an AI Foundry project and any associated Azure service connections.",
+  "canonicalType": "helper"
+}

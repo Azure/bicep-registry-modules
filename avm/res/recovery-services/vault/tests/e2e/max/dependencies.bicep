@@ -126,7 +126,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.20.0' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2ads_v5'
     disablePasswordAuthentication: true
     publicKeys: [
       {

@@ -76,3 +76,6 @@ output name string = partner.name
 
 @description('The resource group the integration account partner was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location of the integration account partner.')
+output location string = partner.?location ?? location

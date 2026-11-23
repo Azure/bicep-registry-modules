@@ -97,7 +97,7 @@ module testDeployment '../../../main.bicep' = [
           osDiskSizeGB: 128
           osType: 'Linux'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS2_v2'
+          vmSize: 'Standard_D2s_v5'
           enableAutoScaling: true
           minCount: 1
           maxCount: 3
@@ -130,7 +130,7 @@ module testDeployment '../../../main.bicep' = [
           osType: 'Linux'
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_D2s_v3'
+          vmSize: 'Standard_D2ds_v5'
           vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
           enableAutoScaling: true
           maxCount: 2
@@ -386,7 +386,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           name: guid('Owner assignment ${namePrefix}${serviceShort}')
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }

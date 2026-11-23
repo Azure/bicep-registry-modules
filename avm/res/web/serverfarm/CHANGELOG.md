@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/serverfarm/CHANGELOG.md).
 
+## 0.7.1
+
+### Changes
+
+- Applied native Bicep formatting and regenerated the ARM template with Bicep `0.48.1` without changing resource configuration.
+
+### Breaking Changes
+
+- None
+
 ## 0.7.0
 
 ### Changes

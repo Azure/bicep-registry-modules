@@ -6,7 +6,7 @@ disabled: false
 
 configuration:
   resourceManagementConfiguration:
-    scheduledSearches:
+    scheduledSearches: []
       # - description: "ITA01BCP.1 - Label and comment AVM issues that have been marked as requiring triage and have not had any activity for 3 business days."
       #   frequencies:
       #     - weekday:
