@@ -6,7 +6,7 @@ The shared [PR check](./pr-check.yml) discovers affected modules and runs static
 
 When no required scenarios are discovered for changed modules, the run summary and sticky PR comment explain that the Required label selects no deployments and the All label is needed for optional scenarios. The feedback identifies the class-specific requirements and marks missing scenarios as advisory. Selecting tests is not a claim that validation passed.
 
-The planned shared `Avm.Authoring` script using `gh` will hand off a fork PR to a same-repository release branch. An authorized Microsoft FTE's invocation will authorize the handoff, with no extra approval or confirmation prompt. Security-review the fork changes before invoking the script with privileged credentials. Existing GitHub branch protections, required reviews and checks remain in force. Until the script is implemented and released, coordinate the handoff with a maintainer; no script command is available here yet.
+When the required E2E gate fails for a fork, the trusted [fork feedback workflow](./pr-fork-e2e-feedback.yml) comments with handoff guidance. An authorized Microsoft FTE must review the fork changes before using the [release-branch process](../skills/avm-release-branch/SKILL.md). Existing GitHub branch protections, required reviews and checks remain in force.
 
 The shared [release workflow](./release.yml) runs on pushes to `main` or can be started manually. Both select pending modules whose own compiled template or version changed in the selected commit range, check their changelogs and create scoped release tags. Unchanged children are not swept into the release. Registry publication is a separate process, so verify the published version after the tag is created.
 

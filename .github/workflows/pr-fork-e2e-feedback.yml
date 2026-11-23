@@ -1,0 +1,90 @@
+name: ".Module - Fork E2E feedback"
+
+on:
+  workflow_run:
+    workflows: [".Module - PR Check"]
+    types: [completed]
+
+permissions: {}
+
+jobs:
+  feedback:
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      checks: read
+      pull-requests: write
+    concurrency:
+      group: fork-e2e-feedback-${{ github.event.workflow_run.head_repository.id }}-${{ github.event.workflow_run.head_branch }}
+      cancel-in-progress: false
+    steps:
+      - name: "Report fork E2E handoff"
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $event = Get-Content -LiteralPath $env:GITHUB_EVENT_PATH -Raw | ConvertFrom-Json -AsHashtable
+          $run = $event.workflow_run
+          $repository = $env:GITHUB_REPOSITORY
+          if ($repository -cnotmatch '\A[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\z') { throw 'Invalid repository.' }
+          if ($run.head_repository.full_name -ceq $repository -or
+              $run.head_repository.full_name -cnotmatch '\A[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\z' -or
+              $run.id -isnot [long] -or $run.id -lt 1) { return }
+
+          function Get-GitHubPages {
+            param([string] $Endpoint, [string[]] $Fields = @())
+            $json = & gh api --method GET $Endpoint --paginate --slurp @Fields
+            if ($LASTEXITCODE -ne 0) { throw "GitHub API request failed: $Endpoint" }
+            $pages = ConvertFrom-Json -InputObject ($json -join "`n") -AsHashtable -NoEnumerate
+            foreach ($page in $pages) { $page }
+          }
+
+          $jobs = @(Get-GitHubPages "repos/$repository/actions/runs/$($run.id)/jobs?per_page=100" |
+              ForEach-Object { $_.jobs })
+          $gate = @($jobs | Where-Object { $_.name -ceq 'Report check status' -and $_.conclusion -ceq 'failure' })
+          if ($gate.Count -ne 1) { return }
+          $annotations = @(Get-GitHubPages "repos/$repository/check-runs/$($gate[0].id)/annotations?per_page=100")
+          if (-not @($annotations | Where-Object {
+                $_.annotation_level -ceq 'failure' -and
+                $_.message.StartsWith('Required E2E tests must run and pass before merging.', [StringComparison]::Ordinal)
+              }).Count) { return }
+
+          $owner = $run.head_repository.full_name.Split('/')[0]
+          $pulls = @(Get-GitHubPages "repos/$repository/pulls?per_page=100" @(
+                '-f', 'state=open', '-f', 'base=main', '-f', "head=${owner}:$($run.head_branch)"
+              ))
+          $pull = @($pulls | Where-Object {
+                $_.head.sha -ceq $run.head_sha -and $_.head.repo.full_name -ceq $run.head_repository.full_name
+              })
+          if ($pull.Count -ne 1) { return }
+          $number = $pull[0].number
+          if ($number -isnot [long] -or $number -lt 1) { throw 'Invalid pull request number.' }
+          $marker = '<!-- avm-bicep-fork-e2e-feedback -->'
+          $comments = @(Get-GitHubPages "repos/$repository/issues/$number/comments?per_page=100")
+          $previous = @($comments | Where-Object {
+                $_.user.login -ceq 'github-actions[bot]' -and $_.body -is [string] -and
+                $_.body.StartsWith($marker, [StringComparison]::Ordinal)
+              } | Select-Object -First 1)
+          $currentJson = & gh api "repos/$repository/pulls/$number"
+          if ($LASTEXITCODE -ne 0) { throw 'Could not verify the current pull request.' }
+          $current = ConvertFrom-Json -InputObject ($currentJson -join "`n") -AsHashtable
+          if ($current.state -cne 'open' -or $current.base.ref -cne 'main' -or
+              $current.head.sha -cne $run.head_sha -or
+              $current.head.repo.full_name -cne $run.head_repository.full_name) { return }
+          $body = @"
+          $marker
+
+          Required E2E tests cannot run with credentials from a fork pull request, and adding an E2E label does not authorize them. Ask an authorized Microsoft FTE to review the current changes and follow the [release-branch handoff process](https://github.com/Azure/bicep-registry-modules/blob/main/.github/skills/avm-release-branch/SKILL.md) before running credentialed tests.
+
+          [View the failed check]($env:GITHUB_SERVER_URL/$repository/actions/runs/$($run.id))
+          "@
+          if ($previous.Count -gt 0) {
+            if ($previous[0].body -ceq $body) { return }
+            $null = & gh api --method PATCH "repos/$repository/issues/comments/$($previous[0].id)" -f "body=$body"
+          }
+          else {
+            $null = & gh api --method POST "repos/$repository/issues/$number/comments" -f "body=$body"
+          }
+          if ($LASTEXITCODE -ne 0) { throw 'Could not publish fork E2E feedback.' }
