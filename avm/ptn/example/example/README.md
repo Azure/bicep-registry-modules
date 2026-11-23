@@ -232,6 +232,7 @@ Tags for the virtual network.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `resourceGroupName` | string | The resource group containing the virtual network. |
 | `resourceId` | string | The resource ID of the virtual network. |
 
 ## Cross-referenced modules

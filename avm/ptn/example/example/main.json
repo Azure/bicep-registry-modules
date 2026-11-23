@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.49.2.45890",
-      "templateHash": "2280758292864993738"
+      "templateHash": "7208841650391898185"
     },
     "name": "Fork Workflow Example",
     "description": "Disposable VNet pattern for fork workflow testing."
@@ -27,10 +27,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/virtualNetworks@2025-05-01#properties/tags"
+        },
         "description": "Optional. Tags for the virtual network."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -1896,6 +1899,13 @@
         "description": "The resource ID of the virtual network."
       },
       "value": "[reference('virtualNetwork').outputs.resourceId.value]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group containing the virtual network."
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }

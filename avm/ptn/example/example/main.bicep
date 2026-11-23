@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags for the virtual network.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/virtualNetworks@2025-05-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -49,3 +49,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.10.2' = {
 
 @description('The resource ID of the virtual network.')
 output resourceId string = virtualNetwork.outputs.resourceId
+
+@description('The resource group containing the virtual network.')
+output resourceGroupName string = resourceGroup().name
