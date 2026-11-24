@@ -95,9 +95,9 @@ resource vnetRegion1 'Microsoft.Network/virtualNetworks@2025-01-01' = {
           ]
           delegations: [
             {
-              name: 'Microsoft.Web/serverFarms'
+              name: 'Microsoft.ApiManagement/service'
               properties: {
-                serviceName: 'Microsoft.Web/serverFarms'
+                serviceName: 'Microsoft.ApiManagement/service'
               }
             }
           ]
@@ -140,9 +140,9 @@ resource vnetRegion2 'Microsoft.Network/virtualNetworks@2025-01-01' = {
           ]
           delegations: [
             {
-              name: 'Microsoft.Web/serverFarms'
+              name: 'Microsoft.ApiManagement/service'
               properties: {
-                serviceName: 'Microsoft.Web/serverFarms'
+                serviceName: 'Microsoft.ApiManagement/service'
               }
             }
           ]
