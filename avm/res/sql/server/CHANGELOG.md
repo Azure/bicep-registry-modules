@@ -2,6 +2,35 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
+## 0.24.0
+
+### Changes
+
+- Fixed `roleAssignments` of `elasticPools` not being passed to the `elastic-pool` child module
+- Marked the `storageAccountAccessKey` property of the `securityAlertPolicies` type as `@secure()` to avoid exposing it in the deployment history
+- Added the `expressVulnerabilityAssessmentState` parameter to configure the express configuration of SQL vulnerability assessment (no storage account required)
+- Added `roleAssignments` support to the `databases` parameter
+- Added `diagnosticSettings` support to the `elasticPools` parameter
+- Added the `databases` and `elasticPools` outputs
+- The `primaryUserAssignedIdentityResourceId` now defaults to the user-assigned identity, if exactly one is provided
+- The `administrators` property is only set if the `administrators` parameter is provided
+- Managed HSM key URIs are now derived from the cloud environment instead of being hardcoded to the Azure public cloud, and the HSM detection is case-insensitive
+- Added validations for missing administrator configuration, multiple user-assigned identities without a primary identity, secrets export without an administrator password, and combining the classic and express vulnerability assessment configurations
+- Consolidated the customer-managed key URI logic into a single variable
+- Fixed the `name` description of the `databaseType` and clarified the `auditSettings` description
+- Updated the `tags` types to API version `2025-01-01`
+- Updated `avm-common-types` to version `0.7.0` across the module
+- Updated the child modules `auditing-setting`, `database`, `database/backup-long-term-retention-policy`, `elastic-pool`, `encryption-protector`, `failover-group` and `vulnerability-assessment` (see their changelogs)
+
+### Breaking Changes
+
+- Removed `1.0` and `1.1` from the allowed values of `minimalTlsVersion`, as TLS 1.0 and 1.1 are retired for Azure SQL Database
+- The `publicNetworkAccess` parameter is now nullable and no longer accepts an empty string (`''`). Omit the parameter instead
+- The deployment now fails if neither `administratorLogin` nor `administrators` is provided
+- The deployment now fails if more than one user-assigned identity is provided without a `primaryUserAssignedIdentityResourceId`
+- Removed the ignored `enableTelemetry` property from all child resource types (e.g., `databases`, `elasticPools`, `firewallRules`, `auditSettings`)
+- The `timeBasedImmutabilityMode` of the database long-term backup retention policy now defaults to `Unlocked` (instead of `Locked`) if time-based immutability is enabled
+
 ## 0.23.1
 
 ### Changes

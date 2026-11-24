@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14639222289876912597"
+      "templateHash": "7025131273077865416"
     },
     "name": "Azure SQL Server failover group",
     "description": "This module deploys Azure SQL Server failover group."
@@ -28,7 +28,7 @@
         "targetServer": {
           "type": "string",
           "metadata": {
-            "description": "Required. The target partner server where the read-only endpoint points to."
+            "description": "Required. The target partner server where the read-only endpoint points to. Can be either the resource ID of the partner server (recommended, required if the partner server is in a different resource group or subscription) or the name of a partner server in the same resource group."
           }
         }
       },
@@ -54,7 +54,7 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Grace period before failover with data loss is attempted for the read-write endpoint."
+            "description": "Conditional. Grace period before failover with data loss is attempted for the read-write endpoint. Required if `failoverPolicy` is `Automatic`."
           }
         }
       },
@@ -187,8 +187,8 @@
             }
           }
         ],
-        "readOnlyEndpoint": "[if(not(empty(parameters('readOnlyEndpoint'))), createObject('failoverPolicy', parameters('readOnlyEndpoint').failoverPolicy, 'targetServer', resourceId(resourceGroup().name, 'Microsoft.Sql/servers', parameters('readOnlyEndpoint').targetServer)), null())]",
-        "readWriteEndpoint": "[parameters('readWriteEndpoint')]",
+        "readOnlyEndpoint": "[if(not(empty(parameters('readOnlyEndpoint'))), createObject('failoverPolicy', parameters('readOnlyEndpoint').failoverPolicy, 'targetServer', if(contains(parameters('readOnlyEndpoint').targetServer, '/'), parameters('readOnlyEndpoint').targetServer, resourceId(resourceGroup().name, 'Microsoft.Sql/servers', parameters('readOnlyEndpoint').targetServer))), null())]",
+        "readWriteEndpoint": "[if(and(equals(parameters('readWriteEndpoint').failoverPolicy, 'Automatic'), equals(tryGet(parameters('readWriteEndpoint'), 'failoverWithDataLossGracePeriodMinutes'), null())), fail('The ''failoverWithDataLossGracePeriodMinutes'' property is required if the read-write endpoint ''failoverPolicy'' is set to ''Automatic''.'), parameters('readWriteEndpoint'))]",
         "secondaryType": "[parameters('secondaryType')]"
       }
     }

@@ -44,7 +44,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | [`auditActionsAndGroups`](#parameter-auditactionsandgroups) | array | Specifies the Actions-Groups and Actions to audit. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`isAzureMonitorTargetEnabled`](#parameter-isazuremonitortargetenabled) | bool | Specifies whether audit events are sent to Azure Monitor. |
+| [`isAzureMonitorTargetEnabled`](#parameter-isazuremonitortargetenabled) | bool | Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, a diagnostic setting with the `SQLSecurityAuditEvents` log category must be configured on the server's `master` database. |
 | [`isDevopsAuditEnabled`](#parameter-isdevopsauditenabled) | bool | Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor. |
 | [`isManagedIdentityInUse`](#parameter-ismanagedidentityinuse) | bool | Specifies whether Managed Identity is used to access blob storage. |
 | [`isStorageSecondaryKeyInUse`](#parameter-isstoragesecondarykeyinuse) | bool | Specifies whether storageAccountAccessKey value is the storage's secondary key. |
@@ -92,7 +92,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `isAzureMonitorTargetEnabled`
 
-Specifies whether audit events are sent to Azure Monitor.
+Specifies whether audit events are sent to Azure Monitor. Note: To route the audit logs to a Log Analytics workspace or Event Hub, a diagnostic setting with the `SQLSecurityAuditEvents` log category must be configured on the server's `master` database.
 
 - Required: No
 - Type: bool
@@ -159,7 +159,6 @@ A blob storage to hold the auditing storage account.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

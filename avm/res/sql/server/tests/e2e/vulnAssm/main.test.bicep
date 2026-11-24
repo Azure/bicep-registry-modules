@@ -24,6 +24,8 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+var resourceSuffix = substring(uniqueString(subscription().id), 0, 4)
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -54,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}-${serviceShort}'
+      name: '${namePrefix}-${serviceShort}-${resourceSuffix}'
       primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
