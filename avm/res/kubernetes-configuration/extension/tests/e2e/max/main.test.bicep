@@ -24,11 +24,14 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
+#disable-next-line no-hardcoded-location // Standard_D2as_v5 is unavailable in some randomized test regions (for example, norwayeast).
+var enforcedLocation = 'swedencentral'
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
@@ -51,7 +54,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      location: enforcedLocation
       clusterName: nestedDependencies.outputs.clusterName
       extensionType: 'microsoft.flux'
       configurationSettings: {
@@ -62,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
         'source-controller.enabled': 'true'
       }
       releaseNamespace: 'flux-system'
-      releaseTrain: 'Stable'
+      releaseTrain: 'stable'
       version: '0.5.2'
       fluxConfigurations: [
         {
