@@ -7,7 +7,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Marked assembly content as secure when forwarding it to the assembly child module.
-- Fixed tenant-wide role-assignment name collisions in the max test fixture by including the vault scope, principal and role in each deterministic name.
 
 ### Breaking Changes
 
@@ -22,6 +21,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - None
+
 ## 0.2.0
 
 ### Changes

@@ -7,7 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Protected the slot config child-module boundary for configuration properties and retained app settings, as identified by the secure-flow linter rules.
-- Protected app-setting and metadata dictionaries, connection strings, and backup/log SAS URLs in the exported config types. Added a narrow reverse-flow exception for mixed properties forwarding, with regression controls for the credential annotations.
+- Protected app-setting and metadata dictionaries, connection strings, and backup/log SAS URLs in the exported config types. Added a narrow reverse-flow exception for mixed properties forwarding.
 
 ### Breaking Changes
 
