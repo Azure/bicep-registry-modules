@@ -66,7 +66,7 @@ type portalSettingPropertiesType = {
   validationKey: string?
 
   @secure()
-  @description('Optional. A base64-encoded secondary validation key to validate that a request comes from Azure API Management.')
+  @description('Optional. Defensive secure pass-through for a secondary validation key if supplied. This property is not documented by the Microsoft.ApiManagement/service/portalsettings@2024-05-01 API; marking it secure does not establish API support.')
   validationSecondaryKey: string?
 
   @description('Optional. Other portal setting properties, including sign-in and sign-up settings.')

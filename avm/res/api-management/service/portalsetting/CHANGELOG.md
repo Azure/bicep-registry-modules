@@ -6,6 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Clarified that `validationSecondaryKey` is a defensive secure pass-through, not an API-documented property. Its secure handling is unchanged.
 - Added an open `portalSettingPropertiesType` to secure only the primary and secondary delegation validation keys. Other properties remain unconstrained and are forwarded unchanged, as with the previous native `object` contract.
 
 ### Breaking Changes

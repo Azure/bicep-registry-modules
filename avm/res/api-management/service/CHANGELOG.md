@@ -6,6 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Sequenced private endpoint deployments after APIM child module updates to avoid overlapping Private Link and child resource writes to the service.
+- Clarified that the portal-setting child's secondary validation key is a defensive secure pass-through, not an API-documented property.
 - Marked cache connection strings as secure in `cacheType` and the cache child module. Named-value references such as `{{cache-connection-string}}` remain supported.
 - Marked primary and secondary subscription keys as secure in service and workspace subscription types, matching their child modules. Keys remain optional.
 - Marked workspace named values as secure through the imported workspace type, matching the named-value child module.

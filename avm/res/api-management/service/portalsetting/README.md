@@ -72,7 +72,7 @@ Portal setting properties.
 | :-- | :-- | :-- |
 | [`>Any_other_property<`](#parameter-properties>any_other_property<) |  | Other portal setting properties, including sign-in and sign-up settings. |
 | [`validationKey`](#parameter-propertiesvalidationkey) | securestring | A base64-encoded validation key to validate that a request comes from Azure API Management. |
-| [`validationSecondaryKey`](#parameter-propertiesvalidationsecondarykey) | securestring | A base64-encoded secondary validation key to validate that a request comes from Azure API Management. |
+| [`validationSecondaryKey`](#parameter-propertiesvalidationsecondarykey) | securestring | Defensive secure pass-through for a secondary validation key if supplied. This property is not documented by the Microsoft.ApiManagement/service/portalsettings@2024-05-01 API; marking it secure does not establish API support. |
 
 ### Parameter: `properties.>Any_other_property<`
 
@@ -90,7 +90,7 @@ A base64-encoded validation key to validate that a request comes from Azure API 
 
 ### Parameter: `properties.validationSecondaryKey`
 
-A base64-encoded secondary validation key to validate that a request comes from Azure API Management.
+Defensive secure pass-through for a secondary validation key if supplied. This property is not documented by the Microsoft.ApiManagement/service/portalsettings@2024-05-01 API; marking it secure does not establish API support.
 
 - Required: No
 - Type: securestring

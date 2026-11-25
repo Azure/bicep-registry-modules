@@ -728,6 +728,23 @@ module service_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
+    // Private Link updates the service; avoid overlapping APIM child writes.
+    dependsOn: [
+      service_apis
+      service_apiVersionSets
+      service_authorizationServers
+      service_backends
+      service_caches
+      service_identityProviders
+      service_loggers
+      service_namedValues
+      service_portalsettings
+      service_policies
+      service_products
+      service_subscriptions
+      service_diagnostics
+      service_workspaces
+    ]
   }
 ]
 
