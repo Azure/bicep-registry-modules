@@ -21,7 +21,7 @@ param namePrefix string = '#_namePrefix_#'
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
 #disable-next-line no-hardcoded-location
-var enforcedSecondLocation = 'westus3'
+var enforcedSecondLocation = 'francecentral'
 
 // ============ //
 // Dependencies //
@@ -66,7 +66,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    name: '${namePrefix}${serviceShort}001'
+    name: '${take('${namePrefix}${serviceShort}001', 30)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
     tags: {
       environment: 'dev'
       role: 'validation'

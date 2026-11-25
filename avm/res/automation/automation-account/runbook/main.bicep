@@ -45,12 +45,36 @@ param location string = resourceGroup().location
 @sys.description('Optional. Tags of the Automation Account resource.')
 param tags object?
 
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 var accountSasProperties = {
   signedServices: 'b'
   signedPermission: 'r'
   signedExpiry: dateTimeAdd(baseTime, sasTokenValidityLength)
   signedResourceTypes: 'o'
   signedProtocol: 'https'
+}
+
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
 }
 
 resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {

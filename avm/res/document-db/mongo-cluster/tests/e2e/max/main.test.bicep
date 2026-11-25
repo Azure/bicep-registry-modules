@@ -30,7 +30,7 @@ param password string = newGuid()
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -39,7 +39,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
@@ -56,7 +55,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
   }
 }
 

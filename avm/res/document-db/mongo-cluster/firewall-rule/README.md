@@ -12,7 +12,7 @@ This module config firewall rules for the Azure Cosmos DB for MongoDB (vCore) cl
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.DocumentDB/mongoClusters/firewallRules` | 2024-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_mongoclusters_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-10-01-preview/mongoClusters/firewallRules)</li></ul> |
+| `Microsoft.DocumentDB/mongoClusters/firewallRules` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_mongoclusters_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-09-01/mongoClusters/firewallRules)</li></ul> |
 
 ## Parameters
 

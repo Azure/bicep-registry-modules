@@ -42,7 +42,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' = {
   name: storageAccountName
   location: location
   kind: 'StorageV2'
@@ -59,14 +59,15 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
     }
   }
   tags: {
+    SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
     'hidden-title': 'This is visible in the resource name'
     Env: 'test'
   }
 
-  resource storageQueueService 'queueServices@2024-01-01' = {
+  resource storageQueueService 'queueServices@2026-04-01' = {
     name: 'default'
 
-    resource storageQueue 'queues@2024-01-01' = {
+    resource storageQueue 'queues@2026-04-01' = {
       name: 'jobs-queue'
     }
   }

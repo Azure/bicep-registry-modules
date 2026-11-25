@@ -71,6 +71,8 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: 'global'
       dataLocation: 'Germany'
+      disableLocalAuth: false
+      publicNetworkAccess: 'Enabled'
       linkedDomains: [
         nestedDependencies.outputs.emailDomainResourceId
       ]

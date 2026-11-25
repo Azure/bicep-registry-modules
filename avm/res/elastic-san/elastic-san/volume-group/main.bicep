@@ -43,9 +43,33 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 // ============== //
 // Variables      //
 // ============== //
+
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 var enableReferencedModulesTelemetry = false
 
@@ -83,14 +107,14 @@ resource elasticSan 'Microsoft.ElasticSan/elasticSans@2024-05-01' existing = {
   name: elasticSanName
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -135,6 +159,7 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2024-05-01' 
   }
 }
 
+@sys.batchSize(1)
 module volumeGroup_volumes 'volume/main.bicep' = [
   for (volume, index) in (volumes ?? []): {
     name: '${uniqueString(deployment().name, location)}-VolumeGroup-Volume-${index}'
@@ -145,10 +170,12 @@ module volumeGroup_volumes 'volume/main.bicep' = [
       location: location
       sizeGiB: volume.sizeGiB
       snapshots: volume.?snapshots
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
+@sys.batchSize(1)
 module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-ElasticSan-PrivateEndpoint-${index}'
@@ -201,6 +228,9 @@ module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
+    dependsOn: [
+      volumeGroup_volumes
+    ]
   }
 ]
 

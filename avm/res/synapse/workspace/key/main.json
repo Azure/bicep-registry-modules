@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "14862823412868014182"
+      "version": "0.48.1.52935",
+      "templateHash": "16370441533317143209"
     },
     "name": "Synapse Workspaces Keys",
     "description": "This module deploys a Synapse Workspaces Key."
@@ -34,16 +34,47 @@
       "metadata": {
         "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.1254be8",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     {
       "type": "Microsoft.Synapse/workspaces/keys",
       "apiVersion": "2021-06-01",
       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
       "properties": {
         "isActiveCMK": "[parameters('isActiveCMK')]",
-        "keyVaultUrl": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('name')), '2024-11-01').keyUri]"
+        "keyVaultUrl": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('name')), '2026-02-01').keyUri]"
       }
     }
   ],

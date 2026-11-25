@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "SA - Content Processing",
+  "moduleDescription": "AVM Pattern Module for SA - Content Processing",
+  "telemetryIdPrefix": "46d3xbcp.ptn.c8cbae4",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.sa-contentprocessing"],
+  "alternativeNames": [
+    "Solution Accelerator - Content Processing"
+  ],
+  "canonicalType": "sa/content-processing",
+  "owners": []
+}

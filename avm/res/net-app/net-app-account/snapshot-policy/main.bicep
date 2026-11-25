@@ -28,9 +28,11 @@ param snapEnabled bool = false
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.netapp-netappaccount-snapshotpolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -72,6 +74,9 @@ output name string = snapshotPolicies.name
 
 @description('The name of the Resource Group the Snapshot was created in.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location of the snapshot policy.')
+output location string = snapshotPolicies.location
 
 // ================ //
 // Definitions      //

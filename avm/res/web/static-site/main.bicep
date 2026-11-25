@@ -163,9 +163,11 @@ var formattedRoleAssignments = [
   })
 ]
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.web-staticSite.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -182,7 +184,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource staticSite 'Microsoft.Web/staticSites@2024-04-01' = {
+resource staticSite 'Microsoft.Web/staticSites@2025-03-01' = {
   name: name
   location: location
   tags: tags
@@ -213,6 +215,7 @@ module staticSite_linkedBackend 'linked-backend/main.bicep' = if (!empty(linkedB
     staticSiteName: staticSite.name
     backendResourceId: linkedBackend.resourceId
     region: linkedBackend.?location ?? location
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -222,6 +225,7 @@ module staticSite_appSettings 'config/main.bicep' = if (!empty(appSettings)) {
     kind: 'appsettings'
     staticSiteName: staticSite.name
     properties: appSettings
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -231,6 +235,7 @@ module staticSite_functionAppSettings 'config/main.bicep' = if (!empty(functionA
     kind: 'functionappsettings'
     staticSiteName: staticSite.name
     properties: functionAppSettings
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -243,6 +248,7 @@ module staticSite_customDomains 'custom-domain/main.bicep' = [
       validationMethod: validationMethod ?? (indexOf(customDomain, '.') == lastIndexOf(customDomain, '.')
         ? 'dns-txt-token'
         : 'cname-delegation')
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -274,7 +280,7 @@ resource staticSite_roleAssignments 'Microsoft.Authorization/roleAssignments@202
   }
 ]
 
-module staticSite_privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (!empty(privateEndpoints) && createPrivateDnsZone == 'Enabled') {
+module staticSite_privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.1' = if (!empty(privateEndpoints) && createPrivateDnsZone == 'Enabled') {
   name: '${uniqueString(deployment().name, location)}-staticSite-PrivateDnsZone'
   params: {
     name: 'privatelink.${split(staticSite.properties.defaultHostname, '.')[0]}.azurestaticapps.net'
@@ -287,7 +293,7 @@ module staticSite_privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8
   }
 }
 
-module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-staticSite-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -334,7 +340,7 @@ module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0
       privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup ?? {
         privateDnsZoneGroupConfigs: [
           {
-            privateDnsZoneResourceId: staticSite_privateDnsZone.outputs.resourceId
+            privateDnsZoneResourceId: staticSite_privateDnsZone.?outputs.resourceId
           }
         ]
       }

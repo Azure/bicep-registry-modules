@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "734384424730017478"
+      "version": "0.48.1.52935",
+      "templateHash": "14700261358195319869"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service."
@@ -856,7 +856,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
+        "description": "Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured."
       }
     },
     "tags": {
@@ -878,6 +878,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.25823ee",
     "enableReferencedModulesTelemetry": false,
     "shouldExportSecrets": "[and(not(equals(parameters('secretsExportConfiguration'), null())), not(parameters('disableLocalAuth')))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -891,14 +892,15 @@
       "Search Index Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1407120a-92aa-4202-b7e9-c0e197c71c8f')]",
       "Search Service Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7ca78c08-252a-4471-8644-bb5ff32d4ba0')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.search-searchservice.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -953,20 +955,20 @@
         "copy": [
           {
             "name": "metrics",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
             "input": {
-              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
               "timeGrain": null
             }
           },
           {
             "name": "logs",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
             "input": {
-              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
             }
           }
         ],
@@ -1020,7 +1022,9 @@
     "searchService_privateEndpoints": {
       "copy": {
         "name": "searchService_privateEndpoints",
-        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -1721,6 +1725,9 @@
           },
           "resourceRegion": {
             "value": "[tryGet(parameters('sharedPrivateLinkResources')[copyIndex()], 'resourceRegion')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1730,8 +1737,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "9681817997999190354"
+              "version": "0.48.1.52935",
+              "templateHash": "9655198260140137981"
             },
             "name": "Search Services Private Link Resources",
             "description": "This module deploys a Search Service Private Link Resource."
@@ -1773,9 +1780,40 @@
               "metadata": {
                 "description": "Optional. Can be used to specify the Azure Resource Manager location of the resource to which a shared private link is to be created. This is only required for those resources whose DNS configuration are regional (such as Azure Kubernetes Service)."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.0ba7be3",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "searchService": {
               "existing": true,
               "type": "Microsoft.Search/searchServices",
@@ -1820,7 +1858,8 @@
         }
       },
       "dependsOn": [
-        "searchService"
+        "searchService",
+        "searchService_privateEndpoints"
       ]
     },
     "secretsExport": {
@@ -1850,8 +1889,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "9545753382768322909"
+              "version": "0.48.1.52935",
+              "templateHash": "843757494301757643"
             }
           },
           "definitions": {
@@ -1914,7 +1953,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secrets": {
@@ -1923,7 +1962,7 @@
                 "count": "[length(parameters('secretsToSet'))]"
               },
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"

@@ -46,7 +46,16 @@ param associatedContainerRegistryResourceId string?
 @sys.description('Optional. Enable service-side encryption.')
 param enableServiceSideCMKEncryption bool?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@sys.description('Optional. Enable data isolation for the workspace.')
+param enableDataIsolation bool?
+
+@sys.description('Optional. Whether the service assigns roles to the workspace managed identity at resource group scope.')
+param allowRoleAssignmentOnRG bool?
+
+@sys.description('Optional. Enable legacy v1 API mode. This may prevent use of v2 API features.')
+param v1LegacyMode bool?
+
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -56,16 +65,16 @@ param hbiWorkspace bool = false
 @sys.description('Conditional. The resource ID of the hub to associate with the workspace. Required if \'kind\' is set to \'Project\'.')
 param hubResourceId string?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @sys.description('Optional. Computes to create respectively attach to the workspace.')
-param computes array?
+param computes computeType[]?
 
 @sys.description('Optional. Connections to create in the workspace.')
 param connections connectionType[]?
@@ -74,12 +83,12 @@ param connections connectionType[]?
 param datastores datastoreType[]?
 
 @sys.description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.MachineLearningServices/workspaces@2026-09-15-preview'>.tags?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The managed identity definition for this resource. At least one identity type is required.')
 param managedIdentities managedIdentityAllType = {
   systemAssigned: true
@@ -88,8 +97,8 @@ param managedIdentities managedIdentityAllType = {
 @sys.description('Conditional. Settings for feature store type workspaces. Required if \'kind\' is set to \'FeatureStore\'.')
 param featureStoreSettings featureStoreSettingType?
 
-@sys.description('Optional. List of IPv4 addresse ranges that are allowed to access the workspace.')
-param ipAllowlist string[]?
+@sys.description('Optional. Network access control rules for the workspace.')
+param networkAcls resourceInput<'Microsoft.MachineLearningServices/workspaces@2026-09-15-preview'>.properties.networkAcls?
 
 @sys.description('Optional. Managed Network settings for a machine learning workspace.')
 param managedNetworkSettings managedNetworkSettingType?
@@ -112,17 +121,14 @@ param systemDatastoresAuthMode string?
 param workspaceHubConfig workspaceHubConfigType?
 
 // Diagnostic Settings
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@sys.description('Optional. The diagnostic settings of the service.')
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@sys.description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @sys.description('Optional. The description of this workspace.')
 param description string?
 
-@sys.description('Optional. URL for the discovery service to identify regional endpoints for machine learning experimentation services.')
-param discoveryUrl string?
-
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -133,10 +139,10 @@ param imageBuildCompute string?
 param primaryUserAssignedIdentity string?
 
 @sys.description('Optional. The service managed resource settings.')
-param serviceManagedResourcesSettings object?
+param serviceManagedResourcesSettings resourceInput<'Microsoft.MachineLearningServices/workspaces@2026-09-15-preview'>.properties.serviceManagedResourcesSettings?
 
 @sys.description('Optional. The list of shared private link resources in this workspace. Note: This property is not idempotent.')
-param sharedPrivateLinkResources array?
+param sharedPrivateLinkResources resourceInput<'Microsoft.MachineLearningServices/workspaces@2026-09-15-preview'>.properties.sharedPrivateLinkResources?
 
 @sys.description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled.')
 @allowed([
@@ -152,16 +158,24 @@ param publicNetworkAccess string = 'Disabled'
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  map(
+    union(
+      (managedIdentities.?userAssignedResourceIds ?? []),
+      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
+        ? [customerManagedKey.?userAssignedIdentityResourceId]
+        : [])
+    ),
+    (id) => { '${id}': {} }
+  ),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities)
+var identity = !empty(managedIdentities) || !empty(formattedUserAssignedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -210,9 +224,11 @@ var formattedRoleAssignments = [
   })
 ]
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.machinelearningservices-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2026-06-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -229,27 +245,27 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey)) {
+  name: last(split((customerManagedKey!.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+    split(customerManagedKey!.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey!.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName!
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey)) {
+    name: customerManagedKey!.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey!.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
+    split(customerManagedKey!.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey!.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
-resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-10-01-preview' = {
+resource workspace 'Microsoft.MachineLearningServices/workspaces@2026-09-15-preview' = {
   name: name
   location: location
   tags: tags
@@ -259,6 +275,8 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-10-01-prev
   }
   identity: identity
   properties: {
+    enableDataIsolation: enableDataIsolation
+    v1LegacyMode: v1LegacyMode
     friendlyName: friendlyName ?? name
     storageAccount: associatedStorageAccountResourceId
     keyVault: associatedKeyVaultResourceId
@@ -266,7 +284,6 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-10-01-prev
     containerRegistry: associatedContainerRegistryResourceId
     hbiWorkspace: hbiWorkspace
     description: description
-    discoveryUrl: discoveryUrl
     encryption: !empty(customerManagedKey)
       ? {
           status: 'Enabled'
@@ -277,9 +294,9 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-10-01-prev
             : null
           keyVaultProperties: {
             keyVaultArmId: cMKKeyVault.id
-            keyIdentifier: !empty(customerManagedKey.?keyVersion ?? '')
-              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
-              : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+            keyIdentifier: !empty(customerManagedKey.?keyVersion)
+              ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+              : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
           }
         }
       : null
@@ -288,7 +305,7 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-10-01-prev
     primaryUserAssignedIdentity: primaryUserAssignedIdentity
     systemDatastoresAuthMode: systemDatastoresAuthMode
     publicNetworkAccess: publicNetworkAccess
-    ipAllowlist: ipAllowlist
+    networkAcls: networkAcls
     serviceManagedResourcesSettings: serviceManagedResourcesSettings
     featureStoreSettings: featureStoreSettings
     hubResourceId: hubResourceId
@@ -300,6 +317,11 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-10-01-prev
     ...(!empty(sharedPrivateLinkResources)
       ? {
           sharedPrivateLinkResources: sharedPrivateLinkResources
+        }
+      : {})
+    ...(allowRoleAssignmentOnRG != null
+      ? {
+          allowRoleAssignmentOnRG: allowRoleAssignmentOnRG
         }
       : {})
   }
@@ -323,6 +345,7 @@ module workspace_computes 'compute/main.bicep' = [
       resourceId: compute.?resourceId
       computeType: compute.computeType
       properties: compute.?properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       workspace_privateEndpoints
@@ -342,8 +365,10 @@ module workspace_connections 'connection/main.bicep' = [
       metadata: connection.?metadata
       sharedUserList: connection.?sharedUserList
       target: connection.target
-      value: connection.?value
+      useWorkspaceManagedIdentity: connection.?useWorkspaceManagedIdentity
+      peRequirement: connection.?peRequirement
       connectionProperties: connection.connectionProperties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -355,6 +380,7 @@ module workspace_datastores 'datastore/main.bicep' = [
       machineLearningWorkspaceName: workspace.name
       name: datastore.name
       properties: datastore.properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -379,14 +405,18 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -399,7 +429,7 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
   }
 ]
 
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.2' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -569,6 +599,9 @@ type privateEndpointoutboundRuleType = {
   @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\' or \'AllowInternetOutbound\'.')
   type: 'PrivateEndpoint'
 
+  @sys.description('Optional. Fully qualified domain names associated with the private endpoint outbound rule.')
+  fqdns: string[]?
+
   @sys.description('Required. Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace.')
   destination: {
     @sys.description('Required. The resource ID of the target resource for the private endpoint.')
@@ -593,14 +626,20 @@ type serviceTagoutboundRuleType = {
 
   @sys.description('Required. Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace.')
   destination: {
-    @sys.description('Required. The name of the service tag to allow.')
+    @sys.description('Optional. Whether to allow or deny traffic matching the rule.')
+    action: 'Allow' | 'Deny'?
+
+    @sys.description('Optional. Address prefixes to match. When provided, serviceTag is ignored.')
+    addressPrefixes: string[]?
+
+    @sys.description('Required. The ports to allow. Provide an asterisk(*) to allow any port.')
     portRanges: string
 
     @sys.description('Required. The protocol to allow. Provide an asterisk(*) to allow any protocol.')
     protocol: 'TCP' | 'UDP' | 'ICMP' | '*'
 
-    @sys.description('Required. Which ports will be allow traffic by this rule. Provide an asterisk(*) to allow any port.')
-    serviceTag: string
+    @sys.description('Conditional. The name of the service tag to match. Required unless addressPrefixes is provided.')
+    serviceTag: string?
   }
 
   @sys.description('Optional. Category of a managed network Outbound Rule of a machine learning workspace.')
@@ -621,6 +660,12 @@ type managedNetworkSettingType = {
 
   @sys.description('Optional. The firewall SKU used for FQDN rules.')
   firewallSku: 'Basic' | 'Standard'?
+
+  @sys.description('Optional. Enable monitoring for the managed network.')
+  enableNetworkMonitor: bool?
+
+  @sys.description('Optional. The managed network kind. Switching from V1 to V2 enables granular access controls and cannot be reversed.')
+  managedNetworkKind: 'V1' | 'V2'?
 }
 
 @export()
@@ -641,6 +686,58 @@ type workspaceHubConfigType = {
 
   @sys.description('Optional. The resource ID of the default resource group for projects created in the workspace hub.')
   defaultWorkspaceResourceGroup: string?
+}
+
+@export()
+@sys.description('The type for the workspace compute.')
+type computeType = {
+  @sys.description('Required. The name of the compute.')
+  @minLength(2)
+  @maxLength(16)
+  name: string
+
+  @sys.description('Required. The location of the compute resource.')
+  location: string
+
+  @sys.description('Required. The type of compute.')
+  computeType:
+    | 'AKS'
+    | 'AmlCompute'
+    | 'ComputeInstance'
+    | 'Databricks'
+    | 'DataFactory'
+    | 'DataLakeAnalytics'
+    | 'HDInsight'
+    | 'Kubernetes'
+    | 'SynapseSpark'
+    | 'VirtualMachine'
+
+  @sys.description('Optional. The SKU of the compute. Required when creating a compute resource.')
+  sku: 'Basic' | 'Free' | 'Premium' | 'Standard'?
+
+  @sys.description('Optional. The managed identity definition for the compute.')
+  managedIdentities: managedIdentityAllType?
+
+  @sys.description('Optional. Resource tags. Ignored when attaching a compute resource.')
+  tags: resourceInput<'Microsoft.MachineLearningServices/workspaces/computes@2026-09-01'>.tags?
+
+  @sys.description('Optional. Whether to deploy the compute. Set to false when an attached compute already exists to avoid a non-idempotent attachment.')
+  deployCompute: bool?
+
+  @sys.description('Optional. The location of the underlying compute. Ignored when attaching a compute resource.')
+  computeLocation: string?
+
+  @sys.description('Optional. The description of the compute.')
+  description: string?
+
+  @sys.description('Optional. Disable local authentication so only managed identity and Microsoft Entra authentication can be used.')
+  disableLocalAuth: bool?
+
+  @sys.description('Optional. The resource ID of the underlying compute to attach.')
+  resourceId: string?
+
+  @sys.description('Optional. Compute-type-specific properties. Ignored when resourceId is provided.')
+  properties: object?
 }
 
 import { categoryType, connectionPropertyType } from 'connection/main.bicep'
@@ -672,8 +769,11 @@ type connectionType = {
   @sys.description('Required. The target of the connection.')
   target: string
 
-  @sys.description('Optional. Value details of the workspace connection.')
-  value: string?
+  @sys.description('Optional. Use the workspace managed identity for the connection.')
+  useWorkspaceManagedIdentity: bool?
+
+  @sys.description('Optional. Whether a private endpoint is required for the connection.')
+  peRequirement: 'Required' | 'NotRequired' | 'NotApplicable'?
 
   @sys.description('Required. The properties of the connection, specific to the auth type.')
   connectionProperties: connectionPropertyType
@@ -686,5 +786,5 @@ type datastoreType = {
   name: string
 
   @sys.description('Required. The properties of the datastore.')
-  properties: resourceInput<'Microsoft.MachineLearningServices/workspaces/datastores@2024-10-01'>.properties
+  properties: resourceInput<'Microsoft.MachineLearningServices/workspaces/datastores@2026-09-01'>.properties
 }

@@ -88,9 +88,13 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.network-networkmanager.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -127,6 +131,7 @@ module networkManager_networkGroups 'network-group/main.bicep' = [
       description: networkGroup.?description
       staticMembers: networkGroup.?staticMembers
       memberType: networkGroup.?memberType ?? 'VirtualNetwork'
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -144,6 +149,7 @@ module networkManager_connectivityConfigurations 'connectivity-configuration/mai
       hubs: connectivityConfiguration.?hubs ?? []
       deleteExistingPeering: connectivityConfiguration.?deleteExistingPeering ?? false
       isGlobal: connectivityConfiguration.?isGlobal ?? false
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: networkManager_networkGroups
   }
@@ -158,6 +164,7 @@ module networkManager_scopeConnections 'scope-connection/main.bicep' = [
       description: scopeConnection.?description
       resourceId: scopeConnection.resourceId
       tenantId: scopeConnection.tenantId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -171,6 +178,7 @@ module networkManager_securityAdminConfigurations 'security-admin-configuration/
       description: securityAdminConfiguration.?description
       applyOnNetworkIntentPolicyBasedServices: securityAdminConfiguration.applyOnNetworkIntentPolicyBasedServices
       ruleCollections: securityAdminConfiguration.?ruleCollections ?? []
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: networkManager_networkGroups
   }
@@ -185,6 +193,7 @@ module networkManager_routingConfigurations 'routing-configuration/main.bicep' =
       description: routingConfiguration.?description
       routeTableUsageMode: routingConfiguration.?routeTableUsageMode
       ruleCollections: routingConfiguration.?ruleCollections ?? []
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: networkManager_networkGroups
   }

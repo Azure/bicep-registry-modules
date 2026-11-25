@@ -1,0 +1,13 @@
+{
+  "status": "Failed",
+  "error": {
+    "code": "InvalidTemplateDeployment",
+    "message": "The template deployment 'regional-fixture-test-aks-init' is not valid according to the validation procedure. The following resource provider(s) - 'Microsoft.ContainerService/managedClusters (2025-10-01)' reported preflight validation errors. Tracking id is '22222222-2222-2222-2222-222222222222'. See inner errors for details.",
+    "details": [
+      {
+        "code": "AvailabilityZoneNotSupported",
+        "message": "Preflight validation check for resource(s) for container service private-cluster in resource group retry-fixture failed. Message: The zone(s) '3' for resource 'systempool' is not supported. The supported zones for location 'swedencentral' are ''. Details: "
+      }
+    ]
+  }
+}

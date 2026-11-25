@@ -27,24 +27,24 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/secrets)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Sql/servers` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers)</li></ul> |
-| `Microsoft.Sql/servers/auditingSettings` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_auditingsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/auditingSettings)</li></ul> |
-| `Microsoft.Sql/servers/connectionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_connectionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/connectionPolicies)</li></ul> |
-| `Microsoft.Sql/servers/databases` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases)</li></ul> |
-| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backuplongtermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupLongTermRetentionPolicies)</li></ul> |
-| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupShortTermRetentionPolicies)</li></ul> |
-| `Microsoft.Sql/servers/elasticPools` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_elasticpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/elasticPools)</li></ul> |
-| `Microsoft.Sql/servers/encryptionProtector` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_encryptionprotector.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/encryptionProtector)</li></ul> |
-| `Microsoft.Sql/servers/failoverGroups` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_failovergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/servers/failoverGroups)</li></ul> |
-| `Microsoft.Sql/servers/firewallRules` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/firewallRules)</li></ul> |
-| `Microsoft.Sql/servers/keys` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/keys)</li></ul> |
-| `Microsoft.Sql/servers/outboundFirewallRules` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_outboundfirewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/outboundFirewallRules)</li></ul> |
-| `Microsoft.Sql/servers/securityAlertPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_securityalertpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/securityAlertPolicies)</li></ul> |
-| `Microsoft.Sql/servers/virtualNetworkRules` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_virtualnetworkrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/virtualNetworkRules)</li></ul> |
-| `Microsoft.Sql/servers/vulnerabilityAssessments` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_vulnerabilityassessments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/vulnerabilityAssessments)</li></ul> |
+| `Microsoft.Sql/servers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers)</li></ul> |
+| `Microsoft.Sql/servers/auditingSettings` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_auditingsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/auditingSettings)</li></ul> |
+| `Microsoft.Sql/servers/connectionPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_connectionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/connectionPolicies)</li></ul> |
+| `Microsoft.Sql/servers/databases` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/databases)</li></ul> |
+| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backuplongtermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/databases/backupLongTermRetentionPolicies)</li></ul> |
+| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/databases/backupShortTermRetentionPolicies)</li></ul> |
+| `Microsoft.Sql/servers/elasticPools` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_elasticpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/elasticPools)</li></ul> |
+| `Microsoft.Sql/servers/encryptionProtector` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_encryptionprotector.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/encryptionProtector)</li></ul> |
+| `Microsoft.Sql/servers/failoverGroups` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_failovergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/failoverGroups)</li></ul> |
+| `Microsoft.Sql/servers/firewallRules` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/firewallRules)</li></ul> |
+| `Microsoft.Sql/servers/keys` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/keys)</li></ul> |
+| `Microsoft.Sql/servers/outboundFirewallRules` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_outboundfirewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/outboundFirewallRules)</li></ul> |
+| `Microsoft.Sql/servers/securityAlertPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_securityalertpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/securityAlertPolicies)</li></ul> |
+| `Microsoft.Sql/servers/virtualNetworkRules` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_virtualnetworkrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/virtualNetworkRules)</li></ul> |
+| `Microsoft.Sql/servers/vulnerabilityAssessments` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_vulnerabilityassessments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/vulnerabilityAssessments)</li></ul> |
 
 ## Usage examples
 
@@ -172,6 +172,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
     auditSettings: {
+      isAzureMonitorTargetEnabled: true
+      isDevopsAuditEnabled: true
       isManagedIdentityInUse: true
       state: 'Enabled'
       storageAccountResourceId: '<storageAccountResourceId>'
@@ -180,6 +182,20 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     managedIdentities: {
       systemAssigned: true
     }
+    masterDatabaseDiagnosticSettings: [
+      {
+        logCategoriesAndGroups: [
+          {
+            category: 'SQLSecurityAuditEvents'
+          }
+          {
+            category: 'DevOpsOperationsAudit'
+          }
+        ]
+        name: 'auditDiagnosticSetting'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
   }
 }
 ```
@@ -209,6 +225,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "auditSettings": {
       "value": {
+        "isAzureMonitorTargetEnabled": true,
+        "isDevopsAuditEnabled": true,
         "isManagedIdentityInUse": true,
         "state": "Enabled",
         "storageAccountResourceId": "<storageAccountResourceId>"
@@ -221,6 +239,22 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": {
         "systemAssigned": true
       }
+    },
+    "masterDatabaseDiagnosticSettings": {
+      "value": [
+        {
+          "logCategoriesAndGroups": [
+            {
+              "category": "SQLSecurityAuditEvents"
+            },
+            {
+              "category": "DevOpsOperationsAudit"
+            }
+          ],
+          "name": "auditDiagnosticSetting",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
     }
   }
 }
@@ -242,6 +276,8 @@ param name = 'ssaud001'
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param auditSettings = {
+  isAzureMonitorTargetEnabled: true
+  isDevopsAuditEnabled: true
   isManagedIdentityInUse: true
   state: 'Enabled'
   storageAccountResourceId: '<storageAccountResourceId>'
@@ -250,6 +286,20 @@ param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
+param masterDatabaseDiagnosticSettings = [
+  {
+    logCategoriesAndGroups: [
+      {
+        category: 'SQLSecurityAuditEvents'
+      }
+      {
+        category: 'DevOpsOperationsAudit'
+      }
+    ]
+    name: 'auditDiagnosticSetting'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 ```
 
 </details>
@@ -480,7 +530,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       autoRotationEnabled: true
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
-      keyVersion: '<keyVersion>'
     }
     databases: [
       {
@@ -546,8 +595,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": {
         "autoRotationEnabled": true,
         "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "keyVersion": "<keyVersion>"
+        "keyVaultResourceId": "<keyVaultResourceId>"
       }
     },
     "databases": {
@@ -614,7 +662,6 @@ param customerManagedKey = {
   autoRotationEnabled: true
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
-  keyVersion: '<keyVersion>'
 }
 param databases = [
   {
@@ -1337,6 +1384,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         availabilityZone: -1
         backupLongTermRetentionPolicy: {
           monthlyRetention: 'P6M'
+          timeBasedImmutability: 'Enabled'
+          timeBasedImmutabilityMode: 'Locked'
         }
         backupShortTermRetentionPolicy: {
           retentionDays: 14
@@ -1417,6 +1466,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         '<serverIdentityResourceId>'
       ]
     }
+    masterDatabaseDiagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     outboundFirewallRules: [
       'www.bing.com'
       'www.microsoft.com'
@@ -1452,7 +1510,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     restrictOutboundNetworkAccess: 'Disabled'
     roleAssignments: [
       {
-        name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1540,7 +1597,9 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         {
           "availabilityZone": -1,
           "backupLongTermRetentionPolicy": {
-            "monthlyRetention": "P6M"
+            "monthlyRetention": "P6M",
+            "timeBasedImmutability": "Enabled",
+            "timeBasedImmutabilityMode": "Locked"
           },
           "backupShortTermRetentionPolicy": {
             "retentionDays": 14
@@ -1632,6 +1691,17 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
       }
     },
+    "masterDatabaseDiagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "outboundFirewallRules": {
       "value": [
         "www.bing.com",
@@ -1676,7 +1746,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1763,6 +1832,8 @@ param databases = [
     availabilityZone: -1
     backupLongTermRetentionPolicy: {
       monthlyRetention: 'P6M'
+      timeBasedImmutability: 'Enabled'
+      timeBasedImmutabilityMode: 'Locked'
     }
     backupShortTermRetentionPolicy: {
       retentionDays: 14
@@ -1843,6 +1914,15 @@ param managedIdentities = {
     '<serverIdentityResourceId>'
   ]
 }
+param masterDatabaseDiagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param outboundFirewallRules = [
   'www.bing.com'
   'www.microsoft.com'
@@ -1878,7 +1958,6 @@ param privateEndpoints = [
 param restrictOutboundNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
-    name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -2331,6 +2410,16 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
+    masterDatabaseDiagnosticSettings: [
+      {
+        logCategoriesAndGroups: [
+          {
+            category: 'SQLSecurityAuditEvents'
+          }
+        ]
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     privateEndpoints: [
       {
@@ -2480,6 +2569,18 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
       }
     },
+    "masterDatabaseDiagnosticSettings": {
+      "value": [
+        {
+          "logCategoriesAndGroups": [
+            {
+              "category": "SQLSecurityAuditEvents"
+            }
+          ],
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "primaryUserAssignedIdentityResourceId": {
       "value": "<primaryUserAssignedIdentityResourceId>"
     },
@@ -2625,6 +2726,16 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param masterDatabaseDiagnosticSettings = [
+  {
+    logCategoriesAndGroups: [
+      {
+        category: 'SQLSecurityAuditEvents'
+      }
+    ]
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param privateEndpoints = [
   {
@@ -2716,6 +2827,7 @@ param vulnerabilityAssessmentsObj = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`masterDatabaseDiagnosticSettings`](#parameter-masterdatabasediagnosticsettings) | array | The diagnostic settings of the server's `master` database. Server-level audit logs (i.e., the `SQLSecurityAuditEvents` & `DevOpsOperationsAudit` categories) are emitted by the implicitly created `master` database. Hence, forwarding them to a Log Analytics workspace, Event Hub, Storage Account or partner solution requires a diagnostic setting on that database. If no log categories are specified, all logs are configured by default. Metrics are only configured if explicitly specified, as the `master` database does not emit any. |
 | [`minimalTlsVersion`](#parameter-minimaltlsversion) | string | Minimal TLS version allowed. |
 | [`outboundFirewallRules`](#parameter-outboundfirewallrules) | array | The outbound firewall rules for the server. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
@@ -2853,6 +2965,7 @@ The audit settings configuration. If you want to disable auditing, set the parma
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`auditActionsAndGroups`](#parameter-auditsettingsauditactionsandgroups) | array | Specifies the Actions-Groups and Actions to audit. |
+| [`enableTelemetry`](#parameter-auditsettingsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`isAzureMonitorTargetEnabled`](#parameter-auditsettingsisazuremonitortargetenabled) | bool | Specifies whether audit events are sent to Azure Monitor. |
 | [`isDevopsAuditEnabled`](#parameter-auditsettingsisdevopsauditenabled) | bool | Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor. |
 | [`isManagedIdentityInUse`](#parameter-auditsettingsismanagedidentityinuse) | bool | Specifies whether Managed Identity is used to access blob storage. |
@@ -2869,6 +2982,13 @@ Specifies the Actions-Groups and Actions to audit.
 
 - Required: No
 - Type: array
+
+### Parameter: `auditSettings.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `auditSettings.isAzureMonitorTargetEnabled`
 
@@ -3040,6 +3160,7 @@ The databases to create in the server.
 | [`customerManagedKey`](#parameter-databasescustomermanagedkey) | object | The customer managed key definition for database TDE. |
 | [`diagnosticSettings`](#parameter-databasesdiagnosticsettings) | array | The diagnostic settings of the service. |
 | [`elasticPoolResourceId`](#parameter-databaseselasticpoolresourceid) | string | The resource identifier of the elastic pool containing this database. |
+| [`enableTelemetry`](#parameter-databasesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`federatedClientId`](#parameter-databasesfederatedclientid) | string | The Client id used for cross tenant per database CMK scenario. |
 | [`freeLimitExhaustionBehavior`](#parameter-databasesfreelimitexhaustionbehavior) | string | Specifies the behavior when monthly free limits are exhausted for the free database. |
 | [`highAvailabilityReplicaCount`](#parameter-databaseshighavailabilityreplicacount) | int | The number of secondary replicas associated with the database that are used to provide high availability. Not applicable to a Hyperscale database within an elastic pool. |
@@ -3111,10 +3232,20 @@ The long term backup retention policy for the database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-databasesbackuplongtermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`monthlyRetention`](#parameter-databasesbackuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
+| [`timeBasedImmutability`](#parameter-databasesbackuplongtermretentionpolicytimebasedimmutability) | string | The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled. |
+| [`timeBasedImmutabilityMode`](#parameter-databasesbackuplongtermretentionpolicytimebasedimmutabilitymode) | string | The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked. |
 | [`weeklyRetention`](#parameter-databasesbackuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-databasesbackuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-databasesbackuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
+
+### Parameter: `databases.backupLongTermRetentionPolicy.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `databases.backupLongTermRetentionPolicy.monthlyRetention`
 
@@ -3122,6 +3253,34 @@ Monthly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
+
+### Parameter: `databases.backupLongTermRetentionPolicy.timeBasedImmutability`
+
+The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `databases.backupLongTermRetentionPolicy.timeBasedImmutabilityMode`
+
+The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Locked'
+    'Unlocked'
+  ]
+  ```
 
 ### Parameter: `databases.backupLongTermRetentionPolicy.weeklyRetention`
 
@@ -3156,6 +3315,7 @@ The short term backup retention policy for the database.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diffBackupIntervalInHours`](#parameter-databasesbackupshorttermretentionpolicydiffbackupintervalinhours) | int | Differential backup interval in hours. For Hyperscale tiers this value will be ignored. |
+| [`enableTelemetry`](#parameter-databasesbackupshorttermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`retentionDays`](#parameter-databasesbackupshorttermretentionpolicyretentiondays) | int | Point-in-time retention in days. |
 
 ### Parameter: `databases.backupShortTermRetentionPolicy.diffBackupIntervalInHours`
@@ -3164,6 +3324,13 @@ Differential backup interval in hours. For Hyperscale tiers this value will be i
 
 - Required: No
 - Type: int
+
+### Parameter: `databases.backupShortTermRetentionPolicy.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `databases.backupShortTermRetentionPolicy.retentionDays`
 
@@ -3417,6 +3584,13 @@ The resource identifier of the elastic pool containing this database.
 
 - Required: No
 - Type: string
+
+### Parameter: `databases.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `databases.federatedClientId`
 
@@ -3785,6 +3959,7 @@ The Elastic Pools to create in the server.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoPauseDelay`](#parameter-elasticpoolsautopausedelay) | int | Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled. |
+| [`enableTelemetry`](#parameter-elasticpoolsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`highAvailabilityReplicaCount`](#parameter-elasticpoolshighavailabilityreplicacount) | int | The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools. |
 | [`licenseType`](#parameter-elasticpoolslicensetype) | string | The license type to apply for this elastic pool. |
 | [`lock`](#parameter-elasticpoolslock) | object | The lock settings of the elastic pool. |
@@ -3827,6 +4002,13 @@ Time in minutes after which elastic pool is automatically paused. A value of -1 
 
 - Required: No
 - Type: int
+
+### Parameter: `elasticPools.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `elasticPools.highAvailabilityReplicaCount`
 
@@ -4198,6 +4380,7 @@ The failover groups configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-failovergroupsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`readOnlyEndpoint`](#parameter-failovergroupsreadonlyendpoint) | object | Read-only endpoint of the failover group instance. |
 | [`tags`](#parameter-failovergroupstags) | object | Tags of the resource. |
 
@@ -4276,6 +4459,13 @@ Databases secondary type on partner server.
   ]
   ```
 
+### Parameter: `failoverGroups.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `failoverGroups.readOnlyEndpoint`
 
 Read-only endpoint of the failover group instance.
@@ -4342,6 +4532,7 @@ The firewall rules to create in the server.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-firewallrulesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`endIpAddress`](#parameter-firewallrulesendipaddress) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses. |
 | [`startIpAddress`](#parameter-firewallrulesstartipaddress) | string | The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses. |
 
@@ -4351,6 +4542,13 @@ The name of the firewall rule.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `firewallRules.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `firewallRules.endIpAddress`
 
@@ -4392,9 +4590,17 @@ The keys to configure.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-keysenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`name`](#parameter-keysname) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. |
 | [`serverKeyType`](#parameter-keysserverkeytype) | string | The server key type. |
 | [`uri`](#parameter-keysuri) | string | The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'. |
+
+### Parameter: `keys.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `keys.name`
 
@@ -4503,6 +4709,152 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `masterDatabaseDiagnosticSettings`
+
+The diagnostic settings of the server's `master` database. Server-level audit logs (i.e., the `SQLSecurityAuditEvents` & `DevOpsOperationsAudit` categories) are emitted by the implicitly created `master` database. Hence, forwarding them to a Log Analytics workspace, Event Hub, Storage Account or partner solution requires a diagnostic setting on that database. If no log categories are specified, all logs are configured by default. Metrics are only configured if explicitly specified, as the `master` database does not emit any.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-masterdatabasediagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-masterdatabasediagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-masterdatabasediagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-masterdatabasediagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-masterdatabasediagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-masterdatabasediagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-masterdatabasediagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-masterdatabasediagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-masterdatabasediagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `masterDatabaseDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `masterDatabaseDiagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-masterdatabasediagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-masterdatabasediagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-masterdatabasediagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `masterDatabaseDiagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `masterDatabaseDiagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-masterdatabasediagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-masterdatabasediagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `masterDatabaseDiagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `masterDatabaseDiagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `masterDatabaseDiagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
 
 ### Parameter: `minimalTlsVersion`
 
@@ -5151,6 +5503,7 @@ The security alert policies to create in the server.
 | [`disabledAlerts`](#parameter-securityalertpoliciesdisabledalerts) | array | Alerts to disable. |
 | [`emailAccountAdmins`](#parameter-securityalertpoliciesemailaccountadmins) | bool | Specifies that the alert is sent to the account administrators. |
 | [`emailAddresses`](#parameter-securityalertpoliciesemailaddresses) | array | Specifies an array of email addresses to which the alert is sent. |
+| [`enableTelemetry`](#parameter-securityalertpoliciesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`retentionDays`](#parameter-securityalertpoliciesretentiondays) | int | Specifies the number of days to keep in the Threat Detection audit logs. |
 | [`state`](#parameter-securityalertpoliciesstate) | string | Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database. |
 | [`storageAccountAccessKey`](#parameter-securityalertpoliciesstorageaccountaccesskey) | string | Specifies the identifier key of the Threat Detection audit storage account. |
@@ -5194,6 +5547,13 @@ Specifies an array of email addresses to which the alert is sent.
 
 - Required: No
 - Type: array
+
+### Parameter: `securityAlertPolicies.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `securityAlertPolicies.retentionDays`
 
@@ -5255,6 +5615,7 @@ The virtual network rules to create in the server.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-virtualnetworkrulesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ignoreMissingVnetServiceEndpoint`](#parameter-virtualnetworkrulesignoremissingvnetserviceendpoint) | bool | Allow creating a firewall rule before the virtual network has vnet service endpoint enabled. |
 
 ### Parameter: `virtualNetworkRules.name`
@@ -5270,6 +5631,13 @@ The resource ID of the virtual network subnet.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `virtualNetworkRules.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `virtualNetworkRules.ignoreMissingVnetServiceEndpoint`
 
@@ -5297,6 +5665,7 @@ The vulnerability assessment configuration.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`createStorageRoleAssignment`](#parameter-vulnerabilityassessmentsobjcreatestorageroleassignment) | bool | Specifies whether to create a role assignment for the storage account. |
+| [`enableTelemetry`](#parameter-vulnerabilityassessmentsobjenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`recurringScans`](#parameter-vulnerabilityassessmentsobjrecurringscans) | object | The recurring scans settings. |
 | [`useStorageAccountAccessKey`](#parameter-vulnerabilityassessmentsobjusestorageaccountaccesskey) | bool | Specifies whether to use the storage account access key to access the storage account. |
 
@@ -5317,6 +5686,13 @@ The resource ID of the storage account to store the scan reports.
 ### Parameter: `vulnerabilityAssessmentsObj.createStorageRoleAssignment`
 
 Specifies whether to create a role assignment for the storage account.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vulnerabilityAssessmentsObj.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -5388,12 +5764,49 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Notes
+
+### Sending server-level audit logs to Azure Monitor
+
+Server-level auditing is configured via the `auditSettings` parameter. However, the resulting audit events (the `SQLSecurityAuditEvents` and `DevOpsOperationsAudit` log categories) are emitted by the server's `master` database and not by the logical server itself. Sending them to a Log Analytics workspace, Event Hub, Storage Account or partner solution therefore requires an additional diagnostic setting scoped to that `master` database, which can be configured via the `masterDatabaseDiagnosticSettings` parameter.
+
+As the `master` database is implicitly created together with the logical server, it cannot be declared via the `databases` parameter.
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+auditSettings: {
+    state: 'Enabled'
+    isAzureMonitorTargetEnabled: true // Required to forward the audit events to Azure Monitor
+    isDevopsAuditEnabled: true // Optional. Only required for the 'DevOpsOperationsAudit' category
+}
+masterDatabaseDiagnosticSettings: [
+    {
+        workspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+        logCategoriesAndGroups: [
+            {
+                category: 'SQLSecurityAuditEvents'
+            }
+            {
+                category: 'DevOpsOperationsAudit'
+            }
+        ]
+    }
+]
+```
+
+</details>
+<p>
+
+> **Note:** The `master` database does not emit any platform metrics. Metrics are hence only configured if explicitly requested via `metricCategories`.
 
 ### Parameter Usage: `administrators`
 

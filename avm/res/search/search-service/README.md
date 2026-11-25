@@ -26,7 +26,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/secrets)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Search/searchServices` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-05-01/searchServices)</li></ul> |
@@ -60,7 +60,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
   params: {
-    name: 'sssmin002'
+    name: '<name>'
   }
 }
 ```
@@ -78,7 +78,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "sssmin002"
+      "value": "<name>"
     }
   }
 }
@@ -94,7 +94,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/search/search-service:<version>'
 
-param name = 'sssmin002'
+param name = '<name>'
 ```
 
 </details>
@@ -214,7 +214,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
   params: {
     // Required parameters
-    name: 'sssmax001'
+    name: '<name>'
     // Non-required parameters
     authOptions: {
       aadOrApiKey: {
@@ -271,7 +271,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
         name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -310,7 +310,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sssmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "authOptions": {
@@ -395,7 +395,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
           "name": "73ec30e0-2e25-475f-beec-d90cab332eb7",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -438,7 +438,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 using 'br/public:avm/res/search/search-service:<version>'
 
 // Required parameters
-param name = 'sssmax001'
+param name = '<name>'
 // Non-required parameters
 param authOptions = {
   aadOrApiKey: {
@@ -495,7 +495,7 @@ param roleAssignments = [
     name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -536,7 +536,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
   params: {
     // Required parameters
-    name: 'ssspr001'
+    name: '<name>'
     // Non-required parameters
     privateEndpoints: [
       {
@@ -604,7 +604,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssspr001"
+      "value": "<name>"
     },
     // Non-required parameters
     "privateEndpoints": {
@@ -678,7 +678,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 using 'br/public:avm/res/search/search-service:<version>'
 
 // Required parameters
-param name = 'ssspr001'
+param name = '<name>'
 // Non-required parameters
 param privateEndpoints = [
   {
@@ -963,7 +963,7 @@ param tags = {
 | [`cmkEnforcement`](#parameter-cmkenforcement) | string | Describes a policy that determines how resources within the search service are to be encrypted with Customer Managed Keys. |
 | [`computeType`](#parameter-computetype) | string | The compute type of the search service. |
 | [`dataExfiltrationProtections`](#parameter-dataexfiltrationprotections) | array | A list of data exfiltration scenarios that are explicitly disallowed for the search service. Currently, the only supported value is 'All' to disable all possible data export scenarios with more fine grained controls planned for the future. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | When set to true, calls to the search service will not be permitted to utilize API keys for authentication. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hostingMode`](#parameter-hostingmode) | string | Applicable only for the standard3 SKU. You can set this property to enable up to 3 high density partitions that allow up to 1000 indexes, which is much higher than the maximum indexes allowed for any other SKU. For the standard3 SKU, the value is either 'default' or 'highDensity'. For all other SKUs, this value must be 'default'. |
@@ -1042,7 +1042,7 @@ A list of data exfiltration scenarios that are explicitly disallowed for the sea
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

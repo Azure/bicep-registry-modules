@@ -1,10 +1,5 @@
 # Azure Health Bots `[Microsoft.HealthBot/healthBots]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an Azure Health Bot.
 
 You can reference the module as follows:
@@ -30,7 +25,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.HealthBot/healthBots` | 2022-08-08 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.healthbot_healthbots.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HealthBot/2022-08-08/healthBots)</li></ul> |
+| `Microsoft.HealthBot/healthBots` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.healthbot_healthbots.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HealthBot/2025-11-01/healthBots)</li></ul> |
 
 ## Usage examples
 
@@ -429,8 +424,9 @@ The name of the Azure Health Bot SKU.
   ```Bicep
   [
     'C0'
+    'C1'
     'F0'
-    'S1'
+    'PES'
   ]
   ```
 
@@ -639,8 +635,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 

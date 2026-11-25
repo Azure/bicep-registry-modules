@@ -31,7 +31,7 @@ var existingName = getResourceName(existingResourceId, existingResourceParts)
 var existingSubscriptionId = getSubscriptionId(existingResourceParts)
 var existingResourceGroupName = getResourceGroupName(existingResourceParts)
 
-resource existingKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(existingResourceId)) {
+resource existingKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(existingResourceId)) {
   name: existingName
   scope: resourceGroup(existingSubscriptionId, existingResourceGroupName)
 }

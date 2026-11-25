@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "4638629489649557955"
+      "version": "0.43.1.21952",
+      "templateHash": "17622698538854927541"
     },
     "name": "Azure Cosmos DB for MongoDB (vCore) cluster user",
     "description": "This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster. These users are used to connect to the cluster and perform operations using Microsoft Entra authentication."
@@ -52,7 +52,7 @@
         "role": {
           "type": "string",
           "allowedValues": [
-            "dbOwner"
+            "root"
           ],
           "metadata": {
             "description": "Required. The role to assign to the user."
@@ -93,11 +93,11 @@
       "defaultValue": [
         {
           "database": "admin",
-          "role": "dbOwner"
+          "role": "root"
         }
       ],
       "metadata": {
-        "description": "Optional. The roles to assign to the user per database. Defaults to the \"dbOwner\" role on the \"admin\" database."
+        "description": "Optional. The roles to assign to the user per database. Defaults to the \"root\" role on the \"admin\" database."
       }
     }
   },
@@ -105,12 +105,12 @@
     "mongoCluster": {
       "existing": true,
       "type": "Microsoft.DocumentDB/mongoClusters",
-      "apiVersion": "2025-04-01-preview",
+      "apiVersion": "2025-09-01",
       "name": "[parameters('mongoClusterName')]"
     },
     "user": {
       "type": "Microsoft.DocumentDB/mongoClusters/users",
-      "apiVersion": "2025-04-01-preview",
+      "apiVersion": "2025-09-01",
       "name": "[format('{0}/{1}', parameters('mongoClusterName'), parameters('targetIdentity').principalId)]",
       "location": "[parameters('location')]",
       "properties": {

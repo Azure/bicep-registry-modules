@@ -188,7 +188,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4
 param roleAssignments roleAssignmentType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
@@ -207,14 +207,25 @@ var standByAvailabilityZone = {
 }[?highAvailability]
 
 var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  map(
+    union(
+      (managedIdentities.?userAssignedResourceIds ?? []),
+      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
+        ? [customerManagedKey.?userAssignedIdentityResourceId]
+        : []),
+      (!empty(customerManagedKeyGeo.?userAssignedIdentityResourceId)
+        ? [customerManagedKeyGeo.?userAssignedIdentityResourceId]
+        : [])
+    ),
+    (id) => { '${id}': {} }
+  ),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities)
+var identity = !empty(managedIdentities) || !empty(formattedUserAssignedIdentities)
   ? {
-      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null
+      type: !empty(formattedUserAssignedIdentities) ? 'UserAssigned' : null
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -248,9 +259,11 @@ var formattedRoleAssignments = [
   })
 ]
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.dbformysql-flexibleserver.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -268,44 +281,44 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
-  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+  name: last(split((customerManagedKey!.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+    split(customerManagedKey!.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey!.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
-    name: customerManagedKey.?keyName!
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+    name: customerManagedKey!.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
+  name: last(split(customerManagedKey!.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
+    split(customerManagedKey!.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey!.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
 var isGeoHSMManagedCMK = split(customerManagedKeyGeo.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
-resource cMKGeoKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyGeo) && !isGeoHSMManagedCMK) {
-  name: last(split(customerManagedKeyGeo.?keyVaultResourceId!, '/'))
+resource cMKGeoKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKeyGeo) && !isGeoHSMManagedCMK) {
+  name: last(split(customerManagedKeyGeo!.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
-    split(customerManagedKeyGeo.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKeyGeo.?keyVaultResourceId!, '/')[4]
+    split(customerManagedKeyGeo!.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKeyGeo!.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyGeo) && !isGeoHSMManagedCMK) {
-    name: customerManagedKeyGeo.?keyName!
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKeyGeo) && !isGeoHSMManagedCMK) {
+    name: customerManagedKeyGeo!.?keyName!
   }
 }
 
 resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKeyGeo.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKeyGeo.?userAssignedIdentityResourceId!, '/'))
+  name: last(split(customerManagedKeyGeo!.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split(customerManagedKeyGeo.?userAssignedIdentityResourceId!, '/')[2],
-    split(customerManagedKeyGeo.?userAssignedIdentityResourceId!, '/')[4]
+    split(customerManagedKeyGeo!.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKeyGeo!.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -460,7 +473,7 @@ module flexibleServer_configurations 'configuration/main.bicep' = [
   }
 ]
 
-module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = {
+module flexibleServer_advancedThreatProtection 'advanced-threat-protection-setting/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-MySQL-AdvancedThreatProtection'
   params: {
     flexibleServerName: flexibleServer.name
@@ -479,14 +492,18 @@ resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -499,7 +516,7 @@ resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
   }
 ]
 
-module flexibleServer_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module flexibleServer_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): if (empty(delegatedSubnetResourceId)) {
     name: '${uniqueString(deployment().name, location)}-MySQL-Flex-PrivateEndpoint-${index}'
     scope: resourceGroup(

@@ -89,6 +89,19 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+resource captureDeployerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(storageAccount.id, deployer().objectId, 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
+  scope: storageAccount
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+    )
+    principalId: deployer().objectId
+    principalType: empty(deployer().?userPrincipalName) ? 'ServicePrincipal' : 'User'
+  }
+}
+
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 

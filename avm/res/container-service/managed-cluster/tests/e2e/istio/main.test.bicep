@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'systempool'
           count: 2
-          vmSize: 'Standard_DS4_v2'
+          vmSize: 'Standard_D8ds_v5'
           mode: 'System'
         }
       ]
@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
         mode: 'Istio'
         istio: {
           revisions: [
-            'asm-1-27'
+            'asm-1-29'
           ]
           components: {
             ingressGateways: [

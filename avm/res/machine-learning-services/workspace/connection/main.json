@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "18244995253192905896"
+      "version": "0.49.2.45890",
+      "templateHash": "11241774775236990074"
     },
     "name": "Machine Learning Services Workspaces Connections",
     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -36,9 +36,14 @@
         "AmazonRedshift",
         "AmazonS3Compatible",
         "ApiKey",
+        "ApiManagement",
+        "AppConfig",
+        "AppInsights",
         "AzureBlob",
+        "AzureContainerAppEnvironment",
         "AzureDataExplorer",
         "AzureDatabricksDeltaLake",
+        "AzureKeyVault",
         "AzureMariaDb",
         "AzureMySqlDb",
         "AzureOneLake",
@@ -46,6 +51,7 @@
         "AzurePostgresDb",
         "AzureSqlDb",
         "AzureSqlMi",
+        "AzureStorageAccount",
         "AzureSynapseAnalytics",
         "AzureTableStorage",
         "BingLLMSearch",
@@ -58,6 +64,7 @@
         "CosmosDbMongoDbApi",
         "Couchbase",
         "CustomKeys",
+        "Databricks",
         "Db2",
         "Drill",
         "Dynamics",
@@ -75,6 +82,8 @@
         "GoogleBigQuery",
         "GoogleCloudStorage",
         "Greenplum",
+        "GroundingWithBingSearch",
+        "GroundingWithCustomSearch",
         "Hbase",
         "Hdfs",
         "Hive",
@@ -87,6 +96,8 @@
         "MariaDb",
         "Marketo",
         "MicrosoftAccess",
+        "MicrosoftFabric",
+        "ModelGateway",
         "MongoDbAtlas",
         "MongoDbV2",
         "MySql",
@@ -102,10 +113,13 @@
         "Phoenix",
         "Pinecone",
         "PostgreSql",
+        "PowerPlatformEnvironment",
         "Presto",
         "PythonFeed",
         "QuickBooks",
         "Redis",
+        "RemoteA2A",
+        "RemoteTool",
         "Responsys",
         "S3",
         "Salesforce",
@@ -122,6 +136,7 @@
         "ServiceNow",
         "Sftp",
         "SharePointOnlineList",
+        "Sharepoint",
         "Shopify",
         "Snowflake",
         "Spark",
@@ -684,6 +699,13 @@
     }
   },
   "parameters": {
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
     "name": {
       "type": "string",
       "metadata": {
@@ -739,11 +761,23 @@
         "description": "Required. The target of the connection."
       }
     },
-    "value": {
-      "type": "string",
+    "useWorkspaceManagedIdentity": {
+      "type": "bool",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Value details of the workspace connection."
+        "description": "Optional. Use the workspace managed identity for the connection."
+      }
+    },
+    "peRequirement": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Required",
+        "NotRequired",
+        "NotApplicable"
+      ],
+      "metadata": {
+        "description": "Optional. Whether a private endpoint is required for the connection."
       }
     },
     "connectionProperties": {
@@ -753,18 +787,42 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.a9b5094",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "machineLearningWorkspace": {
       "existing": true,
       "type": "Microsoft.MachineLearningServices/workspaces",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2026-09-01",
       "name": "[parameters('machineLearningWorkspaceName')]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2026-06-01",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
     "connection": {
       "type": "Microsoft.MachineLearningServices/workspaces/connections",
-      "apiVersion": "2024-10-01",
+      "apiVersion": "2026-09-01",
       "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
-      "properties": "[union(createObject('category', parameters('category'), 'expiryTime', parameters('expiryTime'), 'isSharedToAll', parameters('isSharedToAll'), 'metadata', parameters('metadata'), 'sharedUserList', parameters('sharedUserList'), 'target', parameters('target'), 'value', parameters('value')), parameters('connectionProperties'))]"
+      "properties": "[union(shallowMerge(createArray(createObject('category', parameters('category'), 'metadata', parameters('metadata'), 'target', parameters('target')), if(not(equals(parameters('expiryTime'), null())), createObject('expiryTime', parameters('expiryTime')), createObject()), if(not(equals(parameters('isSharedToAll'), null())), createObject('isSharedToAll', parameters('isSharedToAll')), createObject()), if(not(equals(parameters('sharedUserList'), null())), createObject('sharedUserList', parameters('sharedUserList')), createObject()), if(not(equals(parameters('useWorkspaceManagedIdentity'), null())), createObject('useWorkspaceManagedIdentity', parameters('useWorkspaceManagedIdentity')), createObject()), if(not(equals(parameters('peRequirement'), null())), createObject('peRequirement', parameters('peRequirement')), createObject()))), parameters('connectionProperties'))]"
     }
   },
   "outputs": {

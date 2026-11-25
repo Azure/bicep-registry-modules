@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-postgre-sql/flexible-server/advanced-threat-protection-setting/CHANGELOG.md).
 
+## 0.1.2
+
+### Changes
+
+- Fixed `advancedThreatProtectionSettings` resource name from `PostgreSQL-advancedThreatProtection` to `Default` to comply with the ARM schema constraint
+
+### Breaking Changes
+
+- None
+
 ## 0.1.1
 
 ### Changes

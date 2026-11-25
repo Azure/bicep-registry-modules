@@ -872,7 +872,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`endpoints`](#parameter-endpoints) | array | The endpoints of the service. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -892,7 +892,7 @@ The name of the Digital Twin Instance.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

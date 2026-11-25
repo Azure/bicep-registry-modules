@@ -116,11 +116,11 @@ import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-com
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-@description('Optional. Enable/disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. The Principal Assignments for the Kusto Cluster.')
@@ -176,9 +176,11 @@ var formattedRoleAssignments = [
 // Resources      //
 // ============== //
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.kusto-cluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -195,14 +197,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey)) {
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey)) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -277,14 +279,18 @@ resource kustoCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true

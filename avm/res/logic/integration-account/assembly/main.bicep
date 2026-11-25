@@ -29,9 +29,11 @@ param tags resourceInput<'Microsoft.Logic/integrationAccounts/assemblies@2019-05
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.logic-integrationaccount-assembly.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -77,3 +79,6 @@ output name string = assembly.name
 
 @description('The resource group the integration account assembly was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location of the integration account assembly.')
+output location string = assembly.?location ?? location

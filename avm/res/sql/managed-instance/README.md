@@ -1,10 +1,5 @@
 # SQL Managed Instances `[Microsoft.Sql/managedInstances]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a SQL Managed Instance.
 
 You can reference the module as follows:
@@ -31,7 +26,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Sql/managedInstances` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances)</li></ul> |
+| `Microsoft.Sql/managedInstances` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/managedInstances)</li></ul> |
 | `Microsoft.Sql/managedInstances/databases` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/databases)</li></ul> |
 | `Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances_databases_backuplongtermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/databases/backupLongTermRetentionPolicies)</li></ul> |
 | `Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/databases/backupShortTermRetentionPolicies)</li></ul> |
@@ -68,7 +63,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlmimin'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -91,7 +86,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlmimin"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -118,7 +113,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 using 'br/public:avm/res/sql/managed-instance:<version>'
 
 // Required parameters
-param name = 'sqlmimin'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
@@ -143,7 +138,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlmimax'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -284,8 +279,9 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
-      "value": "sqlmimax"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -481,7 +477,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 using 'br/public:avm/res/sql/managed-instance:<version>'
 
 // Required parameters
-param name = 'sqlmimax'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
@@ -626,7 +622,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlmivln'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -678,7 +674,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlmivln"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -740,7 +736,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 using 'br/public:avm/res/sql/managed-instance:<version>'
 
 // Required parameters
-param name = 'sqlmivln'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
@@ -794,7 +790,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlmiwaf'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -902,8 +898,9 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
-      "value": "sqlmiwaf"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -1058,7 +1055,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 using 'br/public:avm/res/sql/managed-instance:<version>'
 
 // Required parameters
-param name = 'sqlmiwaf'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
@@ -1179,7 +1176,7 @@ param vulnerabilityAssessment = {
 | :-- | :-- | :-- |
 | [`collation`](#parameter-collation) | string | Collation of the managed instance. |
 | [`databases`](#parameter-databases) | array | Databases to create in this server. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`dnsZonePartnerResourceId`](#parameter-dnszonepartnerresourceid) | string | The resource ID of another managed instance whose DNS zone this managed instance will share after creation. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionProtector`](#parameter-encryptionprotector) | object | The encryption protection configuration. |
@@ -1203,7 +1200,7 @@ param vulnerabilityAssessment = {
 | [`skuName`](#parameter-skuname) | string | The name of the SKU, typically, a letter + Number code, e.g. P3. |
 | [`skuTier`](#parameter-skutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
 | [`sourceManagedInstanceResourceId`](#parameter-sourcemanagedinstanceresourceid) | string | The resource identifier of the source managed instance associated with create operation of this instance. |
-| [`storageSizeInGB`](#parameter-storagesizeingb) | int | Storage size in GB. Increments of 32 GB allowed only. |
+| [`storageSizeInGB`](#parameter-storagesizeingb) | int | Storage size in GB, from 32 to 32768 in increments of 32 GB. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timezoneId`](#parameter-timezoneid) | string | ID of the timezone. Allowed values are timezones supported by Windows. |
 | [`vCores`](#parameter-vcores) | int | The number of vCores. |
@@ -1711,7 +1708,7 @@ Tags of the resource.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
@@ -1725,8 +1722,7 @@ The diagnostic settings of the service.
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -1801,42 +1797,9 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 - Required: No
 - Type: string
 
-### Parameter: `diagnosticSettings.metricCategories`
-
-The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enabled`](#parameter-diagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
-
-### Parameter: `diagnosticSettings.metricCategories.category`
-
-Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `diagnosticSettings.metricCategories.enabled`
-
-Enable or disable the category explicitly. Default is `true`.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `diagnosticSettings.name`
 
-The name of the diagnostic setting.
+The name of diagnostic setting.
 
 - Required: No
 - Type: string
@@ -2417,13 +2380,13 @@ The resource identifier of the source managed instance associated with create op
 
 ### Parameter: `storageSizeInGB`
 
-Storage size in GB. Increments of 32 GB allowed only.
+Storage size in GB, from 32 to 32768 in increments of 32 GB.
 
 - Required: No
 - Type: int
 - Default: `32`
 - MinValue: 32
-- MaxValue: 8192
+- MaxValue: 32768
 
 ### Parameter: `tags`
 
@@ -2530,6 +2493,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 

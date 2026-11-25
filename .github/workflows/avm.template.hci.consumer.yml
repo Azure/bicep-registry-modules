@@ -1,0 +1,144 @@
+name: "avm.template.hci.consumer"
+
+on:
+  workflow_call:
+    inputs:
+      workflowInput:
+        type: string
+        required: true
+      modulePath:
+        type: string
+        required: true
+      testCase:
+        type: string
+        required: true
+      tokenNamePrefix:
+        type: string
+        required: false
+
+permissions: {}
+
+concurrency:
+  group: ${{ fromJson(inputs.testCase).environmentConcurrencyGroup }}
+  queue: max
+
+jobs:
+  job_module_deploy_validation:
+    name: "Deploy [${{ fromJson(inputs.testCase).name }}] on [${{ fromJson(inputs.testCase).subscriptionName }}]"
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ fromJson(inputs.testCase).concurrencyGroup }}
+      queue: max
+    env:
+      TOKEN_NAMEPREFIX: ${{ inputs.tokenNamePrefix || secrets.TOKEN_NAMEPREFIX }}
+      ARM_MGMTGROUP_ID: ${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}
+      CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
+    steps:
+      - name: "Check cleanup policy"
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
+        shell: pwsh
+        env:
+          REMOVE_DEPLOYMENT: ${{ fromJson(inputs.workflowInput).removeDeployment }}
+        run: |
+          if ($env:REMOVE_DEPLOYMENT -cne 'true') {
+            throw 'Reserved Azure Local consumers require cleanup. Retained or uncertain test resources block reuse.'
+          }
+      - name: "Report skipped deployment"
+        if: ${{ fromJson(inputs.testCase).e2eIgnore }}
+        shell: pwsh
+        env:
+          TEMPLATE_FILE_PATH: ${{ inputs.modulePath }}/${{ fromJson(inputs.testCase).path }}
+        run: Write-Output "Skipping deployment for [$env:TEMPLATE_FILE_PATH] because .e2eignore is set."
+      - name: "Checkout"
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Set environment"
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
+        uses: ./.github/actions/templates/avm-setEnvironment
+        with:
+          removeDeployment: "true"
+      - name: "Resolve the pinned reserved subscription"
+        id: subscription
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
+        shell: pwsh
+        env:
+          MODULE_PATH: ${{ inputs.modulePath }}
+          TEST_CASE: ${{ inputs.testCase }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'HciTestEnvironment.ps1')
+          $testCase = ConvertFrom-Json -InputObject $env:TEST_CASE -AsHashtable
+          $subscription = Get-HciTestSubscription -ModulePath $env:MODULE_PATH -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS `
+            -SubscriptionIndex $testCase.subscriptionIndex -SubscriptionKey $testCase.subscriptionKey -RepoRootPath $env:GITHUB_WORKSPACE
+          "subscriptionId=$($subscription.id)" >> $env:GITHUB_OUTPUT
+      - name: "Log in to the reserved subscription"
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
+        with:
+          client-id: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          subscription-id: ${{ steps.subscription.outputs.subscriptionId }}
+          enable-AzPSSession: true
+      - name: "Validate and acquire the prepared environment"
+        id: hci-consumer
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
+        uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+        env:
+          MODULE_PATH: ${{ inputs.modulePath }}
+          TEST_CASE: ${{ inputs.testCase }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          HCI_RUN_IDENTITY: ${{ github.repository }}|${{ github.run_id }}|${{ github.run_attempt }}
+          AVM_CI_VARIABLES: ${{ toJSON(vars) }}
+          AVM_CI_SECRETS: ${{ toJSON(secrets) }}
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            $ErrorActionPreference = 'Stop'
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciTestConsumer.ps1')
+            Initialize-HciTestConsumer -RepoRootPath $env:GITHUB_WORKSPACE -ModulePath $env:MODULE_PATH `
+              -TestCase (ConvertFrom-Json $env:TEST_CASE -AsHashtable) -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS `
+              -TenantId $env:VALIDATE_TENANT_ID -RunIdentity $env:HCI_RUN_IDENTITY -RunnerTempPath $env:RUNNER_TEMP `
+              -GitHubVariables $env:AVM_CI_VARIABLES -GitHubSecrets $env:AVM_CI_SECRETS -KeyVaultName $env:CI_KEY_VAULT_NAME
+      - name: "Run deployment validation"
+        id: deployment
+        if: steps.hci-consumer.outcome == 'success'
+        uses: ./.github/actions/templates/avm-validateModuleDeployment
+        with:
+          modulePath: ${{ inputs.modulePath }}
+          templateFilePath: ${{ inputs.modulePath }}/${{ fromJson(inputs.testCase).path }}
+          deploymentMetadataLocation: "WestEurope"
+          subscriptionIndex: ${{ fromJson(inputs.testCase).subscriptionIndex }}
+          subscriptionKey: ${{ fromJson(inputs.testCase).subscriptionKey }}
+          managementGroupId: ${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}
+          removeDeployment: "true"
+          customLocation: ${{ fromJson(inputs.workflowInput).customLocation }}
+          githubVariables: ${{ toJSON(vars) }}
+          githubSecrets: ${{ toJSON(secrets) }}
+          deploymentDataFile: ${{ runner.temp }}/avm-module-deployment-data.json
+          requireCompleteRemoval: "true"
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_CLIENT_ID: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+      - name: "Release only a successfully cleaned test environment"
+        if: ${{ (success() || failure()) && steps.hci-consumer.outcome == 'success' }}
+        uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+        env:
+          DEPLOYMENT_OUTCOME: ${{ steps.deployment.outcome }}
+          CLEANUP_STATUS: ${{ steps.deployment.outputs.cleanupStatus }}
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            $ErrorActionPreference = 'Stop'
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciTestConsumer.ps1')
+            Complete-HciTestConsumer -ContextFile (Join-Path $env:RUNNER_TEMP 'avm-hci-test-context.json') `
+              -DeploymentOutcome $env:DEPLOYMENT_OUTCOME -CleanupStatus $env:CLEANUP_STATUS

@@ -21,7 +21,7 @@ import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.1
 param aiModelDeployments deploymentType[] = []
 
 @description('Optional. Specifies the resource tags for all the resources.')
-param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the AI resources.')
@@ -63,9 +63,11 @@ var projectName = !empty(aiFoundryConfiguration.?project.?name)
   ? aiFoundryConfiguration!.project!.name!
   : 'proj-${resourcesName}'
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.aiml-aifoundry.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -101,7 +103,7 @@ module foundryAccount 'modules/account.bicep' = {
         ]
       : []
     roleAssignments: aiFoundryConfiguration.?roleAssignments
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     lock: lock
   }
@@ -118,7 +120,7 @@ module keyVault 'modules/keyVault.bicep' = if (includeAssociatedResources) {
       24
     )
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
     privateDnsZoneResourceId: keyVaultConfiguration.?privateDnsZoneResourceId
@@ -132,7 +134,7 @@ module aiSearch 'modules/aiSearch.bicep' = if (includeAssociatedResources) {
     existingResourceId: aiSearchConfiguration.?existingResourceId
     name: take(!empty(aiSearchConfiguration.?name) ? aiSearchConfiguration!.name! : 'srch${resourcesName}', 60)
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
     privateDnsZoneResourceId: aiSearchConfiguration.?privateDnsZoneResourceId
@@ -154,7 +156,7 @@ module storageAccount 'modules/storageAccount.bicep' = if (includeAssociatedReso
       24
     )
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
     blobPrivateDnsZoneResourceId: storageAccountConfiguration.?blobPrivateDnsZoneResourceId
@@ -188,7 +190,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
     existingResourceId: cosmosDbConfiguration.?existingResourceId
     name: take(!empty(cosmosDbConfiguration.?name) ? cosmosDbConfiguration!.name! : 'cos${resourcesName}', 44)
     location: location
-    tags: tags
+    tags: tags ?? {}
     enableTelemetry: enableTelemetry
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
     privateDnsZoneResourceId: cosmosDbConfiguration.?privateDnsZoneResourceId
@@ -239,7 +241,7 @@ module foundryProject 'modules/project/main.bicep' = {
           resourceGroupName: cosmosDb!.outputs.resourceGroupName
         }
       : null
-    tags: tags
+    tags: tags ?? {}
     lock: lock
   }
 }

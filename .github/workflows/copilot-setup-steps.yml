@@ -29,13 +29,13 @@ jobs:
     # If you do not check out your code, Copilot will do this for you.
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
 
       - name: Validate AVM tools setup
-        uses: azure/powershell@v2
+        uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2.0.0
         with:
           azPSVersion: "latest"
           inlineScript: |
@@ -49,5 +49,6 @@ jobs:
             Write-Host "Checking PowerShell modules..."
             Get-Module -ListAvailable Az, Pester, PSRule.Rules.Azure | Select-Object Name, Version
 
-            Write-Host "Checking Test-ModuleLocally.ps1 script..."
-            Test-Path "./utilities/tools/Test-ModuleLocally.ps1"
+            Write-Host "Checking AVM authoring commands..."
+            Import-Module Avm.Authoring -MinimumVersion "1.1.0" -ErrorAction Stop
+            Get-Command Invoke-AvmPreCommit, Invoke-AvmTestUnit, Invoke-AvmTestE2e -ErrorAction Stop

@@ -70,14 +70,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
   params: {
     // Required parameters
     name: 'csauto001'
-    primaryAgentPoolProfiles: [
-      {
-        count: 1
-        mode: 'System'
-        name: 'systempool'
-        vmSize: 'Standard_DS4_v2'
-      }
-    ]
+    primaryAgentPoolProfiles: []
     // Non-required parameters
     aadProfile: {
       enableAzureRBAC: true
@@ -152,14 +145,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": "csauto001"
     },
     "primaryAgentPoolProfiles": {
-      "value": [
-        {
-          "count": 1,
-          "mode": "System",
-          "name": "systempool",
-          "vmSize": "Standard_DS4_v2"
-        }
-      ]
+      "value": []
     },
     // Non-required parameters
     "aadProfile": {
@@ -260,14 +246,7 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 
 // Required parameters
 param name = 'csauto001'
-param primaryAgentPoolProfiles = [
-  {
-    count: 1
-    mode: 'System'
-    name: 'systempool'
-    vmSize: 'Standard_DS4_v2'
-  }
-]
+param primaryAgentPoolProfiles = []
 // Non-required parameters
 param aadProfile = {
   enableAzureRBAC: true
@@ -347,7 +326,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 3
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D2s_v5'
       }
     ]
     // Non-required parameters
@@ -384,7 +363,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 3,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS4_v2"
+          "vmSize": "Standard_D2s_v5"
         }
       ]
     },
@@ -421,7 +400,7 @@ param primaryAgentPoolProfiles = [
     count: 3
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D2s_v5'
   }
 ]
 // Non-required parameters
@@ -458,7 +437,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 3
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8ds_v5'
       }
     ]
     // Non-required parameters
@@ -496,7 +475,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 3,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS4_v2"
+          "vmSize": "Standard_D8ds_v5"
         }
       ]
     },
@@ -536,7 +515,7 @@ param primaryAgentPoolProfiles = [
     count: 3
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8ds_v5'
   }
 ]
 // Non-required parameters
@@ -574,7 +553,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 2
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8ds_v5'
       }
     ]
     // Non-required parameters
@@ -608,7 +587,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           ]
         }
         revisions: [
-          'asm-1-27'
+          'asm-1-29'
         ]
       }
       mode: 'Istio'
@@ -639,7 +618,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 2,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS4_v2"
+          "vmSize": "Standard_D8ds_v5"
         }
       ]
     },
@@ -685,7 +664,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             ]
           },
           "revisions": [
-            "asm-1-27"
+            "asm-1-29"
           ]
         },
         "mode": "Istio"
@@ -712,7 +691,7 @@ param primaryAgentPoolProfiles = [
     count: 2
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8ds_v5'
   }
 ]
 // Non-required parameters
@@ -746,7 +725,7 @@ param serviceMeshProfile = {
       ]
     }
     revisions: [
-      'asm-1-27'
+      'asm-1-29'
     ]
   }
   mode: 'Istio'
@@ -790,7 +769,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8ds_v5'
       }
     ]
     // Non-required parameters
@@ -800,24 +779,24 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     }
     agentPools: [
       {
-        availabilityZones: [
-          3
-        ]
-        count: 2
-        enableAutoScaling: true
-        maxCount: 3
         maxPods: 30
-        minCount: 1
         minPods: 2
         mode: 'User'
         name: 'userpool1'
         nodeLabels: {}
         osDiskSizeGB: 128
         osType: 'Linux'
-        scaleSetEvictionPolicy: 'Delete'
-        scaleSetPriority: 'Regular'
-        type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        type: 'VirtualMachines'
+        virtualMachinesProfile: {
+          scale: {
+            manual: [
+              {
+                count: 2
+                size: 'Standard_D8ds_v5'
+              }
+            ]
+          }
+        }
       }
     ]
     diagnosticSettings: [
@@ -845,7 +824,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -903,7 +882,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2"
+          "vmSize": "Standard_D8ds_v5"
         }
       ]
     },
@@ -917,24 +896,24 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "agentPools": {
       "value": [
         {
-          "availabilityZones": [
-            3
-          ],
-          "count": 2,
-          "enableAutoScaling": true,
-          "maxCount": 3,
           "maxPods": 30,
-          "minCount": 1,
           "minPods": 2,
           "mode": "User",
           "name": "userpool1",
           "nodeLabels": {},
           "osDiskSizeGB": 128,
           "osType": "Linux",
-          "scaleSetEvictionPolicy": "Delete",
-          "scaleSetPriority": "Regular",
-          "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2"
+          "type": "VirtualMachines",
+          "virtualMachinesProfile": {
+            "scale": {
+              "manual": [
+                {
+                  "count": 2,
+                  "size": "Standard_D8ds_v5"
+                }
+              ]
+            }
+          }
         }
       ]
     },
@@ -970,7 +949,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1026,7 +1005,7 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8ds_v5'
   }
 ]
 // Non-required parameters
@@ -1036,24 +1015,24 @@ param aadProfile = {
 }
 param agentPools = [
   {
-    availabilityZones: [
-      3
-    ]
-    count: 2
-    enableAutoScaling: true
-    maxCount: 3
     maxPods: 30
-    minCount: 1
     minPods: 2
     mode: 'User'
     name: 'userpool1'
     nodeLabels: {}
     osDiskSizeGB: 128
     osType: 'Linux'
-    scaleSetEvictionPolicy: 'Delete'
-    scaleSetPriority: 'Regular'
-    type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    type: 'VirtualMachines'
+    virtualMachinesProfile: {
+      scale: {
+        manual: [
+          {
+            count: 2
+            size: 'Standard_D8ds_v5'
+          }
+        ]
+      }
+    }
   }
 ]
 param diagnosticSettings = [
@@ -1081,7 +1060,7 @@ param roleAssignments = [
     name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -1149,7 +1128,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           maxSurge: '33%'
           nodeSoakDurationInMinutes: 0
         }
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_D2s_v5'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -1207,7 +1186,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           maxSurge: '50%'
           nodeSoakDurationInMinutes: 0
         }
-        vmSize: 'Standard_D2s_v3'
+        vmSize: 'Standard_D2ds_v5'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -1406,7 +1385,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -1502,7 +1481,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             "maxSurge": "33%",
             "nodeSoakDurationInMinutes": 0
           },
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_D2s_v5",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -1566,7 +1545,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             "maxSurge": "50%",
             "nodeSoakDurationInMinutes": 0
           },
-          "vmSize": "Standard_D2s_v3",
+          "vmSize": "Standard_D2ds_v5",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -1871,7 +1850,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "principalId": "<principalId>",
@@ -1983,7 +1962,7 @@ param primaryAgentPoolProfiles = [
       maxSurge: '33%'
       nodeSoakDurationInMinutes: 0
     }
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v5'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -2041,7 +2020,7 @@ param agentPools = [
       maxSurge: '50%'
       nodeSoakDurationInMinutes: 0
     }
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2ds_v5'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -2240,7 +2219,7 @@ param roleAssignments = [
     name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     principalId: '<principalId>'
@@ -2326,7 +2305,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8ds_v5'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -2354,7 +2333,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8ds_v5'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -2410,7 +2389,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2",
+          "vmSize": "Standard_D8ds_v5",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -2442,7 +2421,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2",
+          "vmSize": "Standard_D8ds_v5",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -2506,7 +2485,7 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8ds_v5'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -2534,7 +2513,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8ds_v5'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -2590,7 +2569,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8ds_v5'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -2619,7 +2598,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8ds_v5'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
       {
@@ -2641,7 +2620,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8ds_v5'
       }
     ]
     apiServerAccessProfile: {
@@ -2777,7 +2756,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2",
+          "vmSize": "Standard_D8ds_v5",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -2810,7 +2789,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2",
+          "vmSize": "Standard_D8ds_v5",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         },
         {
@@ -2832,7 +2811,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2"
+          "vmSize": "Standard_D8ds_v5"
         }
       ]
     },
@@ -2994,7 +2973,7 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8ds_v5'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -3023,7 +3002,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8ds_v5'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
   {
@@ -3045,7 +3024,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8ds_v5'
   }
 ]
 param apiServerAccessProfile = {
@@ -3183,7 +3162,7 @@ param tags = {
 | [`bootstrapProfile`](#parameter-bootstrapprofile) | object | Profile of the cluster bootstrap configuration. |
 | [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
 | [`defaultIngressControllerType`](#parameter-defaultingresscontrollertype) | string | Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
 | [`diskEncryptionSetResourceId`](#parameter-diskencryptionsetresourceid) | string | The Resource ID of the disk encryption set to use for enabling encryption at rest. For security reasons, this value should be provided. |
 | [`dnsPrefix`](#parameter-dnsprefix) | string | Specifies the DNS prefix specified when creating the managed cluster. |
@@ -3658,6 +3637,7 @@ The type of the agent pool.
   ```Bicep
   [
     'AvailabilitySet'
+    'VirtualMachines'
     'VirtualMachineScaleSets'
   ]
   ```
@@ -4140,6 +4120,7 @@ The type of the agent pool.
   ```Bicep
   [
     'AvailabilitySet'
+    'VirtualMachines'
     'VirtualMachineScaleSets'
   ]
   ```
@@ -4283,7 +4264,7 @@ Ingress type for the default NginxIngressController custom resource. It will be 
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

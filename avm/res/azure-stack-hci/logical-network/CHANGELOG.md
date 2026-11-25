@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/azure-stack-hci/logical-network/CHANGELOG.md).
 
+## 0.3.1
+
+### Changes
+
+- Updated the AVM telemetry deployment to API version `2025-04-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.3.0
 
 ### Changes

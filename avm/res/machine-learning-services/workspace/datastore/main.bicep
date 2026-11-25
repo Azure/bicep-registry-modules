@@ -5,6 +5,9 @@ metadata description = 'This module creates a datastore in a Machine Learning Se
 // Parameters       //
 // ================ //
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @description('Required. Name of the datastore to create.')
 param name string
 
@@ -12,13 +15,13 @@ param name string
 param machineLearningWorkspaceName string
 
 @description('Required. The properties of the datastore.')
-param properties resourceInput<'Microsoft.MachineLearningServices/workspaces/datastores@2024-10-01'>.properties
+param properties resourceInput<'Microsoft.MachineLearningServices/workspaces/datastores@2026-09-01'>.properties
 
 // ============================= //
 // Existing resources references //
 // ============================= //
 
-resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2025-01-01-preview' existing = {
+resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2026-09-01' existing = {
   name: machineLearningWorkspaceName
 }
 
@@ -26,7 +29,28 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 // Resources      //
 // ============== //
 
-resource datastore 'Microsoft.MachineLearningServices/workspaces/datastores@2024-10-01' = {
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2026-06-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource datastore 'Microsoft.MachineLearningServices/workspaces/datastores@2026-09-01' = {
   name: name
   parent: machineLearningWorkspace
   properties: properties

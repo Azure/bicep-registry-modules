@@ -2,6 +2,70 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
+## 0.23.1
+
+### Changes
+
+- Updated Key Vault API references to `2026-02-01`.
+- Fixed elastic-pool deployment ordering so server encryption protection is configured first.
+- Fixed connection-policy update ordering so private endpoint updates finish first.
+
+### Breaking Changes
+
+- None
+
+## 0.23.0
+
+### Changes
+
+- Added parameter `masterDatabaseDiagnosticSettings` to configure diagnostic settings on the server's implicitly created `master` database, which is required to forward server-level audit logs (`SQLSecurityAuditEvents` & `DevOpsOperationsAudit`) to a Log Analytics workspace, Event Hub, Storage Account or partner solution
+
+### Breaking Changes
+
+- None
+
+## 0.22.1
+
+### Changes
+
+- Added support for time-based immutability settings in database backup long-term retention policy module
+- Added types for tags parameters
+
+### Breaking Changes
+
+- None
+
+## 0.22.0
+
+### Changes
+
+- For child-module `database`, updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+### Breaking Changes
+
+- None
+
+## 0.21.4
+
+### Changes
+
+- Enabled child modules `avm/res/sql/server/auditing-setting`, `avm/res/sql/server/elastic-pool`, `avm/res/sql/server/encryption-protector`, `avm/res/sql/server/failover-group`, `avm/res/sql/server/firewall-rule`, `avm/res/sql/server/key`, `avm/res/sql/server/security-alert-policy`, `avm/res/sql/server/virtual-network-rule`, `avm/res/sql/server/vulnerability-assessment`, `avm/res/sql/server/database/backup-short-term-retention-policy`, and `avm/res/sql/server/database/backup-long-term-retention-policy` for publishing
+
+### Breaking Changes
+
+- None
+
+## 0.21.3
+
+### Changes
+
+- Fixed server-level customer-managed key autorotation when using a versionless Key Vault key URI
+- Added regression coverage for CMK autorotation without an explicit server key version
+
+### Breaking Changes
+
+- None
+
 ## 0.21.2
 
 ### Changes

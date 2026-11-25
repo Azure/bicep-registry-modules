@@ -38,7 +38,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 param lock lockType?
 
 @description('Optional. Tags to be applied to the resources.')
-param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags?
 
 resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
   name: accountName
@@ -74,7 +74,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-12-01' = {
     displayName: !empty(displayName) ? displayName : name
     description: !empty(desc) ? desc : name
   }
-  tags: tags
+  tags: tags ?? {}
 }
 
 module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(cosmosDbConnection)) {
@@ -167,7 +167,7 @@ resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityH
   ]
   properties: {
     capabilityHostKind: 'Agents'
-    tags: tags
+    tags: tags ?? {}
   }
 }
 
@@ -191,7 +191,7 @@ resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilit
     threadStorageConnections: ['${cosmosDbConnectionResource.name}']
     vectorStoreConnections: ['${aiSearchConnectionResource.name}']
     storageConnections: ['${storageAccountConnectionResource.name}']
-    tags: tags
+    tags: tags ?? {}
   }
 }
 

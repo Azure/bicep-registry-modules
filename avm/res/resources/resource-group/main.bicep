@@ -23,9 +23,11 @@ param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.resources-resourcegroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   location: location
   properties: {
     mode: 'Incremental'
@@ -52,7 +54,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 }
 
 module resourceGroup_lock 'modules/nested_lock.bicep' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: '${uniqueString(subscription().id, location)}-RG-Lock'
+  name: '${uniqueString(subscription().id, location, name)}-RG-Lock'
   params: {
     lock: lock
     name: resourceGroup.name
@@ -61,7 +63,7 @@ module resourceGroup_lock 'modules/nested_lock.bicep' = if (!empty(lock ?? {}) &
 }
 
 module resourceGroup_roleAssignments 'modules/nested_roleAssignments.bicep' = if (!empty(roleAssignments ?? [])) {
-  name: '${uniqueString(subscription().id, location)}-RG-RoleAssignments'
+  name: '${uniqueString(subscription().id, location, name)}-RG-RoleAssignments'
   params: {
     roleAssignments: roleAssignments
   }

@@ -1,10 +1,5 @@
 # SignalR Service SignalR `[Microsoft.SignalRService/signalR]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a SignalR Service SignalR.
 
 You can reference the module as follows:
@@ -779,7 +774,7 @@ param tags = {
 | [`allowedOrigins`](#parameter-allowedorigins) | array | The allowed origin settings of the resource. |
 | [`capacity`](#parameter-capacity) | int | The unit count of the resource. |
 | [`clientCertEnabled`](#parameter-clientcertenabled) | bool | Request client certificate during TLS handshake if enabled. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableAadAuth`](#parameter-disableaadauth) | bool | The disable Azure AD auth settings of the resource. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | The disable local auth settings of the resource. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -837,7 +832,7 @@ Request client certificate during TLS handshake if enabled.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

@@ -292,7 +292,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             name: '9afa4fb3-2157-40db-aebb-039ce73c50ca'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -351,7 +351,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         name: 'd57821b0-52b3-4a42-9799-533a9cdb7eec'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -472,7 +472,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
               "name": "9afa4fb3-2157-40db-aebb-039ce73c50ca",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -533,7 +533,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           "name": "d57821b0-52b3-4a42-9799-533a9cdb7eec",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -642,7 +642,7 @@ param privateEndpoints = [
         name: '9afa4fb3-2157-40db-aebb-039ce73c50ca'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -701,7 +701,7 @@ param roleAssignments = [
     name: 'd57821b0-52b3-4a42-9799-533a9cdb7eec'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -923,7 +923,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`allowedAuthenticationModes`](#parameter-allowedauthenticationmodes) | array | List of allowed authentication modes for the Batch account that can be used to authenticate with the data plane. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1032,7 +1032,7 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

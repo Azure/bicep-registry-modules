@@ -94,6 +94,10 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
         location: '<location>'
         subnetId: '<subnetId>'
       }
+      {
+        location: '<location>'
+        subnetId: '<subnetId>'
+      }
     ]
     tags: {
       Environment: 'Non-Prod'
@@ -177,6 +181,10 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
         {
           "location": "<location>",
           "subnetId": "<subnetId>"
+        },
+        {
+          "location": "<location>",
+          "subnetId": "<subnetId>"
         }
       ]
     },
@@ -242,6 +250,10 @@ param replicaSets = [
     location: '<location>'
     subnetId: '<subnetId>'
   }
+  {
+    location: '<location>'
+    subnetId: '<subnetId>'
+  }
 ]
 param tags = {
   Environment: 'Non-Prod'
@@ -273,7 +285,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalRecipients`](#parameter-additionalrecipients) | array | The email recipient value to receive alerts. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`domainConfigurationType`](#parameter-domainconfigurationtype) | string | The value is to provide domain configuration type. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`externalAccess`](#parameter-externalaccess) | string | The value is to enable the Secure LDAP for external services of Azure AD DS Services. |
@@ -338,7 +350,7 @@ The email recipient value to receive alerts.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
@@ -1006,6 +1018,11 @@ In order to provision Entra Domain Services, the Service Principal that has been
     | AllowLDAPs | TCP | `*` | `VirtualNetwork` | `5986` | `*` |
 - Associating a route table to the AADDS subnet is not recommended
 - The network used for AADDS must have its [DNS Servers configured](https://learn.microsoft.com/en-us/azure/active-directory-domain-services/tutorial-configure-networking#configure-dns-servers-in-the-peered-virtual-network) (e.g. with IPs `10.0.1.4` & `10.0.1.5`)
+
+### Replica Set
+
+Replica Sets are not provisioned during the initial deployment. Once the first Replica Set has been deployed, additional Replica Sets will be provisioned.
+You can deploy any additional virtual networks, subnets and NSGs required during the initial deployment.
 
 ### Create self-signed certificate for secure LDAP
 Follow the below PowerShell commands to get base64 encoded string of a self-signed certificate (with a `pfxCertificatePassword`)

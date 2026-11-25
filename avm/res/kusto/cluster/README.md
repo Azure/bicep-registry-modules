@@ -55,6 +55,11 @@ Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](h
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-sami]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: the CMK update failed with PartiallySucceeded and Internal Server Error after bootstrap, key creation and the key-scoped identity grant succeeded. The underlying cause is unproven; this is not a confirmed capacity failure.
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131891114125
+```
 
 <details>
 
@@ -1051,7 +1056,7 @@ param tier = 'Standard'
 | [`clusterPrincipalAssignments`](#parameter-clusterprincipalassignments) | array | The Principal Assignments for the Kusto Cluster. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`databases`](#parameter-databases) | array | The Kusto Cluster databases. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableAutoScale`](#parameter-enableautoscale) | bool | Enable/disable auto-scale. |
 | [`enableAutoStop`](#parameter-enableautostop) | bool | Enable/disable auto-stop. |
 | [`enableDiskEncryption`](#parameter-enablediskencryption) | bool | Enable/disable disk encryption. |
@@ -1060,7 +1065,7 @@ param tier = 'Standard'
 | [`enablePurge`](#parameter-enablepurge) | bool | Enable/disable purge. |
 | [`enableRestrictOutboundNetworkAccess`](#parameter-enablerestrictoutboundnetworkaccess) | bool | Enable/disable restricting outbound network access. |
 | [`enableStreamingIngest`](#parameter-enablestreamingingest) | bool | Enable/disable streaming ingest. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/disable usage telemetry for module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`engineType`](#parameter-enginetype) | string | The engine type of the Kusto Cluster. |
 | [`languageExtensions`](#parameter-languageextensions) | array | List of the language extensions of the Kusto Cluster. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -1477,7 +1482,7 @@ The tenant id of the principal.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
@@ -1687,7 +1692,7 @@ Enable/disable streaming ingest.
 
 ### Parameter: `enableTelemetry`
 
-Enable/disable usage telemetry for module.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

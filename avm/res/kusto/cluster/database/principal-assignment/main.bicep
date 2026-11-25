@@ -5,8 +5,7 @@ metadata description = 'This module deploys a Kusto Cluster Database Principal A
 @description('Required. The name of the Kusto cluster.')
 param kustoClusterName string
 
-@minLength(4)
-@maxLength(22)
+@maxLength(260)
 @description('Required. The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment.')
 param kustoDatabaseName string
 
@@ -39,7 +38,7 @@ param tenantId string = tenant().tenantId
 // Resources      //
 // ============== //
 
-resource cluster 'Microsoft.Kusto/clusters@2024-04-13' existing  = {
+resource cluster 'Microsoft.Kusto/clusters@2024-04-13' existing = {
   name: kustoClusterName
 
   resource database 'databases@2024-04-13' existing = {

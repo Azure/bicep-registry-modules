@@ -14,11 +14,11 @@ param aiServicesName string
 param tags object?
 
 // Reference to cognitive service in current resource group for new projects
-resource cogServiceReference 'Microsoft.CognitiveServices/accounts@2025-10-01-preview' existing = {
+resource cogServiceReference 'Microsoft.CognitiveServices/accounts@2026-01-15-preview' existing = {
   name: aiServicesName
 }
 
-resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-10-01-preview' = {
+resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2026-01-15-preview' = {
   parent: cogServiceReference
   name: name
   tags: tags

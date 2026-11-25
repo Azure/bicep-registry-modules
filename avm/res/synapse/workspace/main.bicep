@@ -37,7 +37,7 @@ import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
-@description('Optional. Activate workspace by adding the system managed identity in the KeyVault containing the customer managed key and activating the workspace.')
+@description('Optional. Grant the workspace system identity access to the customer-managed key and activate the workspace. Creates a deployment script and a dedicated identity with Contributor access only to the workspace key. Activation is verified for up to 10 minutes. Requires permission to deploy the helper identity, deployment script and its supporting resources, and assign the key-scoped role.')
 param encryptionActivateWorkspace bool = false
 
 @maxLength(90)
@@ -163,9 +163,11 @@ var formattedRoleAssignments = [
   })
 ]
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.synapse-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -182,14 +184,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -267,7 +269,11 @@ module synapse_integrationRuntimes 'integration-runtime/main.bicep' = [
       name: integrationRuntime.name
       type: integrationRuntime.type
       typeProperties: integrationRuntime.?typeProperties ?? {}
+      enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      workspace_key
+    ]
   }
 ]
 
@@ -289,13 +295,14 @@ module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivat
 }
 
 // - Workspace encryption - Activate Workspace
-module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
+module workspace_key 'modules/nested_cmkActivation.bicep' = if (encryptionActivateWorkspace) {
   name: take('${workspace.name}-cmk-activation', 64)
   params: {
-    name: customerManagedKey!.keyName
-    isActiveCMK: true
-    keyVaultResourceId: cMKKeyVault.id
+    keyName: customerManagedKey!.keyName
+    keyVaultUrl: cMKKeyVault::cMKKey!.properties.keyUri
     workspaceName: workspace.name
+    location: location
+    tags: tags
   }
   dependsOn: [
     workspace_cmk_rbac
@@ -311,7 +318,11 @@ module workspace_administrator 'administrator/main.bicep' = if (!empty(administr
     login: administrator!.login
     sid: administrator!.sid
     tenantId: administrator.?tenantId
+    enableTelemetry: enableReferencedModulesTelemetry
   }
+  dependsOn: [
+    workspace_key
+  ]
 }
 
 // Resource Lock
@@ -324,6 +335,9 @@ resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(
       : 'Cannot delete or modify the resource or child resources.')
   }
   scope: workspace
+  dependsOn: [
+    workspace_key
+  ]
 }
 
 // RBAC
@@ -352,7 +366,11 @@ module workspace_firewallRules 'firewall-rule/main.bicep' = [
       endIpAddress: rule.endIpAddress
       startIpAddress: rule.startIpAddress
       workspaceName: workspace.name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      workspace_key
+    ]
   }
 ]
 
@@ -375,7 +393,7 @@ module workspace_bigDataPools 'big-data-pool/main.bicep' = [
       libraryRequirements: bigDataPool.?libraryRequirements
       nodeCount: bigDataPool.?nodeCount
       nodeSize: bigDataPool.nodeSize
-      nodeSizeFamily: bigDataPool.nodeSizeFamily
+      nodeSizeFamily: bigDataPool.?nodeSizeFamily ?? 'MemoryOptimized'
       sessionLevelPackagesEnabled: bigDataPool.?sessionLevelPackagesEnabled
       sparkConfigProperties: bigDataPool.?sparkConfigProperties
       defaultSparkLogFolder: bigDataPool.?defaultSparkLogFolder
@@ -384,7 +402,11 @@ module workspace_bigDataPools 'big-data-pool/main.bicep' = [
       lock: bigDataPool.?lock ?? lock
       diagnosticSettings: bigDataPool.?diagnosticSettings ?? []
       roleAssignments: bigDataPool.?roleAssignments ?? []
+      enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      workspace_key
+    ]
   }
 ]
 
@@ -407,7 +429,11 @@ module workspace_sqlPools 'sql-pool/main.bicep' = [
       roleAssignments: sqlPool.?roleAssignments ?? []
       lock: sqlPool.?lock ?? lock
       tags: sqlPool.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      workspace_key
+    ]
   }
 ]
 
@@ -491,7 +517,7 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
 ]
 
 @description('The resource ID of the deployed Synapse Workspace.')
-output resourceID string = workspace.id
+output resourceId string = workspace.id
 
 @description('The name of the deployed Synapse Workspace.')
 output name string = workspace.name
@@ -580,7 +606,13 @@ type firewallRuleType = {
   endIpAddress: string
 }
 
-import { autoScaleType, dynamicExecutorAllocationType, sparkConfigPropertiesType, libraryRequirementsType, customLibraryType } from 'big-data-pool/main.bicep'
+import {
+  autoScaleType
+  dynamicExecutorAllocationType
+  sparkConfigPropertiesType
+  libraryRequirementsType
+  customLibraryType
+} from 'big-data-pool/main.bicep'
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @export()
 @description('The synapse workspace Big Data Pool definition.')
@@ -588,11 +620,11 @@ type bigDataPoolType = {
   @description('Required. The name of the Big Data Pool.')
   name: string
 
-  @description('Optional. The node size family of the pool.')
+  @description('Optional. The node size family of the pool. Defaults to MemoryOptimized.')
   nodeSizeFamily: string?
 
-  @description('Optional. The node size of the pool.')
-  nodeSize: string?
+  @description('Required. The node size of the pool.')
+  nodeSize: string
 
   @description('Optional. The auto scale configuration.')
   autoScale: autoScaleType?

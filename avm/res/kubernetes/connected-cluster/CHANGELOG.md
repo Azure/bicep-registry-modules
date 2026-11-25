@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/kubernetes/connected-cluster/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Updated API version for `Microsoft.Kubernetes/connectedClusters` from the preview `2026-02-01-preview` to the stable `2026-05-01`.
+- Updated the AVM telemetry deployment to API version `2025-04-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes

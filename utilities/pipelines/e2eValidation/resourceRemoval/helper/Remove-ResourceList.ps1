@@ -9,6 +9,9 @@ Remove the given resource(s). Resources that the script fails to removed are ret
 .PARAMETER ResourcesToRemove
 Mandatory. The resource(s) to remove. Each resource must have a type & resourceId property.
 
+.PARAMETER RequireCompleteRemoval
+Optional. Preserve each resource's subscription context and require complete post-removal handling.
+
 .EXAMPLE
 Remove-ResourceListInner -ResourcesToRemove @( @{ Type = 'Microsoft.Storage/storageAccounts'; ResourceId = 'subscriptions/.../storageAccounts/resourceName' } )
 #>
@@ -17,7 +20,10 @@ function Remove-ResourceListInner {
     [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory = $false)]
-        [Hashtable[]] $ResourcesToRemove = @()
+        [Hashtable[]] $ResourcesToRemove = @(),
+
+        [Parameter()]
+        [switch] $RequireCompleteRemoval
     )
 
     begin {
@@ -26,6 +32,7 @@ function Remove-ResourceListInner {
         # Load functions
         . (Join-Path $PSScriptRoot 'Invoke-ResourceRemoval.ps1')
         . (Join-Path $PSScriptRoot 'Invoke-ResourcePostRemoval.ps1')
+        . (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
     }
 
     process {
@@ -35,40 +42,70 @@ function Remove-ResourceListInner {
         Write-Verbose '----------------------------------' -Verbose
 
         foreach ($resource in $resourcesToRemove) {
-            $resourceName = Split-Path $resource.resourceId -Leaf
-            $alreadyProcessed = $processedResources.count -gt 0 ? (($processedResources | Where-Object { $resource.resourceId -like ('{0}/*' -f $_) }).Count -gt 0) : $false
+            $restoreContext = $false
+            $removalError = $null
+            if ($RequireCompleteRemoval -and $resource.resourceId -match '^/subscriptions/([^/]+)/') {
+                $subscriptionId = $Matches[1]
+                $originalContext = Get-AzContext -ErrorAction Stop
+                $restoreContext = $originalContext.Subscription.Id -ne $subscriptionId
+            }
+            try {
+                if ($restoreContext) {
+                    $null = Set-AzContext -Subscription $subscriptionId -ErrorAction Stop
+                }
+                $resourceName = Split-Path $resource.resourceId -Leaf
+                $alreadyProcessed = $processedResources.count -gt 0 ? (($processedResources | Where-Object { $resource.resourceId -like ('{0}/*' -f $_) }).Count -gt 0) : $false
 
-            if ($alreadyProcessed) {
-                # Skipping
-                Write-Verbose ('[/] Skipping resource [{0}] of type [{1}]. Reason: Its parent resource was already processed' -f $resourceName, $resource.type) -Verbose
-                [array]$processedResources += $resource.resourceId
-                [array]$resourcesToRetry = $resourcesToRetry | Where-Object { $_.resourceId -notmatch $resource.resourceId }
-            } else {
-                Write-Verbose ('[-] Removing resource [{0}] of type [{1}]' -f $resourceName, $resource.type) -Verbose
-                try {
-                    if ($PSCmdlet.ShouldProcess(('Resource [{0}]' -f $resource.resourceId), 'Remove')) {
-                        Invoke-ResourceRemoval -Type $resource.type -ResourceId $resource.resourceId
-                    }
-
-                    # If we removed a parent remove its children
+                if ($alreadyProcessed) {
+                    # Skipping
+                    Write-Verbose ('[/] Skipping resource [{0}] of type [{1}]. Reason: Its parent resource was already processed' -f $resourceName, $resource.type) -Verbose
                     [array]$processedResources += $resource.resourceId
                     [array]$resourcesToRetry = $resourcesToRetry | Where-Object { $_.resourceId -notmatch $resource.resourceId }
-                } catch {
-                    if ($_.Exception.HttpStatus -in @(404, 'NotFound')) {
-                        # Skipping because resource/parent is missing. This 'exception handling' can be required in case the parent resource removal ran into an issue, but was completed regardless
-                        Write-Verbose ('[/] Skipping resource [{0}] of type [{1}]. Reason: It or its parent cannot be found.' -f $resourceName, $resource.type) -Verbose
+                } else {
+                    Write-Verbose ('[-] Removing resource [{0}] of type [{1}]' -f $resourceName, $resource.type) -Verbose
+                    try {
+                        if ($PSCmdlet.ShouldProcess(('Resource [{0}]' -f $resource.resourceId), 'Remove')) {
+                            Invoke-ResourceRemoval -Type $resource.type -ResourceId $resource.resourceId
+                        }
+
+                        # If we removed a parent remove its children
                         [array]$processedResources += $resource.resourceId
                         [array]$resourcesToRetry = $resourcesToRetry | Where-Object { $_.resourceId -notmatch $resource.resourceId }
-                    } else {
-                        Write-Warning ('[!] Removal moved back for retry. Reason: [{0}]' -f $_.Exception.Message)
-                        [array]$resourcesToRetry += $resource
+                    } catch {
+                        if ((Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Cancellation') {
+                            throw
+                        }
+                        if ($_.Exception.HttpStatus -in @(404, 'NotFound')) {
+                            # Skipping because resource/parent is missing. This 'exception handling' can be required in case the parent resource removal ran into an issue, but was completed regardless
+                            Write-Verbose ('[/] Skipping resource [{0}] of type [{1}]. Reason: It or its parent cannot be found.' -f $resourceName, $resource.type) -Verbose
+                            [array]$processedResources += $resource.resourceId
+                            [array]$resourcesToRetry = $resourcesToRetry | Where-Object { $_.resourceId -notmatch $resource.resourceId }
+                        } else {
+                            Write-Warning ('[!] Removal moved back for retry. Reason: [{0}]' -f $_.Exception.Message)
+                            [array]$resourcesToRetry += $resource
+                        }
                     }
                 }
-            }
 
-            # We want to purge resources even if they were not explicitly removed because they were 'alreadyProcessed'
-            if ($PSCmdlet.ShouldProcess(('Post-resource-removal for [{0}]' -f $resource.resourceId), 'Execute')) {
-                Invoke-ResourcePostRemoval -Type $resource.type -ResourceId $resource.resourceId
+                # We want to purge resources even if they were not explicitly removed because they were 'alreadyProcessed'
+                if ($PSCmdlet.ShouldProcess(('Post-resource-removal for [{0}]' -f $resource.resourceId), 'Execute')) {
+                    Invoke-ResourcePostRemoval -Type $resource.type -ResourceId $resource.resourceId -RequireCompleteRemoval:$RequireCompleteRemoval
+                }
+            } catch {
+                $removalError = $_
+                throw
+            } finally {
+                if ($restoreContext) {
+                    try {
+                        $null = Set-AzContext -Context $originalContext -ErrorAction Stop
+                    } catch {
+                        if ($removalError -and (Get-DeploymentErrorKind -ErrorRecord $removalError) -eq 'Cancellation') {
+                            Write-Warning "Azure context restoration also failed during cancellation: $($_.Exception.Message)"
+                        } else {
+                            throw
+                        }
+                    }
+                }
             }
         }
         Write-Verbose '----------------------------------' -Verbose
@@ -90,6 +127,9 @@ Remove all resources in the provided array from Azure. Resources are removed wit
 .PARAMETER ResourcesToRemove
 Optional. The array of resources to remove. Has to contain objects with at least a 'resourceId' & 'type' property
 
+.PARAMETER RequireCompleteRemoval
+Optional. Use strict post-removal handling and restore subscription context before returning.
+
 .EXAMPLE
 Remove-ResourceList @( @{ Type = 'Microsoft.Storage/storageAccounts'; ResourceId = 'subscriptions/.../storageAccounts/resourceName' } )
 
@@ -106,7 +146,10 @@ function Remove-ResourceList {
         [int] $RemovalRetryLimit = 3,
 
         [Parameter(Mandatory = $false)]
-        [int] $RemovalRetryInterval = 15
+        [int] $RemovalRetryInterval = 15,
+
+        [Parameter()]
+        [switch] $RequireCompleteRemoval
     )
 
     $removalRetryCount = 1
@@ -114,7 +157,7 @@ function Remove-ResourceList {
 
     do {
         if ($PSCmdlet.ShouldProcess(("[{0}] Resource(s) with a maximum of [$removalRetryLimit] attempts." -f (($resourcesToRetry -is [array]) ? $resourcesToRetry.Count : 1)), 'Remove')) {
-            $resourcesToRetry = Remove-ResourceListInner -ResourcesToRemove $resourcesToRetry
+            $resourcesToRetry = Remove-ResourceListInner -ResourcesToRemove $resourcesToRetry -RequireCompleteRemoval:$RequireCompleteRemoval
         } else {
             Remove-ResourceListInner -ResourcesToRemove $resourcesToRemove -WhatIf
         }

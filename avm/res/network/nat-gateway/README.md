@@ -858,7 +858,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
-| [`name`](#parameter-name) | string | Name of the Azure Bastion resource. |
+| [`name`](#parameter-name) | string | Name of the Azure NAT gateway resource. |
 
 **Optional parameters**
 
@@ -898,7 +898,7 @@ If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to
 
 ### Parameter: `name`
 
-Name of the Azure Bastion resource.
+Name of the Azure NAT gateway resource.
 
 - Required: Yes
 - Type: string

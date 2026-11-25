@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/deployment-script/import-image-to-acr/CHANGELOG.md).
 
+## 0.4.5
+
+### Changes
+
+- Updated resource provider versions
+- Updated az cli version in the deployment script
+
+### Breaking Changes
+
+- None
+
 ## 0.4.4
 
 ### Changes

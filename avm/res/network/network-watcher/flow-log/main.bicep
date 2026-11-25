@@ -48,8 +48,32 @@ param retentionInDays int = 365
 @description('Optional. Field to filter network traffic logs based on SrcIP, SrcPort, DstIP, DstPort, Protocol, Encryption, Direction and Action. If not specified, all network traffic will be logged.')
 param enabledFilteringCriteria string?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 resource networkWatcher 'Microsoft.Network/networkWatchers@2024-10-01' existing = {
   name: networkWatcherName
+}
+
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
 }
 
 resource flowLog 'Microsoft.Network/networkWatchers/flowLogs@2024-10-01' = {

@@ -38,7 +38,7 @@ param policies productPolicyType[]?
 param state string = 'published'
 
 @sys.description('Optional. Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it\'s value is assumed to be true.')
-param subscriptionRequired bool = false
+param subscriptionRequired bool = true
 
 @sys.description('Optional. Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false.')
 param subscriptionsLimit int = 1
@@ -55,9 +55,11 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.apimgmt-product.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -121,6 +123,7 @@ module product_policies 'policy/main.bicep' = [
       name: policy.?name
       format: policy.?format
       value: policy.value
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

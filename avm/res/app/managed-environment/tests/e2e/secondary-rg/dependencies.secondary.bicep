@@ -21,7 +21,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   name: managedIdentityName
   location: location
 }
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -36,6 +36,9 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
     enabledForDeployment: true
     enableRbacAuthorization: true
     accessPolicies: []
+  }
+  tags: {
+    SecurityControl: 'Ignore' // Ignore security policies imposed on testing subscriptions. Public network access would otherwise be prevented.
   }
 }
 
@@ -67,6 +70,9 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01'
     retentionInterval: 'P1D'
     arguments: '-KeyVaultName "${keyVault.name}" -CertName "${certname}" -CertSubjectName "CN=*.contoso.com"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
+  }
+  tags: {
+    SecurityControl: 'Ignore' // Ignore security policies imposed on testing subscriptions. Key based access for Storage Accounts is otherwise denied
   }
 }
 

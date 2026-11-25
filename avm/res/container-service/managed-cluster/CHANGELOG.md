@@ -2,6 +2,37 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-service/managed-cluster/CHANGELOG.md).
 
+## 0.14.1
+
+### Changes
+
+- Regenerated ARM template artifacts with Bicep 0.48.1 without changing resource configuration.
+
+### Breaking Changes
+
+- None
+
+## 0.14.0
+
+### Changes
+
+- Added `VirtualMachines` as an allowed agent pool type to support AKS static egress gateway private IP scenarios.
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+## 0.13.1
+
+### Changes
+
+- Publishing child module `avm/res/container-service/managed-cluster/agent-pool`
+- Publishing child module `avm/res/container-service/managed-cluster/maintenance-configuration`
+
+### Breaking Changes
+
+- None
+
 ## 0.13.0
 
 ### Changes

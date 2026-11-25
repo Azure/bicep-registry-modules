@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/product/CHANGELOG.md).
 
+## 0.2.3
+
+### Changes
+
+- Publishing child module `avm/res/api-management/service/product/policy`
+- Set default value for `subscriptionRequired` parameter to `true`
+
+### Breaking Changes
+
+- None
+
 ## 0.2.2
 
 ### Changes

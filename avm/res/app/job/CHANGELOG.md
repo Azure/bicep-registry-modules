@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/job/CHANGELOG.md).
 
+## 0.7.2
+
+### Changes
+
+- Updated resource provider `Microsoft.App/jobs` to `2026-01-01`.
+- Updated `avm-common-types` to `0.7.0`.
+
+### Breaking Changes
+
+- None
+
 ## 0.7.1
 
 ### Changes

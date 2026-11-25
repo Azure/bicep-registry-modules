@@ -99,14 +99,28 @@ param vmAuthenticationType string = 'password'
 // ------------------
 
 //Destination Service Tag for AzureCloud for Central France is centralfrance, but location is francecentral
-var locationVar = location == 'francecentral' ? 'centralfrance' : location
+// Lookup map for Azure locations where the service tag suffix differs from the location name
+var serviceTagLocationMap = {
+  francecentral: 'centralfrance'
+  francesouth: 'southfrance'
+  brazilsoutheast: 'brazilse'
+  germanynorth: 'germanyn'
+  germanywestcentral: 'germanywc'
+  norwayeast: 'norwaye'
+  norwaywest: 'norwayw'
+  switzerlandnorth: 'switzerlandn'
+  switzerlandwest: 'switzerlandw'
+  chilecentral: 'chilec'
+}
+
+var serviceTagLocation = serviceTagLocationMap[?location] ?? location
 
 // Subnet definition taking in consideration feature flags
 var defaultSubnets = [
   {
     name: spokeInfraSubnetName
     addressPrefix: spokeInfraSubnetAddressPrefix
-    networkSecurityGroupResourceId: nsgContainerAppsEnvironment.outputs.resourceId
+    networkSecurityGroupResourceId: networkSecurityGroups[0].outputs.resourceId
     routeTableResourceId: (!empty(hubVNetId) && !empty(networkApplianceIpAddress))
       ? egressLockdownUdr.outputs.resourceId
       : null
@@ -115,13 +129,14 @@ var defaultSubnets = [
   {
     name: deploymentSubnetName
     addressPrefix: deploymentSubnetAddressPrefix
-    networkSecurityGroupResourceId: nsgDeploymentSubnet.outputs.resourceId
+    networkSecurityGroupResourceId: networkSecurityGroups[3].outputs.resourceId
     delegation: 'Microsoft.ContainerInstance/containerGroups'
+    serviceEndpoints: ['Microsoft.Storage']
   }
   {
     name: spokePrivateEndpointsSubnetName
     addressPrefix: spokePrivateEndpointsSubnetAddressPrefix
-    networkSecurityGroupResourceId: nsgPep.outputs.resourceId
+    networkSecurityGroupResourceId: networkSecurityGroups[2].outputs.resourceId
   }
 ]
 
@@ -131,7 +146,8 @@ var appGwAndDefaultSubnets = !empty(spokeApplicationGatewaySubnetAddressPrefix)
       {
         name: spokeApplicationGatewaySubnetName
         addressPrefix: spokeApplicationGatewaySubnetAddressPrefix
-        networkSecurityGroupResourceId: nsgAppGw.outputs.resourceId
+        networkSecurityGroupResourceId: networkSecurityGroups[1].outputs.resourceId
+        delegation: 'Microsoft.Network/applicationGateways'
       }
     ])
   : defaultSubnets
@@ -154,6 +170,8 @@ var spokeSubnets = vmJumpboxOSType != 'none'
 module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.2' = {
   name: take('deploy-vnetSpoke-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
+  // A collection dependency preserves the indexed closure without unstable dependency-array ordering.
+  dependsOn: [networkSecurityGroups]
   params: {
     name: resourcesNames.vnetSpoke
     location: location
@@ -190,15 +208,11 @@ module logAnalyticsWorkspace 'logAnalytics.bicep' = {
   }
 }
 
-@description('Network security group rules for the Container Apps cluster.')
-module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-group:0.5.0' = {
-  name: take('deploy-nsgContainerAppsEnvironment-${deployment().name}', 64)
-  scope: resourceGroup(resourcesNames.resourceGroup)
-  params: {
+var nsgConfigurations = [
+  {
+    deploymentName: take('deploy-nsgContainerAppsEnvironment-${deployment().name}', 64)
     name: resourcesNames.containerAppsEnvironmentNsg
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
+    enabled: true
     securityRules: [
       {
         name: 'Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP'
@@ -207,7 +221,7 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
           protocol: 'Udp'
           sourceAddressPrefix: 'VirtualNetwork'
           sourcePortRange: '*'
-          destinationAddressPrefix: 'AzureCloud.${locationVar}'
+          destinationAddressPrefix: 'AzureCloud.${serviceTagLocation}'
           destinationPortRange: '1194'
           access: 'Allow'
           priority: 100
@@ -221,7 +235,7 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
           protocol: 'Tcp'
           sourceAddressPrefix: 'VirtualNetwork'
           sourcePortRange: '*'
-          destinationAddressPrefix: 'AzureCloud.${locationVar}'
+          destinationAddressPrefix: 'AzureCloud.${serviceTagLocation}'
           destinationPortRange: '9000'
           access: 'Allow'
           priority: 110
@@ -235,7 +249,7 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
           protocol: 'Tcp'
           sourceAddressPrefix: 'VirtualNetwork'
           sourcePortRange: '*'
-          destinationAddressPrefix: 'AzureCloud.${locationVar}'
+          destinationAddressPrefix: 'AzureCloud.${serviceTagLocation}'
           destinationPortRange: '443'
           access: 'Allow'
           priority: 120
@@ -304,24 +318,11 @@ module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-g
         }
       }
     ]
-    diagnosticSettings: [
-      {
-        name: 'logAnalyticsSettings'
-        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-      }
-    ]
   }
-}
-
-@description('NSG Rules for the Application Gateway.')
-module nsgAppGw 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(spokeApplicationGatewaySubnetAddressPrefix)) {
-  name: take('deploy-nsgAppGw-${deployment().name}', 64)
-  scope: resourceGroup(resourcesNames.resourceGroup)
-  params: {
+  {
+    deploymentName: take('deploy-nsgAppGw-${deployment().name}', 64)
     name: resourcesNames.applicationGatewayNsg
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
+    enabled: !empty(spokeApplicationGatewaySubnetAddressPrefix)
     securityRules: [
       {
         name: 'HealthProbes'
@@ -393,24 +394,11 @@ module nsgAppGw 'br/public:avm/res/network/network-security-group:0.5.0' = if (!
         }
       }
     ]
-    diagnosticSettings: [
-      {
-        name: 'logAnalyticsSettings'
-        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-      }
-    ]
   }
-}
-
-@description('NSG Rules for the private enpoint subnet.')
-module nsgPep 'br/public:avm/res/network/network-security-group:0.5.0' = {
-  name: take('deploy-nsgPep-${deployment().name}', 64)
-  scope: resourceGroup(resourcesNames.resourceGroup)
-  params: {
+  {
+    deploymentName: take('deploy-nsgPep-${deployment().name}', 64)
     name: resourcesNames.pepNsg
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
+    enabled: true
     securityRules: [
       {
         name: 'deny-hop-outbound'
@@ -429,24 +417,11 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.5.0' = {
         }
       }
     ]
-    diagnosticSettings: [
-      {
-        name: 'logAnalyticsSettings'
-        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-      }
-    ]
   }
-}
-
-@description('NSG Rules for the deployment subnet (container instances).')
-module nsgDeploymentSubnet 'br/public:avm/res/network/network-security-group:0.5.0' = {
-  name: take('deploy-nsgDeploymentSubnet-${deployment().name}', 64)
-  scope: resourceGroup(resourcesNames.resourceGroup)
-  params: {
+  {
+    deploymentName: take('deploy-nsgDeploymentSubnet-${deployment().name}', 64)
     name: resourcesNames.acrDeploymentPoolNsg
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
+    enabled: true
     securityRules: [
       {
         name: 'Allow_HTTPS_Inbound'
@@ -491,14 +466,29 @@ module nsgDeploymentSubnet 'br/public:avm/res/network/network-security-group:0.5
         }
       }
     ]
-    diagnosticSettings: [
-      {
-        name: 'logAnalyticsSettings'
-        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-      }
-    ]
   }
-}
+]
+
+@description('Network security groups for the spoke subnets.')
+module networkSecurityGroups 'br/public:avm/res/network/network-security-group:0.5.0' = [
+  for nsg in nsgConfigurations: if (nsg.enabled) {
+    name: nsg.deploymentName
+    scope: resourceGroup(resourcesNames.resourceGroup)
+    params: {
+      name: nsg.name
+      location: location
+      tags: tags
+      enableTelemetry: enableTelemetry
+      securityRules: nsg.securityRules
+      diagnosticSettings: [
+        {
+          name: 'logAnalyticsSettings'
+          workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+        }
+      ]
+    }
+  }
+]
 
 @description('The Route Table deployment')
 module egressLockdownUdr 'br/public:avm/res/network/route-table:0.4.0' = if (!empty(hubVNetId) && !empty(networkApplianceIpAddress)) {

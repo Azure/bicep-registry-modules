@@ -54,7 +54,7 @@ module roleAssignment 'dependencies_rbac.bicep' = {
 }
 
 // Deploy image template
-resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01' = {
+resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2025-10-01' = {
   name: imageTemplateName
   location: location
   identity: {
@@ -66,14 +66,14 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01
   properties: {
     buildTimeoutInMinutes: 0
     vmProfile: {
-      vmSize: 'Standard_D2s_v3'
+      vmSize: 'Standard_D2ads_v5'
       osDiskSizeGB: 127
     }
     source: {
       type: 'PlatformImage'
       publisher: 'MicrosoftWindowsDesktop'
       offer: 'Windows-11'
-      sku: 'win11-21h2-avd'
+      sku: 'win11-24h2-avd'
       version: 'latest'
     }
     distribute: [

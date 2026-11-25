@@ -13,7 +13,7 @@ param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-
 
 // Enforce uksouth to avoid restrictions around zone redundancy in certain regions
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'swedencentral'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'sqlswaf'
@@ -132,6 +132,16 @@ module testDeployment '../../../main.bicep' = [
             monthlyRetention: 'P6M'
           }
           availabilityZone: 1
+        }
+      ]
+      masterDatabaseDiagnosticSettings: [
+        {
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          logCategoriesAndGroups: [
+            {
+              category: 'SQLSecurityAuditEvents'
+            }
+          ]
         }
       ]
       customerManagedKey: {

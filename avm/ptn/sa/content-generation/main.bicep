@@ -30,7 +30,7 @@ param secondaryLocation string = 'uksouth'
 
 // NOTE: Metadata must be compile-time constants. Update usageName manually if you change model parameters.
 // Format: 'OpenAI.<DeploymentType>.<ModelName>,<Capacity>'
-// Allowed regions: Union of GPT-5.1, gpt-image-1, and gpt-image-1.5 GlobalStandard availability
+// Allowed regions: Union of GPT-5.1, gpt-image-1-mini, and gpt-image-1.5 GlobalStandard availability
 @allowed([
   'australiaeast'
   'canadaeast'
@@ -49,7 +49,7 @@ param secondaryLocation string = 'uksouth'
     type: 'location'
     usageName: [
       'OpenAI.GlobalStandard.gpt-5.1,150'
-      'OpenAI.GlobalStandard.gpt-image-1,1'
+      'OpenAI.GlobalStandard.gpt-image-1-mini,1'
     ]
   }
 })
@@ -71,13 +71,13 @@ param gptModelName string = 'gpt-5.1'
 @description('Optional. Version of the GPT model to deploy.')
 param gptModelVersion string = '2025-11-13'
 
-@description('Optional. Image model to deploy: gpt-image-1, gpt-image-1.5, or none to skip.')
+@description('Optional. Image model to deploy: gpt-image-1-mini, gpt-image-1.5, or none to skip.')
 @allowed([
-  'gpt-image-1'
+  'gpt-image-1-mini'
   'gpt-image-1.5'
   'none'
 ])
-param imageModelChoice string = 'gpt-image-1'
+param imageModelChoice string = 'gpt-image-1-mini'
 
 @description('Optional. API version for Azure OpenAI service.')
 param azureOpenaiAPIVersion string = '2025-01-01-preview'
@@ -114,12 +114,6 @@ param enableRedundancy bool = true
 @description('Optional. Enable private networking for applicable resources (WAF-aligned).')
 param enablePrivateNetworking bool = true
 
-@description('Optional. The existing Container Registry name (without .azurecr.io). Must contain pre-built images: content-gen-app and content-gen-api.')
-param acrName string = 'contentgencontainerreg'
-
-@description('Optional. Image Tag.')
-param imageTag string = 'latest_2026-03-02_109'
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -134,8 +128,6 @@ param createdBy string = contains(deployer(), 'userPrincipalName')
 
 var solutionLocation = empty(location) ? resourceGroup().location : location
 
-// acrName is required - points to existing ACR with pre-built images
-var acrResourceName = acrName
 var solutionSuffix = toLower(trim(replace(
   replace(
     replace(replace(replace(replace('${solutionName}${solutionUniqueText}', '-', ''), '_', ''), '.', ''), '/', ''),
@@ -188,9 +180,9 @@ var baseModelDeployments = [
 
 // Image model configuration based on choice
 var imageModelConfig = {
-  'gpt-image-1': {
-    name: 'gpt-image-1'
-    version: '2025-04-15'
+  'gpt-image-1-mini': {
+    name: 'gpt-image-1-mini'
+    version: '2025-10-06'
     sku: 'GlobalStandard'
   }
   'gpt-image-1.5': {
@@ -231,9 +223,11 @@ var aiFoundryAiProjectDescription = 'Content Generation AI Foundry Project'
 // Resources      //
 // ============== //
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.sa-contentgeneration.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -320,6 +314,34 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   }
 }
 
+// ========== Azure Container Registry ========== //
+var containerRegistryName = 'cr${solutionSuffix}'
+module containerRegistry 'modules/container-registry.bicep' = {
+  name: take('module.container-registry.${solutionSuffix}', 64)
+  params: {
+    name: containerRegistryName
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    acrSku: 'Standard'
+    enablePrivateNetworking: enablePrivateNetworking
+    enableScalability: enableScalability
+    replicationLocation: replicaLocation
+    privateEndpointSubnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.pepsSubnetResourceId : ''
+    privateDnsZoneResourceId: enablePrivateNetworking
+      ? avmPrivateDnsZones[dnsZoneIndex.containerRegistry]!.outputs.resourceId
+      : ''
+    managedIdentities: {
+      userAssignedResourceIds: [
+        userAssignedIdentity.outputs.resourceId
+      ]
+    }
+    pullPrincipalIds: [
+      userAssignedIdentity.outputs.principalId
+    ]
+  }
+}
+
 // ========== Virtual Network and Networking Components ========== //
 module virtualNetwork 'modules/virtualNetwork.bicep' = if (enablePrivateNetworking) {
   name: take('module.virtualNetwork.${solutionSuffix}', 64)
@@ -342,11 +364,13 @@ module virtualNetwork 'modules/virtualNetwork.bicep' = if (enablePrivateNetworki
 // - OpenAI (for Azure OpenAI endpoints)
 // - Blob Storage
 // - Cosmos DB (Documents)
+// - Container Registry
 var privateDnsZones = [
   'privatelink.cognitiveservices.azure.com'
   'privatelink.openai.azure.com'
   'privatelink.blob.${environment().suffixes.storage}'
   'privatelink.documents.azure.com'
+  'privatelink.azurecr.io'
 ]
 
 var dnsZoneIndex = {
@@ -354,6 +378,7 @@ var dnsZoneIndex = {
   openAI: 1
   storageBlob: 2
   cosmosDB: 3
+  containerRegistry: 4
 }
 
 @batchSize(5)
@@ -375,7 +400,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
 ]
 
 // ========== AI Foundry: AI Services ========== //
-module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.14.1' = {
+module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.14.2' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
@@ -525,7 +550,7 @@ module aiSearch 'br/public:avm/res/search/search-service:0.12.0' = {
 }
 
 // ========== AI Search Connection to AI Services ========== //
-resource aiSearchFoundryConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-09-01' = {
+resource aiSearchFoundryConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2026-01-15-preview' = {
   name: '${aiFoundryAiServicesResourceName}/${aiFoundryAiProjectResourceName}/${aiSearchConnectionName}'
   properties: {
     category: 'CognitiveSearch'
@@ -598,7 +623,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
             subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
-                { privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob]!.outputs.resourceId }
+                {
+                  name: 'blob'
+                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob]!.outputs.resourceId
+                }
               ]
             }
           }
@@ -695,7 +723,10 @@ module cosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
             subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
-                { privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDB]!.outputs.resourceId }
+                {
+                  name: 'cosmos'
+                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDB]!.outputs.resourceId
+                }
               ]
             }
           }
@@ -742,11 +773,13 @@ module webSite 'modules/web-sites.bicep' = {
     serverFarmResourceId: webServerFarm.outputs.resourceId
     managedIdentities: { userAssignedResourceIds: [userAssignedIdentity!.outputs.resourceId] }
     siteConfig: {
-      // Frontend container - same for both modes
-      linuxFxVersion: 'DOCKER|${acrResourceName}.azurecr.io/content-gen-app:${imageTag}'
+      // Placeholder image is replaced with the private ACR image after deployment.
+      linuxFxVersion: 'DOCKER|mcr.microsoft.com/azuredocs/aci-helloworld:latest'
       minTlsVersion: '1.2'
       alwaysOn: true
       ftpsState: 'FtpsOnly'
+      acrUseManagedIdentityCreds: true
+      acrUserManagedIdentityID: userAssignedIdentity.outputs.clientId
     }
     virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webSubnetResourceId : null
     configs: concat(
@@ -755,7 +788,7 @@ module webSite 'modules/web-sites.bicep' = {
           // Frontend container proxies to ACI backend (both modes)
           name: 'appsettings'
           properties: {
-            DOCKER_REGISTRY_SERVER_URL: 'https://${acrResourceName}.azurecr.io'
+            DOCKER_REGISTRY_SERVER_URL: 'https://${containerRegistry.outputs.loginServer}'
             BACKEND_URL: aciBackendUrl
             AZURE_CLIENT_ID: userAssignedIdentity.outputs.clientId
           }
@@ -788,13 +821,14 @@ module containerInstance 'modules/container-instance.bicep' = {
     name: containerInstanceName
     location: solutionLocation
     tags: tags
-    containerImage: '${acrResourceName}.azurecr.io/content-gen-api:${imageTag}'
+    containerImage: 'mcr.microsoft.com/azuredocs/aci-helloworld:latest'
     cpu: 2
     memoryInGB: 4
     port: 8000
     // Only pass subnetResourceId when private networking is enabled
     subnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.aciSubnetResourceId : ''
     userAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
+    acrLoginServer: containerRegistry.outputs.loginServer
     enableTelemetry: enableTelemetry
     environmentVariables: [
       // Azure OpenAI Settings
@@ -935,7 +969,7 @@ output containerInstanceIp string = containerInstance.outputs.ipAddress
 output containerInstanceFqdn string = enablePrivateNetworking ? '' : containerInstance.outputs.fqdn
 
 @description('The ACR name.')
-output acrName string = acrResourceName
+output acrName string = containerRegistry.outputs.name
 
 @description('The flag for Azure AI Foundry usage.')
 output useFoundry bool = useFoundryMode ? true : false

@@ -2,6 +2,37 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/data-protection/backup-vault/CHANGELOG.md).
 
+## 0.13.4
+
+### Changes
+
+- Regenerated ARM template artifacts with Bicep 0.48.1 without changing resource configuration.
+
+### Breaking Changes
+
+- None
+
+## 0.13.3
+
+### Changes
+
+- Added the customer-managed key's user-assigned identity to the resource's managed identities.
+- Updated the Key Vault API version used for customer-managed key references.
+
+### Breaking Changes
+
+- None
+
+## 0.13.2
+
+### Changes
+
+- Added optional `dataSourceSetInfo` to `backupInstanceType` to support data source types that require a DatasourceSet (e.g., AKS).
+
+### Breaking Changes
+
+- None
+
 ## 0.13.1
 
 ### Changes

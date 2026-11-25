@@ -17,8 +17,8 @@ param serviceShort string = 'swbdp'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'northeurope'
+#disable-next-line no-hardcoded-location // Accounting for capacity constraints
+var enforcedLocation = 'polandcentral'
 
 // ============ //
 // Dependencies //
@@ -36,7 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     location: enforcedLocation
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
+    storageAccountName: '${take('dep${namePrefix}sa${serviceShort}01', 11)}${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
   }
 }
 
@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${take('${namePrefix}${serviceShort}001', 36)}-${uniqueString(resourceGroup.id, namePrefix, serviceShort)}'
       defaultDataLakeStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       defaultDataLakeStorageFilesystem: nestedDependencies.outputs.storageContainerName
       sqlAdministratorLogin: 'synwsadmin'
@@ -59,6 +59,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'dep${namePrefix}bdp01'
           nodeSizeFamily: 'MemoryOptimized'
           nodeSize: 'Small'
+          sparkVersion: '3.5'
           autoScale: {
             minNodeCount: 3
             maxNodeCount: 5
@@ -78,8 +79,8 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: 'dep${namePrefix}bdp02'
-          nodeSizeFamily: 'MemoryOptimized'
           nodeSize: 'Small'
+          sparkVersion: '3.5'
         }
       ]
       tags: {

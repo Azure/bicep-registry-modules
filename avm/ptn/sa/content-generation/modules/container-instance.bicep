@@ -31,8 +31,11 @@ param environmentVariables array
 @description('Optional. Enable telemetry.')
 param enableTelemetry bool = true
 
-@description('Optional. User-assigned managed identity resource ID for ACR pull.')
-param userAssignedIdentityResourceId string = ''
+@description('Required. User-assigned managed identity resource ID for ACR pull.')
+param userAssignedIdentityResourceId string
+
+@description('Optional. ACR login server. When set, the container group pulls the image using the user-assigned managed identity.')
+param acrLoginServer string = ''
 
 var isPrivateNetworking = !empty(subnetResourceId)
 
@@ -41,7 +44,7 @@ var isPrivateNetworking = !empty(subnetResourceId)
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.containerinstance.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -104,8 +107,14 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01'
       ]
       dnsNameLabel: isPrivateNetworking ? null : name
     }
-    // Removed imageRegistryCredentials - ACR is public with anonymous pull enabled
-    // If you need managed identity auth, add AcrPull role to the managed identity on the ACR
+    imageRegistryCredentials: !empty(acrLoginServer)
+      ? [
+          {
+            server: acrLoginServer
+            identity: userAssignedIdentityResourceId
+          }
+        ]
+      : null
   }
 }
 

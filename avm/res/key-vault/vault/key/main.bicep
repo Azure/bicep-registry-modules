@@ -8,7 +8,7 @@ param keyVaultName string
 param name string
 
 @description('Optional. Resource tags.')
-param tags resourceInput<'Microsoft.KeyVault/vaults/keys@2024-11-01'>.tags?
+param tags resourceInput<'Microsoft.KeyVault/vaults/keys@2026-02-01'>.tags?
 
 @description('Optional. Determines whether the object is enabled.')
 param attributesEnabled bool = true
@@ -114,9 +114,11 @@ var formattedRoleAssignments = [
   })
 ]
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.keyvault-key.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -133,11 +135,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: keyVaultName
 }
 
-resource key 'Microsoft.KeyVault/vaults/keys@2024-11-01' = {
+resource key 'Microsoft.KeyVault/vaults/keys@2026-02-01' = {
   name: name
   parent: keyVault
   tags: tags

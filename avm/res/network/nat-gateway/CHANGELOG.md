@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/nat-gateway/CHANGELOG.md).
 
+## 2.1.1
+
+### Changes
+
+- Corrected the `name` parameter description, which incorrectly referred to the Azure Bastion resource
+
+### Breaking Changes
+
+- None
+
 ## 2.1.0
 
 ### Changes

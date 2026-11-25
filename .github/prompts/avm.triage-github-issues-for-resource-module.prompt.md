@@ -1,9 +1,29 @@
 ---
 name: AVM-Triage-GitHub-Issues-for-Resource-Module
-description: 'Triage Open GitHub Issues related to the specific resource module.'
+description: "Triage Open GitHub Issues related to the specific resource module."
 agent: agent
 model: Auto (copilot)
-tools: ['search', 'runCommands', 'runTasks', 'github/*', 'github/github-mcp-server/list_issues', 'github/github-mcp-server/search_issues', 'github/github-mcp-server/search_pull_requests', 'Azure MCP/documentation', 'Azure MCP/search', 'Bicep (EXPERIMENTAL)/list_avm_metadata', 'usages', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos']
+tools:
+  [
+    "search",
+    "runCommands",
+    "runTasks",
+    "github/*",
+    "github/github-mcp-server/list_issues",
+    "github/github-mcp-server/search_issues",
+    "github/github-mcp-server/search_pull_requests",
+    "Azure MCP/documentation",
+    "Azure MCP/search",
+    "Bicep (EXPERIMENTAL)/list_avm_metadata",
+    "usages",
+    "problems",
+    "changes",
+    "testFailure",
+    "openSimpleBrowser",
+    "fetch",
+    "githubRepo",
+    "todos",
+  ]
 ---
 
 # Triage Open GitHub Issues for Resource Module
@@ -56,14 +76,13 @@ Here is a ReAct-style Thought–Action–Observation execution flow that you MUS
   - Action: Compile a summary table (issue/link, title, relevance, category, findings) and a detailed findings list including deep analysis.
   - Observation: Outputs ready for presentation to the user.
 
-
 ## 5. Output Format
 
 The output table must comply with the final action and should look similar to this example:
 
-| Issue                                                                | Title                                          | Relevance | Category | Findings           |
-| ---------------------------------------------------------------------|------------------------------------------------|-----------|----------|--------------------|
-| [#5798](https://github.com/Azure/bicep-registry-modules/issues/5798) | [Failed pipeline] avm.res.databricks.workspace | High      |  🐞     | Summary of findings |
+| Issue                                                                | Title                                          | Relevance | Category | Findings            |
+| -------------------------------------------------------------------- | ---------------------------------------------- | --------- | -------- | ------------------- |
+| [#5798](https://github.com/Azure/bicep-registry-modules/issues/5798) | [Failed pipeline] avm.res.databricks.workspace | High      | 🐞       | Summary of findings |
 
 ### 5.1 Categories
 
@@ -79,6 +98,7 @@ The output table must comply with the final action and should look similar to th
 ## 6. Finding Details
 
 The findings from the analysis for each issue should be provided using the following format:
+
 ```markdown
 ## Issue: {IssueTitle}
 
@@ -88,16 +108,19 @@ The findings from the analysis for each issue should be provided using the follo
 - **Location**: {specific line numbers or sections}
 
 **Problem Description:**
+
 - Clear description of the issue found
 - Impact on module quality or usability
 - Specific examples of the problem
 
 **Recommended Fix:**
+
 - Specific corrective actions required
 - Exact text changes or structural modifications needed
 - References to AVM specifications or best practices
 
 **Validation Steps:**
+
 - How to verify the fix is correct
 - Testing requirements to ensure quality
 - Documentation updates needed

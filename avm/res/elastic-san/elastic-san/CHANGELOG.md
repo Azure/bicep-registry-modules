@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/elastic-san/elastic-san/CHANGELOG.md).
 
+## 0.5.2
+
+### Changes
+
+- Publishing child modules: `volume-group`, `volume-group/snapshot`, `volume-group/volume`
+- Serialized volume group, volume, and private endpoint deployment to avoid concurrent Elastic SAN operations.
+
+### Breaking Changes
+
+- None
+
 ## 0.5.0
 
 ### Changes

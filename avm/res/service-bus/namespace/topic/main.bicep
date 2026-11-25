@@ -72,6 +72,8 @@ param subscriptions subscriptionType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
+
 var builtInRoleNames = {
   'Azure Service Bus Data Owner': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
@@ -109,9 +111,11 @@ var formattedRoleAssignments = [
   })
 ]
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.servicebus-namespacetopic.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, resourceGroup().location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, resourceGroup().location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -164,6 +168,7 @@ module topic_authorizationRules 'authorization-rule/main.bicep' = [
       topicName: topic.name
       name: authorizationRule.name
       rights: authorizationRule.?rights ?? []
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -217,6 +222,7 @@ module topic_subscription 'subscription/main.bicep' = [
       requiresSession: subscription.?requiresSession
       rules: subscription.?rules
       status: subscription.?status
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

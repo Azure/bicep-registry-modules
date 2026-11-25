@@ -1,0 +1,134 @@
+name: ".Module - PR Check"
+
+on:
+  workflow_dispatch:
+    inputs:
+      modulePaths:
+        type: string
+        description: "Module path or comma-separated module paths"
+        required: true
+      authoringSource:
+        type: choice
+        description: "Where to obtain the Avm.Authoring PowerShell module."
+        required: true
+        default: gallery
+        options:
+          - gallery
+          - repo
+      authoringRef:
+        type: string
+        description: "Avm.Authoring reference: authoringSource=gallery uses a package version (blank = latest); authoringSource=repo uses a tools SHA, tag or branch (blank = latest stable tag)."
+        required: false
+      runE2E:
+        type: boolean
+        description: "Run required and optional Azure deployment tests."
+        default: false
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
+      - labeled
+      - unlabeled
+
+permissions: {}
+
+jobs:
+  initialize:
+    name: "Initialize module checks"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      hasModules: ${{ steps.initialize.outputs.hasModules }}
+      moduleMatrix: ${{ steps.initialize.outputs.moduleMatrix }}
+      baseCommit: ${{ steps.initialize.outputs.baseCommit }}
+      targetCommit: ${{ steps.initialize.outputs.targetCommit }}
+      workflowInput: ${{ steps.initialize.outputs.workflowInput }}
+      authoringArtifact: ${{ steps.initialize.outputs.authoringArtifact }}
+      hasRequiredModules: ${{ steps.initialize.outputs.hasRequiredModules }}
+      requiredRequested: ${{ steps.initialize.outputs.requiredRequested }}
+      requiredErrors: ${{ steps.initialize.outputs.requiredErrors }}
+      hasOptionalModules: ${{ steps.initialize.outputs.hasOptionalModules }}
+      optionalRequested: ${{ steps.initialize.outputs.optionalRequested }}
+    steps:
+      - name: "Prepare module checks"
+        id: initialize
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@44f4be39b22b0aae5b7c0266567f488e0dda3316
+        with:
+          authoringSource: ${{ inputs.authoringSource || 'gallery' }}
+          authoringRef: ${{ inputs.authoringRef || '' }}
+          modulePaths: ${{ inputs.modulePaths || '' }}
+          deploymentValidation: ${{ inputs.runE2E && 'true' || 'false' }}
+
+  check:
+    name: "Module checks: ${{ matrix.modulePath }}"
+    needs: initialize
+    if: needs.initialize.outputs.hasModules == 'true' && !(github.event_name == 'workflow_dispatch' && github.event.repository.fork)
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@44f4be39b22b0aae5b7c0266567f488e0dda3316
+    with:
+      tools-ref: 44f4be39b22b0aae5b7c0266567f488e0dda3316
+      modulePath: ${{ matrix.modulePath }}
+      moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
+      psRuleModuleTestFilePaths: ${{ matrix.psRuleModuleTestFilePaths }}
+      e2eRoute: ${{ matrix.e2eRoute }}
+      baseCommit: ${{ needs.initialize.outputs.baseCommit }}
+      workflowInput: ${{ needs.initialize.outputs.workflowInput }}
+      targetCommit: ${{ needs.initialize.outputs.targetCommit }}
+      authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
+    secrets: inherit
+
+  check-fork:
+    name: "Fork module checks: ${{ matrix.modulePath }}"
+    needs: initialize
+    if: needs.initialize.outputs.hasModules == 'true' && github.event_name == 'workflow_dispatch' && github.event.repository.fork
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@44f4be39b22b0aae5b7c0266567f488e0dda3316
+    with:
+      tools-ref: 44f4be39b22b0aae5b7c0266567f488e0dda3316
+      modulePath: ${{ matrix.modulePath }}
+      moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
+      psRuleModuleTestFilePaths: ${{ matrix.psRuleModuleTestFilePaths }}
+      e2eRoute: ${{ matrix.e2eRoute }}
+      baseCommit: ${{ needs.initialize.outputs.baseCommit }}
+      workflowInput: ${{ needs.initialize.outputs.workflowInput }}
+      targetCommit: ${{ needs.initialize.outputs.targetCommit }}
+      authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
+    secrets:
+      ARM_CLIENT_ID_OVERRIDE: ${{ secrets.ARM_CLIENT_ID_OVERRIDE }}
+      ARM_TENANT_ID_OVERRIDE: ${{ secrets.ARM_TENANT_ID_OVERRIDE }}
+      ARM_SUBSCRIPTION_ID_OVERRIDE: ${{ secrets.ARM_SUBSCRIPTION_ID_OVERRIDE }}
+      VALIDATE_SUBSCRIPTION_IDS: ${{ secrets.VALIDATE_SUBSCRIPTION_IDS }}
+      TEST_SUBSCRIPTION_IDS: ${{ secrets.TEST_SUBSCRIPTION_IDS }}
+      VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+      VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
+      VALIDATE_MANAGEMENT_GROUP_ID: ${{ secrets.VALIDATE_MANAGEMENT_GROUP_ID }}
+      ARM_MGMTGROUP_ID: ${{ secrets.ARM_MGMTGROUP_ID }}
+      TOKEN_NAMEPREFIX: ${{ secrets.TOKEN_NAMEPREFIX }}
+
+  module-gate:
+    name: "Report check status"
+    if: always()
+    needs: [initialize, check, check-fork]
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: "Evaluate and report check status"
+        uses: Azure/azure-verified-modules-tools/.github/actions/report-check-status@44f4be39b22b0aae5b7c0266567f488e0dda3316
+        with:
+          ecosystem: bicep
+          results: ${{ toJSON(needs) }}
+          require-e2e: ${{ github.event_name == 'pull_request' || inputs.runE2E }}

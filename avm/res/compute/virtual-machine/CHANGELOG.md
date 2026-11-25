@@ -2,6 +2,36 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.22.4
+
+### Changes
+
+- Regenerated ARM template artifacts with Bicep 0.48.1 without changing resource configuration.
+
+### Breaking Changes
+
+- None
+
+## 0.22.3
+
+### Changes
+
+- Adding new parameter `diskControllerType` to specify the disk controller type to allow to deploy NVME enabled virtual machines.
+
+### Breaking Changes
+
+- None
+
+## 0.22.2
+
+### Changes
+
+- Fix bug where Key Encryption parameter for created Data Disks was not correctly passed through
+
+### Breaking Changes
+
+- None
+
 ## 0.22.1
 
 ### Changes

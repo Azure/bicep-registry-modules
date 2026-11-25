@@ -56,6 +56,9 @@ module testDeployment '../../../main.bicep' = [
       image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       overwriteExistingImage: true
       managedIdentities: { userAssignedResourceIds: [dependencies.outputs.managedIdentityResourceId] }
+      tags: {
+        SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
+      }
     }
   }
 ]

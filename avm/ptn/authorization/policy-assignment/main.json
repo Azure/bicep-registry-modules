@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "1392721657800820476"
+      "version": "0.48.1.52935",
+      "templateHash": "815796507931595905"
     },
     "name": "Policy Assignments (All scopes)",
     "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope."
@@ -190,14 +190,16 @@
     }
   },
   "variables": {
-    "parametersMerged": "[union(parameters('parameters'), parameters('parameterOverrides'))]"
+    "$fxv#0": "46d3xbcp.ptn.323d983",
+    "parametersMerged": "[union(parameters('parameters'), parameters('parameterOverrides'))]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.ptn.authorization-policyassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
@@ -274,8 +276,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "7692435330944646752"
+              "version": "0.48.1.52935",
+              "templateHash": "3864106373623083938"
             },
             "name": "Policy Assignments (Management Group scope)",
             "description": "This module deploys a Policy Assignment at a Management Group scope."
@@ -484,8 +486,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "10017645154257990381"
+                      "version": "0.48.1.52935",
+                      "templateHash": "6081548893889371131"
                     }
                   },
                   "parameters": {
@@ -556,8 +558,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "10796323897242257419"
+                              "version": "0.48.1.52935",
+                              "templateHash": "15013317569996763560"
                             }
                           },
                           "parameters": {
@@ -645,8 +647,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "14144569634170551925"
+                      "version": "0.48.1.52935",
+                      "templateHash": "12238810688243581184"
                     }
                   },
                   "parameters": {
@@ -717,8 +719,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "14695744570092934285"
+                              "version": "0.48.1.52935",
+                              "templateHash": "17175711166670393084"
                             }
                           },
                           "parameters": {
@@ -806,8 +808,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "12719155201334983353"
+                      "version": "0.48.1.52935",
+                      "templateHash": "2952379169640169315"
                     }
                   },
                   "parameters": {
@@ -878,8 +880,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "8219218582300636616"
+                              "version": "0.48.1.52935",
+                              "templateHash": "17434852447559902387"
                             }
                           },
                           "parameters": {
@@ -1020,8 +1022,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "18411916135891867005"
+              "version": "0.48.1.52935",
+              "templateHash": "15087669213016529191"
             },
             "name": "Policy Assignments (Subscription scope)",
             "description": "This module deploys a Policy Assignment at a Subscription scope."
@@ -1286,8 +1288,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14577590102193999239"
+              "version": "0.48.1.52935",
+              "templateHash": "18277185645554078714"
             },
             "name": "Policy Assignments (Resource Group scope)",
             "description": "This module deploys a Policy Assignment at a Resource Group scope."

@@ -12,7 +12,7 @@ Mandatory. The name of the GitHub organization
 Mandatory. The name of the GitHub team (from that organization)
 
 .EXAMPLE
-Get-GithubTeamMembersLogin -OrgName 'Azure' -TeamName 'avm-core-team-technical-bicep'
+Get-GithubTeamMembersLogin -OrgName 'Azure' -TeamName 'azure-verified-modules-tooling-contributors'
 
 .NOTES
 Needs to run under a context with the permissions to read organisations directory

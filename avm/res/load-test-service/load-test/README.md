@@ -135,7 +135,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
         name: 'd37a15bc-8634-4f4f-a736-700c1b955cd7'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -197,7 +197,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
           "name": "d37a15bc-8634-4f4f-a736-700c1b955cd7",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -249,7 +249,7 @@ param roleAssignments = [
     name: 'd37a15bc-8634-4f4f-a736-700c1b955cd7'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -296,11 +296,6 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
   }
 }
 ```
@@ -331,13 +326,6 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
     }
   }
 }
@@ -362,11 +350,6 @@ param customerManagedKey = {
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
 param location = '<location>'
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 ```
 
 </details>

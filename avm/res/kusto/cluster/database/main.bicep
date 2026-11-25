@@ -2,6 +2,7 @@ metadata name = 'Kusto Cluster Databases'
 metadata description = 'This module deploys a Kusto Cluster Database.'
 
 @description('Required. The name of the Kusto Cluster database.')
+@maxLength(260)
 param name string
 
 @description('Conditional. The name of the parent Kusto Cluster. Required if the template is used in a standalone deployment.')
@@ -73,6 +74,9 @@ output resourceId string = databaseKind == 'ReadOnlyFollowing' ? database_readOn
 @description('The resource group containing the Kusto Cluster database.')
 output resourceGroupName string = resourceGroup().name
 
+@description('The location of the Kusto Cluster database.')
+output location string = databaseKind == 'ReadOnlyFollowing' ? database_readOnly.location : database_readWrite.location
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -112,4 +116,3 @@ type databasePrincipalAssignmentType = {
   @description('Optional. The tenant id of the principal.')
   tenantId: string?
 }
-

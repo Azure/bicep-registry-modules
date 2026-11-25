@@ -797,6 +797,7 @@ Array of Security Rules to deploy to the Network Security Group. When not provid
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`accessRules`](#parameter-profilesaccessrules) | array | Whether network traffic is allowed or denied. |
+| [`enableTelemetry`](#parameter-profilesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 
 ### Parameter: `profiles.name`
 
@@ -825,6 +826,7 @@ Whether network traffic is allowed or denied.
 | :-- | :-- | :-- |
 | [`addressPrefixes`](#parameter-profilesaccessrulesaddressprefixes) | array | Inbound address prefixes (IPv4/IPv6).s. |
 | [`emailAddresses`](#parameter-profilesaccessrulesemailaddresses) | array | Outbound rules email address format. |
+| [`enableTelemetry`](#parameter-profilesaccessrulesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fullyQualifiedDomainNames`](#parameter-profilesaccessrulesfullyqualifieddomainnames) | array | Outbound rules fully qualified domain name format. |
 | [`phoneNumbers`](#parameter-profilesaccessrulesphonenumbers) | array | Outbound rules phone number format. |
 | [`serviceTags`](#parameter-profilesaccessrulesservicetags) | array | Inbound rules service tag names. |
@@ -864,6 +866,13 @@ Outbound rules email address format.
 
 - Required: No
 - Type: array
+
+### Parameter: `profiles.accessRules.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `profiles.accessRules.fullyQualifiedDomainNames`
 
@@ -905,6 +914,13 @@ The subscription id.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `profiles.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `resourceAssociations`
 

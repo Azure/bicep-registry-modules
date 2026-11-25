@@ -36,9 +36,11 @@ param enableTelemetry bool = true
 
 var defaultContentType = mapType == 'Liquid' ? 'application/liquid' : 'application/xml'
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.logic-integrationaccount-map.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -85,3 +87,6 @@ output name string = map.name
 
 @description('The resource group the integration account map was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location of the integration account map.')
+output location string = map.?location ?? location

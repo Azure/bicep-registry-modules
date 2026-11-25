@@ -123,6 +123,7 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.dev.azuresynapse.net'
   'privatelink.sql.azuresynapse.net'
   'privatelink.webpubsub.azure.com'
+  'privatelink.redis.azure.net'
 ]
 
 @description('Optional. An array of Private Link Private DNS Zones to exclude from the deployment. The DNS zone names must match what is provided as the default values or any input to the `privateLinkPrivateDnsZones` parameter e.g. `privatelink.api.azureml.ms` or `privatelink.{regionCode}.backup.windowsazure.com` or `privatelink.{regionName}.azmk8s.io` .')
@@ -176,7 +177,7 @@ var azureRegionGeoCodeShortNameAsKey = {
   francesouth: 'frs'
   germanynorth: 'gn'
   germanywestcentral: 'gwc'
-  indiasouthcentral: 'insc'
+  indiasouthcentral: 'isc'
   indonesiacentral: 'idc'
   israelcentral: 'ilc'
   israelnorthwest: 'iln'
@@ -198,11 +199,13 @@ var azureRegionGeoCodeShortNameAsKey = {
   norwaywest: 'nww'
   polandcentral: 'plc'
   qatarcentral: 'qac'
+  saudiarabiaeast: 'sae'
   southafricanorth: 'san'
   southafricawest: 'saw'
   southcentralus: 'scus'
   southcentralus2: 'usc2'
   southeastasia: 'sea'
+  southeastasia3: 'sg3'
   southeastus: 'use'
   southeastus3: 'use3'
   southeastus5: 'use5'
@@ -220,6 +223,7 @@ var azureRegionGeoCodeShortNameAsKey = {
   uksouth: 'uks'
   ukwest: 'ukw'
   westcentralus: 'wcus'
+  westcentralusfre: 'wfre'
   westeurope: 'we'
   westindia: 'inw'
   westus: 'wus'
@@ -279,12 +283,14 @@ var azureRegionShortNameDisplayNameAsKey = {
   'norway west': 'norwaywest'
   'poland central': 'polandcentral'
   'qatar central': 'qatarcentral'
+  'saudi arabia east': 'saudiarabiaeast'
   'south africa north': 'southafricanorth'
   'south africa west': 'southafricawest'
   'south central us': 'southcentralus'
   'south central us 2': 'southcentralus2'
   'south india': 'southindia'
   'southeast asia': 'southeastasia'
+  'southeast asia 3': 'southeastasia3'
   'southeast us': 'southeastus'
   'southeast us 3': 'southeastus3'
   'southeast us 5': 'southeastus5'
@@ -301,6 +307,7 @@ var azureRegionShortNameDisplayNameAsKey = {
   'uk south': 'uksouth'
   'uk west': 'ukwest'
   'west central us': 'westcentralus'
+  'west central us fre': 'westcentralusfre'
   'west europe': 'westeurope'
   'west india': 'westindia'
   'west us': 'westus'
@@ -348,9 +355,11 @@ var combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink = map(
   }
 )
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.network-privatelinkprivatednszones.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {

@@ -1073,7 +1073,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     ]
     roleAssignments: [
       {
-        name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Network Contributor'
@@ -1554,7 +1554,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     "roleAssignments": {
       "value": [
         {
-          "name": "97fc1da9-bfe4-409d-b17a-da9a82fad0d0",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Network Contributor"
@@ -1997,7 +1997,7 @@ param rewriteRuleSets = [
 ]
 param roleAssignments = [
   {
-    name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Network Contributor'
@@ -2701,6 +2701,11 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: the initial gateway PUT failed with UpdateGatewayInProgress. Scoped activity showed one initial PUT and no idempotency deployment; the underlying cause is unproven and this is not a confirmed capacity failure.
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131901259795
+```
 
 <details>
 
@@ -3997,7 +4002,7 @@ param tags = {
 | [`backendSettingsCollection`](#parameter-backendsettingscollection) | array | Backend settings of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits). |
 | [`capacity`](#parameter-capacity) | int | The number of Application instances to be configured. |
 | [`customErrorConfigurations`](#parameter-customerrorconfigurations) | array | Custom error configurations of the application gateway resource. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableFips`](#parameter-enablefips) | bool | Whether FIPS is enabled on the application gateway resource. |
 | [`enableHttp2`](#parameter-enablehttp2) | bool | Whether HTTP2 is enabled on the application gateway resource. |
 | [`enableRequestBuffering`](#parameter-enablerequestbuffering) | bool | Enable request buffering. |
@@ -4138,7 +4143,7 @@ Custom error configurations of the application gateway resource.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

@@ -151,6 +151,7 @@ Resource tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the integration account agreement. |
 | `name` | string | The name of the integration account agreement. |
 | `resourceGroupName` | string | The resource group the integration account agreement was deployed into. |
 | `resourceId` | string | The resource ID of the integration account agreement. |

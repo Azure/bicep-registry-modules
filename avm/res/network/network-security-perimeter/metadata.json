@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Network Security Perimeter",
+  "moduleDescription": "AVM Resource Module for Network Security Perimeter",
+  "telemetryIdPrefix": "46d3xbcp.res.dc662c3",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-nwsecurityperimeter"],
+  "canonicalType": "Microsoft.Network/networkSecurityPerimeters",
+  "owners": []
+}

@@ -131,7 +131,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
   }
 }
 
-resource pip 'Microsoft.Network/publicIPAddresses@2024-01-01' = {
+resource pip 'Microsoft.Network/publicIPAddresses@2025-05-01' = {
   name: publicIPAddressName
   location: location
   sku: {
@@ -236,7 +236,7 @@ resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2025-02-01' = 
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -253,7 +253,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2024-11-01' = {
+  resource key 'keys@2026-02-01' = {
     name: 'encryptionKey'
     properties: {
       kty: 'RSA'
@@ -440,7 +440,7 @@ resource dcr 'Microsoft.Insights/dataCollectionRules@2024-03-11' = {
   }
 }
 
-resource dataDisk 'Microsoft.Compute/disks@2024-03-02' = {
+resource dataDisk 'Microsoft.Compute/disks@2025-01-02' = {
   location: location
   name: preCreatedDiskName
   sku: {

@@ -24,9 +24,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Sql/servers/databases` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases)</li></ul> |
-| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backuplongtermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupLongTermRetentionPolicies)</li></ul> |
-| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupShortTermRetentionPolicies)</li></ul> |
+| `Microsoft.Sql/servers/databases` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/databases)</li></ul> |
+| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backuplongtermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/databases/backupLongTermRetentionPolicies)</li></ul> |
+| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/databases/backupShortTermRetentionPolicies)</li></ul> |
 
 ## Parameters
 
@@ -54,7 +54,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`collation`](#parameter-collation) | string | The collation of the database. |
 | [`createMode`](#parameter-createmode) | string | Specifies the mode of database creation. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition for database TDE. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`elasticPoolResourceId`](#parameter-elasticpoolresourceid) | string | The resource ID of the elastic pool containing this database. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`federatedClientId`](#parameter-federatedclientid) | string | The Client id used for cross tenant per database CMK scenario. |
@@ -137,10 +137,20 @@ The long term backup retention policy to create for the database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-backuplongtermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`monthlyRetention`](#parameter-backuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
+| [`timeBasedImmutability`](#parameter-backuplongtermretentionpolicytimebasedimmutability) | string | The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled. |
+| [`timeBasedImmutabilityMode`](#parameter-backuplongtermretentionpolicytimebasedimmutabilitymode) | string | The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked. |
 | [`weeklyRetention`](#parameter-backuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-backuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-backuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
+
+### Parameter: `backupLongTermRetentionPolicy.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `backupLongTermRetentionPolicy.monthlyRetention`
 
@@ -148,6 +158,34 @@ Monthly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
+
+### Parameter: `backupLongTermRetentionPolicy.timeBasedImmutability`
+
+The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `backupLongTermRetentionPolicy.timeBasedImmutabilityMode`
+
+The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Locked'
+    'Unlocked'
+  ]
+  ```
 
 ### Parameter: `backupLongTermRetentionPolicy.weeklyRetention`
 
@@ -182,6 +220,7 @@ The short term backup retention policy to create for the database.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diffBackupIntervalInHours`](#parameter-backupshorttermretentionpolicydiffbackupintervalinhours) | int | Differential backup interval in hours. For Hyperscale tiers this value will be ignored. |
+| [`enableTelemetry`](#parameter-backupshorttermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`retentionDays`](#parameter-backupshorttermretentionpolicyretentiondays) | int | Point-in-time retention in days. |
 
 ### Parameter: `backupShortTermRetentionPolicy.diffBackupIntervalInHours`
@@ -190,6 +229,13 @@ Differential backup interval in hours. For Hyperscale tiers this value will be i
 
 - Required: No
 - Type: int
+
+### Parameter: `backupShortTermRetentionPolicy.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `backupShortTermRetentionPolicy.retentionDays`
 
@@ -296,7 +342,7 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

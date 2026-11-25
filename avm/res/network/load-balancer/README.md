@@ -2421,7 +2421,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`backendAddressPools`](#parameter-backendaddresspools) | array | Collection of backend address pools used by a load balancer. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`inboundNatRules`](#parameter-inboundnatrules) | array | Collection of inbound NAT Rules used by a load balancer. Defining inbound NAT rules on your load balancer is mutually exclusive with defining an inbound NAT pool. Inbound NAT pools are referenced from virtual machine scale sets. NICs that are associated with individual virtual machines cannot reference an Inbound NAT pool. They have to reference individual inbound NAT rules. |
 | [`loadBalancingRules`](#parameter-loadbalancingrules) | array | Array of objects containing all load balancing rules. |
@@ -3342,7 +3342,7 @@ Collection of backend address pools used by a load balancer.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

@@ -38,7 +38,8 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    // Storage account names are globally unique, so the subscription is mixed in to avoid collisions between environments sharing a namePrefix.
+    storageAccountName: 'dep${namePrefix}st${serviceShort}${substring(uniqueString(subscription().id), 0, 4)}'
   }
 }
 
@@ -86,7 +87,6 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      gitConfigureLater: true
       globalParameters: {
         testParameter1: {
           type: 'String'
@@ -185,8 +185,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: '12093237-f40a-4f36-868f-accbeebf540c'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
@@ -199,7 +198,7 @@ module testDeployment '../../../main.bicep' = [
         {
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

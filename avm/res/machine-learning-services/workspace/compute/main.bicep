@@ -7,6 +7,9 @@ Attaching a compute is not idempotent and will fail in case you try to redeploy 
 // Parameters       //
 // ================ //
 
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @sys.description('Conditional. The name of the parent Machine Learning Workspace. Required if the template is used in a standalone deployment.')
 param machineLearningWorkspaceName string
 
@@ -63,7 +66,7 @@ param computeType string
 @sys.description('Optional. The properties of the compute. Will be ignored in case "resourceId" is set.')
 param properties object?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -90,7 +93,7 @@ var identity = !empty(managedIdentities)
 // Existing resources references //
 // ============================= //
 
-resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' existing = {
+resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2026-09-01' existing = {
   name: machineLearningWorkspaceName
 }
 
@@ -98,7 +101,28 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 // Deployments  //
 // ============ //
 
-resource compute 'Microsoft.MachineLearningServices/workspaces/computes@2024-10-01' = if (deployCompute == true) {
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2026-06-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource compute 'Microsoft.MachineLearningServices/workspaces/computes@2026-09-01' = if (deployCompute == true) {
   name: name
   location: location
   tags: empty(resourceId) ? tags : any(null)
@@ -144,4 +168,4 @@ output resourceGroupName string = resourceGroup().name
 output systemAssignedMIPrincipalId string? = compute.?identity.?principalId
 
 @sys.description('The location the resource was deployed into.')
-output location string = compute.location
+output location string = deployCompute ? compute!.location : location

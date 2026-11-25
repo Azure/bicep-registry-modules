@@ -191,12 +191,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     skuObject: {
       capacity: 1
       name: 'Premium'
@@ -229,14 +223,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": false,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "skuObject": {
       "value": {
         "capacity": 1,
@@ -264,12 +250,6 @@ param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param managedIdentities = {
-  systemAssigned: false
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 param skuObject = {
   capacity: 1
@@ -360,6 +340,12 @@ This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: this max scenario requests a Premium Service Bus namespace with 16 messaging units, which is too high a capacity request for our test tenant to provision reliably.
+Azure message: "There is not enough capacity in the specified region to create the namespace. Please try an alternate region."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43472177647/job/132147623330
+```
 
 <details>
 
@@ -514,7 +500,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -534,7 +520,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         name: '2c42f915-20bf-4094-ba42-fee1f811d374'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -581,7 +567,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -831,7 +817,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -853,7 +839,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "name": "2c42f915-20bf-4094-ba42-fee1f811d374",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -906,7 +892,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -1132,7 +1118,7 @@ param queues = [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -1152,7 +1138,7 @@ param roleAssignments = [
     name: '2c42f915-20bf-4094-ba42-fee1f811d374'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -1199,7 +1185,7 @@ param topics = [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -1711,7 +1697,7 @@ param topics = [
 | [`alternateName`](#parameter-alternatename) | string | Alternate name for namespace. |
 | [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Service Bus namespace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | This property disables SAS authentication for the Service Bus namespace. |
 | [`disasterRecoveryConfig`](#parameter-disasterrecoveryconfig) | object | The disaster recovery configuration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1859,7 +1845,7 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

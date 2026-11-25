@@ -1,5 +1,11 @@
 # Modernize Your Code Solution Accelerator `[Sa/ModernizeYourCode]`
 
+> ⚠️THIS MODULE IS DEPRECATED.⚠️
+> 
+> - It will no longer receive any updates.
+> - If the underlying Azure service is not deprecated/retired, this module may still be used as is (references to any existing versions will keep working), but it is not recommended for new deployments.
+> - It is recommended to migrate to a replacement/alternative version of the module, if available.
+
 This module contains the resources required to deploy the [Modernize-your-code-solution-accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.
 
 |**Post-Deployment Step** |
@@ -164,6 +170,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
     enablePrivateNetworking: true
     enableRedundancy: true
     enableScaling: true
+    gptModelVersion: '2024-11-20'
     location: '<location>'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
@@ -203,6 +210,9 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
     "enableScaling": {
       "value": true
     },
+    "gptModelVersion": {
+      "value": "2024-11-20"
+    },
     "location": {
       "value": "<location>"
     },
@@ -234,6 +244,7 @@ param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScaling = true
+param gptModelVersion = '2024-11-20'
 param location = '<location>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
@@ -260,6 +271,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
     azureAiServiceLocation: '<azureAiServiceLocation>'
     solutionName: '<solutionName>'
     // Non-required parameters
+    gptModelVersion: '2024-11-20'
     location: '<location>'
   }
 }
@@ -285,6 +297,9 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
       "value": "<solutionName>"
     },
     // Non-required parameters
+    "gptModelVersion": {
+      "value": "2024-11-20"
+    },
     "location": {
       "value": "<location>"
     }
@@ -306,6 +321,7 @@ using 'br/public:avm/ptn/sa/modernize-your-code:<version>'
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 param solutionName = '<solutionName>'
 // Non-required parameters
+param gptModelVersion = '2024-11-20'
 param location = '<location>'
 ```
 
@@ -334,6 +350,7 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
     enablePrivateNetworking: true
     enableRedundancy: true
     enableScaling: true
+    gptModelVersion: '2024-11-20'
     location: '<location>'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
@@ -373,6 +390,9 @@ module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = 
     "enableScaling": {
       "value": true
     },
+    "gptModelVersion": {
+      "value": "2024-11-20"
+    },
     "location": {
       "value": "<location>"
     },
@@ -404,6 +424,7 @@ param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScaling = true
+param gptModelVersion = '2024-11-20'
 param location = '<location>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'

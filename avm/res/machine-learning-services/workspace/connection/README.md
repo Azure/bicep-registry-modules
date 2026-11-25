@@ -2,17 +2,26 @@
 
 This module creates a connection in a Machine Learning Services workspace.
 
+You can reference the module as follows:
+```bicep
+module workspace 'br/public:avm/res/machine-learning-services/workspace/connection:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.MachineLearningServices/workspaces/connections` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections)</li></ul> |
+| `Microsoft.MachineLearningServices/workspaces/connections` | 2026-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2026-09-01/workspaces/connections)</li></ul> |
 
 ## Parameters
 
@@ -30,11 +39,13 @@ This module creates a connection in a Machine Learning Services workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`expiryTime`](#parameter-expirytime) | string | The expiry time of the connection. |
 | [`isSharedToAll`](#parameter-issharedtoall) | bool | Indicates whether the connection is shared to all users in the workspace. |
 | [`metadata`](#parameter-metadata) | object | User metadata for the connection. |
+| [`peRequirement`](#parameter-perequirement) | string | Whether a private endpoint is required for the connection. |
 | [`sharedUserList`](#parameter-shareduserlist) | array | The shared user list of the connection. |
-| [`value`](#parameter-value) | string | Value details of the workspace connection. |
+| [`useWorkspaceManagedIdentity`](#parameter-useworkspacemanagedidentity) | bool | Use the workspace managed identity for the connection. |
 
 ### Parameter: `category`
 
@@ -53,9 +64,14 @@ Category of the connection.
     'AmazonRedshift'
     'AmazonS3Compatible'
     'ApiKey'
+    'ApiManagement'
+    'AppConfig'
+    'AppInsights'
     'AzureBlob'
+    'AzureContainerAppEnvironment'
     'AzureDatabricksDeltaLake'
     'AzureDataExplorer'
+    'AzureKeyVault'
     'AzureMariaDb'
     'AzureMySqlDb'
     'AzureOneLake'
@@ -63,6 +79,7 @@ Category of the connection.
     'AzurePostgresDb'
     'AzureSqlDb'
     'AzureSqlMi'
+    'AzureStorageAccount'
     'AzureSynapseAnalytics'
     'AzureTableStorage'
     'BingLLMSearch'
@@ -75,6 +92,7 @@ Category of the connection.
     'CosmosDbMongoDbApi'
     'Couchbase'
     'CustomKeys'
+    'Databricks'
     'Db2'
     'Drill'
     'Dynamics'
@@ -92,6 +110,8 @@ Category of the connection.
     'GoogleBigQuery'
     'GoogleCloudStorage'
     'Greenplum'
+    'GroundingWithBingSearch'
+    'GroundingWithCustomSearch'
     'Hbase'
     'Hdfs'
     'Hive'
@@ -104,6 +124,8 @@ Category of the connection.
     'MariaDb'
     'Marketo'
     'MicrosoftAccess'
+    'MicrosoftFabric'
+    'ModelGateway'
     'MongoDbAtlas'
     'MongoDbV2'
     'MySql'
@@ -119,10 +141,13 @@ Category of the connection.
     'Phoenix'
     'Pinecone'
     'PostgreSql'
+    'PowerPlatformEnvironment'
     'Presto'
     'PythonFeed'
     'QuickBooks'
     'Redis'
+    'RemoteA2A'
+    'RemoteTool'
     'Responsys'
     'S3'
     'Salesforce'
@@ -138,6 +163,7 @@ Category of the connection.
     'Serverless'
     'ServiceNow'
     'Sftp'
+    'Sharepoint'
     'SharePointOnlineList'
     'Shopify'
     'Snowflake'
@@ -824,6 +850,14 @@ The target of the connection.
 - Required: Yes
 - Type: string
 
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `expiryTime`
 
 The expiry time of the connection.
@@ -859,6 +893,21 @@ The metadata key-value pairs.
 - Required: Yes
 - Type: string
 
+### Parameter: `peRequirement`
+
+Whether a private endpoint is required for the connection.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NotApplicable'
+    'NotRequired'
+    'Required'
+  ]
+  ```
+
 ### Parameter: `sharedUserList`
 
 The shared user list of the connection.
@@ -866,12 +915,12 @@ The shared user list of the connection.
 - Required: No
 - Type: array
 
-### Parameter: `value`
+### Parameter: `useWorkspaceManagedIdentity`
 
-Value details of the workspace connection.
+Use the workspace managed identity for the connection.
 
 - Required: No
-- Type: string
+- Type: bool
 
 ## Outputs
 
@@ -880,3 +929,7 @@ Value details of the workspace connection.
 | `name` | string | The name of the connection. |
 | `resourceGroupName` | string | The name of the resource group the connection was created in. |
 | `resourceId` | string | The resource ID of the connection. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

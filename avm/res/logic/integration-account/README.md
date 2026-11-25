@@ -438,10 +438,9 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     ]
     roleAssignments: [
       {
-        name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -834,10 +833,9 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     "roleAssignments": {
       "value": [
         {
-          "name": "1f98c16b-ea00-4686-8b81-05353b594ea3",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1214,10 +1212,9 @@ param partners = [
 ]
 param roleAssignments = [
   {
-    name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -1560,7 +1557,7 @@ param tags = {
 | [`agreements`](#parameter-agreements) | array | All agreements to create. |
 | [`assemblies`](#parameter-assemblies) | array | All assemblies to create. |
 | [`certificates`](#parameter-certificates) | array | All certificates to create. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1825,7 +1822,7 @@ Resource tags.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
