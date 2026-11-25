@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "501200787965810111"
+      "version": "0.48.1.52935",
+      "templateHash": "10900461147273144731"
     },
     "name": "Azure NetApp Files Backup Policy",
     "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -132,6 +132,13 @@
         "description": "The name of the Resource Group the Backup Policy was created in."
       },
       "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the backup policy."
+      },
+      "value": "[reference(resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), parameters('name')), '2025-01-01', 'full').location]"
     }
   }
 }

@@ -13,6 +13,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - None
 
+## 0.17.2
+
+### Changes
+
+- Regenerated ARM template artifacts with Bicep 0.48.1 without changing resource configuration.
+
+### Breaking Changes
+
+- None
+
 ## 0.17.1
 
 ### Changes

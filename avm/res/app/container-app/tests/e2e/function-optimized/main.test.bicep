@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
       activeRevisionsMode: 'Single'
       ingressTargetPort: 80
-      ingressTransport:'auto'
+      ingressTransport: 'auto'
       ingressAllowInsecure: false
       exposedPort: 0
       traffic: [

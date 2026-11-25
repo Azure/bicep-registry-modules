@@ -412,7 +412,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
         name: '89cc419c-8383-461d-9a70-5cfae4045a8d'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -491,7 +491,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
           "name": "89cc419c-8383-461d-9a70-5cfae4045a8d",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -548,7 +548,7 @@ param roleAssignments = [
     name: '89cc419c-8383-461d-9a70-5cfae4045a8d'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'

@@ -230,7 +230,7 @@ module log 'br/public:avm/res/operational-insights/workspace:0.5.0' = {
   }
 }
 
-module kv 'br/public:avm/res/key-vault/vault:0.7.0' = {
+module kv 'br/public:avm/res/key-vault/vault:0.14.2' = {
   name: keyVaultName
   params: {
     // Required parameters

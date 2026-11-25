@@ -1,5 +1,29 @@
 ﻿param ([string] $RepoRootPath = (Get-Item -LiteralPath $PSScriptRoot).Parent.Parent.Parent.FullName)
 
+Describe 'HCI image build timestamp parsing' {
+    BeforeAll {
+        . (Join-Path $RepoRootPath 'utilities' 'e2e-template-assets' 'module-specific' 'azure-stack-hci' 'HciImageOperation.ps1')
+    }
+
+    It 'Accepts the provider timestamp <value> as parsed from JSON' -ForEach @(
+        @{ value = '2026-10-15T13:26:36.123456789Z'; expected = '2026-10-15T13:26:36.1234568+00:00' }
+        @{ value = '2026-10-15T13:26:36.123456789+05:45'; expected = '2026-10-15T07:41:36.1234568+00:00' }
+        @{ value = '2026-10-15T13:26:36.1234567Z'; expected = '2026-10-15T13:26:36.1234567+00:00' }
+    ) {
+        $parsed = ('{"startTime":"' + $value + '"}' | ConvertFrom-Json).startTime
+
+        (ConvertTo-HciImageBuildTimestamp -Value $parsed).ToString('o') | Should -BeExactly $expected
+    }
+
+    It 'Rejects the timestamp <value>' -ForEach @(
+        @{ value = '2026-10-15T13:26:36.1234567891Z' }
+        @{ value = '2026-10-15T13:26:36.123456789' }
+        @{ value = [datetime]::new(2026, 10, 15, 13, 26, 36, [DateTimeKind]::Unspecified) }
+    ) {
+        { ConvertTo-HciImageBuildTimestamp -Value $value } | Should -Throw '*time-zone-qualified*'
+    }
+}
+
 Describe 'HCI confidential JSON parsing' {
     BeforeAll {
         . (Join-Path $RepoRootPath 'utilities' 'e2e-template-assets' 'module-specific' 'azure-stack-hci' 'HciImageOperation.ps1')

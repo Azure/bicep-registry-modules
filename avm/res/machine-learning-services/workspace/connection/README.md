@@ -21,7 +21,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.MachineLearningServices/workspaces/connections` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections)</li></ul> |
+| `Microsoft.MachineLearningServices/workspaces/connections` | 2026-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2026-09-01/workspaces/connections)</li></ul> |
 
 ## Parameters
 
@@ -43,8 +43,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`expiryTime`](#parameter-expirytime) | string | The expiry time of the connection. |
 | [`isSharedToAll`](#parameter-issharedtoall) | bool | Indicates whether the connection is shared to all users in the workspace. |
 | [`metadata`](#parameter-metadata) | object | User metadata for the connection. |
+| [`peRequirement`](#parameter-perequirement) | string | Whether a private endpoint is required for the connection. |
 | [`sharedUserList`](#parameter-shareduserlist) | array | The shared user list of the connection. |
-| [`value`](#parameter-value) | string | Value details of the workspace connection. |
+| [`useWorkspaceManagedIdentity`](#parameter-useworkspacemanagedidentity) | bool | Use the workspace managed identity for the connection. |
 
 ### Parameter: `category`
 
@@ -63,9 +64,14 @@ Category of the connection.
     'AmazonRedshift'
     'AmazonS3Compatible'
     'ApiKey'
+    'ApiManagement'
+    'AppConfig'
+    'AppInsights'
     'AzureBlob'
+    'AzureContainerAppEnvironment'
     'AzureDatabricksDeltaLake'
     'AzureDataExplorer'
+    'AzureKeyVault'
     'AzureMariaDb'
     'AzureMySqlDb'
     'AzureOneLake'
@@ -73,6 +79,7 @@ Category of the connection.
     'AzurePostgresDb'
     'AzureSqlDb'
     'AzureSqlMi'
+    'AzureStorageAccount'
     'AzureSynapseAnalytics'
     'AzureTableStorage'
     'BingLLMSearch'
@@ -85,6 +92,7 @@ Category of the connection.
     'CosmosDbMongoDbApi'
     'Couchbase'
     'CustomKeys'
+    'Databricks'
     'Db2'
     'Drill'
     'Dynamics'
@@ -102,6 +110,8 @@ Category of the connection.
     'GoogleBigQuery'
     'GoogleCloudStorage'
     'Greenplum'
+    'GroundingWithBingSearch'
+    'GroundingWithCustomSearch'
     'Hbase'
     'Hdfs'
     'Hive'
@@ -114,6 +124,8 @@ Category of the connection.
     'MariaDb'
     'Marketo'
     'MicrosoftAccess'
+    'MicrosoftFabric'
+    'ModelGateway'
     'MongoDbAtlas'
     'MongoDbV2'
     'MySql'
@@ -129,10 +141,13 @@ Category of the connection.
     'Phoenix'
     'Pinecone'
     'PostgreSql'
+    'PowerPlatformEnvironment'
     'Presto'
     'PythonFeed'
     'QuickBooks'
     'Redis'
+    'RemoteA2A'
+    'RemoteTool'
     'Responsys'
     'S3'
     'Salesforce'
@@ -148,6 +163,7 @@ Category of the connection.
     'Serverless'
     'ServiceNow'
     'Sftp'
+    'Sharepoint'
     'SharePointOnlineList'
     'Shopify'
     'Snowflake'
@@ -877,6 +893,21 @@ The metadata key-value pairs.
 - Required: Yes
 - Type: string
 
+### Parameter: `peRequirement`
+
+Whether a private endpoint is required for the connection.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NotApplicable'
+    'NotRequired'
+    'Required'
+  ]
+  ```
+
 ### Parameter: `sharedUserList`
 
 The shared user list of the connection.
@@ -884,12 +915,12 @@ The shared user list of the connection.
 - Required: No
 - Type: array
 
-### Parameter: `value`
+### Parameter: `useWorkspaceManagedIdentity`
 
-Value details of the workspace connection.
+Use the workspace managed identity for the connection.
 
 - Required: No
-- Type: string
+- Type: bool
 
 ## Outputs
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "6632607736268892832"
+      "version": "0.48.1.52935",
+      "templateHash": "9611216542764122167"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -642,7 +642,7 @@
         },
         "description": "Optional. Specifies the resource tags for all the resources."
       },
-      "defaultValue": {}
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -762,7 +762,7 @@
             "value": "[tryGet(parameters('aiFoundryConfiguration'), 'roleAssignments')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -778,8 +778,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "17515602153742881319"
+              "version": "0.48.1.52935",
+              "templateHash": "2317631062325679321"
             }
           },
           "definitions": {
@@ -1199,8 +1199,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "8642151282041103672"
+                      "version": "0.45.6.27763",
+                      "templateHash": "7850396439393838491"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -1527,6 +1527,80 @@
                       "metadata": {
                         "__bicep_export!": true,
                         "description": "Type for network configuration in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network."
+                      }
+                    },
+                    "networkAclsType": {
+                      "type": "object",
+                      "properties": {
+                        "bypass": {
+                          "type": "string",
+                          "allowedValues": [
+                            "AzureServices",
+                            "None"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Setting for trusted services. Use 'AzureServices' to allow trusted Microsoft services to bypass the firewall."
+                          }
+                        },
+                        "defaultAction": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Allow",
+                            "Deny"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The default action when no rule from ipRules and from virtualNetworkRules match. This is only used after the bypass property has been evaluated."
+                          }
+                        },
+                        "ipRules": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "value": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. An IPv4 address range in CIDR notation, such as '124.56.78.91' (simple IP address) or '124.56.78.0/24' (all addresses that start with 124.56.78)."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The list of IP address rules."
+                          }
+                        },
+                        "virtualNetworkRules": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. Full resource id of a vnet subnet, such as '/subscriptions/subid/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/subnet1'."
+                                }
+                              },
+                              "ignoreMissingVnetServiceEndpoint": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Ignore missing vnet service endpoint or not."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The list of virtual network rules."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "Type for the network rule set (firewall) governing the accessibility of the Cognitive Services account from specific network locations."
                       }
                     },
                     "_1.secretSetOutputType": {
@@ -2342,7 +2416,7 @@
                       }
                     },
                     "networkAcls": {
-                      "type": "object",
+                      "$ref": "#/definitions/networkAclsType",
                       "nullable": true,
                       "metadata": {
                         "description": "Optional. A collection of rules governing the accessibility from specific network locations."
@@ -2562,8 +2636,8 @@
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.14.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.15.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -2611,7 +2685,7 @@
                       "properties": {
                         "allowProjectManagement": "[parameters('allowProjectManagement')]",
                         "customSubDomainName": "[parameters('customSubDomainName')]",
-                        "networkAcls": "[if(not(empty(coalesce(parameters('networkAcls'), createObject()))), createObject('defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
+                        "networkAcls": "[if(not(empty(coalesce(parameters('networkAcls'), createObject()))), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass'), 'defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
                         "networkInjections": "[if(not(empty(parameters('networkInjections'))), createArray(createObject('scenario', tryGet(parameters('networkInjections'), 'scenario'), 'subnetArmId', tryGet(parameters('networkInjections'), 'subnetResourceId'), 'useMicrosoftManagedNetwork', coalesce(tryGet(parameters('networkInjections'), 'useMicrosoftManagedNetwork'), false()))), null())]",
                         "publicNetworkAccess": "[if(not(equals(parameters('publicNetworkAccess'), null())), parameters('publicNetworkAccess'), if(not(empty(parameters('networkAcls'))), 'Enabled', 'Disabled'))]",
                         "allowedFqdnList": "[parameters('allowedFqdnList')]",
@@ -2645,7 +2719,7 @@
                         "raiPolicyName": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'raiPolicyName')]",
                         "versionUpgradeOption": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'versionUpgradeOption')]"
                       },
-                      "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', parameters('sku'), 'capacity', tryGet(parameters('sku'), 'capacity'), 'tier', tryGet(parameters('sku'), 'tier'), 'size', tryGet(parameters('sku'), 'size'), 'family', tryGet(parameters('sku'), 'family')))]",
+                      "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', 'Standard', 'capacity', 1))]",
                       "dependsOn": [
                         "cognitiveService"
                       ]
@@ -3397,7 +3471,9 @@
                         }
                       },
                       "dependsOn": [
-                        "cognitiveService"
+                        "cognitiveService",
+                        "cognitiveService_commitmentPlans",
+                        "cognitiveService_deployments"
                       ]
                     },
                     "secretsExport": {
@@ -3427,8 +3503,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "13968722110082077308"
+                              "version": "0.45.6.27763",
+                              "templateHash": "9103817615860225284"
                             }
                           },
                           "definitions": {
@@ -3714,7 +3790,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -3736,8 +3812,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "6954034207179674914"
+              "version": "0.48.1.52935",
+              "templateHash": "2066462238046272031"
             }
           },
           "definitions": {
@@ -3989,7 +4065,7 @@
               "condition": "[not(empty(parameters('existingResourceId')))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "subscriptionId": "[variables('existingSubscriptionId')]",
               "resourceGroup": "[variables('existingResourceGroupName')]",
               "name": "[variables('existingName')]"
@@ -7497,7 +7573,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -7528,8 +7604,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "5036941218626531688"
+              "version": "0.48.1.52935",
+              "templateHash": "10058792205312986791"
             }
           },
           "definitions": {
@@ -9953,7 +10029,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -9975,8 +10051,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "5453447899308568482"
+              "version": "0.48.1.52935",
+              "templateHash": "16617750928353776093"
             }
           },
           "definitions": {
@@ -18461,7 +18537,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -18489,8 +18565,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11639296185979376043"
+              "version": "0.48.1.52935",
+              "templateHash": "9879755466792653078"
             }
           },
           "definitions": {
@@ -24789,7 +24865,7 @@
           "aiSearchConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', reference('aiSearch').outputs.name.value, 'subscriptionId', reference('aiSearch').outputs.subscriptionId.value, 'resourceGroupName', reference('aiSearch').outputs.resourceGroupName.value)), createObject('value', null()))]",
           "cosmosDbConnection": "[if(parameters('includeAssociatedResources'), createObject('value', createObject('resourceName', reference('cosmosDb').outputs.name.value, 'subscriptionId', reference('cosmosDb').outputs.subscriptionId.value, 'resourceGroupName', reference('cosmosDb').outputs.resourceGroupName.value)), createObject('value', null()))]",
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "lock": {
             "value": "[parameters('lock')]"
@@ -24802,8 +24878,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "14769608498987839423"
+              "version": "0.48.1.52935",
+              "templateHash": "14336301300135123633"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -24965,7 +25041,7 @@
                 },
                 "description": "Optional. Tags to be applied to the resources."
               },
-              "defaultValue": {}
+              "nullable": true
             }
           },
           "variables": {
@@ -25018,7 +25094,7 @@
                 "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), parameters('name'))]",
                 "description": "[if(not(empty(parameters('desc'))), parameters('desc'), parameters('name'))]"
               },
-              "tags": "[parameters('tags')]"
+              "tags": "[coalesce(parameters('tags'), createObject())]"
             },
             "cosmosDbConnectionResource": {
               "condition": "[not(empty(parameters('cosmosDbConnection')))]",
@@ -25093,7 +25169,7 @@
               "name": "[format('{0}/{1}', parameters('accountName'), format('chagent{0}', replace(parameters('accountName'), '-', '')))]",
               "properties": {
                 "capabilityHostKind": "Agents",
-                "tags": "[parameters('tags')]"
+                "tags": "[coalesce(parameters('tags'), createObject())]"
               },
               "dependsOn": [
                 "aiSearchConnectionResource",
@@ -25118,7 +25194,7 @@
                 "storageConnections": [
                   "[format('{0}', parameters('storageAccountConnection').resourceName)]"
                 ],
-                "tags": "[parameters('tags')]"
+                "tags": "[coalesce(parameters('tags'), createObject())]"
               },
               "dependsOn": [
                 "accountCapabilityHost",
@@ -25169,8 +25245,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "17200224943645191747"
+                      "version": "0.48.1.52935",
+                      "templateHash": "9909329263607001138"
                     }
                   },
                   "parameters": {
@@ -25232,8 +25308,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "13065792564353351624"
+                      "version": "0.48.1.52935",
+                      "templateHash": "2393090564444546167"
                     }
                   },
                   "parameters": {
@@ -25295,8 +25371,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "17642323173492771442"
+                      "version": "0.48.1.52935",
+                      "templateHash": "9990002856175995322"
                     }
                   },
                   "parameters": {
@@ -25372,8 +25448,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "6980253785932858738"
+                      "version": "0.48.1.52935",
+                      "templateHash": "13415573132318883611"
                     }
                   },
                   "parameters": {
@@ -25459,8 +25535,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "7502832477035962053"
+                      "version": "0.48.1.52935",
+                      "templateHash": "17255027842168017826"
                     }
                   },
                   "parameters": {

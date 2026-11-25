@@ -24,18 +24,21 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
+#disable-next-line no-hardcoded-location // Container Apps environments are not available in every CI candidate region.
+var enforcedLocation = 'swedencentral'
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
+    location: enforcedLocation
     managedEnvironmentName: 'dep-${namePrefix}-me-${serviceShort}'
   }
 }
@@ -52,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       containerAppsEnvironmentName: nestedDependencies.outputs.containerAppsEnvironmentName
-      location: resourceLocation
+      location: enforcedLocation
     }
   }
 ]

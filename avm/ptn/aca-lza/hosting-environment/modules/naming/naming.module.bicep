@@ -25,7 +25,7 @@ param uniqueId string
 // VARIABLES
 // ------------------
 
-var naming = json(loadTextContent('./naming-rules.jsonc'))
+var naming = loadJsonContent('./naming-rules.jsonc')
 
 // get arbitary 5 first characters (instead of something like 5yj4yjf5mbg72), to save string length.
 var uniqueIdShort = substring(uniqueId, 0, 5)

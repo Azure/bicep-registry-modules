@@ -319,8 +319,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     ]
     location: '<location>'
     releaseNamespace: 'flux-system'
-    releaseTrain: 'Stable'
-    version: '0.5.2'
+    releaseTrain: 'stable'
   }
 }
 ```
@@ -387,10 +386,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "flux-system"
     },
     "releaseTrain": {
-      "value": "Stable"
-    },
-    "version": {
-      "value": "0.5.2"
+      "value": "stable"
     }
   }
 }
@@ -441,8 +437,7 @@ param fluxConfigurations = [
 ]
 param location = '<location>'
 param releaseNamespace = 'flux-system'
-param releaseTrain = 'Stable'
-param version = '0.5.2'
+param releaseTrain = 'stable'
 ```
 
 </details>
@@ -496,8 +491,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       }
     ]
     releaseNamespace: 'flux-system'
-    releaseTrain: 'Stable'
-    version: '0.5.2'
+    releaseTrain: 'stable'
   }
 }
 ```
@@ -561,10 +555,7 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "flux-system"
     },
     "releaseTrain": {
-      "value": "Stable"
-    },
-    "version": {
-      "value": "0.5.2"
+      "value": "stable"
     }
   }
 }
@@ -614,8 +605,7 @@ param fluxConfigurations = [
   }
 ]
 param releaseNamespace = 'flux-system'
-param releaseTrain = 'Stable'
-param version = '0.5.2'
+param releaseTrain = 'stable'
 ```
 
 </details>
