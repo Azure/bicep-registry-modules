@@ -25,9 +25,9 @@ Describe 'Platform CI utility test workflow' {
         $workflow.permissions.contents | Should -BeExactly 'read'
     }
 
-    It 'preserves main, scheduled and manual coverage' {
-        $workflow.on.push.branches | Should -Be @('main')
-        $workflow.on.schedule | Should -HaveCount 1
+    It 'retains only manual and pull request coverage' {
+        $workflow.on.ContainsKey('push') | Should -BeFalse
+        $workflow.on.ContainsKey('schedule') | Should -BeFalse
         $workflow.on.ContainsKey('workflow_dispatch') | Should -BeTrue
         $workflow.jobs.'job_run_tests'.steps[2].uses |
             Should -BeExactly 'azure/powershell@53dd145408794f7e80f97cfcca04155c85234709'
