@@ -33,6 +33,12 @@ Describe 'Bicep PR check reporter caller contract' {
         }
     }
 
+    It 'allows the initializer to read live pull request labels' {
+        $prCheck.jobs.initialize.permissions.Keys | Sort-Object | Should -Be @('contents', 'issues')
+        $prCheck.jobs.initialize.permissions.contents | Should -BeExactly 'read'
+        $prCheck.jobs.initialize.permissions.issues | Should -BeExactly 'read'
+    }
+
     It 'keeps the reporter behind a least-privilege trust boundary' {
         $moduleGate.name | Should -BeExactly 'Report check status'
         $moduleGate.if | Should -BeExactly 'always()'
