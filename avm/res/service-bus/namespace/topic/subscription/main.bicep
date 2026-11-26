@@ -27,8 +27,8 @@ param deadLetteringOnMessageExpiration bool = false
 @description('Optional. ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself.')
 param defaultMessageTimeToLive string = 'P10675199DT2H48M5.4775807S'
 
-@description('Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes.')
-param duplicateDetectionHistoryTimeWindow string = 'PT10M'
+@description('Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. Not set by default, as the service does not persist this property on subscriptions and setting it causes what-if to report a change on every run.')
+param duplicateDetectionHistoryTimeWindow string?
 
 @description('Optional. A value that indicates whether server-side batched operations are enabled.')
 param enableBatchedOperations bool = true

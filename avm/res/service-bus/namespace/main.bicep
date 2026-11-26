@@ -337,6 +337,7 @@ module serviceBusNamespace_topics 'topic/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Topic-${index}'
     params: {
       namespaceName: serviceBusNamespace.name
+      namespaceSkuName: skuObject.name
       name: topic.name
       authorizationRules: topic.?authorizationRules
       autoDeleteOnIdle: topic.?autoDeleteOnIdle

@@ -11,6 +11,14 @@ param namespaceName string
 @maxLength(260)
 param name string
 
+@description('Optional. The SKU name of the parent Service Bus Namespace. If not provided, the SKU is read from the existing namespace at deployment time. Providing it allows what-if to evaluate the Premium-only properties `enableExpress` and `maxMessageSizeInKilobytes`.')
+@allowed([
+  'Basic'
+  'Standard'
+  'Premium'
+])
+param namespaceSkuName string?
+
 @description('Optional. The maximum size of the topic in megabytes, which is the size of memory allocated for the topic. Default is 1024.')
 param maxSizeInMegabytes int = 1024
 
@@ -151,7 +159,7 @@ resource topic 'Microsoft.ServiceBus/namespaces/topics@2024-01-01' = {
       supportOrdering: supportOrdering
       maxSizeInMegabytes: maxSizeInMegabytes
     },
-    (namespace.sku.name == 'Premium')
+    ((namespaceSkuName ?? namespace.sku.name) == 'Premium')
       ? {
           enableExpress: enableExpress
           maxMessageSizeInKilobytes: maxMessageSizeInKilobytes

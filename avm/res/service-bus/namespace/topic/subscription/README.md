@@ -48,7 +48,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`deadLetteringOnFilterEvaluationExceptions`](#parameter-deadletteringonfilterevaluationexceptions) | bool | A value that indicates whether a subscription has dead letter support on filter evaluation exceptions. |
 | [`deadLetteringOnMessageExpiration`](#parameter-deadletteringonmessageexpiration) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
 | [`defaultMessageTimeToLive`](#parameter-defaultmessagetimetolive) | string | ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself. |
-| [`duplicateDetectionHistoryTimeWindow`](#parameter-duplicatedetectionhistorytimewindow) | string | ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes. |
+| [`duplicateDetectionHistoryTimeWindow`](#parameter-duplicatedetectionhistorytimewindow) | string | ISO 8601 timespan that defines the duration of the duplicate detection history. Not set by default, as the service does not persist this property on subscriptions and setting it causes what-if to report a change on every run. |
 | [`enableBatchedOperations`](#parameter-enablebatchedoperations) | bool | A value that indicates whether server-side batched operations are enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`forwardDeadLetteredMessagesTo`](#parameter-forwarddeadletteredmessagesto) | string | Queue/Topic name to forward the Dead Letter messages to. |
@@ -156,11 +156,10 @@ ISO 8061 Default message timespan to live value. This is the duration after whic
 
 ### Parameter: `duplicateDetectionHistoryTimeWindow`
 
-ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes.
+ISO 8601 timespan that defines the duration of the duplicate detection history. Not set by default, as the service does not persist this property on subscriptions and setting it causes what-if to report a change on every run.
 
 - Required: No
 - Type: string
-- Default: `'PT10M'`
 
 ### Parameter: `enableBatchedOperations`
 

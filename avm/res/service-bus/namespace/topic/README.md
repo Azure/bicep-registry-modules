@@ -58,6 +58,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maxMessageSizeInKilobytes`](#parameter-maxmessagesizeinkilobytes) | int | Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium. |
 | [`maxSizeInMegabytes`](#parameter-maxsizeinmegabytes) | int | The maximum size of the topic in megabytes, which is the size of memory allocated for the topic. Default is 1024. |
+| [`namespaceSkuName`](#parameter-namespaceskuname) | string | The SKU name of the parent Service Bus Namespace. If not provided, the SKU is read from the existing namespace at deployment time. Providing it allows what-if to evaluate the Premium-only properties `enableExpress` and `maxMessageSizeInKilobytes`. |
 | [`requiresDuplicateDetection`](#parameter-requiresduplicatedetection) | bool | A value indicating if this topic requires duplicate detection. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`status`](#parameter-status) | string | Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown. |
@@ -200,6 +201,21 @@ The maximum size of the topic in megabytes, which is the size of memory allocate
 - Required: No
 - Type: int
 - Default: `1024`
+
+### Parameter: `namespaceSkuName`
+
+The SKU name of the parent Service Bus Namespace. If not provided, the SKU is read from the existing namespace at deployment time. Providing it allows what-if to evaluate the Premium-only properties `enableExpress` and `maxMessageSizeInKilobytes`.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Premium'
+    'Standard'
+  ]
+  ```
 
 ### Parameter: `requiresDuplicateDetection`
 
