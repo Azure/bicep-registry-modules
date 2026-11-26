@@ -45,12 +45,14 @@ module nestedDependencies 'dependencies.bicep' = {
 
 resource backupStorageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   scope: resourceGroup
-  name: storageAccountName
-  // Ensure the key lookup only happens after the storage account was deployed
-  dependsOn: [
-    nestedDependencies
-  ]
+  name: nestedDependencies.outputs.storageAccountName
 }
+
+// The output-derived existing name cannot be used for a deployment-time-constant key lookup.
+var backupStorageAccountKeys = listKeys(
+  resourceId(resourceGroup.name, 'Microsoft.Storage/storageAccounts', storageAccountName),
+  backupStorageAccount.apiVersion
+)
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -87,7 +89,7 @@ module testDeployment '../../../main.bicep' = [
         retentionPeriod: 7
         enableEncryption: false
         storageAccountUrl: nestedDependencies.outputs.storageAccountBlobEndpoint
-        storageAccessKey: backupStorageAccount.listKeys().keys[0].value
+        storageAccessKey: backupStorageAccountKeys.keys[0].value
       }
       autoPatchingSettings: {
         additionalVmPatch: 'MicrosoftUpdate'

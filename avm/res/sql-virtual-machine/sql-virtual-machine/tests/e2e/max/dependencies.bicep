@@ -151,5 +151,8 @@ output virtualMachineResourceId string = virtualMachine.outputs.resourceId
 @description('The principal ID of the created managed identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
+@description('The name of the created storage account.')
+output storageAccountName string = storageAccount.name
+
 @description('The blob endpoint of the created storage account.')
 output storageAccountBlobEndpoint string = storageAccount.properties.primaryEndpoints.blob
