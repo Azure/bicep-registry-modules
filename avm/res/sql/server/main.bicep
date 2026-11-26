@@ -133,6 +133,10 @@ param vulnerabilityAssessmentsObj vulnerabilityAssessmentType?
 @description('Optional. The state of the SQL vulnerability assessment express configuration, which does not require a storage account and is the recommended configuration. Requires Microsoft Defender for SQL to be enabled (e.g., via `securityAlertPolicies`). Cannot be combined with `vulnerabilityAssessmentsObj` (classic configuration).')
 param expressVulnerabilityAssessmentState ('Enabled' | 'Disabled')?
 
+var checkVulnerabilityAssessmentConfig = expressVulnerabilityAssessmentState == 'Enabled' && vulnerabilityAssessmentsObj != null
+  ? fail('The classic vulnerability assessment configuration (\'vulnerabilityAssessmentsObj\') cannot be combined with the express configuration (\'expressVulnerabilityAssessmentState\' set to \'Enabled\').')
+  : true
+
 @description('Optional. The audit settings configuration. To disable auditing, set `state` to `Disabled`. If set to an empty object, the audit settings are not deployed (i.e., any existing configuration remains unchanged).')
 param auditSettings auditSettingsType = {
   state: 'Enabled'
@@ -507,13 +511,11 @@ module server_securityAlertPolicies 'security-alert-policy/main.bicep' = [
   }
 ]
 
-module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if (vulnerabilityAssessmentsObj != null) {
+module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if (vulnerabilityAssessmentsObj != null && checkVulnerabilityAssessmentConfig) {
   name: '${uniqueString(deployment().name, location)}-Sql-VulnAssessm'
   params: {
     serverName: server.name
-    name: expressVulnerabilityAssessmentState == 'Enabled'
-      ? fail('The classic vulnerability assessment configuration (\'vulnerabilityAssessmentsObj\') cannot be combined with the express configuration (\'expressVulnerabilityAssessmentState\' set to \'Enabled\').')
-      : vulnerabilityAssessmentsObj!.name
+    name: vulnerabilityAssessmentsObj!.name
     recurringScans: vulnerabilityAssessmentsObj.?recurringScans
     storageAccountResourceId: vulnerabilityAssessmentsObj!.storageAccountResourceId
     useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey
@@ -688,7 +690,7 @@ resource server_outbound_firewall_rules 'Microsoft.Sql/servers/outboundFirewallR
   }
 ]
 
-resource server_sqlVulnerabilityAssessment 'Microsoft.Sql/servers/sqlVulnerabilityAssessments@2025-01-01' = if (expressVulnerabilityAssessmentState != null) {
+resource server_sqlVulnerabilityAssessment 'Microsoft.Sql/servers/sqlVulnerabilityAssessments@2025-01-01' = if (expressVulnerabilityAssessmentState != null && checkVulnerabilityAssessmentConfig) {
   name: 'default'
   parent: server
   properties: {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.49.2.45890",
-      "templateHash": "17665314356050726137"
+      "templateHash": "6504261638400684488"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -2365,6 +2365,7 @@
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "primaryUserAssignedIdentityId": "[if(not(empty(parameters('primaryUserAssignedIdentityResourceId'))), parameters('primaryUserAssignedIdentityResourceId'), if(equals(length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())), 1), parameters('managedIdentities').userAssignedResourceIds[0], if(greater(length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())), 1), fail('The ''primaryUserAssignedIdentityResourceId'' parameter is required if more than one user-assigned identity is provided.'), null())))]",
+    "checkVulnerabilityAssessmentConfig": "[if(and(equals(parameters('expressVulnerabilityAssessmentState'), 'Enabled'), not(equals(parameters('vulnerabilityAssessmentsObj'), null()))), fail('The classic vulnerability assessment configuration (''vulnerabilityAssessmentsObj'') cannot be combined with the express configuration (''expressVulnerabilityAssessmentState'' set to ''Enabled'').'), true())]",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -2560,7 +2561,7 @@
       ]
     },
     "server_sqlVulnerabilityAssessment": {
-      "condition": "[not(equals(parameters('expressVulnerabilityAssessmentState'), null()))]",
+      "condition": "[and(not(equals(parameters('expressVulnerabilityAssessmentState'), null())), variables('checkVulnerabilityAssessmentConfig'))]",
       "type": "Microsoft.Sql/servers/sqlVulnerabilityAssessments",
       "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('name'), 'default')]",
@@ -6025,7 +6026,7 @@
       ]
     },
     "server_vulnerabilityAssessment": {
-      "condition": "[not(equals(parameters('vulnerabilityAssessmentsObj'), null()))]",
+      "condition": "[and(not(equals(parameters('vulnerabilityAssessmentsObj'), null())), variables('checkVulnerabilityAssessmentConfig'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[format('{0}-Sql-VulnAssessm', uniqueString(deployment().name, parameters('location')))]",
@@ -6038,7 +6039,9 @@
           "serverName": {
             "value": "[parameters('name')]"
           },
-          "name": "[if(equals(parameters('expressVulnerabilityAssessmentState'), 'Enabled'), createObject('value', fail('The classic vulnerability assessment configuration (''vulnerabilityAssessmentsObj'') cannot be combined with the express configuration (''expressVulnerabilityAssessmentState'' set to ''Enabled'').')), createObject('value', parameters('vulnerabilityAssessmentsObj').name))]",
+          "name": {
+            "value": "[parameters('vulnerabilityAssessmentsObj').name]"
+          },
           "recurringScans": {
             "value": "[tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScans')]"
           },
