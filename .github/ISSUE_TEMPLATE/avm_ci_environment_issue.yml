@@ -5,7 +5,6 @@ labels:
   [
     "Type: AVM :a: :v: :m:",
     "Needs: Triage :mag:",
-    "Needs: Core Team :genie:",
     "Type: CI :rocket:",
   ]
 projects: ["Azure/538"]
