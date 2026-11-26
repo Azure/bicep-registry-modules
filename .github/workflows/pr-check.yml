@@ -28,7 +28,6 @@ on:
       - opened
       - reopened
       - synchronize
-      - edited
       - labeled
       - unlabeled
 
