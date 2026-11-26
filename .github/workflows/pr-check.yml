@@ -27,6 +27,10 @@ on:
         type: boolean
         description: "Retain Azure E2E resources after testing when runE2E is enabled."
         default: false
+      retrieveOnly:
+        type: boolean
+        description: "Retrieve the observed failed registry task log without running tests."
+        default: false
   pull_request:
     types:
       - opened
@@ -40,6 +44,7 @@ permissions: {}
 jobs:
   initialize:
     name: "Initialize module checks"
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.retrieveOnly) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -124,7 +129,7 @@ jobs:
 
   module-gate:
     name: "Report check status"
-    if: always()
+    if: ${{ always() && !(github.event_name == 'workflow_dispatch' && inputs.retrieveOnly) }}
     needs: [initialize, check, check-fork]
     runs-on: ubuntu-latest
     permissions:
@@ -136,3 +141,45 @@ jobs:
           ecosystem: bicep
           results: ${{ toJSON(needs) }}
           require-e2e: ${{ github.event_name == 'pull_request' || inputs.runE2E }}
+
+  retrieve-diagnostic-log:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.retrieveOnly && !inputs.runE2E && !inputs.keepResources }}
+    name: "Retrieve observed test log"
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out diagnostic scripts
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - name: Verify the observed test pool and registry
+        id: guard
+        shell: pwsh
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          MODULE_CLIENT_IDS: ${{ vars.VALIDATE_MODULE_CLIENT_IDS }}
+        run: ./.github/diagnostic/verify-registry.ps1
+      - name: Sign in to Azure
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
+        with:
+          client-id: ${{ steps.guard.outputs.clientId }}
+          tenant-id: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          subscription-id: ${{ steps.guard.outputs.subscriptionId }}
+      - name: Encrypt the failed task log
+        shell: pwsh
+        env:
+          SUBSCRIPTION_ID: ${{ steps.guard.outputs.subscriptionId }}
+          RESOURCE_GROUP: ${{ steps.guard.outputs.resourceGroup }}
+          REGISTRY_NAME: ${{ steps.guard.outputs.registryName }}
+          DIAGNOSTIC_CERT: ${{ github.workspace }}/.github/diagnostic/recipient.pem
+        run: ./.github/diagnostic/retrieve-encrypted-logs.ps1
+      - name: Upload encrypted log
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: encrypted-required-aci-task-log
+          path: ${{ runner.temp }}/encrypted-service-logs/*.p7m
+          if-no-files-found: error
+          retention-days: 7

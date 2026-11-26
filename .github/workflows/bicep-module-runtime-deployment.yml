@@ -153,6 +153,7 @@ jobs:
         shell: pwsh
         env:
           TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          DIAGNOSTIC_READ_ONLY: 'false'
           REMOVE_DEPLOYMENT: ${{ fromJSON(inputs.workflowInput).removeDeployment }}
           DEPLOYMENT_VALIDATION: ${{ fromJSON(inputs.workflowInput).deploymentValidation }}
         run: ./.github/diagnostic/verify-test-pool.ps1

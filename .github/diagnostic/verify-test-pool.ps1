@@ -1,7 +1,10 @@
 $ErrorActionPreference = 'Stop'
 if ($env:GITHUB_EVENT_NAME -cne 'workflow_dispatch' -or
-    $env:GITHUB_REPOSITORY -cne 'Azure/bicep-registry-modules' -or
-    $env:REMOVE_DEPLOYMENT -cne 'false' -or $env:DEPLOYMENT_VALIDATION -cne 'true') {
+    $env:GITHUB_REPOSITORY -cne 'Azure/bicep-registry-modules') {
+    throw 'The diagnostic requires a manual run in the upstream repository.'
+}
+if ($env:DIAGNOSTIC_READ_ONLY -cne 'true' -and
+    ($env:REMOVE_DEPLOYMENT -cne 'false' -or $env:DEPLOYMENT_VALIDATION -cne 'true')) {
     throw 'The diagnostic requires a manual E2E run with retention enabled.'
 }
 $allowed = @(
