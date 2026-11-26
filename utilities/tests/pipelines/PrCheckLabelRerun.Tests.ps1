@@ -6,8 +6,8 @@ param(
 BeforeAll {
     Import-Module powershell-yaml -ErrorAction Stop
     $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
-    $observerPath = Join-Path $workflowRoot 'platform.on-pull-request-observe-e2e-labels.yml'
-    $handlerPath = Join-Path $workflowRoot 'platform.on-pr-label-observer-rerun.yml'
+    $observerPath = Join-Path $workflowRoot 'pr-check-label-observer.yml'
+    $handlerPath = Join-Path $workflowRoot 'pr-check-label-rerun.yml'
     $observerContent = Get-Content -LiteralPath $observerPath -Raw
     $handlerContent = Get-Content -LiteralPath $handlerPath -Raw
     $observer = $observerContent | ConvertFrom-Yaml
@@ -19,6 +19,7 @@ BeforeAll {
 
 Describe 'PR label observer consumer workflow' {
     It 'observes only same-repository label and unlabel events' {
+        $observer.name | Should -BeExactly '.Module - PR Check Label Observer'
         $observer.on.pull_request.types | Should -Be @('labeled', 'unlabeled')
         $observer.on.ContainsKey('pull_request_target') | Should -BeFalse
         $observer.on.pull_request.ContainsKey('paths') | Should -BeFalse
@@ -41,6 +42,7 @@ Describe 'PR label observer consumer workflow' {
 
 Describe 'PR label rerun handler consumer workflow' {
     It 'runs from the default branch only after the exact observer workflow completes' {
+        $handler.name | Should -BeExactly '.Module - PR Check Label Rerun'
         $handler.on.workflow_run.workflows | Should -Be @($observer.name)
         $handler.on.workflow_run.types | Should -Be @('completed')
         $handler.on.ContainsKey('pull_request_target') | Should -BeFalse
@@ -67,7 +69,7 @@ Describe 'PR label rerun handler consumer workflow' {
         $handlerPin | Should -BeExactly $observerPin
         $observerPin | Should -BeExactly (($prCheck.jobs.initialize.steps[0].uses -split '@')[-1])
         $handlerJob.with.'observer-workflow-path' |
-            Should -BeExactly '.github/workflows/platform.on-pull-request-observe-e2e-labels.yml'
+            Should -BeExactly '.github/workflows/pr-check-label-observer.yml'
     }
 
     It 'does not duplicate handler logic in BRM' {

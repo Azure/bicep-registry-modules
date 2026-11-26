@@ -1,4 +1,4 @@
-name: ".Platform - Observe E2E PR labels"
+name: ".Module - PR Check Label Observer"
 
 on:
   pull_request:
