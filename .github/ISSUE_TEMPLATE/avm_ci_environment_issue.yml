@@ -1,13 +1,7 @@
 name: AVM - CI Environment Issue 🚀
 description: Have an issue, question or suggestion for the CI Environment or its utilities? Let us know!
 title: "[AVM CI Environment Issue]: "
-labels:
-  [
-    "Type: AVM :a: :v: :m:",
-    "Needs: Triage :mag:",
-    "Needs: Core Team :genie:",
-    "Type: CI :rocket:",
-  ]
+labels: ["Type: AVM :a: :v: :m:", "Needs: Triage :mag:", "Type: CI :rocket:"]
 projects: ["Azure/538"]
 body:
   - type: markdown
