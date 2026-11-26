@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "7326680356339837605"
+      "version": "0.48.1.52935",
+      "templateHash": "11732902004082173948"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job."
@@ -900,6 +900,17 @@
         "description": "Optional. The managed identity definition for this resource."
       }
     },
+    "identitySettings": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/jobs@2026-01-01#properties/properties/properties/configuration/properties/identitySettings"
+        },
+        "example": "  [\n    {\n      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\n      lifecycle: 'None'\n    }\n  ]\n  ",
+        "description": "Optional. Settings for the managed identities assigned to the Container App Job. Use `lifecycle` to control in which phases of the job an identity is available, for example `None` to let the platform use an identity for Key Vault secret references and image pulls without exposing it to the containers of the job."
+      },
+      "nullable": true
+    },
     "roleAssignments": {
       "type": "array",
       "items": {
@@ -1063,6 +1074,7 @@
       "properties": {
         "environmentId": "[parameters('environmentResourceId')]",
         "configuration": {
+          "identitySettings": "[parameters('identitySettings')]",
           "triggerType": "[parameters('triggerType')]",
           "eventTriggerConfig": "[if(equals(parameters('triggerType'), 'Event'), parameters('eventTriggerConfig'), null())]",
           "manualTriggerConfig": "[if(equals(parameters('triggerType'), 'Manual'), parameters('manualTriggerConfig'), null())]",

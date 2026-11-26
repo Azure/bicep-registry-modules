@@ -383,6 +383,12 @@ module job 'br/public:avm/res/app/job:<version>' = {
         ]
       }
     }
+    identitySettings: [
+      {
+        identity: '<identity>'
+        lifecycle: 'Main'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -572,6 +578,14 @@ module job 'br/public:avm/res/app/job:<version>' = {
           ]
         }
       }
+    },
+    "identitySettings": {
+      "value": [
+        {
+          "identity": "<identity>",
+          "lifecycle": "Main"
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -767,6 +781,12 @@ param eventTriggerConfig = {
     ]
   }
 }
+param identitySettings = [
+  {
+    identity: '<identity>'
+    lifecycle: 'Main'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -1031,6 +1051,7 @@ param workloadProfileName = '<workloadProfileName>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`identitySettings`](#parameter-identitysettings) | array | Settings for the managed identities assigned to the Container App Job. Use `lifecycle` to control in which phases of the job an identity is available, for example `None` to let the platform use an identity for Key Vault secret references and image pulls without exposing it to the containers of the job. |
 | [`initContainers`](#parameter-initcontainers) | array | List of specialized containers that run before app containers. |
 | [`location`](#parameter-location) | string | Location for all Resources. Defaults to the location of the Resource Group. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1728,6 +1749,22 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `identitySettings`
+
+Settings for the managed identities assigned to the Container App Job. Use `lifecycle` to control in which phases of the job an identity is available, for example `None` to let the platform use an identity for Key Vault secret references and image pulls without exposing it to the containers of the job.
+
+- Required: No
+- Type: array
+- Example:
+  ```Bicep
+  [
+    {
+      identity: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'
+      lifecycle: 'None'
+    }
+  ]
+  ```
 
 ### Parameter: `initContainers`
 

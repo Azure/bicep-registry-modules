@@ -74,6 +74,12 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      identitySettings: [
+        {
+          identity: nestedDependencies.outputs.managedIdentityResourceId
+          lifecycle: 'Main'
+        }
+      ]
       triggerType: 'Event'
       eventTriggerConfig: {
         parallelism: 1
