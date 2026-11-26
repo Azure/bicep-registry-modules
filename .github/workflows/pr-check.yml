@@ -179,7 +179,7 @@ jobs:
       - name: Upload encrypted log
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: encrypted-required-aci-task-log
+          name: encrypted-required-aca-task-log
           path: ${{ runner.temp }}/encrypted-service-logs/*.p7m
           if-no-files-found: error
           retention-days: 7
