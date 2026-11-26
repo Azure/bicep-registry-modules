@@ -13,7 +13,12 @@ Describe 'Lab fixture storage naming' {
         $diagnostics = bicep build $fixturePath --outfile $compiledPath 2>&1
         if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
         $template = Get-Content -LiteralPath $compiledPath -Raw | ConvertFrom-Json -AsHashtable
-        $dependencies = $template.resources | Where-Object { $_.properties.parameters.storageAccountName }
+        $resources = if ($template.resources -is [System.Collections.IDictionary]) {
+            @($template.resources.Values)
+        } else {
+            @($template.resources)
+        }
+        $dependencies = $resources | Where-Object { $_.properties.parameters.storageAccountName }
 
         $scenarios = @(
             @{ subscription = '11111111-1111-1111-1111-111111111111'; group = 'dep-gci-devtestlab.labs-dtllmax-rg'; short = 'dtllmax' }
@@ -56,7 +61,12 @@ Describe 'Lab fixture storage naming' {
 
     It 'Emits the scope-derived name to the actual storage dependency' {
         $dependencies.properties.parameters.storageAccountName.value | Should -Be "[format('dep{0}', uniqueString(subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName')), parameters('serviceShort')))]"
-        $storage = $dependencies.properties.template.resources | Where-Object { $_.type -eq 'Microsoft.Storage/storageAccounts' }
+        $dependencyResources = if ($dependencies.properties.template.resources -is [System.Collections.IDictionary]) {
+            @($dependencies.properties.template.resources.Values)
+        } else {
+            @($dependencies.properties.template.resources)
+        }
+        $storage = $dependencyResources | Where-Object { $_.type -eq 'Microsoft.Storage/storageAccounts' }
         $storage.name | Should -Be "[parameters('storageAccountName')]"
     }
 

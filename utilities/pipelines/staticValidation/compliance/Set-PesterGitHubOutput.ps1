@@ -87,7 +87,10 @@ function Set-PesterGitHubOutput {
         [string] $BranchName,
 
         [Parameter(Mandatory = $false)]
-        [string] $Title = 'Pester validation summary'
+        [string] $Title = 'Pester validation summary',
+
+        [Parameter(Mandatory = $false)]
+        [switch] $ExcludePassedTests
     )
 
     $passedTests = $PesterTestResults.Passed
@@ -189,7 +192,9 @@ function Set-PesterGitHubOutput {
         ''
     )
 
-    if (($passedTests.Count -gt 0)) {
+    if ($ExcludePassedTests -and $passedTests.Count -gt 0) {
+        $fileContent += ('Passed test details omitted to keep the summary below the GitHub Actions size limit. [{0}] passed.' -f $passedTests.Count)
+    } elseif (($passedTests.Count -gt 0)) {
 
         $fileContent += [System.Collections.ArrayList]@(
             '| Name | Source |',

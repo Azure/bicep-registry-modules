@@ -32,8 +32,6 @@ on:
       - opened
       - reopened
       - synchronize
-      - labeled
-      - unlabeled
 
 permissions: {}
 
@@ -43,6 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      issues: read
     outputs:
       hasModules: ${{ steps.initialize.outputs.hasModules }}
       moduleMatrix: ${{ steps.initialize.outputs.moduleMatrix }}

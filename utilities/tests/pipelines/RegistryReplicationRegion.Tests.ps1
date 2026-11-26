@@ -10,7 +10,7 @@ Describe 'Registry replication region selection in <scenario>' -ForEach @(
     BeforeAll {
         $fixturePath = Join-Path $repoRootPath 'avm' 'res' 'container-registry' 'registry' 'tests' 'e2e' $scenario 'main.test.bicep'
         $compiledPath = Join-Path $TestDrive "$scenario.json"
-        $diagnostics = bicep build $fixturePath --no-restore --outfile $compiledPath 2>&1
+        $diagnostics = bicep build $fixturePath --outfile $compiledPath 2>&1
         if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
         $template = Get-Content -LiteralPath $compiledPath -Raw | ConvertFrom-Json -AsHashtable
         $dependencies = ($template.resources | Where-Object { $_.name -match '-nestedDependencies' }).properties.template
