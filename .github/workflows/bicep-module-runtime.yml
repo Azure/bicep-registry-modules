@@ -1,0 +1,493 @@
+name: 'Reusable: Bicep Module Runtime'
+
+on:
+  workflow_call:
+    inputs:
+      modulePath:
+        type: string
+        required: true
+      moduleTestFilePaths:
+        type: string
+        required: true
+      psRuleModuleTestFilePaths:
+        type: string
+        required: true
+      e2eRoute:
+        description: Native or disabled E2E route selected by the caller.
+        type: string
+        required: true
+      baseCommit:
+        type: string
+        required: false
+        default: ''
+      workflowInput:
+        type: string
+        required: true
+      targetCommit:
+        type: string
+        required: true
+      authoringArtifact:
+        type: string
+        default: ''
+      tools-ref:
+        description: Full tools commit SHA, identical to the caller's reusable workflow revision.
+        type: string
+        required: true
+    secrets:
+      ARM_CLIENT_ID_OVERRIDE:
+        description: Contributor-owned client ID override for a manual fork run.
+        required: false
+      ARM_TENANT_ID_OVERRIDE:
+        description: Contributor-owned tenant ID override for a manual fork run.
+        required: false
+      ARM_SUBSCRIPTION_ID_OVERRIDE:
+        description: Contributor-owned subscription ID override for a manual fork run.
+        required: false
+      VALIDATE_SUBSCRIPTION_IDS:
+        required: false
+      TEST_SUBSCRIPTION_IDS:
+        required: false
+      VALIDATE_SUBSCRIPTION_ID:
+        required: false
+      VALIDATE_TENANT_ID:
+        required: false
+      VALIDATE_MANAGEMENT_GROUP_ID:
+        required: false
+      ARM_MGMTGROUP_ID:
+        required: false
+      TOKEN_NAMEPREFIX:
+        required: false
+
+permissions: {}
+
+jobs:
+  pr-check:
+    name: PR check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      AVM_AUTHORING_MODULE: Avm.Authoring
+    steps:
+      - name: Check out module repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ inputs.targetCommit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Download AVM tools from build job
+        if: inputs.authoringArtifact != ''
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ inputs.authoringArtifact }}
+          path: ${{ runner.temp }}/avm-authoring
+      - name: Verify downloaded AVM tools
+        if: inputs.authoringArtifact != ''
+        shell: pwsh
+        run: |
+          $packageRoot = Join-Path $env:RUNNER_TEMP 'avm-authoring'
+          $manifest = Join-Path $packageRoot 'Avm.Authoring.psd1'
+          if (-not (Test-Path -LiteralPath $manifest -PathType Leaf)) { throw 'Prepared Avm.Authoring manifest is missing.' }
+          $discoveryRoot = Join-Path $env:RUNNER_TEMP 'avm-authoring-discovery'
+          $discoveryModule = Join-Path $discoveryRoot 'Avm.Authoring'
+          Remove-Item -LiteralPath $discoveryRoot -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path $discoveryModule -Force | Out-Null
+          Copy-Item -Path (Join-Path $packageRoot '*') -Destination $discoveryModule -Recurse -Force
+          $artifactHash = (Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash
+          $discoveryManifest = Join-Path $discoveryModule 'Avm.Authoring.psd1'
+          if ((Get-FileHash -LiteralPath $discoveryManifest -Algorithm SHA256).Hash -cne $artifactHash) {
+            throw 'Prepared Avm.Authoring discovery package does not match the downloaded artifact.'
+          }
+          $separator = [IO.Path]::PathSeparator
+          $env:PSModulePath = "$discoveryRoot$separator$env:PSModulePath"
+          $candidates = @(Get-Module -ListAvailable -Name Avm.Authoring)
+          $selected = @($candidates | Where-Object { $_.ModuleBase -ceq $discoveryModule })
+          $unexpected = @($candidates | Where-Object { $_.ModuleBase -cne $discoveryModule })
+          if ($selected.Count -ne 1 -or $unexpected.Count -ne 0) {
+            throw 'Prepared Avm.Authoring package must be the only discoverable Avm.Authoring module.'
+          }
+          $byName = Import-Module -Name Avm.Authoring -Global -PassThru -ErrorAction Stop
+          if ($byName.ModuleBase -cne $discoveryModule) {
+            throw 'Named Avm.Authoring import did not resolve to the prepared package.'
+          }
+          "PSModulePath=$env:PSModulePath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "AVM_AUTHORING_MODULE=$discoveryManifest" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "AVM_AUTHORING_ARTIFACT_MANIFEST=$manifest" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "AVM_AUTHORING_ARTIFACT_MANIFEST_SHA256=$artifactHash" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Install AVM tools
+        if: env.AVM_AUTHORING_MODULE == 'Avm.Authoring'
+        uses: Azure/azure-verified-modules-tools/.github/actions/install-avm-authoring@d44d0021b58a51e9630f3ce22008736507b57f81 # v0.0.0
+      - name: Verify AVM tools capabilities
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Import-Module $env:AVM_AUTHORING_MODULE -ErrorAction Stop
+          $capabilities = (Get-Module Avm.Authoring).PrivateData.AvmCapabilities
+          if ($capabilities.BicepWorkflowOrchestration -isnot [int] -or $capabilities.BicepWorkflowOrchestration -ne 1) {
+            throw 'The installed Avm.Authoring package does not provide BicepWorkflowOrchestration = 1.'
+          }
+      - name: PR check
+        shell: pwsh
+        working-directory: ${{ inputs.modulePath }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Import-Module $env:AVM_AUTHORING_MODULE -ErrorAction Stop
+          $null = avm -SkipModuleVersionCheck pr-check --passthru
+
+  unit-test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      AVM_AUTHORING_MODULE: Avm.Authoring
+    steps:
+      - name: Check out module repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ inputs.targetCommit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Download AVM tools from build job
+        if: inputs.authoringArtifact != ''
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ inputs.authoringArtifact }}
+          path: ${{ runner.temp }}/avm-authoring
+      - name: Verify downloaded AVM tools
+        if: inputs.authoringArtifact != ''
+        shell: pwsh
+        run: |
+          $packageRoot = Join-Path $env:RUNNER_TEMP 'avm-authoring'
+          $manifest = Join-Path $packageRoot 'Avm.Authoring.psd1'
+          if (-not (Test-Path -LiteralPath $manifest -PathType Leaf)) { throw 'Prepared Avm.Authoring manifest is missing.' }
+          $discoveryRoot = Join-Path $env:RUNNER_TEMP 'avm-authoring-discovery'
+          $discoveryModule = Join-Path $discoveryRoot 'Avm.Authoring'
+          Remove-Item -LiteralPath $discoveryRoot -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path $discoveryModule -Force | Out-Null
+          Copy-Item -Path (Join-Path $packageRoot '*') -Destination $discoveryModule -Recurse -Force
+          $artifactHash = (Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash
+          $discoveryManifest = Join-Path $discoveryModule 'Avm.Authoring.psd1'
+          if ((Get-FileHash -LiteralPath $discoveryManifest -Algorithm SHA256).Hash -cne $artifactHash) {
+            throw 'Prepared Avm.Authoring discovery package does not match the downloaded artifact.'
+          }
+          $separator = [IO.Path]::PathSeparator
+          $env:PSModulePath = "$discoveryRoot$separator$env:PSModulePath"
+          $candidates = @(Get-Module -ListAvailable -Name Avm.Authoring)
+          $selected = @($candidates | Where-Object { $_.ModuleBase -ceq $discoveryModule })
+          $unexpected = @($candidates | Where-Object { $_.ModuleBase -cne $discoveryModule })
+          if ($selected.Count -ne 1 -or $unexpected.Count -ne 0) {
+            throw 'Prepared Avm.Authoring package must be the only discoverable Avm.Authoring module.'
+          }
+          $byName = Import-Module -Name Avm.Authoring -Global -PassThru -ErrorAction Stop
+          if ($byName.ModuleBase -cne $discoveryModule) {
+            throw 'Named Avm.Authoring import did not resolve to the prepared package.'
+          }
+          "PSModulePath=$env:PSModulePath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "AVM_AUTHORING_MODULE=$discoveryManifest" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "AVM_AUTHORING_ARTIFACT_MANIFEST=$manifest" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "AVM_AUTHORING_ARTIFACT_MANIFEST_SHA256=$artifactHash" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Install AVM tools
+        if: env.AVM_AUTHORING_MODULE == 'Avm.Authoring'
+        uses: Azure/azure-verified-modules-tools/.github/actions/install-avm-authoring@d44d0021b58a51e9630f3ce22008736507b57f81 # v0.0.0
+      - name: Verify AVM tools capabilities
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Import-Module $env:AVM_AUTHORING_MODULE -ErrorAction Stop
+          $capabilities = (Get-Module Avm.Authoring).PrivateData.AvmCapabilities
+          if ($capabilities.BicepWorkflowOrchestration -isnot [int] -or $capabilities.BicepWorkflowOrchestration -ne 1) {
+            throw 'The installed Avm.Authoring package does not provide BicepWorkflowOrchestration = 1.'
+          }
+      - name: Unit tests
+        id: unit-result
+        shell: pwsh
+        working-directory: ${{ inputs.modulePath }}
+        env:
+          MODULE_PATH: ${{ inputs.modulePath }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Import-Module $env:AVM_AUTHORING_MODULE -ErrorAction Stop
+          $keyBytes = [System.Security.Cryptography.SHA256]::HashData(
+              [System.Text.Encoding]::UTF8.GetBytes($env:MODULE_PATH))
+          $key = [Convert]::ToHexString($keyBytes).ToLowerInvariant().Substring(0, 16)
+          $resultDirectory = Join-Path $env:RUNNER_TEMP 'avm-bicep-unit-results'
+          $resultPath = Join-Path $resultDirectory "$key.json"
+          New-Item -ItemType Directory -Path $resultDirectory -Force | Out-Null
+
+          function Normalize-UnitDiagnostic {
+            param([AllowNull()][object] $Value)
+
+            $message = ([string]$Value).ReplaceLineEndings(' ').Trim()
+            $message = [regex]::Replace($message, "(['`"]).*?\1", '<value>')
+            $message = [regex]::Replace($message, '(?i)\b(expected|actual|got|received)\b\s+[^,.;]+', '$1 <value>')
+            if ($message.Length -gt 1024) { $message = $message.Substring(0, 1024) + '…' }
+            return $message
+          }
+
+          try {
+            $result = Invoke-AvmTestUnit -Path $PWD.Path -SkipModuleVersionCheck -Recurse -IncludeCompliance
+            $active = @(Get-Module -Name Avm.Authoring)
+            $expectedBase = Split-Path -Parent $env:AVM_AUTHORING_MODULE
+            if ($active.Count -ne 1 -or $active[0].ModuleBase -cne $expectedBase -or
+                (Get-FileHash -LiteralPath (Join-Path $active[0].ModuleBase 'Avm.Authoring.psd1') -Algorithm SHA256).Hash -cne
+                $env:AVM_AUTHORING_ARTIFACT_MANIFEST_SHA256) {
+              throw 'Authored unit setup did not retain the exact admitted Avm.Authoring package.'
+            }
+            $failure = $result.Status -in @('fail', 'error')
+            $issues = @($result.Issues | ForEach-Object {
+                [ordered]@{
+                    code     = [string]$_.Code
+                    severity = [string]$_.Severity
+                    file     = [string]$_.File
+                    line     = [int]$_.Line
+                    message  = Normalize-UnitDiagnostic $_.Message
+                }
+            })
+            $document = [ordered]@{
+                schemaVersion = 1
+                engine        = [string]$result.Engine
+                tool          = [string]$result.Tool
+                status        = [string]$result.Status
+                filesProcessed = [int]$result.FilesProcessed
+                unitFiles     = [int]$result.UnitFiles
+                moduleScopes  = [int]$result.ModuleScopes
+                runs = [ordered]@{
+                    total        = [int]$result.RunsTotal
+                    passed       = [int]$result.RunsPassed
+                    failed       = [int]$result.RunsFailed
+                    skipped      = [int]$result.RunsSkipped
+                    inconclusive = [int]$result.RunsInconclusive
+                    filtered     = [int]$result.RunsFiltered
+                }
+                issues = $issues
+            }
+            if ($result.UnitFiles -gt 0 -and
+                (-not $result.PSObject.Properties['Authoring'] -or $null -eq $result.Authoring)) {
+              throw 'Authored unit tests did not return a validated child identity receipt.'
+            }
+            if ($result.PSObject.Properties['Authoring'] -and $null -ne $result.Authoring) {
+              $receipt = $result.Authoring
+              $document.authoring = [ordered]@{
+                ChildProcessId           = [int]$receipt.ChildProcessId
+                SourceManifest           = [string]$receipt.SourceManifest
+                SourceSha256             = [string]$receipt.SourceSha256
+                SourceModuleBase         = [string]$receipt.SourceModuleBase
+                LoadedModuleBase         = [string]$receipt.LoadedModuleBase
+                LoadedManifest           = [string]$receipt.LoadedManifest
+                LoadedSha256             = [string]$receipt.LoadedSha256
+                DiscoverableModuleBase   = [string]$receipt.DiscoverableModuleBase
+                Version                  = [string]$receipt.Version
+                Guid                     = [string]$receipt.Guid
+                GetAvmToolModuleBase     = [string]$receipt.GetAvmToolModuleBase
+                InstallAvmToolModuleBase = [string]$receipt.InstallAvmToolModuleBase
+              }
+            }
+          }
+          catch {
+            $failure = $true
+            $document = [ordered]@{
+                schemaVersion = 1
+                engine = 'bicep'
+                status = 'error'
+                issues = @([ordered]@{
+                    code = 'avm.bicep.unit-runtime-error'
+                    severity = 'error'
+                    message = Normalize-UnitDiagnostic $_.Exception.Message
+                })
+            }
+          }
+
+          $document | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $resultPath -Encoding utf8NoBOM
+          foreach ($issue in @($document.issues)) {
+            $level = switch ($issue.severity) {
+              'error' { 'error' }
+              'warning' { 'warning' }
+              default { 'notice' }
+            }
+            $text = '[{0}] {1} {2}: {3}' -f $issue.code, $issue.severity, $issue['file'], $issue.message
+            $text = $text.Replace('%', '%25').Replace("`r", '%0D').Replace("`n", '%0A')
+            Write-Information ("::{0}::{1}" -f $level, $text) -InformationAction Continue
+          }
+          "artifactName=bicep-unit-result-$key-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" |
+              Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "resultPath=$resultPath" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "failed=$failure" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+      - name: Upload unit test result
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.unit-result.outputs.artifactName }}
+          path: ${{ steps.unit-result.outputs.resultPath }}
+          if-no-files-found: error
+          retention-days: 7
+      - name: Report failed unit tests
+        if: steps.unit-result.outputs.failed == 'True'
+        shell: pwsh
+        env:
+          UNIT_RESULT_PATH: ${{ steps.unit-result.outputs.resultPath }}
+        run: |
+          $result = Get-Content -LiteralPath $env:UNIT_RESULT_PATH -Raw | ConvertFrom-Json
+          foreach ($issue in @($result.issues)) {
+            Write-Output ('[{0}] {1} {2}: {3}' -f $issue.code, $issue.severity, $issue.file, $issue.message)
+          }
+          throw 'Bicep unit tests failed. See the diagnostics above and the uploaded unit result artifact.'
+
+  discover-examples:
+    name: Select E2E tests and subscriptions
+    if: |
+      inputs.e2eRoute == 'native' &&
+      fromJSON(inputs.workflowInput).deploymentValidation == 'true' &&
+      inputs.moduleTestFilePaths != '' && inputs.moduleTestFilePaths != '[]'
+    runs-on: ubuntu-latest
+    environment: avm-validation
+    permissions:
+      contents: read
+    env:
+      AVM_AUTHORING_MODULE: Avm.Authoring
+    outputs:
+      deploymentMatrix: ${{ steps.select.outputs.deploymentMatrix }}
+    steps:
+      - name: Check out module repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ inputs.targetCommit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Download AVM tools from build job
+        if: inputs.authoringArtifact != ''
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ inputs.authoringArtifact }}
+          path: ${{ runner.temp }}/avm-authoring
+      - name: Verify downloaded AVM tools
+        if: inputs.authoringArtifact != ''
+        shell: pwsh
+        run: |
+          $packageRoot = Join-Path $env:RUNNER_TEMP 'avm-authoring'
+          $manifest = Join-Path $packageRoot 'Avm.Authoring.psd1'
+          if (-not (Test-Path -LiteralPath $manifest -PathType Leaf)) { throw 'Prepared Avm.Authoring manifest is missing.' }
+          $discoveryRoot = Join-Path $env:RUNNER_TEMP 'avm-authoring-discovery'
+          $discoveryModule = Join-Path $discoveryRoot 'Avm.Authoring'
+          Remove-Item -LiteralPath $discoveryRoot -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path $discoveryModule -Force | Out-Null
+          Copy-Item -Path (Join-Path $packageRoot '*') -Destination $discoveryModule -Recurse -Force
+          $artifactHash = (Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash
+          $discoveryManifest = Join-Path $discoveryModule 'Avm.Authoring.psd1'
+          if ((Get-FileHash -LiteralPath $discoveryManifest -Algorithm SHA256).Hash -cne $artifactHash) {
+            throw 'Prepared Avm.Authoring discovery package does not match the downloaded artifact.'
+          }
+          $separator = [IO.Path]::PathSeparator
+          $env:PSModulePath = "$discoveryRoot$separator$env:PSModulePath"
+          $candidates = @(Get-Module -ListAvailable -Name Avm.Authoring)
+          $selected = @($candidates | Where-Object { $_.ModuleBase -ceq $discoveryModule })
+          $unexpected = @($candidates | Where-Object { $_.ModuleBase -cne $discoveryModule })
+          if ($selected.Count -ne 1 -or $unexpected.Count -ne 0) {
+            throw 'Prepared Avm.Authoring package must be the only discoverable Avm.Authoring module.'
+          }
+          $byName = Import-Module -Name Avm.Authoring -Global -PassThru -ErrorAction Stop
+          if ($byName.ModuleBase -cne $discoveryModule) {
+            throw 'Named Avm.Authoring import did not resolve to the prepared package.'
+          }
+          "PSModulePath=$env:PSModulePath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "AVM_AUTHORING_MODULE=$discoveryManifest" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "AVM_AUTHORING_ARTIFACT_MANIFEST=$manifest" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "AVM_AUTHORING_ARTIFACT_MANIFEST_SHA256=$artifactHash" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Install AVM tools
+        if: env.AVM_AUTHORING_MODULE == 'Avm.Authoring'
+        uses: Azure/azure-verified-modules-tools/.github/actions/install-avm-authoring@d44d0021b58a51e9630f3ce22008736507b57f81 # v0.0.0
+      - name: Validate tools revision
+        shell: pwsh
+        env:
+          TOOLS_REF: ${{ inputs.tools-ref }}
+        run: |
+          if ($env:TOOLS_REF -cnotmatch '^[0-9a-f]{40}$') { throw 'tools-ref must be the full immutable SHA used by the caller.' }
+      - name: Check out workflow support
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          repository: Azure/azure-verified-modules-tools
+          ref: ${{ inputs.tools-ref }}
+          path: .avm-tools
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/bicep-workflows
+            repository-management/shared
+      - name: Verify the observed test pool
+        shell: pwsh
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          REMOVE_DEPLOYMENT: ${{ fromJSON(inputs.workflowInput).removeDeployment }}
+          DEPLOYMENT_VALIDATION: ${{ fromJSON(inputs.workflowInput).deploymentValidation }}
+        run: ./.github/diagnostic/verify-test-pool.ps1
+      - name: Select E2E tests and subscriptions
+        id: select
+        shell: pwsh
+        env:
+          MODULE_PATH: ${{ inputs.modulePath }}
+          TEST_FILES: ${{ inputs.moduleTestFilePaths }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_MODULE_CLIENT_IDS: ${{ vars.VALIDATE_MODULE_CLIENT_IDS }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          ALLOW_VALIDATION_OVERRIDES: ${{ github.event_name == 'workflow_dispatch' && github.event.repository.fork }}
+          ARM_CLIENT_ID_OVERRIDE: ${{ secrets.ARM_CLIENT_ID_OVERRIDE || vars.ARM_CLIENT_ID_OVERRIDE }}
+          ARM_TENANT_ID_OVERRIDE: ${{ secrets.ARM_TENANT_ID_OVERRIDE || vars.ARM_TENANT_ID_OVERRIDE }}
+          ARM_SUBSCRIPTION_ID_OVERRIDE: ${{ secrets.ARM_SUBSCRIPTION_ID_OVERRIDE || vars.ARM_SUBSCRIPTION_ID_OVERRIDE }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Import-Module $env:AVM_AUTHORING_MODULE -ErrorAction Stop
+          . (Join-Path $env:GITHUB_WORKSPACE '.avm-tools' 'scripts' 'bicep-workflows' 'Deployment.ps1')
+          $capabilities = (Get-Module Avm.Authoring).PrivateData.AvmCapabilities
+          if ($capabilities.BicepWorkflowE2eRuntime -isnot [int] -or $capabilities.BicepWorkflowE2eRuntime -ne 1) {
+            throw 'The installed Avm.Authoring package does not provide BicepWorkflowE2eRuntime = 1.'
+          }
+          $testFiles = @(ConvertFrom-Json -InputObject $env:TEST_FILES -AsHashtable)
+          $validation = Resolve-AvmWorkflowValidationConfiguration -ModulePath $env:MODULE_PATH `
+              -PoolJson $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID `
+              -ModuleClientIds $env:VALIDATE_MODULE_CLIENT_IDS -TenantId $env:VALIDATE_TENANT_ID `
+              -ArmClientIdOverride $env:ARM_CLIENT_ID_OVERRIDE -ArmTenantIdOverride $env:ARM_TENANT_ID_OVERRIDE `
+              -ArmSubscriptionIdOverride $env:ARM_SUBSCRIPTION_ID_OVERRIDE `
+              -AllowOverrides:(ConvertTo-AvmWorkflowBoolean $env:ALLOW_VALIDATION_OVERRIDES)
+          $matrix = @(Get-AvmBicepE2eDeploymentMatrix -Root $env:GITHUB_WORKSPACE -ModulePath $env:MODULE_PATH `
+              -TestFiles $testFiles -PoolJson $validation.poolJson -FallbackSubscriptionId $validation.fallbackSubscriptionId `
+              -ModuleClientIds $validation.moduleClientIds -TenantId $validation.tenantId `
+              -RandomSeed ([int](([long]$env:GITHUB_RUN_ID + [long]$env:GITHUB_RUN_ATTEMPT) % [int]::MaxValue)) `
+              -DisplaySubscriptionNames:($validation.poolJson -ne '') -SkipModuleVersionCheck)
+          $moduleTypeMatch = [regex]::Match($env:MODULE_PATH, '^avm/(?<type>res|ptn|utl)/')
+          if (-not $moduleTypeMatch.Success) {
+            throw [System.IO.InvalidDataException]::new("Unsupported AVM module path: $env:MODULE_PATH")
+          }
+          $scenarioSelection = Get-AvmE2eScenarioSelection -ModuleType $moduleTypeMatch.Groups['type'].Value `
+              -Names @($matrix.Name) -SkipModuleVersionCheck
+          foreach ($testCase in $matrix) {
+            $isRequired = $scenarioSelection.Required -ccontains $testCase.Name
+            $testCase | Add-Member -NotePropertyName IsRequired -NotePropertyValue $isRequired -Force
+          }
+          $value = ConvertTo-Json -InputObject $matrix -Depth 20 -Compress
+          "deploymentMatrix=$value" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+  e2e-test:
+    name: "Run ${{ matrix.testCase.IsRequired && 'Required' || 'Optional' }} E2E test: ${{ matrix.testCase.Name }}"
+    needs: discover-examples
+    if: |
+      !cancelled() &&
+      inputs.e2eRoute == 'native' &&
+      needs.discover-examples.result == 'success'
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        testCase: ${{ fromJSON(needs.discover-examples.outputs.deploymentMatrix) }}
+    uses: ./.github/workflows/bicep-module-runtime-deployment.yml
+    with:
+      modulePath: ${{ inputs.modulePath }}
+      workflowInput: ${{ inputs.workflowInput }}
+      testCase: ${{ toJSON(matrix.testCase) }}
+      targetCommit: ${{ inputs.targetCommit }}
+      authoringArtifact: ${{ inputs.authoringArtifact }}
+      tools-ref: ${{ inputs.tools-ref }}
+    secrets:
+      AVM_SECRETS_CONTEXT: ${{ toJSON(secrets) }}

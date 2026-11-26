@@ -1,0 +1,376 @@
+name: 'Reusable: Bicep Module Runtime Deployment'
+
+on:
+  workflow_call:
+    inputs:
+      modulePath:
+        type: string
+        required: true
+      workflowInput:
+        type: string
+        required: true
+      testCase:
+        type: string
+        required: true
+      targetCommit:
+        type: string
+        required: true
+      authoringArtifact:
+        type: string
+        default: ''
+      tools-ref:
+        description: Full tools commit SHA, identical to the caller's reusable workflow revision.
+        type: string
+        required: true
+    secrets:
+      ARM_CLIENT_ID_OVERRIDE:
+        description: Contributor-owned client ID override for a manual fork run.
+        required: false
+      ARM_TENANT_ID_OVERRIDE:
+        description: Contributor-owned tenant ID override for a manual fork run.
+        required: false
+      ARM_SUBSCRIPTION_ID_OVERRIDE:
+        description: Contributor-owned subscription ID override for a manual fork run.
+        required: false
+      VALIDATE_SUBSCRIPTION_IDS:
+        required: false
+      TEST_SUBSCRIPTION_IDS:
+        required: false
+      VALIDATE_SUBSCRIPTION_ID:
+        required: false
+      VALIDATE_TENANT_ID:
+        required: false
+      VALIDATE_MANAGEMENT_GROUP_ID:
+        required: false
+      ARM_MGMTGROUP_ID:
+        required: false
+      TOKEN_NAMEPREFIX:
+        required: false
+      AVM_SECRETS_CONTEXT:
+        required: false
+
+permissions: {}
+
+jobs:
+  deploy:
+    name: "E2E test (${{ fromJSON(inputs.testCase).IsRequired && 'required' || 'optional' }}): ${{ fromJSON(inputs.testCase).Name }} - ${{ fromJSON(inputs.testCase).SubscriptionName }}"
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AVM_AUTHORING_MODULE: Avm.Authoring
+    concurrency:
+      group: ${{ fromJSON(inputs.testCase).ConcurrencyGroup }}
+      queue: max
+    steps:
+      - name: Skip test (not selected to run)
+        if: fromJSON(inputs.testCase).E2eIgnore
+        shell: pwsh
+        run: Write-Output 'Deployment skipped because .e2eignore is set.'
+      - name: Check out module repository
+        if: ${{ !fromJSON(inputs.testCase).E2eIgnore }}
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ inputs.targetCommit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Download AVM tools from build job
+        if: ${{ !fromJSON(inputs.testCase).E2eIgnore && inputs.authoringArtifact != '' }}
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ inputs.authoringArtifact }}
+          path: ${{ runner.temp }}/avm-authoring
+      - name: Verify downloaded AVM tools
+        if: ${{ !fromJSON(inputs.testCase).E2eIgnore && inputs.authoringArtifact != '' }}
+        shell: pwsh
+        run: |
+          $packageRoot = Join-Path $env:RUNNER_TEMP 'avm-authoring'
+          $manifest = Join-Path $packageRoot 'Avm.Authoring.psd1'
+          if (-not (Test-Path -LiteralPath $manifest -PathType Leaf)) { throw 'Prepared Avm.Authoring manifest is missing.' }
+          $discoveryRoot = Join-Path $env:RUNNER_TEMP 'avm-authoring-discovery'
+          $discoveryModule = Join-Path $discoveryRoot 'Avm.Authoring'
+          Remove-Item -LiteralPath $discoveryRoot -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path $discoveryModule -Force | Out-Null
+          Copy-Item -Path (Join-Path $packageRoot '*') -Destination $discoveryModule -Recurse -Force
+          $artifactHash = (Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash
+          $discoveryManifest = Join-Path $discoveryModule 'Avm.Authoring.psd1'
+          if ((Get-FileHash -LiteralPath $discoveryManifest -Algorithm SHA256).Hash -cne $artifactHash) {
+            throw 'Prepared Avm.Authoring discovery package does not match the downloaded artifact.'
+          }
+          $separator = [IO.Path]::PathSeparator
+          $env:PSModulePath = "$discoveryRoot$separator$env:PSModulePath"
+          $candidates = @(Get-Module -ListAvailable -Name Avm.Authoring)
+          $selected = @($candidates | Where-Object { $_.ModuleBase -ceq $discoveryModule })
+          $unexpected = @($candidates | Where-Object { $_.ModuleBase -cne $discoveryModule })
+          if ($selected.Count -ne 1 -or $unexpected.Count -ne 0) {
+            throw 'Prepared Avm.Authoring package must be the only discoverable Avm.Authoring module.'
+          }
+          $byName = Import-Module -Name Avm.Authoring -Global -PassThru -ErrorAction Stop
+          if ($byName.ModuleBase -cne $discoveryModule) {
+            throw 'Named Avm.Authoring import did not resolve to the prepared package.'
+          }
+          "PSModulePath=$env:PSModulePath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "AVM_AUTHORING_MODULE=$discoveryManifest" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "AVM_AUTHORING_ARTIFACT_MANIFEST=$manifest" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "AVM_AUTHORING_ARTIFACT_MANIFEST_SHA256=$artifactHash" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Install AVM tools
+        if: >-
+          !fromJSON(inputs.testCase).E2eIgnore && env.AVM_AUTHORING_MODULE == 'Avm.Authoring'
+        uses: Azure/azure-verified-modules-tools/.github/actions/install-avm-authoring@d44d0021b58a51e9630f3ce22008736507b57f81 # v0.0.0
+      - name: Validate tools revision
+        if: ${{ !fromJSON(inputs.testCase).E2eIgnore }}
+        shell: pwsh
+        env:
+          TOOLS_REF: ${{ inputs.tools-ref }}
+          EVENT_NAME: ${{ github.event_name }}
+          REMOVE_DEPLOYMENT: ${{ fromJSON(inputs.workflowInput).removeDeployment }}
+          ISOLATION_MODE: ${{ fromJSON(inputs.testCase).IsolationMode }}
+        run: |
+          if ($env:TOOLS_REF -cnotmatch '^[0-9a-f]{40}$') { throw 'tools-ref must be the full immutable SHA used by the caller.' }
+          if ($env:REMOVE_DEPLOYMENT -ceq 'false') {
+            if ($env:EVENT_NAME -cne 'workflow_dispatch') {
+              throw [ArgumentException]::new('Resource retention requires manual dispatch.')
+            }
+            if ($env:ISOLATION_MODE -ceq 'shared') {
+              throw [ArgumentException]::new('Shared-target execution requires cleanup before releasing the lifecycle lock.')
+            }
+          }
+      - name: Check out workflow support
+        if: ${{ !fromJSON(inputs.testCase).E2eIgnore }}
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          repository: Azure/azure-verified-modules-tools
+          ref: ${{ inputs.tools-ref }}
+          path: .avm-tools
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/bicep-workflows
+            repository-management/shared
+      - name: Verify the observed test pool
+        if: ${{ !fromJSON(inputs.testCase).E2eIgnore }}
+        shell: pwsh
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          REMOVE_DEPLOYMENT: ${{ fromJSON(inputs.workflowInput).removeDeployment }}
+          DEPLOYMENT_VALIDATION: ${{ fromJSON(inputs.workflowInput).deploymentValidation }}
+        run: ./.github/diagnostic/verify-test-pool.ps1
+      - name: Check selected test and install Azure tools
+        id: context
+        if: ${{ !fromJSON(inputs.testCase).E2eIgnore }}
+        shell: pwsh
+        env:
+          MODULE_PATH: ${{ inputs.modulePath }}
+          TEST_CASE: ${{ inputs.testCase }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_MODULE_CLIENT_IDS: ${{ vars.VALIDATE_MODULE_CLIENT_IDS }}
+          VALIDATE_MODULE_SUBSCRIPTION_CLEANUP_MANAGEMENT_GROUP_IDS: ${{ vars.VALIDATE_MODULE_SUBSCRIPTION_CLEANUP_MANAGEMENT_GROUP_IDS }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+          TOKEN_NAMEPREFIX: ${{ secrets.TOKEN_NAMEPREFIX }}
+          AVM_SECRETS_CONTEXT: ${{ secrets.AVM_SECRETS_CONTEXT }}
+          ALLOW_VALIDATION_OVERRIDES: ${{ github.event_name == 'workflow_dispatch' && github.event.repository.fork }}
+          ARM_CLIENT_ID_OVERRIDE: ${{ secrets.ARM_CLIENT_ID_OVERRIDE || vars.ARM_CLIENT_ID_OVERRIDE }}
+          ARM_TENANT_ID_OVERRIDE: ${{ secrets.ARM_TENANT_ID_OVERRIDE || vars.ARM_TENANT_ID_OVERRIDE }}
+          ARM_SUBSCRIPTION_ID_OVERRIDE: ${{ secrets.ARM_SUBSCRIPTION_ID_OVERRIDE || vars.ARM_SUBSCRIPTION_ID_OVERRIDE }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Import-Module $env:AVM_AUTHORING_MODULE -ErrorAction Stop
+          . (Join-Path $env:GITHUB_WORKSPACE '.avm-tools' 'scripts' 'bicep-workflows' 'Deployment.ps1')
+          Write-Host 'Checking the authoring runtime and its Azure PowerShell dependencies.'
+          if (-not (Get-Module -ListAvailable -Name Microsoft.PowerShell.PSResourceGet)) {
+            for ($attempt = 1; $attempt -le 3; $attempt++) {
+              try {
+                Install-Module -Name Microsoft.PowerShell.PSResourceGet -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
+                break
+              }
+              catch {
+                if ($attempt -eq 3) { throw }
+                $delaySeconds = 5 * [math]::Pow(2, $attempt - 1)
+                Write-Warning "PSResourceGet installation failed on attempt $attempt of 3: $($_.Exception.Message). Retrying in $delaySeconds seconds."
+                Start-Sleep -Seconds $delaySeconds
+              }
+            }
+          }
+          Import-Module Microsoft.PowerShell.PSResourceGet -ErrorAction Stop
+          $capabilities = (Get-Module Avm.Authoring).PrivateData.AvmCapabilities
+          if ($capabilities.BicepWorkflowE2eRuntime -isnot [int] -or $capabilities.BicepWorkflowE2eRuntime -ne 1) {
+            throw 'The installed Avm.Authoring package does not provide BicepWorkflowE2eRuntime = 1.'
+          }
+          if ($capabilities.BicepAzureDependencyInventory -isnot [int] -or $capabilities.BicepAzureDependencyInventory -ne 1) {
+            throw 'The installed Avm.Authoring package does not provide BicepAzureDependencyInventory = 1.'
+          }
+          foreach ($dependency in Get-AvmBicepAzureDependency -SkipModuleVersionCheck) {
+            $available = @(Get-Module -ListAvailable -Name $dependency.Name | Where-Object { $_.Version -ge $dependency.MinimumVersion })
+            if ($available.Count -gt 0) { continue }
+            if ($env:AVM_OFFLINE -eq '1') { throw "AVM_OFFLINE=1 prevents installing $($dependency.Name)." }
+            $repositories = @(Get-PSResourceRepository -ErrorAction Stop | Sort-Object Priority, Name)
+            if ($repositories.Count -eq 0) { throw [InvalidOperationException]::new('No PowerShell repositories are configured.') }
+            $installed = $false
+            foreach ($repository in $repositories) {
+              try {
+                for ($dependencyAttempt = 1; $dependencyAttempt -le 3; $dependencyAttempt++) {
+                  try {
+                    $available = @(Get-Module -ListAvailable -Name $dependency.Name | Where-Object { $_.Version -ge $dependency.MinimumVersion })
+                    if ($available.Count -eq 0) {
+                      Install-PSResource -Name $dependency.Name -Version $dependency.MinimumVersion.ToString() `
+                        -Repository $repository.Name -Scope CurrentUser -TrustRepository -Quiet -ErrorAction Stop
+                    }
+                    $available = @(Get-Module -ListAvailable -Name $dependency.Name | Where-Object { $_.Version -ge $dependency.MinimumVersion })
+                    if ($available.Count -eq 0) { throw "Installation did not provide $($dependency.Name) $($dependency.MinimumVersion) or newer." }
+                    break
+                  }
+                  catch {
+                    if ($dependencyAttempt -eq 3 -or $_.Exception.ToString() -notmatch '(?i)(timed? out|connection (reset|refused)|temporary failure|temporarily unavailable|\b429\b|\b50[234]\b|no route to host|name or service not known)') { throw }
+                    Write-Warning "Installing $($dependency.Name) failed transiently (attempt $dependencyAttempt of 3); checking installed state before retry."
+                    Start-Sleep -Seconds (5 * [math]::Pow(2, $dependencyAttempt - 1))
+                  }
+                }
+                $installed = $true
+                break
+              }
+              catch {
+                $lastFailure = $_
+                Write-Verbose "PowerShell repository '$($repository.Name)' could not install $($dependency.Name); trying the next configured repository."
+              }
+            }
+            if (-not $installed) { throw $lastFailure }
+          }
+          $testCase = ConvertFrom-Json -InputObject $env:TEST_CASE -AsHashtable
+          $validation = Resolve-AvmWorkflowValidationConfiguration -ModulePath $env:MODULE_PATH `
+              -PoolJson $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID `
+              -ModuleClientIds $env:VALIDATE_MODULE_CLIENT_IDS -TenantId $env:VALIDATE_TENANT_ID `
+              -TokenNamePrefix $env:TOKEN_NAMEPREFIX `
+              -ArmClientIdOverride $env:ARM_CLIENT_ID_OVERRIDE -ArmTenantIdOverride $env:ARM_TENANT_ID_OVERRIDE `
+              -ArmSubscriptionIdOverride $env:ARM_SUBSCRIPTION_ID_OVERRIDE `
+              -SecretContextJson $env:AVM_SECRETS_CONTEXT `
+              -AllowOverrides:(ConvertTo-AvmWorkflowBoolean $env:ALLOW_VALIDATION_OVERRIDES)
+          Write-Host "Revalidating the test case and selected identity for '$env:MODULE_PATH' with Get-AvmBicepE2eTestContext."
+          $context = Get-AvmBicepE2eTestContext -Root $env:GITHUB_WORKSPACE -ModulePath $env:MODULE_PATH `
+              -TestCase $testCase -PoolJson $validation.poolJson -FallbackSubscriptionId $validation.fallbackSubscriptionId `
+              -ModuleClientIds $validation.moduleClientIds -TenantId $validation.tenantId `
+              -ModuleSubscriptionCleanupManagementGroupIds $env:VALIDATE_MODULE_SUBSCRIPTION_CLEANUP_MANAGEMENT_GROUP_IDS `
+              -NamePrefix $validation.tokenNamePrefix -SkipModuleVersionCheck
+          foreach ($property in $context.PSObject.Properties) {
+            "$($property.Name)=$($property.Value)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          }
+      - name: Sign in to Azure
+        if: ${{ !fromJSON(inputs.testCase).E2eIgnore }}
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
+        with:
+          client-id: ${{ steps.context.outputs.ClientId }}
+          tenant-id: ${{ steps.context.outputs.TenantId }}
+          subscription-id: ${{ steps.context.outputs.SubscriptionId }}
+          enable-AzPSSession: true
+      - name: Validate (What-If) and deploy test to Azure
+        id: deploy
+        if: ${{ !fromJSON(inputs.testCase).E2eIgnore }}
+        shell: pwsh
+        env:
+          MODULE_PATH: ${{ steps.context.outputs.ModulePath }}
+          EXAMPLE: ${{ steps.context.outputs.Example }}
+          SUBSCRIPTION_ID: ${{ steps.context.outputs.SubscriptionId }}
+          TENANT_ID: ${{ steps.context.outputs.TenantId }}
+          REQUIRE_ISOLATION: ${{ steps.context.outputs.RequireResourceIsolation }}
+          NAME_PREFIX: ${{ steps.context.outputs.NamePrefix }}
+          METADATA_LOCATION: WestEurope
+          RESOURCE_GROUP_PREFIX: avm
+          RESOURCE_LOCATION: ${{ fromJSON(inputs.workflowInput).customLocation }}
+          REMOVE_DEPLOYMENT: ${{ fromJSON(inputs.workflowInput).removeDeployment }}
+          SUBSCRIPTION_CLEANUP_MANAGEMENT_GROUP_ID: ${{ steps.context.outputs.SubscriptionCleanupManagementGroupId }}
+          AVM_CI_VARIABLES: ${{ toJSON(vars) }}
+          AVM_CI_SECRETS: ${{ toJSON(secrets) }}
+          AVM_SECRETS_CONTEXT: ${{ secrets.AVM_SECRETS_CONTEXT }}
+          STATE_PATH: ${{ runner.temp }}/avm-bicep-state/${{ steps.context.outputs.ArtifactKey }}.cleanup.json
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Import-Module $env:AVM_AUTHORING_MODULE -ErrorAction Stop
+          . (Join-Path $env:GITHUB_WORKSPACE '.avm-tools' 'scripts' 'bicep-workflows' 'Deployment.ps1')
+          $env:AVM_CI_SECRETS = Resolve-AvmWorkflowSecretsJson `
+              -DirectJson $env:AVM_CI_SECRETS -SecretContextJson $env:AVM_SECRETS_CONTEXT
+          $null = New-Item -ItemType Directory -Path (Split-Path $env:STATE_PATH) -Force
+          Set-Location (Join-Path $env:GITHUB_WORKSPACE $env:MODULE_PATH)
+          if (-not [string]::IsNullOrWhiteSpace($env:NAME_PREFIX)) {
+            $env:localToken_namePrefix = $env:NAME_PREFIX
+          }
+          $arguments = @(
+            'test', 'e2e', '--ecosystem', 'bicep', '--example', $env:EXAMPLE, '--recurse',
+            '--subscription-id', $env:SUBSCRIPTION_ID, '--tenant-id', $env:TENANT_ID, '--phase', 'Deploy',
+            '--cleanup-state-path', $env:STATE_PATH, '--location', $env:METADATA_LOCATION,
+            '--resource-group-prefix', $env:RESOURCE_GROUP_PREFIX, '--use-ci-inputs',
+            "--require-resource-isolation=$($env:REQUIRE_ISOLATION)",
+            "--keep-resources=$($env:REMOVE_DEPLOYMENT -ceq 'false')", '--confirm=false'
+          )
+          if (-not [string]::IsNullOrWhiteSpace($env:RESOURCE_LOCATION)) {
+            $arguments += '--resource-location', $env:RESOURCE_LOCATION
+          }
+          if (-not [string]::IsNullOrWhiteSpace($env:SUBSCRIPTION_CLEANUP_MANAGEMENT_GROUP_ID)) {
+            $arguments += '--subscription-cleanup-management-group-id', $env:SUBSCRIPTION_CLEANUP_MANAGEMENT_GROUP_ID
+          }
+          Write-Host "Running avm test e2e --ecosystem bicep --example '$env:EXAMPLE' --phase Deploy for '$env:MODULE_PATH'; metadata location '$env:METADATA_LOCATION', isolation '$env:REQUIRE_ISOLATION'."
+          avm -SkipModuleVersionCheck @arguments
+      - name: Capture encrypted diagnostic service logs
+        id: capture-encrypted-logs
+        if: ${{ always() && !cancelled() && steps.deploy.outcome == 'failure' && steps.context.outcome == 'success' }}
+        shell: pwsh
+        env:
+          SUBSCRIPTION_ID: ${{ steps.context.outputs.SubscriptionId }}
+          STATE_PATH: ${{ runner.temp }}/avm-bicep-state/${{ steps.context.outputs.ArtifactKey }}.cleanup.json
+          DIAGNOSTIC_CERT: ${{ github.workspace }}/.github/diagnostic/recipient.pem
+        run: ./.github/diagnostic/capture-encrypted-logs.ps1
+      - name: Upload encrypted diagnostic service logs
+        if: ${{ always() && steps.capture-encrypted-logs.outcome != 'skipped' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: encrypted-diagnostic-${{ steps.context.outputs.ArtifactKey }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/encrypted-service-logs/*.p7m
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Sign in to Azure again before tests and clean-up
+        id: renew_oidc
+        if: ${{ !cancelled() && (success() || failure()) && steps.deploy.outcome != 'skipped' }}
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
+        with:
+          client-id: ${{ steps.context.outputs.ClientId }}
+          tenant-id: ${{ steps.context.outputs.TenantId }}
+          subscription-id: ${{ steps.context.outputs.SubscriptionId }}
+          enable-AzPSSession: true
+      - name: Run post-deployment tests, then clean up if enabled
+        if: ${{ !cancelled() && (success() || failure()) && (steps.deploy.outcome == 'success' || steps.deploy.outcome == 'failure') && steps.renew_oidc.outcome == 'success' }}
+        shell: pwsh
+        env:
+          MODULE_PATH: ${{ steps.context.outputs.ModulePath }}
+          SUBSCRIPTION_ID: ${{ steps.context.outputs.SubscriptionId }}
+          TENANT_ID: ${{ steps.context.outputs.TenantId }}
+          REMOVE_DEPLOYMENT: ${{ fromJSON(inputs.workflowInput).removeDeployment }}
+          STATE_PATH: ${{ runner.temp }}/avm-bicep-state/${{ steps.context.outputs.ArtifactKey }}.cleanup.json
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Import-Module $env:AVM_AUTHORING_MODULE -ErrorAction Stop
+          Set-Location (Join-Path $env:GITHUB_WORKSPACE $env:MODULE_PATH)
+          Write-Host "Running post-deployment tests and optional clean-up for '$env:MODULE_PATH' with avm test e2e --ecosystem bicep --phase Complete and the saved cleanup state."
+          avm -SkipModuleVersionCheck test e2e --ecosystem bicep --subscription-id $env:SUBSCRIPTION_ID `
+            --tenant-id $env:TENANT_ID --phase Complete --cleanup-state-path $env:STATE_PATH `
+            --keep-resources=$($env:REMOVE_DEPLOYMENT -ceq 'false') --confirm=false
+      - name: Retry deleting leftover test resources (only if an earlier step failed)
+        if: ${{ !cancelled() && failure() && steps.deploy.outcome != 'skipped' && fromJSON(inputs.workflowInput).removeDeployment == 'true' && steps.renew_oidc.outcome == 'success' }}
+        shell: pwsh
+        env:
+          SUBSCRIPTION_ID: ${{ steps.context.outputs.SubscriptionId }}
+          TENANT_ID: ${{ steps.context.outputs.TenantId }}
+          STATE_PATH: ${{ runner.temp }}/avm-bicep-state/${{ steps.context.outputs.ArtifactKey }}.cleanup.json
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Import-Module $env:AVM_AUTHORING_MODULE -ErrorAction Stop
+          Write-Host 'Running avm test cleanup using the saved cleanup state and selected subscription.'
+          avm -SkipModuleVersionCheck test cleanup --state-path $env:STATE_PATH --subscription-id $env:SUBSCRIPTION_ID `
+            --tenant-id $env:TENANT_ID --confirm=false
+      - name: Upload clean-up state for later recovery
+        if: always() && steps.context.outcome == 'success'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: bicep-deployment-${{ steps.context.outputs.ArtifactKey }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/avm-bicep-state/*.json
+          if-no-files-found: warn
+          retention-days: 14
