@@ -53,7 +53,7 @@ jobs:
     steps:
       - name: "Prepare module checks"
         id: initialize
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@9e0c446411aa8b9ed3392045c67065f6a0119117
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@6216cf3d7f8c0374effc3a9dc587d23e99d87e16
         with:
           authoringSource: ${{ inputs.authoringSource || 'gallery' }}
           authoringRef: ${{ inputs.authoringRef || '' }}
@@ -70,9 +70,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@9e0c446411aa8b9ed3392045c67065f6a0119117
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@6216cf3d7f8c0374effc3a9dc587d23e99d87e16
     with:
-      tools-ref: 9e0c446411aa8b9ed3392045c67065f6a0119117
+      tools-ref: 6216cf3d7f8c0374effc3a9dc587d23e99d87e16
       modulePath: ${{ matrix.modulePath }}
       moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
       psRuleModuleTestFilePaths: ${{ matrix.psRuleModuleTestFilePaths }}
@@ -93,9 +93,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@9e0c446411aa8b9ed3392045c67065f6a0119117
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@6216cf3d7f8c0374effc3a9dc587d23e99d87e16
     with:
-      tools-ref: 9e0c446411aa8b9ed3392045c67065f6a0119117
+      tools-ref: 6216cf3d7f8c0374effc3a9dc587d23e99d87e16
       modulePath: ${{ matrix.modulePath }}
       moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
       psRuleModuleTestFilePaths: ${{ matrix.psRuleModuleTestFilePaths }}
@@ -125,7 +125,7 @@ jobs:
       pull-requests: write
     steps:
       - name: "Evaluate and report check status"
-        uses: Azure/azure-verified-modules-tools/.github/actions/report-check-status@9e0c446411aa8b9ed3392045c67065f6a0119117
+        uses: Azure/azure-verified-modules-tools/.github/actions/report-check-status@6216cf3d7f8c0374effc3a9dc587d23e99d87e16
         with:
           ecosystem: bicep
           results: ${{ toJSON(needs) }}
