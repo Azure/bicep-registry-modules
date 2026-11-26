@@ -32,7 +32,8 @@ Describe 'Coordinated tools dependency updates' {
                 [regex]::Matches($content, '(?m)^\s*uses:\s*Azure/azure-verified-modules-tools/[^\s@]+@([^\s#]+)') |
                     ForEach-Object { $_.Groups[1].Value }
             )
-            $toolsRefs | Should -HaveCount 2
+            $expectedCount = if ($file -eq 'pr-check.yml') { 4 } else { 2 }
+            $toolsRefs | Should -HaveCount $expectedCount
             @($toolsRefs | Select-Object -Unique) | Should -HaveCount 1
         }
     }
@@ -61,7 +62,7 @@ Describe 'Shared Bicep workflow entry points' {
         $release.on.push.paths | Should -Be @('avm/**')
         $release.on.ContainsKey('workflow_dispatch') | Should -BeTrue
         $prCheck.on.pull_request.ContainsKey('paths') | Should -BeFalse
-        $prCheck.on.pull_request.types | Should -Be @('opened', 'reopened', 'synchronize', 'edited', 'labeled', 'unlabeled')
+        $prCheck.on.pull_request.types | Should -Be @('opened', 'reopened', 'synchronize', 'labeled', 'unlabeled')
         $prCheck.on.ContainsKey('workflow_dispatch') | Should -BeTrue
         $release.name | Should -BeExactly '.Module - Release'
         $release.jobs.release.name | Should -BeExactly '${{ matrix.modulePath }}'
@@ -80,7 +81,7 @@ Describe 'Shared Bicep workflow entry points' {
         }
     }
 
-    It 'runs one module matrix and evaluates its result in one gate' {
+    It 'evaluates mutually exclusive module check routes in one gate' {
         $prCheck = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'pr-check.yml') -Raw |
             ConvertFrom-Yaml
 
@@ -88,15 +89,14 @@ Describe 'Shared Bicep workflow entry points' {
         $prCheck.jobs.check.strategy.matrix | Should -BeExactly '${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}'
         $prCheck.jobs.check.with.e2eRoute | Should -BeExactly '${{ matrix.e2eRoute }}'
         $prCheck.jobs.check.with.moduleTestFilePaths | Should -BeExactly '${{ matrix.moduleTestFilePaths }}'
+        $prCheck.jobs.'check-fork'.strategy.matrix | Should -BeExactly $prCheck.jobs.check.strategy.matrix
         $prCheck.jobs.ContainsKey('required-e2e') | Should -BeFalse
         $prCheck.jobs.ContainsKey('optional-e2e') | Should -BeFalse
         $prCheck.jobs.ContainsKey('static-gate') | Should -BeFalse
         $prCheck.jobs.ContainsKey('required-e2e-gate') | Should -BeFalse
         $prCheck.jobs.'module-gate'.name | Should -BeExactly 'Report check status'
         $prCheck.jobs.'module-gate'.if | Should -BeExactly 'always()'
-        $prCheck.jobs.'module-gate'.needs | Should -Be @('initialize', 'check')
-        $prCheck.jobs.'module-gate'.env.CHECK_RESULT | Should -BeExactly '${{ needs.check.result }}'
-        $prCheck.jobs.'module-gate'.env.REQUIRE_E2E | Should -BeExactly '${{ github.event_name == ''pull_request'' || inputs.runE2E }}'
+        $prCheck.jobs.'module-gate'.needs | Should -Be @('initialize', 'check', 'check-fork')
     }
 
     It 'exposes the selected release plan in per-module jobs' {
@@ -105,6 +105,7 @@ Describe 'Shared Bicep workflow entry points' {
         $selector = $release.jobs.initialize
         $publisher = $release.jobs.release
 
+        $selector.name | Should -BeExactly 'Select pending module releases'
         $selector.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-release\.yml@'
         $selector.with.initializeOnly | Should -BeTrue
         $publisher.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-runtime-release\.yml@'

@@ -28,7 +28,6 @@ on:
       - opened
       - reopened
       - synchronize
-      - edited
       - labeled
       - unlabeled
 
@@ -50,10 +49,12 @@ jobs:
       hasRequiredModules: ${{ steps.initialize.outputs.hasRequiredModules }}
       requiredRequested: ${{ steps.initialize.outputs.requiredRequested }}
       requiredErrors: ${{ steps.initialize.outputs.requiredErrors }}
+      hasOptionalModules: ${{ steps.initialize.outputs.hasOptionalModules }}
+      optionalRequested: ${{ steps.initialize.outputs.optionalRequested }}
     steps:
       - name: "Prepare module checks"
         id: initialize
-        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@c62bf0153e307777c064e536125547b47f31358b
+        uses: Azure/azure-verified-modules-tools/.github/actions/bicep-pr-check-initializer@9d422114f2acb166c096852dfe551b95de78f038
         with:
           authoringSource: ${{ inputs.authoringSource || 'gallery' }}
           authoringRef: ${{ inputs.authoringRef || '' }}
@@ -63,15 +64,16 @@ jobs:
   check:
     name: "Module checks: ${{ matrix.modulePath }}"
     needs: initialize
-    if: needs.initialize.outputs.hasModules == 'true'
+    if: needs.initialize.outputs.hasModules == 'true' && !(github.event_name == 'workflow_dispatch' && github.event.repository.fork)
     permissions:
       contents: read
       id-token: write
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@c62bf0153e307777c064e536125547b47f31358b
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@9d422114f2acb166c096852dfe551b95de78f038
     with:
+      tools-ref: 9d422114f2acb166c096852dfe551b95de78f038
       modulePath: ${{ matrix.modulePath }}
       moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
       psRuleModuleTestFilePaths: ${{ matrix.psRuleModuleTestFilePaths }}
@@ -82,173 +84,50 @@ jobs:
       authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
     secrets: inherit
 
+  check-fork:
+    name: "Fork module checks: ${{ matrix.modulePath }}"
+    needs: initialize
+    if: needs.initialize.outputs.hasModules == 'true' && github.event_name == 'workflow_dispatch' && github.event.repository.fork
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime.yml@9d422114f2acb166c096852dfe551b95de78f038
+    with:
+      tools-ref: 9d422114f2acb166c096852dfe551b95de78f038
+      modulePath: ${{ matrix.modulePath }}
+      moduleTestFilePaths: ${{ matrix.moduleTestFilePaths }}
+      psRuleModuleTestFilePaths: ${{ matrix.psRuleModuleTestFilePaths }}
+      e2eRoute: ${{ matrix.e2eRoute }}
+      baseCommit: ${{ needs.initialize.outputs.baseCommit }}
+      workflowInput: ${{ needs.initialize.outputs.workflowInput }}
+      targetCommit: ${{ needs.initialize.outputs.targetCommit }}
+      authoringArtifact: ${{ needs.initialize.outputs.authoringArtifact }}
+    secrets:
+      ARM_CLIENT_ID_OVERRIDE: ${{ secrets.ARM_CLIENT_ID_OVERRIDE }}
+      ARM_TENANT_ID_OVERRIDE: ${{ secrets.ARM_TENANT_ID_OVERRIDE }}
+      ARM_SUBSCRIPTION_ID_OVERRIDE: ${{ secrets.ARM_SUBSCRIPTION_ID_OVERRIDE }}
+      VALIDATE_SUBSCRIPTION_IDS: ${{ secrets.VALIDATE_SUBSCRIPTION_IDS }}
+      TEST_SUBSCRIPTION_IDS: ${{ secrets.TEST_SUBSCRIPTION_IDS }}
+      VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+      VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
+      VALIDATE_MANAGEMENT_GROUP_ID: ${{ secrets.VALIDATE_MANAGEMENT_GROUP_ID }}
+      ARM_MGMTGROUP_ID: ${{ secrets.ARM_MGMTGROUP_ID }}
+      TOKEN_NAMEPREFIX: ${{ secrets.TOKEN_NAMEPREFIX }}
+
   module-gate:
     name: "Report check status"
     if: always()
-    needs: [initialize, check]
+    needs: [initialize, check, check-fork]
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    env:
-      INITIALIZE_RESULT: ${{ needs.initialize.result }}
-      HAS_MODULES: ${{ needs.initialize.outputs.hasModules }}
-      REQUIRE_E2E: ${{ github.event_name == 'pull_request' || inputs.runE2E }}
-      HAS_REQUIRED_MODULES: ${{ needs.initialize.outputs.hasRequiredModules }}
-      REQUIRED_REQUESTED: ${{ needs.initialize.outputs.requiredRequested }}
-      REQUIRED_ERRORS: ${{ needs.initialize.outputs.requiredErrors }}
-      MODULE_MATRIX: ${{ needs.initialize.outputs.moduleMatrix }}
-      CHECK_RESULT: ${{ needs.check.result }}
     steps:
-      - name: Evaluate and report check status
-        id: evaluate
-        shell: pwsh
-        run: |
-          if ($env:INITIALIZE_RESULT -cne 'success') { throw 'Bicep initialization did not succeed.' }
-          if ($env:HAS_MODULES -cnotin @('true', 'false')) { throw 'Bicep module selection is invalid.' }
-          if ($env:REQUIRE_E2E -cnotin @('true', 'false')) { throw 'E2E enforcement selection is invalid.' }
-          $requiredLabelMissing = $false
-          if ($env:REQUIRE_E2E -ceq 'true') {
-            if ($env:HAS_REQUIRED_MODULES -cnotin @('true', 'false')) { throw 'Required E2E selection is invalid.' }
-            if ($env:REQUIRED_REQUESTED -cnotin @('true', 'false')) { throw 'E2E request selection is invalid.' }
-            $requiredLabelMissing = $env:HAS_REQUIRED_MODULES -ceq 'true' -and $env:REQUIRED_REQUESTED -cne 'true'
-          }
-          if ($env:REQUIRE_E2E -ceq 'true') {
-            if ($env:REQUIRED_ERRORS -cne '[]') { throw "Required E2E scenarios are ignored: $env:REQUIRED_ERRORS" }
-          }
-          Write-Output "requiredLabelMissing=$($requiredLabelMissing.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
-          if ($requiredLabelMissing) {
-            $labelMessage = 'Add the `PR: Run Required E2E Tests` label to run required scenarios only, or the `PR: Run All E2E Tests` label to run required and optional scenarios.'
-            $forkGuidance = 'For pull requests from forks, labels do not grant deployment credentials. Coordinate a handoff with a maintainer to an authorized same-repository release branch before deployment testing.'
-            Write-Output '## Bicep E2E tests need a label' >> $env:GITHUB_STEP_SUMMARY
-            Write-Output '' >> $env:GITHUB_STEP_SUMMARY
-            Write-Output $labelMessage >> $env:GITHUB_STEP_SUMMARY
-            Write-Output $forkGuidance >> $env:GITHUB_STEP_SUMMARY
-            Write-Output "::error title=Bicep E2E label required::$labelMessage $forkGuidance"
-            exit 1
-          }
-          if ($env:HAS_MODULES -ceq 'true' -and $env:CHECK_RESULT -cne 'success') {
-            throw 'Bicep module checks did not succeed (static, unit, or selected E2E tests).'
-          }
-      - name: Update required E2E label feedback
-        if: ${{ always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false && steps.evaluate.outputs.requiredLabelMissing != '' }}
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        env:
-          REQUIRED_LABEL_MISSING: ${{ steps.evaluate.outputs.requiredLabelMissing }}
+      - name: "Evaluate and report check status"
+        uses: Azure/azure-verified-modules-tools/.github/actions/report-check-status@9d422114f2acb166c096852dfe551b95de78f038
         with:
-          script: |
-            const marker = '<!-- avm-bicep-required-e2e-label-feedback -->';
-            const requiredLabelName = 'PR: Run Required E2E Tests';
-            const allLabelName = 'PR: Run All E2E Tests';
-            const requiredLabel = '`PR: Run Required E2E Tests`';
-            const allLabel = '`PR: Run All E2E Tests`';
-            const requiredLabelMissing = process.env.REQUIRED_LABEL_MISSING === 'true';
-            const noRequired = process.env.HAS_MODULES === 'true' && process.env.HAS_REQUIRED_MODULES === 'false';
-            const utilityOnly = noRequired && JSON.parse(process.env.MODULE_MATRIX).include.every((entry) => entry.modulePath.startsWith('avm/utl/'));
-            const pullRequest = context.payload.pull_request;
-            const allRequested = (pullRequest.labels || []).some((label) => label.name === allLabelName);
-            const absence = [
-              '### Bicep E2E scenario selection',
-              '',
-              utilityOnly
-                ? 'Only utility modules changed. Utility modules are exempt from the required defaults and waf-aligned scenarios.'
-                : 'Warning: no runnable required `default`/`defaults` or `waf-aligned` scenarios were discovered for the changed modules. Their absence does not currently block merging.',
-              '',
-              allRequested
-                ? 'All existing E2E scenarios were selected. Check the deployment job results; selection does not mean validation passed.'
-                : `No E2E deployment tests were selected. ${requiredLabel} selects no tests here; add ${allLabel} to run any optional scenarios.`,
-              '',
-              `Add ${requiredLabel} to run required scenarios only, or ${allLabel} to run required and optional scenarios.`,
-              '',
-              'Labels cannot run scenarios that do not exist. Open PRs early and add deployment labels when ready to avoid unnecessary cloud cost and runtime.',
-              '',
-              'For fork contributions, labels do not grant deployment credentials. Ask a maintainer for an authorized same-repository release-branch handoff.'
-            ].join('\n');
-            const body = noRequired
-              ? `${marker}\n\n${absence}`
-              : requiredLabelMissing
-              ? [
-                  marker,
-                  '',
-                  '### Required Bicep E2E tests need authorization',
-                  '',
-                  `Add ${requiredLabel} to run required scenarios only, or ${allLabel} to run required and optional scenarios.`,
-                ].filter(Boolean).join('\n')
-              : [
-                  marker,
-                  '',
-                  '### Required Bicep E2E label requirement resolved',
-                  '',
-                  'The required E2E label is now present, or no required E2E scenarios remain. No label action is needed for this run.',
-                ].filter(Boolean).join('\n');
-
-            if (noRequired) {
-              await core.summary.addRaw(absence).write();
-              if (!utilityOnly) core.warning('No required Bicep E2E scenarios found; optional scenarios need "PR: Run All E2E Tests".');
-            }
-
-            try {
-              const livePullRequest = await github.rest.pulls.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pullRequest.number,
-              });
-              const snapshotLabels = new Set((pullRequest.labels || []).map((label) => label.name));
-              const liveLabels = new Set(livePullRequest.data.labels.map((label) => label.name));
-              const e2eLabelsAreCurrent = [requiredLabelName, allLabelName].every((label) =>
-                snapshotLabels.has(label) === liveLabels.has(label));
-
-              if (livePullRequest.data.head.sha !== pullRequest.head.sha || !e2eLabelsAreCurrent) {
-                const message = 'Skipped stale E2E label feedback because the PR head or E2E labels changed after this run started.';
-                core.warning(message);
-                await core.summary
-                  .addHeading('Skipped stale Bicep E2E label feedback', 3)
-                  .addRaw(`${message} A newer workflow run will report the current state.`)
-                  .write();
-                return;
-              }
-
-              const comments = await github.paginate(github.rest.issues.listComments, {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pullRequest.number,
-                per_page: 100,
-              });
-              const existingComment = comments.find((comment) =>
-                comment.user?.login === 'github-actions[bot]' && comment.body?.includes(marker));
-
-              if (requiredLabelMissing || noRequired) {
-                if (existingComment) {
-                  await github.rest.issues.updateComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    comment_id: existingComment.id,
-                    body,
-                  });
-                } else {
-                  await github.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: pullRequest.number,
-                    body,
-                  });
-                }
-              } else if (existingComment) {
-                await github.rest.issues.updateComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  comment_id: existingComment.id,
-                  body,
-                });
-              }
-            } catch (error) {
-              if (error.status !== 403) {
-                throw error;
-              }
-
-              const permissionMessage = 'The workflow token was denied permission to write PR comments (HTTP 403). The gate result is still recorded above.';
-              core.warning(permissionMessage);
-              await core.summary
-                .addHeading('Bicep E2E label feedback could not be posted', 3)
-                .addRaw(`${permissionMessage} A maintainer can review the Actions summary and comment if needed.`)
-                .write();
-            }
+          ecosystem: bicep
+          results: ${{ toJSON(needs) }}
+          require-e2e: ${{ github.event_name == 'pull_request' || inputs.runE2E }}
