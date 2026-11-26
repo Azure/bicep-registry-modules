@@ -223,7 +223,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       caches: [
         {
-          connectionString: 'connectionstringtest'
+          connectionString: customSecret
           name: 'westeurope'
           useFromLocation: 'westeurope'
         }
@@ -516,7 +516,7 @@ module testDeployment '../../../main.bicep' = [
             {
               name: 'workspace-named-value'
               displayName: 'WorkspaceNamedValue'
-              value: 'workspace-secret-value'
+              value: customSecret
               secret: true
               tags: [
                 'test'

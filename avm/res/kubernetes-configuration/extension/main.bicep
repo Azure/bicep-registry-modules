@@ -42,8 +42,8 @@ param targetNamespace string?
 @description('Optional. Version of the extension for this extension, if it is "pinned" to a specific version.')
 param version string?
 
-@description('Optional. A list of flux configuraitons.')
-param fluxConfigurations resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties[]?
+@description('Optional. A list of flux configurations.')
+param fluxConfigurations fluxConfigurationType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -145,3 +145,37 @@ output resourceId string = clusterType == 'managedCluster' ? managedExtension.id
 
 @description('The name of the resource group the extension was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type of a Flux configuration.')
+type fluxConfigurationType = {
+  @description('Required. The namespace to which this configuration is installed to.')
+  namespace: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.namespace
+
+  @description('Required. Scope at which the configuration will be installed.')
+  scope: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.scope
+
+  @description('Optional. Parameters to reconcile to the Bucket source kind type.')
+  bucket: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.bucket?
+
+  @description('Optional. Key-value pairs of protected configuration settings for the configuration.')
+  @secure()
+  configurationProtectedSettings: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.configurationProtectedSettings?
+
+  @description('Optional. Parameters to reconcile to the GitRepository source kind type.')
+  gitRepository: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.gitRepository?
+
+  @description('Required. Kustomizations used to reconcile the artifact pulled by the source type on the cluster.')
+  kustomizations: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.kustomizations
+
+  @description('Optional. Whether this configuration should suspend its reconciliation of its kustomizations and sources.')
+  suspend: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.suspend?
+
+  @description('Optional. Other caller properties, including the Flux configuration name. Only the properties used by the referenced Flux module are forwarded.')
+  #disable-next-line no-explicit-any // Keep accepting provider fields that this module does not forward.
+  *: any
+}
