@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "7482936041177113217"
+      "version": "0.49.2.45890",
+      "templateHash": "17769265286836624014"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -793,7 +793,7 @@
           "os": "Linux"
         },
         "step": {
-          "dockerFilePath": "dockerfile",
+          "dockerFilePath": "Dockerfile",
           "type": "Docker",
           "contextPath": "[if(contains(parameters('computeTypes'), 'azure-container-app'), format('{0}:{1}', variables('githubURL'), filter(variables('imagePaths'), lambda('imagePath', equals(lambdaVariables('imagePath').platform, format('{0}-container-app', parameters('selfHostedConfig').selfHostedType))))[0].imagePath), if(contains(parameters('computeTypes'), 'azure-container-instance'), format('{0}:{1}', variables('githubURL'), filter(variables('imagePaths'), lambda('imagePath', equals(lambdaVariables('imagePath').platform, format('{0}-container-instance', parameters('selfHostedConfig').selfHostedType))))[0].imagePath), null()))]",
           "imageNames": [

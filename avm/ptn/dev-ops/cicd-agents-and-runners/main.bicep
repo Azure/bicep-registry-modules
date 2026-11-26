@@ -448,7 +448,7 @@ resource buildImages 'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-pr
         os: 'Linux'
       }
       step: {
-        dockerFilePath: 'dockerfile'
+        dockerFilePath: 'Dockerfile'
         type: 'Docker'
         contextPath: contains(computeTypes, 'azure-container-app')
           ? '${githubURL}:${filter(imagePaths, imagePath => imagePath.platform == '${selfHostedConfig.selfHostedType}-container-app')[0].imagePath}'
