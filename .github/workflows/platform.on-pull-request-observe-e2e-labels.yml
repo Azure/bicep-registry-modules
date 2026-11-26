@@ -1,0 +1,14 @@
+name: ".Platform - Observe E2E PR labels"
+
+on:
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
+
+permissions: {}
+
+jobs:
+  observe-labels:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    uses: Azure/azure-verified-modules-tools/.github/workflows/pr-check-label-observer.yml@5be28c8db7f04f75a7fb6a195ed89678885cc280

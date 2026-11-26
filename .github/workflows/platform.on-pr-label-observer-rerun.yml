@@ -1,0 +1,22 @@
+name: ".Platform - Rerun PR check after E2E label observation"
+
+on:
+  workflow_run:
+    workflows:
+      - ".Platform - Observe E2E PR labels"
+    types:
+      - completed
+
+permissions: {}
+
+jobs:
+  rerun-pr-check:
+    permissions:
+      actions: write
+      contents: read
+      issues: read
+      pull-requests: read
+    uses: Azure/azure-verified-modules-tools/.github/workflows/pr-check-label-rerun.yml@5be28c8db7f04f75a7fb6a195ed89678885cc280
+    with:
+      tools-ref: 5be28c8db7f04f75a7fb6a195ed89678885cc280
+      observer-workflow-path: ".github/workflows/platform.on-pull-request-observe-e2e-labels.yml"

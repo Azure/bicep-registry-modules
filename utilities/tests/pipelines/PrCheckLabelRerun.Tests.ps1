@@ -5,50 +5,75 @@ param(
 
 BeforeAll {
     Import-Module powershell-yaml -ErrorAction Stop
-    $workflowContent = Get-Content -LiteralPath (
-        Join-Path $RepoRootPath '.github' 'workflows' 'platform.on-pull-request-rerun-e2e.yml'
-    ) -Raw
-    $workflow = $workflowContent | ConvertFrom-Yaml
-    $rerunJob = $workflow.jobs.'rerun-pr-check'
-    $prCheck = Get-Content -LiteralPath (
-        Join-Path $RepoRootPath '.github' 'workflows' 'pr-check.yml'
-    ) -Raw | ConvertFrom-Yaml
+    $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
+    $observerPath = Join-Path $workflowRoot 'platform.on-pull-request-observe-e2e-labels.yml'
+    $handlerPath = Join-Path $workflowRoot 'platform.on-pr-label-observer-rerun.yml'
+    $observerContent = Get-Content -LiteralPath $observerPath -Raw
+    $handlerContent = Get-Content -LiteralPath $handlerPath -Raw
+    $observer = $observerContent | ConvertFrom-Yaml
+    $handler = $handlerContent | ConvertFrom-Yaml
+    $observerJob = $observer.jobs.'observe-labels'
+    $handlerJob = $handler.jobs.'rerun-pr-check'
+    $prCheck = Get-Content -LiteralPath (Join-Path $workflowRoot 'pr-check.yml') -Raw | ConvertFrom-Yaml
 }
 
-Describe 'PR label rerun consumer workflow' {
-    It 'wires only pull request label events to the shared rerun workflow' {
-        $workflow.on.pull_request_target.types | Should -Be @('labeled', 'unlabeled')
-        $workflow.on.ContainsKey('pull_request') | Should -BeFalse
-        $workflow.on.ContainsKey('workflow_dispatch') | Should -BeFalse
-        $workflow.on.pull_request_target.ContainsKey('paths') | Should -BeFalse
-        $workflow.jobs.Keys | Should -Be @('rerun-pr-check')
-        $rerunJob.uses |
+Describe 'PR label observer consumer workflow' {
+    It 'observes only same-repository label and unlabel events' {
+        $observer.on.pull_request.types | Should -Be @('labeled', 'unlabeled')
+        $observer.on.ContainsKey('pull_request_target') | Should -BeFalse
+        $observer.on.pull_request.ContainsKey('paths') | Should -BeFalse
+        $observer.permissions.Keys | Should -BeNullOrEmpty
+        $observer.jobs.Keys | Should -Be @('observe-labels')
+        $observerJob.if |
+            Should -BeExactly 'github.event.pull_request.head.repo.full_name == github.repository'
+        $observerJob.uses |
+            Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/pr-check-label-observer\.yml@[0-9a-f]{40}$'
+        $observerJob.ContainsKey('steps') | Should -BeFalse
+    }
+
+    It 'does not duplicate observer logic in BRM' {
+        $observerContent.Contains('pull_request_target') | Should -BeFalse
+        $observerContent.Contains('gh api') | Should -BeFalse
+        $observerContent.Contains('actions/checkout') | Should -BeFalse
+        $observerContent.Contains('GITHUB_TOKEN') | Should -BeFalse
+    }
+}
+
+Describe 'PR label rerun handler consumer workflow' {
+    It 'runs from the default branch only after the exact observer workflow completes' {
+        $handler.on.workflow_run.workflows | Should -Be @($observer.name)
+        $handler.on.workflow_run.types | Should -Be @('completed')
+        $handler.on.ContainsKey('pull_request_target') | Should -BeFalse
+        $handler.permissions.Keys | Should -BeNullOrEmpty
+        $handler.jobs.Keys | Should -Be @('rerun-pr-check')
+        $handlerJob.uses |
             Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/pr-check-label-rerun\.yml@[0-9a-f]{40}$'
-        $rerunJob.ContainsKey('if') | Should -BeFalse
-        $rerunJob.ContainsKey('steps') | Should -BeFalse
+        $handlerJob.ContainsKey('steps') | Should -BeFalse
     }
 
-    It 'grants only the reusable workflow permissions it needs' {
-        $workflow.permissions.Keys | Should -BeNullOrEmpty
-        $rerunJob.permissions.Keys | Sort-Object |
+    It 'grants only the reusable handler permissions it needs' {
+        $handlerJob.permissions.Keys | Sort-Object |
             Should -Be @('actions', 'contents', 'issues', 'pull-requests')
-        $rerunJob.permissions.actions | Should -BeExactly 'write'
-        $rerunJob.permissions.contents | Should -BeExactly 'read'
-        $rerunJob.permissions.issues | Should -BeExactly 'read'
-        $rerunJob.permissions.'pull-requests' | Should -BeExactly 'read'
+        $handlerJob.permissions.actions | Should -BeExactly 'write'
+        $handlerJob.permissions.contents | Should -BeExactly 'read'
+        $handlerJob.permissions.issues | Should -BeExactly 'read'
+        $handlerJob.permissions.'pull-requests' | Should -BeExactly 'read'
     }
 
-    It 'pins the reusable workflow and nested Tools checkout to the same revision' {
-        $rerunPin = ($rerunJob.uses -split '@')[-1]
-        $rerunJob.with.'tools-ref' | Should -BeExactly $rerunPin
-        $rerunPin | Should -Match '^[0-9a-f]{40}$'
+    It 'pins both shared workflows, nested tools and the observer path consistently' {
+        $observerPin = ($observerJob.uses -split '@')[-1]
+        $handlerPin = ($handlerJob.uses -split '@')[-1]
+        $handlerJob.with.'tools-ref' | Should -BeExactly $handlerPin
+        $handlerPin | Should -BeExactly $observerPin
+        $handlerJob.with.'observer-workflow-path' |
+            Should -BeExactly '.github/workflows/platform.on-pull-request-observe-e2e-labels.yml'
     }
 
-    It 'does not duplicate shared rerun implementation in BRM' {
-        $workflow.ContainsKey('concurrency') | Should -BeFalse
-        $workflowContent.Contains('gh api') | Should -BeFalse
-        $workflowContent.Contains('actions/checkout') | Should -BeFalse
-        $workflowContent.Contains('GITHUB_TOKEN') | Should -BeFalse
+    It 'does not duplicate handler logic in BRM' {
+        $handlerContent.Contains('pull_request_target') | Should -BeFalse
+        $handlerContent.Contains('gh api') | Should -BeFalse
+        $handlerContent.Contains('actions/checkout') | Should -BeFalse
+        $handlerContent.Contains('GITHUB_TOKEN') | Should -BeFalse
         Test-Path -LiteralPath (
             Join-Path $RepoRootPath '.github' 'scripts' 'Invoke-PrCheckRerun.ps1'
         ) | Should -BeFalse
