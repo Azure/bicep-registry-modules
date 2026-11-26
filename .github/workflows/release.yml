@@ -36,7 +36,7 @@ jobs:
     name: "Select pending module releases"
     permissions:
       contents: write
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@6216cf3d7f8c0374effc3a9dc587d23e99d87e16
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@4ba5ab579d2a5074236aec42bfd831102fb70ca7
     with:
       initializeOnly: true
       authoringSource: ${{ inputs.authoringSource || 'gallery' }}
@@ -54,7 +54,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime-release.yml@6216cf3d7f8c0374effc3a9dc587d23e99d87e16
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime-release.yml@4ba5ab579d2a5074236aec42bfd831102fb70ca7
     with:
       modulePath: ${{ matrix.modulePath }}
       plannedTags: ${{ matrix.plannedTags }}

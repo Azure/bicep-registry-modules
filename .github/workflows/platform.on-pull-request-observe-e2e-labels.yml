@@ -11,4 +11,4 @@ permissions: {}
 jobs:
   observe-labels:
     if: github.event.pull_request.head.repo.full_name == github.repository
-    uses: Azure/azure-verified-modules-tools/.github/workflows/pr-check-label-observer.yml@5be28c8db7f04f75a7fb6a195ed89678885cc280
+    uses: Azure/azure-verified-modules-tools/.github/workflows/pr-check-label-observer.yml@4ba5ab579d2a5074236aec42bfd831102fb70ca7
