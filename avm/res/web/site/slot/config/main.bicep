@@ -22,10 +22,14 @@ param slotName string
 ])
 param name string
 
-@description('Optional. The properties of the config. Note: This parameter is highly dependent on the config type, defined by its name.')
+// Config shapes overlap with arbitrary storage mount names, so leaf protection needs the config discriminator.
+// We keep this shared input flexible and protect the whole object at the child boundary.
+@description('Optional. The properties of the config. The shape depends on its name. The entire object is secure because config properties can contain secrets.')
+@secure()
 param properties object = {}
 
-@description('Optional. The current app settings.')
+@description('Optional. The current app settings. The entire object is secure because retained settings can contain secrets.')
+@secure()
 param currentAppSettings {
   @description('Required. The key-values pairs of the current app settings.')
   *: string

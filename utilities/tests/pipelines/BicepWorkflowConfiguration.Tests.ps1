@@ -62,7 +62,7 @@ Describe 'Shared Bicep workflow entry points' {
         $release.on.push.paths | Should -Be @('avm/**')
         $release.on.ContainsKey('workflow_dispatch') | Should -BeTrue
         $prCheck.on.pull_request.ContainsKey('paths') | Should -BeFalse
-        $prCheck.on.pull_request.types | Should -Be @('opened', 'reopened', 'synchronize', 'edited', 'labeled', 'unlabeled')
+        $prCheck.on.pull_request.types | Should -Be @('opened', 'reopened', 'synchronize', 'labeled', 'unlabeled')
         $prCheck.on.ContainsKey('workflow_dispatch') | Should -BeTrue
         $release.name | Should -BeExactly '.Module - Release'
         $release.jobs.release.name | Should -BeExactly '${{ matrix.modulePath }}'
