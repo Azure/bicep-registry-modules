@@ -1,0 +1,47 @@
+name: ".Platform - Rerun PR check for E2E label"
+
+on:
+  pull_request_target:
+    types:
+      - labeled
+
+permissions: {}
+
+concurrency:
+  group: pr-check-label-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  rerun-pr-check:
+    if: >-
+      github.event.label.name == 'PR: Run Required E2E Tests' ||
+      github.event.label.name == 'PR: Run All E2E Tests'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      actions: write
+      contents: read
+      pull-requests: read
+    steps:
+      - name: "Checkout trusted workflow"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - name: "Rerun the matching PR check"
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_CHECK_REPOSITORY: ${{ github.repository }}
+          PR_CHECK_NUMBER: ${{ github.event.pull_request.number }}
+          PR_CHECK_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_CHECK_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_CHECK_DISPATCH_RUN_ID: ${{ github.run_id }}
+        run: |
+          & (Join-Path $env:GITHUB_WORKSPACE '.github' 'scripts' 'Invoke-PrCheckRerun.ps1') `
+            -Repository $env:PR_CHECK_REPOSITORY `
+            -PullRequestNumber ([int64] $env:PR_CHECK_NUMBER) `
+            -ExpectedHeadSha $env:PR_CHECK_HEAD_SHA `
+            -ExpectedBaseSha $env:PR_CHECK_BASE_SHA `
+            -DispatcherRunId ([int64] $env:PR_CHECK_DISPATCH_RUN_ID)

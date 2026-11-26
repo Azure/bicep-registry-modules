@@ -28,8 +28,6 @@ on:
       - opened
       - reopened
       - synchronize
-      - labeled
-      - unlabeled
 
 permissions: {}
 
