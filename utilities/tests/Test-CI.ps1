@@ -93,11 +93,12 @@ function Test-CI {
         # ----------------------------------------- #
 
         $functionInput = @{
-            RepoRootPath      = $RepoRootPath
-            PesterTestResults = $testResults
-            OutputFilePath    = Join-Path $RepoRootPath 'utilities' 'tests' 'Pester-output.md'
-            GitHubRepository  = $GitHubRepository
-            BranchName        = $BranchName
+            RepoRootPath       = $RepoRootPath
+            PesterTestResults  = $testResults
+            OutputFilePath     = Join-Path $RepoRootPath 'utilities' 'tests' 'Pester-output.md'
+            GitHubRepository   = $GitHubRepository
+            BranchName         = $BranchName
+            ExcludePassedTests = $true
         }
 
         Write-Verbose 'Invoke Pester formatting function with' -Verbose

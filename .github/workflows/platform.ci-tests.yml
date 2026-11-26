@@ -8,6 +8,18 @@ on:
         description: "The regex of the test file(s) to run"
         required: false
         default: ".*"
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - ".github/**"
+      - "utilities/**"
+      - "avm/**"
+      - "bicepconfig.json"
+      - ".gitattributes"
+      - ".reserved-test-subscriptions.json"
   push:
     branches:
       - main
@@ -17,6 +29,9 @@ on:
       - "!*/**/README.md"
   schedule:
     - cron: "0 0 * * Sun" # Every Sunday
+
+permissions:
+  contents: read
 
 env:
   workflowPath: ".github/workflows/platform.ci-tests.yml"
