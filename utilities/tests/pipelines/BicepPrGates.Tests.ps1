@@ -14,6 +14,15 @@ BeforeAll {
 }
 
 Describe 'Bicep PR check reporter caller contract' {
+    It 'only requests resource retention for manual E2E runs that opt in' {
+        $inputs = $prCheck.on.workflow_dispatch.inputs
+        $inputs.keepResources.type | Should -BeExactly 'boolean'
+        $inputs.keepResources.default | Should -BeFalse
+        $inputs.runE2E.default | Should -BeFalse
+        $prCheck.jobs.initialize.steps[0].with.keepResources |
+            Should -BeExactly '${{ github.event_name == ''workflow_dispatch'' && inputs.runE2E && inputs.keepResources && ''true'' || ''false'' }}'
+    }
+
     It 'uses the shared reporter with normalized input values' {
         $moduleGate.steps | Should -HaveCount 1
         $reportStep.uses |

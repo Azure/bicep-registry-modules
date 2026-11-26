@@ -65,6 +65,7 @@ Describe 'PR label rerun handler consumer workflow' {
         $handlerPin = ($handlerJob.uses -split '@')[-1]
         $handlerJob.with.'tools-ref' | Should -BeExactly $handlerPin
         $handlerPin | Should -BeExactly $observerPin
+        $observerPin | Should -BeExactly (($prCheck.jobs.initialize.steps[0].uses -split '@')[-1])
         $handlerJob.with.'observer-workflow-path' |
             Should -BeExactly '.github/workflows/platform.on-pull-request-observe-e2e-labels.yml'
     }

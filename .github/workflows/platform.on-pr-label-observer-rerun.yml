@@ -16,7 +16,7 @@ jobs:
       contents: read
       issues: read
       pull-requests: read
-    uses: Azure/azure-verified-modules-tools/.github/workflows/pr-check-label-rerun.yml@4ba5ab579d2a5074236aec42bfd831102fb70ca7
+    uses: Azure/azure-verified-modules-tools/.github/workflows/pr-check-label-rerun.yml@5a2f3974b78869ed9af9aa0769499e67d41460ef
     with:
-      tools-ref: 4ba5ab579d2a5074236aec42bfd831102fb70ca7
+      tools-ref: 5a2f3974b78869ed9af9aa0769499e67d41460ef
       observer-workflow-path: ".github/workflows/platform.on-pull-request-observe-e2e-labels.yml"
