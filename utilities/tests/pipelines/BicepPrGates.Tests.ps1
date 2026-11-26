@@ -36,7 +36,7 @@ Describe 'Bicep PR check reporter caller contract' {
     It 'keeps the reporter behind a least-privilege trust boundary' {
         $moduleGate.name | Should -BeExactly 'Report check status'
         $moduleGate.if | Should -BeExactly 'always()'
-        $moduleGate.needs | Should -Be @('initialize', 'check')
+        $moduleGate.needs | Should -Be @('initialize', 'check', 'check-fork')
         $moduleGate.permissions.Keys | Should -Be @('pull-requests')
         $moduleGate.permissions.'pull-requests' | Should -BeExactly 'write'
         $moduleGate.ContainsKey('env') | Should -BeFalse
@@ -46,19 +46,52 @@ Describe 'Bicep PR check reporter caller contract' {
         $prCheckContent.Contains('pull_request_target') | Should -BeFalse
     }
 
-    It 'pins all PR and release Tools references to one immutable revision' {
+    It 'forwards manual fork secrets without dropping inherited upstream secrets' {
+        $upstreamCheck = $prCheck.jobs.check
+        $forkCheck = $prCheck.jobs.'check-fork'
+        $upstreamCheck.if | Should -BeExactly "needs.initialize.outputs.hasModules == 'true' && !(github.event_name == 'workflow_dispatch' && github.event.repository.fork)"
+        $upstreamCheck.secrets | Should -BeExactly 'inherit'
+        $forkCheck.if | Should -BeExactly "needs.initialize.outputs.hasModules == 'true' && github.event_name == 'workflow_dispatch' && github.event.repository.fork"
+        $forkCheck.needs | Should -BeExactly 'initialize'
+        @($forkCheck.permissions.Keys | Sort-Object) | Should -Be @('contents', 'id-token')
+        $forkCheck.permissions.contents | Should -BeExactly 'read'
+        $forkCheck.permissions.'id-token' | Should -BeExactly 'write'
+        $forkCheck.strategy.'fail-fast' | Should -BeFalse
+        $forkCheck.strategy.matrix | Should -BeExactly $upstreamCheck.strategy.matrix
+        $forkCheck.uses | Should -BeExactly $upstreamCheck.uses
+        $forkCheck.with.Count | Should -Be $upstreamCheck.with.Count
+        foreach ($name in $upstreamCheck.with.Keys) {
+            $forkCheck.with[$name] | Should -BeExactly $upstreamCheck.with[$name]
+        }
+
+        $secretNames = @(
+            'ARM_CLIENT_ID_OVERRIDE', 'ARM_TENANT_ID_OVERRIDE', 'ARM_SUBSCRIPTION_ID_OVERRIDE',
+            'VALIDATE_SUBSCRIPTION_IDS', 'TEST_SUBSCRIPTION_IDS', 'VALIDATE_SUBSCRIPTION_ID',
+            'VALIDATE_TENANT_ID', 'VALIDATE_MANAGEMENT_GROUP_ID', 'ARM_MGMTGROUP_ID', 'TOKEN_NAMEPREFIX'
+        )
+        @($forkCheck.secrets.Keys | Sort-Object) | Should -Be @($secretNames | Sort-Object)
+        foreach ($name in $secretNames) {
+            $forkCheck.secrets[$name] | Should -BeExactly "`${{ secrets.$name }}"
+            $prCheck.on.workflow_dispatch.inputs.ContainsKey($name) | Should -BeFalse
+        }
+    }
+
+    It 'pins PR, release and workflow support to one immutable Tools revision' {
         $references = @(
             $prCheck.jobs.initialize.steps[0].uses
             $prCheck.jobs.check.uses
+            $prCheck.jobs.'check-fork'.uses
             $moduleGate.steps[0].uses
             $release.jobs.initialize.uses
             $release.jobs.release.uses
         )
-        $references | Should -HaveCount 5
+        $references | Should -HaveCount 6
         $pins = @($references | ForEach-Object {
                 $_ | Should -Match '^Azure/azure-verified-modules-tools/.+@[0-9a-f]{40}$'
                 ($_ -split '@')[-1]
             } | Select-Object -Unique)
         $pins | Should -HaveCount 1
+        $prCheck.jobs.check.with.'tools-ref' | Should -BeExactly $pins[0]
+        $prCheck.jobs.'check-fork'.with.'tools-ref' | Should -BeExactly $pins[0]
     }
 }

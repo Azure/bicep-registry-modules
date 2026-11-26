@@ -4223,7 +4223,7 @@ To use this variant, set the property `name` to `appsettings`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applicationInsightResourceId`](#parameter-configsname-appsettingsapplicationinsightresourceid) | string | Resource ID of the application insight to leverage for this resource. |
-| [`properties`](#parameter-configsname-appsettingsproperties) | object | The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. |
+| [`properties`](#parameter-configsname-appsettingsproperties) | secureObject | The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. Values can contain secrets. |
 | [`retainCurrentAppSettings`](#parameter-configsname-appsettingsretaincurrentappsettings) | bool | The retain the current app settings. Defaults to true. |
 | [`storageAccountResourceId`](#parameter-configsname-appsettingsstorageaccountresourceid) | string | Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions. |
 | [`storageAccountUseIdentityAuthentication`](#parameter-configsname-appsettingsstorageaccountuseidentityauthentication) | bool | If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'. |
@@ -4250,23 +4250,10 @@ Resource ID of the application insight to leverage for this resource.
 
 ### Parameter: `configs.name-appsettings.properties`
 
-The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.
+The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. Values can contain secrets.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-configsname-appsettingsproperties>any_other_property<) | string | An app settings key-value pair. |
-
-### Parameter: `configs.name-appsettings.properties.>Any_other_property<`
-
-An app settings key-value pair.
-
-- Required: Yes
-- Type: string
+- Type: secureObject
 
 ### Parameter: `configs.name-appsettings.retainCurrentAppSettings`
 
@@ -6115,7 +6102,7 @@ The config settings.
 | [`backupSchedule`](#parameter-configsname-backuppropertiesbackupschedule) | object | Schedule for the backup if it is executed periodically. |
 | [`databases`](#parameter-configsname-backuppropertiesdatabases) | array | Databases included in the backup. |
 | [`enabled`](#parameter-configsname-backuppropertiesenabled) | bool | Set to `True` if the backup schedule is enabled (must be included in that case), `false` if the backup schedule should be disabled. |
-| [`storageAccountUrl`](#parameter-configsname-backuppropertiesstorageaccounturl) | string | SAS URL to the container. |
+| [`storageAccountUrl`](#parameter-configsname-backuppropertiesstorageaccounturl) | securestring | SAS URL to the container. |
 
 ### Parameter: `configs.name-backup.properties.backupName`
 
@@ -6258,7 +6245,7 @@ Set to `True` if the backup schedule is enabled (must be included in that case),
 SAS URL to the container.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Variant: `configs.name-connectionstrings`
 The type for a connection string configuration.
@@ -6310,7 +6297,7 @@ The name of the connection string setting.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`type`](#parameter-configsname-connectionstringsproperties>any_other_property<type) | string | Type of database. |
-| [`value`](#parameter-configsname-connectionstringsproperties>any_other_property<value) | string | Value of pair. |
+| [`value`](#parameter-configsname-connectionstringsproperties>any_other_property<value) | securestring | Value of pair. |
 
 ### Parameter: `configs.name-connectionstrings.properties.>Any_other_property<.type`
 
@@ -6340,7 +6327,7 @@ Type of database.
 Value of pair.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Variant: `configs.name-logs`
 The type of a logs configuration.
@@ -6411,7 +6398,7 @@ Application logs to blob storage configuration.
 | :-- | :-- | :-- |
 | [`level`](#parameter-configsname-logspropertiesapplicationlogsazureblobstoragelevel) | string | Log level. |
 | [`retentionInDays`](#parameter-configsname-logspropertiesapplicationlogsazureblobstorageretentionindays) | int | Retention in days. Remove blobs older than X days. 0 or lower means no retention. |
-| [`sasUrl`](#parameter-configsname-logspropertiesapplicationlogsazureblobstoragesasurl) | string | SAS url to a azure blob container with read/write/list/delete permissions. |
+| [`sasUrl`](#parameter-configsname-logspropertiesapplicationlogsazureblobstoragesasurl) | securestring | SAS url to a azure blob container with read/write/list/delete permissions. |
 
 ### Parameter: `configs.name-logs.properties.applicationLogs.azureBlobStorage.level`
 
@@ -6442,7 +6429,7 @@ Retention in days. Remove blobs older than X days. 0 or lower means no retention
 SAS url to a azure blob container with read/write/list/delete permissions.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `configs.name-logs.properties.applicationLogs.azureTableStorage`
 
@@ -6455,7 +6442,7 @@ Application logs to azure table storage configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`sasUrl`](#parameter-configsname-logspropertiesapplicationlogsazuretablestoragesasurl) | string | SAS URL to an Azure table with add/query/delete permissions. |
+| [`sasUrl`](#parameter-configsname-logspropertiesapplicationlogsazuretablestoragesasurl) | securestring | SAS URL to an Azure table with add/query/delete permissions. |
 
 **Optional parameters**
 
@@ -6468,7 +6455,7 @@ Application logs to azure table storage configuration.
 SAS URL to an Azure table with add/query/delete permissions.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `configs.name-logs.properties.applicationLogs.azureTableStorage.level`
 
@@ -6584,7 +6571,7 @@ Http logs to azure blob storage configuration.
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-configsname-logspropertieshttplogsazureblobstorageenabled) | bool | Set to `True` if configuration is enabled, false if it is disabled. |
 | [`retentionInDays`](#parameter-configsname-logspropertieshttplogsazureblobstorageretentionindays) | int | Retention in days. Remove blobs older than X days. 0 or lower means no retention. |
-| [`sasUrl`](#parameter-configsname-logspropertieshttplogsazureblobstoragesasurl) | string | SAS url to a azure blob container with read/write/list/delete permissions. |
+| [`sasUrl`](#parameter-configsname-logspropertieshttplogsazureblobstoragesasurl) | securestring | SAS url to a azure blob container with read/write/list/delete permissions. |
 
 ### Parameter: `configs.name-logs.properties.httpLogs.azureBlobStorage.enabled`
 
@@ -6605,7 +6592,7 @@ Retention in days. Remove blobs older than X days. 0 or lower means no retention
 SAS url to a azure blob container with read/write/list/delete permissions.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `configs.name-logs.properties.httpLogs.fileSystem`
 
@@ -6655,7 +6642,7 @@ To use this variant, set the property `name` to `metadata`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-configsname-metadataname) | string | The type of config. |
-| [`properties`](#parameter-configsname-metadataproperties) | object | The config settings. |
+| [`properties`](#parameter-configsname-metadataproperties) | secureObject | The metadata key-value pairs. Values can contain secrets. |
 
 ### Parameter: `configs.name-metadata.name`
 
@@ -6672,23 +6659,10 @@ The type of config.
 
 ### Parameter: `configs.name-metadata.properties`
 
-The config settings.
+The metadata key-value pairs. Values can contain secrets.
 
 - Required: Yes
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-configsname-metadataproperties>any_other_property<) | string | The metadata key value pair. |
-
-### Parameter: `configs.name-metadata.properties.>Any_other_property<`
-
-The metadata key value pair.
-
-- Required: No
-- Type: string
+- Type: secureObject
 
 ### Variant: `configs.name-pushsettings`
 The type of a pushSettings configuration.
@@ -7013,7 +6987,7 @@ Application settings.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-configsname-webpropertiesappsettingsname) | string | Name of the pair. |
-| [`value`](#parameter-configsname-webpropertiesappsettingsvalue) | string | Value of the pair. |
+| [`value`](#parameter-configsname-webpropertiesappsettingsvalue) | securestring | Value of the pair. |
 
 ### Parameter: `configs.name-web.properties.appSettings.name`
 
@@ -7027,7 +7001,7 @@ Name of the pair.
 Value of the pair.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `configs.name-web.properties.autoHealEnabled`
 
@@ -7466,7 +7440,7 @@ Connection strings.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectionString`](#parameter-configsname-webpropertiesconnectionstringsconnectionstring) | string | Connection string value. |
+| [`connectionString`](#parameter-configsname-webpropertiesconnectionstringsconnectionstring) | securestring | Connection string value. |
 | [`name`](#parameter-configsname-webpropertiesconnectionstringsname) | string | Name of connection string. |
 | [`type`](#parameter-configsname-webpropertiesconnectionstringstype) | string | Type of database. |
 
@@ -7475,7 +7449,7 @@ Connection strings.
 Connection string value.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `configs.name-web.properties.connectionStrings.name`
 
@@ -8019,7 +7993,7 @@ Application metadata. This property cannot be retrieved, since it may contain se
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-configsname-webpropertiesmetadataname) | string | Pair name. |
-| [`value`](#parameter-configsname-webpropertiesmetadatavalue) | string | Pair Value. |
+| [`value`](#parameter-configsname-webpropertiesmetadatavalue) | securestring | Pair Value. |
 
 ### Parameter: `configs.name-web.properties.metadata.name`
 
@@ -8033,7 +8007,7 @@ Pair name.
 Pair Value.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `configs.name-web.properties.minimumElasticInstanceCount`
 
@@ -9998,7 +9972,7 @@ To use this variant, set the property `name` to `appsettings`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applicationInsightResourceId`](#parameter-slotsconfigsname-appsettingsapplicationinsightresourceid) | string | Resource ID of the application insight to leverage for this resource. |
-| [`properties`](#parameter-slotsconfigsname-appsettingsproperties) | object | The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. |
+| [`properties`](#parameter-slotsconfigsname-appsettingsproperties) | secureObject | The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. Values can contain secrets. |
 | [`retainCurrentAppSettings`](#parameter-slotsconfigsname-appsettingsretaincurrentappsettings) | bool | The retain the current app settings. Defaults to true. |
 | [`storageAccountResourceId`](#parameter-slotsconfigsname-appsettingsstorageaccountresourceid) | string | Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions. |
 | [`storageAccountUseIdentityAuthentication`](#parameter-slotsconfigsname-appsettingsstorageaccountuseidentityauthentication) | bool | If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'. |
@@ -10025,23 +9999,10 @@ Resource ID of the application insight to leverage for this resource.
 
 ### Parameter: `slots.configs.name-appsettings.properties`
 
-The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.
+The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. Values can contain secrets.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-slotsconfigsname-appsettingsproperties>any_other_property<) | string | An app settings key-value pair. |
-
-### Parameter: `slots.configs.name-appsettings.properties.>Any_other_property<`
-
-An app settings key-value pair.
-
-- Required: Yes
-- Type: string
+- Type: secureObject
 
 ### Parameter: `slots.configs.name-appsettings.retainCurrentAppSettings`
 
@@ -11890,7 +11851,7 @@ The config settings.
 | [`backupSchedule`](#parameter-slotsconfigsname-backuppropertiesbackupschedule) | object | Schedule for the backup if it is executed periodically. |
 | [`databases`](#parameter-slotsconfigsname-backuppropertiesdatabases) | array | Databases included in the backup. |
 | [`enabled`](#parameter-slotsconfigsname-backuppropertiesenabled) | bool | Set to `True` if the backup schedule is enabled (must be included in that case), `false` if the backup schedule should be disabled. |
-| [`storageAccountUrl`](#parameter-slotsconfigsname-backuppropertiesstorageaccounturl) | string | SAS URL to the container. |
+| [`storageAccountUrl`](#parameter-slotsconfigsname-backuppropertiesstorageaccounturl) | securestring | SAS URL to the container. |
 
 ### Parameter: `slots.configs.name-backup.properties.backupName`
 
@@ -12033,7 +11994,7 @@ Set to `True` if the backup schedule is enabled (must be included in that case),
 SAS URL to the container.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Variant: `slots.configs.name-connectionstrings`
 The type for a connection string configuration.
@@ -12085,7 +12046,7 @@ The name of the connection string setting.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`type`](#parameter-slotsconfigsname-connectionstringsproperties>any_other_property<type) | string | Type of database. |
-| [`value`](#parameter-slotsconfigsname-connectionstringsproperties>any_other_property<value) | string | Value of pair. |
+| [`value`](#parameter-slotsconfigsname-connectionstringsproperties>any_other_property<value) | securestring | Value of pair. |
 
 ### Parameter: `slots.configs.name-connectionstrings.properties.>Any_other_property<.type`
 
@@ -12115,7 +12076,7 @@ Type of database.
 Value of pair.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Variant: `slots.configs.name-logs`
 The type of a logs configuration.
@@ -12186,7 +12147,7 @@ Application logs to blob storage configuration.
 | :-- | :-- | :-- |
 | [`level`](#parameter-slotsconfigsname-logspropertiesapplicationlogsazureblobstoragelevel) | string | Log level. |
 | [`retentionInDays`](#parameter-slotsconfigsname-logspropertiesapplicationlogsazureblobstorageretentionindays) | int | Retention in days. Remove blobs older than X days. 0 or lower means no retention. |
-| [`sasUrl`](#parameter-slotsconfigsname-logspropertiesapplicationlogsazureblobstoragesasurl) | string | SAS url to a azure blob container with read/write/list/delete permissions. |
+| [`sasUrl`](#parameter-slotsconfigsname-logspropertiesapplicationlogsazureblobstoragesasurl) | securestring | SAS url to a azure blob container with read/write/list/delete permissions. |
 
 ### Parameter: `slots.configs.name-logs.properties.applicationLogs.azureBlobStorage.level`
 
@@ -12217,7 +12178,7 @@ Retention in days. Remove blobs older than X days. 0 or lower means no retention
 SAS url to a azure blob container with read/write/list/delete permissions.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `slots.configs.name-logs.properties.applicationLogs.azureTableStorage`
 
@@ -12230,7 +12191,7 @@ Application logs to azure table storage configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`sasUrl`](#parameter-slotsconfigsname-logspropertiesapplicationlogsazuretablestoragesasurl) | string | SAS URL to an Azure table with add/query/delete permissions. |
+| [`sasUrl`](#parameter-slotsconfigsname-logspropertiesapplicationlogsazuretablestoragesasurl) | securestring | SAS URL to an Azure table with add/query/delete permissions. |
 
 **Optional parameters**
 
@@ -12243,7 +12204,7 @@ Application logs to azure table storage configuration.
 SAS URL to an Azure table with add/query/delete permissions.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `slots.configs.name-logs.properties.applicationLogs.azureTableStorage.level`
 
@@ -12359,7 +12320,7 @@ Http logs to azure blob storage configuration.
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-slotsconfigsname-logspropertieshttplogsazureblobstorageenabled) | bool | Set to `True` if configuration is enabled, false if it is disabled. |
 | [`retentionInDays`](#parameter-slotsconfigsname-logspropertieshttplogsazureblobstorageretentionindays) | int | Retention in days. Remove blobs older than X days. 0 or lower means no retention. |
-| [`sasUrl`](#parameter-slotsconfigsname-logspropertieshttplogsazureblobstoragesasurl) | string | SAS url to a azure blob container with read/write/list/delete permissions. |
+| [`sasUrl`](#parameter-slotsconfigsname-logspropertieshttplogsazureblobstoragesasurl) | securestring | SAS url to a azure blob container with read/write/list/delete permissions. |
 
 ### Parameter: `slots.configs.name-logs.properties.httpLogs.azureBlobStorage.enabled`
 
@@ -12380,7 +12341,7 @@ Retention in days. Remove blobs older than X days. 0 or lower means no retention
 SAS url to a azure blob container with read/write/list/delete permissions.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `slots.configs.name-logs.properties.httpLogs.fileSystem`
 
@@ -12430,7 +12391,7 @@ To use this variant, set the property `name` to `metadata`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-slotsconfigsname-metadataname) | string | The type of config. |
-| [`properties`](#parameter-slotsconfigsname-metadataproperties) | object | The config settings. |
+| [`properties`](#parameter-slotsconfigsname-metadataproperties) | secureObject | The metadata key-value pairs. Values can contain secrets. |
 
 ### Parameter: `slots.configs.name-metadata.name`
 
@@ -12447,23 +12408,10 @@ The type of config.
 
 ### Parameter: `slots.configs.name-metadata.properties`
 
-The config settings.
+The metadata key-value pairs. Values can contain secrets.
 
 - Required: Yes
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-slotsconfigsname-metadataproperties>any_other_property<) | string | The metadata key value pair. |
-
-### Parameter: `slots.configs.name-metadata.properties.>Any_other_property<`
-
-The metadata key value pair.
-
-- Required: No
-- Type: string
+- Type: secureObject
 
 ### Variant: `slots.configs.name-pushsettings`
 The type of a pushSettings configuration.
@@ -12788,7 +12736,7 @@ Application settings.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-slotsconfigsname-webpropertiesappsettingsname) | string | Name of the pair. |
-| [`value`](#parameter-slotsconfigsname-webpropertiesappsettingsvalue) | string | Value of the pair. |
+| [`value`](#parameter-slotsconfigsname-webpropertiesappsettingsvalue) | securestring | Value of the pair. |
 
 ### Parameter: `slots.configs.name-web.properties.appSettings.name`
 
@@ -12802,7 +12750,7 @@ Name of the pair.
 Value of the pair.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `slots.configs.name-web.properties.autoHealEnabled`
 
@@ -13241,7 +13189,7 @@ Connection strings.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectionString`](#parameter-slotsconfigsname-webpropertiesconnectionstringsconnectionstring) | string | Connection string value. |
+| [`connectionString`](#parameter-slotsconfigsname-webpropertiesconnectionstringsconnectionstring) | securestring | Connection string value. |
 | [`name`](#parameter-slotsconfigsname-webpropertiesconnectionstringsname) | string | Name of connection string. |
 | [`type`](#parameter-slotsconfigsname-webpropertiesconnectionstringstype) | string | Type of database. |
 
@@ -13250,7 +13198,7 @@ Connection strings.
 Connection string value.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `slots.configs.name-web.properties.connectionStrings.name`
 
@@ -13794,7 +13742,7 @@ Application metadata. This property cannot be retrieved, since it may contain se
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-slotsconfigsname-webpropertiesmetadataname) | string | Pair name. |
-| [`value`](#parameter-slotsconfigsname-webpropertiesmetadatavalue) | string | Pair Value. |
+| [`value`](#parameter-slotsconfigsname-webpropertiesmetadatavalue) | securestring | Pair Value. |
 
 ### Parameter: `slots.configs.name-web.properties.metadata.name`
 
@@ -13808,7 +13756,7 @@ Pair name.
 Pair Value.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `slots.configs.name-web.properties.minimumElasticInstanceCount`
 

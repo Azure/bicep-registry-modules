@@ -109,7 +109,7 @@ Describe 'CODEOWNERS governance' {
     It 'Preserves tooling ownership for <Path>' -ForEach @(
         @{ Path = 'avm/res/storage/storage-account/tests/unit/avm.core.team.tests.ps1' }
         @{ Path = 'utilities/script.ps1' }
-        @{ Path = '.github/workflows/platform.toggle-avm-workflows.yml' }
+        @{ Path = '.github/workflows/platform.ci-tests.yml' }
     ) {
         $script:ownershipRules = @(Get-Content -Path (Join-Path $repoRootPath '.github' 'CODEOWNERS'))
         @(Get-TestCodeOwners -Path $Path) | Should -Be @('@Azure/azure-verified-modules-tooling-contributors')

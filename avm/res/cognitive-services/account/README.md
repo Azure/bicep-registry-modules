@@ -541,7 +541,7 @@ param publicNetworkAccess = 'Disabled'
 
 ### Example 4: _Using `AIServices` with `deployments` in parameter set_
 
-This instance deploys the module with the AI model deployment feature.
+This instance deploys the module with the AI model deployment feature and local authentication enabled, so that the keys are read after the model deployments.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment]
 
@@ -572,6 +572,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       }
     ]
+    disableLocalAuth: false
   }
 }
 ```
@@ -614,6 +615,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           }
         }
       ]
+    },
+    "disableLocalAuth": {
+      "value": false
     }
   }
 }
@@ -648,6 +652,7 @@ param deployments = [
     }
   }
 ]
+param disableLocalAuth = false
 ```
 
 </details>

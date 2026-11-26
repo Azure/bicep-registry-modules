@@ -421,6 +421,7 @@ type certificateType = {
   name: string?
 
   @description('Optional. The value of the certificate. PFX or PEM blob.')
+  @secure()
   certificateValue: string?
 
   @description('Optional. The password of the certificate.')

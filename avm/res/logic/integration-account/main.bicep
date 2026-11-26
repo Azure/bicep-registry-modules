@@ -485,6 +485,7 @@ type integrationAccountAssemblyType = {
   assemblyName: string
 
   @description('Required. The assembly content.')
+  @secure()
   content: string
 
   @description('Optional. The assembly content type.')
