@@ -1,5 +1,11 @@
 # AI Platform Baseline `[AiPlatform/Baseline]`
 
+> ⚠️THIS MODULE IS DEPRECATED.⚠️
+> 
+> - It will no longer receive any updates.
+> - If the underlying Azure service is not deprecated/retired, this module may still be used as is (references to any existing versions will keep working), but it is not recommended for new deployments.
+> - It is recommended to migrate to a replacement/alternative version of the module, if available.
+
 This module provides a secure and scalable environment for deploying AI applications on Azure.
 The module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.
 By integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.

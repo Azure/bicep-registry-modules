@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.48.1.52935",
-      "templateHash": "2871477651840743745"
+      "version": "0.49.2.45890",
+      "templateHash": "12463583264805979597"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -1662,8 +1662,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.48.1.52935",
-              "templateHash": "2010807355645913210"
+              "version": "0.49.2.45890",
+              "templateHash": "6363583871209081864"
             },
             "name": "Cognitive Services Account Deployment",
             "description": "This module deploys a Cognitive Services account model deployment."
@@ -2476,6 +2476,72 @@
         "cognitiveService_deployments"
       ]
     },
+    "cognitiveService_keys": {
+      "condition": "[or(or(not(parameters('disableLocalAuth')), contains(coalesce(parameters('secretsExportConfiguration'), createObject()), 'accessKey1Name')), contains(coalesce(parameters('secretsExportConfiguration'), createObject()), 'accessKey2Name'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-cognitiveService-keys', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "accountName": {
+            "value": "[parameters('name')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.49.2.45890",
+              "templateHash": "47751015917325930"
+            }
+          },
+          "parameters": {
+            "accountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Cognitive Services account."
+              }
+            }
+          },
+          "resources": {
+            "cognitiveService": {
+              "existing": true,
+              "type": "Microsoft.CognitiveServices/accounts",
+              "apiVersion": "2025-06-01",
+              "name": "[parameters('accountName')]"
+            }
+          },
+          "outputs": {
+            "primaryKey": {
+              "type": "securestring",
+              "metadata": {
+                "description": "The primary access key."
+              },
+              "value": "[listKeys('cognitiveService', '2025-06-01').key1]"
+            },
+            "secondaryKey": {
+              "type": "securestring",
+              "metadata": {
+                "description": "The secondary access key."
+              },
+              "value": "[listKeys('cognitiveService', '2025-06-01').key2]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "cognitiveService",
+        "cognitiveService_commitmentPlans",
+        "cognitiveService_deployments"
+      ]
+    },
     "secretsExport": {
       "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
       "type": "Microsoft.Resources/deployments",
@@ -2493,7 +2559,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('cognitiveService', '2025-06-01').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('cognitiveService', '2025-06-01').key2)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listOutputsWithSecureValues('cognitiveService_keys', '2025-04-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listOutputsWithSecureValues('cognitiveService_keys', '2025-04-01').secondaryKey)), createArray()))]"
           }
         },
         "template": {
@@ -2503,8 +2569,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.48.1.52935",
-              "templateHash": "17209990053078075625"
+              "version": "0.49.2.45890",
+              "templateHash": "8333450795878652992"
             }
           },
           "definitions": {
@@ -2620,7 +2686,7 @@
         }
       },
       "dependsOn": [
-        "cognitiveService"
+        "cognitiveService_keys"
       ]
     }
   },
@@ -2707,7 +2773,7 @@
       "metadata": {
         "description": "The primary access key."
       },
-      "value": "[if(not(parameters('disableLocalAuth')), listKeys('cognitiveService', '2025-06-01').key1, null())]"
+      "value": "[if(not(parameters('disableLocalAuth')), listOutputsWithSecureValues('cognitiveService_keys', '2025-04-01').primaryKey, null())]"
     },
     "secondaryKey": {
       "type": "securestring",
@@ -2715,7 +2781,7 @@
       "metadata": {
         "description": "The secondary access key."
       },
-      "value": "[if(not(parameters('disableLocalAuth')), listKeys('cognitiveService', '2025-06-01').key2, null())]"
+      "value": "[if(not(parameters('disableLocalAuth')), listOutputsWithSecureValues('cognitiveService_keys', '2025-04-01').secondaryKey, null())]"
     }
   }
 }

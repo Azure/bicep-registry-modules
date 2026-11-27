@@ -32,8 +32,16 @@ param sharedUserList string[]?
 @description('Required. The target of the connection.')
 param target string
 
-@description('Optional. Value details of the workspace connection.')
-param value string?
+@description('Optional. Use the workspace managed identity for the connection.')
+param useWorkspaceManagedIdentity bool?
+
+@description('Optional. Whether a private endpoint is required for the connection.')
+@allowed([
+  'Required'
+  'NotRequired'
+  'NotApplicable'
+])
+param peRequirement string?
 
 @description('Required. The properties of the connection, specific to the auth type.')
 param connectionProperties connectionPropertyType
@@ -42,7 +50,7 @@ param connectionProperties connectionPropertyType
 // Existing resources references //
 // ============================= //
 
-resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' existing = {
+resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2026-09-01' existing = {
   name: machineLearningWorkspaceName
 }
 
@@ -53,7 +61,7 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2026-06-01' = if (enableTelemetry) {
   name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -71,18 +79,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource connection 'Microsoft.MachineLearningServices/workspaces/connections@2024-10-01' = {
+resource connection 'Microsoft.MachineLearningServices/workspaces/connections@2026-09-01' = {
   name: name
   parent: machineLearningWorkspace
   properties: union(
     {
       category: category
-      expiryTime: expiryTime
-      isSharedToAll: isSharedToAll
       metadata: metadata
-      sharedUserList: sharedUserList
       target: target
-      value: value
+      ...(expiryTime != null ? { expiryTime: expiryTime } : {})
+      ...(isSharedToAll != null ? { isSharedToAll: isSharedToAll } : {})
+      ...(sharedUserList != null ? { sharedUserList: sharedUserList } : {})
+      ...(useWorkspaceManagedIdentity != null ? { useWorkspaceManagedIdentity: useWorkspaceManagedIdentity } : {})
+      ...(peRequirement != null ? { peRequirement: peRequirement } : {})
     },
     connectionProperties
   )
@@ -121,10 +130,15 @@ type categoryType =
   | 'AmazonRdsForSqlServer'
   | 'AmazonRedshift'
   | 'AmazonS3Compatible'
+  | 'ApiManagement'
   | 'ApiKey'
+  | 'AppConfig'
+  | 'AppInsights'
   | 'AzureBlob'
+  | 'AzureContainerAppEnvironment'
   | 'AzureDataExplorer'
   | 'AzureDatabricksDeltaLake'
+  | 'AzureKeyVault'
   | 'AzureMariaDb'
   | 'AzureMySqlDb'
   | 'AzureOneLake'
@@ -132,6 +146,7 @@ type categoryType =
   | 'AzurePostgresDb'
   | 'AzureSqlDb'
   | 'AzureSqlMi'
+  | 'AzureStorageAccount'
   | 'AzureSynapseAnalytics'
   | 'AzureTableStorage'
   | 'BingLLMSearch'
@@ -144,6 +159,7 @@ type categoryType =
   | 'CosmosDbMongoDbApi'
   | 'Couchbase'
   | 'CustomKeys'
+  | 'Databricks'
   | 'Db2'
   | 'Drill'
   | 'Dynamics'
@@ -161,6 +177,8 @@ type categoryType =
   | 'GoogleBigQuery'
   | 'GoogleCloudStorage'
   | 'Greenplum'
+  | 'GroundingWithBingSearch'
+  | 'GroundingWithCustomSearch'
   | 'Hbase'
   | 'Hdfs'
   | 'Hive'
@@ -173,6 +191,8 @@ type categoryType =
   | 'MariaDb'
   | 'Marketo'
   | 'MicrosoftAccess'
+  | 'MicrosoftFabric'
+  | 'ModelGateway'
   | 'MongoDbAtlas'
   | 'MongoDbV2'
   | 'MySql'
@@ -188,10 +208,13 @@ type categoryType =
   | 'Phoenix'
   | 'Pinecone'
   | 'PostgreSql'
+  | 'PowerPlatformEnvironment'
   | 'Presto'
   | 'PythonFeed'
   | 'QuickBooks'
   | 'Redis'
+  | 'RemoteA2A'
+  | 'RemoteTool'
   | 'Responsys'
   | 'S3'
   | 'Salesforce'
@@ -208,6 +231,7 @@ type categoryType =
   | 'ServiceNow'
   | 'Sftp'
   | 'SharePointOnlineList'
+  | 'Sharepoint'
   | 'Shopify'
   | 'Snowflake'
   | 'Spark'

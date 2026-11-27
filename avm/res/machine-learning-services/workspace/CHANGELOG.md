@@ -2,6 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/machine-learning-services/workspace/CHANGELOG.md).
 
+## 0.15.0
+
+### Changes
+
+- Added workspace network ACLs, data isolation, legacy mode, and resource-group role assignment controls.
+- Expanded managed networking and connection configuration options.
+- Improved input validation for compute configurations, service-managed resource settings, shared private links, and tags.
+
+### Breaking Changes
+
+- Removed `ipAllowlist`. Use `networkAcls` with `defaultAction: 'Deny'` and allowed IP ranges in `ipRules[*].value` instead.
+- Removed `discoveryUrl`.
+- Removed `connections[*].value`. Remove this property from connection configurations before upgrading.
+
 ## 0.14.2
 
 ### Changes

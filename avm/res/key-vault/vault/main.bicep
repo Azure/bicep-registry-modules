@@ -58,11 +58,12 @@ param sku string = 'premium'
 @description('Optional. Rules governing the accessibility of the resource from specific network locations.')
 param networkAcls networkAclsType?
 
-@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
+@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. When secured by an associated network security perimeter, trusted services require explicit perimeter access rules.')
 @allowed([
   ''
   'Enabled'
   'Disabled'
+  'SecuredByPerimeter'
 ])
 param publicNetworkAccess string = ''
 
@@ -605,7 +606,9 @@ type secretType = {
     @description('Optional. If set, defines the date from which onwards the secret becomes valid. Defined in seconds since 1970-01-01T00:00:00Z.')
     nbf: int?
   }?
+  // Secure to match the `secret` child module's `contentType` parameter, so the parent doesn't record a value the child hides.
   @description('Optional. The content type of the secret.')
+  @secure()
   contentType: string?
 
   @description('Required. The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets.')

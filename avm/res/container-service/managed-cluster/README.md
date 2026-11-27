@@ -4536,7 +4536,7 @@ Settings and configurations for the flux extension.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`configurationProtectedSettings`](#parameter-fluxextensionconfigurationprotectedsettings) | object | The configuration protected settings of the extension. |
+| [`configurationProtectedSettings`](#parameter-fluxextensionconfigurationprotectedsettings) | secureObject | The configuration protected settings of the extension. |
 | [`configurationSettings`](#parameter-fluxextensionconfigurationsettings) | object | The configuration settings of the extension. |
 | [`fluxConfigurations`](#parameter-fluxextensionfluxconfigurations) | array | The flux configurations of the extension. |
 | [`name`](#parameter-fluxextensionname) | string | The name of the extension. |
@@ -4550,7 +4550,7 @@ Settings and configurations for the flux extension.
 The configuration protected settings of the extension.
 
 - Required: No
-- Type: object
+- Type: secureObject
 
 ### Parameter: `fluxExtension.configurationSettings`
 

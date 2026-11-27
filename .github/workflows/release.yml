@@ -26,6 +26,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "avm/**"
 
 permissions: {}
 
@@ -33,8 +35,8 @@ jobs:
   initialize:
     name: "Select pending module releases"
     permissions:
-      contents: read
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@987bf24c2d2f22cd063444b86fad80aeb0e9b748
+      contents: write
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-release.yml@23cfc981167157e2b8ef8f5a89c5ea0b0eaf5869
     with:
       initializeOnly: true
       authoringSource: ${{ inputs.authoringSource || 'gallery' }}
@@ -52,7 +54,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}
-    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime-release.yml@987bf24c2d2f22cd063444b86fad80aeb0e9b748
+    uses: Azure/azure-verified-modules-tools/.github/workflows/bicep-module-runtime-release.yml@23cfc981167157e2b8ef8f5a89c5ea0b0eaf5869
     with:
       modulePath: ${{ matrix.modulePath }}
       plannedTags: ${{ matrix.plannedTags }}

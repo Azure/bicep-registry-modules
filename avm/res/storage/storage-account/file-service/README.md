@@ -322,7 +322,7 @@ File shares to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessTier`](#parameter-sharesaccesstier) | string | Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool. |
+| [`accessTier`](#parameter-sharesaccesstier) | string | Access tier for the share. Defaults to Premium for FileStorage accounts with Premium_LRS or Premium_ZRS, and is omitted by default for provisioned v2 accounts (PremiumV2_* and StandardV2_*). GpV2 accounts can choose between TransactionOptimized (default), Hot, and Cool. |
 | [`enabledProtocols`](#parameter-sharesenabledprotocols) | string | The authentication protocol that is used for the file share. Can only be specified when creating a share. |
 | [`provisionedBandwidthMibps`](#parameter-sharesprovisionedbandwidthmibps) | int | The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340. |
 | [`provisionedIops`](#parameter-sharesprovisionediops) | int | The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400. |
@@ -339,7 +339,7 @@ The name of the file share.
 
 ### Parameter: `shares.accessTier`
 
-Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool.
+Access tier for the share. Defaults to Premium for FileStorage accounts with Premium_LRS or Premium_ZRS, and is omitted by default for provisioned v2 accounts (PremiumV2_* and StandardV2_*). GpV2 accounts can choose between TransactionOptimized (default), Hot, and Cool.
 
 - Required: No
 - Type: string

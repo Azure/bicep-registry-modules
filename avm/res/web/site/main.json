@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "9726079552292033179"
+      "version": "0.48.1.52935",
+      "templateHash": "17164943319068367792"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -1064,7 +1064,7 @@
           }
         },
         "properties": {
-          "type": "object",
+          "type": "secureObject",
           "properties": {},
           "additionalProperties": {
             "type": "string",
@@ -1074,7 +1074,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING."
+            "description": "Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. Values can contain secrets."
           }
         }
       },
@@ -2673,7 +2673,7 @@
               }
             },
             "storageAccountUrl": {
-              "type": "string",
+              "type": "securestring",
               "nullable": true,
               "metadata": {
                 "description": "Optional. SAS URL to the container."
@@ -2730,7 +2730,7 @@
                 }
               },
               "value": {
-                "type": "string",
+                "type": "securestring",
                 "metadata": {
                   "description": "Required. Value of pair."
                 }
@@ -3102,7 +3102,7 @@
                       }
                     },
                     "sasUrl": {
-                      "type": "string",
+                      "type": "securestring",
                       "nullable": true,
                       "metadata": {
                         "description": "Optional. SAS url to a azure blob container with read/write/list/delete permissions."
@@ -3132,7 +3132,7 @@
                       }
                     },
                     "sasUrl": {
-                      "type": "string",
+                      "type": "securestring",
                       "metadata": {
                         "description": "Required. SAS URL to an Azure table with add/query/delete permissions."
                       }
@@ -3225,7 +3225,7 @@
                       }
                     },
                     "sasUrl": {
-                      "type": "string",
+                      "type": "securestring",
                       "nullable": true,
                       "metadata": {
                         "description": "Optional. SAS url to a azure blob container with read/write/list/delete permissions."
@@ -3329,7 +3329,7 @@
           }
         },
         "properties": {
-          "type": "object",
+          "type": "secureObject",
           "properties": {},
           "additionalProperties": {
             "type": "string",
@@ -3339,7 +3339,7 @@
             }
           },
           "metadata": {
-            "description": "Required. The config settings."
+            "description": "Required. The metadata key-value pairs. Values can contain secrets."
           }
         }
       },
@@ -3710,7 +3710,7 @@
                     }
                   },
                   "value": {
-                    "type": "string",
+                    "type": "securestring",
                     "metadata": {
                       "description": "Required. Value of the pair."
                     }
@@ -4019,7 +4019,7 @@
                 "type": "object",
                 "properties": {
                   "connectionString": {
-                    "type": "string",
+                    "type": "securestring",
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. Connection string value."
@@ -4421,7 +4421,7 @@
                     }
                   },
                   "value": {
-                    "type": "string",
+                    "type": "securestring",
                     "metadata": {
                       "description": "Required. Pair Value."
                     }
@@ -5495,8 +5495,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "6643230019895518584"
+              "version": "0.48.1.52935",
+              "templateHash": "5279374896413125457"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -5528,10 +5528,10 @@
               }
             },
             "properties": {
-              "type": "object",
+              "type": "secureObject",
               "defaultValue": {},
               "metadata": {
-                "description": "Optional. The properties of the config. Note: This parameter is highly dependent on the config type, defined by its name."
+                "description": "Optional. The properties of the config. The shape depends on its name. The entire object is secure because config properties can contain secrets."
               }
             },
             "storageAccountUseIdentityAuthentication": {
@@ -5563,7 +5563,7 @@
               }
             },
             "currentAppSettings": {
-              "type": "object",
+              "type": "secureObject",
               "properties": {},
               "additionalProperties": {
                 "type": "string",
@@ -5573,7 +5573,7 @@
               },
               "defaultValue": {},
               "metadata": {
-                "description": "Optional. The current app settings."
+                "description": "Optional. The current app settings. The entire object is secure because retained settings can contain secrets."
               }
             }
           },
@@ -5698,8 +5698,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "5803343456396733312"
+              "version": "0.48.1.52935",
+              "templateHash": "9095647952104839013"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy."
@@ -5995,8 +5995,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "4430311077336354521"
+              "version": "0.48.1.52935",
+              "templateHash": "7299752074683453340"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -6188,7 +6188,7 @@
                   }
                 },
                 "properties": {
-                  "type": "object",
+                  "type": "secureObject",
                   "properties": {},
                   "additionalProperties": {
                     "type": "string",
@@ -6198,7 +6198,7 @@
                   },
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING."
+                    "description": "Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. Values can contain secrets."
                   }
                 }
               },
@@ -7789,7 +7789,7 @@
                       }
                     },
                     "storageAccountUrl": {
-                      "type": "string",
+                      "type": "securestring",
                       "nullable": true,
                       "metadata": {
                         "description": "Optional. SAS URL to the container."
@@ -7844,7 +7844,7 @@
                         }
                       },
                       "value": {
-                        "type": "string",
+                        "type": "securestring",
                         "metadata": {
                           "description": "Required. Value of pair."
                         }
@@ -7908,7 +7908,7 @@
                               }
                             },
                             "sasUrl": {
-                              "type": "string",
+                              "type": "securestring",
                               "nullable": true,
                               "metadata": {
                                 "description": "Optional. SAS url to a azure blob container with read/write/list/delete permissions."
@@ -7938,7 +7938,7 @@
                               }
                             },
                             "sasUrl": {
-                              "type": "string",
+                              "type": "securestring",
                               "metadata": {
                                 "description": "Required. SAS URL to an Azure table with add/query/delete permissions."
                               }
@@ -8031,7 +8031,7 @@
                               }
                             },
                             "sasUrl": {
-                              "type": "string",
+                              "type": "securestring",
                               "nullable": true,
                               "metadata": {
                                 "description": "Optional. SAS url to a azure blob container with read/write/list/delete permissions."
@@ -8105,7 +8105,7 @@
                   }
                 },
                 "properties": {
-                  "type": "object",
+                  "type": "secureObject",
                   "properties": {},
                   "additionalProperties": {
                     "type": "string",
@@ -8115,7 +8115,7 @@
                     }
                   },
                   "metadata": {
-                    "description": "Required. The config settings."
+                    "description": "Required. The metadata key-value pairs. Values can contain secrets."
                   }
                 }
               },
@@ -8262,7 +8262,7 @@
                             }
                           },
                           "value": {
-                            "type": "string",
+                            "type": "securestring",
                             "metadata": {
                               "description": "Required. Value of the pair."
                             }
@@ -8571,7 +8571,7 @@
                         "type": "object",
                         "properties": {
                           "connectionString": {
-                            "type": "string",
+                            "type": "securestring",
                             "nullable": true,
                             "metadata": {
                               "description": "Optional. Connection string value."
@@ -8973,7 +8973,7 @@
                             }
                           },
                           "value": {
-                            "type": "string",
+                            "type": "securestring",
                             "metadata": {
                               "description": "Required. Pair Value."
                             }
@@ -10955,8 +10955,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "8336761301306417999"
+                      "version": "0.48.1.52935",
+                      "templateHash": "6760814342594945850"
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
                     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
@@ -11113,8 +11113,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "2498996548656408267"
+                      "version": "0.48.1.52935",
+                      "templateHash": "8007226781463597848"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
@@ -11284,8 +11284,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "6490717852474688867"
+                      "version": "0.48.1.52935",
+                      "templateHash": "15724878736405007256"
                     },
                     "name": "Web/Function Apps Slot Host Name Bindings",
                     "description": "This module deploys a Site Slot Host Name Binding."
@@ -11590,8 +11590,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "4291595888817116466"
+                              "version": "0.48.1.52935",
+                              "templateHash": "17247864335123051108"
                             },
                             "name": "Web/Function Apps Certificates",
                             "description": "This module deploys a Web/Function App Certificate."
@@ -11940,8 +11940,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "1049955440012329769"
+                      "version": "0.48.1.52935",
+                      "templateHash": "13418409483541197264"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -11978,14 +11978,14 @@
                       }
                     },
                     "properties": {
-                      "type": "object",
+                      "type": "secureObject",
                       "defaultValue": {},
                       "metadata": {
-                        "description": "Optional. The properties of the config. Note: This parameter is highly dependent on the config type, defined by its name."
+                        "description": "Optional. The properties of the config. The shape depends on its name. The entire object is secure because config properties can contain secrets."
                       }
                     },
                     "currentAppSettings": {
-                      "type": "object",
+                      "type": "secureObject",
                       "properties": {},
                       "additionalProperties": {
                         "type": "string",
@@ -11995,7 +11995,7 @@
                       },
                       "defaultValue": {},
                       "metadata": {
-                        "description": "Optional. The current app settings."
+                        "description": "Optional. The current app settings. The entire object is secure because retained settings can contain secrets."
                       }
                     },
                     "storageAccountUseIdentityAuthentication": {
@@ -12163,8 +12163,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "17109451070818458117"
+                      "version": "0.48.1.52935",
+                      "templateHash": "5258963560176094651"
                     },
                     "name": "Site Deployment Extension ",
                     "description": "This module deploys a Site extension for MSDeploy."
@@ -13084,8 +13084,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "4153762679031264439"
+              "version": "0.48.1.52935",
+              "templateHash": "8177936735458822696"
             },
             "name": "Web Site Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Basic Publishing Credentials Policy."
@@ -13233,8 +13233,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "7005368868370677801"
+              "version": "0.48.1.52935",
+              "templateHash": "12729479817764911706"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay."
@@ -13396,8 +13396,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "18421211248855040614"
+              "version": "0.48.1.52935",
+              "templateHash": "13326828460378264885"
             },
             "name": "Web/Function Apps Slot Host Name Bindings",
             "description": "This module deploys a Site Slot Host Name Binding."
@@ -13690,8 +13690,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "4291595888817116466"
+                      "version": "0.48.1.52935",
+                      "templateHash": "17247864335123051108"
                     },
                     "name": "Web/Function Apps Certificates",
                     "description": "This module deploys a Web/Function App Certificate."

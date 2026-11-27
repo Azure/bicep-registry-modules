@@ -196,7 +196,7 @@ param extensionAzureDiskEncryptionConfig object = {
 }
 
 @description('Optional. The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionDSCConfig object = {
+param extensionDSCConfig extensionDSCConfigType = {
   enabled: false
 }
 
@@ -1492,6 +1492,18 @@ type nicConfigurationOutputType = {
 
   @description('Required. List of IP configurations of the NIC configuration.')
   ipConfigurations: networkInterfaceIPConfigurationOutputType[]
+}
+
+@export()
+@description('DSC configuration. Only protected settings are constrained; other caller properties retain the open object contract.')
+type extensionDSCConfigType = {
+  @description('Optional. Any object that contains the extension specific protected settings.')
+  @secure()
+  protectedSettings: object?
+
+  @description('Optional. Other DSC configuration properties. Only the properties used by the extension are forwarded.')
+  #disable-next-line no-explicit-any // The previous object contract did not constrain ordinary siblings.
+  *: any
 }
 
 @export()

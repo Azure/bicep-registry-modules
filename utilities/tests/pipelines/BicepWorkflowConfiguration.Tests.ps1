@@ -4,9 +4,8 @@
 )
 
 Describe 'Coordinated tools dependency updates' {
-    It 'keeps every caller tools reference aligned without pinning Avm.Authoring' {
+    It 'keeps each caller tools reference aligned without pinning Avm.Authoring' {
         $workflowRoot = Join-Path $RepoRootPath '.github' 'workflows'
-        $toolsRefs = @()
         foreach ($file in @('pr-check.yml', 'release.yml')) {
             $workflowPath = Join-Path $workflowRoot $file
             $content = Get-Content -LiteralPath $workflowPath -Raw
@@ -29,13 +28,14 @@ Describe 'Coordinated tools dependency updates' {
             $authoringWith.authoringSource | Should -BeExactly ('$' + '{{ inputs.authoringSource || ''gallery'' }}')
             $authoringWith.authoringRef | Should -BeExactly ('$' + '{{ inputs.authoringRef || ' + "''" + ' }}')
 
-            $toolsRefs += @(
+            $toolsRefs = @(
                 [regex]::Matches($content, '(?m)^\s*uses:\s*Azure/azure-verified-modules-tools/[^\s@]+@([^\s#]+)') |
                     ForEach-Object { $_.Groups[1].Value }
             )
+            $expectedCount = if ($file -eq 'pr-check.yml') { 4 } else { 2 }
+            $toolsRefs | Should -HaveCount $expectedCount
+            @($toolsRefs | Select-Object -Unique) | Should -HaveCount 1
         }
-        $toolsRefs | Should -HaveCount 4
-        @($toolsRefs | Select-Object -Unique) | Should -HaveCount 1
     }
 
     It 'prevents automatic uses-only changes from diverging from tools-ref inputs' {
@@ -59,8 +59,11 @@ Describe 'Shared Bicep workflow entry points' {
         $prCheck = Get-Content -LiteralPath (Join-Path $workflowRoot 'pr-check.yml') -Raw | ConvertFrom-Yaml
 
         $release.on.push.branches | Should -Be @('main')
-        $release.on.push.ContainsKey('paths') | Should -BeFalse
+        $release.on.push.paths | Should -Be @('avm/**')
         $release.on.ContainsKey('workflow_dispatch') | Should -BeTrue
+        $prCheck.on.pull_request.ContainsKey('paths') | Should -BeFalse
+        $prCheck.on.pull_request.types | Should -Be @('opened', 'reopened', 'synchronize')
+        $prCheck.on.ContainsKey('workflow_dispatch') | Should -BeTrue
         $release.name | Should -BeExactly '.Module - Release'
         $release.jobs.release.name | Should -BeExactly '${{ matrix.modulePath }}'
         $prCheck.name | Should -BeExactly '.Module - PR Check'
@@ -78,14 +81,32 @@ Describe 'Shared Bicep workflow entry points' {
         }
     }
 
+    It 'evaluates mutually exclusive module check routes in one gate' {
+        $prCheck = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'pr-check.yml') -Raw |
+            ConvertFrom-Yaml
+
+        $prCheck.jobs.check.name | Should -BeExactly 'Module checks: ${{ matrix.modulePath }}'
+        $prCheck.jobs.check.strategy.matrix | Should -BeExactly '${{ fromJSON(needs.initialize.outputs.moduleMatrix) }}'
+        $prCheck.jobs.check.with.e2eRoute | Should -BeExactly '${{ matrix.e2eRoute }}'
+        $prCheck.jobs.check.with.moduleTestFilePaths | Should -BeExactly '${{ matrix.moduleTestFilePaths }}'
+        $prCheck.jobs.'check-fork'.strategy.matrix | Should -BeExactly $prCheck.jobs.check.strategy.matrix
+        $prCheck.jobs.ContainsKey('required-e2e') | Should -BeFalse
+        $prCheck.jobs.ContainsKey('optional-e2e') | Should -BeFalse
+        $prCheck.jobs.ContainsKey('static-gate') | Should -BeFalse
+        $prCheck.jobs.ContainsKey('required-e2e-gate') | Should -BeFalse
+        $prCheck.jobs.'module-gate'.name | Should -BeExactly 'Report check status'
+        $prCheck.jobs.'module-gate'.if | Should -BeExactly 'always()'
+        $prCheck.jobs.'module-gate'.needs | Should -Be @('initialize', 'check', 'check-fork')
+    }
+
     It 'exposes the selected release plan in per-module jobs' {
         $release = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'release.yml') -Raw |
             ConvertFrom-Yaml
         $selector = $release.jobs.initialize
         $publisher = $release.jobs.release
 
+        $selector.name | Should -BeExactly 'Select pending module releases'
         $selector.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-release\.yml@'
-        $selector.permissions.contents | Should -BeExactly 'read'
         $selector.with.initializeOnly | Should -BeTrue
         $publisher.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-module-runtime-release\.yml@'
         $publisher.needs | Should -BeExactly 'initialize'
@@ -101,6 +122,17 @@ Describe 'Shared Bicep workflow entry points' {
         }
         $publisher.with.pendingRelease | Should -BeTrue
         $publisher.with.requireChangelog | Should -BeTrue
+    }
+
+    It 'grants the initialize-only reusable workflow the nested release job permissions' {
+        $release = Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'release.yml') -Raw |
+            ConvertFrom-Yaml
+        $selector = $release.jobs.initialize
+
+        $selector.uses | Should -Match '^Azure/azure-verified-modules-tools/\.github/workflows/bicep-release\.yml@'
+        $selector.with.initializeOnly | Should -BeTrue
+        @($selector.permissions.Keys) | Should -Be @('contents')
+        $selector.permissions.contents | Should -BeExactly 'write'
     }
 }
 

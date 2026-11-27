@@ -15,5 +15,6 @@
     "Microsoft.Storage",
     "Microsoft.Insights",
     "Microsoft.KeyVault"
-  ]
+  ],
+  "avm/res/kubernetes-configuration/extension": ["Microsoft.Kubernetes"]
 }

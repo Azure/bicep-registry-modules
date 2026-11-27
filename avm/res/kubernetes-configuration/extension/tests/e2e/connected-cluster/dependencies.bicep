@@ -7,28 +7,35 @@ param clusterName string
 @description('Required. The name of the AKS cluster extension to create.')
 param clusterExtensionName string
 
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.10.0' = {
-  name: '${uniqueString(deployment().name, location)}-managedCluster'
-  scope: resourceGroup()
-  params: {
-    name: clusterName
-    kubernetesVersion: '1.32.6'
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-01' = {
+  name: clusterName
+  location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  sku: {
+    name: 'Base'
+    tier: 'Standard'
+  }
+  properties: {
+    dnsPrefix: clusterName
     publicNetworkAccess: 'Enabled'
-    azurePolicyEnabled: false
-    disableLocalAccounts: false
-    managedIdentities: {
-      systemAssigned: true
+    enableRBAC: true
+    addonProfiles: {
+      azurepolicy: {
+        enabled: false
+      }
     }
-    aadProfile: null
-    primaryAgentPoolProfiles: [
+    disableLocalAccounts: false
+    agentPoolProfiles: [
       {
         name: 'agentpool'
         count: 1
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_D2as_v5'
         osType: 'Linux'
         mode: 'System'
         availabilityZones: [
-          1
+          '1'
         ]
       }
     ]

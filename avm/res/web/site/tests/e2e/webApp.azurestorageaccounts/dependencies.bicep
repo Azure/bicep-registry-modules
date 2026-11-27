@@ -89,6 +89,7 @@ output primaryStorageAccountResourceId string = primaryStorageAccount.id
 output primaryStorageAccountName string = primaryStorageAccount.name
 
 @description('The primary access key of the primary Storage Account.')
+@secure()
 output primaryStorageAccountKey string = primaryStorageAccount.listKeys().keys[0].value
 
 @description('The resource ID of the secondary Storage Account.')
@@ -98,4 +99,5 @@ output secondaryStorageAccountResourceId string = secondaryStorageAccount.id
 output secondaryStorageAccountName string = secondaryStorageAccount.name
 
 @description('The primary access key of the secondary Storage Account.')
+@secure()
 output secondaryStorageAccountKey string = secondaryStorageAccount.listKeys().keys[0].value

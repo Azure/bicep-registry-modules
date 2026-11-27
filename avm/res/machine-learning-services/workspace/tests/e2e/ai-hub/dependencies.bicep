@@ -38,10 +38,12 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
   location: location
   kind: ''
-  properties: {}
+  properties: {
+    Application_Type: 'web'
+  }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-06-01' = {
   name: '${take(storageAccountName, 11)}${uniqueString(resourceGroup().id, storageAccountName)}'
   location: location
   sku: {
@@ -50,7 +52,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   kind: 'StorageV2'
 }
 
-resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2026-06-01' = {
   name: '${take(secondaryStorageAccountName, 11)}${uniqueString(resourceGroup().id, secondaryStorageAccountName)}'
   location: location
   sku: {
@@ -59,7 +61,7 @@ resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' 
   kind: 'StorageV2'
 }
 
-resource aiServices 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
+resource aiServices 'Microsoft.CognitiveServices/accounts@2026-07-01' = {
   name: aiServicesName
   location: location
   sku: {
