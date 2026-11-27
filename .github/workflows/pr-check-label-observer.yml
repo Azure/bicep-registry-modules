@@ -1,0 +1,14 @@
+name: ".Module - PR Check Label Observer"
+
+on:
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
+
+permissions: {}
+
+jobs:
+  observe-labels:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    uses: Azure/azure-verified-modules-tools/.github/workflows/pr-check-label-observer.yml@5a2f3974b78869ed9af9aa0769499e67d41460ef

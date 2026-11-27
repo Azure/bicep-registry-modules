@@ -22,6 +22,12 @@ param serviceShort string = 'iamax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+// This checked-in sample assembly is public test data; the default contains no secret.
+@description('Optional. The Base64-encoded content of the public test assembly.')
+@secure()
+#disable-next-line secure-parameter-default
+param assemblyContent string = loadTextContent('assembly-content.txt')
+
 @description('Optional. An existing built-in service principal object ID for offline validation. When omitted, resolve it through Microsoft Graph.')
 param builtInServicePrincipalObjectId string?
 
@@ -158,7 +164,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'assembly1'
           assemblyName: 'name1'
-          content: loadTextContent('assembly-content.txt')
+          content: assemblyContent
         }
       ]
       agreements: [

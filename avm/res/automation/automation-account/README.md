@@ -387,28 +387,28 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       {
         description: 'TestStringDescription'
         name: 'TestString'
-        value: '\'TestString\''
+        value: '<value>'
       }
       {
         description: 'TestIntegerDescription'
         name: 'TestInteger'
-        value: '500'
+        value: '<value>'
       }
       {
         description: 'TestBooleanDescription'
         name: 'TestBoolean'
-        value: 'false'
+        value: '<value>'
       }
       {
         description: 'TestDateTimeDescription'
         isEncrypted: false
         name: 'TestDateTime'
-        value: '\'\\/Date(1637934042656)\\/\''
+        value: '<value>'
       }
       {
         description: 'TestEncryptedDescription'
         name: 'TestEncryptedVariable'
-        value: '\'TestEncryptedValue\''
+        value: '<value>'
       }
     ]
     webhooks: [
@@ -663,28 +663,28 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         {
           "description": "TestStringDescription",
           "name": "TestString",
-          "value": "\"TestString\""
+          "value": "<value>"
         },
         {
           "description": "TestIntegerDescription",
           "name": "TestInteger",
-          "value": "500"
+          "value": "<value>"
         },
         {
           "description": "TestBooleanDescription",
           "name": "TestBoolean",
-          "value": "false"
+          "value": "<value>"
         },
         {
           "description": "TestDateTimeDescription",
           "isEncrypted": false,
           "name": "TestDateTime",
-          "value": "\"\\/Date(1637934042656)\\/\""
+          "value": "<value>"
         },
         {
           "description": "TestEncryptedDescription",
           "name": "TestEncryptedVariable",
-          "value": "\"TestEncryptedValue\""
+          "value": "<value>"
         }
       ]
     },
@@ -899,28 +899,28 @@ param variables = [
   {
     description: 'TestStringDescription'
     name: 'TestString'
-    value: '\'TestString\''
+    value: '<value>'
   }
   {
     description: 'TestIntegerDescription'
     name: 'TestInteger'
-    value: '500'
+    value: '<value>'
   }
   {
     description: 'TestBooleanDescription'
     name: 'TestBoolean'
-    value: 'false'
+    value: '<value>'
   }
   {
     description: 'TestDateTimeDescription'
     isEncrypted: false
     name: 'TestDateTime'
-    value: '\'\\/Date(1637934042656)\\/\''
+    value: '<value>'
   }
   {
     description: 'TestEncryptedDescription'
     name: 'TestEncryptedVariable'
-    value: '\'TestEncryptedValue\''
+    value: '<value>'
   }
 ]
 param webhooks = [
@@ -1057,27 +1057,27 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       {
         description: 'TestStringDescription'
         name: 'TestString'
-        value: '\'TestString\''
+        value: '<value>'
       }
       {
         description: 'TestIntegerDescription'
         name: 'TestInteger'
-        value: '500'
+        value: '<value>'
       }
       {
         description: 'TestBooleanDescription'
         name: 'TestBoolean'
-        value: 'false'
+        value: '<value>'
       }
       {
         description: 'TestDateTimeDescription'
         name: 'TestDateTime'
-        value: '\'\\/Date(1637934042656)\\/\''
+        value: '<value>'
       }
       {
         description: 'TestEncryptedDescription'
         name: 'TestEncryptedVariable'
-        value: '\'TestEncryptedValue\''
+        value: '<value>'
       }
     ]
   }
@@ -1227,27 +1227,27 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         {
           "description": "TestStringDescription",
           "name": "TestString",
-          "value": "\"TestString\""
+          "value": "<value>"
         },
         {
           "description": "TestIntegerDescription",
           "name": "TestInteger",
-          "value": "500"
+          "value": "<value>"
         },
         {
           "description": "TestBooleanDescription",
           "name": "TestBoolean",
-          "value": "false"
+          "value": "<value>"
         },
         {
           "description": "TestDateTimeDescription",
           "name": "TestDateTime",
-          "value": "\"\\/Date(1637934042656)\\/\""
+          "value": "<value>"
         },
         {
           "description": "TestEncryptedDescription",
           "name": "TestEncryptedVariable",
-          "value": "\"TestEncryptedValue\""
+          "value": "<value>"
         }
       ]
     }
@@ -1369,27 +1369,27 @@ param variables = [
   {
     description: 'TestStringDescription'
     name: 'TestString'
-    value: '\'TestString\''
+    value: '<value>'
   }
   {
     description: 'TestIntegerDescription'
     name: 'TestInteger'
-    value: '500'
+    value: '<value>'
   }
   {
     description: 'TestBooleanDescription'
     name: 'TestBoolean'
-    value: 'false'
+    value: '<value>'
   }
   {
     description: 'TestDateTimeDescription'
     name: 'TestDateTime'
-    value: '\'\\/Date(1637934042656)\\/\''
+    value: '<value>'
   }
   {
     description: 'TestEncryptedDescription'
     name: 'TestEncryptedVariable'
-    value: '\'TestEncryptedValue\''
+    value: '<value>'
   }
 ]
 ```
@@ -1433,7 +1433,7 @@ param variables = [
 | [`skuName`](#parameter-skuname) | string | SKU name of the account. |
 | [`sourceControlConfigurations`](#parameter-sourcecontrolconfigurations) | array | The source control configurations. |
 | [`tags`](#parameter-tags) | object | Tags of the Automation Account resource. |
-| [`variables`](#parameter-variables) | array | List of variables to be created in the automation account. |
+| [`variables`](#parameter-variables) | array | List of variables to be created in the automation account. Each entry supplies name and value; description and isEncrypted are optional and retain the child module defaults. |
 | [`webhooks`](#parameter-webhooks) | array | List of webhooks to be created in the automation account. |
 
 ### Parameter: `name`
@@ -2749,11 +2749,37 @@ Tags of the Automation Account resource.
 
 ### Parameter: `variables`
 
-List of variables to be created in the automation account.
+List of variables to be created in the automation account. Each entry supplies name and value; description and isEncrypted are optional and retain the child module defaults.
 
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-variablesvalue) | securestring | The value of the variable. For security best practices, this value is always passed as a secure string as it could contain an encrypted value when the "isEncrypted" property is set to true. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-variables>any_other_property<) |  | Other variable properties, including name, description, and isEncrypted. Only the properties used by the variable child module are forwarded. |
+
+### Parameter: `variables.value`
+
+The value of the variable. For security best practices, this value is always passed as a secure string as it could contain an encrypted value when the "isEncrypted" property is set to true.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `variables.>Any_other_property<`
+
+Other variable properties, including name, description, and isEncrypted. Only the properties used by the variable child module are forwarded.
+
+- Required: Yes
+- Type: 
 
 ### Parameter: `webhooks`
 

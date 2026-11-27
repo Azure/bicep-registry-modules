@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.48.1.52935",
-      "templateHash": "8716989648573441020"
+      "version": "0.49.2.45890",
+      "templateHash": "12598436762067249113"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -23,7 +23,7 @@
           }
         },
         "certificateValue": {
-          "type": "string",
+          "type": "securestring",
           "nullable": true,
           "metadata": {
             "description": "Optional. The value of the certificate. PFX or PEM blob."
@@ -1167,8 +1167,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.48.1.52935",
-              "templateHash": "10975253151808989738"
+              "version": "0.49.2.45890",
+              "templateHash": "16321341039932547195"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -1329,8 +1329,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.48.1.52935",
-              "templateHash": "12384375647753927788"
+              "version": "0.49.2.45890",
+              "templateHash": "11604894851917700445"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
