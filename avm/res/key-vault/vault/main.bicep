@@ -1,5 +1,5 @@
 metadata name = 'Key Vaults'      
-metadata description = 'This module deploys a Key Vault.'
+metadata description = 'This module deploys a Key Vault.'     
 
 // ================ //
 // Parameters       //
