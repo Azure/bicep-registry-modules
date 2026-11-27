@@ -309,6 +309,7 @@ resource dataFactory_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empt
   scope: dataFactory
 }
 
+#disable-next-line use-recent-api-versions // This is the most recent API version. The GA version the linter suggests ('2016-09-01') is older and does not support 'categoryGroup'.
 resource dataFactory_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
