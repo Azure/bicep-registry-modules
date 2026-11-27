@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.49.2.45890",
-      "templateHash": "14762890556183904389"
+      "templateHash": "13072111266519999227"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault."
@@ -1233,10 +1233,11 @@
       "allowedValues": [
         "",
         "Enabled",
-        "Disabled"
+        "Disabled",
+        "SecuredByPerimeter"
       ],
       "metadata": {
-        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set."
+        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. When secured by an associated network security perimeter, trusted services require explicit perimeter access rules."
       }
     },
     "lock": {
