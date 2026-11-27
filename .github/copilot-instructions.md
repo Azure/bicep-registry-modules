@@ -40,7 +40,7 @@ Install `Avm.Authoring` from Microsoft Artifact Registry (MAR) using the [Bicep 
 
 E2E deployments are label-gated so contributors can open pull requests early and run cloud tests only when changes are ready, reducing deployment cost and feedback time during development. For same-repository pull requests, add `PR: Run Required E2E Tests` to run required deployment scenarios only, or `PR: Run All E2E Tests` to run required and optional scenarios. For fork pull requests, labels do not grant deployment credentials; coordinate an authorized deployment test run with a maintainer.
 
-For fork PRs that need credentialed E2E tests, an authorized Microsoft FTE must first review the current fork code, workflows, and dependencies, then use `avm release-branch` for the same-repository handoff. Read the [release-branch skill](skills/avm-release-branch/SKILL.md) before invoking it: the command retargets and merges the original fork PR into a release branch, opens a follow-up PR to `main`, and adds `PR: Run Required E2E Tests`. It does not merge to `main` or bypass required reviews and checks.
+For fork PRs that need credentialed E2E tests, an authorized Microsoft FTE must first review the current fork code, workflows, and dependencies, then use `avm release-branch` for the same-repository handoff. Read the [release-branch skill](skills/avm-release-branch/SKILL.md) before invoking it: the command retargets and merges the original fork PR into a release branch and opens a follow-up PR to `main`. It does not add labels, merge to `main`, or bypass required reviews and checks.
 
 ### Fallback to Use Quick Starts as a last resort
 

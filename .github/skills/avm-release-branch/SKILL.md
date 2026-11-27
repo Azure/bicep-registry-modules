@@ -25,7 +25,7 @@ avm release-branch `
 
 This command changes GitHub state. It creates `release/fork-pr-<number>-<sha-prefix>` from upstream `main`, retargets the original fork PR, merges its captured head into that release branch, and opens a follow-up PR back to `main`. It refuses to merge if the fork head changes during handoff. It does not merge the follow-up, publish a release, approve reviews, or bypass branch protections and required checks.
 
-For `Azure/bicep-registry-modules`, the command automatically adds `PR: Run Required E2E Tests` to the follow-up PR. Review must therefore be complete before invocation, not deferred until after the label is added. Use `PR: Run All E2E Tests` on the follow-up when optional scenarios are also needed. Inspect actual selected test results and merge gates before merging to `main`; a label or skipped job is not proof of passing E2E tests.
+The command does not add labels to the follow-up PR. After review, add `PR: Run Required E2E Tests` for required scenarios or `PR: Run All E2E Tests` when optional scenarios are also needed. Inspect actual selected test results and merge gates before merging to `main`; a label or skipped job is not proof of passing E2E tests.
 
 ## Interrupted handoffs
 
