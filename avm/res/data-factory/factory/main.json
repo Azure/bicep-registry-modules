@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.48.1.52935",
-      "templateHash": "11383155579833075152"
+      "version": "0.49.2.45890",
+      "templateHash": "6697059745418305757"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory."
@@ -851,6 +851,17 @@
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set."
       }
     },
+    "trustedServiceMode": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Legacy",
+        "Modern"
+      ],
+      "metadata": {
+        "description": "Optional. The trusted service mode (`Factory settings` > `Trusted service` in Data Factory Studio), which controls how the Data Factory accesses firewall-protected resources such as Azure Storage accounts and Azure Key Vaults. `Modern` is recommended, as `Legacy` retires in August 2027. Switching to `Modern` might require network changes for connections that rely on trusted service firewall exceptions. Sets the `trustModeClaimForMi` property (`Modern` = `Disabled`, `Legacy` = `Enabled`). If not provided, the mode is not changed: existing Data Factories keep their current mode and new ones use the service default (currently `Modern`). Independent of `publicNetworkAccess` and private endpoints, which control network access to the Data Factory itself."
+      }
+    },
     "gitConfiguration": {
       "type": "object",
       "metadata": {
@@ -1027,13 +1038,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
-      "properties": {
-        "repoConfiguration": "[parameters('gitConfiguration')]",
-        "globalParameters": "[parameters('globalParameters')]",
-        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null()))]",
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), if(not(variables('isHSMManagedCMK')), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')), fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))), 'vaultBaseUrl', if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault').vaultUri, format('https://{0}.managedhsm.azure.net/', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))))), null())]",
-        "purviewConfiguration": "[if(not(empty(parameters('purviewResourceId'))), createObject('purviewResourceId', parameters('purviewResourceId')), null())]"
-      },
+      "properties": "[shallowMerge(createArray(createObject('repoConfiguration', parameters('gitConfiguration'), 'globalParameters', parameters('globalParameters'), 'publicNetworkAccess', if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null())), 'encryption', if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), if(not(variables('isHSMManagedCMK')), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')), fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))), 'vaultBaseUrl', if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault').vaultUri, format('https://{0}.managedhsm.azure.net/', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))))), null()), 'purviewConfiguration', if(not(empty(parameters('purviewResourceId'))), createObject('purviewResourceId', parameters('purviewResourceId')), null())), if(not(empty(parameters('trustedServiceMode'))), createObject('trustModeClaimForMi', createObject('value', if(equals(parameters('trustedServiceMode'), 'Modern'), 'Disabled', 'Enabled'))), createObject())))]",
       "dependsOn": [
         "cMKKeyVault",
         "cMKKeyVault::cMKKey"
@@ -1147,8 +1152,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.48.1.52935",
-              "templateHash": "4177907076652217295"
+              "version": "0.49.2.45890",
+              "templateHash": "5568485196605281040"
             },
             "name": "Data Factory Managed Virtual Networks",
             "description": "This module deploys a Data Factory Managed Virtual Network."
@@ -1303,8 +1308,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.48.1.52935",
-                      "templateHash": "15608320102839858343"
+                      "version": "0.49.2.45890",
+                      "templateHash": "10696811931155329677"
                     },
                     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
                     "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint."
@@ -1761,8 +1766,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.48.1.52935",
-              "templateHash": "9339074964233711747"
+              "version": "0.49.2.45890",
+              "templateHash": "4873217022195531393"
             },
             "name": "Data Factory Integration RunTimes",
             "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime."
@@ -1927,8 +1932,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.48.1.52935",
-              "templateHash": "16593835775823509606"
+              "version": "0.49.2.45890",
+              "templateHash": "15367083677717546472"
             },
             "name": "Data Factory Linked Service",
             "description": "This module deploys a Data Factory Linked Service."

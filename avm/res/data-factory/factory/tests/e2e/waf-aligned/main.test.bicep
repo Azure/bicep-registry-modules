@@ -103,6 +103,8 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      // WAF Security - Use the recommended Modern trusted service mode to access firewall-protected resources
+      trustedServiceMode: 'Modern'
       // WAF Operational Excellence - Configure comprehensive diagnostics
       diagnosticSettings: [
         {

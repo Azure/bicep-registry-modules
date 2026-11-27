@@ -414,6 +414,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    trustedServiceMode: 'Modern'
   }
 }
 ```
@@ -598,6 +599,9 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "trustedServiceMode": {
+      "value": "Modern"
     }
   }
 }
@@ -756,6 +760,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
+param trustedServiceMode = 'Modern'
 ```
 
 </details>
@@ -842,6 +847,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       Role: 'DeploymentValidation'
       'WAF-Pillar': 'Security-Reliability-Cost-OperationalExcellence'
     }
+    trustedServiceMode: 'Modern'
   }
 }
 ```
@@ -940,6 +946,9 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         "Role": "DeploymentValidation",
         "WAF-Pillar": "Security-Reliability-Cost-OperationalExcellence"
       }
+    },
+    "trustedServiceMode": {
+      "value": "Modern"
     }
   }
 }
@@ -1022,6 +1031,7 @@ param tags = {
   Role: 'DeploymentValidation'
   'WAF-Pillar': 'Security-Reliability-Cost-OperationalExcellence'
 }
+param trustedServiceMode = 'Modern'
 ```
 
 </details>
@@ -1055,6 +1065,7 @@ param tags = {
 | [`purviewResourceId`](#parameter-purviewresourceid) | string | Purview Account resource identifier. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`trustedServiceMode`](#parameter-trustedservicemode) | string | The trusted service mode (`Factory settings` > `Trusted service` in Data Factory Studio), which controls how the Data Factory accesses firewall-protected resources such as Azure Storage accounts and Azure Key Vaults. `Modern` is recommended, as `Legacy` retires in August 2027. Switching to `Modern` might require network changes for connections that rely on trusted service firewall exceptions. Sets the `trustModeClaimForMi` property (`Modern` = `Disabled`, `Legacy` = `Enabled`). If not provided, the mode is not changed: existing Data Factories keep their current mode and new ones use the service default (currently `Modern`). Independent of `publicNetworkAccess` and private endpoints, which control network access to the Data Factory itself. |
 
 ### Parameter: `name`
 
@@ -2127,6 +2138,20 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `trustedServiceMode`
+
+The trusted service mode (`Factory settings` > `Trusted service` in Data Factory Studio), which controls how the Data Factory accesses firewall-protected resources such as Azure Storage accounts and Azure Key Vaults. `Modern` is recommended, as `Legacy` retires in August 2027. Switching to `Modern` might require network changes for connections that rely on trusted service firewall exceptions. Sets the `trustModeClaimForMi` property (`Modern` = `Disabled`, `Legacy` = `Enabled`). If not provided, the mode is not changed: existing Data Factories keep their current mode and new ones use the service default (currently `Modern`). Independent of `publicNetworkAccess` and private endpoints, which control network access to the Data Factory itself.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Legacy'
+    'Modern'
+  ]
+  ```
 
 ## Outputs
 

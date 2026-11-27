@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/data-factory/factory/CHANGELOG.md).
 
+## 0.14.0
+
+### Changes
+
+- Added the optional `trustedServiceMode` parameter to configure the trusted service mode (`Factory settings` > `Trusted service` in Data Factory Studio). `Modern` and `Legacy` set the `trustModeClaimForMi` property to `Disabled` and `Enabled` respectively. If not provided, the mode is not changed.
+
+### Breaking Changes
+
+- None
+
 ## 0.13.0
 
 ### Changes
