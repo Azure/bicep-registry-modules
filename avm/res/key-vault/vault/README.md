@@ -1581,7 +1581,7 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`networkAcls`](#parameter-networkacls) | object | Rules governing the accessibility of the resource from specific network locations. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. When secured by an associated network security perimeter, trusted services require explicit perimeter access rules. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`secrets`](#parameter-secrets) | array | All secrets to create. |
 | [`sku`](#parameter-sku) | string | Specifies the SKU for the vault. |
@@ -2934,7 +2934,7 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 ### Parameter: `publicNetworkAccess`
 
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. When secured by an associated network security perimeter, trusted services require explicit perimeter access rules.
 
 - Required: No
 - Type: string
@@ -2945,6 +2945,7 @@ Whether or not public network access is allowed for this resource. For security 
     ''
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 
