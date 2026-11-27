@@ -16,7 +16,6 @@ on:
     paths:
       - ".github/**"
       - "utilities/**"
-      - "avm/**"
       - "bicepconfig.json"
       - ".gitattributes"
       - ".reserved-test-subscriptions.json"

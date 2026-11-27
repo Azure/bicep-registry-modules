@@ -17,10 +17,13 @@ BeforeAll {
 Describe 'Platform CI utility test workflow' {
     It 'runs before merge when files covered by the utility suite change' {
         $workflow.on.pull_request.types | Should -Be @('opened', 'reopened', 'synchronize')
-        $workflow.on.pull_request.paths | Should -Contain '.github/**'
-        $workflow.on.pull_request.paths | Should -Contain 'utilities/**'
-        $workflow.on.pull_request.paths | Should -Contain 'avm/**'
-        $workflow.on.pull_request.paths | Should -Contain 'bicepconfig.json'
+        $workflow.on.pull_request.paths | Should -Be @(
+            '.github/**'
+            'utilities/**'
+            'bicepconfig.json'
+            '.gitattributes'
+            '.reserved-test-subscriptions.json'
+        )
         $workflow.on.ContainsKey('pull_request_target') | Should -BeFalse
         $workflow.permissions.contents | Should -BeExactly 'read'
     }
