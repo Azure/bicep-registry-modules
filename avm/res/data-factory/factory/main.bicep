@@ -24,6 +24,13 @@ param location string = resourceGroup().location
 ])
 param publicNetworkAccess string = ''
 
+@description('Optional. The trusted service mode (`Factory settings` > `Trusted service` in Data Factory Studio), which controls how the Data Factory accesses firewall-protected resources such as Azure Storage accounts and Azure Key Vaults. `Modern` is recommended, as `Legacy` retires in August 2027. Switching to `Modern` might require network changes for connections that rely on trusted service firewall exceptions. Sets the `trustModeClaimForMi` property (`Modern` = `Disabled`, `Legacy` = `Enabled`). If not provided, the mode is not changed: existing Data Factories keep their current mode and new ones use the service default (currently `Modern`). Independent of `publicNetworkAccess` and private endpoints, which control network access to the Data Factory itself.')
+@allowed([
+  'Legacy'
+  'Modern'
+])
+param trustedServiceMode string?
+
 @description('Optional. The Git repository configuration of the Data Factory. If omitted, the Data Factory is deployed without a Git repository configuration.')
 param gitConfiguration resourceInput<'Microsoft.DataFactory/factories@2018-06-01'>.properties.repoConfiguration?
 
@@ -155,7 +162,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
 var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -178,6 +185,7 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
   location: location
   tags: tags
   identity: identity
+  #disable-next-line BCP037 // The 'trustModeClaimForMi' property (spread in below) is accepted by the resource provider but missing from the '2018-06-01' API spec and Bicep type definition.
   properties: {
     repoConfiguration: gitConfiguration
     globalParameters: globalParameters
@@ -209,6 +217,14 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
           purviewResourceId: purviewResourceId
         }
       : null
+    // Spread instead of 'null' so the property is omitted from the request and the current mode is kept when not provided.
+    ...(!empty(trustedServiceMode)
+      ? {
+          trustModeClaimForMi: {
+            value: trustedServiceMode == 'Modern' ? 'Disabled' : 'Enabled'
+          }
+        }
+      : {})
   }
 }
 
@@ -293,6 +309,7 @@ resource dataFactory_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empt
   scope: dataFactory
 }
 
+#disable-next-line use-recent-api-versions // This is the most recent API version. The GA version the linter suggests ('2016-09-01') is older and does not support 'categoryGroup'.
 resource dataFactory_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -342,7 +359,7 @@ resource dataFactory_roleAssignments 'Microsoft.Authorization/roleAssignments@20
   }
 ]
 
-module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
+module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.2' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dataFactory-PrivateEndpoint-${index}'
     scope: resourceGroup(
