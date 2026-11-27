@@ -11,10 +11,9 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' = {
   name: managedEnvironmentName
   location: location
   properties: {
-    appLogsConfiguration:{
+    appLogsConfiguration: {
       destination: 'azure-monitor'
     }
-
   }
 }
 

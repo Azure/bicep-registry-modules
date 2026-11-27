@@ -10,12 +10,9 @@ Fixes #123
 Closes #123
 -->
 
-## Pipeline Reference
+## PR Checks
 
-<!-- Insert your Pipeline Status Badge below -->
-
-| Pipeline |
-| -------- |
+<!-- E2E deployments are label-gated so PRs can be opened early and cloud tests run only when the changes are ready, reducing cost and feedback time. Add PR: Run Required E2E Tests for required scenarios only, or PR: Run All E2E Tests for required and optional scenarios. Fork PR labels do not grant deployment credentials. -->
 
 ## Type of Change
 
@@ -31,7 +28,7 @@ Closes #123
 ## Checklist
 
 - [ ] I'm sure there are no other open Pull Requests for the same update/change
-- [ ] I have run `Set-AVMModule` locally to generate the supporting module files.
+- [ ] I have run `avm pre-commit` locally to generate the supporting module files, if applicable.
 - [ ] My corresponding pipelines / checks run clean and green without any errors or warnings
 - [ ] I have updated the module's CHANGELOG.md file with an entry for the next version
 

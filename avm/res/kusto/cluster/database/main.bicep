@@ -74,6 +74,9 @@ output resourceId string = databaseKind == 'ReadOnlyFollowing' ? database_readOn
 @description('The resource group containing the Kusto Cluster database.')
 output resourceGroupName string = resourceGroup().name
 
+@description('The location of the Kusto Cluster database.')
+output location string = databaseKind == 'ReadOnlyFollowing' ? database_readOnly.location : database_readWrite.location
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -113,4 +116,3 @@ type databasePrincipalAssignmentType = {
   @description('Optional. The tenant id of the principal.')
   tenantId: string?
 }
-

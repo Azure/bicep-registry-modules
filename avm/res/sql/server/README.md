@@ -27,7 +27,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/secrets)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Sql/servers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers)</li></ul> |
@@ -1509,7 +1509,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     restrictOutboundNetworkAccess: 'Disabled'
     roleAssignments: [
       {
-        name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1745,7 +1744,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1957,7 +1955,6 @@ param privateEndpoints = [
 param restrictOutboundNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
-    name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -5506,7 +5503,7 @@ The security alert policies to create in the server.
 | [`enableTelemetry`](#parameter-securityalertpoliciesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`retentionDays`](#parameter-securityalertpoliciesretentiondays) | int | Specifies the number of days to keep in the Threat Detection audit logs. |
 | [`state`](#parameter-securityalertpoliciesstate) | string | Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database. |
-| [`storageAccountAccessKey`](#parameter-securityalertpoliciesstorageaccountaccesskey) | string | Specifies the identifier key of the Threat Detection audit storage account. |
+| [`storageAccountAccessKey`](#parameter-securityalertpoliciesstorageaccountaccesskey) | securestring | Specifies the identifier key of the Threat Detection audit storage account. |
 | [`storageEndpoint`](#parameter-securityalertpoliciesstorageendpoint) | string | Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs. |
 
 ### Parameter: `securityAlertPolicies.name`
@@ -5581,7 +5578,7 @@ Specifies the state of the policy, whether it is enabled or disabled or a policy
 Specifies the identifier key of the Threat Detection audit storage account.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `securityAlertPolicies.storageEndpoint`
 

@@ -4,7 +4,7 @@
 )
 
 BeforeAll {
-    . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeploymentWithRetry.ps1')
+    . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Invoke-TemplateDeploymentWithRetry.ps1')
     $script:aksPreflightJson = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'fixtures' 'aks-empty-zones-regional-error.json') -Raw
 
     function New-PreflightValidationResponse {
@@ -385,7 +385,7 @@ Describe 'Pre-deployment <kind> relocation with actual validation and region sel
     }
 
     It 'Uses the same repair for validation-only callers without submitting anything' {
-        Test-TemplateDeploymentWithRetry -ValidationInput $templateInput -ModuleRoot $retryInput.ModuleRoot | Should -Be 'centralus'
+        Invoke-TemplateDeploymentWithRetry -ValidationOnly -TemplateInput $templateInput -ModuleRoot $retryInput.ModuleRoot | Should -Be 'centralus'
         @($script:requests.Region) | Should -Be @($location, 'centralus')
         Should -Invoke New-TemplateDeployment -Times 0 -Exactly
     }

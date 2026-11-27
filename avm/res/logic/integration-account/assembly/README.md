@@ -119,6 +119,7 @@ Resource tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the integration account assembly. |
 | `name` | string | The name of the integration account assembly. |
 | `resourceGroupName` | string | The resource group the integration account assembly was deployed into. |
 | `resourceId` | string | The resource ID of the integration account assembly. |

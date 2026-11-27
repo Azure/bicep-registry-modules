@@ -278,6 +278,20 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2025-08-01' = {
   }
 }
 
+var replicationContainerMappings = flatten(map(
+  replicationFabrics ?? [],
+  fabric =>
+    flatten(map(
+      fabric.?replicationContainers ?? [],
+      container =>
+        map(container.?mappings ?? [], mapping => {
+          fabricName: fabric.?name ?? fabric.location
+          containerName: container.name
+          mapping: mapping
+        })
+    ))
+))
+
 module rsv_replicationFabrics 'replication-fabric/main.bicep' = [
   for (replicationFabric, index) in (replicationFabrics ?? []): {
     name: '${uniqueString(deployment().name, location)}-RSV-Fabric-${index}'
@@ -285,11 +299,34 @@ module rsv_replicationFabrics 'replication-fabric/main.bicep' = [
       recoveryVaultName: rsv.name
       name: replicationFabric.?name
       location: replicationFabric.location
-      replicationContainers: replicationFabric.?replicationContainers
+      replicationContainers: map(replicationFabric.?replicationContainers ?? [], container => {
+        name: container.name
+      })
       enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       rsv_replicationPolicies
+    ]
+  }
+]
+
+module rsv_replicationContainerMappings 'replication-fabric/replication-protection-container/replication-protection-container-mapping/main.bicep' = [
+  for (containerMapping, index) in replicationContainerMappings: {
+    name: '${uniqueString(deployment().name, location)}-RSV-ContainerMapping-${index}'
+    params: {
+      name: containerMapping.mapping.?name
+      policyResourceId: containerMapping.mapping.?policyResourceId
+      policyName: containerMapping.mapping.?policyName
+      recoveryVaultName: rsv.name
+      replicationFabricName: containerMapping.fabricName
+      sourceProtectionContainerName: containerMapping.containerName
+      targetProtectionContainerResourceId: containerMapping.mapping.?targetProtectionContainerResourceId
+      targetContainerFabricName: containerMapping.mapping.?targetContainerFabricName
+      targetContainerName: containerMapping.mapping.?targetContainerName
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
+    dependsOn: [
+      rsv_replicationFabrics
     ]
   }
 ]

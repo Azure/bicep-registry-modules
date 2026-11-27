@@ -2,6 +2,26 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-service/managed-cluster/CHANGELOG.md).
 
+## 0.14.2
+
+### Changes
+
+- Marked `configurationProtectedSettings` as secure in `extensionType`, matching the extension module.
+
+### Breaking Changes
+
+- None
+
+## 0.14.1
+
+### Changes
+
+- Regenerated ARM template artifacts with Bicep 0.48.1 without changing resource configuration.
+
+### Breaking Changes
+
+- None
+
 ## 0.14.0
 
 ### Changes

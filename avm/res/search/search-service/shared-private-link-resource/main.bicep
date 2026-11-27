@@ -47,7 +47,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-
 resource searchService 'Microsoft.Search/searchServices@2025-05-01' existing = {
   name: searchServiceName
 }

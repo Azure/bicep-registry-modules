@@ -29,7 +29,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectionString`](#parameter-connectionstring) | string | Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}. |
+| [`connectionString`](#parameter-connectionstring) | securestring | Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}. |
 | [`name`](#parameter-name) | string | Identifier of the Cache entity. Cache identifier (should be either 'default' or valid Azure region identifier). |
 | [`useFromLocation`](#parameter-usefromlocation) | string | Location identifier to use cache from (should be either 'default' or valid Azure region identifier). |
 
@@ -52,7 +52,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `name`
 

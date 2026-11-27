@@ -574,6 +574,7 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
+@batchSize(1)
 module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-sa-PrivateEndpoint-${index}'

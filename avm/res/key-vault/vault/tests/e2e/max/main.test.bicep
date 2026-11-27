@@ -20,6 +20,12 @@ param serviceShort string = 'kvvmax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+// This default is a public content-type label, not a secret value.
+@description('Optional. The content-type label for the test secret.')
+@secure()
+#disable-next-line secure-parameter-default
+param secretContentType string = 'Something'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -130,7 +136,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'keyName'
           roleAssignments: [
             {
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
@@ -142,7 +148,7 @@ module testDeployment '../../../main.bicep' = [
             {
               roleDefinitionIdOrName: subscriptionResourceId(
                 'Microsoft.Authorization/roleDefinitions',
-                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
               )
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
@@ -209,14 +215,14 @@ module testDeployment '../../../main.bicep' = [
           }
           roleAssignments: [
             {
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
             {
               roleDefinitionIdOrName: subscriptionResourceId(
                 'Microsoft.Authorization/roleDefinitions',
-                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
               )
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
@@ -256,7 +262,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
@@ -269,7 +275,7 @@ module testDeployment '../../../main.bicep' = [
         {
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -281,11 +287,11 @@ module testDeployment '../../../main.bicep' = [
             exp: 1725109032
             nbf: 10000
           }
-          contentType: 'Something'
+          contentType: secretContentType
           name: 'secretName'
           roleAssignments: [
             {
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
@@ -297,7 +303,7 @@ module testDeployment '../../../main.bicep' = [
             {
               roleDefinitionIdOrName: subscriptionResourceId(
                 'Microsoft.Authorization/roleDefinitions',
-                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
               )
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'

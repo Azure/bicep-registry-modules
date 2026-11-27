@@ -14,8 +14,6 @@ param (
 )
 
 BeforeAll {
-    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
-
     if ($moduleFolderPaths.Count -gt 1) {
         $topLevelModuleTemplatePath = $moduleFolderPaths | Sort-Object -Culture 'en-US' | Select-Object -First 1
     } else {
@@ -28,8 +26,12 @@ BeforeAll {
 Describe 'AVM Core Team Module Specific Tests' {
     Context 'WAF - Reliability Pillar - Parameter Tests' {
         It 'VM Module Availability Zone Parameter Should Not Have A Default Value Set' {
-            $isRequired = Get-IsParameterRequired -TemplateFileContent $moduleJsonContentHashtable -Parameter $moduleJsonContentHashtable.parameters.availabilityZone
-            $isRequired | Should -Be $true
+            $parameter = $moduleJsonContentHashtable.parameters.availabilityZone
+            $parameter.ContainsKey('defaultValue') | Should -BeFalse
+            $parameter.nullable | Should -Not -BeTrue
+            if ($parameter.ContainsKey('$ref')) {
+                $moduleJsonContentHashtable.definitions[(Split-Path $parameter.'$ref' -Leaf)].nullable | Should -Not -BeTrue
+            }
         }
     }
 }

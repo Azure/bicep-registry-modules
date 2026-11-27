@@ -90,3 +90,6 @@ output resourceId string = cassandraView.id
 
 @description('The name of the resource group the Cassandra view was created in.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location of the Cassandra view.')
+output location string = cassandraView.location

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "8599721310896873183"
+      "version": "0.48.1.52935",
+      "templateHash": "1954460714903960429"
     },
     "name": "Container Registries Tasks",
     "description": "Deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview))."

@@ -30,7 +30,7 @@ var enforcedLocation = 'uksouth'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -65,29 +65,26 @@ module testDeployment '../../../main.bicep' = [
       associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       sku: 'Basic'
       kind: 'Hub'
-      // There currently appears to be a bug that fails the idempotent deployment if it runs
-      // immediately after the initial deployment with no delay, when the connection is defined.
-      // The connection is commented out for now, but should be uncommented once the bug is fixed.
-      // connections: [
-      //   {
-      //     name: 'ai'
-      //     category: 'AIServices'
-      //     target: nestedDependencies.outputs.aiServicesEndpoint
-      //     connectionProperties: {
-      //       authType: 'ApiKey'
-      //       credentials: {
-      //         key: 'key'
-      //       }
-      //     }
-      //     metadata: {
-      //       ApiType: 'Azure'
-      //       ResourceId: nestedDependencies.outputs.aiServicesResourceId
-      //       Location: enforcedLocation
-      //       ApiVersion: '2023-07-01-preview'
-      //       DeploymentApiVersion: '2023-10-01-preview'
-      //     }
-      //   }
-      // ]
+      connections: [
+        {
+          name: 'ai'
+          category: 'AIServices'
+          target: nestedDependencies.outputs.aiServicesEndpoint
+          connectionProperties: {
+            authType: 'ApiKey'
+            credentials: {
+              key: 'key'
+            }
+          }
+          metadata: {
+            ApiType: 'Azure'
+            ResourceId: nestedDependencies.outputs.aiServicesResourceId
+            Location: enforcedLocation
+            ApiVersion: '2023-07-01-preview'
+            DeploymentApiVersion: '2023-10-01-preview'
+          }
+        }
+      ]
       workspaceHubConfig: {
         additionalWorkspaceStorageAccounts: [nestedDependencies.outputs.secondaryStorageAccountResourceId]
         defaultWorkspaceResourceGroup: resourceGroup.id

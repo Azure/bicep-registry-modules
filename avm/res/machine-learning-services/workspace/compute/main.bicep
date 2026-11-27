@@ -66,7 +66,7 @@ param computeType string
 @sys.description('Optional. The properties of the compute. Will be ignored in case "resourceId" is set.')
 param properties object?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -93,7 +93,7 @@ var identity = !empty(managedIdentities)
 // Existing resources references //
 // ============================= //
 
-resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2022-10-01' existing = {
+resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2026-09-01' existing = {
   name: machineLearningWorkspaceName
 }
 
@@ -104,7 +104,7 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2026-06-01' = if (enableTelemetry) {
   name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -122,7 +122,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource compute 'Microsoft.MachineLearningServices/workspaces/computes@2024-10-01' = if (deployCompute == true) {
+resource compute 'Microsoft.MachineLearningServices/workspaces/computes@2026-09-01' = if (deployCompute == true) {
   name: name
   location: location
   tags: empty(resourceId) ? tags : any(null)
@@ -168,4 +168,4 @@ output resourceGroupName string = resourceGroup().name
 output systemAssignedMIPrincipalId string? = compute.?identity.?principalId
 
 @sys.description('The location the resource was deployed into.')
-output location string = compute.location
+output location string = deployCompute ? compute!.location : location

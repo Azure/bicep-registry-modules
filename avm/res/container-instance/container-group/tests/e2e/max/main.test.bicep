@@ -121,12 +121,12 @@ module testDeployment '../../../main.bicep' = [
             ]
             resources: {
               requests: {
-                cpu: 2
-                memoryInGB: '2'
+                cpu: 1
+                memoryInGB: '0.5'
               }
               limits: {
-                cpu: 4
-                memoryInGB: '4'
+                cpu: 1
+                memoryInGB: '0.5'
               }
             }
           }
@@ -145,8 +145,8 @@ module testDeployment '../../../main.bicep' = [
             ]
             resources: {
               requests: {
-                cpu: 2
-                memoryInGB: '2'
+                cpu: 1
+                memoryInGB: '0.5'
               }
             }
           }

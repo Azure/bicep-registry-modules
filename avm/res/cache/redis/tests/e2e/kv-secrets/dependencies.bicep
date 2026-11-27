@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Managed Identity to create.')
 param keyVaultName string
 
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {

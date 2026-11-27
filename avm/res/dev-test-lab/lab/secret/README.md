@@ -1,4 +1,4 @@
-# DevTest Lab Secrets `[Microsoft.DevTestLab/labs]`
+# DevTest Lab Secrets `[Microsoft.DevTestLab/labs/secrets]`
 
 > ⚠️THIS MODULE IS DEPRECATED.⚠️
 > 

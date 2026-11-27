@@ -149,6 +149,12 @@ This instance deploys the module with customer-managed keys for encryption, wher
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131891030220
+```
 
 <details>
 
@@ -237,6 +243,12 @@ This instance deploys the module with the minimum set of required parameters.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131891029889
+```
 
 <details>
 
@@ -291,6 +303,12 @@ This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131891030204
+```
 
 <details>
 
@@ -390,7 +408,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
         name: '2754e64b-b96e-44bc-9cb2-6e39b057f515'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -573,7 +591,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
           "name": "2754e64b-b96e-44bc-9cb2-6e39b057f515",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -712,7 +730,7 @@ param roleAssignments = [
     name: '2754e64b-b96e-44bc-9cb2-6e39b057f515'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -746,6 +764,12 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131891142250
+```
 
 <details>
 

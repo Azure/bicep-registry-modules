@@ -29,10 +29,10 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Databricks/accessConnectors` | 2022-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.databricks_accessconnectors.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Databricks/2022-10-01-preview/accessConnectors)</li></ul> |
 | `Microsoft.Databricks/workspaces` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.databricks_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Databricks/2024-05-01/workspaces)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults)</li></ul> |
-| `Microsoft.KeyVault/vaults/accessPolicies` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies)</li></ul> |
-| `Microsoft.KeyVault/vaults/keys` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets)</li></ul> |
+| `Microsoft.KeyVault/vaults` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults)</li></ul> |
+| `Microsoft.KeyVault/vaults/accessPolicies` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/accessPolicies)</li></ul> |
+| `Microsoft.KeyVault/vaults/keys` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/keys)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/secrets)</li></ul> |
 | `Microsoft.Network/networkSecurityGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networksecuritygroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups)</li></ul> |
 | `Microsoft.Network/privateDnsZones` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones)</li></ul> |
 | `Microsoft.Network/privateDnsZones/A` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_a.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A)</li></ul> |
@@ -44,8 +44,10 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/privateDnsZones/SRV` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_srv.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV)</li></ul> |
 | `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/virtualNetworks` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks)</li></ul> |
 | `Microsoft.Network/virtualNetworks/subnets` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets)</li></ul> |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
@@ -162,6 +164,12 @@ This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131891255390
+```
 
 <details>
 
@@ -509,6 +517,12 @@ Isolated network deployment - fully private.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc01-priv]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231
+```
 
 <details>
 
@@ -605,6 +619,12 @@ Isolated network deployment - allowed IP address.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc01-pub]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231
+```
 
 <details>
 
@@ -716,6 +736,12 @@ Deployment in an Existing, Enterprise-Specific Virtual Network - fully private.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc02-priv]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231
+```
 
 <details>
 
@@ -838,6 +864,12 @@ Deployment in an Existing, Enterprise-Specific Virtual Network - allowed IP addr
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc02-pub]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231
+```
 
 <details>
 
@@ -975,6 +1007,12 @@ Integration with existing core Infrastructure - fully private.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc03-priv]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231
+```
 
 <details>
 
@@ -1107,6 +1145,12 @@ Integration with existing core Infrastructure - allowed IP address.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc03-pub]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231
+```
 
 <details>
 
@@ -1241,10 +1285,16 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 ### Example 11: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+This instance supplies a replicated Log Analytics workspace and deploys the module in alignment with the Azure Well-Architected Framework.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: Databricks workspace creation repeatedly fails with RESOURCE_EXHAUSTED because the daily workspace-creation quota is exhausted, preventing end-to-end validation. This is a service quota, not VM SKU capacity.
+Azure message: "Limit reached for workspace creation. You've hit your daily limit for workspace creation. Please try again in 24 hours."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231
+```
 
 <details>
 
@@ -1272,11 +1322,8 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     enableDatabricks: true
     enableTelemetry: true
     location: '<location>'
-    tags: {
-      CostCenter: '123-456-789'
-      'hidden-title': 'This is visible in the resource name'
-      Owner: 'Contoso'
-    }
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    tags: '<tags>'
   }
 }
 ```
@@ -1322,12 +1369,11 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
     "location": {
       "value": "<location>"
     },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
     "tags": {
-      "value": {
-        "CostCenter": "123-456-789",
-        "hidden-title": "This is visible in the resource name",
-        "Owner": "Contoso"
-      }
+      "value": "<tags>"
     }
   }
 }
@@ -1362,11 +1408,8 @@ param advancedOptions = {
 param enableDatabricks = true
 param enableTelemetry = true
 param location = '<location>'
-param tags = {
-  CostCenter: '123-456-789'
-  'hidden-title': 'This is visible in the resource name'
-  Owner: 'Contoso'
-}
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param tags = '<tags>'
 ```
 
 </details>
@@ -1739,8 +1782,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/databricks/access-connector:0.3.0` | Remote reference |
-| `br/public:avm/res/databricks/workspace:0.8.5` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |
+| `br/public:avm/res/databricks/workspace:0.12.0` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.14.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |

@@ -1,0 +1,2 @@
+Temporarily excluded: the initial gateway PUT failed with UpdateGatewayInProgress. Scoped activity showed one initial PUT and no idempotency deployment; the underlying cause is unproven and this is not a confirmed capacity failure.
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131901259795

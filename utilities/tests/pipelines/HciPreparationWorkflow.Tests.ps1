@@ -13,7 +13,6 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $prepareSteps = $prepare.jobs.job_begin.steps
         $consumer = Get-Content (Join-Path $workflowRoot 'avm.template.hci.consumer.yml') -Raw | ConvertFrom-Yaml
         $hciModule = Get-Content (Join-Path $workflowRoot 'avm.template.hci.module.yml') -Raw | ConvertFrom-Yaml
-        $deployment = Get-Content (Join-Path $workflowRoot 'avm.template.module.deployment.yml') -Raw | ConvertFrom-Yaml
         $action = Get-Content (Join-Path $RepoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml') -Raw | ConvertFrom-Yaml
         $consumerScript = Get-Content (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Invoke-HciTestConsumer.ps1') -Raw
         $roots = (Get-Content (Join-Path $RepoRootPath '.reserved-test-subscriptions.json') -Raw | ConvertFrom-Json -AsHashtable).Keys
@@ -49,21 +48,9 @@ Describe 'Reserved Azure Local workflow and fixture wiring' {
         $wrapper.uses | Should -Be './.github/workflows/avm.template.hci.consumer.yml'
         @($consumer.jobs.Keys) | Should -Be @('job_module_deploy_validation')
         $consumer.jobs.job_module_deploy_validation.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
-        $deployment.jobs.job_module_deploy_validation.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
         $manual.jobs.job_prepare_environment.concurrency.group | Should -Be '${{ needs.job_select_subscription.outputs.environmentConcurrencyGroup }}'
         $manual.jobs.job_prepare_environment.concurrency.queue | Should -Be 'max'
         foreach ($job in $prepare.jobs.Values) { $job.Contains('concurrency') | Should -BeFalse }
-    }
-
-    It 'Preserves the outer shared-scope locks of all legacy and experimental callers' -ForEach @(
-        @{ file = 'avm.template.module.yml' }
-        @{ file = 'avm.template.module.preview.yml' }
-        @{ file = 'avm.template.module.publish.yml' }
-    ) {
-        $caller = Get-Content (Join-Path $workflowRoot $file) -Raw | ConvertFrom-Yaml
-        $caller.jobs.job_module_deploy_validation.concurrency.group | Should -Match "sharedScope == 'true'"
-        $caller.jobs.job_module_deploy_validation.concurrency.queue | Should -Be 'max'
-        $caller.jobs.job_module_deploy_validation.uses | Should -Be './.github/workflows/avm.template.module.deployment.yml'
     }
 
     It 'Defaults recreation off and exposes it only through manual preparation' {

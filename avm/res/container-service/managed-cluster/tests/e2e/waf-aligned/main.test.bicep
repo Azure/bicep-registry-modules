@@ -7,10 +7,10 @@ metadata description = 'This instance deploys the module in alignment with the b
 // Parameters //
 // ========== //
 
-@description('Optional. The name of the resource group to deploy for testing purposes.')
+@description('Optional. The test resource group name. Defaults to a deployment-specific name.')
 @maxLength(90)
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-containerservice.managedclusters-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-aks-${serviceShort}-${uniqueString(deployment().name, resourceLocation)}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -91,7 +91,7 @@ module testDeployment '../../../main.bicep' = [
           osDiskSizeGB: 0
           osType: 'Linux'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS4_v2'
+          vmSize: 'Standard_D8ds_v5'
           vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
         }
       ]
@@ -115,7 +115,7 @@ module testDeployment '../../../main.bicep' = [
           scaleSetEvictionPolicy: 'Delete'
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS4_v2'
+          vmSize: 'Standard_D8ds_v5'
           vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
         }
         {
@@ -137,7 +137,7 @@ module testDeployment '../../../main.bicep' = [
           scaleSetEvictionPolicy: 'Delete'
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS4_v2'
+          vmSize: 'Standard_D8ds_v5'
         }
       ]
       autoUpgradeProfile: {

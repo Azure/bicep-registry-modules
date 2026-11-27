@@ -340,6 +340,12 @@ This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: this max scenario requests a Premium Service Bus namespace with 16 messaging units, which is too high a capacity request for our test tenant to provision reliably.
+Azure message: "There is not enough capacity in the specified region to create the namespace. Please try an alternate region."
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43472177647/job/132147623330
+```
 
 <details>
 
@@ -494,7 +500,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -514,7 +520,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         name: '2c42f915-20bf-4094-ba42-fee1f811d374'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -561,7 +567,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -811,7 +817,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -833,7 +839,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "name": "2c42f915-20bf-4094-ba42-fee1f811d374",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -886,7 +892,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -1112,7 +1118,7 @@ param queues = [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -1132,7 +1138,7 @@ param roleAssignments = [
     name: '2c42f915-20bf-4094-ba42-fee1f811d374'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -1179,7 +1185,7 @@ param topics = [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'

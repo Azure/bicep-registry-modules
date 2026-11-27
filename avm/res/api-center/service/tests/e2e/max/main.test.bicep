@@ -39,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    apiManagementServiceName: 'dep-${namePrefix}-apim-${serviceShort}'
+    apiManagementServiceName: 'dep-${namePrefix}-apim-${serviceShort}-${uniqueString(subscription().subscriptionId)}'
   }
 }
 

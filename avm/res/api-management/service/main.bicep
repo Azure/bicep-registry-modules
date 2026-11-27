@@ -116,6 +116,7 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Necessary to create a new GUID.')
+@secure()
 param newGuidValue string = newGuid()
 
 @description('Optional. APIs.')
@@ -727,6 +728,23 @@ module service_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
+    // Private Link updates the service; avoid overlapping APIM child writes.
+    dependsOn: [
+      service_apis
+      service_apiVersionSets
+      service_authorizationServers
+      service_backends
+      service_caches
+      service_identityProviders
+      service_loggers
+      service_namedValues
+      service_portalsettings
+      service_policies
+      service_products
+      service_subscriptions
+      service_diagnostics
+      service_workspaces
+    ]
   }
 ]
 
@@ -1078,6 +1096,7 @@ type cacheType = {
   name: string
 
   @description('Required. Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}.')
+  @secure()
   connectionString: string
 
   @description('Optional. Cache description.')
@@ -1252,6 +1271,7 @@ type subscriptionType = {
   @minLength(1)
   @maxLength(256)
   @description('Optional. Primary subscription key. If not specified during request key will be generated automatically.')
+  @secure()
   primaryKey: string?
 
   @description('Optional. Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".')
@@ -1260,6 +1280,7 @@ type subscriptionType = {
   @minLength(1)
   @maxLength(256)
   @description('Optional. Secondary subscription key. If not specified during request key will be generated automatically.')
+  @secure()
   secondaryKey: string?
 
   @description('''Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:

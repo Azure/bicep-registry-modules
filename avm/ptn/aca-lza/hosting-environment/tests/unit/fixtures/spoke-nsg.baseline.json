@@ -1,0 +1,352 @@
+{
+  "publishedHead": "46cdebc5ec7162d75793de869d4ab3105fc91662",
+  "sourceGitBlob": "60721d442f25f1f47803c8e07e54aa259d480b31",
+  "nsgDeclarations": [
+    {
+      "declaration": "module nsgContainerAppsEnvironment 'br/public:avm/res/network/network-security-group:0.5.0' = {\n  name: take('deploy-nsgContainerAppsEnvironment-${deployment().name}', 64)\n  scope: resourceGroup(resourcesNames.resourceGroup)\n  params: {\n    name: resourcesNames.containerAppsEnvironmentNsg\n    location: location\n    tags: tags\n    enableTelemetry: enableTelemetry\n    securityRules: [\n      {\n        name: 'Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_UDP'\n        properties: {\n          description: 'internal AKS secure connection between underlying nodes and control plane..'\n          protocol: 'Udp'\n          sourceAddressPrefix: 'VirtualNetwork'\n          sourcePortRange: '*'\n          destinationAddressPrefix: 'AzureCloud.${serviceTagLocation}'\n          destinationPortRange: '1194'\n          access: 'Allow'\n          priority: 100\n          direction: 'Outbound'\n        }\n      }\n      {\n        name: 'Allow_Internal_AKS_Connection_Between_Nodes_And_Control_Plane_TCP'\n        properties: {\n          description: 'internal AKS secure connection between underlying nodes and control plane..'\n          protocol: 'Tcp'\n          sourceAddressPrefix: 'VirtualNetwork'\n          sourcePortRange: '*'\n          destinationAddressPrefix: 'AzureCloud.${serviceTagLocation}'\n          destinationPortRange: '9000'\n          access: 'Allow'\n          priority: 110\n          direction: 'Outbound'\n        }\n      }\n      {\n        name: 'Allow_Azure_Monitor'\n        properties: {\n          description: 'Allows outbound calls to Azure Monitor.'\n          protocol: 'Tcp'\n          sourceAddressPrefix: 'VirtualNetwork'\n          sourcePortRange: '*'\n          destinationAddressPrefix: 'AzureCloud.${serviceTagLocation}'\n          destinationPortRange: '443'\n          access: 'Allow'\n          priority: 120\n          direction: 'Outbound'\n        }\n      }\n      {\n        name: 'Allow_Outbound_443'\n        properties: {\n          description: 'Allowing all outbound on port 443 provides a way to allow all FQDN based outbound dependencies that don\\'t have a static IP'\n          protocol: 'Tcp'\n          sourceAddressPrefix: 'VirtualNetwork'\n          sourcePortRange: '*'\n          destinationAddressPrefix: '*'\n          destinationPortRange: '443'\n          access: 'Allow'\n          priority: 130\n          direction: 'Outbound'\n        }\n      }\n      {\n        name: 'Allow_NTP_Server'\n        properties: {\n          description: 'NTP server'\n          protocol: 'Udp'\n          sourceAddressPrefix: 'VirtualNetwork'\n          sourcePortRange: '*'\n          destinationAddressPrefix: '*'\n          destinationPortRange: '123'\n          access: 'Allow'\n          priority: 140\n          direction: 'Outbound'\n        }\n      }\n      {\n        name: 'Allow_Container_Apps_control_plane'\n        properties: {\n          description: 'Container Apps control plane'\n          protocol: 'Tcp'\n          sourceAddressPrefix: 'VirtualNetwork'\n          sourcePortRange: '*'\n          destinationAddressPrefix: '*'\n          destinationPortRanges: [\n            '5671'\n            '5672'\n          ]\n          access: 'Allow'\n          priority: 150\n          direction: 'Outbound'\n        }\n      }\n      {\n        name: 'deny-hop-outbound'\n        properties: {\n          protocol: '*'\n          sourcePortRange: '*'\n          destinationPortRanges: [\n            '3389'\n            '22'\n          ]\n          access: 'Deny'\n          priority: 200\n          direction: 'Outbound'\n          sourceAddressPrefix: 'VirtualNetwork'\n          destinationAddressPrefix: '*'\n        }\n      }\n    ]\n    diagnosticSettings: [\n      {\n        name: 'logAnalyticsSettings'\n        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId\n      }\n    ]\n  }\n}",
+      "symbol": "nsgContainerAppsEnvironment"
+    },
+    {
+      "declaration": "module nsgAppGw 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(spokeApplicationGatewaySubnetAddressPrefix)) {\n  name: take('deploy-nsgAppGw-${deployment().name}', 64)\n  scope: resourceGroup(resourcesNames.resourceGroup)\n  params: {\n    name: resourcesNames.applicationGatewayNsg\n    location: location\n    tags: tags\n    enableTelemetry: enableTelemetry\n    securityRules: [\n      {\n        name: 'HealthProbes'\n        properties: {\n          description: 'allow HealthProbes from gateway Manager.'\n          protocol: '*'\n          sourceAddressPrefix: 'GatewayManager'\n          sourcePortRange: '*'\n          destinationAddressPrefix: '*'\n          destinationPortRange: '65200-65535'\n          access: 'Allow'\n          priority: 100\n          direction: 'Inbound'\n        }\n      }\n      {\n        name: 'Allow_TLS'\n        properties: {\n          description: 'allow https incoming connections'\n          protocol: '*'\n          sourceAddressPrefix: '*'\n          sourcePortRange: '*'\n          destinationAddressPrefix: '*'\n          destinationPortRange: '443'\n          access: 'Allow'\n          priority: 110\n          direction: 'Inbound'\n        }\n      }\n      {\n        name: 'Allow_HTTP'\n        properties: {\n          description: 'allow http incoming connections'\n          protocol: '*'\n          sourceAddressPrefix: '*'\n          sourcePortRange: '*'\n          destinationAddressPrefix: '*'\n          destinationPortRange: '80'\n          access: 'Allow'\n          priority: 120\n          direction: 'Inbound'\n        }\n      }\n      {\n        name: 'Allow_AzureLoadBalancer'\n        properties: {\n          description: 'allow AzureLoadBalancer incoming connections'\n          protocol: '*'\n          sourceAddressPrefix: 'AzureLoadBalancer'\n          sourcePortRange: '*'\n          destinationAddressPrefix: '*'\n          destinationPortRange: '80'\n          access: 'Allow'\n          priority: 130\n          direction: 'Inbound'\n        }\n      }\n      {\n        name: 'allow-all-outbound'\n        properties: {\n          protocol: '*'\n          sourcePortRange: '*'\n          destinationPortRange: '*'\n          access: 'Allow'\n          priority: 210\n          direction: 'Outbound'\n          sourceAddressPrefix: 'VirtualNetwork'\n          destinationAddressPrefix: '*'\n        }\n      }\n    ]\n    diagnosticSettings: [\n      {\n        name: 'logAnalyticsSettings'\n        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId\n      }\n    ]\n  }\n}",
+      "symbol": "nsgAppGw"
+    },
+    {
+      "declaration": "module nsgPep 'br/public:avm/res/network/network-security-group:0.5.0' = {\n  name: take('deploy-nsgPep-${deployment().name}', 64)\n  scope: resourceGroup(resourcesNames.resourceGroup)\n  params: {\n    name: resourcesNames.pepNsg\n    location: location\n    tags: tags\n    enableTelemetry: enableTelemetry\n    securityRules: [\n      {\n        name: 'deny-hop-outbound'\n        properties: {\n          protocol: '*'\n          sourcePortRange: '*'\n          destinationPortRanges: [\n            '3389'\n            '22'\n          ]\n          access: 'Deny'\n          priority: 200\n          direction: 'Outbound'\n          sourceAddressPrefix: 'VirtualNetwork'\n          destinationAddressPrefix: '*'\n        }\n      }\n    ]\n    diagnosticSettings: [\n      {\n        name: 'logAnalyticsSettings'\n        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId\n      }\n    ]\n  }\n}",
+      "symbol": "nsgPep"
+    },
+    {
+      "declaration": "module nsgDeploymentSubnet 'br/public:avm/res/network/network-security-group:0.5.0' = {\n  name: take('deploy-nsgDeploymentSubnet-${deployment().name}', 64)\n  scope: resourceGroup(resourcesNames.resourceGroup)\n  params: {\n    name: resourcesNames.acrDeploymentPoolNsg\n    location: location\n    tags: tags\n    enableTelemetry: enableTelemetry\n    securityRules: [\n      {\n        name: 'Allow_HTTPS_Inbound'\n        properties: {\n          description: 'Allow inbound HTTPS traffic on port 443 from any source.'\n          protocol: 'Tcp'\n          sourceAddressPrefix: '*'\n          sourcePortRange: '*'\n          destinationAddressPrefix: '*'\n          destinationPortRange: '443'\n          access: 'Allow'\n          priority: 110\n          direction: 'Inbound'\n        }\n      }\n      {\n        name: 'Allow_HTTPS_Outbound'\n        properties: {\n          description: 'Allow outbound HTTPS traffic on port 443 to any destination.'\n          protocol: 'Tcp'\n          sourceAddressPrefix: '*'\n          sourcePortRange: '*'\n          destinationAddressPrefix: '*'\n          destinationPortRange: '443'\n          access: 'Allow'\n          priority: 120\n          direction: 'Outbound'\n        }\n      }\n      {\n        name: 'Allow_Azure_Container_Instance_Outbound'\n        properties: {\n          description: 'Allow outbound traffic to Azure services for container instances.'\n          protocol: '*'\n          sourceAddressPrefix: 'VirtualNetwork'\n          sourcePortRange: '*'\n          destinationAddressPrefix: 'Internet'\n          destinationPortRange: '*'\n          access: 'Allow'\n          priority: 200\n          direction: 'Outbound'\n        }\n      }\n    ]\n    diagnosticSettings: [\n      {\n        name: 'logAnalyticsSettings'\n        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId\n      }\n    ]\n  }\n}",
+      "symbol": "nsgDeploymentSubnet"
+    }
+  ],
+  "subnetAssembly": "var defaultSubnets = [\n  {\n    name: spokeInfraSubnetName\n    addressPrefix: spokeInfraSubnetAddressPrefix\n    networkSecurityGroupResourceId: nsgContainerAppsEnvironment.outputs.resourceId\n    routeTableResourceId: (!empty(hubVNetId) && !empty(networkApplianceIpAddress))\n      ? egressLockdownUdr.outputs.resourceId\n      : null\n    delegation: 'Microsoft.App/environments'\n  }\n  {\n    name: deploymentSubnetName\n    addressPrefix: deploymentSubnetAddressPrefix\n    networkSecurityGroupResourceId: nsgDeploymentSubnet.outputs.resourceId\n    delegation: 'Microsoft.ContainerInstance/containerGroups'\n  }\n  {\n    name: spokePrivateEndpointsSubnetName\n    addressPrefix: spokePrivateEndpointsSubnetAddressPrefix\n    networkSecurityGroupResourceId: nsgPep.outputs.resourceId\n  }\n]\n\n// Append optional application gateway subnet, if required\nvar appGwAndDefaultSubnets = !empty(spokeApplicationGatewaySubnetAddressPrefix)\n  ? concat(defaultSubnets, [\n      {\n        name: spokeApplicationGatewaySubnetName\n        addressPrefix: spokeApplicationGatewaySubnetAddressPrefix\n        networkSecurityGroupResourceId: nsgAppGw.outputs.resourceId\n        delegation: 'Microsoft.Network/applicationGateways'\n      }\n    ])\n  : defaultSubnets\n\n// Append optional jumpbox subnet, if required\nvar spokeSubnets = vmJumpboxOSType != 'none'\n  ? concat(appGwAndDefaultSubnets, [\n      {\n        name: vmSubnetName\n        addressPrefix: vmJumpBoxSubnetAddressPrefix\n      }\n    ])\n  : appGwAndDefaultSubnets\n\n",
+  "nsgTemplateSha256": "706a1d4796756d4dce2056f2c1fb29c8f6a0586198f1c251009e4a8d77f549ea",
+  "nsgDependsOn": [
+    [
+      "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-logAnalyticsWs-{0}', deployment().name), 64))]"
+    ],
+    [
+      "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-logAnalyticsWs-{0}', deployment().name), 64))]"
+    ],
+    [
+      "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-logAnalyticsWs-{0}', deployment().name), 64))]"
+    ],
+    [
+      "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-logAnalyticsWs-{0}', deployment().name), 64))]"
+    ]
+  ],
+  "vnet": {
+    "resourceGroup": "[parameters('resourcesNames').resourceGroup]",
+    "name": "[take(format('deploy-vnetSpoke-{0}', deployment().name), 64)]",
+    "dependsOn": [
+      "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64))]",
+      "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgAppGw-{0}', deployment().name), 64))]",
+      "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgContainerAppsEnvironment-{0}', deployment().name), 64))]",
+      "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgDeploymentSubnet-{0}', deployment().name), 64))]",
+      "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgPep-{0}', deployment().name), 64))]"
+    ],
+    "templateSha256": "ab092b643d3f0c32f95489548aacc3538af0fe7a9a94e5630eee2e3076750ba3",
+    "parameters": {
+      "name": {
+        "value": "[parameters('resourcesNames').vnetSpoke]"
+      },
+      "location": {
+        "value": "[parameters('location')]"
+      },
+      "tags": {
+        "value": "[parameters('tags')]"
+      },
+      "enableTelemetry": {
+        "value": "[parameters('enableTelemetry')]"
+      },
+      "addressPrefixes": {
+        "value": "[parameters('spokeVNetAddressPrefixes')]"
+      },
+      "subnets": "[if(not(equals(parameters('vmJumpboxOSType'), 'none')), createObject('value', concat(if(not(empty(parameters('spokeApplicationGatewaySubnetAddressPrefix'))), concat(createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgContainerAppsEnvironment-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, null()), 'delegation', 'Microsoft.App/environments'), createObject('name', parameters('deploymentSubnetName'), 'addressPrefix', parameters('deploymentSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgDeploymentSubnet-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.ContainerInstance/containerGroups'), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgPep-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value)), createArray(createObject('name', parameters('spokeApplicationGatewaySubnetName'), 'addressPrefix', parameters('spokeApplicationGatewaySubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgAppGw-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.Network/applicationGateways'))), createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgContainerAppsEnvironment-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, null()), 'delegation', 'Microsoft.App/environments'), createObject('name', parameters('deploymentSubnetName'), 'addressPrefix', parameters('deploymentSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgDeploymentSubnet-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.ContainerInstance/containerGroups'), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgPep-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value))), createArray(createObject('name', parameters('vmSubnetName'), 'addressPrefix', parameters('vmJumpBoxSubnetAddressPrefix'))))), if(not(empty(parameters('spokeApplicationGatewaySubnetAddressPrefix'))), createObject('value', concat(createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgContainerAppsEnvironment-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, null()), 'delegation', 'Microsoft.App/environments'), createObject('name', parameters('deploymentSubnetName'), 'addressPrefix', parameters('deploymentSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgDeploymentSubnet-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.ContainerInstance/containerGroups'), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgPep-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value)), createArray(createObject('name', parameters('spokeApplicationGatewaySubnetName'), 'addressPrefix', parameters('spokeApplicationGatewaySubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgAppGw-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.Network/applicationGateways')))), createObject('value', createArray(createObject('name', parameters('spokeInfraSubnetName'), 'addressPrefix', parameters('spokeInfraSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgContainerAppsEnvironment-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, 'routeTableResourceId', if(and(not(empty(parameters('hubVNetId'))), not(empty(parameters('networkApplianceIpAddress')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, null()), 'delegation', 'Microsoft.App/environments'), createObject('name', parameters('deploymentSubnetName'), 'addressPrefix', parameters('deploymentSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgDeploymentSubnet-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value, 'delegation', 'Microsoft.ContainerInstance/containerGroups'), createObject('name', parameters('spokePrivateEndpointsSubnetName'), 'addressPrefix', parameters('spokePrivateEndpointsSubnetAddressPrefix'), 'networkSecurityGroupResourceId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-nsgPep-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value)))))]",
+      "peerings": "[if(not(empty(parameters('hubVNetId'))), createObject('value', createArray(createObject('allowForwardedTraffic', true(), 'allowGatewayTransit', false(), 'allowVirtualNetworkAccess', true(), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringEnabled', true(), 'remotePeeringName', 'spokeToHub', 'remoteVirtualNetworkResourceId', parameters('hubVNetId'), 'useRemoteGateways', false()))), createObject('value', null()))]"
+    }
+  },
+  "unchangedResources": [
+    {
+      "name": "[take(format('deploy-logAnalyticsWs-{0}', deployment().name), 64)]",
+      "sha256": "d3223dd3fd533940cc38bac52feab03d63ca5b8a49e21fe0855e54bf33e6e5a4"
+    },
+    {
+      "name": "[take(format('deploy-egressLockdownUdr-{0}', deployment().name), 64)]",
+      "sha256": "cf9e424f633c99aaa6e10bb7253f769e93db416d7ad4957fe60c6862d486e070"
+    },
+    {
+      "name": "[take(format('deploy-vm-linux-{0}', deployment().name), 64)]",
+      "sha256": "99de35eaf9324fee10174da2af4ee44c83a7abf45b723d02e338698577950b4f"
+    },
+    {
+      "name": "[take(format('deploy-vm-windows-{0}', deployment().name), 64)]",
+      "sha256": "57c0c2b355023acaf98ea70d8aac38086b0bb8cbeb8eb09a31c7cab67914708d"
+    }
+  ],
+  "parameters": {
+    "resourcesNames": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. The resource names definition"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "The location where the resources will be created. This should be the same region as the hub."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The tags to be assigned to the created resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. Whether to enable deplotment telemetry."
+      }
+    },
+    "hubVNetId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the existing hub virtual network."
+      }
+    },
+    "bastionResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource id of the bastion host."
+      }
+    },
+    "spokeVNetAddressPrefixes": {
+      "type": "array",
+      "metadata": {
+        "description": "CIDR of the spoke virtual network. For most landing zone implementations, the spoke network would have been created by your platform team."
+      }
+    },
+    "spokeInfraSubnetName": {
+      "type": "string",
+      "defaultValue": "snet-infra",
+      "metadata": {
+        "description": "Optional. The name of the subnet to create for the spoke infrastructure. If set, it overrides the name generated by the template."
+      }
+    },
+    "spokeInfraSubnetAddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "CIDR of the spoke infrastructure subnet."
+      }
+    },
+    "spokePrivateEndpointsSubnetName": {
+      "type": "string",
+      "defaultValue": "snet-pep",
+      "metadata": {
+        "description": "Optional. The name of the subnet to create for the spoke private endpoints. If set, it overrides the name generated by the template."
+      }
+    },
+    "spokePrivateEndpointsSubnetAddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "CIDR of the spoke private endpoints subnet."
+      }
+    },
+    "spokeApplicationGatewaySubnetName": {
+      "type": "string",
+      "defaultValue": "snet-agw",
+      "metadata": {
+        "description": "Optional. The name of the subnet to create for the spoke application gateway. If set, it overrides the name generated by the template."
+      }
+    },
+    "spokeApplicationGatewaySubnetAddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "CIDR of the spoke Application Gateway subnet. If the value is empty, this subnet will not be created."
+      }
+    },
+    "deploymentSubnetName": {
+      "type": "string",
+      "defaultValue": "snet-deployment",
+      "metadata": {
+        "description": "Optional. The name of the subnet to create for the deployment sctripts. If set, it overrides the name generated by the template."
+      }
+    },
+    "deploymentSubnetAddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The CIDR to use for Deployment scripts subnet."
+      }
+    },
+    "routeSpokeTrafficInternally": {
+      "type": "bool",
+      "metadata": {
+        "description": "Optional. Define whether to route spoke-internal traffic within the spoke network. If false, traffic will be sent to the hub network. Default is false."
+      }
+    },
+    "networkApplianceIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "The IP address of the network appliance (e.g. firewall) that will be used to route traffic to the internet."
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "The size of the jump box virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information."
+      }
+    },
+    "vmZone": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Optional. The zone to create the jump box in. Defaults to 0."
+      }
+    },
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "metadata": {
+        "description": "Optional. The storage account type to use for the jump box. Defaults to Standard_LRS."
+      }
+    },
+    "vmAdminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The password to use for the jump box."
+      }
+    },
+    "vmLinuxSshAuthorizedKey": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The SSH public key to use for the jump box. Only relevant for Linux."
+      }
+    },
+    "vmJumpboxOSType": {
+      "type": "string",
+      "defaultValue": "none",
+      "allowedValues": [
+        "linux",
+        "windows",
+        "none"
+      ],
+      "metadata": {
+        "description": "The OS of the jump box virtual machine to create. If set to \"none\", no jump box will be created."
+      }
+    },
+    "vmSubnetName": {
+      "type": "string",
+      "defaultValue": "snet-jumpbox",
+      "metadata": {
+        "description": "Optional. The name of the subnet to create for the jump box. If set, it overrides the name generated by the template."
+      }
+    },
+    "vmJumpBoxSubnetAddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "CIDR to use for the jump box subnet."
+      }
+    },
+    "vmAuthenticationType": {
+      "type": "string",
+      "defaultValue": "password",
+      "allowedValues": [
+        "sshPublicKey",
+        "password"
+      ],
+      "metadata": {
+        "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
+      }
+    }
+  },
+  "outputs": {
+    "spokeVNetId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the spoke virtual network."
+      },
+      "value": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Network/virtualNetworks', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-vnetSpoke-{0}', deployment().name), 64)), '2025-04-01').outputs.name.value)]"
+    },
+    "spokeVNetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the spoke virtual network."
+      },
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-vnetSpoke-{0}', deployment().name), 64)), '2025-04-01').outputs.name.value]"
+    },
+    "spokeInfraSubnetId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the spoke infrastructure subnet."
+      },
+      "value": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Network/virtualNetworks/subnets', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-vnetSpoke-{0}', deployment().name), 64)), '2025-04-01').outputs.name.value, parameters('spokeInfraSubnetName'))]"
+    },
+    "spokeInfraSubnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the spoke infrastructure subnet."
+      },
+      "value": "[parameters('spokeInfraSubnetName')]"
+    },
+    "spokePrivateEndpointsSubnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the spoke private endpoints subnet."
+      },
+      "value": "[parameters('spokePrivateEndpointsSubnetName')]"
+    },
+    "spokePrivateEndpointsSubnetResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the spoke private endpoints subnet."
+      },
+      "value": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Network/virtualNetworks/subnets', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-vnetSpoke-{0}', deployment().name), 64)), '2025-04-01').outputs.name.value, parameters('spokePrivateEndpointsSubnetName'))]"
+    },
+    "deploymentSubnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the spoke deployment subnet."
+      },
+      "value": "[parameters('deploymentSubnetName')]"
+    },
+    "deploymentSubnetResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the spoke deployment subnet."
+      },
+      "value": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Network/virtualNetworks/subnets', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-vnetSpoke-{0}', deployment().name), 64)), '2025-04-01').outputs.name.value, parameters('deploymentSubnetName'))]"
+    },
+    "spokeApplicationGatewaySubnetId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the spoke Application Gateway subnet. This is '' if the subnet was not created."
+      },
+      "value": "[if(not(empty(parameters('spokeApplicationGatewaySubnetAddressPrefix'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Network/virtualNetworks/subnets', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-vnetSpoke-{0}', deployment().name), 64)), '2025-04-01').outputs.name.value, parameters('spokeApplicationGatewaySubnetName')), '')]"
+    },
+    "spokeApplicationGatewaySubnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the spoke Application Gateway subnet.  This is '' if the subnet was not created."
+      },
+      "value": "[if(not(empty(parameters('spokeApplicationGatewaySubnetAddressPrefix'))), parameters('spokeApplicationGatewaySubnetName'), '')]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Azure Log Analytics Workspace."
+      },
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', take(format('deploy-logAnalyticsWs-{0}', deployment().name), 64)), '2025-04-01').outputs.resourceId.value]"
+    },
+    "vmJumpBoxName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the jump box virtual machine."
+      },
+      "value": "[parameters('resourcesNames').vmJumpBox]"
+    }
+  }
+}

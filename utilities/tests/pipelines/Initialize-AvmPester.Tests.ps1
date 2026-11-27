@@ -288,10 +288,9 @@ Describe 'Pester entry-point initialization' {
         $deploymentAction = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml') -Raw)
         $workflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $RepoRootPath '.github' 'workflows' 'platform.on-pull-request-check-metadata.yml') -Raw)
         $script:scripts = @{
-            'full static validation' = ($action.runs.steps | Where-Object id -EQ 'pester_run_step').run.Replace('${{ inputs.modulePath }}', 'avm/res/example/module').Replace('${{ inputs.moduleTestFilePath }}', 'utilities/pipelines/staticValidation/compliance/module.tests.ps1')
+            'full static validation' = ($action.runs.steps | Where-Object id -EQ 'pester_run_step').run
             'post-deployment validation' = ($deploymentAction.runs.steps | Where-Object id -EQ 'pester_run_step').run
             'standalone metadata'    = ($workflow.jobs.job_check_metadata.steps | Where-Object shell -EQ 'pwsh').run
-            'local module tests'     = Get-Content -LiteralPath (Join-Path $RepoRootPath 'utilities' 'tools' 'Test-ModuleLocally.ps1') -Raw
             'CI utility tests'       = Get-Content -LiteralPath (Join-Path $RepoRootPath 'utilities' 'tests' 'Test-CI.ps1') -Raw
         }
     }
@@ -300,7 +299,6 @@ Describe 'Pester entry-point initialization' {
         @{ EntryPoint = 'full static validation' }
         @{ EntryPoint = 'post-deployment validation' }
         @{ EntryPoint = 'standalone metadata' }
-        @{ EntryPoint = 'local module tests' }
         @{ EntryPoint = 'CI utility tests' }
     ) {
         $parseErrors = $null
@@ -326,16 +324,4 @@ Describe 'Pester entry-point initialization' {
         }
     }
 
-    It 'keeps local initialization limited to PesterTest and PesterTestRecurse' {
-        $ast = [System.Management.Automation.Language.Parser]::ParseInput($scripts['local module tests'], [ref] $null, [ref] $null)
-        $initializer = $ast.Find({
-                param($node)
-                $node -is [System.Management.Automation.Language.CommandAst] -and $node.GetCommandName() -eq 'Initialize-AvmPester'
-            }, $true)
-        $ancestor = $initializer.Parent
-        while ($ancestor -isnot [System.Management.Automation.Language.IfStatementAst]) {
-            $ancestor = $ancestor.Parent
-        }
-        $ancestor.Clauses[0].Item1.Extent.Text | Should -Be '$PesterTest -or $PesterTestRecurse'
-    }
 }

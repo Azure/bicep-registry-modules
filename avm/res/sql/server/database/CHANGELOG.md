@@ -6,11 +6,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Recompiled `main.json` with Bicep CLI `0.48.1` to align nested template metadata with the CI-pinned compiler.
+- Updated Key Vault API references to `2026-02-01`.
 
 ### Breaking Changes
 
-- None.
+- None
 
 ## 0.3.1
 

@@ -125,7 +125,7 @@ For each resource requiring an update, provide the following details:
 **Implementation Plan:**
 
 1. **Module Updates**: Detail specific required changes to parameters, variables, and outputs.
-2. **Test Updates**: Specify which e2e test scenarios need modification (defaults/max/waf-aligned).
+2. **Test Updates**: Specify which e2e scenarios need modification: resources require `defaults` and `waf-aligned`; patterns and utilities require `defaults`; `max` is recommended, not mandatory. Refer to [BCPRMNFR1](https://azure.github.io/Azure-Verified-Modules/spec/BCPRMNFR1) and [SNFR2](https://azure.github.io/Azure-Verified-Modules/spec/SNFR2).
 3. **Documentation**: Note specific required updates for the README file.
 4. **Validation**: Mention any PSRule or linter considerations.
 

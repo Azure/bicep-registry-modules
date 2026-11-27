@@ -110,6 +110,7 @@ Resource tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the integration account certificate. |
 | `name` | string | The name of the integration account certificate. |
 | `resourceGroupName` | string | The resource group the integration account certificate was deployed into. |
 | `resourceId` | string | The resource ID of the integration account certificate. |

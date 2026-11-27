@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'systempool'
           count: 2
-          vmSize: 'Standard_DS4_v2'
+          vmSize: 'Standard_D8ds_v5'
           mode: 'System'
         }
       ]

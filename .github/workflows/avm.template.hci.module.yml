@@ -206,12 +206,9 @@ jobs:
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Create module release tag"
         shell: pwsh
+        env:
+          MODULE_PATH: ${{ inputs.modulePath }}
         run: |
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleReleaseTag.ps1')
-          $functionInput = @{
-            TemplateFilePath = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.modulePath }}/main.bicep"
-            RepoRoot         = $env:GITHUB_WORKSPACE
-          }
-          if ($tagOutputs = Set-ModuleReleaseTag @functionInput -Verbose) {
-            Write-Verbose ("Created release tag(s):`n{0}" -f ($tagOutputs | ConvertTo-Json -Depth 10 | Out-String)) -Verbose
-          }
+          Import-Module Avm.Authoring -MinimumVersion '1.1.0' -ErrorAction Stop
+          Set-AvmBicepReleaseTags -Root $env:GITHUB_WORKSPACE -ModulePath $env:MODULE_PATH `
+            -TargetCommit $env:GITHUB_SHA -PendingRelease -RequireChangelog -Confirm:$false

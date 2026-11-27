@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "1188921224327885549"
+      "version": "0.48.1.52935",
+      "templateHash": "1107256074567360282"
     },
     "name": "Container Registries Credential Sets",
     "description": "This module deploys an ACR Credential Set."

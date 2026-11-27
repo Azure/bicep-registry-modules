@@ -16,8 +16,6 @@ Describe 'Module deployment workflow expansion' {
         $selection = Get-ModuleDeploymentMatrix -ModulePath $modulePath -TestFilePaths $testFiles `
             -TestSubscriptionIds '[{"id":"11111111-1111-1111-1111-111111111111","name":"general"}]' `
             -RandomSeed 42 -RepoRoot $RepoRootPath
-        $deployment = Get-Content (Join-Path $workflowRoot 'avm.template.module.deployment.yml') -Raw | ConvertFrom-Yaml
-        $action = Get-Content (Join-Path $RepoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml') -Raw | ConvertFrom-Yaml
         $hciModule = Get-Content (Join-Path $workflowRoot 'avm.template.hci.module.yml') -Raw | ConvertFrom-Yaml
         $consumer = Get-Content (Join-Path $workflowRoot 'avm.template.hci.consumer.yml') -Raw | ConvertFrom-Yaml
         $reservedModules = Get-Content (Join-Path $RepoRootPath '.reserved-test-subscriptions.json') -Raw | ConvertFrom-Json -AsHashtable
@@ -71,87 +69,8 @@ Describe 'Module deployment workflow expansion' {
         $selection.sharedScope | Should -BeTrue
     }
 
-    It 'expands every declared job lock for <caseName> with <fieldState> optional environment metadata' -ForEach @(
-        @{ caseName = 'defaults'; fieldState = 'absent' }
-        @{ caseName = 'defaults'; fieldState = 'empty' }
-        @{ caseName = 'git-config'; fieldState = 'absent' }
-        @{ caseName = 'git-config'; fieldState = 'empty' }
-        @{ caseName = 'max'; fieldState = 'absent' }
-        @{ caseName = 'max'; fieldState = 'empty' }
-        @{ caseName = 'waf-aligned'; fieldState = 'absent' }
-        @{ caseName = 'waf-aligned'; fieldState = 'empty' }
-        @{ caseName = 'cmk-hsm-uami'; fieldState = 'absent' }
-        @{ caseName = 'cmk-hsm-uami'; fieldState = 'empty' }
-    ) {
-        $record = @($selection.testCases | Where-Object name -EQ $caseName)[0].Clone()
-        $record.Remove('environmentConcurrencyGroup')
-        if ($fieldState -eq 'empty') {
-            $record.environmentConcurrencyGroup = ''
-        }
-        $testCase = $record | ConvertTo-Json -Compress | ConvertFrom-Json -AsHashtable
-
-        foreach ($jobName in $deployment.jobs.Keys) {
-            $job = $deployment.jobs[$jobName]
-            if ($job.ContainsKey('concurrency')) {
-                $group = Resolve-TestCaseExpression -Expression $job.concurrency.group -TestCase $testCase
-                $group | Should -Not -BeNullOrEmpty -Because "GitHub must expand [$jobName] without relying on its if condition to hide an empty concurrency group"
-                $group | Should -BeExactly $testCase.concurrencyGroup
-            }
-        }
-    }
-
-    It 'keeps the ordinary deployment workflow and composite free of HCI runtime dependencies' {
-        @($deployment.jobs.Keys) | Should -Be @('job_module_deploy_validation')
-        $deployment.jobs.job_module_deploy_validation.ContainsKey('if') | Should -BeFalse
-        @($deployment.on.workflow_call.inputs.Keys | Sort-Object) |
-            Should -Be @('modulePath', 'testCase', 'tokenNamePrefix', 'workflowInput')
-        foreach ($document in @($deployment, $action)) {
-            $document | ConvertTo-Json -Depth 50 |
-                Should -Not -Match 'Hci|Azure Local|environmentConcurrencyGroup|avm-hci'
-        }
-    }
-
-    It 'preserves the actual <caseName> report/deploy behavior after lock expansion' -ForEach @(
-        @{ caseName = 'defaults'; deploy = $true }
-        @{ caseName = 'git-config'; deploy = $true }
-        @{ caseName = 'max'; deploy = $true }
-        @{ caseName = 'waf-aligned'; deploy = $true }
-        @{ caseName = 'cmk-hsm-uami'; deploy = $false }
-    ) {
-        $testCase = @($selection.testCases | Where-Object name -EQ $caseName)[0]
-        $steps = @($deployment.jobs.job_module_deploy_validation.steps | Where-Object {
-                Resolve-TestCaseExpression -Expression $_.if -TestCase $testCase
-            })
-        if ($deploy) {
-            $steps.Count | Should -Be 3
-            $steps[0].uses | Should -Match '^actions/checkout@'
-            $steps[1].uses | Should -Be './.github/actions/templates/avm-setEnvironment'
-            $steps[2].uses | Should -Be './.github/actions/templates/avm-validateModuleDeployment'
-        } else {
-            $steps.Count | Should -Be 1
-            $steps[0].name | Should -Be 'Report skipped deployment'
-            $steps[0].ContainsKey('uses') | Should -BeFalse
-        }
-    }
-
-    It 'preserves legacy Data Factory deployment without introducing HCI runtime dependencies' {
-        $entry = Get-Content (Join-Path $workflowRoot 'avm.res.data-factory.factory.yml') -Raw | ConvertFrom-Yaml
-        $entry.on.push.branches | Should -Be @('main')
-        $entry.env.modulePath | Should -Be $modulePath
-        $entry.jobs.'call-workflow-passing-data'.uses | Should -Be './.github/workflows/avm.template.module.yml'
-
-        foreach ($file in @('avm.template.module.yml', 'avm.template.module.preview.yml', 'avm.template.module.publish.yml')) {
-            $caller = Get-Content (Join-Path $workflowRoot $file) -Raw | ConvertFrom-Yaml
-            $job = $caller.jobs.job_module_deploy_validation
-            $job.uses | Should -Be './.github/workflows/avm.template.module.deployment.yml'
-            $job.with.testCase | Should -Be '${{ toJSON(matrix.testCases) }}'
-            $job.strategy.matrix.testCases | Should -Be '${{ fromJson(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}'
-            $caller | ConvertTo-Json -Depth 30 | Should -Not -Match 'Hci|Azure Local|environmentConcurrencyGroup|avm-hci'
-        }
-    }
-
     It 'routes every reserved per-module entrypoint through the explicit wrapper without changing inputs or triggers' {
-        $reference = Get-Content (Join-Path $workflowRoot 'avm.res.data-factory.factory.yml') -Raw | ConvertFrom-Yaml
+        $reference = Get-Content (Join-Path $workflowRoot 'avm.res.azure-stack-hci.cluster.yml') -Raw | ConvertFrom-Yaml
         $reservedModules.Count | Should -Be 7
         foreach ($path in $reservedModules.Keys) {
             $file = "$($path.Replace('/', '.')).yml"
@@ -169,11 +88,6 @@ Describe 'Module deployment workflow expansion' {
 
     It 'resolves every downstream job output against the post-separation producer contract' {
         $files = @(
-            'avm.res.data-factory.factory.yml'
-            'avm.template.module.yml'
-            'avm.template.module.preview.yml'
-            'avm.template.module.publish.yml'
-            'avm.template.module.deployment.yml'
             'avm.template.hci.module.yml'
             'avm.template.hci.consumer.yml'
         ) + @($reservedModules.Keys | ForEach-Object { "$($_.Replace('/', '.')).yml" })
@@ -197,14 +111,10 @@ Describe 'Module deployment workflow expansion' {
             }
         }
         $referenceCount | Should -BeGreaterThan 0
-        $deployment.on.workflow_call.ContainsKey('outputs') | Should -BeFalse
         $consumer.on.workflow_call.ContainsKey('outputs') | Should -BeFalse
     }
 
-    It 'does not classify missing deployment outputs as successful non-HCI publishing in <file>' -ForEach @(
-        @{ file = 'avm.template.module.yml'; publicationJob = 'job_publish_module' }
-        @{ file = 'avm.template.module.preview.yml'; publicationJob = 'job_preview_module' }
-        @{ file = 'avm.template.module.publish.yml'; publicationJob = 'job_publish_module' }
+    It 'does not classify missing deployment outputs as successful publishing in <file>' -ForEach @(
         @{ file = 'avm.template.hci.module.yml'; publicationJob = 'job_publish_module' }
     ) {
         $workflow = Get-Content (Join-Path $workflowRoot $file) -Raw | ConvertFrom-Yaml
@@ -231,53 +141,9 @@ Describe 'Module deployment workflow expansion' {
             $failed.deploymentResult = $result
             Test-WorkflowCondition -Expression $publish.if -Context $failed | Should -BeFalse
         }
-        if ($file -ne 'avm.template.hci.module.yml') {
-            $reservedPath = @($reservedModules.Keys | Sort-Object)[0]
-            {
-                Get-ModuleDeploymentMatrix -ModulePath $reservedPath `
-                    -TestFilePaths @(@{ name = 'defaults'; path = 'tests/e2e/defaults/main.test.bicep' }) `
-                    -RandomSeed 42 -RepoRoot $RepoRootPath
-            } | Should -Throw '*Use the module''s dedicated workflow*'
-            $context.selectionResult = 'failure'
-            $context.deploymentResult = 'skipped'
-            Test-WorkflowCondition -Expression $workflow.jobs.job_module_deploy_validation.if -Context $context | Should -BeFalse
-            Test-WorkflowCondition -Expression $publish.if -Context $context | Should -BeFalse
-        }
     }
 
-    It 'allows reserved static/PSRule-only requests through <file> without entering deployment selection' -ForEach @(
-        @{ file = 'avm.template.module.yml' }
-        @{ file = 'avm.template.module.preview.yml' }
-        @{ file = 'avm.template.module.publish.yml' }
-    ) {
-        $workflow = Get-Content (Join-Path $workflowRoot $file) -Raw | ConvertFrom-Yaml
-        $context = @{
-            staticValidation = 'true'
-            deploymentValidation = 'false'
-            testFiles = '[{"name":"defaults","path":"tests/e2e/defaults/main.test.bicep"}]'
-            psRuleFiles = '[{"name":"defaults","path":"tests/e2e/defaults/main.test.bicep"}]'
-        }
-        foreach ($jobName in @('job_module_static_validation', 'job_psrule_must', 'job_psrule_opt')) {
-            Test-WorkflowCondition -Expression $workflow.jobs[$jobName].if -Context $context | Should -BeTrue
-        }
-        Test-WorkflowCondition -Expression $workflow.jobs.job_initialize_subscription_selection.if -Context $context |
-            Should -BeFalse
-        foreach ($path in $reservedModules.Keys) {
-            (Get-ModuleWorkflowMatrix -ModulePathInput $path -RepoRoot $RepoRootPath).include.modulePath | Should -Be $path
-        }
-    }
-
-    It 'preserves existing static/PSRule actions and conditions while reserving Azure Local selection for its own initializer' {
-        $legacy = Get-Content (Join-Path $workflowRoot 'avm.template.module.yml') -Raw | ConvertFrom-Yaml
-        $hciModule.env | ConvertTo-Json -Compress | Should -Be ($legacy.env | ConvertTo-Json -Compress)
-        foreach ($jobName in @('job_module_static_validation', 'job_psrule_must', 'job_psrule_opt')) {
-            $job = $hciModule.jobs[$jobName]
-            $reference = $legacy.jobs[$jobName]
-            $job.if | Should -Be $reference.if
-            $job.'runs-on' | Should -Be $reference.'runs-on'
-            $job.steps | ConvertTo-Json -Depth 15 -Compress | Should -Be ($reference.steps | ConvertTo-Json -Depth 15 -Compress)
-            $job.strategy | ConvertTo-Json -Depth 10 -Compress | Should -Be ($reference.strategy | ConvertTo-Json -Depth 10 -Compress)
-        }
+    It 'reserves Azure Local selection for its own initializer' {
         $initialize = $hciModule.jobs.job_initialize_subscription_selection
         $matrixStep = $initialize.steps | Where-Object id -EQ deployment-matrix
         $matrixStep.with.expectedSubscriptionTag | Should -Be 'Azure Local'
@@ -288,9 +154,24 @@ Describe 'Module deployment workflow expansion' {
         $deploy.with.workflowInput | Should -Be '${{ inputs.workflowInput }}'
         $deploy.concurrency.group | Should -Match "sharedScope == 'true'"
         $deploy.concurrency.queue | Should -Be 'max'
-        $deploy.if | Should -Be $legacy.jobs.job_module_deploy_validation.if
-        $deploy.needs | Should -Be $legacy.jobs.job_module_deploy_validation.needs
         $deploy.needs | Should -Not -Contain 'job_psrule_opt'
+    }
+
+    It 'runs Azure Local static and PSRule validation only when requested' {
+        $context = @{
+            staticValidation = 'true'
+            testFiles = '[{"name":"defaults","path":"tests/e2e/defaults/main.test.bicep"}]'
+            psRuleFiles = '[{"name":"defaults","path":"tests/e2e/defaults/main.test.bicep"}]'
+        }
+        foreach ($jobName in @('job_module_static_validation', 'job_psrule_must', 'job_psrule_opt')) {
+            $job = $hciModule.jobs[$jobName]
+            Test-WorkflowCondition -Expression $job.if -Context $context | Should -BeTrue
+            $action = $jobName -eq 'job_module_static_validation' ? 'avm-validateModulePester' : 'avm-validateModulePSRule'
+            @($job.steps.uses) | Should -Contain "./.github/actions/templates/$action"
+            $disabled = $context.Clone()
+            $disabled.staticValidation = 'false'
+            Test-WorkflowCondition -Expression $job.if -Context $disabled | Should -BeFalse
+        }
     }
 
     It 'preserves required versus optional validation gates for dedicated deployment' {
@@ -394,7 +275,8 @@ Describe 'Module deployment workflow expansion' {
             Test-WorkflowCondition -Expression $publish.if -Context $failed | Should -BeFalse
         }
         $release = $publish.steps | Where-Object name -EQ 'Create module release tag'
-        $release.run | Should -Match 'Set-ModuleReleaseTag @functionInput'
-        $release.run | Should -Match ([regex]::Escape('${{ inputs.modulePath }}/main.bicep'))
+        $release.env.MODULE_PATH | Should -Be '${{ inputs.modulePath }}'
+        $release.run | Should -Match 'Set-AvmBicepReleaseTags'
+        $release.run | Should -Match '-TargetCommit \$env:GITHUB_SHA -PendingRelease -RequireChangelog'
     }
 }

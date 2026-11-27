@@ -7,16 +7,16 @@ param keyVaultName string
 @description('Required. The name of the Application Insights instance to create.')
 param applicationInsightsName string
 
-@description('Required. The name of the Storage Account to create.')
+@description('Required. The storage account base name. A stable resource-group-specific suffix is added.')
 param storageAccountName string
 
-@description('Required. The name of the additional Storage Account to create.')
+@description('Required. The additional storage account base name. A stable resource-group-specific suffix is added.')
 param secondaryStorageAccountName string
 
 @description('Required. The name of the AI Hub to create.')
 param aiHubName string
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -38,11 +38,13 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
   location: location
   kind: ''
-  properties: {}
+  properties: {
+    Application_Type: 'web'
+  }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
-  name: storageAccountName
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-06-01' = {
+  name: '${take(storageAccountName, 11)}${uniqueString(resourceGroup().id, storageAccountName)}'
   location: location
   sku: {
     name: 'Standard_LRS'
@@ -50,8 +52,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   kind: 'StorageV2'
 }
 
-resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
-  name: secondaryStorageAccountName
+resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2026-06-01' = {
+  name: '${take(secondaryStorageAccountName, 11)}${uniqueString(resourceGroup().id, secondaryStorageAccountName)}'
   location: location
   sku: {
     name: 'Standard_LRS'
@@ -59,7 +61,7 @@ resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' 
   kind: 'StorageV2'
 }
 
-resource aiHub 'Microsoft.MachineLearningServices/workspaces@2024-10-01-preview' = {
+resource aiHub 'Microsoft.MachineLearningServices/workspaces@2026-09-01' = {
   name: aiHubName
   location: location
   sku: {

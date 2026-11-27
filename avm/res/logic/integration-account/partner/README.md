@@ -115,6 +115,7 @@ Resource tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the integration account partner. |
 | `name` | string | The name of the integration account partner. |
 | `resourceGroupName` | string | The resource group the integration account partner was deployed into. |
 | `resourceId` | string | The resource ID of the integration account partner. |

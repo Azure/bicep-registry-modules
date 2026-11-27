@@ -22,7 +22,7 @@ param cacertDeploymentScriptName string
 @description('Optional. Do not provide a value. Used to force the deployment script to rerun on every redeployment.')
 param utcValue string = utcNow()
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {

@@ -125,6 +125,7 @@ Location for all resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the protected item. |
 | `name` | string | The Name of the protected item. |
 | `resourceGroupName` | string | The name of the Resource Group the protected item was created in. |
 | `resourceId` | string | The resource ID of the protected item. |

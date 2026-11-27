@@ -13,10 +13,10 @@ param keyVaultResourceId string
 @description('Required. Name of the key to set the permissions for.')
 param keyName string
 
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: last(split(keyVaultResourceId, '/'))!
 
-  resource key 'keys@2025-05-01' existing = {
+  resource key 'keys@2026-02-01' existing = {
     name: keyName
   }
 }

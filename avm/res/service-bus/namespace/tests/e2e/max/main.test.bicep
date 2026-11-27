@@ -81,7 +81,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           name: '2c42f915-20bf-4094-ba42-fee1f811d374'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
@@ -94,7 +94,7 @@ module testDeployment '../../../main.bicep' = [
         {
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -142,7 +142,7 @@ module testDeployment '../../../main.bicep' = [
           name: '${namePrefix}${serviceShort}q001'
           roleAssignments: [
             {
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
@@ -154,7 +154,7 @@ module testDeployment '../../../main.bicep' = [
             {
               roleDefinitionIdOrName: subscriptionResourceId(
                 'Microsoft.Authorization/roleDefinitions',
-                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
               )
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
@@ -186,7 +186,7 @@ module testDeployment '../../../main.bicep' = [
           name: '${namePrefix}${serviceShort}t001'
           roleAssignments: [
             {
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName: 'Reader'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
@@ -198,7 +198,7 @@ module testDeployment '../../../main.bicep' = [
             {
               roleDefinitionIdOrName: subscriptionResourceId(
                 'Microsoft.Authorization/roleDefinitions',
-                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+                '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
               )
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'

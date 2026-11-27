@@ -171,9 +171,7 @@ output endpoint string = '${redisCluster.properties.hostName}:${redisDatabase.pr
 
 @secure()
 @description('The primary access key.')
-output primaryAccessKey string? = accessKeysAuthentication == 'Enabled'
-  ? redisDatabase.listKeys().primaryKey
-  : null
+output primaryAccessKey string? = accessKeysAuthentication == 'Enabled' ? redisDatabase.listKeys().primaryKey : null
 
 @secure()
 @description('The primary connection string.')
@@ -189,9 +187,7 @@ output primaryStackExchangeRedisConnectionString string? = accessKeysAuthenticat
 
 @secure()
 @description('The secondary access key.')
-output secondaryAccessKey string? = accessKeysAuthentication == 'Enabled'
-  ? redisDatabase.listKeys().secondaryKey
-  : null
+output secondaryAccessKey string? = accessKeysAuthentication == 'Enabled' ? redisDatabase.listKeys().secondaryKey : null
 
 @secure()
 @description('The secondary connection string.')

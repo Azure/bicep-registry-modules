@@ -75,6 +75,9 @@ output name string = snapshotPolicies.name
 @description('The name of the Resource Group the Snapshot was created in.')
 output resourceGroupName string = resourceGroup().name
 
+@description('The location of the snapshot policy.')
+output location string = snapshotPolicies.location
+
 // ================ //
 // Definitions      //
 // ================ //

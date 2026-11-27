@@ -11,15 +11,25 @@ metadata description = 'This instance deploys the module with most of its featur
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-automation.account-${serviceShort}-rg'
 
-// Enforce uksouth to avoid restrictions around zone redundancy in certain regions
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'westeurope'
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'aamax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+// These defaults are public serialized test data, not credentials. Keep each type's exact representation.
+@description('Optional. Public fixtures for the string, integer, boolean and date variable serialization cases.')
+@secure()
+#disable-next-line secure-parameter-default
+param variableValues object = {
+  stringValue: '\'TestString\''
+  integerValue: '500'
+  booleanValue: 'false'
+  dateTimeValue: '\'\\/Date(1637934042656)\\/\''
+}
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -32,12 +42,12 @@ param timeNow string = utcNow()
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -48,7 +58,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
@@ -65,7 +75,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
       diagnosticSettings: [
@@ -106,7 +116,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       disableLocalAuth: true
       linkedWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      location: enforcedLocation
+      location: resourceLocation
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -192,7 +202,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           name: guid('${resourceGroupName}${namePrefix}/Owner')
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Reader'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
@@ -205,7 +215,7 @@ module testDeployment '../../../main.bicep' = [
         {
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            '43d0d8ad-25c7-4714-9337-8ba259a9fe05'
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -242,28 +252,28 @@ module testDeployment '../../../main.bicep' = [
         {
           description: 'TestStringDescription'
           name: 'TestString'
-          value: '\'TestString\''
+          value: variableValues.stringValue
         }
         {
           description: 'TestIntegerDescription'
           name: 'TestInteger'
-          value: '500'
+          value: variableValues.integerValue
         }
         {
           description: 'TestBooleanDescription'
           name: 'TestBoolean'
-          value: 'false'
+          value: variableValues.booleanValue
         }
         {
           description: 'TestDateTimeDescription'
           isEncrypted: false
           name: 'TestDateTime'
-          value: '\'\\/Date(1637934042656)\\/\''
+          value: variableValues.dateTimeValue
         }
         {
           description: 'TestEncryptedDescription'
           name: 'TestEncryptedVariable'
-          value: '\'TestEncryptedValue\''
+          value: '\'${password}\''
         }
       ]
       webhooks: [

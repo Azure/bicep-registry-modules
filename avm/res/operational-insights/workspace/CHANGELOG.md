@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/operational-insights/workspace/CHANGELOG.md).
 
+## 0.16.2
+
+### Changes
+
+- Use the Sentinel onboarding API instead of a separate legacy SecurityInsights gallery deployment when `onboardWorkspaceToSentinel` is enabled.
+
+### Breaking Changes
+
+- None
+
 ## 0.16.1
 
 ### Changes

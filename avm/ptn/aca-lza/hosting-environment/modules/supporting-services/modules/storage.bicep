@@ -28,6 +28,9 @@ param spokeVNetResourceId string
 @description('The resource id of the subnet in the VNet to which the private endpoint will be connected.')
 param spokePrivateEndpointSubnetResourceId string
 
+@description('Required. The resource ID of the deployment-script subnet.')
+param deploymentSubnetResourceId string
+
 @description('Optional. The name of the private endpoint to be created for Key Vault. If left empty, it defaults to "<resourceName>-pep')
 param storagePrivateEndpointName string = 'storage-pep'
 
@@ -58,14 +61,17 @@ module storage 'br/public:avm/res/storage/storage-account:0.15.0' = {
     skuName: 'Standard_ZRS'
     enableTelemetry: enableTelemetry
     name: storageAccountName
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: 'Enabled'
+    allowSharedKeyAccess: true
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
-    }
-    secretsExportConfiguration: {
-      keyVaultResourceId: keyVaultResourceId
-      accessKey1: 'ciStorageAccessKey1'
+      virtualNetworkRules: [
+        {
+          id: deploymentSubnetResourceId
+          action: 'Allow'
+        }
+      ]
     }
     fileServices: {
       shares: shares
@@ -98,6 +104,16 @@ module storage 'br/public:avm/res/storage/storage-account:0.15.0' = {
     tags: tags
   }
 }
+
+module storageAccessKeySecret 'storage-key-secret.bicep' = {
+  name: '${take(uniqueString(deployment().name, location), 4)}-ci-storage-key-secret'
+  params: {
+    storageAccountResourceId: storage.outputs.resourceId
+    keyVaultResourceId: keyVaultResourceId
+    enableTelemetry: enableTelemetry
+  }
+}
+
 module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   name: '${take(uniqueString(deployment().name, location),4)}-storagePrivateDnsZone-deployment'
   params: {

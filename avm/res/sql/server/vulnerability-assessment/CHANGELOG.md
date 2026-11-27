@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Recompiled `main.json` with Bicep CLI `0.48.1` to align nested template metadata with the CI-pinned compiler.
+- Regenerated ARM template artifacts with Bicep 0.48.1 without changing resource configuration.
 
 ### Breaking Changes
 

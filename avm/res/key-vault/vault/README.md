@@ -184,6 +184,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvec002"
     },
+    // Non-required parameters
     "enablePurgeProtection": {
       "value": false
     },
@@ -363,7 +364,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -452,7 +453,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -484,7 +485,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
         name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -504,13 +505,13 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           exp: 1725109032
           nbf: 10000
         }
-        contentType: 'Something'
+        contentType: '<contentType>'
         name: 'secretName'
         roleAssignments: [
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Owner'
+            roleDefinitionIdOrName: 'Reader'
           }
           {
             principalId: '<principalId>'
@@ -552,6 +553,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvmax002"
     },
+    // Non-required parameters
     "accessPolicies": {
       "value": [
         {
@@ -625,7 +627,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -722,7 +724,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -756,7 +758,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           "name": "b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -778,13 +780,13 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             "exp": 1725109032,
             "nbf": 10000
           },
-          "contentType": "Something",
+          "contentType": "<contentType>",
           "name": "secretName",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Owner"
+              "roleDefinitionIdOrName": "Reader"
             },
             {
               "principalId": "<principalId>",
@@ -892,7 +894,7 @@ param keys = [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -981,7 +983,7 @@ param privateEndpoints = [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -1013,7 +1015,7 @@ param roleAssignments = [
     name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -1033,13 +1035,13 @@ param secrets = [
       exp: 1725109032
       nbf: 10000
     }
-    contentType: 'Something'
+    contentType: '<contentType>'
     name: 'secretName'
     roleAssignments: [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         principalId: '<principalId>'
@@ -1138,6 +1140,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvrsa002"
     },
+    // Non-required parameters
     "enablePurgeProtection": {
       "value": false
     },
@@ -1321,7 +1324,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           exp: 1702648632
           nbf: 10000
         }
-        contentType: 'Something'
+        contentType: '<contentType>'
         name: 'secretName'
         value: 'secretValue'
       }
@@ -1352,6 +1355,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "name": {
       "value": "kvvwaf002"
     },
+    // Non-required parameters
     "diagnosticSettings": {
       "value": [
         {
@@ -1433,7 +1437,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             "exp": 1702648632,
             "nbf": 10000
           },
-          "contentType": "Something",
+          "contentType": "<contentType>",
           "name": "secretName",
           "value": "secretValue"
         }
@@ -1534,7 +1538,7 @@ param secrets = [
       exp: 1702648632
       nbf: 10000
     }
-    contentType: 'Something'
+    contentType: '<contentType>'
     name: 'secretName'
     value: 'secretValue'
   }
@@ -3076,7 +3080,7 @@ All secrets to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`attributes`](#parameter-secretsattributes) | object | Contains attributes of the secret. |
-| [`contentType`](#parameter-secretscontenttype) | string | The content type of the secret. |
+| [`contentType`](#parameter-secretscontenttype) | securestring | The content type of the secret. |
 | [`roleAssignments`](#parameter-secretsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-secretstags) | object | Resource tags. |
 
@@ -3135,7 +3139,7 @@ If set, defines the date from which onwards the secret becomes valid. Defined in
 The content type of the secret.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `secrets.roleAssignments`
 

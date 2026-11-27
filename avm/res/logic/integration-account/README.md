@@ -438,10 +438,9 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     ]
     roleAssignments: [
       {
-        name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -834,10 +833,9 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     "roleAssignments": {
       "value": [
         {
-          "name": "1f98c16b-ea00-4686-8b81-05353b594ea3",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1214,10 +1212,9 @@ param partners = [
 ]
 param roleAssignments = [
   {
-    name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -1697,7 +1694,7 @@ All assemblies to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`assemblyName`](#parameter-assembliesassemblyname) | string | The assembly name. |
-| [`content`](#parameter-assembliescontent) | string | The assembly content. |
+| [`content`](#parameter-assembliescontent) | securestring | The assembly content. |
 | [`name`](#parameter-assembliesname) | string | The Name of the assembly resource. |
 
 **Optional parameters**
@@ -1721,7 +1718,7 @@ The assembly name.
 The assembly content.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `assemblies.name`
 

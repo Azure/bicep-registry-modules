@@ -5,11 +5,10 @@ param (
 )
 
 BeforeAll {
-    . (Join-Path $repoRootPath 'utilities/pipelines/sharedScripts/helper/Build-ViaRPC.ps1')
-
     $modulePath = Join-Path ($moduleFolderPaths | Sort-Object | Select-Object -First 1) 'main.bicep'
-    $compiled = Build-ViaRPC -BicepFilePath $modulePath -PassThru -ErrorAction Stop
-    $template = $compiled[$modulePath] | ConvertFrom-Json -AsHashtable
+    $compiled = & bicep build $modulePath --stdout
+    if ($LASTEXITCODE -ne 0) { throw "Bicep compilation failed for $modulePath" }
+    $template = $compiled | ConvertFrom-Json -AsHashtable
     $proxyType = $template.definitions.explicitProxyType
     $policy = $template.resources.Values | Where-Object type -EQ 'Microsoft.Network/firewallPolicies'
 }
@@ -86,7 +85,8 @@ module policy '$relativeModulePath' = {
   }
 }
 "@
-        $result = Build-ViaRPC -BicepFilePath $fixture -PassThru -ErrorAction Stop
-        $result[$fixture] | Should -Not -BeNullOrEmpty
+        $result = & bicep build $fixture --stdout
+        $LASTEXITCODE | Should -Be 0
+        $result | Should -Not -BeNullOrEmpty
     }
 }

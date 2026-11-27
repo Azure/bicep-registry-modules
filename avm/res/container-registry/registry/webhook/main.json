@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "10125751542653631245"
+      "version": "0.48.1.52935",
+      "templateHash": "6897779106791837335"
     },
     "name": "Azure Container Registry (ACR) Webhooks",
     "description": "This module deploys an Azure Container Registry (ACR) Webhook."

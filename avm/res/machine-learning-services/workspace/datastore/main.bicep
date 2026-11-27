@@ -15,13 +15,13 @@ param name string
 param machineLearningWorkspaceName string
 
 @description('Required. The properties of the datastore.')
-param properties resourceInput<'Microsoft.MachineLearningServices/workspaces/datastores@2024-10-01'>.properties
+param properties resourceInput<'Microsoft.MachineLearningServices/workspaces/datastores@2026-09-01'>.properties
 
 // ============================= //
 // Existing resources references //
 // ============================= //
 
-resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2025-01-01-preview' existing = {
+resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2026-09-01' existing = {
   name: machineLearningWorkspaceName
 }
 
@@ -32,7 +32,7 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2026-06-01' = if (enableTelemetry) {
   name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -50,7 +50,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource datastore 'Microsoft.MachineLearningServices/workspaces/datastores@2024-10-01' = {
+resource datastore 'Microsoft.MachineLearningServices/workspaces/datastores@2026-09-01' = {
   name: name
   parent: machineLearningWorkspace
   properties: properties

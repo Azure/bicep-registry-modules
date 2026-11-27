@@ -172,6 +172,11 @@ This instance deploys the module with Cassandra Keyspaces in alignment with the 
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cassandrakeyspaces-waf]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily excluded: the idempotency account PUT failed with PreconditionFailed due to an exclusive service lock after the initial deployment completed. The lock's underlying cause is unproven; this is not a confirmed capacity failure.
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131891398986
+```
 
 <details>
 
@@ -181,7 +186,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddacswaf001'
+    name: '<name>'
     // Non-required parameters
     backupPolicyType: 'Periodic'
     capabilitiesToAdd: [
@@ -341,7 +346,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddacswaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "backupPolicyType": {
@@ -525,7 +530,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddacswaf001'
+param name = '<name>'
 // Non-required parameters
 param backupPolicyType = 'Periodic'
 param capabilitiesToAdd = [
@@ -1190,7 +1195,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'user-mi'
+    name: '<name>'
     // Non-required parameters
     managedIdentities: {
       systemAssigned: true
@@ -1202,7 +1207,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Reader'
       }
       {
         name: '<name>'
@@ -1235,7 +1240,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "user-mi"
+      "value": "<name>"
     },
     // Non-required parameters
     "managedIdentities": {
@@ -1251,7 +1256,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Reader"
         },
         {
           "name": "<name>",
@@ -1284,7 +1289,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'user-mi'
+param name = '<name>'
 // Non-required parameters
 param managedIdentities = {
   systemAssigned: true
@@ -1296,7 +1301,7 @@ param roleAssignments = [
   {
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Reader'
   }
   {
     name: '<name>'
@@ -1331,7 +1336,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddamng001'
+    name: '<name>'
     // Non-required parameters
     mongodbDatabases: [
       {
@@ -1538,7 +1543,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddamng001"
+      "value": "<name>"
     },
     // Non-required parameters
     "mongodbDatabases": {
@@ -1747,7 +1752,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddamng001'
+param name = '<name>'
 // Non-required parameters
 param mongodbDatabases = [
   {
@@ -2101,7 +2106,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddansp001'
+    name: '<name>'
     // Non-required parameters
     networkRestrictions: {
       publicNetworkAccess: 'SecuredByPerimeter'
@@ -2124,7 +2129,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddansp001"
+      "value": "<name>"
     },
     // Non-required parameters
     "networkRestrictions": {
@@ -2147,7 +2152,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddansp001'
+param name = '<name>'
 // Non-required parameters
 param networkRestrictions = {
   publicNetworkAccess: 'SecuredByPerimeter'
@@ -2415,7 +2420,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddasql001'
+    name: '<name>'
     // Non-required parameters
     sqlDatabases: [
       {
@@ -2661,7 +2666,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddasql001"
+      "value": "<name>"
     },
     // Non-required parameters
     "sqlDatabases": {
@@ -2909,7 +2914,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddasql001'
+param name = '<name>'
 // Non-required parameters
 param sqlDatabases = [
   {
@@ -3157,7 +3162,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddarole001'
+    name: '<name>'
     // Non-required parameters
     sqlDatabases: [
       {
@@ -3194,7 +3199,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     sqlRoleDefinitions: [
       {
         assignableScopes: [
-          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+          '<databaseAccountResourceId>'
         ]
         assignments: [
           {
@@ -3211,7 +3216,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       }
       {
         assignableScopes: [
-          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+          '<databaseAccountResourceId>'
         ]
         dataActions: [
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
@@ -3244,7 +3249,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddarole001"
+      "value": "<name>"
     },
     // Non-required parameters
     "sqlDatabases": {
@@ -3287,7 +3292,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": [
         {
           "assignableScopes": [
-            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
+            "<databaseAccountResourceId>"
           ],
           "assignments": [
             {
@@ -3304,7 +3309,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         },
         {
           "assignableScopes": [
-            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
+            "<databaseAccountResourceId>"
           ],
           "dataActions": [
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
@@ -3337,7 +3342,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddarole001'
+param name = '<name>'
 // Non-required parameters
 param sqlDatabases = [
   {
@@ -3374,7 +3379,7 @@ param sqlRoleAssignments = [
 param sqlRoleDefinitions = [
   {
     assignableScopes: [
-      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+      '<databaseAccountResourceId>'
     ]
     assignments: [
       {
@@ -3391,7 +3396,7 @@ param sqlRoleDefinitions = [
   }
   {
     assignableScopes: [
-      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+      '<databaseAccountResourceId>'
     ]
     dataActions: [
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
@@ -3534,7 +3539,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddawaf001'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -3606,7 +3611,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddawaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -3698,7 +3703,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddawaf001'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {

@@ -81,7 +81,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2025-10-01
   properties: {
     buildTimeoutInMinutes: 0
     vmProfile: {
-      vmSize: 'Standard_D2s_v3'
+      vmSize: 'Standard_D2ads_v5'
       osDiskSizeGB: 127
     }
     source: {
@@ -155,7 +155,7 @@ resource copyVhdDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-
   ]
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -173,7 +173,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2025-05-01' = {
+  resource key 'keys@2026-02-01' = {
     name: 'encryptionKey'
     properties: {
       kty: 'RSA'

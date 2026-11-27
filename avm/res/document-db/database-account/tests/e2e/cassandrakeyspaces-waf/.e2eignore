@@ -1,0 +1,2 @@
+Temporarily excluded: the idempotency account PUT failed with PreconditionFailed due to an exclusive service lock after the initial deployment completed. The lock's underlying cause is unproven; this is not a confirmed capacity failure.
+Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/43426915231/job/131891398986

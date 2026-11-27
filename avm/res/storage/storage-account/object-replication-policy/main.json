@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "12825447910121940613"
+      "version": "0.48.1.52935",
+      "templateHash": "17165141310549509384"
     },
     "name": "Storage Account Object Replication Policy",
     "description": "This module deploys a Storage Account Object Replication Policy for both the source account and destination account."
@@ -192,8 +192,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "4665383193426697350"
+              "version": "0.48.1.52935",
+              "templateHash": "28945008581909239"
             },
             "name": "Storage Account Object Replication Policy",
             "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -362,6 +362,20 @@
             }
           },
           "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the created Object Replication Policy."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the created Object Replication Policy."
+              },
+              "value": "[resourceId('Microsoft.Storage/storageAccounts/objectReplicationPolicies', parameters('storageAccountName'), parameters('name'))]"
+            },
             "resourceGroupName": {
               "type": "string",
               "metadata": {
@@ -443,8 +457,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "4665383193426697350"
+              "version": "0.48.1.52935",
+              "templateHash": "28945008581909239"
             },
             "name": "Storage Account Object Replication Policy",
             "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -613,6 +627,20 @@
             }
           },
           "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the created Object Replication Policy."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the created Object Replication Policy."
+              },
+              "value": "[resourceId('Microsoft.Storage/storageAccounts/objectReplicationPolicies', parameters('storageAccountName'), parameters('name'))]"
+            },
             "resourceGroupName": {
               "type": "string",
               "metadata": {

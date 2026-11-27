@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "6784372896250458115"
+      "version": "0.48.1.52935",
+      "templateHash": "9839216822119437050"
     },
     "name": "Kusto Cluster Databases",
     "description": "This module deploys a Kusto Cluster Database."
@@ -231,8 +231,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "661948545988216283"
+              "version": "0.48.1.52935",
+              "templateHash": "8249084250794861606"
             },
             "name": "Kusto Cluster Database Principal Assignments",
             "description": "This module deploys a Kusto Cluster Database Principal Assignment."
@@ -356,6 +356,13 @@
         "description": "The resource group containing the Kusto Cluster database."
       },
       "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the Kusto Cluster database."
+      },
+      "value": "[if(equals(parameters('databaseKind'), 'ReadOnlyFollowing'), reference('database_readOnly', '2024-04-13', 'full').location, reference('database_readWrite', '2024-04-13', 'full').location)]"
     }
   }
 }

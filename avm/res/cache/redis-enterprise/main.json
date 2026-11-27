@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "14188156777374208990"
+      "version": "0.48.1.52935",
+      "templateHash": "16429595342544211335"
     },
     "name": "Redis Enterprise and Azure Managed Redis",
     "description": "This module deploys a Redis Enterprise or Azure Managed Redis cache."
@@ -1458,8 +1458,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11126356191358371505"
+              "version": "0.48.1.52935",
+              "templateHash": "14359789144961816725"
             },
             "name": "Redis database",
             "description": "This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis cluster."
@@ -1979,8 +1979,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "16674341821676677715"
+                      "version": "0.48.1.52935",
+                      "templateHash": "15640134415079726422"
                     },
                     "name": "Azure Managed Redis Database Access Policy Assignment",
                     "description": "This module deploys an access policy assignment for an Azure Managed Redis database."

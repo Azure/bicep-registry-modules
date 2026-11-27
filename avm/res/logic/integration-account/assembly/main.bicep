@@ -79,3 +79,6 @@ output name string = assembly.name
 
 @description('The resource group the integration account assembly was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location of the integration account assembly.')
+output location string = assembly.?location ?? location

@@ -131,6 +131,7 @@ Tags of the resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the certificate. |
 | `name` | string | The name of the key values. |
 | `resourceGroupName` | string | The resource group the certificate was deployed into. |
 | `resourceId` | string | The resource ID of the key values. |

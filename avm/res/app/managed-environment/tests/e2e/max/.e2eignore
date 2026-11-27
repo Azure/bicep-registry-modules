@@ -1,0 +1,3 @@
+Temporarily excluded after InternalServerError during the private-endpoint stage; environment, certificate and storage dependencies completed successfully. The underlying provider-operation cause is not established. Evidence: https://github.com/Azure/bicep-registry-modules/actions/runs/38540661047/job/115775085298.
+
+Defaults, WAF-aligned and the other scenarios remain enabled. Re-enable this max scenario when its private-endpoint deployment and normal cleanup complete successfully in a separately scoped validation; this exception does not establish private-endpoint coverage.

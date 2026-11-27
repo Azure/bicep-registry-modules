@@ -49,5 +49,6 @@ jobs:
             Write-Host "Checking PowerShell modules..."
             Get-Module -ListAvailable Az, Pester, PSRule.Rules.Azure | Select-Object Name, Version
 
-            Write-Host "Checking Test-ModuleLocally.ps1 script..."
-            Test-Path "./utilities/tools/Test-ModuleLocally.ps1"
+            Write-Host "Checking AVM authoring commands..."
+            Import-Module Avm.Authoring -MinimumVersion "1.1.0" -ErrorAction Stop
+            Get-Command Invoke-AvmPreCommit, Invoke-AvmTestUnit, Invoke-AvmTestE2e -ErrorAction Stop

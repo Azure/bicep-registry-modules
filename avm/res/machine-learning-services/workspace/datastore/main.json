@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "3390380406234937570"
+      "version": "0.49.2.45890",
+      "templateHash": "3663092854323028201"
     },
     "name": "Machine Learning Services Workspaces Datastores",
     "description": "This module creates a datastore in a Machine Learning Services workspace."
@@ -34,7 +34,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.MachineLearningServices/workspaces/datastores@2024-10-01#properties/properties"
+          "source": "Microsoft.MachineLearningServices/workspaces/datastores@2026-09-01#properties/properties"
         },
         "description": "Required. The properties of the datastore."
       }
@@ -48,7 +48,7 @@
     {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2026-06-01",
       "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -67,7 +67,7 @@
     },
     {
       "type": "Microsoft.MachineLearningServices/workspaces/datastores",
-      "apiVersion": "2024-10-01",
+      "apiVersion": "2026-09-01",
       "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
       "properties": "[parameters('properties')]"
     }
