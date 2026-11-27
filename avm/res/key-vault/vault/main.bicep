@@ -58,11 +58,12 @@ param sku string = 'premium'
 @description('Optional. Rules governing the accessibility of the resource from specific network locations.')
 param networkAcls networkAclsType?
 
-@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
+@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. When secured by an associated network security perimeter, trusted services require explicit perimeter access rules.')
 @allowed([
   ''
   'Enabled'
   'Disabled'
+  'SecuredByPerimeter'
 ])
 param publicNetworkAccess string = ''
 
