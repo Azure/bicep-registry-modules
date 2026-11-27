@@ -50,7 +50,7 @@ Describe 'SQL security fixture storage identities' {
             $names = (Get-Content -LiteralPath $parameterOutput -Raw | ConvertFrom-Json -AsHashtable).parameters
 
             $compiledPath = Join-Path $TestDrive "$fixture.json"
-            $diagnostics = bicep build $fixturePath --no-restore --outfile $compiledPath 2>&1
+            $diagnostics = bicep build $fixturePath --outfile $compiledPath 2>&1
             if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
             $template = Get-Content -LiteralPath $compiledPath -Raw | ConvertFrom-Json -AsHashtable -Depth 100
             $resources = $template.resources -is [System.Collections.IDictionary] ? @($template.resources.Values) : @($template.resources)

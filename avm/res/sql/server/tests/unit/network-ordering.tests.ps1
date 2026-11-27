@@ -2,7 +2,7 @@ Describe 'SQL private endpoint and connection policy ordering' {
     BeforeAll {
         $modulePath = Join-Path $PSScriptRoot '..' '..' 'main.bicep'
         $compiledPath = Join-Path $TestDrive 'server.json'
-        $diagnostics = bicep build $modulePath --no-restore --outfile $compiledPath 2>&1
+        $diagnostics = bicep build $modulePath --outfile $compiledPath 2>&1
         if ($LASTEXITCODE -ne 0) { throw ($diagnostics | Out-String) }
         $template = Get-Content -LiteralPath $compiledPath -Raw | ConvertFrom-Json -AsHashtable -Depth 100
     }
