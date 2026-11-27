@@ -1,6 +1,6 @@
 # Key Vaults `[Microsoft.KeyVault/vaults]`
 
-This module deploys a Key Vault. Oops!
+This module deploys a Key Vault.
 
 You can reference the module as follows:
 ```bicep
