@@ -73,11 +73,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2025-03-01-preview' existing = {
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2025-10-10' existing = {
   name: applicationGroupName
 }
 
-resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2025-03-01-preview' = {
+resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2025-10-10' = {
   name: name
   parent: appGroup
   properties: {

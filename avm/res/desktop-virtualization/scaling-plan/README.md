@@ -96,7 +96,7 @@ param name = 'dvspmin002'
 
 ### Example 2: _Using large parameter set_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module with most of its features enabled and grants the Azure Virtual Desktop service principal subscription-level autoscale permissions.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 

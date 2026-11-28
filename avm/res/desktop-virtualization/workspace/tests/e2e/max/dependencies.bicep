@@ -15,8 +15,7 @@ param applicationGroupName string
 
 var addressPrefix = '10.0.0.0/16'
 
-#disable-next-line use-recent-api-versions
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-09-01' = {
   name: virtualNetworkName
   location: location
   properties: {

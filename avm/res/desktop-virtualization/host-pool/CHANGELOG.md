@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/desktop-virtualization/host-pool/CHANGELOG.md).
 
+## 0.8.3
+
+### Changes
+
+- Updated all `avm-common-types` imports to `0.7.0` and the private endpoint module to `0.12.1`.
+- Updated telemetry, stable-compatible resource input types, virtual network lookup and test dependencies to stable API versions.
+- Retained host pool API `2025-03-01-preview` to preserve UDP controls and automated management support.
+
+### Breaking Changes
+
+- None
+
 ## 0.8.2
 
 ### Changes

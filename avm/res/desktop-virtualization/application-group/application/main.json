@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "11614347311320649941"
+      "version": "0.43.8.12551",
+      "templateHash": "3061368591673568133"
     },
     "name": "Azure Virtual Desktop Application Group Application",
     "description": "This module deploys an Azure Virtual Desktop Application Group Application."
@@ -144,12 +144,12 @@
     "appGroup": {
       "existing": true,
       "type": "Microsoft.DesktopVirtualization/applicationGroups",
-      "apiVersion": "2025-03-01-preview",
+      "apiVersion": "2025-10-10",
       "name": "[parameters('applicationGroupName')]"
     },
     "application": {
       "type": "Microsoft.DesktopVirtualization/applicationGroups/applications",
-      "apiVersion": "2025-03-01-preview",
+      "apiVersion": "2025-10-10",
       "name": "[format('{0}/{1}', parameters('applicationGroupName'), parameters('name'))]",
       "properties": {
         "description": "[parameters('description')]",

@@ -29,7 +29,7 @@ param hostPoolType string = 'Pooled'
 ])
 param publicNetworkAccess string = 'Enabled'
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -80,7 +80,7 @@ param preferredAppGroupType string = 'Desktop'
 param startVMOnConnect bool = false
 
 @sys.description('Optional. The session host configuration for updating agent, monitoring agent, and stack component.')
-param agentUpdate resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'>.properties.agentUpdate = {
+param agentUpdate resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-10-10'>.properties.agentUpdate = {
   type: 'Scheduled'
   useSessionHostLocalTime: true
   maintenanceWindows: [
@@ -131,20 +131,20 @@ param relayUDP resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-03-
 param managementType resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'>.properties.managementType = 'Standard'
 
 @sys.description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.DesktopVirtualization/hostPools@2024-04-03'>.tags?
+param tags resourceInput<'Microsoft.DesktopVirtualization/hostPools@2025-10-10'>.tags?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
@@ -246,7 +246,7 @@ var formattedRoleAssignments = [
 var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -264,6 +264,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
+// Retain preview support for UDP controls and automated host pool management.
 resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview' = {
   name: name
   location: location
@@ -302,7 +303,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'
   }
 }
 
-module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-hostPool-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -342,7 +343,7 @@ module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.1
       enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
-        '2020-06-01',
+        '2025-09-01',
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock

@@ -7,14 +7,12 @@ param managedIdentityName string
 @description('Optional. Expiration time of Host Pool registration token. Should be between one hour and 30 days from now and the format is like \'2023-12-24T12:00:00.0000000Z\'. If not provided, the expiration time will be set to two days from now.')
 param expirationTime string = dateTimeAdd(utcNow(), 'P2D')
 
-#disable-next-line use-recent-api-versions
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-#disable-next-line use-recent-api-versions
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-10-10' = {
   name: 'myHostPool'
   location: location
   tags: {}
